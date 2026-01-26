@@ -1,0 +1,85 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "onto-standard"
+version = "1.0.0"
+description = "ONTO Epistemic Risk Standard v1.0 Reference Implementation"
+readme = "README_PACKAGE.md"
+license = {text = "Apache-2.0"}
+requires-python = ">=3.8"
+authors = [
+    {name = "ONTO Standards Council", email = "standards@onto-bench.org"}
+]
+maintainers = [
+    {name = "ONTO Project", email = "dev@onto-bench.org"}
+]
+keywords = [
+    "ai",
+    "ml", 
+    "llm",
+    "calibration",
+    "uncertainty",
+    "epistemic",
+    "compliance",
+    "risk",
+    "safety",
+    "evaluation",
+    "benchmark"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
+]
+dependencies = []  # Pure Python, no dependencies
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=23.0",
+    "mypy>=1.0",
+]
+
+[project.scripts]
+onto-standard = "onto_standard:main"
+
+[project.urls]
+Homepage = "https://onto-bench.org"
+Documentation = "https://onto-bench.org/standard"
+Repository = "https://github.com/onto-project/onto-standard"
+"Bug Tracker" = "https://github.com/onto-project/onto-standard/issues"
+"Standard Document" = "https://onto-bench.org/standard/v1.0"
+Changelog = "https://github.com/onto-project/onto-standard/blob/main/CHANGELOG.md"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["onto_standard*"]
+
+[tool.black]
+line-length = 100
+target-version = ['py38', 'py39', 'py310', 'py311', 'py312']
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v"

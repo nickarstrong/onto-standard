@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ONTO - AI Liability Exposure Chart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    </style>
+</head>
+<body class="bg-white p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">AI Liability Exposure</h1>
+        <p class="text-gray-600 mb-8">Expected annual loss: With vs Without ONTO</p>
+        
+        <!-- Main Chart -->
+        <div class="bg-white p-6 rounded-xl shadow-lg border mb-8">
+            <canvas id="liabilityChart" height="300"></canvas>
+        </div>
+        
+        <!-- Key Numbers -->
+        <div class="grid grid-cols-3 gap-6 mb-8">
+            <div class="bg-red-50 p-6 rounded-xl border border-red-200 text-center">
+                <p class="text-4xl font-bold text-red-600">$4.25M</p>
+                <p class="text-gray-600">Annual Exposure<br>(Without ONTO)</p>
+            </div>
+            <div class="bg-green-50 p-6 rounded-xl border border-green-200 text-center">
+                <p class="text-4xl font-bold text-green-600">$1.28M</p>
+                <p class="text-gray-600">Annual Exposure<br>(With ONTO)</p>
+            </div>
+            <div class="bg-blue-50 p-6 rounded-xl border border-blue-200 text-center">
+                <p class="text-4xl font-bold text-blue-600">$2.97M</p>
+                <p class="text-gray-600">Annual Savings<br>(70% Reduction)</p>
+            </div>
+        </div>
+        
+        <!-- Risk Breakdown -->
+        <div class="bg-gray-50 p-6 rounded-xl mb-8">
+            <h2 class="text-xl font-bold mb-4">Risk Category Breakdown</h2>
+            <div class="space-y-4">
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <span class="text-gray-700">Regulatory Fines (EU AI Act 6%)</span>
+                        <span class="font-bold text-red-600">$3,000,000</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-4">
+                        <div class="bg-red-500 h-4 rounded-full" style="width: 70%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <span class="text-gray-700">Lawsuit Liability</span>
+                        <span class="font-bold text-orange-600">$500,000</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-4">
+                        <div class="bg-orange-500 h-4 rounded-full" style="width: 12%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <span class="text-gray-700">Brand Damage</span>
+                        <span class="font-bold text-yellow-600">$500,000</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-4">
+                        <div class="bg-yellow-500 h-4 rounded-full" style="width: 12%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <span class="text-gray-700">Lost Enterprise Deals</span>
+                        <span class="font-bold text-blue-600">$250,000</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-4">
+                        <div class="bg-blue-500 h-4 rounded-full" style="width: 6%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ROI Box -->
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-8 rounded-xl text-white text-center">
+            <p class="text-lg mb-2">ONTO Investment: $150,000/year</p>
+            <p class="text-5xl font-bold mb-2">20x ROI</p>
+            <p class="text-lg opacity-90">$2.97M saved ÷ $150K investment</p>
+        </div>
+        
+        <!-- CTA -->
+        <div class="mt-8 text-center">
+            <a href="#" class="inline-block bg-indigo-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-indigo-700">
+                Book Epistemic Risk Audit →
+            </a>
+            <p class="text-gray-500 mt-2">Free pilot available. See your numbers.</p>
+        </div>
+    </div>
+    
+    <script>
+        const ctx = document.getElementById('liabilityChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Regulatory\nFines', 'Lawsuit\nLiability', 'Brand\nDamage', 'Lost\nDeals', 'TOTAL'],
+                datasets: [
+                    {
+                        label: 'Without ONTO',
+                        data: [3000000, 500000, 500000, 250000, 4250000],
+                        backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                        borderColor: 'rgb(239, 68, 68)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'With ONTO (70% reduction)',
+                        data: [900000, 150000, 150000, 75000, 1275000],
+                        backgroundColor: 'rgba(34, 197, 94, 0.8)',
+                        borderColor: 'rgb(34, 197, 94)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Expected Annual AI Liability ($)',
+                        font: { size: 16 }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + (value / 1000000).toFixed(1) + 'M';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

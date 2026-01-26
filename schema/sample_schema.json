@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ONTO-Bench Sample",
+  "type": "object",
+  "required": ["id", "question", "label", "domain", "source"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique sample ID (UUID or hash)"
+    },
+    "question": {
+      "type": "string",
+      "minLength": 10,
+      "description": "The question text"
+    },
+    "answer": {
+      "type": ["string", "null"],
+      "description": "Ground truth answer (null for UNKNOWN)"
+    },
+    "label": {
+      "type": "string",
+      "enum": ["KNOWN", "UNKNOWN", "CONTRADICTION"],
+      "description": "Epistemic label"
+    },
+    "domain": {
+      "type": "string",
+      "enum": ["physics", "mathematics", "biology", "chemistry", "computer_science", "philosophy", "information_theory"],
+      "description": "Scientific domain"
+    },
+    "source": {
+      "type": "string",
+      "description": "Provenance source"
+    },
+    "source_type": {
+      "type": "string",
+      "enum": ["TIER1_AUTHORITY", "TIER2_CURATED", "LLM_GENERATED", "MANUAL"],
+      "description": "Source reliability tier"
+    },
+    "source_url": {
+      "type": ["string", "null"],
+      "description": "URL reference if available"
+    },
+    "validated": {
+      "type": "boolean",
+      "default": false,
+      "description": "Human validated flag"
+    },
+    "validator_id": {
+      "type": ["string", "null"],
+      "description": "Who validated (for agreement calc)"
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Label confidence"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata"
+    }
+  }
+}

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ONTO-Bench Leaderboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .highlight-row {
+            background-color: #f0fdf4;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-12">
+        <div class="max-w-6xl mx-auto px-4">
+            <h1 class="text-4xl font-bold mb-2">ONTO-Bench</h1>
+            <p class="text-xl opacity-90">Benchmarking Epistemic Calibration in LLMs</p>
+            <p class="mt-4 text-sm opacity-75">
+                Do AI models know what they don't know? Submit your model to find out.
+            </p>
+            <div class="mt-6 flex gap-4">
+                <a href="https://arxiv.org/abs/XXXX.XXXXX" 
+                   class="bg-white text-purple-700 px-4 py-2 rounded font-medium hover:bg-gray-100">
+                    📄 Paper
+                </a>
+                <a href="https://github.com/onto-project/onto-bench" 
+                   class="bg-white/20 px-4 py-2 rounded font-medium hover:bg-white/30">
+                    💻 Code
+                </a>
+                <a href="#submit" 
+                   class="bg-green-500 px-4 py-2 rounded font-medium hover:bg-green-600">
+                    🚀 Submit
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Key Metric -->
+    <div class="max-w-6xl mx-auto px-4 -mt-6">
+        <div class="bg-white rounded-lg shadow-lg p-6 flex items-center justify-between">
+            <div>
+                <p class="text-gray-500 text-sm">Key Finding</p>
+                <p class="text-2xl font-bold text-gray-800">
+                    LLMs detect <span class="text-red-500">&lt;10%</span> of genuinely unanswerable questions
+                </p>
+            </div>
+            <div class="text-right">
+                <p class="text-gray-500 text-sm">Best Unknown Recall</p>
+                <p class="text-3xl font-bold text-green-600">96%</p>
+                <p class="text-sm text-gray-500">ONTO</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard -->
+    <main class="max-w-6xl mx-auto px-4 py-8">
+        <h2 class="text-2xl font-bold mb-4">Leaderboard</h2>
+        
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <table class="w-full">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">#</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">Model</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">Organization</th>
+                        <th class="px-4 py-3 text-right text-sm font-semibold text-gray-600">U-Prec ↑</th>
+                        <th class="px-4 py-3 text-right text-sm font-semibold text-gray-600">U-Recall ↑</th>
+                        <th class="px-4 py-3 text-right text-sm font-semibold text-gray-600">U-F1 ↑</th>
+                        <th class="px-4 py-3 text-right text-sm font-semibold text-gray-600">ECE ↓</th>
+                        <th class="px-4 py-3 text-right text-sm font-semibold text-gray-600">Acc</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                    <!-- Populated by JS or static -->
+                    <tr class="highlight-row border-b">
+                        <td class="px-4 py-3 font-bold">🥇</td>
+                        <td class="px-4 py-3 font-bold">ONTO</td>
+                        <td class="px-4 py-3 text-gray-600">ONTO Project</td>
+                        <td class="px-4 py-3 text-right">0.41</td>
+                        <td class="px-4 py-3 text-right font-bold text-green-600">0.96</td>
+                        <td class="px-4 py-3 text-right font-bold text-green-600">0.58</td>
+                        <td class="px-4 py-3 text-right">0.30</td>
+                        <td class="px-4 py-3 text-right">0.43</td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="px-4 py-3">🥈</td>
+                        <td class="px-4 py-3">Claude 3 Sonnet</td>
+                        <td class="px-4 py-3 text-gray-600">Anthropic</td>
+                        <td class="px-4 py-3 text-right">0.45</td>
+                        <td class="px-4 py-3 text-right">0.09</td>
+                        <td class="px-4 py-3 text-right">0.15</td>
+                        <td class="px-4 py-3 text-right">0.31</td>
+                        <td class="px-4 py-3 text-right">0.48</td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="px-4 py-3">🥉</td>
+                        <td class="px-4 py-3">Llama 3 70B</td>
+                        <td class="px-4 py-3 text-gray-600">Meta</td>
+                        <td class="px-4 py-3 text-right">0.20</td>
+                        <td class="px-4 py-3 text-right">0.01</td>
+                        <td class="px-4 py-3 text-right">0.02</td>
+                        <td class="px-4 py-3 text-right">0.33</td>
+                        <td class="px-4 py-3 text-right">0.46</td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="px-4 py-3">4</td>
+                        <td class="px-4 py-3">GPT-4</td>
+                        <td class="px-4 py-3 text-gray-600">OpenAI</td>
+                        <td class="px-4 py-3 text-right">0.10</td>
+                        <td class="px-4 py-3 text-right">0.01</td>
+                        <td class="px-4 py-3 text-right">0.02</td>
+                        <td class="px-4 py-3 text-right">0.34</td>
+                        <td class="px-4 py-3 text-right">0.44</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p class="text-sm text-gray-500 mt-2">
+            Last updated: January 2026 · 
+            <span class="text-gray-400">Results are preliminary pending official lab submissions</span>
+        </p>
+
+        <!-- Metrics Explanation -->
+        <div class="mt-8 grid md:grid-cols-3 gap-4">
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h3 class="font-bold text-lg mb-2">U-F1 (Unknown F1)</h3>
+                <p class="text-sm text-gray-600">
+                    Harmonic mean of precision and recall for detecting genuinely unanswerable questions.
+                    Higher is better.
+                </p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h3 class="font-bold text-lg mb-2">U-Recall</h3>
+                <p class="text-sm text-gray-600">
+                    Fraction of genuine unknowns correctly identified.
+                    96% means catching almost all unanswerable questions.
+                </p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h3 class="font-bold text-lg mb-2">ECE (Calibration)</h3>
+                <p class="text-sm text-gray-600">
+                    Expected Calibration Error. Lower means confidence matches accuracy.
+                    Well-calibrated models have ECE &lt; 0.1.
+                </p>
+            </div>
+        </div>
+
+        <!-- Submit Section -->
+        <div id="submit" class="mt-12 bg-white rounded-lg shadow p-6">
+            <h2 class="text-2xl font-bold mb-4">Submit Your Model</h2>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="font-semibold mb-2">Quick Start</h3>
+                    <pre class="bg-gray-900 text-green-400 p-4 rounded text-sm overflow-x-auto">
+# 1. Clone and install
+git clone https://github.com/onto-project/onto-bench
+cd onto-bench
+pip install -r requirements.txt
+
+# 2. Run your model on test set
+python eval_your_model.py > predictions.jsonl
+
+# 3. Submit
+curl -X POST https://onto-bench.org/api/submit \
+  -H "Content-Type: application/json" \
+  -d @submission.json</pre>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-2">Submission Format</h3>
+                    <pre class="bg-gray-100 p-4 rounded text-sm overflow-x-auto">
+{
+  "model_name": "Your Model",
+  "organization": "Your Org",
+  "predictions": [
+    {"id": "sample_001", "label": "KNOWN", "confidence": 0.85},
+    {"id": "sample_002", "label": "UNKNOWN", "confidence": 0.72},
+    ...
+  ]
+}</pre>
+                    <p class="text-sm text-gray-500 mt-2">
+                        Labels: KNOWN, UNKNOWN, CONTRADICTION
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dataset Info -->
+        <div class="mt-8 bg-gray-100 rounded-lg p-6">
+            <h2 class="text-xl font-bold mb-4">About ONTO-Bench</h2>
+            <div class="grid md:grid-cols-4 gap-4 text-center">
+                <div>
+                    <p class="text-3xl font-bold text-purple-600">268</p>
+                    <p class="text-sm text-gray-600">Total Samples</p>
+                </div>
+                <div>
+                    <p class="text-3xl font-bold text-blue-600">126</p>
+                    <p class="text-sm text-gray-600">KNOWN Facts</p>
+                </div>
+                <div>
+                    <p class="text-3xl font-bold text-orange-600">110</p>
+                    <p class="text-sm text-gray-600">UNKNOWN Problems</p>
+                </div>
+                <div>
+                    <p class="text-3xl font-bold text-red-600">32</p>
+                    <p class="text-sm text-gray-600">CONTRADICTIONS</p>
+                </div>
+            </div>
+            <p class="text-sm text-gray-500 mt-4">
+                Sources include Clay Mathematics Institute Millennium Problems, NSF Grand Challenges, 
+                physics/biology open problem surveys, and established textbooks.
+            </p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="font-bold mb-2">ONTO-Bench</h3>
+                    <p class="text-sm text-gray-400">
+                        Benchmarking epistemic calibration and unknown detection in LLMs.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-2">Links</h3>
+                    <ul class="text-sm text-gray-400 space-y-1">
+                        <li><a href="#" class="hover:text-white">Paper (arXiv)</a></li>
+                        <li><a href="#" class="hover:text-white">Code (GitHub)</a></li>
+                        <li><a href="#" class="hover:text-white">Dataset</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-2">Disclaimer</h3>
+                    <p class="text-sm text-gray-400">
+                        This benchmark is for research purposes. Results do not reflect 
+                        full system capabilities in production settings.
+                    </p>
+                </div>
+            </div>
+            <p class="text-center text-gray-500 text-sm mt-8">
+                © 2026 ONTO Project · Apache 2.0 License
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
