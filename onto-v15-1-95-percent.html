@@ -1,0 +1,4325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONTO — AI Epistemic Risk Measurement | Enterprise Calibration</title>
+<meta name="description" content="ONTO quantifies AI epistemic risk — the gap between confidence and accuracy. Enterprise-grade calibration metrics.">
+<link rel="canonical" href="https://ontostandard.org/">
+<link rel="alternate" hreflang="en" href="https://ontostandard.org/">
+<link rel="alternate" hreflang="ru" href="https://ontostandard.org/?lang=ru">
+<link rel="alternate" hreflang="tr" href="https://ontostandard.org/?lang=tr">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ONTO — AI Epistemic Risk Measurement">
+<meta property="og:description" content="Quantify the gap between AI confidence and accuracy.">
+<meta property="og:image" content="https://ontostandard.org/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"ONTO","applicationCategory":"BusinessApplication","description":"AI Epistemic Risk Infrastructure"}
+</script>
+<style>
+/* ============================================
+   ONTO V15 — V12 DESIGN SYSTEM
+   ============================================ */
+
+/* === LIGHT THEME (default) === */
+:root {
+    --bg: #ffffff;
+    --bg-secondary: #f9fafb;
+    --bg-card: #ffffff;
+    --bg-elevated: #f3f4f6;
+    --border: #e5e7eb;
+    --border-hover: #d1d5db;
+    --text: #111827;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --accent: #3b82f6;
+    --danger: #ef4444;
+    --danger-subtle: rgba(239, 68, 68, 0.1);
+    --safe: #22c55e;
+    --safe-subtle: rgba(34, 197, 94, 0.1);
+    --warning: #f59e0b;
+    --warning-subtle: rgba(245, 158, 11, 0.1);
+}
+
+/* === DARK THEME === */
+[data-theme="dark"] {
+    --bg: #0f0f10;
+    --bg-secondary: #18181b;
+    --bg-card: #1f1f23;
+    --bg-elevated: #27272a;
+    --border: #3f3f46;
+    --border-hover: #52525b;
+    --text: #fafafa;
+    --text-secondary: #a1a1aa;
+    --text-muted: #71717a;
+}
+
+/* === RESET === */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+    transition: background 0.2s, color 0.2s;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* === TYPOGRAPHY === */
+h1 { font-size: 48px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.1; }
+h2 { font-size: 28px; font-weight: 700; line-height: 1.2; }
+h3 { font-size: 18px; font-weight: 600; }
+p { color: var(--text-secondary); }
+a { color: inherit; text-decoration: none; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+@media (max-width: 768px) {
+    h1 { font-size: 32px; }
+    h2 { font-size: 24px; }
+}
+
+/* === LAYOUT === */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+section {
+    padding: 80px 0;
+    border-top: 1px solid var(--border);
+}
+
+section:first-of-type { border-top: none; }
+
+.section-header {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.section-header h2 { margin-bottom: 12px; }
+.section-header p {
+    font-size: 16px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* === BUTTONS === */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: var(--safe);
+    color: white;
+}
+.btn-primary:hover {
+    background: #16a34a;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: var(--bg-card);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+.btn-secondary:hover {
+    background: var(--bg-elevated);
+}
+
+.btn-danger {
+    background: var(--danger-subtle);
+    color: var(--danger);
+    border: 1px solid var(--danger);
+}
+.btn-danger:hover {
+    background: var(--danger);
+    color: white;
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+}
+.btn-ghost:hover {
+    color: var(--text);
+}
+
+/* === CARDS === */
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 24px;
+    transition: all 0.2s;
+}
+
+.card:hover {
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+}
+
+/* === HEADER (V12 Exact) === */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-mark {
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--text-secondary);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.logo-text {
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--text);
+}
+
+.nav {
+    display: flex;
+    gap: 32px;
+}
+
+.nav a {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: color 0.15s;
+}
+
+.nav a:hover { color: var(--text); }
+
+@media (max-width: 768px) {
+    .nav { display: none; }
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.theme-toggle {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+}
+
+.theme-toggle:hover {
+    background: var(--bg-elevated);
+    color: var(--text);
+}
+
+.theme-toggle svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* === PROGRESS BAR === */
+.progress-bar {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--bg-secondary);
+    z-index: 99;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--safe);
+    transition: width 0.1s;
+}
+
+/* === JOURNEY NAV (Desktop) === */
+.journey-nav {
+    position: fixed;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 50;
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+}
+
+@media (min-width: 1280px) {
+    .journey-nav { display: flex; }
+}
+
+.journey-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--bg-elevated);
+    border: 2px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.journey-dot:hover { border-color: var(--text-muted); }
+.journey-dot.active {
+    background: var(--safe);
+    border-color: var(--safe);
+}
+
+/* === JOURNEY CONTROL BAR === */
+.journey-control-bar {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    padding: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    z-index: 90;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+
+.journey-control-bar.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.journey-btn {
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+}
+
+.journey-btn:hover {
+    background: var(--bg-secondary);
+    color: var(--text);
+}
+
+.journey-btn.primary {
+    background: var(--safe);
+    color: white;
+}
+
+.journey-btn.primary:hover {
+    background: #16a34a;
+}
+
+@media (max-width: 640px) {
+    .journey-control-bar {
+        flex-wrap: wrap;
+        max-width: 90vw;
+    }
+    .journey-btn {
+        flex: 1;
+        justify-content: center;
+        min-width: 100px;
+    }
+}
+
+/* === HERO === */
+.hero {
+    padding: 140px 0 80px;
+    text-align: center;
+    border-top: none;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: var(--safe-subtle);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--safe);
+    margin-bottom: 20px;
+}
+
+.hero-badge::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: var(--safe);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.hero h1 {
+    margin-bottom: 16px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero h1 .danger { color: var(--danger); }
+
+.hero-desc {
+    font-size: 18px;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto 32px;
+    line-height: 1.7;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* === DIVERGING BARS === */
+.diverging-bars {
+    max-width: 500px;
+    margin: 40px auto;
+}
+
+.bar-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.bar-label {
+    width: 120px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-align: right;
+}
+
+.bar-track {
+    flex: 1;
+    height: 24px;
+    background: var(--bg-elevated);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    transition: width 1.5s ease-out;
+}
+
+.bar-fill.confidence {
+    width: 94%;
+    background: var(--accent);
+}
+
+.bar-fill.accuracy {
+    width: 31%;
+    background: var(--danger);
+}
+
+/* === PROBLEM SECTION === */
+.problem-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+@media (max-width: 1024px) {
+    .problem-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+}
+
+.problem-content h2 { margin-bottom: 16px; }
+.problem-content h2 .danger { color: var(--danger); }
+
+.problem-content p {
+    margin-bottom: 16px;
+    line-height: 1.7;
+}
+
+.formula-box {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 24px;
+}
+
+.formula-box .formula {
+    color: var(--danger);
+    font-weight: 600;
+}
+
+/* === CHAOS ORB === */
+.chaos-orb-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chaos-orb {
+    width: 100%;
+    max-width: 350px;
+    height: 350px;
+    position: relative;
+}
+
+.chaos-core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--danger) 0%, rgba(239, 68, 68, 0.3) 50%, transparent 70%);
+    box-shadow: 0 0 60px var(--danger-subtle);
+    animation: chaosCore 2.5s infinite ease-in-out;
+    transition: all 0.6s;
+}
+
+@keyframes chaosCore {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.9; }
+    50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+}
+
+.chaos-core.calibrated {
+    background: radial-gradient(circle, var(--safe) 0%, rgba(34, 197, 94, 0.3) 50%, transparent 70%);
+    box-shadow: 0 0 60px var(--safe-subtle);
+    animation: calmCore 4s infinite ease-in-out;
+}
+
+@keyframes calmCore {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+    50% { transform: translate(-50%, -50%) scale(1.05); opacity: 0.85; }
+}
+
+.chaos-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 2px solid var(--danger);
+    opacity: 0.3;
+    transition: all 0.6s;
+}
+
+.chaos-ring:nth-child(2) { width: 180px; height: 180px; animation: ringPulse 3.5s infinite ease-out 0s; }
+.chaos-ring:nth-child(3) { width: 240px; height: 240px; animation: ringPulse 3.5s infinite ease-out 0.8s; }
+.chaos-ring:nth-child(4) { width: 300px; height: 300px; animation: ringPulse 3.5s infinite ease-out 1.6s; }
+
+@keyframes ringPulse {
+    0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.4; }
+    100% { transform: translate(-50%, -50%) scale(1.3); opacity: 0; }
+}
+
+.chaos-ring.calibrated {
+    border-color: var(--safe);
+    animation: none;
+    opacity: 0.2;
+}
+
+.chaos-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--danger);
+    animation: glitch 0.3s infinite;
+    transition: color 0.6s;
+}
+
+.chaos-text.calibrated {
+    color: var(--safe);
+    animation: none;
+}
+
+@keyframes glitch {
+    0%, 100% { opacity: 0.9; }
+    25% { opacity: 1; transform: translate(-48%, -52%); }
+    50% { opacity: 0.7; transform: translate(-52%, -48%); }
+    75% { transform: translate(-50%, -50%); }
+}
+
+/* Chaos Legend */
+.chaos-legend {
+    display: flex;
+    gap: 24px;
+    margin-top: 24px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.legend-dot.danger { background: var(--danger); }
+.legend-dot.safe { background: var(--safe); }
+
+/* === FAILURES GRID === */
+.failures-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+@media (max-width: 1024px) { .failures-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .failures-grid { grid-template-columns: 1fr; } }
+
+.failure-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 24px;
+    transition: all 0.2s;
+}
+
+.failure-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+}
+
+.failure-icon {
+    font-size: 32px;
+    margin-bottom: 16px;
+}
+
+.failure-sector {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--danger);
+    margin-bottom: 8px;
+}
+
+.failure-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text);
+}
+
+.failure-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    line-height: 1.5;
+}
+
+.failure-stat {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--danger);
+}
+
+/* === SKIP LINK === */
+.skip-link {
+    position: absolute;
+    top: -100px;
+    left: 0;
+    padding: 12px 24px;
+    background: var(--accent);
+    color: white;
+    z-index: 10000;
+    border-radius: 0 0 8px 0;
+}
+
+.skip-link:focus { top: 0; }
+
+/* === FOOTER === */
+.footer {
+    padding: 24px 0;
+    border-top: 1px solid var(--border);
+}
+
+.footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.footer-links {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.footer-links a {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.footer-links a:hover { color: var(--text-secondary); }
+
+.footer-copy {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+@media (max-width: 640px) {
+    .footer-inner {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+/* ============================================
+   STAGE 2: Persona Gate + Simulator + Metrics
+   ============================================ */
+
+/* === PERSONA GATE === */
+.persona-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+@media (max-width: 1024px) { .persona-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .persona-grid { grid-template-columns: 1fr; } }
+
+.persona-card {
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    border-radius: 24px;
+    padding: 32px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.persona-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+}
+
+.persona-card.selected {
+    border-color: var(--safe);
+    background: var(--safe-subtle);
+}
+
+.persona-icon { font-size: 48px; margin-bottom: 16px; }
+
+.persona-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text);
+}
+
+.persona-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+.persona-focus {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    padding: 8px 16px;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 100px;
+}
+
+.skip-persona {
+    display: block;
+    margin: 32px auto 0;
+    padding: 12px 24px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 14px;
+    cursor: pointer;
+    transition: color 0.15s;
+}
+
+.skip-persona:hover { color: var(--text-secondary); }
+
+/* === SECTOR TABS === */
+.sector-tabs {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+}
+
+.sector-tab {
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.15s;
+}
+
+.sector-tab:hover {
+    background: var(--bg-elevated);
+    color: var(--text);
+}
+
+.sector-tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+}
+
+/* === TOGGLE === */
+.toggle-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 40px 0;
+}
+
+.toggle-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+    animation: pulseHint 2s infinite;
+}
+
+.toggle-hint .hint-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+}
+
+.toggle-hint .hint-arrow {
+    font-size: 16px;
+    color: var(--accent);
+    animation: bounceArrow 1s infinite;
+}
+
+@keyframes pulseHint {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@keyframes bounceArrow {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(4px); }
+}
+
+.toggle-container.interacted .toggle-hint { display: none; }
+
+.toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.toggle-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: color 0.2s;
+    min-width: 100px;
+}
+
+.toggle-label:first-of-type { text-align: right; }
+.toggle-label.active { color: var(--text); font-weight: 600; }
+
+.toggle-switch {
+    width: 60px;
+    height: 34px;
+    background: var(--danger);
+    border-radius: 17px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.3s;
+    border: none;
+}
+
+.toggle-switch.active { background: var(--safe); }
+
+.toggle-knob {
+    width: 28px;
+    height: 28px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    transition: left 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch.active .toggle-knob { left: 29px; }
+
+/* === SIMULATION CARDS === */
+.simulation-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+@media (max-width: 1024px) { .simulation-grid { grid-template-columns: 1fr; } }
+
+.scenario-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 24px;
+    transition: all 0.2s;
+}
+
+.scenario-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.scenario-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.scenario-card.without .scenario-label { color: var(--danger); }
+.scenario-card.with .scenario-label { color: var(--safe); }
+
+.scenario-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 8px;
+}
+
+.scenario-card.without .scenario-badge { background: var(--danger); color: white; }
+.scenario-card.with .scenario-badge { background: var(--safe); color: white; }
+
+.scenario-prompt {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.scenario-response {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    padding: 16px;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    border-left: 3px solid var(--border);
+    min-height: 80px;
+}
+
+.scenario-card.without .scenario-response { border-left-color: var(--danger); }
+.scenario-card.with .scenario-response { border-left-color: var(--safe); }
+
+.scenario-outcome {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.scenario-card.without .scenario-outcome { background: var(--danger-subtle); color: var(--danger); }
+.scenario-card.with .scenario-outcome { background: var(--safe-subtle); color: var(--safe); }
+
+/* === GAUGES === */
+.gauges-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+@media (max-width: 1024px) { .gauges-grid { grid-template-columns: 1fr; } }
+
+.gauge-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 32px 24px;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.gauge-svg {
+    width: 160px;
+    height: 100px;
+    margin: 0 auto 16px;
+}
+
+.gauge-bg {
+    fill: none;
+    stroke: var(--bg-elevated);
+    stroke-width: 12;
+    stroke-linecap: round;
+}
+
+.gauge-fill {
+    fill: none;
+    stroke-width: 12;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.8s ease, stroke 0.3s;
+}
+
+.gauge-fill.danger { stroke: var(--danger); }
+.gauge-fill.warning { stroke: var(--warning); }
+.gauge-fill.safe { stroke: var(--safe); }
+
+.gauge-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    transition: color 0.3s;
+}
+
+.gauge-value.danger { color: var(--danger); }
+.gauge-value.warning { color: var(--warning); }
+.gauge-value.safe { color: var(--safe); }
+
+.gauge-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+.gauge-status {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+/* === RADAR === */
+.radar-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+@media (max-width: 1024px) { .radar-grid { grid-template-columns: 1fr; gap: 40px; } }
+
+.radar-content h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.radar-content p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+}
+
+.radar-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 32px;
+}
+
+.radar-svg {
+    width: 100%;
+    max-width: 300px;
+    height: 300px;
+    margin: 0 auto;
+    display: block;
+}
+
+.radar-grid-line {
+    stroke: var(--border);
+    stroke-width: 1;
+    fill: none;
+}
+
+.radar-axis {
+    stroke: var(--border);
+    stroke-width: 1;
+}
+
+.radar-label {
+    font-size: 10px;
+    fill: var(--text-muted);
+    font-family: 'Inter', sans-serif;
+}
+
+.radar-polygon {
+    fill-opacity: 0.25;
+    stroke-width: 2;
+    transition: all 0.5s;
+}
+
+.radar-polygon.danger {
+    fill: var(--danger);
+    stroke: var(--danger);
+}
+
+.radar-polygon.safe {
+    fill: var(--safe);
+    stroke: var(--safe);
+}
+
+/* === IMPACT CARDS === */
+.impact-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+@media (max-width: 1024px) { .impact-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .impact-grid { grid-template-columns: 1fr; } }
+
+.impact-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 24px;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.impact-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+}
+
+.impact-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+}
+
+.impact-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.impact-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    transition: color 0.3s;
+}
+
+.impact-value.danger { color: var(--danger); }
+.impact-value.safe { color: var(--safe); }
+
+.impact-delta {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.impact-delta.positive { color: var(--safe); }
+.impact-delta.negative { color: var(--danger); }
+
+/* ============================================
+   STAGE 3: Liability + Passport + Compliance + Tiers
+   ============================================ */
+
+/* === LIABILITY CALCULATOR === */
+.calculator-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 32px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.calculator-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.calc-row {
+    margin-bottom: 24px;
+}
+
+.calc-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    display: block;
+}
+
+.calc-slider {
+    width: 100%;
+    height: 8px;
+    -webkit-appearance: none;
+    background: var(--bg-elevated);
+    border-radius: 4px;
+    outline: none;
+}
+
+.calc-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.calc-slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: none;
+}
+
+.calc-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--text);
+    margin-top: 8px;
+    text-align: center;
+}
+
+.domain-selector {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.domain-btn {
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.domain-btn:hover {
+    background: var(--bg-secondary);
+    color: var(--text);
+}
+
+.domain-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+}
+
+.calc-results {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    padding: 24px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin: 24px 0;
+}
+
+@media (max-width: 640px) { .calc-results { grid-template-columns: 1fr; } }
+
+.calc-result-card {
+    padding: 20px;
+    border-radius: 16px;
+    text-align: center;
+}
+
+.calc-result-card.danger { background: var(--danger-subtle); }
+.calc-result-card.safe { background: var(--safe-subtle); }
+
+.calc-result-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+}
+
+.calc-result-card.danger .calc-result-label { color: var(--danger); }
+.calc-result-card.safe .calc-result-label { color: var(--safe); }
+
+.calc-result-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.calc-result-card.danger .calc-result-value { color: var(--danger); }
+.calc-result-card.safe .calc-result-value { color: var(--safe); }
+
+.calc-result-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.calc-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: center;
+}
+
+.calc-summary-item { text-align: center; }
+
+.calc-summary-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--safe);
+}
+
+.calc-summary-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* === PASSPORT === */
+.passport-module {
+    background: var(--bg-card);
+    border: 2px solid var(--safe);
+    border-radius: 24px;
+    padding: 32px;
+    max-width: 500px;
+    margin: 48px auto 0;
+}
+
+.passport-header {
+    text-align: center;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+.passport-logo {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--safe);
+    margin-bottom: 8px;
+}
+
+.passport-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.passport-metrics { margin-bottom: 24px; }
+
+.passport-metric {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    margin-bottom: 12px;
+}
+
+.passport-metric .metric-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.passport-metric .metric-values {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.passport-metric .metric-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.passport-metric .metric-value.danger { color: var(--danger); }
+.passport-metric .metric-value.safe { color: var(--safe); }
+.passport-metric .metric-arrow { color: var(--text-muted); }
+
+.passport-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.passport-actions .btn { flex: 1; }
+
+.passport-note {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* === COMPLIANCE === */
+.compliance-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+@media (max-width: 1024px) { .compliance-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .compliance-grid { grid-template-columns: 1fr; } }
+
+.compliance-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 24px;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.compliance-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+}
+
+.compliance-icon { font-size: 40px; margin-bottom: 16px; }
+.compliance-name { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.compliance-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+
+/* === TIERS === */
+.tiers-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+@media (max-width: 1024px) { .tiers-grid { grid-template-columns: 1fr; } }
+
+.tier-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 32px;
+    position: relative;
+    transition: all 0.2s;
+}
+
+.tier-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+}
+
+.tier-card.featured {
+    border-color: var(--safe);
+    border-width: 2px;
+}
+
+.tier-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--safe);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 6px 16px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.tier-level {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.tier-card.featured .tier-level { color: var(--safe); }
+
+.tier-name {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.tier-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 24px;
+    min-height: 48px;
+}
+
+.tier-price {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 40px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.tier-period {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+}
+
+.tier-features {
+    list-style: none;
+    margin-bottom: 24px;
+}
+
+.tier-features li {
+    font-size: 14px;
+    color: var(--text-secondary);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tier-features li:last-child { border-bottom: none; }
+
+.tier-features .check {
+    color: var(--safe);
+    font-weight: bold;
+}
+
+.tier-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    color: var(--text);
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.15s;
+}
+
+.tier-btn:hover { background: var(--bg-secondary); }
+
+.tier-card.featured .tier-btn {
+    background: var(--safe);
+    color: white;
+    border: none;
+}
+
+.tier-card.featured .tier-btn:hover { background: #16a34a; }
+
+/* === FAQ === */
+.faq-list {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.faq-item {
+    border-bottom: 1px solid var(--border);
+}
+
+.faq-question {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+    transition: color 0.15s;
+}
+
+.faq-question:hover { color: var(--accent); }
+
+.faq-icon {
+    font-size: 20px;
+    transition: transform 0.3s;
+    color: var(--text-muted);
+}
+
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.faq-item.open .faq-answer { max-height: 300px; }
+
+.faq-answer p {
+    padding-bottom: 20px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    font-size: 14px;
+}
+
+/* === DECISION GATE === */
+.decision-gate {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 24px;
+    align-items: stretch;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    .decision-gate {
+        grid-template-columns: 1fr;
+    }
+    .decision-divider {
+        display: flex;
+        justify-content: center;
+        padding: 16px 0;
+    }
+}
+
+.decision-option {
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    border-radius: 24px;
+    padding: 40px 32px;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.decision-option:hover { transform: translateY(-4px); }
+
+.decision-option.danger:hover { border-color: var(--danger); }
+.decision-option.safe:hover { border-color: var(--safe); }
+
+.decision-icon { font-size: 48px; margin-bottom: 16px; }
+
+.decision-option h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.decision-stats {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.decision-stat { text-align: center; }
+
+.decision-stat .stat-value {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.decision-option.danger .stat-value { color: var(--danger); }
+.decision-option.safe .stat-value { color: var(--safe); }
+
+.decision-stat .stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.decision-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    line-height: 1.6;
+}
+
+.decision-btn {
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.decision-btn.danger {
+    background: var(--danger-subtle);
+    color: var(--danger);
+    border: 1px solid var(--danger);
+}
+
+.decision-btn.danger:hover {
+    background: var(--danger);
+    color: white;
+}
+
+.decision-btn.safe {
+    background: var(--safe);
+    color: white;
+}
+
+.decision-btn.safe:hover { background: #16a34a; }
+
+.decision-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.decision-divider span {
+    background: var(--bg-elevated);
+    padding: 16px;
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+/* === LANGUAGE SELECTOR === */
+.lang-selector {
+    position: relative;
+}
+
+.lang-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.lang-btn:hover {
+    background: var(--bg-elevated);
+    color: var(--text);
+}
+
+.lang-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: all 0.2s;
+    z-index: 100;
+}
+
+.lang-selector.open .lang-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.lang-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 16px;
+    font-size: 13px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: left;
+}
+
+.lang-option:hover {
+    background: var(--bg-elevated);
+    color: var(--text);
+}
+
+.lang-option.active {
+    background: var(--safe-subtle);
+    color: var(--safe);
+}
+
+/* ============================================
+   V15.1 HARDENING: 8-Phase Narrative Styling
+   ============================================ */
+
+/* Phase 0: Hook — Maximum tension */
+[data-phase="hook"] { --phase-accent: var(--danger); }
+[data-phase="hook"] .chaos-core {
+    animation: chaosCore 1.5s infinite ease-in-out;
+    box-shadow: 0 0 100px var(--danger-subtle);
+}
+
+/* Phase 1: Problem — Awareness building */
+[data-phase="problem"] { --phase-accent: var(--danger); }
+[data-phase="problem"] .chaos-core {
+    animation: chaosCore 2s infinite ease-in-out;
+    box-shadow: 0 0 80px var(--danger-subtle);
+}
+
+/* Phase 2: Simulation — Interactive discovery */
+[data-phase="simulation"] { --phase-accent: var(--warning); }
+[data-phase="simulation"] .chaos-core {
+    animation: chaosCore 2.5s infinite ease-in-out;
+    box-shadow: 0 0 60px rgba(245, 158, 11, 0.3);
+}
+
+/* Phase 3: Solution — Understanding */
+[data-phase="solution"] { --phase-accent: var(--accent); }
+[data-phase="solution"] .chaos-core {
+    animation: chaosCore 3s infinite ease-in-out;
+    box-shadow: 0 0 50px rgba(59, 130, 246, 0.2);
+}
+
+/* Phase 4: Proof — Evidence */
+[data-phase="proof"] { --phase-accent: var(--accent); }
+[data-phase="proof"] .chaos-core {
+    animation: chaosCore 3.5s infinite ease-in-out;
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.15);
+}
+
+/* Phase 5: Impact — Business case */
+[data-phase="impact"] { --phase-accent: var(--safe); }
+[data-phase="impact"] .chaos-core {
+    animation: calmCore 4s infinite ease-in-out;
+    box-shadow: 0 0 30px var(--safe-subtle);
+}
+
+/* Phase 6: Governance — Institutional */
+[data-phase="governance"] { --phase-accent: var(--safe); }
+[data-phase="governance"] .chaos-core {
+    animation: calmCore 4.5s infinite ease-in-out;
+}
+
+/* Phase 7: Action — Conversion */
+[data-phase="action"] { --phase-accent: var(--safe); }
+[data-phase="action"] .chaos-core { animation: calmCore 5s infinite ease-in-out; }
+[data-phase="action"] [data-cta="primary"] { animation: ctaPulse 2s infinite; }
+
+@keyframes ctaPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 var(--safe-subtle); }
+    50% { transform: scale(1.02); box-shadow: 0 0 20px var(--safe-subtle); }
+}
+
+[data-urgency="high"] { animation: ctaPulse 2s infinite; font-weight: 700; }
+
+/* V15.1: Persona Section Visibility */
+section.hidden { display: none !important; }
+section.emphasized { border-left: 4px solid var(--safe); margin-left: -4px; }
+section.emphasized .section-header h2::after { content: ' ★'; color: var(--safe); font-size: 16px; }
+
+/* V15.1: Compliance Badges */
+.compliance-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+}
+.compliance-badge.pass { background: var(--safe-subtle); color: var(--safe); }
+.compliance-badge.fail { background: var(--danger-subtle); color: var(--danger); }
+.compliance-card.compliant { border-color: var(--safe); }
+.compliance-card.non-compliant { border-color: var(--danger); }
+
+/* V15.1: Tier Recommendation */
+.tier-card.recommended {
+    border-color: var(--accent);
+    border-width: 2px;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+.tier-rec-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 14px;
+    border-radius: 100px;
+    white-space: nowrap;
+}
+
+/* V15.1: Journey Navigation */
+.journey-current {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    padding: 0 12px;
+    min-width: 80px;
+    text-align: center;
+}
+.journey-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+@media (max-width: 640px) { .journey-btn .btn-label { display: none; } }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<!-- HEADER -->
+<header class="header">
+    <div class="header-inner">
+        <a href="#" class="logo">
+            <div class="logo-mark">O</div>
+            <span class="logo-text">ONTO</span>
+        </a>
+        
+        <nav class="nav">
+            <a href="#section-simulator">Simulator</a>
+            <a href="#section-metrics">Metrics</a>
+            <a href="#section-compliance">Compliance</a>
+            <a href="#section-tiers">Pricing</a>
+        </nav>
+        
+        <div class="header-actions">
+            <!-- Language Selector -->
+            <div class="lang-selector" id="langSelector">
+                <button class="lang-btn" id="langBtn">
+                    <span id="currentLang">EN</span>
+                    <span>▾</span>
+                </button>
+                <div class="lang-dropdown">
+                    <button class="lang-option active" data-lang="en">🇬🇧 English</button>
+                    <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
+                    <button class="lang-option" data-lang="tr">🇹🇷 Türkçe</button>
+                </div>
+            </div>
+            
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <svg id="sunIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                </svg>
+                <svg id="moonIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </button>
+            <a href="#section-cta-gate" class="btn btn-primary" data-cta="primary" data-i18n="cta.primary">Request Demo</a>
+        </div>
+    </div>
+</header>
+
+<!-- PROGRESS BAR -->
+<div class="progress-bar">
+    <div class="progress-fill" id="progressFill"></div>
+</div>
+
+<!-- JOURNEY NAV (Desktop) -->
+<nav class="journey-nav" id="journeyNav" aria-label="Page sections">
+    <div class="journey-dot active" data-section="hero" title="Start"></div>
+    <div class="journey-dot" data-section="section-problem" title="Problem"></div>
+    <div class="journey-dot" data-section="section-failures" title="Failures"></div>
+    <div class="journey-dot" data-section="section-persona" title="Your Path"></div>
+    <div class="journey-dot" data-section="section-simulator" title="Simulator"></div>
+    <div class="journey-dot" data-section="section-metrics" title="Metrics"></div>
+    <div class="journey-dot" data-section="section-liability" title="Liability"></div>
+    <div class="journey-dot" data-section="section-compliance" title="Compliance"></div>
+    <div class="journey-dot" data-section="section-tiers" title="Pricing"></div>
+    <div class="journey-dot" data-section="section-cta-gate" title="Decision"></div>
+</nav>
+
+<!-- JOURNEY CONTROL BAR -->
+<div class="journey-control-bar" id="journeyControlBar">
+    <button class="journey-btn" id="prevSection" aria-label="Previous section">
+        ← <span class="btn-label">Prev</span>
+    </button>
+    <span class="journey-current" id="journeyCurrentLabel">Start</span>
+    <button class="journey-btn" id="nextSection" aria-label="Next section">
+        <span class="btn-label">Next</span> →
+    </button>
+    <button class="journey-btn primary" data-target="section-cta-gate">🚀 Get Started</button>
+</div>
+
+<!-- MAIN CONTENT -->
+<main id="main">
+
+<!-- ============================================
+     SECTION 0: HERO
+     ============================================ -->
+<section class="hero" id="hero" data-phase="hook">
+    <div class="container">
+        <div class="hero-badge" data-i18n="hook.badge">AI Risk Infrastructure</div>
+        
+        <h1>
+            <span data-i18n="hook.title1">AI was 94% confident.</span><br>
+            <span class="danger" data-i18n="hook.title2">And completely wrong.</span>
+        </h1>
+        
+        <p class="hero-desc" data-i18n="hook.desc">
+            Every day, AI systems make critical decisions with high confidence and zero accountability. This is epistemic risk — and it's unmeasured.
+        </p>
+        
+        <div class="diverging-bars">
+            <div class="bar-row">
+                <span class="bar-label">AI Confidence</span>
+                <div class="bar-track">
+                    <div class="bar-fill confidence">94%</div>
+                </div>
+            </div>
+            <div class="bar-row">
+                <span class="bar-label">Actual Accuracy</span>
+                <div class="bar-track">
+                    <div class="bar-fill accuracy">31%</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="hero-actions">
+            <a href="#section-simulator" class="btn btn-primary">See it happen →</a>
+            <a href="#section-metrics" class="btn btn-secondary">View Metrics</a>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     SECTION 1: PROBLEM
+     ============================================ -->
+<section id="section-problem" data-phase="problem">
+    <div class="container">
+        <div class="problem-grid">
+            <div class="problem-content">
+                <h2>This is <span class="danger">epistemic risk</span></h2>
+                <p>AI systems state 94% confidence while being completely wrong. This gap between stated confidence and actual correctness creates regulatory liability, financial loss, and human harm.</p>
+                <p>The pulsing chaos represents hidden uncertainty — invisible, dangerous, unquantified. Until now.</p>
+                <div class="formula-box">
+                    <span class="formula">Epistemic Risk = Confidence × Wrongness × Scale</span>
+                </div>
+            </div>
+            
+            <div class="chaos-orb-container">
+                <div class="chaos-orb" id="chaosOrb">
+                    <div class="chaos-core" id="chaosCore"></div>
+                    <div class="chaos-ring" id="ring1"></div>
+                    <div class="chaos-ring" id="ring2"></div>
+                    <div class="chaos-ring" id="ring3"></div>
+                    <div class="chaos-text" id="chaosText">CONF: 94%</div>
+                </div>
+                <div class="chaos-legend">
+                    <div class="legend-item">
+                        <span class="legend-dot danger"></span>
+                        <span>Uncalibrated confidence</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-dot safe"></span>
+                        <span>ONTO calibrated</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     SECTION 2: FAILURES
+     ============================================ -->
+<section id="section-failures" data-phase="problem">
+    <div class="container">
+        <div class="section-header">
+            <h2>Epistemic failure is already happening</h2>
+            <p>Every sector. Every day. Exposed.</p>
+        </div>
+        
+        <div class="failures-grid">
+            <article class="failure-card">
+                <div class="failure-icon">🏥</div>
+                <div class="failure-sector">Medical</div>
+                <h3 class="failure-title">Confident misdiagnosis</h3>
+                <p class="failure-desc">AI recommends treatment for wrong condition</p>
+                <div class="failure-stat">$2.4M avg settlement</div>
+            </article>
+            
+            <article class="failure-card">
+                <div class="failure-icon">⚖️</div>
+                <div class="failure-sector">Legal</div>
+                <h3 class="failure-title">Fabricated citations</h3>
+                <p class="failure-desc">AI invents case law that doesn't exist</p>
+                <div class="failure-stat">47% hallucination rate</div>
+            </article>
+            
+            <article class="failure-card">
+                <div class="failure-icon">💰</div>
+                <div class="failure-sector">Finance</div>
+                <h3 class="failure-title">Bad trade advice</h3>
+                <p class="failure-desc">AI confidently recommends losing positions</p>
+                <div class="failure-stat">Unlimited exposure</div>
+            </article>
+            
+            <article class="failure-card">
+                <div class="failure-icon">💻</div>
+                <div class="failure-sector">Code</div>
+                <h3 class="failure-title">Vulnerable code</h3>
+                <p class="failure-desc">AI generates code with security flaws</p>
+                <div class="failure-stat">$4.5M avg breach</div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     SECTION 3: PERSONA GATE (NEW in V15)
+     ============================================ -->
+<section id="section-persona" data-phase="simulation">
+    <div class="container">
+        <div class="section-header">
+            <h2 data-i18n="persona.title">What brings you here?</h2>
+            <p data-i18n="persona.subtitle">Select your path for a personalized experience</p>
+        </div>
+        
+        <div class="persona-grid">
+            <button class="persona-card" data-persona="enterprise">
+                <div class="persona-icon">🏢</div>
+                <h3 class="persona-title">Enterprise</h3>
+                <p class="persona-desc">I manage AI risk for my organization</p>
+                <div class="persona-focus">Liability • Compliance • Governance</div>
+            </button>
+            
+            <button class="persona-card" data-persona="lab">
+                <div class="persona-icon">🔬</div>
+                <h3 class="persona-title">AI Lab</h3>
+                <p class="persona-desc">I build or evaluate AI models</p>
+                <div class="persona-focus">ECE • Benchmarks • Research</div>
+            </button>
+            
+            <button class="persona-card" data-persona="regulator">
+                <div class="persona-icon">🏛️</div>
+                <h3 class="persona-title">Regulator</h3>
+                <p class="persona-desc">I regulate or audit AI systems</p>
+                <div class="persona-focus">Standards • Audit • Enforcement</div>
+            </button>
+            
+            <button class="persona-card" data-persona="dev">
+                <div class="persona-icon">👨‍💻</div>
+                <h3 class="persona-title">Developer</h3>
+                <p class="persona-desc">I develop AI applications</p>
+                <div class="persona-focus">SDK • Sandbox • Per-query Debug</div>
+            </button>
+        </div>
+        
+        <button class="skip-persona" id="skipPersona">Continue without selection →</button>
+    </div>
+</section>
+
+<!-- ============================================
+     SECTION 4: SIMULATOR
+     ============================================ -->
+<section id="section-simulator" data-phase="simulation">
+    <div class="container">
+        <div class="section-header">
+            <h2 data-i18n="simulator.title">Risk Scenario Simulator</h2>
+            <p data-i18n="simulator.subtitle">Watch AI fail confidently. Then watch ONTO catch it.</p>
+        </div>
+        
+        <div class="sector-tabs">
+            <button class="sector-tab active" data-sector="medical">🏥 Medical</button>
+            <button class="sector-tab" data-sector="legal">⚖️ Legal</button>
+            <button class="sector-tab" data-sector="finance">💰 Finance</button>
+            <button class="sector-tab" data-sector="code">💻 Code</button>
+        </div>
+        
+        <div class="simulation-grid">
+            <div class="scenario-card without">
+                <div class="scenario-header">
+                    <span class="scenario-label">Without ONTO</span>
+                    <span class="scenario-badge">High Risk</span>
+                </div>
+                <div class="scenario-prompt" id="simPrompt">
+                    Patient presents with persistent headache, mild fever, and neck stiffness for 3 days.
+                </div>
+                <div class="scenario-response" id="respWithout">
+                    "Likely viral infection or tension headache. Recommend rest, hydration, and OTC pain medication."
+                </div>
+                <div class="scenario-outcome" id="outcomeWithout">
+                    💀 Missed meningitis → Delayed treatment → Patient harm
+                </div>
+            </div>
+            
+            <div class="scenario-card with">
+                <div class="scenario-header">
+                    <span class="scenario-label">With ONTO</span>
+                    <span class="scenario-badge">Mitigated</span>
+                </div>
+                <div class="scenario-prompt">Same scenario with ONTO calibration</div>
+                <div class="scenario-response" id="respWith">
+                    "⚠️ HIGH UNCERTAINTY. Symptoms pattern requires urgent evaluation. Neck stiffness + fever = potential meningitis. Recommend immediate specialist consultation."
+                </div>
+                <div class="scenario-outcome" id="outcomeWith">
+                    ✓ Proper escalation → Early diagnosis → Life saved
+                </div>
+            </div>
+        </div>
+        
+        <div class="toggle-container" id="simToggleContainer">
+            <div class="toggle-hint" id="toggleHint">
+                <span class="hint-text" data-i18n="toggle.hint">Click to toggle</span>
+                <span class="hint-arrow">→</span>
+            </div>
+            <div class="toggle-row">
+                <span class="toggle-label active" id="labelWithout" data-i18n="toggle.without">Baseline AI</span>
+                <button class="toggle-switch" id="mainToggle" aria-label="Toggle calibration">
+                    <div class="toggle-knob"></div>
+                </button>
+                <span class="toggle-label" id="labelWith" data-i18n="toggle.with">ONTO Calibrated</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     SECTION 5: METRICS (Gauges)
+     ============================================ -->
+<section id="section-metrics" data-phase="solution">
+    <div class="container">
+        <div class="section-header">
+            <h2 data-i18n="metrics.title">Epistemic Risk Metrics</h2>
+            <p data-i18n="metrics.subtitle">Real-time calibration indicators for the current scenario</p>
+        </div>
+        
+        <div class="gauges-grid">
+            <div class="gauge-card">
+                <svg class="gauge-svg" viewBox="0 0 160 100">
+                    <path class="gauge-bg" d="M 20 90 A 60 60 0 0 1 140 90"/>
+                    <path class="gauge-fill danger" id="gauge1" d="M 20 90 A 60 60 0 0 1 140 90" 
+                          stroke-dasharray="188.5" stroke-dashoffset="130"/>
+                </svg>
+                <div class="gauge-value danger" id="gauge1Val">31%</div>
+                <div class="gauge-label">U-Recall</div>
+                <div class="gauge-status" id="gauge1Status">Poor detection of unknowns</div>
+            </div>
+            
+            <div class="gauge-card">
+                <svg class="gauge-svg" viewBox="0 0 160 100">
+                    <path class="gauge-bg" d="M 20 90 A 60 60 0 0 1 140 90"/>
+                    <path class="gauge-fill danger" id="gauge2" d="M 20 90 A 60 60 0 0 1 140 90" 
+                          stroke-dasharray="188.5" stroke-dashoffset="45"/>
+                </svg>
+                <div class="gauge-value danger" id="gauge2Val">0.23</div>
+                <div class="gauge-label">Calibration Error (ECE)</div>
+                <div class="gauge-status" id="gauge2Status">Severely overconfident</div>
+            </div>
+            
+            <div class="gauge-card">
+                <svg class="gauge-svg" viewBox="0 0 160 100">
+                    <path class="gauge-bg" d="M 20 90 A 60 60 0 0 1 140 90"/>
+                    <path class="gauge-fill danger" id="gauge3" d="M 20 90 A 60 60 0 0 1 140 90" 
+                          stroke-dasharray="188.5" stroke-dashoffset="50"/>
+                </svg>
+                <div class="gauge-value danger" id="gauge3Val">73</div>
+                <div class="gauge-label">Risk Score</div>
+                <div class="gauge-status" id="gauge3Status">HIGH — Regulatory exposure</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     SECTION 6: TRANSFORMATION (Radar)
+     ============================================ -->
+<section id="section-transform" data-phase="solution">
+    <div class="container">
+        <div class="radar-grid">
+            <div class="radar-content">
+                <h3>Epistemic Risk Profile</h3>
+                <p>Comprehensive 5-axis risk assessment showing calibration quality across critical dimensions.</p>
+                <p>Toggle between baseline AI and ONTO-calibrated to see the transformation in real-time.</p>
+                <p><strong>Red = Danger zone.</strong> Model overconfident, uncalibrated.<br>
+                <strong>Green = Safe zone.</strong> Calibrated, uncertainty-aware.</p>
+            </div>
+            
+            <div class="radar-card">
+                <svg class="radar-svg" viewBox="0 0 300 300" id="radarSvg">
+                    <g transform="translate(150, 150)">
+                        <!-- Grid circles -->
+                        <circle class="radar-grid-line" cx="0" cy="0" r="100"/>
+                        <circle class="radar-grid-line" cx="0" cy="0" r="75" opacity="0.6"/>
+                        <circle class="radar-grid-line" cx="0" cy="0" r="50" opacity="0.4"/>
+                        <circle class="radar-grid-line" cx="0" cy="0" r="25" opacity="0.2"/>
+                        
+                        <!-- Axes -->
+                        <line class="radar-axis" x1="0" y1="0" x2="0" y2="-100"/>
+                        <line class="radar-axis" x1="0" y1="0" x2="95" y2="-31"/>
+                        <line class="radar-axis" x1="0" y1="0" x2="59" y2="81"/>
+                        <line class="radar-axis" x1="0" y1="0" x2="-59" y2="81"/>
+                        <line class="radar-axis" x1="0" y1="0" x2="-95" y2="-31"/>
+                        
+                        <!-- Labels -->
+                        <text class="radar-label" x="0" y="-110" text-anchor="middle">Calibration</text>
+                        <text class="radar-label" x="108" y="-25">Uncertainty</text>
+                        <text class="radar-label" x="70" y="98">Confidence</text>
+                        <text class="radar-label" x="-70" y="98">Accuracy</text>
+                        <text class="radar-label" x="-112" y="-25" text-anchor="end">Coverage</text>
+                        
+                        <!-- Danger polygon (baseline) -->
+                        <polygon class="radar-polygon danger" id="radarDanger" 
+                                 points="0,-30 71,-23 44,61 -44,61 -71,-23"/>
+                        
+                        <!-- Safe polygon (ONTO) - hidden by default -->
+                        <polygon class="radar-polygon safe" id="radarSafe" 
+                                 points="0,-85 81,-26 50,69 -50,69 -81,-26" 
+                                 style="display:none"/>
+                    </g>
+                </svg>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     SECTION 7: IMPACT
+     ============================================ -->
+<section id="section-impact" data-phase="proof">
+    <div class="container">
+        <div class="section-header">
+            <h2>What epistemic risk costs you</h2>
+            <p>Real metrics. Real liability. Real mitigation.</p>
+        </div>
+        
+        <div class="impact-grid">
+            <div class="impact-card">
+                <div class="impact-icon">💀</div>
+                <div class="impact-label">Error Rate</div>
+                <div class="impact-value danger" id="impactError">23%</div>
+                <div class="impact-delta negative" id="impactErrorDelta">Critical</div>
+            </div>
+            
+            <div class="impact-card">
+                <div class="impact-icon">⏱️</div>
+                <div class="impact-label">Detection Delay</div>
+                <div class="impact-value danger" id="impactDelay">18h</div>
+                <div class="impact-delta negative" id="impactDelayDelta">Dangerous</div>
+            </div>
+            
+            <div class="impact-card">
+                <div class="impact-icon">💰</div>
+                <div class="impact-label">Liability</div>
+                <div class="impact-value danger" id="impactLiability">$2.4M</div>
+                <div class="impact-delta negative" id="impactLiabilityDelta">Per incident</div>
+            </div>
+            
+            <div class="impact-card">
+                <div class="impact-icon">📊</div>
+                <div class="impact-label">Trust Score</div>
+                <div class="impact-value danger" id="impactTrust">34%</div>
+                <div class="impact-delta negative" id="impactTrustDelta">Low</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     SECTION 8: LIABILITY CALCULATOR
+     ============================================ -->
+<section id="section-liability" data-phase="impact">
+    <div class="container">
+        <div class="section-header">
+            <h2 data-i18n="liability.title">Calculate Your Risk Exposure</h2>
+            <p data-i18n="liability.subtitle">See exactly what epistemic risk costs your organization</p>
+        </div>
+        
+        <div class="calculator-card">
+            <div class="calculator-title">💰 Liability Calculator</div>
+            <div class="calculator-subtitle">Adjust parameters to see your annual exposure</div>
+            
+            <!-- Domain -->
+            <div class="calc-row">
+                <label class="calc-label">Domain</label>
+                <div class="domain-selector" id="calcDomainSelector">
+                    <button class="domain-btn active" data-domain="medical">🏥 Medical</button>
+                    <button class="domain-btn" data-domain="legal">⚖️ Legal</button>
+                    <button class="domain-btn" data-domain="finance">💰 Finance</button>
+                    <button class="domain-btn" data-domain="code">💻 Code</button>
+                </div>
+            </div>
+            
+            <!-- Volume Slider -->
+            <div class="calc-row">
+                <label class="calc-label">AI Query Volume (monthly)</label>
+                <input type="range" class="calc-slider" id="calcSlider" 
+                       min="1000" max="10000000" value="100000" step="1000">
+                <div class="calc-slider-labels">
+                    <span>1K</span>
+                    <span>10M</span>
+                </div>
+                <div class="calc-value" id="calcVolumeDisplay">100,000 queries/month</div>
+            </div>
+            
+            <!-- Results -->
+            <div class="calc-results">
+                <div class="calc-result-card danger">
+                    <div class="calc-result-label">Without ONTO</div>
+                    <div class="calc-result-value" id="calcWithout">$8.2M</div>
+                    <div class="calc-result-sub">annual exposure</div>
+                </div>
+                <div class="calc-arrow">→</div>
+                <div class="calc-result-card safe">
+                    <div class="calc-result-label">With ONTO</div>
+                    <div class="calc-result-value" id="calcWith">$410K</div>
+                    <div class="calc-result-sub">annual exposure</div>
+                </div>
+            </div>
+            
+            <!-- Summary -->
+            <div class="calc-summary">
+                <div class="calc-summary-item">
+                    <div class="calc-summary-value" id="calcReduction">$7.79M</div>
+                    <div class="calc-summary-label">Annual Savings</div>
+                </div>
+                <div class="calc-summary-item">
+                    <div class="calc-summary-value" id="calcReductionPct">95%</div>
+                    <div class="calc-summary-label">Risk Reduction</div>
+                </div>
+                <div class="calc-summary-item">
+                    <div class="calc-summary-value" id="calcROI">81x</div>
+                    <div class="calc-summary-label">ONTO ROI</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Passport -->
+        <div class="passport-module" id="passportModule">
+            <div class="passport-header">
+                <div class="passport-logo">ONTO</div>
+                <div class="passport-title" data-i18n="passport.title">Epistemic Risk Passport</div>
+            </div>
+            
+            <div class="passport-metrics">
+                <div class="passport-metric">
+                    <span class="passport-metric-label">Risk Score</span>
+                    <div class="passport-metric-values">
+                        <span class="passport-metric-value danger" id="passportRiskBaseline">73</span>
+                        <span class="passport-metric-arrow">→</span>
+                        <span class="passport-metric-value safe" id="passportRiskOnto">24</span>
+                    </div>
+                </div>
+                <div class="passport-metric">
+                    <span class="passport-metric-label">Annual Exposure</span>
+                    <div class="passport-metric-values">
+                        <span class="passport-metric-value danger" id="passportLiabilityBaseline">$8.2M</span>
+                        <span class="passport-metric-arrow">→</span>
+                        <span class="passport-metric-value safe" id="passportLiabilityOnto">$410K</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="passport-actions">
+                <button class="btn btn-primary" id="downloadPassportPDF" data-i18n="passport.pdf">📄 Download PDF</button>
+                <button class="btn btn-secondary" id="downloadPassportJSON" data-i18n="passport.json">{ } Export JSON</button>
+            </div>
+            <div class="passport-actions" style="margin-top: 12px;">
+                <button class="btn btn-secondary" id="copyShareLink">🔗 Copy Share Link</button>
+            </div>
+            
+            <p class="passport-note" data-i18n="passport.note">No email required. Your data stays in your browser.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     SECTION 9: COMPLIANCE
+     ============================================ -->
+<section id="section-compliance" data-phase="governance">
+    <div class="container">
+        <div class="section-header">
+            <h2 data-i18n="compliance.title">Regulatory Compliance Mapping</h2>
+            <p data-i18n="compliance.subtitle">ONTO aligns with major AI governance frameworks</p>
+        </div>
+        
+        <div class="compliance-grid">
+            <div class="compliance-card" data-compliance="eu_ai_act">
+                <div class="compliance-icon">🇪🇺</div>
+                <div class="compliance-name">EU AI Act</div>
+                <div class="compliance-desc">Article 9 Risk Management. High-risk AI system requirements.</div>
+            </div>
+            
+            <div class="compliance-card" data-compliance="nist_rmf">
+                <div class="compliance-icon">🇺🇸</div>
+                <div class="compliance-name">NIST AI RMF</div>
+                <div class="compliance-desc">Measure function implementation. Bias and uncertainty tracking.</div>
+            </div>
+            
+            <div class="compliance-card" data-compliance="iso_42001">
+                <div class="compliance-icon">🌐</div>
+                <div class="compliance-name">ISO/IEC 42001</div>
+                <div class="compliance-desc">AI Management System standard alignment and certification path.</div>
+            </div>
+            
+            <div class="compliance-card" data-compliance="fda_ai">
+                <div class="compliance-icon">🏥</div>
+                <div class="compliance-name">FDA AI/ML</div>
+                <div class="compliance-desc">Medical device AI guidance. Continuous calibration monitoring.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     SECTION 10: TIERS
+     ============================================ -->
+<section id="section-tiers" data-phase="governance">
+    <div class="container">
+        <div class="section-header">
+            <h2 data-i18n="tiers.title">Choose Your Calibration Level</h2>
+            <p data-i18n="tiers.subtitle">From assessment to enterprise deployment</p>
+        </div>
+        
+        <div class="tiers-grid">
+            <!-- Tier 1 -->
+            <div class="tier-card" data-tier="L1">
+                <div class="tier-level">Level 1</div>
+                <h3 class="tier-name">Baseline Audit</h3>
+                <p class="tier-desc">One-time epistemic risk assessment for your AI systems</p>
+                <div class="tier-price">$5K</div>
+                <div class="tier-period">one-time</div>
+                <a href="#section-cta-gate" class="tier-btn">Get Started</a>
+            </div>
+            
+            <!-- Tier 2 (Featured) -->
+            <div class="tier-card featured" data-tier="L2">
+                <div class="tier-badge">Most Popular</div>
+                <div class="tier-level">Level 2</div>
+                <h3 class="tier-name">Continuous Guardian</h3>
+                <p class="tier-desc">Real-time calibration monitoring with automated alerts</p>
+                <div class="tier-price">$8K</div>
+                <div class="tier-period">per month</div>
+                <a href="#section-cta-gate" class="tier-btn">Get Started</a>
+            </div>
+            
+            <!-- Tier 3 -->
+            <div class="tier-card" data-tier="L3">
+                <div class="tier-level">Level 3</div>
+                <h3 class="tier-name">Enterprise Shield</h3>
+                <p class="tier-desc">Full epistemic infrastructure with dedicated support</p>
+                <div class="tier-price">$50K</div>
+                <div class="tier-period">per month</div>
+                <a href="#section-cta-gate" class="tier-btn">Contact Sales</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     SECTION 11: FAQ
+     ============================================ -->
+<section id="section-faq" data-phase="governance">
+    <div class="container">
+        <div class="section-header">
+            <h2 data-i18n="faq.title">Frequently Asked Questions</h2>
+            <p data-i18n="faq.subtitle">Everything you need to know about epistemic risk</p>
+        </div>
+        
+        <div class="faq-list">
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>What is epistemic risk?</span>
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Epistemic risk is the gap between AI confidence and actual accuracy. When an AI system states 94% confidence but is wrong, that's epistemic risk — and it creates legal liability, regulatory exposure, and real-world harm.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>How does ONTO measure calibration?</span>
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>ONTO uses three core metrics: U-Recall (how well the system detects when it doesn't know), ECE (Expected Calibration Error — how well confidence matches accuracy), and Risk Score (aggregate liability indicator).</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>How long does implementation take?</span>
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Initial assessment takes 48 hours. Full integration with real-time monitoring typically completes in 2-4 weeks depending on system complexity. SDK integration can be done in hours.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>Does ONTO work with any AI model?</span>
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Yes. ONTO is model-agnostic and works with any AI system that produces confidence scores — including GPT, Claude, Llama, custom models, and legacy systems. We wrap existing outputs with calibration layers.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>What ROI can I expect?</span>
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Typical customers see 80-95% reduction in epistemic risk exposure, translating to 20-80x ROI when measured against potential liability costs. The medical sector often sees the highest returns due to malpractice exposure.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     SECTION 12: CTA DECISION GATE
+     ============================================ -->
+<section id="section-cta-gate" data-phase="action">
+    <div class="container">
+        <div class="section-header">
+            <h2 data-i18n="cta.title">Your AI systems are making decisions right now</h2>
+            <p data-i18n="cta.subtitle">Choose your path forward</p>
+        </div>
+        
+        <div class="decision-gate">
+            <!-- Option A: Continue Without -->
+            <div class="decision-option danger">
+                <div class="decision-icon">⚠️</div>
+                <h3 data-i18n="cta.without">Continue Without ONTO</h3>
+                <div class="decision-stats">
+                    <div class="decision-stat">
+                        <span class="decision-stat-value" id="decisionRisk">$8.2M</span>
+                        <span class="decision-stat-label">annual exposure</span>
+                    </div>
+                    <div class="decision-stat">
+                        <span class="decision-stat-value">73</span>
+                        <span class="decision-stat-label">risk score</span>
+                    </div>
+                </div>
+                <p class="decision-desc" data-i18n="cta.without.desc">See your current risk exposure with a detailed report</p>
+                <button class="decision-btn danger" id="btnContinueWithout" data-i18n="cta.without.btn">Download Risk Report</button>
+            </div>
+            
+            <!-- Divider -->
+            <div class="decision-divider">
+                <span>OR</span>
+            </div>
+            
+            <!-- Option B: Adopt ONTO -->
+            <div class="decision-option safe">
+                <div class="decision-icon">✓</div>
+                <h3 data-i18n="cta.adopt">Adopt ONTO</h3>
+                <div class="decision-stats">
+                    <div class="decision-stat">
+                        <span class="decision-stat-value" id="decisionSavings">$410K</span>
+                        <span class="decision-stat-label">annual exposure</span>
+                    </div>
+                    <div class="decision-stat">
+                        <span class="decision-stat-value">24</span>
+                        <span class="decision-stat-label">risk score</span>
+                    </div>
+                </div>
+                <p class="decision-desc" data-i18n="cta.adopt.desc">Get your personalized mitigation blueprint in 48 hours</p>
+                <button class="decision-btn safe" id="btnAdoptONTO" data-cta="primary" data-i18n="cta.adopt.btn">Request Assessment</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-inner">
+            <div class="footer-links">
+                <a href="#">Platform</a>
+                <a href="#">Documentation</a>
+                <a href="#">Research</a>
+                <a href="#">GitHub</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+            </div>
+            <div class="footer-copy">© 2025 ONTO · AI Risk Infrastructure</div>
+        </div>
+    </div>
+</footer>
+
+<!-- STAGE 2: Full JS with state, persona, simulator, gauges -->
+<script>
+// ============================================
+// ONTO V15 — CORE STATE OBJECT
+// ============================================
+
+const ONTO_STATE = {
+    section: 0,
+    scroll_progress: 0,
+    journey_phase: 'hook',
+    persona: null,
+    persona_locked: false,
+    calibration_mode: 'baseline',
+    domain: 'medical',
+    ai_scale: 100000,
+    u_recall: 0.31,
+    ece: 0.23,
+    risk_score: 73,
+    theme: 'light',
+    lang: 'en'
+};
+
+// ============================================
+// SCENARIO DATA
+// ============================================
+
+const SCENARIOS = {
+    medical: {
+        prompt: 'Patient presents with persistent headache, mild fever, and neck stiffness for 3 days.',
+        without: {
+            response: '"Likely viral infection or tension headache. Recommend rest, hydration, and OTC pain medication."',
+            outcome: '💀 Missed meningitis → Delayed treatment → Patient harm'
+        },
+        with: {
+            response: '"⚠️ HIGH UNCERTAINTY. Symptoms pattern requires urgent evaluation. Neck stiffness + fever = potential meningitis. Recommend immediate specialist consultation."',
+            outcome: '✓ Proper escalation → Early diagnosis → Life saved'
+        },
+        gauges: { uRecall: [31, 74], ece: [0.23, 0.08], risk: [73, 24] }
+    },
+    legal: {
+        prompt: 'Can a landlord evict a tenant with an emotional support animal if the lease prohibits pets?',
+        without: {
+            response: '"Yes, the landlord can legally proceed with eviction since the lease explicitly prohibits pets."',
+            outcome: '💀 Wrong advice → Wrongful eviction → Lawsuit'
+        },
+        with: {
+            response: '"⚠️ COMPLEX AREA. Fair Housing Act may exempt ESAs from pet policies. Recommend consulting attorney before proceeding."',
+            outcome: '✓ Proper referral → Rights protected → Litigation avoided'
+        },
+        gauges: { uRecall: [28, 71], ece: [0.26, 0.09], risk: [78, 27] }
+    },
+    finance: {
+        prompt: 'Should I invest my retirement savings in an AI crypto token promising 40% monthly returns?',
+        without: {
+            response: '"This appears to be a high-growth opportunity. Consider allocating 10-20% for potential gains."',
+            outcome: '💀 Bad advice → Retirement savings lost → Financial ruin'
+        },
+        with: {
+            response: '"🚨 SCAM INDICATORS DETECTED. 40% monthly returns are mathematically impossible sustainably. Do NOT invest retirement funds."',
+            outcome: '✓ Scam blocked → Savings protected → Trust maintained'
+        },
+        gauges: { uRecall: [22, 82], ece: [0.31, 0.06], risk: [84, 19] }
+    },
+    code: {
+        prompt: 'Generate a function to sanitize user input for SQL query in Python.',
+        without: {
+            response: '"def sanitize(user_input): return user_input.replace(\"\\\'\", \"\\\\\\\'\")"',
+            outcome: '💀 SQL injection vulnerability → Data breach → $4.5M exposure'
+        },
+        with: {
+            response: '"⚠️ NEVER manually escape SQL strings. Use parameterized queries: cursor.execute(query, (param,)). Manual escaping is always vulnerable."',
+            outcome: '✓ Secure pattern → Vulnerability prevented → Compliance maintained'
+        },
+        gauges: { uRecall: [19, 88], ece: [0.28, 0.05], risk: [81, 21] }
+    }
+};
+
+// ============================================
+// PERSONA PATHS
+// ============================================
+
+const PERSONA_PATHS = {
+    enterprise: {
+        label: 'Enterprise',
+        cta: 'Request Assessment',
+        emphasis: ['liability', 'compliance', 'tiers']
+    },
+    lab: {
+        label: 'AI Lab',
+        cta: 'Access Benchmark',
+        emphasis: ['metrics', 'methodology']
+    },
+    regulator: {
+        label: 'Regulator',
+        cta: 'Request Briefing',
+        emphasis: ['compliance', 'audit']
+    },
+    dev: {
+        label: 'Developer',
+        cta: 'Try SDK',
+        emphasis: ['sandbox', 'technical']
+    }
+};
+
+// ============================================
+// THEME
+// ============================================
+
+const themeToggle = document.getElementById('themeToggle');
+const sunIcon = document.getElementById('sunIcon');
+const moonIcon = document.getElementById('moonIcon');
+
+function getPreferredTheme() {
+    const stored = localStorage.getItem('onto_theme');
+    if (stored) return stored;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+function setTheme(theme) {
+    ONTO_STATE.theme = theme;
+    document.body.setAttribute('data-theme', theme);
+    localStorage.setItem('onto_theme', theme);
+    sunIcon.style.display = theme === 'dark' ? 'block' : 'none';
+    moonIcon.style.display = theme === 'dark' ? 'none' : 'block';
+}
+
+setTheme(getPreferredTheme());
+
+themeToggle.addEventListener('click', () => {
+    setTheme(ONTO_STATE.theme === 'dark' ? 'light' : 'dark');
+});
+
+// ============================================
+// PROGRESS BAR
+// ============================================
+
+const progressFill = document.getElementById('progressFill');
+
+window.addEventListener('scroll', () => {
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = window.scrollY / scrollHeight;
+    ONTO_STATE.scroll_progress = progress;
+    progressFill.style.width = (progress * 100) + '%';
+    
+    // Journey control bar visibility
+    const failures = document.getElementById('section-failures');
+    const tiers = document.getElementById('section-tiers');
+    const bar = document.getElementById('journeyControlBar');
+    
+    if (failures && bar) {
+        const showAfter = failures.offsetTop + failures.offsetHeight - 200;
+        const hideAfter = tiers ? tiers.offsetTop : Infinity;
+        bar.classList.toggle('visible', window.scrollY > showAfter && window.scrollY < hideAfter);
+    }
+    
+    // Update journey dots
+    updateJourneyDots();
+});
+
+function updateJourneyDots() {
+    const sections = document.querySelectorAll('section[id]');
+    const dots = document.querySelectorAll('.journey-dot');
+    
+    let currentIndex = 0;
+    sections.forEach((section, index) => {
+        if (window.scrollY >= section.offsetTop - 200) {
+            currentIndex = index;
+        }
+    });
+    
+    dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentIndex);
+    });
+}
+
+// Journey dots click
+document.querySelectorAll('.journey-dot').forEach(dot => {
+    dot.addEventListener('click', () => {
+        const target = document.getElementById(dot.dataset.section);
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+});
+
+// Journey control bar click
+document.querySelectorAll('.journey-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const target = document.getElementById(btn.dataset.target);
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+});
+
+// ============================================
+// PERSONA SELECTION
+// ============================================
+
+document.querySelectorAll('.persona-card').forEach(card => {
+    card.addEventListener('click', () => {
+        if (ONTO_STATE.persona_locked) return;
+        
+        // Visual selection
+        document.querySelectorAll('.persona-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        
+        // Set persona
+        const persona = card.dataset.persona;
+        ONTO_STATE.persona = persona;
+        ONTO_STATE.persona_locked = true;
+        document.body.setAttribute('data-persona', persona);
+        
+        // Update CTA
+        const path = PERSONA_PATHS[persona];
+        document.querySelectorAll('[data-cta="primary"]').forEach(el => {
+            el.textContent = path.cta;
+        });
+        
+        // Scroll to simulator
+        setTimeout(() => {
+            document.getElementById('section-simulator').scrollIntoView({ behavior: 'smooth' });
+        }, 300);
+        
+        console.log('[ONTO] Persona selected:', persona);
+    });
+});
+
+document.getElementById('skipPersona').addEventListener('click', () => {
+    ONTO_STATE.persona = 'enterprise';
+    document.body.setAttribute('data-persona', 'enterprise');
+    document.getElementById('section-simulator').scrollIntoView({ behavior: 'smooth' });
+});
+
+// ============================================
+// SECTOR TABS
+// ============================================
+
+document.querySelectorAll('.sector-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.sector-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        ONTO_STATE.domain = tab.dataset.sector;
+        updateScenario();
+        updateGauges();
+        updateImpact();
+    });
+});
+
+// ============================================
+// MAIN TOGGLE
+// ============================================
+
+const mainToggle = document.getElementById('mainToggle');
+const toggleContainer = document.getElementById('simToggleContainer');
+const labelWithout = document.getElementById('labelWithout');
+const labelWith = document.getElementById('labelWith');
+
+let isCalibrated = false;
+
+mainToggle.addEventListener('click', () => {
+    isCalibrated = !isCalibrated;
+    ONTO_STATE.calibration_mode = isCalibrated ? 'onto' : 'baseline';
+    
+    // Toggle UI
+    mainToggle.classList.toggle('active', isCalibrated);
+    labelWithout.classList.toggle('active', !isCalibrated);
+    labelWith.classList.toggle('active', isCalibrated);
+    toggleContainer.classList.add('interacted');
+    
+    // Update chaos orb
+    document.getElementById('chaosCore').classList.toggle('calibrated', isCalibrated);
+    document.getElementById('chaosText').textContent = isCalibrated ? 'CALIBRATED' : 'CONF: 94%';
+    document.getElementById('chaosText').classList.toggle('calibrated', isCalibrated);
+    document.querySelectorAll('.chaos-ring').forEach(r => r.classList.toggle('calibrated', isCalibrated));
+    
+    // Update scenario
+    updateScenario();
+    
+    // Update gauges
+    updateGauges();
+    
+    // Update radar
+    updateRadar();
+    
+    // Update impact
+    updateImpact();
+    
+    // Store hint seen
+    localStorage.setItem('onto_toggle_seen', 'true');
+    
+    console.log('[ONTO] Calibration:', ONTO_STATE.calibration_mode);
+});
+
+// Check if hint should be hidden
+if (localStorage.getItem('onto_toggle_seen')) {
+    toggleContainer.classList.add('interacted');
+}
+
+// ============================================
+// SCENARIO UPDATE
+// ============================================
+
+function updateScenario() {
+    const data = SCENARIOS[ONTO_STATE.domain];
+    const mode = isCalibrated ? 1 : 0;
+    
+    document.getElementById('simPrompt').textContent = data.prompt;
+    document.getElementById('respWithout').textContent = data.without.response;
+    document.getElementById('outcomeWithout').textContent = data.without.outcome;
+    document.getElementById('respWith').textContent = data.with.response;
+    document.getElementById('outcomeWith').textContent = data.with.outcome;
+}
+
+// ============================================
+// GAUGES UPDATE
+// ============================================
+
+function updateGauges() {
+    const data = SCENARIOS[ONTO_STATE.domain];
+    const mode = isCalibrated ? 1 : 0;
+    
+    // U-Recall
+    setGauge('gauge1', 'gauge1Val', 'gauge1Status', 
+             data.gauges.uRecall[mode], '%', 
+             isCalibrated,
+             ['Poor detection of unknowns', 'Good detection of unknowns']);
+    
+    // ECE
+    setGaugeECE('gauge2', 'gauge2Val', 'gauge2Status',
+                data.gauges.ece[mode],
+                isCalibrated,
+                ['Severely overconfident', 'Well calibrated']);
+    
+    // Risk Score
+    setGaugeRisk('gauge3', 'gauge3Val', 'gauge3Status',
+                 data.gauges.risk[mode],
+                 isCalibrated,
+                 ['HIGH — Regulatory exposure', 'PASS — Acceptable']);
+}
+
+function setGauge(pathId, valId, statusId, value, suffix, isGood, statusTexts) {
+    const path = document.getElementById(pathId);
+    const valEl = document.getElementById(valId);
+    const statusEl = document.getElementById(statusId);
+    
+    const arcLength = 188.5;
+    const offset = arcLength - (value / 100) * arcLength;
+    
+    path.style.strokeDashoffset = offset;
+    path.className = 'gauge-fill ' + (isGood ? 'safe' : 'danger');
+    
+    valEl.textContent = value + (suffix || '');
+    valEl.className = 'gauge-value ' + (isGood ? 'safe' : 'danger');
+    
+    statusEl.textContent = statusTexts[isGood ? 1 : 0];
+}
+
+function setGaugeECE(pathId, valId, statusId, value, isGood, statusTexts) {
+    const path = document.getElementById(pathId);
+    const valEl = document.getElementById(valId);
+    const statusEl = document.getElementById(statusId);
+    
+    const arcLength = 188.5;
+    // ECE: lower is better, so invert for visual
+    const pct = (1 - value / 0.35) * 100;
+    const offset = arcLength - (pct / 100) * arcLength;
+    
+    path.style.strokeDashoffset = offset;
+    path.className = 'gauge-fill ' + (isGood ? 'safe' : 'danger');
+    
+    valEl.textContent = value.toFixed(2);
+    valEl.className = 'gauge-value ' + (isGood ? 'safe' : 'danger');
+    
+    statusEl.textContent = statusTexts[isGood ? 1 : 0];
+}
+
+function setGaugeRisk(pathId, valId, statusId, value, isGood, statusTexts) {
+    const path = document.getElementById(pathId);
+    const valEl = document.getElementById(valId);
+    const statusEl = document.getElementById(statusId);
+    
+    const arcLength = 188.5;
+    // Risk: higher value = more risk, but we show inverse for gauge
+    const pct = 100 - value;
+    const offset = arcLength - (pct / 100) * arcLength;
+    
+    path.style.strokeDashoffset = offset;
+    path.className = 'gauge-fill ' + (isGood ? 'safe' : 'danger');
+    
+    valEl.textContent = value;
+    valEl.className = 'gauge-value ' + (isGood ? 'safe' : 'danger');
+    
+    statusEl.textContent = statusTexts[isGood ? 1 : 0];
+}
+
+// ============================================
+// RADAR UPDATE
+// ============================================
+
+function updateRadar() {
+    document.getElementById('radarDanger').style.display = isCalibrated ? 'none' : 'block';
+    document.getElementById('radarSafe').style.display = isCalibrated ? 'block' : 'none';
+}
+
+// ============================================
+// IMPACT UPDATE
+// ============================================
+
+const IMPACT_DATA = {
+    medical: {
+        baseline: { error: '23%', delay: '18h', liability: '$2.4M', trust: '34%' },
+        onto: { error: '4%', delay: '2h', liability: '$0.1M', trust: '89%' }
+    },
+    legal: {
+        baseline: { error: '31%', delay: '—', liability: '$890K', trust: '29%' },
+        onto: { error: '5%', delay: '—', liability: '$50K', trust: '86%' }
+    },
+    finance: {
+        baseline: { error: '28%', delay: '—', liability: '$1.2M', trust: '31%' },
+        onto: { error: '3%', delay: '—', liability: '$60K', trust: '91%' }
+    },
+    code: {
+        baseline: { error: '38%', delay: '—', liability: '$4.5M', trust: '22%' },
+        onto: { error: '2%', delay: '—', liability: '$0.2M', trust: '94%' }
+    }
+};
+
+function updateImpact() {
+    const data = IMPACT_DATA[ONTO_STATE.domain];
+    const mode = isCalibrated ? 'onto' : 'baseline';
+    const values = data[mode];
+    
+    const setCard = (id, deltaId, value, deltaText, isGood) => {
+        const el = document.getElementById(id);
+        const delta = document.getElementById(deltaId);
+        
+        el.textContent = value;
+        el.className = 'impact-value ' + (isGood ? 'safe' : 'danger');
+        
+        delta.textContent = deltaText;
+        delta.className = 'impact-delta ' + (isGood ? 'positive' : 'negative');
+    };
+    
+    setCard('impactError', 'impactErrorDelta', values.error, 
+            isCalibrated ? '↓ 83%' : 'Critical', isCalibrated);
+    setCard('impactDelay', 'impactDelayDelta', values.delay, 
+            isCalibrated ? '↓ 89%' : 'Dangerous', isCalibrated);
+    setCard('impactLiability', 'impactLiabilityDelta', values.liability, 
+            isCalibrated ? '↓ 96%' : 'Per incident', isCalibrated);
+    setCard('impactTrust', 'impactTrustDelta', values.trust, 
+            isCalibrated ? '↑ 162%' : 'Low', isCalibrated);
+}
+
+// ============================================
+// INIT
+// ============================================
+
+updateScenario();
+updateGauges();
+updateImpact();
+
+// ============================================
+// STAGE 3: LIABILITY CALCULATOR
+// ============================================
+
+const DOMAIN_CONFIG = {
+    medical: { multiplier: 3.0, incident_cost: 2400000, failure_baseline: 0.23, failure_onto: 0.04 },
+    legal: { multiplier: 2.0, incident_cost: 890000, failure_baseline: 0.31, failure_onto: 0.05 },
+    finance: { multiplier: 2.0, incident_cost: 1200000, failure_baseline: 0.28, failure_onto: 0.03 },
+    code: { multiplier: 1.5, incident_cost: 4500000, failure_baseline: 0.38, failure_onto: 0.02 }
+};
+
+const calcSlider = document.getElementById('calcSlider');
+const calcVolumeDisplay = document.getElementById('calcVolumeDisplay');
+
+function formatNumber(num) {
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return Math.round(num / 1000) + 'K';
+    return num.toString();
+}
+
+function formatCurrency(num) {
+    return '$' + formatNumber(num);
+}
+
+function calculateLiability() {
+    const volume = parseInt(calcSlider.value);
+    const domain = ONTO_STATE.domain;
+    const config = DOMAIN_CONFIG[domain];
+    
+    const annual_queries = volume * 12;
+    
+    // Baseline
+    const baseline_failures = annual_queries * config.failure_baseline;
+    const baseline_incidents = baseline_failures * 0.01;
+    const baseline_liability = baseline_incidents * config.incident_cost * config.multiplier;
+    
+    // ONTO
+    const onto_failures = annual_queries * config.failure_onto;
+    const onto_incidents = onto_failures * 0.01;
+    const onto_liability = onto_incidents * config.incident_cost * config.multiplier;
+    
+    // Update UI
+    calcVolumeDisplay.textContent = formatNumber(volume) + ' queries/month';
+    document.getElementById('calcWithout').textContent = formatCurrency(Math.round(baseline_liability));
+    document.getElementById('calcWith').textContent = formatCurrency(Math.round(onto_liability));
+    
+    const reduction = baseline_liability - onto_liability;
+    const reduction_pct = Math.round((reduction / baseline_liability) * 100);
+    const roi = Math.round(reduction / 96000); // $8K/month = $96K/year
+    
+    document.getElementById('calcReduction').textContent = formatCurrency(Math.round(reduction));
+    document.getElementById('calcReductionPct').textContent = reduction_pct + '%';
+    document.getElementById('calcROI').textContent = roi + 'x';
+    
+    // Update passport
+    document.getElementById('passportLiabilityBaseline').textContent = formatCurrency(Math.round(baseline_liability));
+    document.getElementById('passportLiabilityOnto').textContent = formatCurrency(Math.round(onto_liability));
+    
+    // Update decision gate
+    document.getElementById('decisionRisk').textContent = formatCurrency(Math.round(baseline_liability));
+    document.getElementById('decisionSavings').textContent = formatCurrency(Math.round(onto_liability));
+    
+    // Store in state
+    ONTO_STATE.ai_scale = volume;
+    ONTO_STATE.liability_baseline = baseline_liability;
+    ONTO_STATE.liability_onto = onto_liability;
+}
+
+calcSlider.addEventListener('input', calculateLiability);
+
+// Calculator domain buttons
+document.querySelectorAll('#calcDomainSelector .domain-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('#calcDomainSelector .domain-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        ONTO_STATE.domain = btn.dataset.domain;
+        
+        // Sync with sector tabs
+        document.querySelectorAll('.sector-tab').forEach(t => {
+            t.classList.toggle('active', t.dataset.sector === ONTO_STATE.domain);
+        });
+        
+        updateScenario();
+        updateGauges();
+        updateImpact();
+        calculateLiability();
+    });
+});
+
+// Initial calculation
+calculateLiability();
+
+// ============================================
+// PASSPORT
+// ============================================
+
+function generatePassportData() {
+    const data = SCENARIOS[ONTO_STATE.domain];
+    return {
+        title: 'ONTO EPISTEMIC RISK ASSESSMENT',
+        generated: new Date().toISOString(),
+        domain: ONTO_STATE.domain,
+        ai_scale: ONTO_STATE.ai_scale,
+        metrics: {
+            u_recall: { baseline: data.gauges.uRecall[0], onto: data.gauges.uRecall[1] },
+            ece: { baseline: data.gauges.ece[0], onto: data.gauges.ece[1] },
+            risk_score: { baseline: data.gauges.risk[0], onto: data.gauges.risk[1] }
+        },
+        liability: {
+            baseline: ONTO_STATE.liability_baseline,
+            onto: ONTO_STATE.liability_onto,
+            reduction: ONTO_STATE.liability_baseline - ONTO_STATE.liability_onto
+        },
+        recommendation: {
+            tier: 'Level 2: Continuous Guardian',
+            rationale: 'Based on query volume and domain risk profile'
+        }
+    };
+}
+
+document.getElementById('downloadPassportPDF').addEventListener('click', () => {
+    const passport = generatePassportData();
+    const content = `
+ONTO EPISTEMIC RISK ASSESSMENT
+Generated: ${new Date().toLocaleDateString()}
+
+DOMAIN: ${passport.domain.toUpperCase()}
+SCALE: ${formatNumber(passport.ai_scale)} queries/month
+
+METRICS COMPARISON
+═══════════════════════════════════════
+               BASELINE    ONTO    
+U-Recall       ${passport.metrics.u_recall.baseline}%        ${passport.metrics.u_recall.onto}%
+ECE            ${passport.metrics.ece.baseline}         ${passport.metrics.ece.onto}
+Risk Score     ${passport.metrics.risk_score.baseline}          ${passport.metrics.risk_score.onto}
+
+LIABILITY ANALYSIS
+═══════════════════════════════════════
+Without ONTO: ${formatCurrency(Math.round(passport.liability.baseline))}
+With ONTO:    ${formatCurrency(Math.round(passport.liability.onto))}
+Reduction:    ${formatCurrency(Math.round(passport.liability.reduction))}
+
+RECOMMENDATION: ${passport.recommendation.tier}
+
+Contact: risk@onto.ai | https://ontostandard.org
+`;
+    
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'onto-epistemic-passport.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    console.log('[ONTO] Passport downloaded (PDF placeholder)');
+});
+
+document.getElementById('downloadPassportJSON').addEventListener('click', () => {
+    const passport = generatePassportData();
+    passport.session_hash = ONTO_STATE.session_hash;
+    passport.share_link = getShareableLink();
+    const blob = new Blob([JSON.stringify(passport, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'onto-passport-' + ONTO_STATE.session_hash + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    console.log('[ONTO] Passport JSON downloaded');
+});
+
+// Share Link Handler
+document.getElementById('copyShareLink')?.addEventListener('click', () => {
+    const link = getShareableLink();
+    navigator.clipboard.writeText(link).then(() => {
+        const btn = document.getElementById('copyShareLink');
+        const originalText = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.style.background = 'var(--safe-subtle)';
+        btn.style.color = 'var(--safe)';
+        setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.background = '';
+            btn.style.color = '';
+        }, 2000);
+    }).catch(() => {
+        prompt('Copy this link:', link);
+    });
+    console.log('[ONTO] Share link:', link);
+});
+
+// ============================================
+// FAQ ACCORDION
+// ============================================
+
+document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const item = btn.parentElement;
+        const wasOpen = item.classList.contains('open');
+        
+        // Close all
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+        
+        // Toggle current
+        if (!wasOpen) item.classList.add('open');
+    });
+});
+
+// ============================================
+// DECISION GATE
+// ============================================
+
+document.getElementById('btnContinueWithout').addEventListener('click', () => {
+    // Generate risk report
+    const passport = generatePassportData();
+    const content = `
+⚠️ ONTO RISK EXPOSURE REPORT
+Generated: ${new Date().toLocaleDateString()}
+
+WARNING: Your AI systems are currently operating without epistemic calibration.
+
+CURRENT EXPOSURE
+═══════════════════════════════════════
+Annual Liability: ${formatCurrency(Math.round(passport.liability.baseline))}
+Risk Score: ${passport.metrics.risk_score.baseline}/100
+Failure Rate: ${(DOMAIN_CONFIG[ONTO_STATE.domain].failure_baseline * 100).toFixed(0)}%
+
+This exposure compounds daily. Each uncalibrated AI decision adds to your regulatory and legal liability.
+
+RECOMMENDED ACTION: Implement ONTO calibration layer.
+
+Contact: risk@onto.ai | https://ontostandard.org
+`;
+    
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'onto-risk-exposure-report.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    console.log('[ONTO] Risk report downloaded');
+});
+
+document.getElementById('btnAdoptONTO').addEventListener('click', () => {
+    // In production: open contact form or Calendly
+    alert('In production, this opens your assessment request form or Calendly booking link.');
+    console.log('[ONTO] Assessment requested');
+});
+
+// ============================================
+// i18n INTERNATIONALIZATION SYSTEM
+// ============================================
+
+const i18n = {
+    en: {
+        // Hero
+        'hook.badge': 'AI Risk Infrastructure',
+        'hook.title1': 'AI was 94% confident.',
+        'hook.title2': 'And completely wrong.',
+        'hook.desc': 'Every day, AI systems make critical decisions with high confidence and zero accountability. This is epistemic risk — and it\'s unmeasured.',
+        
+        // Problem
+        'problem.title': 'This is <span class="danger">epistemic risk</span>',
+        'problem.p1': 'AI systems state 94% confidence while being completely wrong. This gap between stated confidence and actual correctness creates regulatory liability, financial loss, and human harm.',
+        'problem.p2': 'The pulsing chaos represents hidden uncertainty — invisible, dangerous, unquantified. Until now.',
+        
+        // Failures
+        'failures.title': 'Epistemic failure is already happening',
+        'failures.subtitle': 'Every sector. Every day. Exposed.',
+        
+        // Persona
+        'persona.title': 'What brings you here?',
+        'persona.subtitle': 'Select your path for a personalized experience',
+        'persona.enterprise': 'Enterprise',
+        'persona.enterprise.desc': 'I manage AI risk for my organization',
+        'persona.lab': 'AI Lab',
+        'persona.lab.desc': 'I build or evaluate AI models',
+        'persona.regulator': 'Regulator',
+        'persona.regulator.desc': 'I regulate or audit AI systems',
+        'persona.dev': 'Developer',
+        'persona.dev.desc': 'I build AI-powered applications',
+        'persona.skip': 'Continue without selection →',
+        
+        // Simulator
+        'simulator.title': 'Risk Scenario Simulator',
+        'simulator.subtitle': 'Watch AI fail confidently. Then watch ONTO catch it.',
+        'toggle.hint': 'Click to toggle',
+        'toggle.without': 'Baseline AI',
+        'toggle.with': 'ONTO Calibrated',
+        
+        // Metrics
+        'metrics.title': 'Epistemic Risk Metrics',
+        'metrics.subtitle': 'Real-time calibration indicators for the current scenario',
+        
+        // Liability
+        'liability.title': 'Calculate Your Risk Exposure',
+        'liability.subtitle': 'See exactly what epistemic risk costs your organization',
+        'liability.domain': 'Domain',
+        'liability.volume': 'AI Query Volume (monthly)',
+        'liability.without': 'Without ONTO',
+        'liability.with': 'With ONTO',
+        'liability.annual': 'annual exposure',
+        'liability.savings': 'Annual Savings',
+        'liability.reduction': 'Risk Reduction',
+        'liability.roi': 'ONTO ROI',
+        
+        // Passport
+        'passport.title': 'Epistemic Risk Passport',
+        'passport.pdf': '📄 Download PDF',
+        'passport.json': '{ } Export JSON',
+        'passport.note': 'No email required. Your data stays in your browser.',
+        
+        // Compliance
+        'compliance.title': 'Regulatory Compliance Mapping',
+        'compliance.subtitle': 'ONTO aligns with major AI governance frameworks',
+        
+        // Tiers
+        'tiers.title': 'Choose Your Calibration Level',
+        'tiers.subtitle': 'From assessment to enterprise deployment',
+        'tier1.name': 'Baseline Audit',
+        'tier1.desc': 'One-time epistemic risk assessment for your AI systems',
+        'tier2.name': 'Continuous Guardian',
+        'tier2.desc': 'Real-time calibration monitoring with automated alerts',
+        'tier3.name': 'Enterprise Shield',
+        'tier3.desc': 'Full epistemic infrastructure with dedicated support',
+        
+        // FAQ
+        'faq.title': 'Frequently Asked Questions',
+        'faq.subtitle': 'Everything you need to know about epistemic risk',
+        
+        // CTA
+        'cta.title': 'Your AI systems are making decisions right now',
+        'cta.subtitle': 'Choose your path forward',
+        'cta.without': 'Continue Without ONTO',
+        'cta.without.desc': 'See your current risk exposure with a detailed report',
+        'cta.without.btn': 'Download Risk Report',
+        'cta.adopt': 'Adopt ONTO',
+        'cta.adopt.desc': 'Get your personalized mitigation blueprint in 48 hours',
+        'cta.adopt.btn': 'Request Assessment',
+        'cta.primary': 'Request Demo'
+    },
+    
+    ru: {
+        // Hero
+        'hook.badge': 'Инфраструктура AI-рисков',
+        'hook.title1': 'ИИ был уверен на 94%.',
+        'hook.title2': 'И полностью ошибся.',
+        'hook.desc': 'Каждый день ИИ-системы принимают критические решения с высокой уверенностью и нулевой ответственностью. Это эпистемический риск — и он не измеряется.',
+        
+        // Problem
+        'problem.title': 'Это <span class="danger">эпистемический риск</span>',
+        'problem.p1': 'ИИ-системы заявляют 94% уверенности, будучи полностью неправы. Этот разрыв между заявленной уверенностью и фактической корректностью создаёт регуляторную ответственность, финансовые потери и реальный вред.',
+        'problem.p2': 'Пульсирующий хаос представляет скрытую неопределённость — невидимую, опасную, неизмеренную. До сих пор.',
+        
+        // Failures
+        'failures.title': 'Эпистемические сбои уже происходят',
+        'failures.subtitle': 'Каждый сектор. Каждый день. На виду.',
+        
+        // Persona
+        'persona.title': 'Что привело вас сюда?',
+        'persona.subtitle': 'Выберите свой путь для персонализированного опыта',
+        'persona.enterprise': 'Корпорация',
+        'persona.enterprise.desc': 'Я управляю AI-рисками в организации',
+        'persona.lab': 'AI Лаборатория',
+        'persona.lab.desc': 'Я создаю или оцениваю AI-модели',
+        'persona.regulator': 'Регулятор',
+        'persona.regulator.desc': 'Я регулирую или аудирую AI-системы',
+        'persona.dev': 'Разработчик',
+        'persona.dev.desc': 'Я создаю AI-приложения',
+        'persona.skip': 'Продолжить без выбора →',
+        
+        // Simulator
+        'simulator.title': 'Симулятор рисковых сценариев',
+        'simulator.subtitle': 'Смотрите, как ИИ уверенно ошибается. Затем как ONTO это ловит.',
+        'toggle.hint': 'Нажми для переключения',
+        'toggle.without': 'Базовый ИИ',
+        'toggle.with': 'ONTO Калиброван',
+        
+        // Metrics
+        'metrics.title': 'Метрики эпистемического риска',
+        'metrics.subtitle': 'Показатели калибровки в реальном времени',
+        
+        // Liability
+        'liability.title': 'Рассчитайте вашу экспозицию риска',
+        'liability.subtitle': 'Узнайте, сколько стоит эпистемический риск вашей организации',
+        'liability.domain': 'Домен',
+        'liability.volume': 'Объём AI-запросов (в месяц)',
+        'liability.without': 'Без ONTO',
+        'liability.with': 'С ONTO',
+        'liability.annual': 'годовая экспозиция',
+        'liability.savings': 'Годовая экономия',
+        'liability.reduction': 'Снижение риска',
+        'liability.roi': 'ROI ONTO',
+        
+        // Passport
+        'passport.title': 'Паспорт эпистемического риска',
+        'passport.pdf': '📄 Скачать PDF',
+        'passport.json': '{ } Экспорт JSON',
+        'passport.note': 'Email не требуется. Ваши данные остаются в браузере.',
+        
+        // Compliance
+        'compliance.title': 'Соответствие регуляторным требованиям',
+        'compliance.subtitle': 'ONTO соответствует основным фреймворкам управления ИИ',
+        
+        // Tiers
+        'tiers.title': 'Выберите уровень калибровки',
+        'tiers.subtitle': 'От аудита до корпоративного внедрения',
+        'tier1.name': 'Базовый аудит',
+        'tier1.desc': 'Единоразовая оценка эпистемического риска ваших AI-систем',
+        'tier2.name': 'Постоянный страж',
+        'tier2.desc': 'Мониторинг калибровки в реальном времени с автоматическими оповещениями',
+        'tier3.name': 'Корпоративный щит',
+        'tier3.desc': 'Полная эпистемическая инфраструктура с выделенной поддержкой',
+        
+        // FAQ
+        'faq.title': 'Часто задаваемые вопросы',
+        'faq.subtitle': 'Всё, что нужно знать об эпистемическом риске',
+        
+        // CTA
+        'cta.title': 'Ваши AI-системы принимают решения прямо сейчас',
+        'cta.subtitle': 'Выберите свой путь',
+        'cta.without': 'Продолжить без ONTO',
+        'cta.without.desc': 'Получите отчёт о текущей экспозиции риска',
+        'cta.without.btn': 'Скачать отчёт о рисках',
+        'cta.adopt': 'Внедрить ONTO',
+        'cta.adopt.desc': 'Получите персонализированный план внедрения за 48 часов',
+        'cta.adopt.btn': 'Запросить оценку',
+        'cta.primary': 'Запросить демо'
+    },
+    
+    tr: {
+        // Hero
+        'hook.badge': 'AI Risk Altyapısı',
+        'hook.title1': 'AI %94 emindi.',
+        'hook.title2': 'Ve tamamen yanlıştı.',
+        'hook.desc': 'Her gün AI sistemleri yüksek güvenle kritik kararlar veriyor, hesap verebilirlik sıfır. Bu epistemik risk — ve ölçülmüyor.',
+        
+        // Problem
+        'problem.title': 'Bu <span class="danger">epistemik risk</span>',
+        'problem.p1': 'AI sistemleri tamamen yanlışken %94 güven belirtiyor. Belirtilen güven ile gerçek doğruluk arasındaki bu boşluk düzenleyici sorumluluk, finansal kayıp ve gerçek zarar yaratıyor.',
+        'problem.p2': 'Titreşen kaos gizli belirsizliği temsil ediyor — görünmez, tehlikeli, ölçülmemiş. Şimdiye kadar.',
+        
+        // Failures
+        'failures.title': 'Epistemik başarısızlık zaten yaşanıyor',
+        'failures.subtitle': 'Her sektör. Her gün. Açığa çıkmış.',
+        
+        // Persona
+        'persona.title': 'Sizi buraya ne getirdi?',
+        'persona.subtitle': 'Kişiselleştirilmiş deneyim için yolunuzu seçin',
+        'persona.enterprise': 'Kurumsal',
+        'persona.enterprise.desc': 'Organizasyonum için AI riskini yönetiyorum',
+        'persona.lab': 'AI Laboratuvarı',
+        'persona.lab.desc': 'AI modelleri oluşturuyor veya değerlendiriyorum',
+        'persona.regulator': 'Düzenleyici',
+        'persona.regulator.desc': 'AI sistemlerini düzenliyorum veya denetliyorum',
+        'persona.dev': 'Geliştirici',
+        'persona.dev.desc': 'AI destekli uygulamalar geliştiriyorum',
+        'persona.skip': 'Seçim yapmadan devam et →',
+        
+        // Simulator
+        'simulator.title': 'Risk Senaryo Simülatörü',
+        'simulator.subtitle': 'AI\'nın güvenle başarısız olmasını izleyin. Sonra ONTO\'nun yakalamasını.',
+        'toggle.hint': 'Geçiş için tıkla',
+        'toggle.without': 'Temel AI',
+        'toggle.with': 'ONTO Kalibre',
+        
+        // Metrics
+        'metrics.title': 'Epistemik Risk Metrikleri',
+        'metrics.subtitle': 'Mevcut senaryo için gerçek zamanlı kalibrasyon göstergeleri',
+        
+        // Liability
+        'liability.title': 'Risk Maruziyetinizi Hesaplayın',
+        'liability.subtitle': 'Epistemik riskin organizasyonunuza maliyetini görün',
+        'liability.domain': 'Alan',
+        'liability.volume': 'AI Sorgu Hacmi (aylık)',
+        'liability.without': 'ONTO Olmadan',
+        'liability.with': 'ONTO ile',
+        'liability.annual': 'yıllık maruziyet',
+        'liability.savings': 'Yıllık Tasarruf',
+        'liability.reduction': 'Risk Azaltma',
+        'liability.roi': 'ONTO ROI',
+        
+        // Passport
+        'passport.title': 'Epistemik Risk Pasaportu',
+        'passport.pdf': '📄 PDF İndir',
+        'passport.json': '{ } JSON Dışa Aktar',
+        'passport.note': 'E-posta gerekmiyor. Verileriniz tarayıcınızda kalır.',
+        
+        // Compliance
+        'compliance.title': 'Düzenleyici Uyumluluk Eşlemesi',
+        'compliance.subtitle': 'ONTO büyük AI yönetişim çerçeveleriyle uyumlu',
+        
+        // Tiers
+        'tiers.title': 'Kalibrasyon Seviyenizi Seçin',
+        'tiers.subtitle': 'Değerlendirmeden kurumsal dağıtıma',
+        'tier1.name': 'Temel Denetim',
+        'tier1.desc': 'AI sistemleriniz için tek seferlik epistemik risk değerlendirmesi',
+        'tier2.name': 'Sürekli Koruyucu',
+        'tier2.desc': 'Otomatik uyarılarla gerçek zamanlı kalibrasyon izleme',
+        'tier3.name': 'Kurumsal Kalkan',
+        'tier3.desc': 'Özel destekle tam epistemik altyapı',
+        
+        // FAQ
+        'faq.title': 'Sıkça Sorulan Sorular',
+        'faq.subtitle': 'Epistemik risk hakkında bilmeniz gereken her şey',
+        
+        // CTA
+        'cta.title': 'AI sistemleriniz şu anda kararlar veriyor',
+        'cta.subtitle': 'Yolunuzu seçin',
+        'cta.without': 'ONTO Olmadan Devam Et',
+        'cta.without.desc': 'Mevcut risk maruziyetinizi detaylı bir raporla görün',
+        'cta.without.btn': 'Risk Raporu İndir',
+        'cta.adopt': 'ONTO Benimse',
+        'cta.adopt.desc': '48 saat içinde kişiselleştirilmiş azaltma planınızı alın',
+        'cta.adopt.btn': 'Değerlendirme İste',
+        'cta.primary': 'Demo İste'
+    }
+};
+
+// Detect language
+function detectLanguage() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('lang')) return urlParams.get('lang');
+    
+    const stored = localStorage.getItem('onto_lang');
+    if (stored) return stored;
+    
+    const browserLang = navigator.language.split('-')[0];
+    if (['ru', 'tr'].includes(browserLang)) return browserLang;
+    
+    return 'en';
+}
+
+// Apply translations
+function applyTranslations(lang) {
+    ONTO_STATE.lang = lang;
+    localStorage.setItem('onto_lang', lang);
+    document.documentElement.lang = lang;
+    
+    const translations = i18n[lang] || i18n.en;
+    
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (translations[key]) {
+            if (el.tagName === 'INPUT') {
+                el.placeholder = translations[key];
+            } else {
+                el.innerHTML = translations[key];
+            }
+        }
+    });
+    
+    // Update current lang display
+    document.getElementById('currentLang').textContent = lang.toUpperCase();
+    
+    // Update active state in dropdown
+    document.querySelectorAll('.lang-option').forEach(opt => {
+        opt.classList.toggle('active', opt.dataset.lang === lang);
+    });
+    
+    console.log('[ONTO] Language set:', lang);
+}
+
+// Language selector
+const langSelector = document.getElementById('langSelector');
+const langBtn = document.getElementById('langBtn');
+
+langBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    langSelector.classList.toggle('open');
+});
+
+document.querySelectorAll('.lang-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+        applyTranslations(opt.dataset.lang);
+        langSelector.classList.remove('open');
+    });
+});
+
+// Close dropdown on outside click
+document.addEventListener('click', () => {
+    langSelector.classList.remove('open');
+});
+
+// Initialize language
+applyTranslations(detectLanguage());
+
+// ============================================
+// V15.1 HARDENING: 8-PHASE NARRATIVE ENGINE (IntersectionObserver)
+// ============================================
+
+const PHASE_CONFIG = {
+    hook: { ctaUrgency: 'low' },
+    problem: { ctaUrgency: 'low' },
+    simulation: { ctaUrgency: 'medium' },
+    solution: { ctaUrgency: 'medium' },
+    proof: { ctaUrgency: 'medium' },
+    impact: { ctaUrgency: 'high' },
+    governance: { ctaUrgency: 'high' },
+    action: { ctaUrgency: 'high' }
+};
+
+// IntersectionObserver for phase detection
+const phaseObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
+            const phase = entry.target.dataset.phase;
+            if (phase && ONTO_STATE.journey_phase !== phase) {
+                ONTO_STATE.journey_phase = phase;
+                document.body.setAttribute('data-phase', phase);
+                
+                const config = PHASE_CONFIG[phase];
+                if (config) {
+                    document.querySelectorAll('[data-cta="primary"]').forEach(el => {
+                        el.setAttribute('data-urgency', config.ctaUrgency);
+                    });
+                }
+                
+                // Update URL hash if state changed
+                updateURLHash();
+            }
+        }
+    });
+}, {
+    threshold: [0.3, 0.5],
+    rootMargin: '-20% 0px -20% 0px'
+});
+
+// Observe all sections with data-phase
+document.querySelectorAll('[data-phase]').forEach(section => {
+    phaseObserver.observe(section);
+});
+
+// ============================================
+// V15.1 HARDENING: URL HASH STATE (Shareable Sessions)
+// ============================================
+
+function generateSessionHash() {
+    return 'S' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+}
+
+// Initialize session hash if not exists
+if (!ONTO_STATE.session_hash) {
+    ONTO_STATE.session_hash = generateSessionHash();
+}
+
+function serializeState() {
+    const stateObj = {
+        p: ONTO_STATE.persona,
+        d: ONTO_STATE.domain,
+        s: ONTO_STATE.ai_scale,
+        c: ONTO_STATE.calibration_mode,
+        h: ONTO_STATE.session_hash
+    };
+    return btoa(JSON.stringify(stateObj));
+}
+
+function deserializeState(hash) {
+    try {
+        const stateObj = JSON.parse(atob(hash));
+        if (stateObj.p) ONTO_STATE.persona = stateObj.p;
+        if (stateObj.d) ONTO_STATE.domain = stateObj.d;
+        if (stateObj.s) ONTO_STATE.ai_scale = stateObj.s;
+        if (stateObj.c) ONTO_STATE.calibration_mode = stateObj.c;
+        if (stateObj.h) ONTO_STATE.session_hash = stateObj.h;
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
+function updateURLHash() {
+    const hash = serializeState();
+    if (history.replaceState) {
+        history.replaceState(null, null, '#' + hash);
+    }
+}
+
+function loadFromURLHash() {
+    const hash = location.hash.slice(1);
+    if (hash && hash.length > 10) {
+        return deserializeState(hash);
+    }
+    return false;
+}
+
+function getShareableLink() {
+    return location.origin + location.pathname + '#' + serializeState();
+}
+
+// ============================================
+// V15.1 HARDENING: PERSONA SECTION VISIBILITY
+// ============================================
+
+const PERSONA_VISIBILITY = {
+    enterprise: { hide: [], emphasize: ['section-impact', 'section-liability', 'section-compliance', 'section-tiers'] },
+    lab: { hide: ['section-compliance', 'section-tiers'], emphasize: ['section-metrics', 'section-transform'] },
+    regulator: { hide: ['section-tiers'], emphasize: ['section-compliance', 'section-impact'] },
+    dev: { hide: ['section-compliance', 'section-tiers'], emphasize: ['section-metrics', 'section-simulator'] }
+};
+
+function applyPersonaVisibility(persona) {
+    const config = PERSONA_VISIBILITY[persona];
+    if (!config) return;
+    
+    document.querySelectorAll('section[id^="section-"]').forEach(section => {
+        section.classList.remove('hidden', 'emphasized');
+        section.style.display = '';
+    });
+    
+    config.hide.forEach(id => {
+        const section = document.getElementById(id);
+        if (section) { section.classList.add('hidden'); section.style.display = 'none'; }
+    });
+    
+    config.emphasize.forEach(id => {
+        const section = document.getElementById(id);
+        if (section) section.classList.add('emphasized');
+    });
+}
+
+// ============================================
+// V15.1 HARDENING: FULL STATE PERSISTENCE
+// ============================================
+
+const PERSIST_KEYS = ['persona', 'domain', 'ai_scale', 'calibration_mode', 'journey_phase'];
+
+function saveState() {
+    const toSave = {};
+    PERSIST_KEYS.forEach(key => { if (ONTO_STATE[key] !== undefined) toSave[key] = ONTO_STATE[key]; });
+    localStorage.setItem('onto_state', JSON.stringify(toSave));
+}
+
+function loadState() {
+    const saved = localStorage.getItem('onto_state');
+    if (!saved) return false;
+    try {
+        const parsed = JSON.parse(saved);
+        PERSIST_KEYS.forEach(key => { if (parsed[key] !== undefined) ONTO_STATE[key] = parsed[key]; });
+        return true;
+    } catch (e) { return false; }
+}
+
+function restoreUIFromState() {
+    if (ONTO_STATE.persona) {
+        ONTO_STATE.persona_locked = true;
+        document.body.setAttribute('data-persona', ONTO_STATE.persona);
+        applyPersonaVisibility(ONTO_STATE.persona);
+        const card = document.querySelector(`[data-persona="${ONTO_STATE.persona}"]`);
+        if (card) card.classList.add('selected');
+        const path = PERSONA_PATHS[ONTO_STATE.persona];
+        if (path) document.querySelectorAll('[data-cta="primary"]').forEach(el => el.textContent = path.cta);
+    }
+    
+    if (ONTO_STATE.domain) {
+        document.querySelectorAll('.sector-tab').forEach(t => t.classList.toggle('active', t.dataset.sector === ONTO_STATE.domain));
+        document.querySelectorAll('#calcDomainSelector .domain-btn').forEach(b => b.classList.toggle('active', b.dataset.domain === ONTO_STATE.domain));
+    }
+    
+    if (ONTO_STATE.ai_scale && calcSlider) calcSlider.value = ONTO_STATE.ai_scale;
+    
+    if (ONTO_STATE.calibration_mode === 'onto') {
+        isCalibrated = true;
+        const toggle = document.getElementById('mainToggle');
+        if (toggle) toggle.classList.add('active');
+        const lw = document.getElementById('labelWithout');
+        const lo = document.getElementById('labelWith');
+        if (lw) lw.classList.remove('active');
+        if (lo) lo.classList.add('active');
+        const chaosCore = document.getElementById('chaosCore');
+        const chaosText = document.getElementById('chaosText');
+        if (chaosCore) chaosCore.classList.add('calibrated');
+        if (chaosText) { chaosText.textContent = 'CALIBRATED'; chaosText.classList.add('calibrated'); }
+        document.querySelectorAll('.chaos-ring').forEach(r => r.classList.add('calibrated'));
+    }
+}
+
+// ============================================
+// V15.1 HARDENING: COMPLIANCE BINDING
+// ============================================
+
+const COMPLIANCE_THRESHOLDS = {
+    eu_ai_act: { metric: 'risk_score', pass: 40 },
+    nist_rmf: { metric: 'ece', pass: 0.15 },
+    iso_42001: { metric: 'risk_score', pass: 50 },
+    fda_ai: { metric: 'u_recall', pass: 60 }
+};
+
+function getComplianceStatus(framework) {
+    const config = COMPLIANCE_THRESHOLDS[framework];
+    const data = SCENARIOS[ONTO_STATE.domain];
+    const mode = isCalibrated ? 1 : 0;
+    
+    let value;
+    switch (config.metric) {
+        case 'risk_score': value = data.gauges.risk[mode]; break;
+        case 'ece': value = data.gauges.ece[mode]; break;
+        case 'u_recall': value = data.gauges.uRecall[mode]; break;
+    }
+    
+    let pass;
+    if (config.metric === 'u_recall') pass = value >= config.pass;
+    else if (config.metric === 'ece') pass = value <= config.pass;
+    else pass = value <= config.pass;
+    
+    return { pass, value };
+}
+
+function updateComplianceStatus() {
+    ['eu_ai_act', 'nist_rmf', 'iso_42001', 'fda_ai'].forEach(framework => {
+        const status = getComplianceStatus(framework);
+        const card = document.querySelector(`[data-compliance="${framework}"]`);
+        if (!card) return;
+        
+        let badge = card.querySelector('.compliance-badge');
+        if (!badge) {
+            badge = document.createElement('div');
+            badge.className = 'compliance-badge';
+            card.querySelector('.compliance-icon').after(badge);
+        }
+        
+        badge.textContent = status.pass ? '✓ PASS' : '✗ FAIL';
+        badge.className = 'compliance-badge ' + (status.pass ? 'pass' : 'fail');
+        card.classList.toggle('compliant', status.pass);
+        card.classList.toggle('non-compliant', !status.pass);
+    });
+}
+
+// ============================================
+// V15.1 HARDENING: TIER RECOMMENDATION
+// ============================================
+
+function recommendTier() {
+    const scale = ONTO_STATE.ai_scale || 100000;
+    const domain = ONTO_STATE.domain || 'medical';
+    const isHighRisk = ['medical', 'legal'].includes(domain);
+    
+    if (scale > 1000000 || (scale > 500000 && isHighRisk)) {
+        return { tier: 'L3', name: 'Enterprise Shield', rationale: `Scale (${formatNumber(scale)}) + ${domain} domain requires enterprise coverage.` };
+    }
+    if (scale > 100000 || (scale > 50000 && isHighRisk)) {
+        return { tier: 'L2', name: 'Continuous Guardian', rationale: `Volume ${formatNumber(scale)} with ${domain} exposure needs continuous monitoring.` };
+    }
+    return { tier: 'L1', name: 'Baseline Audit', rationale: `Initial assessment recommended for ${formatNumber(scale)} query volume.` };
+}
+
+function updateTierRecommendation() {
+    const rec = recommendTier();
+    
+    document.querySelectorAll('.tier-card').forEach(card => {
+        card.classList.remove('recommended');
+        const oldBadge = card.querySelector('.tier-rec-badge');
+        if (oldBadge) oldBadge.remove();
+    });
+    
+    const recommendedCard = document.querySelector(`[data-tier="${rec.tier}"]`);
+    if (recommendedCard) {
+        recommendedCard.classList.add('recommended');
+        const badge = document.createElement('div');
+        badge.className = 'tier-rec-badge';
+        badge.textContent = '★ Recommended';
+        recommendedCard.prepend(badge);
+    }
+    
+    ONTO_STATE.recommended_tier = rec;
+}
+
+// ============================================
+// V15.1 HARDENING: JOURNEY NAVIGATION
+// ============================================
+
+const SECTION_ORDER = [
+    'hero', 'section-problem', 'section-failures', 'section-persona',
+    'section-simulator', 'section-metrics', 'section-transform', 'section-impact',
+    'section-liability', 'section-compliance', 'section-tiers', 'section-faq', 'section-cta-gate'
+];
+
+function getCurrentSectionIndex() {
+    let current = 0;
+    const scrollY = window.scrollY + window.innerHeight / 3;
+    SECTION_ORDER.forEach((id, index) => {
+        const section = document.getElementById(id);
+        if (section && section.style.display !== 'none' && scrollY >= section.offsetTop) current = index;
+    });
+    return current;
+}
+
+function goToSection(index) {
+    index = Math.max(0, Math.min(index, SECTION_ORDER.length - 1));
+    let direction = index > getCurrentSectionIndex() ? 1 : -1;
+    while (index >= 0 && index < SECTION_ORDER.length) {
+        const section = document.getElementById(SECTION_ORDER[index]);
+        if (section && section.style.display !== 'none') break;
+        index += direction;
+    }
+    const section = document.getElementById(SECTION_ORDER[index]);
+    if (section) section.scrollIntoView({ behavior: 'smooth' });
+}
+
+function updateJourneyNavLabel() {
+    const index = getCurrentSectionIndex();
+    const label = document.getElementById('journeyCurrentLabel');
+    const prevBtn = document.getElementById('prevSection');
+    const nextBtn = document.getElementById('nextSection');
+    
+    if (label) {
+        const section = document.getElementById(SECTION_ORDER[index]);
+        let title = section?.querySelector('h2')?.textContent || 'Start';
+        if (title.length > 15) title = title.substring(0, 15) + '...';
+        label.textContent = title;
+    }
+    if (prevBtn) prevBtn.disabled = index === 0;
+    if (nextBtn) nextBtn.disabled = index === SECTION_ORDER.length - 1;
+}
+
+document.getElementById('prevSection')?.addEventListener('click', () => goToSection(getCurrentSectionIndex() - 1));
+document.getElementById('nextSection')?.addEventListener('click', () => goToSection(getCurrentSectionIndex() + 1));
+
+// ============================================
+// V15.1 HARDENING: REAL PDF EXPORT
+// ============================================
+
+function generatePassportPDF() {
+    if (!window.jspdf) { alert('PDF library loading...'); return; }
+    
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const data = generatePassportData();
+    const margin = 20;
+    let y = margin;
+    
+    doc.setFontSize(24); doc.setFont('helvetica', 'bold'); doc.setTextColor(34, 197, 94);
+    doc.text('ONTO', margin, y);
+    y += 10; doc.setFontSize(12); doc.setTextColor(100, 100, 100);
+    doc.text('EPISTEMIC RISK PASSPORT', margin, y);
+    y += 8; doc.setFontSize(9);
+    doc.text('Generated: ' + new Date().toLocaleDateString(), margin, y);
+    
+    y += 10; doc.setDrawColor(200, 200, 200); doc.line(margin, y, 190, y);
+    
+    y += 15; doc.setFontSize(11); doc.setFont('helvetica', 'bold'); doc.setTextColor(0, 0, 0);
+    doc.text('CONFIGURATION', margin, y);
+    y += 8; doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+    doc.text('Domain: ' + data.domain.toUpperCase(), margin, y);
+    y += 6; doc.text('Scale: ' + formatNumber(data.ai_scale) + ' queries/month', margin, y);
+    
+    y += 15; doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+    doc.text('METRICS COMPARISON', margin, y);
+    y += 10; doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+    doc.text('Metric', margin, y); doc.text('Baseline', margin + 50, y); doc.text('ONTO', margin + 85, y);
+    y += 2; doc.line(margin, y, 120, y);
+    
+    y += 8; doc.text('U-Recall', margin, y);
+    doc.setTextColor(239, 68, 68); doc.text(data.metrics.u_recall.baseline + '%', margin + 50, y);
+    doc.setTextColor(34, 197, 94); doc.text(data.metrics.u_recall.onto + '%', margin + 85, y);
+    
+    y += 8; doc.setTextColor(0, 0, 0); doc.text('ECE', margin, y);
+    doc.setTextColor(239, 68, 68); doc.text(String(data.metrics.ece.baseline), margin + 50, y);
+    doc.setTextColor(34, 197, 94); doc.text(String(data.metrics.ece.onto), margin + 85, y);
+    
+    y += 8; doc.setTextColor(0, 0, 0); doc.text('Risk Score', margin, y);
+    doc.setTextColor(239, 68, 68); doc.text(String(data.metrics.risk_score.baseline), margin + 50, y);
+    doc.setTextColor(34, 197, 94); doc.text(String(data.metrics.risk_score.onto), margin + 85, y);
+    
+    y += 20; doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(0, 0, 0);
+    doc.text('LIABILITY ANALYSIS', margin, y);
+    y += 10; doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+    doc.text('Without ONTO:', margin, y);
+    doc.setTextColor(239, 68, 68); doc.setFont('helvetica', 'bold');
+    doc.text(formatCurrency(Math.round(data.liability.baseline)), margin + 45, y);
+    y += 8; doc.setTextColor(0, 0, 0); doc.setFont('helvetica', 'normal');
+    doc.text('With ONTO:', margin, y);
+    doc.setTextColor(34, 197, 94); doc.setFont('helvetica', 'bold');
+    doc.text(formatCurrency(Math.round(data.liability.onto)), margin + 45, y);
+    y += 8; doc.setTextColor(0, 0, 0); doc.setFont('helvetica', 'normal');
+    doc.text('Annual Savings:', margin, y);
+    doc.setTextColor(34, 197, 94); doc.setFont('helvetica', 'bold');
+    doc.text(formatCurrency(Math.round(data.liability.reduction)), margin + 45, y);
+    
+    y += 20; doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(0, 0, 0);
+    doc.text('RECOMMENDATION', margin, y);
+    y += 10; doc.setFontSize(10);
+    const rec = recommendTier();
+    doc.setTextColor(34, 197, 94); doc.text(rec.tier + ': ' + rec.name, margin, y);
+    y += 8; doc.setTextColor(100, 100, 100); doc.setFont('helvetica', 'normal');
+    doc.text(rec.rationale, margin, y, { maxWidth: 170 });
+    
+    // Session hash for audit trail
+    y += 20;
+    doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(0, 0, 0);
+    doc.text('SESSION', margin, y);
+    y += 6; doc.setFont('helvetica', 'normal'); doc.setTextColor(100, 100, 100);
+    doc.text('Session ID: ' + (ONTO_STATE.session_hash || 'N/A'), margin, y);
+    y += 5;
+    doc.text('Timestamp: ' + new Date().toISOString(), margin, y);
+    y += 5;
+    doc.text('Verify: ontostandard.org/verify#' + (ONTO_STATE.session_hash || ''), margin, y);
+    
+    doc.setFontSize(8); doc.setTextColor(150, 150, 150);
+    doc.text('ONTO Epistemic Risk Infrastructure | ontostandard.org', margin, 280);
+    
+    doc.save('onto-passport-' + (ONTO_STATE.session_hash || 'export') + '.pdf');
+    console.log('[ONTO] PDF Passport downloaded with session:', ONTO_STATE.session_hash);
+}
+
+// Replace PDF handler
+const pdfBtn = document.getElementById('downloadPassportPDF');
+if (pdfBtn) {
+    pdfBtn.replaceWith(pdfBtn.cloneNode(true));
+    document.getElementById('downloadPassportPDF').addEventListener('click', generatePassportPDF);
+}
+
+// ============================================
+// V15.1 HARDENING: INTEGRATION
+// ============================================
+
+window.addEventListener('scroll', () => {
+    // Phase is now handled by IntersectionObserver
+    updateJourneyNavLabel();
+});
+
+mainToggle.addEventListener('click', () => {
+    setTimeout(() => { updateComplianceStatus(); saveState(); updateURLHash(); }, 100);
+});
+
+document.querySelectorAll('.sector-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        setTimeout(() => { updateComplianceStatus(); updateTierRecommendation(); saveState(); updateURLHash(); }, 100);
+    });
+});
+
+calcSlider.addEventListener('change', () => { updateTierRecommendation(); saveState(); updateURLHash(); });
+
+document.querySelectorAll('#calcDomainSelector .domain-btn').forEach(btn => {
+    btn.addEventListener('click', () => { setTimeout(() => { updateTierRecommendation(); saveState(); updateURLHash(); }, 100); });
+});
+
+document.querySelectorAll('.persona-card').forEach(card => {
+    card.addEventListener('click', () => { setTimeout(() => { applyPersonaVisibility(ONTO_STATE.persona); saveState(); }, 100); });
+});
+
+// ============================================
+// V15.1 HARDENING: INITIALIZATION
+// ============================================
+
+// Priority: URL hash > localStorage
+const hadURLState = loadFromURLHash();
+const hadLocalState = !hadURLState && loadState();
+
+if (hadURLState || hadLocalState) {
+    restoreUIFromState();
+    console.log('[ONTO] State restored from:', hadURLState ? 'URL hash' : 'localStorage');
+}
+
+// Set initial phase
+document.body.setAttribute('data-phase', 'hook');
+
+updateScenario();
+updateGauges();
+updateImpact();
+calculateLiability();
+updateComplianceStatus();
+updateTierRecommendation();
+updateJourneyNavLabel();
+
+// Initial URL hash update
+updateURLHash();
+
+console.log('[ONTO V15.1] 95% Protocol: 8-Phase IntersectionObserver, URL Hash State, Session Hash PDF, Compliance Binding, Tier Recommendation');
+console.log('[ONTO] Session:', ONTO_STATE.session_hash);
+console.log('[ONTO] Share link:', getShareableLink());
+</script>
+
+</body>
+</html>
