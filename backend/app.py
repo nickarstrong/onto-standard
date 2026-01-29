@@ -28,6 +28,8 @@ import os
 import hashlib
 import secrets
 import json
+import time
+from collections import defaultdict
 from datetime import datetime, timezone, timedelta
 from typing import Optional, List
 from contextlib import asynccontextmanager
@@ -55,6 +57,65 @@ TIERS = {
     "l2": {"slots": 10, "evaluations_per_month": 1000, "price": 60000},
     "l3": {"slots": 50, "evaluations_per_month": -1, "price": 250000},  # -1 = unlimited
 }
+
+# Rate limits per tier (requests per minute)
+RATE_LIMITS = {
+    "pilot": 30,
+    "l1": 100,
+    "l2": 500,
+    "l3": 2000,
+    "public": 10,  # Unauthenticated requests
+}
+
+# ============================================================
+# RATE LIMITER (In-Memory)
+# ============================================================
+
+class RateLimiter:
+    """Simple in-memory rate limiter using sliding window"""
+    
+    def __init__(self):
+        # {key: [(timestamp, count), ...]}
+        self.requests = defaultdict(list)
+        self.window_seconds = 60
+    
+    def _cleanup(self, key: str):
+        """Remove old entries outside the window"""
+        cutoff = time.time() - self.window_seconds
+        self.requests[key] = [
+            (ts, count) for ts, count in self.requests[key] 
+            if ts > cutoff
+        ]
+    
+    def is_allowed(self, key: str, limit: int) -> tuple[bool, int]:
+        """
+        Check if request is allowed.
+        Returns (allowed, remaining_requests)
+        """
+        now = time.time()
+        self._cleanup(key)
+        
+        # Count requests in current window
+        total = sum(count for _, count in self.requests[key])
+        
+        if total >= limit:
+            return False, 0
+        
+        # Add this request
+        self.requests[key].append((now, 1))
+        remaining = limit - total - 1
+        
+        return True, max(0, remaining)
+    
+    def get_reset_time(self, key: str) -> int:
+        """Get seconds until rate limit resets"""
+        if not self.requests[key]:
+            return 0
+        oldest = min(ts for ts, _ in self.requests[key])
+        reset = int(oldest + self.window_seconds - time.time())
+        return max(0, reset)
+
+rate_limiter = RateLimiter()
 
 # ============================================================
 # DATABASE
@@ -171,6 +232,38 @@ async def validate_api_key(x_api_key: str = Header(...)) -> dict:
         }
 
 # ============================================================
+# RATE LIMITING MIDDLEWARE
+# ============================================================
+
+async def check_rate_limit(request: Request, tier: str = "public") -> None:
+    """Check rate limit for a request"""
+    # Get client identifier
+    client_ip = request.client.host if request.client else "unknown"
+    api_key = request.headers.get("x-api-key", "")
+    
+    # Use API key if present, otherwise IP
+    if api_key:
+        key = f"api:{hash_api_key(api_key)[:16]}"
+    else:
+        key = f"ip:{client_ip}"
+    
+    limit = RATE_LIMITS.get(tier, RATE_LIMITS["public"])
+    allowed, remaining = rate_limiter.is_allowed(key, limit)
+    
+    if not allowed:
+        reset_time = rate_limiter.get_reset_time(key)
+        raise HTTPException(
+            status_code=429,
+            detail="Rate limit exceeded",
+            headers={
+                "X-RateLimit-Limit": str(limit),
+                "X-RateLimit-Remaining": "0",
+                "X-RateLimit-Reset": str(reset_time),
+                "Retry-After": str(reset_time)
+            }
+        )
+
+# ============================================================
 # LIFESPAN
 # ============================================================
 
@@ -187,7 +280,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="ONTO API",
     description="Epistemic Calibration Infrastructure for Enterprise AI",
-    version="1.0.0",
+    version="1.1.0",
     lifespan=lifespan
 )
 
@@ -200,6 +293,65 @@ app.add_middleware(
 )
 
 # ============================================================
+# RATE LIMIT MIDDLEWARE
+# ============================================================
+
+@app.middleware("http")
+async def rate_limit_middleware(request: Request, call_next):
+    """Apply rate limiting to all requests"""
+    # Skip rate limiting for health checks and docs
+    if request.url.path in ["/health", "/docs", "/openapi.json", "/"]:
+        return await call_next(request)
+    
+    # Get client identifier
+    client_ip = request.client.host if request.client else "unknown"
+    api_key = request.headers.get("x-api-key", "")
+    
+    # Determine tier
+    tier = "public"
+    if api_key and db_pool:
+        key_hash = hash_api_key(api_key)
+        async with db_pool.acquire() as conn:
+            row = await conn.fetchrow("""
+                SELECT o.tier FROM api_keys ak
+                JOIN organizations o ON ak.organization_id = o.id
+                WHERE ak.key_hash = $1 AND ak.is_active = true
+            """, key_hash)
+            if row:
+                tier = row['tier']
+    
+    # Check rate limit
+    if api_key:
+        key = f"api:{hash_api_key(api_key)[:16]}"
+    else:
+        key = f"ip:{client_ip}"
+    
+    limit = RATE_LIMITS.get(tier, RATE_LIMITS["public"])
+    allowed, remaining = rate_limiter.is_allowed(key, limit)
+    
+    if not allowed:
+        reset_time = rate_limiter.get_reset_time(key)
+        return JSONResponse(
+            status_code=429,
+            content={"detail": "Rate limit exceeded", "retry_after": reset_time},
+            headers={
+                "X-RateLimit-Limit": str(limit),
+                "X-RateLimit-Remaining": "0",
+                "X-RateLimit-Reset": str(reset_time),
+                "Retry-After": str(reset_time)
+            }
+        )
+    
+    # Process request
+    response = await call_next(request)
+    
+    # Add rate limit headers
+    response.headers["X-RateLimit-Limit"] = str(limit)
+    response.headers["X-RateLimit-Remaining"] = str(remaining)
+    
+    return response
+
+# ============================================================
 # PUBLIC ENDPOINTS
 # ============================================================
 
@@ -207,9 +359,10 @@ app.add_middleware(
 async def root():
     return {
         "name": "ONTO API",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "docs": "https://api.ontostandard.org/docs",
-        "status": "operational"
+        "status": "operational",
+        "rate_limits": RATE_LIMITS
     }
 
 @app.get("/health")
@@ -225,6 +378,7 @@ async def health():
 async def get_pricing():
     return {
         "tiers": TIERS,
+        "rate_limits": RATE_LIMITS,
         "currency": "USD",
         "billing": "annual",
         "contact": "sales@ontostandard.org"
@@ -239,30 +393,36 @@ async def get_signal_status():
             resp = await client.get(f"{SIGNAL_URL}/signal/status", timeout=5)
             return resp.json()
     except Exception as e:
-        return {"status": "unavailable", "error": str(e)}
+        return {"error": str(e), "signal_url": SIGNAL_URL}
 
 # ============================================================
 # AUTH ENDPOINTS
 # ============================================================
 
 @app.post("/v1/auth/register")
-async def register(request: RegisterRequest):
-    """Register new organization"""
-    if not db_pool:
-        raise HTTPException(status_code=503, detail="Database not available")
+async def register(request: RegisterRequest, req: Request):
+    """Register a new organization"""
+    # Rate limit registration (stricter)
+    client_ip = req.client.host if req.client else "unknown"
+    key = f"register:{client_ip}"
+    allowed, _ = rate_limiter.is_allowed(key, 5)  # 5 registrations per minute per IP
+    if not allowed:
+        raise HTTPException(status_code=429, detail="Too many registration attempts")
     
-    slug = request.company.lower().replace(" ", "-")[:50]
-    password_hash = hash_password(request.password)
+    if not db_pool:
+        return {"message": "Registration disabled (no database)", "status": "demo_mode"}
     
     async with db_pool.acquire() as conn:
         # Check if email exists
         existing = await conn.fetchval(
-            "SELECT id FROM users WHERE email = $1", request.email
+            "SELECT id FROM users WHERE email = $1", 
+            request.email
         )
         if existing:
             raise HTTPException(status_code=400, detail="Email already registered")
         
         # Create organization
+        slug = request.company.lower().replace(" ", "-")[:50]
         org_id = await conn.fetchval("""
             INSERT INTO organizations (name, slug, tier)
             VALUES ($1, $2, 'pilot')
@@ -270,6 +430,7 @@ async def register(request: RegisterRequest):
         """, request.company, slug)
         
         # Create user
+        password_hash = hash_password(request.password)
         user_id = await conn.fetchval("""
             INSERT INTO users (email, name, password_hash, organization_id, role)
             VALUES ($1, $2, $3, $4, 'admin')
@@ -279,29 +440,33 @@ async def register(request: RegisterRequest):
         # Create initial API key
         full_key, prefix = generate_api_key()
         key_hash = hash_api_key(full_key)
-        
         await conn.execute("""
-            INSERT INTO api_keys (organization_id, name, key_hash, key_prefix, created_by)
-            VALUES ($1, 'Default Key', $2, $3, $4)
-        """, org_id, key_hash, prefix, user_id)
+            INSERT INTO api_keys (organization_id, name, key_hash, key_prefix, scopes)
+            VALUES ($1, 'Default Key', $2, $3, '["read", "write"]')
+        """, org_id, key_hash, prefix)
+        
+        # Log event
+        await conn.execute("""
+            INSERT INTO audit_log (organization_id, user_id, action, resource_type, details)
+            VALUES ($1, $2, 'register', 'organization', $3)
+        """, org_id, user_id, json.dumps({"company": request.company}))
         
         return {
-            "status": "created",
             "organization_id": str(org_id),
             "user_id": str(user_id),
-            "api_key": full_key,
-            "message": "Save your API key - it won't be shown again!"
+            "api_key": full_key,  # Only shown once!
+            "tier": "pilot",
+            "message": "Registration successful. Save your API key - it won't be shown again."
         }
 
 @app.post("/v1/auth/login")
 async def login(request: LoginRequest):
-    """Login and get session info"""
+    """Login and get JWT token"""
     if not db_pool:
-        raise HTTPException(status_code=503, detail="Database not available")
-    
-    password_hash = hash_password(request.password)
+        return {"message": "Login disabled (no database)", "status": "demo_mode"}
     
     async with db_pool.acquire() as conn:
+        password_hash = hash_password(request.password)
         row = await conn.fetchrow("""
             SELECT u.id, u.name, u.organization_id, o.name as org_name, o.tier
             FROM users u
@@ -318,13 +483,17 @@ async def login(request: LoginRequest):
             row['id']
         )
         
+        # Generate simple token (in production use proper JWT)
+        token = secrets.token_urlsafe(32)
+        
         return {
-            "status": "authenticated",
             "user_id": str(row['id']),
-            "user_name": row['name'],
+            "name": row['name'],
             "organization_id": str(row['organization_id']),
             "organization_name": row['org_name'],
-            "tier": row['tier']
+            "tier": row['tier'],
+            "token": token,
+            "message": "Login successful"
         }
 
 @app.post("/v1/auth/api-keys")
@@ -332,7 +501,7 @@ async def create_api_key(
     request: CreateApiKeyRequest,
     org: dict = Depends(validate_api_key)
 ):
-    """Create new API key"""
+    """Create a new API key"""
     if not db_pool:
         raise HTTPException(status_code=503, detail="Database not available")
     
@@ -341,38 +510,38 @@ async def create_api_key(
     
     async with db_pool.acquire() as conn:
         await conn.execute("""
-            INSERT INTO api_keys (organization_id, name, key_hash, key_prefix)
-            VALUES ($1, $2, $3, $4)
+            INSERT INTO api_keys (organization_id, name, key_hash, key_prefix, scopes)
+            VALUES ($1, $2, $3, $4, '["read", "write"]')
         """, org['organization_id'], request.name, key_hash, prefix)
         
         return {
             "api_key": full_key,
             "prefix": prefix,
             "name": request.name,
-            "message": "Save your API key - it won't be shown again!"
+            "message": "API key created. Save it - it won't be shown again."
         }
 
 @app.get("/v1/auth/api-keys")
 async def list_api_keys(org: dict = Depends(validate_api_key)):
     """List API keys for organization"""
     if not db_pool:
-        return {"keys": []}
+        return {"api_keys": []}
     
     async with db_pool.acquire() as conn:
         rows = await conn.fetch("""
-            SELECT id, name, key_prefix, is_active, created_at, last_used_at
+            SELECT id, name, key_prefix, created_at, last_used_at, is_active
             FROM api_keys
             WHERE organization_id = $1
             ORDER BY created_at DESC
         """, org['organization_id'])
         
         return {
-            "keys": [
+            "api_keys": [
                 {
                     "id": str(r['id']),
                     "name": r['name'],
-                    "prefix": r['key_prefix'],
-                    "active": r['is_active'],
+                    "key_prefix": r['key_prefix'],
+                    "is_active": r['is_active'],
                     "created_at": r['created_at'].isoformat() if r['created_at'] else None,
                     "last_used_at": r['last_used_at'].isoformat() if r['last_used_at'] else None
                 }
@@ -381,14 +550,18 @@ async def list_api_keys(org: dict = Depends(validate_api_key)):
         }
 
 @app.delete("/v1/auth/api-keys/{key_id}")
-async def revoke_api_key(key_id: str, org: dict = Depends(validate_api_key)):
-    """Revoke API key"""
+async def revoke_api_key(
+    key_id: str,
+    org: dict = Depends(validate_api_key)
+):
+    """Revoke an API key"""
     if not db_pool:
         raise HTTPException(status_code=503, detail="Database not available")
     
     async with db_pool.acquire() as conn:
         result = await conn.execute("""
-            UPDATE api_keys SET is_active = false
+            UPDATE api_keys 
+            SET is_active = false 
             WHERE id = $1 AND organization_id = $2
         """, key_id, org['organization_id'])
         
@@ -406,20 +579,25 @@ async def submit_evaluation(
     request: EvaluationRequest,
     org: dict = Depends(validate_api_key)
 ):
-    """Submit model for evaluation"""
+    """Submit model predictions for evaluation"""
     if not db_pool:
-        raise HTTPException(status_code=503, detail="Database not available")
+        # Demo mode
+        return {
+            "evaluation_id": "demo-" + secrets.token_hex(8),
+            "status": "demo_mode",
+            "predictions_received": len(request.predictions)
+        }
     
     async with db_pool.acquire() as conn:
         # Check tier limits
         tier_info = TIERS.get(org['tier'], TIERS['pilot'])
         
-        if tier_info['evaluations_per_month'] != -1:
-            # Count this month's evaluations
+        if tier_info['evaluations_per_month'] > 0:
+            # Count evaluations this month
             count = await conn.fetchval("""
                 SELECT COUNT(*) FROM evaluations
                 WHERE organization_id = $1
-                AND submitted_at > date_trunc('month', NOW())
+                AND submitted_at >= date_trunc('month', NOW())
             """, org['organization_id'])
             
             if count >= tier_info['evaluations_per_month']:
@@ -613,6 +791,7 @@ async def get_organization(org: dict = Depends(validate_api_key)):
             "slug": row['slug'],
             "tier": row['tier'],
             "tier_info": tier_info,
+            "rate_limit": RATE_LIMITS.get(row['tier'], RATE_LIMITS['pilot']),
             "evaluations_count": row['eval_count'],
             "certificates_count": row['cert_count'],
             "created_at": row['created_at'].isoformat() if row['created_at'] else None
@@ -647,6 +826,45 @@ async def get_admin_stats(org: dict = Depends(validate_api_key)):
         stats['by_tier'] = {r['tier']: r['count'] for r in tier_counts}
         
         return stats
+
+# ============================================================
+# RATE LIMIT INFO ENDPOINT
+# ============================================================
+
+@app.get("/v1/rate-limit")
+async def get_rate_limit_info(request: Request):
+    """Get current rate limit status"""
+    client_ip = request.client.host if request.client else "unknown"
+    api_key = request.headers.get("x-api-key", "")
+    
+    tier = "public"
+    if api_key:
+        key = f"api:{hash_api_key(api_key)[:16]}"
+        if db_pool:
+            async with db_pool.acquire() as conn:
+                row = await conn.fetchrow("""
+                    SELECT o.tier FROM api_keys ak
+                    JOIN organizations o ON ak.organization_id = o.id
+                    WHERE ak.key_hash = $1 AND ak.is_active = true
+                """, hash_api_key(api_key))
+                if row:
+                    tier = row['tier']
+    else:
+        key = f"ip:{client_ip}"
+    
+    limit = RATE_LIMITS.get(tier, RATE_LIMITS["public"])
+    
+    # Count current usage
+    rate_limiter._cleanup(key)
+    used = sum(count for _, count in rate_limiter.requests.get(key, []))
+    
+    return {
+        "tier": tier,
+        "limit": limit,
+        "remaining": max(0, limit - used),
+        "reset_in": rate_limiter.get_reset_time(key),
+        "window": "60 seconds"
+    }
 
 # ============================================================
 # MAIN
