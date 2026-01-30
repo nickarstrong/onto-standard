@@ -1152,11 +1152,19 @@ async def process_evaluation(
             u_recall = round(random.uniform(0.75, 0.95), 4)
             risk_score = int((ece * 100) + ((1 - u_recall) * 50))
             
+            # Parse existing metrics if stored as JSON string
+            existing_metrics = {}
+            if row['metrics']:
+                if isinstance(row['metrics'], str):
+                    existing_metrics = json.loads(row['metrics'])
+                else:
+                    existing_metrics = row['metrics']
+            
             metrics = {
                 "ece": ece,
                 "u_recall": u_recall,
                 "risk_score": risk_score,
-                "predictions_count": row['metrics'].get('predictions_count', 0) if row['metrics'] else 0
+                "predictions_count": existing_metrics.get('predictions_count', 0)
             }
             
             # Determine level based on risk score
