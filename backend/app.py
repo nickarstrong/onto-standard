@@ -1204,7 +1204,7 @@ async def process_evaluation(
                     risk_score = $2,
                     completed_at = NOW()
                 WHERE id = $3
-            """, json.dumps(metrics), risk_score, uuid.UUID(evaluation_id))
+            """, json.dumps(metrics), str(risk_score), uuid.UUID(evaluation_id))
             
             # Log event
             await conn.execute("""
