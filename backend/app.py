@@ -548,11 +548,14 @@ async def register(request: RegisterRequest, req: Request):
         
         # Create organization
         slug = request.company.lower().replace(" ", "-")[:50]
-        org_id = await conn.fetchval("""
-            INSERT INTO organizations (name, slug, tier, stripe_customer_id)
-            VALUES ($1, $2, 'open', $3)
-            RETURNING id
-        """, request.company, slug, stripe_customer_id)
+        try:
+            org_id = await conn.fetchval("""
+                INSERT INTO organizations (name, slug, tier, stripe_customer_id)
+                VALUES ($1, $2, 'open', $3)
+                RETURNING id
+            """, request.company, slug, stripe_customer_id)
+        except asyncpg.UniqueViolationError:
+            raise HTTPException(status_code=400, detail=f"Company '{request.company}' already registered")
         
         # Create user
         password_hash = hash_password(request.password)
