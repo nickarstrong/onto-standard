@@ -1187,13 +1187,13 @@ async def process_evaluation(
             # Create certificate
             cert_id = await conn.fetchval("""
                 INSERT INTO certificates (
-                    organization_id, certificate_number, model_name, 
+                    organization_id, evaluation_id, certificate_number, model_name, 
                     level, metrics_snapshot, verification_hash,
                     issued_at, expires_at
                 )
-                VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW() + INTERVAL '1 year')
+                VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW() + INTERVAL '1 year')
                 RETURNING id
-            """, org['organization_id'], cert_number, row['model_name'],
+            """, org['organization_id'], uuid.UUID(evaluation_id), cert_number, row['model_name'],
                 level, json.dumps(metrics), secrets.token_hex(16))
             
             # Update evaluation
