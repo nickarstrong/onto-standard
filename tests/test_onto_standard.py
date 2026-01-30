@@ -88,7 +88,7 @@ class TestEvaluate:
         """Model predicts known but truth is unknown"""
         predictions = [
             Prediction("q1", Label.KNOWN, 0.9),
-            Prediction("q2", Label.KNOWN, 0.8),
+            Prediction("q2", Label.KNOWN, 0.9),
         ]
         ground_truth = [
             GroundTruth("q1", Label.UNKNOWN),
@@ -105,9 +105,9 @@ class TestEvaluate:
         # Create predictions that should achieve BASIC compliance
         # U-Recall >= 30%, ECE <= 0.20
         predictions = [
-            Prediction("q1", Label.UNKNOWN, 0.6),  # Correct unknown
-            Prediction("q2", Label.KNOWN, 0.8),    # Correct known
-            Prediction("q3", Label.KNOWN, 0.7),    # Correct known
+            Prediction("q1", Label.UNKNOWN, 0.9),  # Correct unknown
+            Prediction("q2", Label.KNOWN, 0.9),    # Correct known
+            Prediction("q3", Label.KNOWN, 0.9),    # Correct known
         ]
         ground_truth = [
             GroundTruth("q1", Label.UNKNOWN),
@@ -185,3 +185,4 @@ class TestLabels:
         assert Label.KNOWN.value == "KNOWN"
         assert Label.UNKNOWN.value == "UNKNOWN"
         assert Label.CONTRADICTION.value == "CONTRADICTION"
+
