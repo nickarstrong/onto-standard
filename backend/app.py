@@ -494,7 +494,7 @@ async def register(request: RegisterRequest, req: Request):
         key_hash = hash_api_key(full_key)
         await conn.execute("""
             INSERT INTO api_keys (organization_id, name, key_hash, key_prefix, scopes)
-            VALUES ($1, 'Default Key', $2, $3, '["read", "write"]')
+            VALUES ($1, 'Default Key', $2, $3, '{read,write}')
         """, org_id, key_hash, prefix)
         
         # Log event
@@ -564,7 +564,7 @@ async def create_api_key(
     async with db_pool.acquire() as conn:
         await conn.execute("""
             INSERT INTO api_keys (organization_id, name, key_hash, key_prefix, scopes)
-            VALUES ($1, $2, $3, $4, '["read", "write"]')
+            VALUES ($1, $2, $3, $4, '{read,write}')
         """, org['organization_id'], request.name, key_hash, prefix)
         
         return {
