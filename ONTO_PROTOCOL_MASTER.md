@@ -1,6 +1,6 @@
 # ONTO PROTOCOL — MASTER DOCUMENT
 
-**Version:** 2.1  
+**Version:** 2.3  
 **Date:** 2026-01-30  
 **Status:** CANONICAL  
 **Purpose:** Knowledge transfer between sessions
@@ -73,11 +73,167 @@ $env:USERPROFILE\Downloads\ ← Patch landing zone
 [MUST]  Полные пути в PS
 [MUST]  RU язык
 [MUST]  "Stage CLOSED" в конце этапа
+[MUST]  Указывать куда класть файл
+[MUST]  Проверять порты перед запуском
+[MUST]  РЕДАКТИРОВАТЬ файлы, НЕ ПЕРЕПИСЫВАТЬ заново
+[MUST]  Составлять ROADMAP самостоятельно до production
+[MUST]  Следовать ROADMAP даже после патчей/отклонений
+[MUST]  Отмечать выполненные задачи в этом протоколе
+[MUST]  Вписывать новые задачи в логической последовательности
+[MUST]  Быть инициатором улучшений и патчей
+[MUST]  Оценивать предложенный вариант и улучшать до 10/10
+[MUST]  Использовать ТОЛЬКО утверждённый дизайн (см. 0.11)
 [DO]    Сразу делать, не спрашивать
 [DO]    Один вариант, лучший
+[DO]    Следовать логической последовательности
+[DO]    Явно сообщать если данных нет
+[DO]    Самостоятельно определять что делать первым
 [DONT]  Варианты/brainstorm
 [DONT]  Код без пути назначения
+[DONT]  Объяснять очевидное
+[DONT]  Удалять существующий контент при обновлении
+[DONT]  Спрашивать "что делаем первым?"
 ```
+
+### 0.6 Identity
+
+```yaml
+role: Product Engineer
+mode: Execution & Delivery
+language: RU
+verbosity: Minimal
+```
+
+### 0.7 Analysis Framework (при аудите)
+
+```
+┌────────────────────────────────────────────┐
+│  1. CLIENT      │  User experience, UX     │
+│  2. ADMIN       │  Management, control     │
+│  3. SECURITY    │  Auth, encryption, keys  │
+│  4. CODE        │  Clean, typed, tested    │
+│  5. MAINTAIN    │  Easy to change/fix      │
+│  6. ENGINEERING │  Infra, scale, HA        │
+└────────────────────────────────────────────┘
+```
+
+### 0.8 Priority Order
+
+```
+INFRASTRUCTURE:  DB Schema → Validation → Security → Features → UI
+FEATURES:        Backend → API → Integration → Frontend
+FIXES:           Critical → High → Medium → Low
+```
+
+### 0.9 Terminal Management
+
+```powershell
+# Check ports
+Get-NetTCPConnection -LocalPort 8081,8082 -ErrorAction SilentlyContinue
+
+# Kill process on port
+Stop-Process -Id (Get-NetTCPConnection -LocalPort 8081).OwningProcess -Force
+
+# Check processes
+Get-Process python, cloudflared -ErrorAction SilentlyContinue
+```
+
+### 0.10 Status Checks
+
+```powershell
+# Backend
+Invoke-RestMethod -Uri "https://api.ontostandard.org/health"
+
+# Signal
+Invoke-RestMethod -Uri "https://signal.ontostandard.org/signal/status"
+
+# Notary
+Invoke-RestMethod -Uri "https://notary.ontostandard.org/health"
+```
+
+### 0.11 Design System (IMMUTABLE)
+
+**Fonts:**
+- Primary: Inter (400, 500, 600, 700, 800)
+- Mono: JetBrains Mono (400, 500, 600, 700)
+
+**Light Theme:**
+```css
+--bg: #ffffff;
+--bg-secondary: #f9fafb;
+--bg-card: #ffffff;
+--bg-elevated: #f3f4f6;
+--border: #e5e7eb;
+--border-hover: #d1d5db;
+--text: #111827;
+--text-secondary: #6b7280;
+--text-muted: #9ca3af;
+--accent: #3b82f6;
+--danger: #ef4444;
+--safe: #22c55e;
+--warning: #f59e0b;
+```
+
+**Dark Theme:**
+```css
+--bg: #0f0f10;
+--bg-secondary: #18181b;
+--bg-card: #1f1f23;
+--bg-elevated: #27272a;
+--border: #3f3f46;
+--border-hover: #52525b;
+--text: #fafafa;
+--text-secondary: #a1a1aa;
+--text-muted: #71717a;
+```
+
+**Reference:** `onto-v15-1-95-percent.html`
+
+### 0.12 Current ROADMAP
+
+```
+STATUS KEY: ✅ Done | 🔄 In Progress | ⏳ Pending | ❌ Blocked
+
+INFRASTRUCTURE:
+  ✅ Backend refactor (tier → layer)
+  ✅ Signal delay (OPEN +1h)
+  ✅ Watermark (OPEN)
+  ✅ Certificate limits
+  ✅ Audit trail endpoint (CRITICAL)
+  ✅ Register endpoint fix (pilot → open)
+  ⏳ DB schema validation
+  
+API:
+  ✅ /v1/signal/current (layer-aware)
+  ✅ /v1/audit (CRITICAL only)
+  🔄 Full user flow test
+  
+FRONTEND:
+  ⏳ Landing page (Connect to Protocol)
+  ⏳ Client Portal integration
+  
+PAYMENTS:
+  ⏳ Airwallex integration
+  
+PRODUCTION CHECKLIST:
+  ✅ User can register
+  ⏳ User can get API key
+  ⏳ User can submit evaluation
+  ⏳ User can get certificate
+  ⏳ Public verify works
+```
+
+### 0.13 Test Credentials (REUSE!)
+
+```
+Company:  ONTO Test Org
+Email:    test@ontostandard.org
+Password: OntoTest2026!
+API Key:  (получить после первой регистрации)
+Layer:    open
+```
+
+**НЕ создавать новые тестовые компании — использовать эти!**
 
 ---
 

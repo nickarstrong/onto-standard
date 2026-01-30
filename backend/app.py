@@ -28,6 +28,10 @@ Endpoints:
   GET  /v1/organization      - Get org details
   GET  /v1/audit             - Audit trail (CRITICAL only)
   
+  # Documents
+  GET  /v1/documents         - List legal documents
+  GET  /v1/documents/{type}  - Get document
+  
   # Billing (Stripe)
   POST /v1/billing/checkout  - Create checkout session
   POST /v1/billing/portal    - Create customer portal session
@@ -204,7 +208,6 @@ async def close_db():
 class RegisterRequest(BaseModel):
     name: str
     email: EmailStr
-    company: str
     password: str
 
 class LoginRequest(BaseModel):
@@ -514,11 +517,11 @@ async def get_current_signal(org: dict = Depends(validate_api_key)):
 
 @app.post("/v1/auth/register")
 async def register(request: RegisterRequest, req: Request):
-    """Register a new organization"""
-    # Rate limit registration (stricter)
+    """Register a new user (minimal friction)"""
+    # Rate limit
     client_ip = req.client.host if req.client else "unknown"
     key = f"register:{client_ip}"
-    allowed, _ = rate_limiter.is_allowed(key, 5)  # 5 registrations per minute per IP
+    allowed, _ = rate_limiter.is_allowed(key, 5)
     if not allowed:
         raise HTTPException(status_code=429, detail="Too many registration attempts")
     
@@ -527,36 +530,46 @@ async def register(request: RegisterRequest, req: Request):
     
     async with db_pool.acquire() as conn:
         # Check if email exists
-        existing = await conn.fetchval(
-            "SELECT id FROM users WHERE email = $1", 
-            request.email
-        )
+        existing = await conn.fetchval("SELECT id FROM users WHERE email = $1", request.email)
         if existing:
             raise HTTPException(status_code=400, detail="Email already registered")
         
-        # Create Stripe customer if Stripe is enabled
+        # Create Stripe customer
         stripe_customer_id = None
         if stripe:
             try:
                 customer = stripe.Customer.create(
                     email=request.email,
-                    name=request.company,
-                    metadata={"company": request.company}
+                    name=request.name
                 )
                 stripe_customer_id = customer.id
             except Exception as e:
                 print(f"[API] Stripe customer creation failed: {e}")
         
-        # Create organization
-        slug = request.company.lower().replace(" ", "-")[:50]
+        # Org name = user name (can update later in settings)
+        org_name = request.name
+        slug = org_name.lower().replace(" ", "-")[:50]
+        
+        # Empty profile - fill later when needed
+        profile_data = {
+            "contact_name": request.name,
+            "email": request.email
+        }
+        
         try:
             org_id = await conn.fetchval("""
-                INSERT INTO organizations (name, slug, tier, stripe_customer_id)
-                VALUES ($1, $2, 'open', $3)
+                INSERT INTO organizations (name, slug, tier, stripe_customer_id, profile_data)
+                VALUES ($1, $2, 'open', $3, $4)
                 RETURNING id
-            """, request.company, slug, stripe_customer_id)
+            """, org_name, slug, stripe_customer_id, json.dumps(profile_data))
         except asyncpg.UniqueViolationError:
-            raise HTTPException(status_code=400, detail=f"Company '{request.company}' already registered")
+            # Add random suffix if slug taken
+            slug = f"{slug}-{secrets.token_hex(2)}"
+            org_id = await conn.fetchval("""
+                INSERT INTO organizations (name, slug, tier, stripe_customer_id, profile_data)
+                VALUES ($1, $2, 'open', $3, $4)
+                RETURNING id
+            """, org_name, slug, stripe_customer_id, json.dumps(profile_data))
         
         # Create user
         password_hash = hash_password(request.password)
@@ -566,7 +579,7 @@ async def register(request: RegisterRequest, req: Request):
             RETURNING id
         """, request.email, request.name, password_hash, org_id)
         
-        # Create initial API key
+        # Create API key
         full_key, prefix = generate_api_key()
         key_hash = hash_api_key(full_key)
         await conn.execute("""
@@ -574,18 +587,17 @@ async def register(request: RegisterRequest, req: Request):
             VALUES ($1, 'Default Key', $2, $3, '["read", "write"]')
         """, org_id, key_hash, prefix)
         
-        # Log event
+        # Log
         await conn.execute("""
             INSERT INTO audit_log (organization_id, user_id, action, resource_type, details)
             VALUES ($1, $2, 'register', 'organization', $3)
-        """, org_id, user_id, json.dumps({"company": request.company}))
+        """, org_id, user_id, json.dumps({"name": request.name}))
         
         return {
             "organization_id": str(org_id),
             "user_id": str(user_id),
-            "api_key": full_key,  # Only shown once!
+            "api_key": full_key,
             "layer": "open",
-            "stripe_customer_id": stripe_customer_id,
             "message": "Registration successful. Save your API key - it won't be shown again."
         }
 
@@ -1334,7 +1346,7 @@ async def get_certificate(certificate_id: str):
 
 @app.get("/v1/organization")
 async def get_organization(org: dict = Depends(validate_api_key)):
-    """Get organization details"""
+    """Get organization details including profile data for documents"""
     if not db_pool:
         return {"organization": org}
     
@@ -1352,6 +1364,14 @@ async def get_organization(org: dict = Depends(validate_api_key)):
         
         layer_info = LAYERS.get(row['tier'], LAYERS['open'])
         
+        # Parse profile_data if exists
+        profile_data = {}
+        if row.get('profile_data'):
+            if isinstance(row['profile_data'], str):
+                profile_data = json.loads(row['profile_data'])
+            else:
+                profile_data = row['profile_data'] or {}
+        
         return {
             "id": str(row['id']),
             "name": row['name'],
@@ -1362,7 +1382,73 @@ async def get_organization(org: dict = Depends(validate_api_key)):
             "evaluations_count": row['eval_count'],
             "certificates_count": row['cert_count'],
             "stripe_customer_id": row['stripe_customer_id'],
-            "created_at": row['created_at'].isoformat() if row['created_at'] else None
+            "created_at": row['created_at'].isoformat() if row['created_at'] else None,
+            "profile": profile_data
+        }
+
+
+class ProfileUpdateRequest(BaseModel):
+    """Profile data for legal documents"""
+    company: Optional[str] = None
+    legal_name: Optional[str] = None
+    registration_number: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    zip_code: Optional[str] = None
+    country: Optional[str] = None
+    phone: Optional[str] = None
+    website: Optional[str] = None
+    billing_email: Optional[str] = None
+    legal_email: Optional[str] = None
+    technical_email: Optional[str] = None
+    signatory_name: Optional[str] = None
+    signatory_title: Optional[str] = None
+
+
+@app.put("/v1/organization/profile")
+async def update_profile(
+    profile: ProfileUpdateRequest,
+    org: dict = Depends(validate_api_key)
+):
+    """Update organization profile for legal documents"""
+    if not db_pool:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    async with db_pool.acquire() as conn:
+        # Get current profile
+        current = await conn.fetchval(
+            "SELECT profile_data FROM organizations WHERE id = $1",
+            org['organization_id']
+        )
+        
+        current_data = {}
+        if current:
+            if isinstance(current, str):
+                current_data = json.loads(current)
+            else:
+                current_data = current or {}
+        
+        # Merge with new data (only non-None values)
+        new_data = profile.model_dump(exclude_none=True)
+        current_data.update(new_data)
+        
+        # Update org name if company provided
+        if profile.company:
+            await conn.execute(
+                "UPDATE organizations SET name = $1 WHERE id = $2",
+                profile.company, org['organization_id']
+            )
+        
+        # Save profile
+        await conn.execute(
+            "UPDATE organizations SET profile_data = $1 WHERE id = $2",
+            json.dumps(current_data), org['organization_id']
+        )
+        
+        return {
+            "message": "Profile updated",
+            "profile": current_data
         }
 
 
@@ -1426,6 +1512,344 @@ async def get_audit_trail(
             "layer": layer,
             "retention_months": retention_months
         }
+
+# ============================================================
+# DOCUMENTS ENDPOINTS
+# ============================================================
+
+# Document templates (embedded for simplicity)
+DOCUMENT_TEMPLATES = {
+    "msa": {
+        "name": "Master Service Agreement",
+        "description": "Legal agreement governing ONTO Protocol access",
+        "version": "1.0",
+        "updated": "2026-01-30"
+    },
+    "dpa": {
+        "name": "Data Processing Agreement", 
+        "description": "GDPR-compliant data processing terms",
+        "version": "1.0",
+        "updated": "2026-01-30"
+    },
+    "paa": {
+        "name": "Platform Access Agreement",
+        "description": "Technical terms for Protocol access",
+        "version": "1.0", 
+        "updated": "2026-01-30"
+    },
+    "cp": {
+        "name": "Compliance Policy",
+        "description": "Security and compliance documentation",
+        "version": "1.0",
+        "updated": "2026-01-30"
+    }
+}
+
+@app.get("/v1/documents")
+async def list_documents(org: dict = Depends(validate_api_key)):
+    """List available legal documents"""
+    return {
+        "documents": [
+            {
+                "id": doc_id,
+                "name": doc["name"],
+                "description": doc["description"],
+                "version": doc["version"],
+                "updated": doc["updated"],
+                "download_url": f"https://api.ontostandard.org/v1/documents/{doc_id}"
+            }
+            for doc_id, doc in DOCUMENT_TEMPLATES.items()
+        ],
+        "layer": org.get('tier', 'open')
+    }
+
+@app.get("/v1/documents/{doc_type}")
+async def get_document(doc_type: str, org: dict = Depends(validate_api_key)):
+    """Get document template (returns metadata, PDF generation coming soon)"""
+    if doc_type not in DOCUMENT_TEMPLATES:
+        raise HTTPException(status_code=404, detail=f"Document '{doc_type}' not found")
+    
+    doc = DOCUMENT_TEMPLATES[doc_type]
+    layer = org.get('tier', 'open')
+    layer_info = LAYERS.get(layer, LAYERS['open'])
+    
+    # Return document info with organization-specific data
+    return {
+        "document": {
+            "id": doc_type,
+            "name": doc["name"],
+            "description": doc["description"],
+            "version": doc["version"],
+            "updated": doc["updated"]
+        },
+        "organization": {
+            "id": str(org['organization_id']),
+            "name": org.get('organization_name', 'Unknown'),
+            "layer": layer
+        },
+        "layer_info": {
+            "name": layer.upper(),
+            "price": layer_info.get('price', 0),
+            "certificates": layer_info.get('certificates_per_year', layer_info.get('certificates_per_month', 0))
+        },
+        "note": "PDF generation available in client portal. Contact support for signed copies.",
+        "support_email": "legal@ontostandard.org"
+    }
+
+
+from fastapi.responses import HTMLResponse
+
+@app.get("/v1/documents/{doc_type}/generate", response_class=HTMLResponse)
+async def generate_document(doc_type: str, org: dict = Depends(validate_api_key)):
+    """
+    Generate document with organization data pre-filled.
+    Returns HTML ready for Print to PDF.
+    """
+    if doc_type not in DOCUMENT_TEMPLATES:
+        raise HTTPException(status_code=404, detail=f"Document '{doc_type}' not found")
+    
+    if not db_pool:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    # Get organization profile
+    async with db_pool.acquire() as conn:
+        row = await conn.fetchrow("""
+            SELECT * FROM organizations WHERE id = $1
+        """, org['organization_id'])
+        
+        if not row:
+            raise HTTPException(status_code=404, detail="Organization not found")
+    
+    # Parse profile data
+    profile = {}
+    if row.get('profile_data'):
+        if isinstance(row['profile_data'], str):
+            profile = json.loads(row['profile_data'])
+        else:
+            profile = row['profile_data'] or {}
+    
+    layer = row['tier']
+    layer_info = LAYERS.get(layer, LAYERS['open'])
+    doc = DOCUMENT_TEMPLATES[doc_type]
+    
+    # Generate document ID
+    doc_id = f"{doc_type.upper()}-{secrets.token_hex(4).upper()}"
+    today = datetime.now(timezone.utc).strftime("%B %d, %Y")
+    
+    # Build HTML document
+    html = f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{doc['name']} - {profile.get('company', row['name'])}</title>
+    <style>
+        @page {{ size: A4; margin: 2cm; }}
+        body {{
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 11pt;
+            line-height: 1.6;
+            color: #1a1a1a;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+        }}
+        .header {{
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #000;
+        }}
+        .logo {{
+            font-size: 24px;
+            font-weight: 700;
+            color: #22c55e;
+            margin-bottom: 10px;
+        }}
+        h1 {{
+            font-size: 22pt;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+        }}
+        .doc-id {{
+            font-family: monospace;
+            font-size: 12px;
+            color: #666;
+        }}
+        h2 {{
+            font-size: 14pt;
+            font-weight: 600;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #000;
+        }}
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }}
+        th, td {{
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+        }}
+        th {{
+            background: #f5f5f5;
+            font-weight: 600;
+        }}
+        .parties {{
+            display: flex;
+            gap: 40px;
+            margin: 30px 0;
+        }}
+        .party {{
+            flex: 1;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }}
+        .party h3 {{
+            margin: 0 0 15px 0;
+            font-size: 12pt;
+            text-transform: uppercase;
+            color: #666;
+        }}
+        .party p {{
+            margin: 5px 0;
+        }}
+        .signature-block {{
+            margin-top: 60px;
+            page-break-inside: avoid;
+        }}
+        .signature-line {{
+            border-bottom: 1px solid #000;
+            width: 250px;
+            margin: 8px 0;
+        }}
+        .signature-label {{
+            font-size: 10pt;
+            color: #666;
+        }}
+        .footer {{
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            font-size: 9pt;
+            color: #666;
+            text-align: center;
+        }}
+        .highlight {{
+            background: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+        }}
+        @media print {{
+            body {{ padding: 0; }}
+            .no-print {{ display: none; }}
+        }}
+    </style>
+</head>
+<body>
+    <div class="no-print" style="background: #22c55e; color: white; padding: 15px; margin: -40px -40px 40px -40px; text-align: center;">
+        <strong>Preview Mode</strong> — Press Ctrl+P (Cmd+P on Mac) to save as PDF
+    </div>
+
+    <div class="header">
+        <div class="logo">◆ ONTO</div>
+        <h1>{doc['name']}</h1>
+        <div class="doc-id">Document ID: {doc_id} | Effective Date: {today}</div>
+    </div>
+
+    <p>This {doc['name']} ("Agreement") is entered into by and between:</p>
+
+    <div class="parties">
+        <div class="party">
+            <h3>Provider</h3>
+            <p><strong>ONTO Standard LLC</strong></p>
+            <p>A Delaware Limited Liability Company</p>
+            <p>Email: legal@ontostandard.org</p>
+        </div>
+        <div class="party">
+            <h3>Client</h3>
+            <p><strong>{profile.get('legal_name', profile.get('company', row['name']))}</strong></p>
+            <p>{profile.get('address', '[Address not provided]')}</p>
+            <p>{profile.get('city', '')}{', ' + profile.get('state', '') if profile.get('state') else ''} {profile.get('zip_code', '')}</p>
+            <p>{profile.get('country', '[Country not provided]')}</p>
+            <p>Email: {profile.get('email', org.get('email', '[Email]'))}</p>
+            {f"<p>Tax ID: {profile.get('registration_number')}</p>" if profile.get('registration_number') else ""}
+        </div>
+    </div>
+
+    <h2>1. Protocol Access</h2>
+    <p>Subject to the terms of this Agreement and payment of applicable Fees, ONTO grants Client access to the ONTO Protocol.</p>
+
+    <h2>2. Selected Layer</h2>
+    <table>
+        <tr>
+            <th>Layer</th>
+            <th>Signal Access</th>
+            <th>Certificates</th>
+            <th>Annual Fee</th>
+        </tr>
+        <tr style="background: {'#e8f5e9' if layer == 'open' else '#fff'};">
+            <td><strong>{'✓ ' if layer == 'open' else ''}OPEN</strong></td>
+            <td>+1h delay</td>
+            <td>100/month</td>
+            <td>$0</td>
+        </tr>
+        <tr style="background: {'#e3f2fd' if layer == 'standard' else '#fff'};">
+            <td><strong>{'✓ ' if layer == 'standard' else ''}STANDARD</strong></td>
+            <td>Real-time</td>
+            <td>10,000/year</td>
+            <td>$15,000</td>
+        </tr>
+        <tr style="background: {'#fce4ec' if layer == 'critical' else '#fff'};">
+            <td><strong>{'✓ ' if layer == 'critical' else ''}CRITICAL</strong></td>
+            <td>Real-time</td>
+            <td>Unlimited</td>
+            <td>$100,000+</td>
+        </tr>
+    </table>
+
+    <h2>3. Term</h2>
+    <p>This Agreement is effective as of {today} and continues for twelve (12) months ("Initial Term"), 
+    automatically renewing for successive one-year periods unless terminated.</p>
+
+    <h2>4. Fees</h2>
+    <p>Client shall pay the applicable fees for the selected Layer as specified above. 
+    All fees are due within thirty (30) days of invoice date.</p>
+
+    <h2>5. Signatures</h2>
+    <div class="parties">
+        <div class="signature-block">
+            <p><strong>ONTO Standard LLC</strong></p>
+            <div class="signature-line"></div>
+            <p class="signature-label">Authorized Signature</p>
+            <div class="signature-line"></div>
+            <p class="signature-label">Name & Title</p>
+            <div class="signature-line"></div>
+            <p class="signature-label">Date</p>
+        </div>
+        <div class="signature-block">
+            <p><strong>{profile.get('legal_name', profile.get('company', row['name']))}</strong></p>
+            <div class="signature-line"></div>
+            <p class="signature-label">Authorized Signature</p>
+            <p>{profile.get('signatory_name', profile.get('contact_name', '[Name]'))}</p>
+            <p class="signature-label">{profile.get('signatory_title', '[Title]')}</p>
+            <div class="signature-line"></div>
+            <p class="signature-label">Date</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>ONTO Standard LLC — AI Epistemic Risk Infrastructure</p>
+        <p>Document generated: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")}</p>
+    </div>
+</body>
+</html>
+"""
+    return HTMLResponse(content=html)
 
 # ============================================================
 # ADMIN ENDPOINTS
