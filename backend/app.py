@@ -1167,15 +1167,19 @@ async def process_evaluation(
                 "predictions_count": existing_metrics.get('predictions_count', 0)
             }
             
-            # Determine level based on risk score
+            # Determine level based on risk score (1=best, 4=worst)
             if risk_score < 25:
-                level = "A"
+                level = 1  # A
+                level_letter = "A"
             elif risk_score < 50:
-                level = "B"
+                level = 2  # B
+                level_letter = "B"
             elif risk_score < 75:
-                level = "C"
+                level = 3  # C
+                level_letter = "C"
             else:
-                level = "D"
+                level = 4  # D
+                level_letter = "D"
             
             # Generate certificate number
             cert_number = f"ONTO-{secrets.token_hex(4).upper()}"
@@ -1206,13 +1210,13 @@ async def process_evaluation(
             await conn.execute("""
                 INSERT INTO audit_log (organization_id, action, resource_type, resource_id, details)
                 VALUES ($1, 'certificate_issued', 'certificate', $2, $3)
-            """, org['organization_id'], cert_id, json.dumps({"cert_number": cert_number, "level": level}))
+            """, org['organization_id'], cert_id, json.dumps({"cert_number": cert_number, "level": level_letter}))
             
             response = {
                 "certificate_id": str(cert_id),
                 "certificate_number": cert_number,
                 "model_name": row['model_name'],
-                "level": level,
+                "level": level_letter,
                 "metrics": metrics,
                 "layer": layer,
                 "verify_url": f"https://verify.ontostandard.org/{cert_number}"
