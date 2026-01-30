@@ -1278,12 +1278,26 @@ async def get_certificate(certificate_id: str):
         raise HTTPException(status_code=503, detail="Database not available")
     
     async with db_pool.acquire() as conn:
+        # Try by certificate_number first, then by UUID
         row = await conn.fetchrow("""
             SELECT c.*, o.name as org_name, o.tier as org_layer
             FROM certificates c
             JOIN organizations o ON c.organization_id = o.id
-            WHERE c.id = $1 OR c.certificate_number = $1
+            WHERE c.certificate_number = $1
         """, certificate_id)
+        
+        # If not found, try as UUID
+        if not row:
+            try:
+                cert_uuid = uuid.UUID(certificate_id)
+                row = await conn.fetchrow("""
+                    SELECT c.*, o.name as org_name, o.tier as org_layer
+                    FROM certificates c
+                    JOIN organizations o ON c.organization_id = o.id
+                    WHERE c.id = $1
+                """, cert_uuid)
+            except ValueError:
+                pass
         
         if not row:
             raise HTTPException(status_code=404, detail="Certificate not found")
