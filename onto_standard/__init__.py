@@ -13,7 +13,7 @@ Usage (Local Evaluation):
 
     predictions = [Prediction("q1", Label.KNOWN, 0.9), ...]
     ground_truth = [GroundTruth("q1", Label.KNOWN), ...]
-    
+
     result = evaluate(predictions, ground_truth)
     print(result.compliance_level)  # ComplianceLevel.BASIC
     print(result.certification_ready)  # True/False
@@ -22,11 +22,11 @@ Usage (API Client):
     from onto_standard import ONTOClient
 
     client = ONTOClient(api_key="onto_...")
-    
+
     # Get current signal
     signal = client.get_signal()
     print(signal.sigma_id)
-    
+
     # Submit evaluation
     result = client.evaluate(
         model_name="my-model",
@@ -44,21 +44,23 @@ from typing import List, Dict, Optional, Tuple
 import json
 from pathlib import Path
 
-
 # ============================================================
 # ENUMS
 # ============================================================
 
+
 class ComplianceLevel(Enum):
     """ONTO-ERS §4 Compliance Levels"""
+
     NONE = "none"
-    BASIC = "basic"          # Level 1
-    STANDARD = "standard"    # Level 2
-    ADVANCED = "advanced"    # Level 3
+    BASIC = "basic"  # Level 1
+    STANDARD = "standard"  # Level 2
+    ADVANCED = "advanced"  # Level 3
 
 
 class RiskLevel(Enum):
     """Epistemic risk classification"""
+
     CRITICAL = "critical"
     HIGH = "high"
     MEDIUM = "medium"
@@ -67,6 +69,7 @@ class RiskLevel(Enum):
 
 class Label(Enum):
     """ONTO benchmark labels"""
+
     KNOWN = "KNOWN"
     UNKNOWN = "UNKNOWN"
     CONTRADICTION = "CONTRADICTION"
@@ -76,9 +79,11 @@ class Label(Enum):
 # DATA CLASSES
 # ============================================================
 
+
 @dataclass
 class Prediction:
     """Model prediction for a single sample"""
+
     id: str
     label: Label
     confidence: float
@@ -91,6 +96,7 @@ class Prediction:
 @dataclass
 class GroundTruth:
     """Ground truth for a single sample"""
+
     id: str
     label: Label
 
@@ -98,7 +104,8 @@ class GroundTruth:
 @dataclass
 class CalibrationMetrics:
     """ONTO-ERS §3.1.2 Calibration measurements"""
-    ece: float                    # Expected Calibration Error
+
+    ece: float  # Expected Calibration Error
     brier_score: float
     overconfidence_rate: float
     underconfidence_rate: float
@@ -119,7 +126,8 @@ class CalibrationMetrics:
 @dataclass
 class UnknownDetectionMetrics:
     """ONTO-ERS §3.1.1 Unknown detection measurements"""
-    recall: float                 # U-Recall
+
+    recall: float  # U-Recall
     precision: float
     f1: float
     missed_unknowns: int
@@ -141,6 +149,7 @@ class UnknownDetectionMetrics:
 @dataclass
 class ComplianceResult:
     """Full ONTO-ERS evaluation result"""
+
     # Metrics (§3.1)
     unknown_detection: UnknownDetectionMetrics
     calibration: CalibrationMetrics
@@ -206,9 +215,9 @@ class ComplianceResult:
 # EVALUATION FUNCTIONS
 # ============================================================
 
+
 def compute_unknown_detection(
-    predictions: List[Prediction],
-    ground_truth: List[GroundTruth]
+    predictions: List[Prediction], ground_truth: List[GroundTruth]
 ) -> UnknownDetectionMetrics:
     """
     Compute unknown detection metrics per ONTO-ERS §3.1.1
@@ -242,8 +251,16 @@ def compute_unknown_detection(
             false_negatives += 1
 
     # Calculate metrics
-    recall = true_positives / (true_positives + false_negatives) if (true_positives + false_negatives) > 0 else 0
-    precision = true_positives / (true_positives + false_positives) if (true_positives + false_positives) > 0 else 0
+    recall = (
+        true_positives / (true_positives + false_negatives)
+        if (true_positives + false_negatives) > 0
+        else 0
+    )
+    precision = (
+        true_positives / (true_positives + false_positives)
+        if (true_positives + false_positives) > 0
+        else 0
+    )
     f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0
 
     return UnknownDetectionMetrics(
@@ -256,9 +273,7 @@ def compute_unknown_detection(
 
 
 def compute_calibration(
-    predictions: List[Prediction],
-    ground_truth: List[GroundTruth],
-    n_bins: int = 10
+    predictions: List[Prediction], ground_truth: List[GroundTruth], n_bins: int = 10
 ) -> CalibrationMetrics:
     """
     Compute calibration metrics per ONTO-ERS §3.1.2
@@ -282,8 +297,9 @@ def compute_calibration(
         pairs.append((pred.confidence, correct))
 
     if not pairs:
-        return CalibrationMetrics(ece=1.0, brier_score=1.0,
-                                  overconfidence_rate=1.0, underconfidence_rate=0.0)
+        return CalibrationMetrics(
+            ece=1.0, brier_score=1.0, overconfidence_rate=1.0, underconfidence_rate=0.0
+        )
 
     # Bin predictions for ECE
     bins = [[] for _ in range(n_bins)]
@@ -302,7 +318,7 @@ def compute_calibration(
         ece += abs(avg_conf - avg_acc) * len(bin_items) / total
 
     # Calculate Brier score
-    brier = sum((conf - int(correct))**2 for conf, correct in pairs) / len(pairs)
+    brier = sum((conf - int(correct)) ** 2 for conf, correct in pairs) / len(pairs)
 
     # Calculate over/underconfidence
     overconfident = sum(1 for conf, correct in pairs if conf > 0.5 and not correct) / len(pairs)
@@ -317,8 +333,7 @@ def compute_calibration(
 
 
 def determine_compliance_level(
-    unknown: UnknownDetectionMetrics,
-    calibration: CalibrationMetrics
+    unknown: UnknownDetectionMetrics, calibration: CalibrationMetrics
 ) -> ComplianceLevel:
     """
     Determine compliance level per ONTO-ERS §4
@@ -336,8 +351,7 @@ def determine_compliance_level(
 
 
 def compute_risk_level(
-    unknown: UnknownDetectionMetrics,
-    calibration: CalibrationMetrics
+    unknown: UnknownDetectionMetrics, calibration: CalibrationMetrics
 ) -> Tuple[RiskLevel, int]:
     """
     Compute epistemic risk level and score
@@ -363,10 +377,7 @@ def compute_risk_level(
     return level, total_score
 
 
-def evaluate(
-    predictions: List[Prediction],
-    ground_truth: List[GroundTruth]
-) -> ComplianceResult:
+def evaluate(predictions: List[Prediction], ground_truth: List[GroundTruth]) -> ComplianceResult:
     """
     Main evaluation function implementing ONTO-ERS v1.0
 
@@ -424,10 +435,8 @@ def evaluate(
 # CONVENIENCE FUNCTIONS
 # ============================================================
 
-def evaluate_from_jsonl(
-    predictions_path: str,
-    ground_truth_path: str
-) -> ComplianceResult:
+
+def evaluate_from_jsonl(predictions_path: str, ground_truth_path: str) -> ComplianceResult:
     """
     Evaluate from JSONL files
 
@@ -442,20 +451,15 @@ def evaluate_from_jsonl(
     with open(predictions_path) as f:
         for line in f:
             d = json.loads(line)
-            predictions.append(Prediction(
-                id=d["id"],
-                label=Label[d["label"]],
-                confidence=d.get("confidence", 0.5)
-            ))
+            predictions.append(
+                Prediction(id=d["id"], label=Label[d["label"]], confidence=d.get("confidence", 0.5))
+            )
 
     ground_truth = []
     with open(ground_truth_path) as f:
         for line in f:
             d = json.loads(line)
-            ground_truth.append(GroundTruth(
-                id=d["id"],
-                label=Label[d["label"]]
-            ))
+            ground_truth.append(GroundTruth(id=d["id"], label=Label[d["label"]]))
 
     return evaluate(predictions, ground_truth)
 
@@ -526,24 +530,25 @@ try:
         Certificate,
         Organization,
     )
+
     _HAS_CLIENT = True
 except ImportError:
     _HAS_CLIENT = False
-    
+
     # Provide helpful error when trying to use client without httpx
     class ONTOClient:
         def __init__(self, *args, **kwargs):
             raise ImportError(
-                "API client requires httpx. "
-                "Install with: pip install onto-standard[api]"
+                "API client requires httpx. " "Install with: pip install onto-standard[api]"
             )
-    
+
     AsyncONTOClient = ONTOClient
 
 
 # ============================================================
 # CLI
 # ============================================================
+
 
 def main():
     """CLI entrypoint"""
