@@ -1,19 +1,18 @@
 Metadata-Version: 2.4
 Name: onto-standard
-Version: 1.0.0
-Summary: ONTO Epistemic Risk Standard v1.0 Reference Implementation
+Version: 1.1.0
+Summary: ONTO Epistemic Risk Standard - Reference Implementation & API Client
 Home-page: https://onto-bench.org/standard
 Author: ONTO Standards Council
-Author-email: ONTO Standards Council <standards@onto-bench.org>
-Maintainer-email: ONTO Project <dev@onto-bench.org>
+Author-email: ONTO Standards Council <standards@ontostandard.org>
+Maintainer-email: ONTO Project <admin@ontostandard.org>
 License: Apache-2.0
-Project-URL: Homepage, https://onto-bench.org
-Project-URL: Documentation, https://onto-bench.org/standard
-Project-URL: Repository, https://github.com/onto-project/onto-standard
-Project-URL: Bug Tracker, https://github.com/onto-project/onto-standard/issues
-Project-URL: Standard Document, https://onto-bench.org/standard/v1.0
-Project-URL: Changelog, https://github.com/onto-project/onto-standard/blob/main/CHANGELOG.md
-Keywords: ai,ml,llm,calibration,uncertainty,epistemic,compliance,risk,safety,evaluation,benchmark
+Project-URL: Homepage, https://ontostandard.org
+Project-URL: Documentation, https://docs.ontostandard.org
+Project-URL: Repository, https://github.com/nickarstrong/onto-standard
+Project-URL: API, https://api.ontostandard.org
+Project-URL: Bug Tracker, https://github.com/nickarstrong/onto-standard/issues
+Keywords: ai,ml,llm,calibration,uncertainty,epistemic,compliance,risk,safety,evaluation,benchmark,certification
 Classifier: Development Status :: 5 - Production/Stable
 Classifier: Intended Audience :: Developers
 Classifier: Intended Audience :: Science/Research
@@ -31,11 +30,17 @@ Classifier: Topic :: Software Development :: Testing
 Requires-Python: >=3.8
 Description-Content-Type: text/markdown
 License-File: LICENSE
+Provides-Extra: api
+Requires-Dist: httpx>=0.24.0; extra == "api"
 Provides-Extra: dev
 Requires-Dist: pytest>=7.0; extra == "dev"
 Requires-Dist: pytest-cov>=4.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "dev"
 Requires-Dist: black>=23.0; extra == "dev"
 Requires-Dist: mypy>=1.0; extra == "dev"
+Requires-Dist: httpx>=0.24.0; extra == "dev"
+Provides-Extra: all
+Requires-Dist: httpx>=0.24.0; extra == "all"
 Dynamic: author
 Dynamic: home-page
 Dynamic: license-file
