@@ -73,27 +73,45 @@ if STRIPE_SECRET_KEY:
     except ImportError:
         print("[API] WARNING: stripe package not installed")
 
-# Pricing tiers
-TIERS = {
-    "pilot": {"slots": 1, "evaluations_per_month": 10, "price": 0},
-    "l1": {"slots": 3, "evaluations_per_month": 100, "price": 15000},
-    "l2": {"slots": 10, "evaluations_per_month": 1000, "price": 60000},
-    "l3": {"slots": 50, "evaluations_per_month": -1, "price": 250000},  # -1 = unlimited
+# Protocol Layers (NOT Tiers!)
+# See ONTO_PROTOCOL_MASTER.md Section 3
+LAYERS = {
+    "open": {
+        "certificates_per_month": 100,
+        "signal_delay_hours": 1,  # +1 hour delay for fraud prevention
+        "price": 0,
+        "watermark": True,
+        "attribution_required": True
+    },
+    "standard": {
+        "certificates_per_year": 10000,
+        "signal_delay_hours": 0,  # Real-time
+        "price": 15000,
+        "watermark": False,
+        "attribution_required": False
+    },
+    "critical": {
+        "certificates_per_year": -1,  # Unlimited
+        "signal_delay_hours": 0,  # Real-time
+        "price": 100000,
+        "watermark": False,
+        "attribution_required": False,
+        "audit_trail_months": 24
+    }
 }
 
 # Stripe Price IDs (set in Railway env vars)
+# OPEN = free, no Stripe
 STRIPE_PRICE_IDS = {
-    "l1": os.getenv("STRIPE_PRICE_L1"),
-    "l2": os.getenv("STRIPE_PRICE_L2"),
-    "l3": os.getenv("STRIPE_PRICE_L3"),
+    "standard": os.getenv("STRIPE_PRICE_STANDARD"),
+    "critical": os.getenv("STRIPE_PRICE_CRITICAL"),
 }
 
-# Rate limits per tier (requests per minute)
+# Rate limits per layer (requests per minute)
 RATE_LIMITS = {
-    "pilot": 30,
-    "l1": 100,
-    "l2": 500,
-    "l3": 2000,
+    "open": 30,
+    "standard": 500,
+    "critical": 2000,
     "public": 10,  # Unauthenticated requests
 }
 
@@ -197,7 +215,7 @@ class OrganizationResponse(BaseModel):
     name: str
     email: str
     company: str
-    tier: str
+    layer: str
     created_at: str
 
 class ApiKeyResponse(BaseModel):
@@ -208,7 +226,7 @@ class ApiKeyResponse(BaseModel):
     last_used_at: Optional[str]
 
 class CheckoutRequest(BaseModel):
-    tier: str  # l1, l2, l3
+    layer: str  # standard, critical
 
 class PortalRequest(BaseModel):
     return_url: Optional[str] = None
@@ -234,7 +252,7 @@ async def validate_api_key(x_api_key: str = Header(...)) -> dict:
     """Validate API key and return organization info"""
     if not db_pool:
         # Dev mode - accept any key
-        return {"organization_id": "dev", "tier": "pilot"}
+        return {"organization_id": "dev", "layer": "open"}
     
     key_hash = hash_api_key(x_api_key)
     
@@ -263,7 +281,7 @@ async def validate_api_key(x_api_key: str = Header(...)) -> dict:
             "api_key_id": str(row['id']),
             "organization_id": str(row['organization_id']),
             "organization_name": row['name'],
-            "tier": row['tier'],
+            "layer": row['tier'],
             "slug": row['slug'],
             "stripe_customer_id": row['stripe_customer_id']
         }
@@ -272,7 +290,7 @@ async def validate_api_key(x_api_key: str = Header(...)) -> dict:
 # RATE LIMITING MIDDLEWARE
 # ============================================================
 
-async def check_rate_limit(request: Request, tier: str = "public") -> None:
+async def check_rate_limit(request: Request, layer: str = "public") -> None:
     """Check rate limit for a request"""
     # Get client identifier
     client_ip = request.client.host if request.client else "unknown"
@@ -284,7 +302,7 @@ async def check_rate_limit(request: Request, tier: str = "public") -> None:
     else:
         key = f"ip:{client_ip}"
     
-    limit = RATE_LIMITS.get(tier, RATE_LIMITS["public"])
+    limit = RATE_LIMITS.get(layer, RATE_LIMITS["public"])
     allowed, remaining = rate_limiter.is_allowed(key, limit)
     
     if not allowed:
@@ -344,8 +362,8 @@ async def rate_limit_middleware(request: Request, call_next):
     client_ip = request.client.host if request.client else "unknown"
     api_key = request.headers.get("x-api-key", "")
     
-    # Determine tier
-    tier = "public"
+    # Determine layer (DB column is 'tier' for backward compatibility)
+    layer = "public"
     if api_key and db_pool:
         key_hash = hash_api_key(api_key)
         async with db_pool.acquire() as conn:
@@ -355,7 +373,7 @@ async def rate_limit_middleware(request: Request, call_next):
                 WHERE ak.key_hash = $1 AND ak.is_active = true
             """, key_hash)
             if row:
-                tier = row['tier']
+                layer = row['tier']  # DB column name
     
     # Check rate limit
     if api_key:
@@ -363,7 +381,8 @@ async def rate_limit_middleware(request: Request, call_next):
     else:
         key = f"ip:{client_ip}"
     
-    limit = RATE_LIMITS.get(tier, RATE_LIMITS["public"])
+    limit = RATE_LIMITS.get(layer, RATE_LIMITS["public"])
+    allowed, remaining = rate_limiter.is_allowed(key, limit)
     allowed, remaining = rate_limiter.is_allowed(key, limit)
     
     if not allowed:
@@ -416,7 +435,7 @@ async def health():
 @app.get("/v1/pricing")
 async def get_pricing():
     return {
-        "tiers": TIERS,
+        "layers": LAYERS,
         "rate_limits": RATE_LIMITS,
         "currency": "USD",
         "billing": "annual",
@@ -433,6 +452,52 @@ async def get_signal_status():
             return resp.json()
     except Exception as e:
         return {"error": str(e), "signal_url": SIGNAL_URL}
+
+
+@app.get("/v1/signal/current")
+async def get_current_signal(org: dict = Depends(validate_api_key)):
+    """
+    Get current signal for evaluation.
+    OPEN layer: +1 hour delay (cannot use for real-time production)
+    STANDARD/CRITICAL: real-time signal
+    """
+    import httpx
+    
+    # Get layer info
+    layer = org.get('tier', 'open')  # DB column is 'tier'
+    layer_info = LAYERS.get(layer, LAYERS['open'])
+    delay_hours = layer_info.get('signal_delay_hours', 1)
+    
+    try:
+        async with httpx.AsyncClient() as client:
+            if delay_hours > 0:
+                # OPEN layer: get delayed signal
+                resp = await client.get(
+                    f"{SIGNAL_URL}/signal/delayed",
+                    params={"hours": delay_hours},
+                    timeout=5
+                )
+            else:
+                # STANDARD/CRITICAL: real-time signal
+                resp = await client.get(f"{SIGNAL_URL}/signal/current", timeout=5)
+            
+            data = resp.json()
+            
+            # Add layer info to response
+            data["layer"] = layer
+            data["delay_hours"] = delay_hours
+            if delay_hours > 0:
+                data["warning"] = "OPEN layer signal is delayed by 1 hour. Not suitable for real-time production."
+            
+            return data
+            
+    except Exception as e:
+        return {
+            "error": str(e), 
+            "signal_url": SIGNAL_URL,
+            "layer": layer,
+            "delay_hours": delay_hours
+        }
 
 # ============================================================
 # AUTH ENDPOINTS
@@ -494,7 +559,7 @@ async def register(request: RegisterRequest, req: Request):
         key_hash = hash_api_key(full_key)
         await conn.execute("""
             INSERT INTO api_keys (organization_id, name, key_hash, key_prefix, scopes)
-            VALUES ($1, 'Default Key', $2, $3, '{read,write}')
+            VALUES ($1, 'Default Key', $2, $3, '["read", "write"]')
         """, org_id, key_hash, prefix)
         
         # Log event
@@ -507,7 +572,7 @@ async def register(request: RegisterRequest, req: Request):
             "organization_id": str(org_id),
             "user_id": str(user_id),
             "api_key": full_key,  # Only shown once!
-            "tier": "pilot",
+            "layer": "open",
             "stripe_customer_id": stripe_customer_id,
             "message": "Registration successful. Save your API key - it won't be shown again."
         }
@@ -544,7 +609,7 @@ async def login(request: LoginRequest):
             "name": row['name'],
             "organization_id": str(row['organization_id']),
             "organization_name": row['org_name'],
-            "tier": row['tier'],
+            "layer": row['tier'],
             "token": token,
             "message": "Login successful"
         }
@@ -564,7 +629,7 @@ async def create_api_key(
     async with db_pool.acquire() as conn:
         await conn.execute("""
             INSERT INTO api_keys (organization_id, name, key_hash, key_prefix, scopes)
-            VALUES ($1, $2, $3, $4, '{read,write}')
+            VALUES ($1, $2, $3, $4, '["read", "write"]')
         """, org['organization_id'], request.name, key_hash, prefix)
         
         return {
@@ -632,16 +697,16 @@ async def create_checkout_session(
     request: CheckoutRequest,
     org: dict = Depends(validate_api_key)
 ):
-    """Create a Stripe checkout session for upgrading tier"""
+    """Create a Stripe checkout session for upgrading layer"""
     if not stripe:
         raise HTTPException(status_code=503, detail="Billing not available")
     
-    if request.tier not in STRIPE_PRICE_IDS:
-        raise HTTPException(status_code=400, detail=f"Invalid tier: {request.tier}")
+    if request.layer not in STRIPE_PRICE_IDS:
+        raise HTTPException(status_code=400, detail=f"Invalid layer: {request.layer}")
     
-    price_id = STRIPE_PRICE_IDS.get(request.tier)
+    price_id = STRIPE_PRICE_IDS.get(request.layer)
     if not price_id:
-        raise HTTPException(status_code=400, detail=f"Price not configured for tier: {request.tier}")
+        raise HTTPException(status_code=400, detail=f"Price not configured for layer: {request.layer}")
     
     # Get or create Stripe customer
     stripe_customer_id = org.get('stripe_customer_id')
@@ -683,15 +748,15 @@ async def create_checkout_session(
             cancel_url=STRIPE_CANCEL_URL,
             metadata={
                 "organization_id": org['organization_id'],
-                "tier": request.tier
+                "layer": request.layer
             }
         )
         
         return {
             "checkout_url": session.url,
             "session_id": session.id,
-            "tier": request.tier,
-            "price": TIERS[request.tier]['price']
+            "layer": request.layer,
+            "price": LAYERS[request.layer]['price']
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to create checkout session: {e}")
@@ -751,11 +816,11 @@ async def get_billing_status(org: dict = Depends(validate_api_key)):
         if not row:
             raise HTTPException(status_code=404, detail="Organization not found")
         
-        tier_info = TIERS.get(row['tier'], TIERS['pilot'])
+        layer_info = LAYERS.get(row['tier'], LAYERS['open'])
         
         return {
-            "tier": row['tier'],
-            "tier_info": tier_info,
+            "layer": row['tier'],
+            "layer_info": layer_info,
             "stripe_customer_id": row['stripe_customer_id'],
             "subscription": {
                 "id": row['stripe_subscription_id'],
@@ -805,17 +870,17 @@ async def stripe_webhook(request: Request):
         if event_type == 'checkout.session.completed':
             # Checkout completed - activate subscription
             org_id = data.get('metadata', {}).get('organization_id')
-            tier = data.get('metadata', {}).get('tier')
+            layer = data.get('metadata', {}).get('layer')  # Layer from checkout metadata
             subscription_id = data.get('subscription')
             customer_id = data.get('customer')
             
-            if org_id and tier:
-                # Update organization tier
+            if org_id and layer:
+                # Update organization layer (DB column is 'tier')
                 await conn.execute("""
                     UPDATE organizations 
                     SET tier = $1, stripe_customer_id = $2, updated_at = NOW()
                     WHERE id = $3
-                """, tier, customer_id, org_id)
+                """, layer, customer_id, org_id)
                 
                 # Create subscription record
                 await conn.execute("""
@@ -823,15 +888,15 @@ async def stripe_webhook(request: Request):
                     VALUES ($1, $2, $3, 'active')
                     ON CONFLICT (organization_id) 
                     DO UPDATE SET tier = $2, stripe_subscription_id = $3, status = 'active', updated_at = NOW()
-                """, org_id, tier, subscription_id)
+                """, org_id, layer, subscription_id)
                 
                 # Log event
                 await conn.execute("""
                     INSERT INTO audit_log (organization_id, action, resource_type, details)
                     VALUES ($1, 'subscription_created', 'subscription', $2)
-                """, org_id, json.dumps({"tier": tier, "subscription_id": subscription_id}))
+                """, org_id, json.dumps({"layer": layer, "subscription_id": subscription_id}))
                 
-                print(f"[Stripe] Org {org_id} upgraded to {tier}")
+                print(f"[Stripe] Org {org_id} upgraded to {layer}")
         
         elif event_type == 'customer.subscription.updated':
             subscription_id = data.get('id')
@@ -858,7 +923,7 @@ async def stripe_webhook(request: Request):
                 )
                 if row:
                     await conn.execute(
-                        "UPDATE organizations SET tier = 'pilot', updated_at = NOW() WHERE id = $1",
+                        "UPDATE organizations SET tier = 'open', updated_at = NOW() WHERE id = $1",
                         row['organization_id']
                     )
                     await conn.execute(
@@ -897,23 +962,40 @@ async def submit_evaluation(
             "predictions_received": len(request.predictions)
         }
     
+    layer = org.get('tier', 'open')  # DB column is 'tier'
+    layer_info = LAYERS.get(layer, LAYERS['open'])
+    
     async with db_pool.acquire() as conn:
-        # Check tier limits
-        tier_info = TIERS.get(org['tier'], TIERS['pilot'])
-        
-        if tier_info['evaluations_per_month'] > 0:
-            # Count evaluations this month
+        # Check certificate/evaluation limits based on layer
+        if layer == 'open':
+            # OPEN: 100 certificates per month
+            limit = layer_info.get('certificates_per_month', 100)
             count = await conn.fetchval("""
                 SELECT COUNT(*) FROM evaluations
                 WHERE organization_id = $1
                 AND submitted_at >= date_trunc('month', NOW())
             """, org['organization_id'])
             
-            if count >= tier_info['evaluations_per_month']:
+            if count >= limit:
                 raise HTTPException(
                     status_code=403, 
-                    detail=f"Monthly evaluation limit reached ({tier_info['evaluations_per_month']}). Upgrade your plan."
+                    detail=f"Monthly certificate limit reached ({limit}). Upgrade to STANDARD layer."
                 )
+        elif layer == 'standard':
+            # STANDARD: 10,000 certificates per year
+            limit = layer_info.get('certificates_per_year', 10000)
+            count = await conn.fetchval("""
+                SELECT COUNT(*) FROM evaluations
+                WHERE organization_id = $1
+                AND submitted_at >= date_trunc('year', NOW())
+            """, org['organization_id'])
+            
+            if count >= limit:
+                raise HTTPException(
+                    status_code=403, 
+                    detail=f"Yearly certificate limit reached ({limit}). Contact sales for overage or upgrade to CRITICAL."
+                )
+        # CRITICAL: unlimited (-1)
         
         # Create evaluation
         eval_id = await conn.fetchval("""
@@ -921,14 +1003,18 @@ async def submit_evaluation(
             VALUES ($1, $2, $3, 'pending', $4)
             RETURNING id
         """, org['organization_id'], request.model_name, request.model_version,
-            json.dumps({"predictions_count": len(request.predictions)}))
+            json.dumps({
+                "predictions_count": len(request.predictions),
+                "layer": layer,
+                "watermark": layer_info.get('watermark', False)
+            }))
         
         # Log usage
         await conn.execute("""
             INSERT INTO usage_events (organization_id, event_type, resource_id, event_metadata)
             VALUES ($1, 'evaluation_submitted', $2, $3)
         """, org['organization_id'], eval_id, 
-            json.dumps({"model": request.model_name, "predictions": len(request.predictions)}))
+            json.dumps({"model": request.model_name, "predictions": len(request.predictions), "layer": layer}))
         
         # Update subscription usage counter
         await conn.execute("""
@@ -937,13 +1023,21 @@ async def submit_evaluation(
             WHERE organization_id = $1 AND status = 'active'
         """, org['organization_id'])
         
-        return {
+        response = {
             "evaluation_id": str(eval_id),
             "status": "pending",
             "model_name": request.model_name,
             "predictions_received": len(request.predictions),
+            "layer": layer,
             "message": "Evaluation queued for processing"
         }
+        
+        # Add watermark warning for OPEN layer
+        if layer_info.get('watermark'):
+            response["watermark"] = "ONTO Open"
+            response["attribution_required"] = True
+        
+        return response
 
 @app.get("/v1/evaluations")
 async def list_evaluations(
@@ -1055,7 +1149,7 @@ async def get_certificate(certificate_id: str):
     
     async with db_pool.acquire() as conn:
         row = await conn.fetchrow("""
-            SELECT c.*, o.name as org_name
+            SELECT c.*, o.name as org_name, o.tier as org_layer
             FROM certificates c
             JOIN organizations o ON c.organization_id = o.id
             WHERE c.id = $1 OR c.certificate_number = $1
@@ -1064,18 +1158,31 @@ async def get_certificate(certificate_id: str):
         if not row:
             raise HTTPException(status_code=404, detail="Certificate not found")
         
-        return {
+        # Get layer info for watermark
+        layer = row.get('org_layer', 'open')
+        layer_info = LAYERS.get(layer, LAYERS['open'])
+        
+        response = {
             "certificate_number": row['certificate_number'],
             "organization": row['org_name'],
             "model_name": row['model_name'],
             "level": row['level'],
+            "layer": layer,
             "metrics": row['metrics_snapshot'],
             "verification_hash": row['verification_hash'],
             "status": "revoked" if row['revoked_at'] else "valid",
             "issued_at": row['issued_at'].isoformat() if row['issued_at'] else None,
             "expires_at": row['expires_at'].isoformat() if row['expires_at'] else None,
-            "verify_url": f"https://api.ontostandard.org/v1/certificates/{row['certificate_number']}"
+            "verify_url": f"https://verify.ontostandard.org/{row['certificate_number']}"
         }
+        
+        # Add watermark for OPEN layer
+        if layer_info.get('watermark'):
+            response["watermark"] = "ONTO Open"
+            response["attribution"] = "Verified by ONTO Open Source Protocol"
+            response["attribution_required"] = True
+        
+        return response
 
 # ============================================================
 # ORGANIZATION ENDPOINTS
@@ -1099,15 +1206,15 @@ async def get_organization(org: dict = Depends(validate_api_key)):
         if not row:
             raise HTTPException(status_code=404, detail="Organization not found")
         
-        tier_info = TIERS.get(row['tier'], TIERS['pilot'])
+        layer_info = LAYERS.get(row['tier'], LAYERS['open'])
         
         return {
             "id": str(row['id']),
             "name": row['name'],
             "slug": row['slug'],
-            "tier": row['tier'],
-            "tier_info": tier_info,
-            "rate_limit": RATE_LIMITS.get(row['tier'], RATE_LIMITS['pilot']),
+            "layer": row['tier'],
+            "layer_info": layer_info,
+            "rate_limit": RATE_LIMITS.get(row['tier'], RATE_LIMITS['open']),
             "evaluations_count": row['eval_count'],
             "certificates_count": row['cert_count'],
             "stripe_customer_id": row['stripe_customer_id'],
@@ -1145,7 +1252,7 @@ async def get_admin_stats(org: dict = Depends(validate_api_key)):
             FROM organizations 
             GROUP BY tier
         """)
-        stats['by_tier'] = {r['tier']: r['count'] for r in tier_counts}
+        stats['by_layer'] = {r['tier']: r['count'] for r in tier_counts}
         
         return stats
 
@@ -1159,7 +1266,7 @@ async def get_rate_limit_info(request: Request):
     client_ip = request.client.host if request.client else "unknown"
     api_key = request.headers.get("x-api-key", "")
     
-    tier = "public"
+    layer = "public"
     if api_key:
         key = f"api:{hash_api_key(api_key)[:16]}"
         if db_pool:
@@ -1170,18 +1277,18 @@ async def get_rate_limit_info(request: Request):
                     WHERE ak.key_hash = $1 AND ak.is_active = true
                 """, hash_api_key(api_key))
                 if row:
-                    tier = row['tier']
+                    layer = row['tier']  # DB column name
     else:
         key = f"ip:{client_ip}"
     
-    limit = RATE_LIMITS.get(tier, RATE_LIMITS["public"])
+    limit = RATE_LIMITS.get(layer, RATE_LIMITS["public"])
     
     # Count current usage
     rate_limiter._cleanup(key)
     used = sum(count for _, count in rate_limiter.requests.get(key, []))
     
     return {
-        "tier": tier,
+        "layer": layer,
         "limit": limit,
         "remaining": max(0, limit - used),
         "reset_in": rate_limiter.get_reset_time(key),
