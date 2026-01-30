@@ -20,6 +20,12 @@ Endpoints:
   GET  /v1/certificates      - List certificates
   GET  /v1/certificates/{id} - Get certificate
   
+  # Billing (Stripe)
+  POST /v1/billing/checkout  - Create checkout session
+  POST /v1/billing/portal    - Create customer portal session
+  GET  /v1/billing/status    - Get subscription status
+  POST /v1/webhooks/stripe   - Stripe webhook handler
+  
   # Admin
   GET  /v1/admin/stats       - System stats
 """
@@ -50,12 +56,36 @@ JWT_SECRET = os.getenv("JWT_SECRET", "dev-jwt-secret-change-in-prod")
 SIGNAL_URL = os.getenv("SIGNAL_URL", "https://signal.ontostandard.org")
 NOTARY_URL = os.getenv("NOTARY_URL", "https://notary.ontostandard.org")
 
+# Stripe
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
+STRIPE_SUCCESS_URL = os.getenv("STRIPE_SUCCESS_URL", "https://ontostandard.org/billing/success")
+STRIPE_CANCEL_URL = os.getenv("STRIPE_CANCEL_URL", "https://ontostandard.org/billing/cancel")
+
+# Initialize Stripe
+stripe = None
+if STRIPE_SECRET_KEY:
+    try:
+        import stripe as stripe_module
+        stripe_module.api_key = STRIPE_SECRET_KEY
+        stripe = stripe_module
+        print("[API] Stripe initialized")
+    except ImportError:
+        print("[API] WARNING: stripe package not installed")
+
 # Pricing tiers
 TIERS = {
     "pilot": {"slots": 1, "evaluations_per_month": 10, "price": 0},
     "l1": {"slots": 3, "evaluations_per_month": 100, "price": 15000},
     "l2": {"slots": 10, "evaluations_per_month": 1000, "price": 60000},
     "l3": {"slots": 50, "evaluations_per_month": -1, "price": 250000},  # -1 = unlimited
+}
+
+# Stripe Price IDs (set in Railway env vars)
+STRIPE_PRICE_IDS = {
+    "l1": os.getenv("STRIPE_PRICE_L1"),
+    "l2": os.getenv("STRIPE_PRICE_L2"),
+    "l3": os.getenv("STRIPE_PRICE_L3"),
 }
 
 # Rate limits per tier (requests per minute)
@@ -177,6 +207,12 @@ class ApiKeyResponse(BaseModel):
     created_at: str
     last_used_at: Optional[str]
 
+class CheckoutRequest(BaseModel):
+    tier: str  # l1, l2, l3
+
+class PortalRequest(BaseModel):
+    return_url: Optional[str] = None
+
 # ============================================================
 # AUTH HELPERS
 # ============================================================
@@ -205,7 +241,7 @@ async def validate_api_key(x_api_key: str = Header(...)) -> dict:
     async with db_pool.acquire() as conn:
         row = await conn.fetchrow("""
             SELECT ak.id, ak.organization_id, ak.is_active, 
-                   o.name, o.tier, o.slug
+                   o.name, o.tier, o.slug, o.stripe_customer_id
             FROM api_keys ak
             JOIN organizations o ON ak.organization_id = o.id
             WHERE ak.key_hash = $1
@@ -228,7 +264,8 @@ async def validate_api_key(x_api_key: str = Header(...)) -> dict:
             "organization_id": str(row['organization_id']),
             "organization_name": row['name'],
             "tier": row['tier'],
-            "slug": row['slug']
+            "slug": row['slug'],
+            "stripe_customer_id": row['stripe_customer_id']
         }
 
 # ============================================================
@@ -280,7 +317,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="ONTO API",
     description="Epistemic Calibration Infrastructure for Enterprise AI",
-    version="1.1.0",
+    version="1.2.0",
     lifespan=lifespan
 )
 
@@ -300,7 +337,7 @@ app.add_middleware(
 async def rate_limit_middleware(request: Request, call_next):
     """Apply rate limiting to all requests"""
     # Skip rate limiting for health checks and docs
-    if request.url.path in ["/health", "/docs", "/openapi.json", "/"]:
+    if request.url.path in ["/health", "/docs", "/openapi.json", "/", "/v1/webhooks/stripe"]:
         return await call_next(request)
     
     # Get client identifier
@@ -359,10 +396,11 @@ async def rate_limit_middleware(request: Request, call_next):
 async def root():
     return {
         "name": "ONTO API",
-        "version": "1.1.0",
+        "version": "1.2.0",
         "docs": "https://api.ontostandard.org/docs",
         "status": "operational",
-        "rate_limits": RATE_LIMITS
+        "rate_limits": RATE_LIMITS,
+        "stripe_enabled": stripe is not None
     }
 
 @app.get("/health")
@@ -371,6 +409,7 @@ async def health():
     return {
         "status": "healthy",
         "database": db_status,
+        "stripe": "enabled" if stripe else "disabled",
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
@@ -421,13 +460,26 @@ async def register(request: RegisterRequest, req: Request):
         if existing:
             raise HTTPException(status_code=400, detail="Email already registered")
         
+        # Create Stripe customer if Stripe is enabled
+        stripe_customer_id = None
+        if stripe:
+            try:
+                customer = stripe.Customer.create(
+                    email=request.email,
+                    name=request.company,
+                    metadata={"company": request.company}
+                )
+                stripe_customer_id = customer.id
+            except Exception as e:
+                print(f"[API] Stripe customer creation failed: {e}")
+        
         # Create organization
         slug = request.company.lower().replace(" ", "-")[:50]
         org_id = await conn.fetchval("""
-            INSERT INTO organizations (name, slug, tier)
-            VALUES ($1, $2, 'pilot')
+            INSERT INTO organizations (name, slug, tier, stripe_customer_id)
+            VALUES ($1, $2, 'pilot', $3)
             RETURNING id
-        """, request.company, slug)
+        """, request.company, slug, stripe_customer_id)
         
         # Create user
         password_hash = hash_password(request.password)
@@ -456,6 +508,7 @@ async def register(request: RegisterRequest, req: Request):
             "user_id": str(user_id),
             "api_key": full_key,  # Only shown once!
             "tier": "pilot",
+            "stripe_customer_id": stripe_customer_id,
             "message": "Registration successful. Save your API key - it won't be shown again."
         }
 
@@ -571,6 +624,262 @@ async def revoke_api_key(
         return {"status": "revoked", "key_id": key_id}
 
 # ============================================================
+# BILLING ENDPOINTS (Stripe)
+# ============================================================
+
+@app.post("/v1/billing/checkout")
+async def create_checkout_session(
+    request: CheckoutRequest,
+    org: dict = Depends(validate_api_key)
+):
+    """Create a Stripe checkout session for upgrading tier"""
+    if not stripe:
+        raise HTTPException(status_code=503, detail="Billing not available")
+    
+    if request.tier not in STRIPE_PRICE_IDS:
+        raise HTTPException(status_code=400, detail=f"Invalid tier: {request.tier}")
+    
+    price_id = STRIPE_PRICE_IDS.get(request.tier)
+    if not price_id:
+        raise HTTPException(status_code=400, detail=f"Price not configured for tier: {request.tier}")
+    
+    # Get or create Stripe customer
+    stripe_customer_id = org.get('stripe_customer_id')
+    
+    if not stripe_customer_id and db_pool:
+        async with db_pool.acquire() as conn:
+            row = await conn.fetchrow(
+                "SELECT name, stripe_customer_id FROM organizations WHERE id = $1",
+                org['organization_id']
+            )
+            if row:
+                stripe_customer_id = row['stripe_customer_id']
+                
+                # Create customer if not exists
+                if not stripe_customer_id:
+                    try:
+                        customer = stripe.Customer.create(
+                            name=row['name'],
+                            metadata={"organization_id": org['organization_id']}
+                        )
+                        stripe_customer_id = customer.id
+                        await conn.execute(
+                            "UPDATE organizations SET stripe_customer_id = $1 WHERE id = $2",
+                            stripe_customer_id, org['organization_id']
+                        )
+                    except Exception as e:
+                        raise HTTPException(status_code=500, detail=f"Failed to create customer: {e}")
+    
+    try:
+        session = stripe.checkout.Session.create(
+            customer=stripe_customer_id,
+            payment_method_types=['card'],
+            line_items=[{
+                'price': price_id,
+                'quantity': 1,
+            }],
+            mode='subscription',
+            success_url=f"{STRIPE_SUCCESS_URL}?session_id={{CHECKOUT_SESSION_ID}}",
+            cancel_url=STRIPE_CANCEL_URL,
+            metadata={
+                "organization_id": org['organization_id'],
+                "tier": request.tier
+            }
+        )
+        
+        return {
+            "checkout_url": session.url,
+            "session_id": session.id,
+            "tier": request.tier,
+            "price": TIERS[request.tier]['price']
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create checkout session: {e}")
+
+@app.post("/v1/billing/portal")
+async def create_portal_session(
+    request: PortalRequest,
+    org: dict = Depends(validate_api_key)
+):
+    """Create a Stripe customer portal session for managing subscription"""
+    if not stripe:
+        raise HTTPException(status_code=503, detail="Billing not available")
+    
+    stripe_customer_id = org.get('stripe_customer_id')
+    
+    if not stripe_customer_id and db_pool:
+        async with db_pool.acquire() as conn:
+            row = await conn.fetchrow(
+                "SELECT stripe_customer_id FROM organizations WHERE id = $1",
+                org['organization_id']
+            )
+            if row:
+                stripe_customer_id = row['stripe_customer_id']
+    
+    if not stripe_customer_id:
+        raise HTTPException(status_code=400, detail="No billing account found. Please upgrade first.")
+    
+    try:
+        return_url = request.return_url or "https://ontostandard.org/dashboard"
+        session = stripe.billing_portal.Session.create(
+            customer=stripe_customer_id,
+            return_url=return_url
+        )
+        
+        return {
+            "portal_url": session.url
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create portal session: {e}")
+
+@app.get("/v1/billing/status")
+async def get_billing_status(org: dict = Depends(validate_api_key)):
+    """Get current subscription status"""
+    if not db_pool:
+        return {"status": "no_database"}
+    
+    async with db_pool.acquire() as conn:
+        # Get organization with subscription info
+        row = await conn.fetchrow("""
+            SELECT o.tier, o.stripe_customer_id, s.stripe_subscription_id, s.status,
+                   s.current_period_start, s.current_period_end, s.evaluations_used
+            FROM organizations o
+            LEFT JOIN subscriptions s ON o.id = s.organization_id AND s.status = 'active'
+            WHERE o.id = $1
+        """, org['organization_id'])
+        
+        if not row:
+            raise HTTPException(status_code=404, detail="Organization not found")
+        
+        tier_info = TIERS.get(row['tier'], TIERS['pilot'])
+        
+        return {
+            "tier": row['tier'],
+            "tier_info": tier_info,
+            "stripe_customer_id": row['stripe_customer_id'],
+            "subscription": {
+                "id": row['stripe_subscription_id'],
+                "status": row['status'] or "none",
+                "current_period_start": row['current_period_start'].isoformat() if row['current_period_start'] else None,
+                "current_period_end": row['current_period_end'].isoformat() if row['current_period_end'] else None,
+                "evaluations_used": row['evaluations_used'] or 0
+            } if row['stripe_subscription_id'] else None
+        }
+
+# ============================================================
+# STRIPE WEBHOOK
+# ============================================================
+
+@app.post("/v1/webhooks/stripe")
+async def stripe_webhook(request: Request):
+    """Handle Stripe webhook events"""
+    if not stripe:
+        raise HTTPException(status_code=503, detail="Stripe not configured")
+    
+    payload = await request.body()
+    sig_header = request.headers.get('stripe-signature')
+    
+    try:
+        if STRIPE_WEBHOOK_SECRET:
+            event = stripe.Webhook.construct_event(
+                payload, sig_header, STRIPE_WEBHOOK_SECRET
+            )
+        else:
+            # Dev mode - parse without verification
+            event = json.loads(payload)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid payload")
+    except stripe.error.SignatureVerificationError:
+        raise HTTPException(status_code=400, detail="Invalid signature")
+    
+    event_type = event.get('type') if isinstance(event, dict) else event.type
+    data = event.get('data', {}).get('object', {}) if isinstance(event, dict) else event.data.object
+    
+    print(f"[Stripe] Webhook: {event_type}")
+    
+    if not db_pool:
+        return {"status": "received", "warning": "no database"}
+    
+    async with db_pool.acquire() as conn:
+        # Handle different event types
+        if event_type == 'checkout.session.completed':
+            # Checkout completed - activate subscription
+            org_id = data.get('metadata', {}).get('organization_id')
+            tier = data.get('metadata', {}).get('tier')
+            subscription_id = data.get('subscription')
+            customer_id = data.get('customer')
+            
+            if org_id and tier:
+                # Update organization tier
+                await conn.execute("""
+                    UPDATE organizations 
+                    SET tier = $1, stripe_customer_id = $2, updated_at = NOW()
+                    WHERE id = $3
+                """, tier, customer_id, org_id)
+                
+                # Create subscription record
+                await conn.execute("""
+                    INSERT INTO subscriptions (organization_id, tier, stripe_subscription_id, status)
+                    VALUES ($1, $2, $3, 'active')
+                    ON CONFLICT (organization_id) 
+                    DO UPDATE SET tier = $2, stripe_subscription_id = $3, status = 'active', updated_at = NOW()
+                """, org_id, tier, subscription_id)
+                
+                # Log event
+                await conn.execute("""
+                    INSERT INTO audit_log (organization_id, action, resource_type, details)
+                    VALUES ($1, 'subscription_created', 'subscription', $2)
+                """, org_id, json.dumps({"tier": tier, "subscription_id": subscription_id}))
+                
+                print(f"[Stripe] Org {org_id} upgraded to {tier}")
+        
+        elif event_type == 'customer.subscription.updated':
+            subscription_id = data.get('id')
+            status = data.get('status')
+            current_period_end = data.get('current_period_end')
+            
+            if subscription_id:
+                await conn.execute("""
+                    UPDATE subscriptions 
+                    SET status = $1, 
+                        current_period_end = to_timestamp($2),
+                        updated_at = NOW()
+                    WHERE stripe_subscription_id = $3
+                """, status, current_period_end, subscription_id)
+        
+        elif event_type == 'customer.subscription.deleted':
+            subscription_id = data.get('id')
+            
+            if subscription_id:
+                # Downgrade to pilot
+                row = await conn.fetchrow(
+                    "SELECT organization_id FROM subscriptions WHERE stripe_subscription_id = $1",
+                    subscription_id
+                )
+                if row:
+                    await conn.execute(
+                        "UPDATE organizations SET tier = 'pilot', updated_at = NOW() WHERE id = $1",
+                        row['organization_id']
+                    )
+                    await conn.execute(
+                        "UPDATE subscriptions SET status = 'canceled', updated_at = NOW() WHERE stripe_subscription_id = $1",
+                        subscription_id
+                    )
+                    print(f"[Stripe] Org {row['organization_id']} downgraded to pilot")
+        
+        elif event_type == 'invoice.payment_failed':
+            subscription_id = data.get('subscription')
+            
+            if subscription_id:
+                await conn.execute("""
+                    UPDATE subscriptions 
+                    SET status = 'past_due', updated_at = NOW()
+                    WHERE stripe_subscription_id = $1
+                """, subscription_id)
+    
+    return {"status": "received", "event": event_type}
+
+# ============================================================
 # EVALUATION ENDPOINTS
 # ============================================================
 
@@ -603,7 +912,7 @@ async def submit_evaluation(
             if count >= tier_info['evaluations_per_month']:
                 raise HTTPException(
                     status_code=403, 
-                    detail=f"Monthly evaluation limit reached ({tier_info['evaluations_per_month']})"
+                    detail=f"Monthly evaluation limit reached ({tier_info['evaluations_per_month']}). Upgrade your plan."
                 )
         
         # Create evaluation
@@ -620,6 +929,13 @@ async def submit_evaluation(
             VALUES ($1, 'evaluation_submitted', $2, $3)
         """, org['organization_id'], eval_id, 
             json.dumps({"model": request.model_name, "predictions": len(request.predictions)}))
+        
+        # Update subscription usage counter
+        await conn.execute("""
+            UPDATE subscriptions 
+            SET evaluations_used = COALESCE(evaluations_used, 0) + 1
+            WHERE organization_id = $1 AND status = 'active'
+        """, org['organization_id'])
         
         return {
             "evaluation_id": str(eval_id),
@@ -794,6 +1110,7 @@ async def get_organization(org: dict = Depends(validate_api_key)):
             "rate_limit": RATE_LIMITS.get(row['tier'], RATE_LIMITS['pilot']),
             "evaluations_count": row['eval_count'],
             "certificates_count": row['cert_count'],
+            "stripe_customer_id": row['stripe_customer_id'],
             "created_at": row['created_at'].isoformat() if row['created_at'] else None
         }
 
@@ -816,6 +1133,11 @@ async def get_admin_stats(org: dict = Depends(validate_api_key)):
         stats['api_keys'] = await conn.fetchval("SELECT COUNT(*) FROM api_keys WHERE is_active = true")
         stats['evaluations'] = await conn.fetchval("SELECT COUNT(*) FROM evaluations")
         stats['certificates'] = await conn.fetchval("SELECT COUNT(*) FROM certificates")
+        
+        # Active subscriptions
+        stats['active_subscriptions'] = await conn.fetchval(
+            "SELECT COUNT(*) FROM subscriptions WHERE status = 'active'"
+        )
         
         # By tier
         tier_counts = await conn.fetch("""
