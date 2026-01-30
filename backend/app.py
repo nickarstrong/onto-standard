@@ -77,26 +77,26 @@ if STRIPE_SECRET_KEY:
 # See ONTO_PROTOCOL_MASTER.md Section 3
 LAYERS = {
     "open": {
-        "certificates_per_month": 100,
-        "signal_delay_hours": 1,  # +1 hour delay for fraud prevention
+        "certificates_per_month": 100,  # 100 сертификатов в месяц
+        "signal_delay_hours": 1,        # +1 час задержка сигнала
         "price": 0,
         "watermark": True,
         "attribution_required": True
     },
     "standard": {
-        "certificates_per_year": 10000,
-        "signal_delay_hours": 0,  # Real-time
-        "price": 15000,
+        "certificates_per_year": 10000,  # 10,000 сертификатов в год
+        "signal_delay_hours": 0,         # Real-time сигнал
+        "price": 15000,                  # $15,000/год
         "watermark": False,
         "attribution_required": False
     },
     "critical": {
-        "certificates_per_year": -1,  # Unlimited
-        "signal_delay_hours": 0,  # Real-time
-        "price": 100000,
+        "certificates_per_year": -1,     # Unlimited сертификатов
+        "signal_delay_hours": 0,         # Real-time сигнал
+        "price": 100000,                 # $100,000+/год
         "watermark": False,
         "attribution_required": False,
-        "audit_trail_months": 24
+        "audit_trail_months": 24         # 24 месяца хранения audit trail
     }
 }
 
@@ -968,7 +968,7 @@ async def submit_evaluation(
     async with db_pool.acquire() as conn:
         # Check certificate/evaluation limits based on layer
         if layer == 'open':
-            # OPEN: 100 certificates per month
+            # OPEN: 100 сертификатов в месяц
             limit = layer_info.get('certificates_per_month', 100)
             count = await conn.fetchval("""
                 SELECT COUNT(*) FROM evaluations
@@ -979,10 +979,10 @@ async def submit_evaluation(
             if count >= limit:
                 raise HTTPException(
                     status_code=403, 
-                    detail=f"Monthly certificate limit reached ({limit}). Upgrade to STANDARD layer."
+                    detail=f"Monthly certificate limit reached ({limit} certs/month). Upgrade to STANDARD layer."
                 )
         elif layer == 'standard':
-            # STANDARD: 10,000 certificates per year
+            # STANDARD: 10,000 сертификатов в год
             limit = layer_info.get('certificates_per_year', 10000)
             count = await conn.fetchval("""
                 SELECT COUNT(*) FROM evaluations
@@ -993,7 +993,7 @@ async def submit_evaluation(
             if count >= limit:
                 raise HTTPException(
                     status_code=403, 
-                    detail=f"Yearly certificate limit reached ({limit}). Contact sales for overage or upgrade to CRITICAL."
+                    detail=f"Yearly certificate limit reached ({limit} certs/year). Contact sales for overage or upgrade to CRITICAL."
                 )
         # CRITICAL: unlimited (-1)
         
