@@ -11,6 +11,10 @@ Endpoints:
   POST /v1/auth/login        - Login (get JWT)
   POST /v1/auth/api-keys     - Create API key
   
+  # Signal
+  GET  /v1/signal/status     - Signal server status
+  GET  /v1/signal/current    - Get current signal (layer-aware delay)
+  
   # Evaluations  
   POST /v1/evaluate          - Submit evaluation
   GET  /v1/evaluations       - List evaluations
@@ -18,7 +22,11 @@ Endpoints:
   
   # Certificates
   GET  /v1/certificates      - List certificates
-  GET  /v1/certificates/{id} - Get certificate
+  GET  /v1/certificates/{id} - Get certificate (public verify)
+  
+  # Organization
+  GET  /v1/organization      - Get org details
+  GET  /v1/audit             - Audit trail (CRITICAL only)
   
   # Billing (Stripe)
   POST /v1/billing/checkout  - Create checkout session
@@ -542,7 +550,7 @@ async def register(request: RegisterRequest, req: Request):
         slug = request.company.lower().replace(" ", "-")[:50]
         org_id = await conn.fetchval("""
             INSERT INTO organizations (name, slug, tier, stripe_customer_id)
-            VALUES ($1, $2, 'pilot', $3)
+            VALUES ($1, $2, 'open', $3)
             RETURNING id
         """, request.company, slug, stripe_customer_id)
         
@@ -1219,6 +1227,68 @@ async def get_organization(org: dict = Depends(validate_api_key)):
             "certificates_count": row['cert_count'],
             "stripe_customer_id": row['stripe_customer_id'],
             "created_at": row['created_at'].isoformat() if row['created_at'] else None
+        }
+
+
+@app.get("/v1/audit")
+async def get_audit_trail(
+    limit: int = 100,
+    offset: int = 0,
+    org: dict = Depends(validate_api_key)
+):
+    """
+    Get audit trail for organization.
+    CRITICAL layer only — 24 months retention.
+    Other layers: 403 Forbidden.
+    """
+    layer = org.get('tier', 'open')
+    layer_info = LAYERS.get(layer, LAYERS['open'])
+    
+    # Only CRITICAL layer has audit trail access
+    if not layer_info.get('audit_trail_months'):
+        raise HTTPException(
+            status_code=403,
+            detail="Audit trail is only available for CRITICAL layer. Upgrade to access."
+        )
+    
+    if not db_pool:
+        return {"audit_trail": [], "layer": layer}
+    
+    retention_months = layer_info.get('audit_trail_months', 24)
+    
+    async with db_pool.acquire() as conn:
+        rows = await conn.fetch("""
+            SELECT id, action, resource_type, resource_id, details, created_at
+            FROM audit_log
+            WHERE organization_id = $1
+            AND created_at >= NOW() - INTERVAL '%s months'
+            ORDER BY created_at DESC
+            LIMIT $2 OFFSET $3
+        """ % retention_months, org['organization_id'], limit, offset)
+        
+        total = await conn.fetchval("""
+            SELECT COUNT(*) FROM audit_log
+            WHERE organization_id = $1
+            AND created_at >= NOW() - INTERVAL '%s months'
+        """ % retention_months, org['organization_id'])
+        
+        return {
+            "audit_trail": [
+                {
+                    "id": str(r['id']),
+                    "action": r['action'],
+                    "resource_type": r['resource_type'],
+                    "resource_id": str(r['resource_id']) if r['resource_id'] else None,
+                    "details": r['details'],
+                    "timestamp": r['created_at'].isoformat() if r['created_at'] else None
+                }
+                for r in rows
+            ],
+            "total": total,
+            "limit": limit,
+            "offset": offset,
+            "layer": layer,
+            "retention_months": retention_months
         }
 
 # ============================================================
