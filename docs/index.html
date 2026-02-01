@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONTO — AI Epistemic Risk</title>
+<meta name="description" content="ONTO quantifies the gap between AI confidence and accuracy.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='17' fill='white'/%3E%3Cpath d='M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z' fill='%230a0a0a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* === THEME === */
+:root {
+    --bg: #0a0a0a;
+    --bg-secondary: #121212;
+    --bg-card: #1a1a1a;
+    --bg-elevated: #242424;
+    --border: #333333;
+    --text: #fafafa;
+    --text-secondary: #a0a0a0;
+    --text-muted: #606060;
+    --danger: #dc2626;
+    --danger-subtle: rgba(220, 38, 38, 0.15);
+    --safe: #15803d;
+    --safe-subtle: rgba(21, 128, 61, 0.15);
+    --warning: #d97706;
+}
+
+/* === RESET === */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { 
+    height: 100%; 
+    overflow: hidden;
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+}
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+/* === SCREENS === */
+.screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 1;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.98);
+}
+
+/* === HEADER (persists) === */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 1;
+    transition: opacity 0.6s ease;
+}
+
+.header.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.logo-mark {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+}
+
+.logo-mark svg {
+    width: 100%;
+    height: 100%;
+}
+
+.logo-mark svg circle {
+    transition: all 0.2s;
+}
+
+/* === SIGNAL HASH === */
+.signal-hash {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 12px;
+}
+
+.signal-hash .label {
+    color: #6b7280; /* text-gray-500 */
+}
+
+.signal-hash .bytes {
+    display: flex;
+    gap: 2px;
+}
+
+.signal-hash .byte {
+    color: #15803d; /* text-green-700 */
+    animation: pulse-signal 2s infinite;
+}
+
+.signal-hash .ellipsis {
+    color: #6b7280; /* text-gray-500 */
+}
+
+.signal-hash .size {
+    color: #6b7280; /* text-gray-500 */
+    margin-left: 8px;
+}
+
+@keyframes pulse-signal {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+}
+
+/* === ORB === */
+.orb-container {
+    position: relative;
+    width: 350px;
+    height: 350px;
+    max-width: 100%;
+    cursor: pointer;
+}
+
+.orb-core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--danger) 0%, rgba(220, 38, 38, 0.3) 50%, transparent 70%);
+    box-shadow: 0 0 60px var(--danger-subtle);
+    animation: chaosCore 2.5s infinite ease-in-out;
+    transition: all 0.6s;
+}
+
+@keyframes chaosCore {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.9; }
+    50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+}
+
+.orb-core.calibrated {
+    background: radial-gradient(circle, var(--safe) 0%, rgba(21, 128, 61, 0.3) 50%, transparent 70%) !important;
+    box-shadow: 0 0 60px var(--safe-subtle) !important;
+    animation: calmCore 4s infinite ease-in-out !important;
+}
+
+@keyframes calmCore {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+    50% { transform: translate(-50%, -50%) scale(1.05); opacity: 0.85; }
+}
+
+.orb-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 2px solid var(--danger);
+    opacity: 0.3;
+    transition: all 0.6s;
+}
+
+.orb-ring:nth-child(2) { width: 180px; height: 180px; animation: ringPulse 3.5s infinite ease-out 0s; }
+.orb-ring:nth-child(3) { width: 240px; height: 240px; animation: ringPulse 3.5s infinite ease-out 0.8s; }
+.orb-ring:nth-child(4) { width: 300px; height: 300px; animation: ringPulse 3.5s infinite ease-out 1.6s; }
+
+@keyframes ringPulse {
+    0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.4; }
+    100% { transform: translate(-50%, -50%) scale(1.3); opacity: 0; }
+}
+
+.orb-ring.calibrated {
+    border-color: var(--safe) !important;
+    animation: calmRing 4s infinite ease-in-out !important;
+    opacity: 0.3 !important;
+}
+
+@keyframes calmRing {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.2; }
+    50% { transform: translate(-50%, -50%) scale(1.02); opacity: 0.35; }
+}
+
+.orb-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--danger);
+    animation: glitch 0.3s infinite;
+    transition: color 0.6s;
+    white-space: nowrap;
+}
+
+.orb-text.calibrated {
+    color: var(--safe);
+    animation: none;
+}
+
+@keyframes glitch {
+    0%, 100% { opacity: 0.9; }
+    25% { opacity: 1; transform: translate(-48%, -52%); }
+    50% { opacity: 0.7; transform: translate(-52%, -48%); }
+    75% { transform: translate(-50%, -50%); }
+}
+
+.orb-hint {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+    transition: opacity 0.4s;
+}
+
+.orb-container.calibrated .orb-hint {
+    color: var(--safe);
+}
+
+/* === SCREEN 2: WHY === */
+.screen-why h1 {
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 32px;
+}
+
+.formula {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(16px, 3vw, 22px);
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    padding: 16px 32px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+/* === SCREEN 3: INDUSTRIES === */
+.screen-industries h1 {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.industries {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    max-width: 600px;
+    margin-bottom: 32px;
+}
+
+.industry-tag {
+    padding: 10px 20px;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.industry-tag:hover {
+    border-color: var(--text-muted);
+    color: var(--text);
+}
+
+.industry-tag.active {
+    border-color: var(--safe);
+    color: var(--safe);
+    background: var(--safe-subtle);
+}
+
+.industry-info {
+    text-align: center;
+    min-height: 60px;
+}
+
+.industry-info-text {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.industry-cost {
+    font-size: 13px;
+    color: var(--warning);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* === SCREEN 4: CHOICE === */
+.screen-choice h1 {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.choice-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 700px;
+    width: 100%;
+}
+
+@media (max-width: 600px) {
+    .choice-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+.choice-card {
+    padding: 32px 24px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.choice-card.without {
+    opacity: 0.6;
+}
+
+.choice-card.with {
+    border-color: var(--safe);
+    background: var(--safe-subtle);
+}
+
+.choice-card h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.choice-card.without h3 { color: var(--text-muted); }
+.choice-card.with h3 { color: var(--safe); }
+
+.choice-consequence {
+    font-size: 15px;
+    color: var(--text-secondary);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.choice-card.without .choice-consequence { color: var(--danger); }
+.choice-card.with .choice-consequence { color: var(--safe); }
+
+/* === SCREEN 5: FINAL === */
+.screen-final {
+    text-align: center;
+}
+
+.final-content {
+    max-width: 500px;
+}
+
+.governed-text {
+    font-size: 18px;
+    color: var(--text);
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+.reference-text {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+}
+
+.pip-install {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    margin-bottom: 40px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.pip-install:hover {
+    border-color: var(--text-muted);
+}
+
+.pip-prompt {
+    color: var(--text-muted);
+}
+
+.pip-command {
+    color: var(--text-secondary);
+}
+
+.pip-copy {
+    color: var(--text-muted);
+    font-size: 11px;
+    padding: 2px 6px;
+    background: var(--bg-elevated);
+    border-radius: 4px;
+    margin-left: 8px;
+    transition: all 0.2s;
+}
+
+.pip-install:hover .pip-copy {
+    color: var(--text);
+}
+
+.final-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-secondary {
+    padding: 14px 28px;
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+    background: var(--bg-elevated);
+    color: var(--text);
+}
+
+.btn-primary {
+    padding: 14px 28px;
+    background: var(--safe-subtle);
+    color: var(--safe);
+    border: 1px solid var(--safe);
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.btn-primary:hover {
+    background: var(--safe);
+    color: white;
+}
+
+.cta-button {
+    margin-top: 40px;
+    padding: 16px 40px;
+    background: var(--safe-subtle);
+    color: var(--safe);
+    border: 1px solid var(--safe);
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.cta-button:hover {
+    background: var(--safe);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(21, 128, 61, 0.3);
+}
+
+/* === NAVIGATION DOTS === */
+.nav-dots {
+    position: fixed;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 100;
+    opacity: 1;
+    transition: opacity 0.6s ease;
+}
+
+.nav-dots.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.nav-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.nav-dot.active {
+    background: var(--safe);
+    transform: scale(1.3);
+}
+
+@media (max-width: 600px) {
+    .nav-dots { display: none; }
+    .signal-hash { font-size: 9px; gap: 2px; }
+    .signal-hash .label { display: none; }
+    .signal-hash .size { display: none; }
+    .signal-hash .ellipsis { display: none; }
+    .signal-hash .bytes { gap: 1px; }
+    .signal-hash .byte { font-size: 8px; }
+    .header { padding: 12px 16px; }
+    .orb-container { width: 280px; height: 280px; }
+    .orb-core { width: 90px; height: 90px; }
+    .orb-ring:nth-child(2) { width: 140px; height: 140px; }
+    .orb-ring:nth-child(3) { width: 190px; height: 190px; }
+    .orb-ring:nth-child(4) { width: 240px; height: 240px; }
+    .orb-text { font-size: 11px; }
+    .screen { padding: 16px; }
+    .screen-why h1 { font-size: 24px; }
+    .screen-industries h1 { font-size: 22px; }
+    .screen-choice h1 { font-size: 22px; }
+    .industry-tag { padding: 8px 14px; font-size: 13px; }
+    .cta-button { padding: 14px 32px; font-size: 15px; }
+}
+
+/* === SCROLL INDICATOR === */
+.scroll-indicator {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+    font-size: 11px;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+    z-index: 50;
+}
+
+.scroll-indicator.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.scroll-arrow {
+    width: 20px;
+    height: 20px;
+    border-left: 2px solid var(--text-muted);
+    border-bottom: 2px solid var(--text-muted);
+    transform: rotate(-45deg);
+    position: relative;
+    animation: scroll-bounce 1.5s infinite;
+}
+
+@keyframes scroll-bounce {
+    0%, 100% { top: 0; }
+    50% { top: 8px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header hidden">
+    <div class="logo">
+        <div class="logo-mark">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="18" cy="18" r="17" fill="white"/>
+                <path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/>
+            </svg>
+        </div>
+        <span>ONTO</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+        <div class="signal-hash mono">
+            <span class="label">σ(t) =</span>
+            <div class="bytes" id="signalBytes"></div>
+            <span class="ellipsis">...</span>
+            <span class="size">104 bytes</span>
+        </div>
+    </div>
+</header>
+
+<!-- NAV DOTS -->
+<div class="nav-dots hidden">
+    <div class="nav-dot active" data-screen="1"></div>
+    <div class="nav-dot" data-screen="2"></div>
+    <div class="nav-dot" data-screen="3"></div>
+    <div class="nav-dot" data-screen="4"></div>
+    <div class="nav-dot" data-screen="5"></div>
+</div>
+
+<!-- SCROLL INDICATOR -->
+<div class="scroll-indicator" id="scrollIndicator">
+    <span>scroll</span>
+    <div class="scroll-arrow"></div>
+</div>
+
+<!-- SCREEN 1: ORB -->
+<div class="screen" id="screen1">
+    <div class="orb-container" id="orbContainer" onclick="toggleOrb()">
+        <div class="orb-core" id="orbCore"></div>
+        <div class="orb-ring"></div>
+        <div class="orb-ring"></div>
+        <div class="orb-ring"></div>
+        <div class="orb-text" id="orbText">CONF: 94%</div>
+        <div class="orb-hint">touch me</div>
+    </div>
+</div>
+
+<!-- SCREEN 2: WHY -->
+<div class="screen screen-why hidden" id="screen2">
+    <h1>AI is everywhere.<br>Errors are no longer cheap.</h1>
+    <div class="formula">Risk = Confidence − Truth</div>
+</div>
+
+<!-- SCREEN 3: INDUSTRIES -->
+<div class="screen screen-industries hidden" id="screen3">
+    <h1>Where epistemic errors matter</h1>
+    <div class="industries" id="industryList">
+        <div class="industry-tag" data-info="FDA compliance · Patient safety" data-cost="$100k+">Healthcare</div>
+        <div class="industry-tag" data-info="Trading AI · AML · Systemic risk" data-cost="$1M+">Finance</div>
+        <div class="industry-tag" data-info="Mission-critical · ITAR classified" data-cost="N/A">Defense</div>
+        <div class="industry-tag" data-info="DO-178C · Zero-tolerance" data-cost="$10M+">Aviation</div>
+        <div class="industry-tag" data-info="ISO 26262 · Autonomous decisions" data-cost="$500k+">Automotive</div>
+        <div class="industry-tag" data-info="Model calibration · Foundation models" data-cost="$50k+">AI Labs</div>
+        <div class="industry-tag" data-info="Contract analysis · Liability" data-cost="$200k+">Legal</div>
+        <div class="industry-tag" data-info="AI-to-AI protocols · Physical risk" data-cost="$300k+">Robotics</div>
+        <div class="industry-tag" data-info="FedRAMP · Critical infrastructure" data-cost="$5M+">Government</div>
+    </div>
+    <div class="industry-info">
+        <div class="industry-info-text" id="industryInfoText">Select an industry</div>
+        <div class="industry-cost" id="industryCost"></div>
+    </div>
+</div>
+
+<!-- SCREEN 4: CHOICE -->
+<div class="screen screen-choice hidden" id="screen4">
+    <div class="choice-grid">
+        <div class="choice-card without">
+            <h3>Without epistemic control</h3>
+            <p class="choice-consequence">→ invisible risk</p>
+        </div>
+        <div class="choice-card with">
+            <h3>With ONTO</h3>
+            <p class="choice-consequence">→ defensible AI</p>
+        </div>
+    </div>
+    <button class="cta-button" onclick="goToScreen(5)">Continue →</button>
+</div>
+
+<!-- SCREEN 5: INSTITUTIONAL CLOSE -->
+<div class="screen screen-final hidden" id="screen5">
+    <div class="final-content">
+        <p class="governed-text">Governed by the ONTO Epistemic Risk Standard v10.0</p>
+        <div class="pip-install" onclick="copyPip()" title="Click to copy">
+            <span class="pip-prompt">$</span>
+            <span class="pip-command">pip install onto-standard</span>
+            <span class="pip-copy" id="pipCopy">copy</span>
+        </div>
+        <div class="final-buttons">
+            <a href="https://github.com/ontostandard" class="btn-secondary" target="_blank">Open the Standard</a>
+            <a href="/app" class="btn-primary">Enter the App →</a>
+        </div>
+    </div>
+</div>
+
+<script>
+// === STATE ===
+let currentScreen = 1;
+let isCalibrated = false;
+
+// === SIGNAL HASH ===
+function generateBytes() {
+    const bytes = [];
+    for (let i = 0; i < 13; i++) {
+        bytes.push(Math.floor(Math.random() * 256).toString(16).padStart(2, '0'));
+    }
+    return bytes;
+}
+
+function updateSignalHash() {
+    const container = document.getElementById('signalBytes');
+    const bytes = generateBytes();
+    container.innerHTML = bytes.map((b, i) => 
+        `<span class="byte" style="animation-delay: ${i * 0.1}s">${b}</span>`
+    ).join('');
+}
+
+updateSignalHash();
+setInterval(updateSignalHash, 3000);
+
+// === ORB ===
+function toggleOrb() {
+    const container = document.getElementById('orbContainer');
+    const core = document.getElementById('orbCore');
+    const rings = document.querySelectorAll('.orb-ring');
+    const text = document.getElementById('orbText');
+    const hint = document.getElementById('orbHint') || document.querySelector('.orb-hint');
+    
+    isCalibrated = !isCalibrated;
+    
+    if (isCalibrated) {
+        container.classList.add('calibrated');
+        core.classList.add('calibrated');
+        rings.forEach(r => r.classList.add('calibrated'));
+        text.classList.add('calibrated');
+        text.textContent = 'calibrated';
+        hint.textContent = 'Epistemic calibration enabled';
+    } else {
+        container.classList.remove('calibrated');
+        core.classList.remove('calibrated');
+        rings.forEach(r => r.classList.remove('calibrated'));
+        text.classList.remove('calibrated');
+        text.textContent = 'CONF: 94%';
+        hint.textContent = 'touch me';
+    }
+}
+
+// === NAVIGATION ===
+function goToScreen(num) {
+    if (num === currentScreen) return;
+    
+    // Hide current
+    document.getElementById('screen' + currentScreen).classList.add('hidden');
+    
+    // Show new
+    document.getElementById('screen' + num).classList.remove('hidden');
+    
+    // Update dots
+    document.querySelectorAll('.nav-dot').forEach((d, i) => {
+        d.classList.toggle('active', i + 1 === num);
+    });
+    
+    currentScreen = num;
+    
+    // Progressive reveal: header from screen 2, dots from screen 3
+    const header = document.querySelector('.header');
+    const navDots = document.querySelector('.nav-dots');
+    
+    if (num >= 2) {
+        header.classList.remove('hidden');
+    } else {
+        header.classList.add('hidden');
+    }
+    
+    if (num >= 3) {
+        navDots.classList.remove('hidden');
+    } else {
+        navDots.classList.add('hidden');
+    }
+    
+    // Hide scroll indicator on last screen
+    const scrollIndicator = document.getElementById('scrollIndicator');
+    if (scrollIndicator) {
+        scrollIndicator.classList.toggle('hidden', num === 5);
+    }
+}
+
+// Nav dot clicks
+document.querySelectorAll('.nav-dot').forEach(dot => {
+    dot.addEventListener('click', () => {
+        const screen = parseInt(dot.dataset.screen);
+        goToScreen(screen);
+    });
+});
+
+// === INDUSTRIES ===
+document.querySelectorAll('.industry-tag').forEach(tag => {
+    tag.addEventListener('click', () => {
+        document.querySelectorAll('.industry-tag').forEach(t => t.classList.remove('active'));
+        tag.classList.add('active');
+        
+        document.getElementById('industryInfoText').textContent = tag.dataset.info;
+        document.getElementById('industryCost').textContent = 'Typical failure cost: ' + tag.dataset.cost;
+    });
+});
+
+// === PIP COPY ===
+function copyPip() {
+    navigator.clipboard.writeText('pip install onto-standard').then(() => {
+        const copyEl = document.getElementById('pipCopy');
+        copyEl.textContent = 'copied!';
+        setTimeout(() => {
+            copyEl.textContent = 'copy';
+        }, 2000);
+    });
+}
+
+// === CTA ===
+function continueToApp() {
+    // Redirect to portal or app
+    window.location.href = '/app';
+}
+
+// === KEYBOARD NAV ===
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+        if (currentScreen < 5) goToScreen(currentScreen + 1);
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+        if (currentScreen > 1) goToScreen(currentScreen - 1);
+    } else if (e.key === ' ' || e.key === 'Enter') {
+        if (currentScreen === 1) toggleOrb();
+    }
+});
+
+// === SCROLL/WHEEL NAV ===
+let scrollCooldown = false;
+document.addEventListener('wheel', (e) => {
+    if (scrollCooldown) return;
+    
+    const delta = e.deltaY;
+    
+    if (delta > 30) {
+        // Scroll down
+        if (currentScreen < 5) goToScreen(currentScreen + 1);
+    } else if (delta < -30) {
+        // Scroll up
+        if (currentScreen > 1) goToScreen(currentScreen - 1);
+    }
+    
+    // Cooldown to prevent rapid scrolling
+    scrollCooldown = true;
+    setTimeout(() => scrollCooldown = false, 800);
+}, { passive: true });
+
+// === TOUCH NAV ===
+let touchStartY = 0;
+document.addEventListener('touchstart', (e) => {
+    touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+document.addEventListener('touchend', (e) => {
+    if (scrollCooldown) return;
+    
+    const touchEndY = e.changedTouches[0].clientY;
+    const diff = touchStartY - touchEndY;
+    
+    if (Math.abs(diff) > 50) {
+        if (diff > 0) {
+            // Swipe up = next
+            if (currentScreen < 5) goToScreen(currentScreen + 1);
+        } else {
+            // Swipe down = prev
+            if (currentScreen > 1) goToScreen(currentScreen - 1);
+        }
+        scrollCooldown = true;
+        setTimeout(() => scrollCooldown = false, 800);
+    }
+}, { passive: true });
+</script>
+
+</body>
+</html>
