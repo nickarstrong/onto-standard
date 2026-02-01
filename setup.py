@@ -8,8 +8,8 @@ from setuptools import setup, find_packages
 
 setup(
     name="onto-standard",
-    version="1.0.0",
-    description="ONTO Epistemic Risk Standard v1.0 Reference Implementation",
+    version="10.0.0",
+    description="ONTO Epistemic Risk Standard v10.0 Reference Implementation",
     long_description=open("README_PACKAGE.md").read(),
     long_description_content_type="text/markdown",
     author="ONTO Standards Council",
@@ -41,6 +41,6 @@ setup(
     project_urls={
         "Documentation": "https://onto-bench.org/standard",
         "Source": "https://github.com/onto-project/onto-standard",
-        "Standard": "https://onto-bench.org/standard/v1.0",
+        "Standard": "https://onto-bench.org/standard/v10.0",
     },
 )

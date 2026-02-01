@@ -1,11 +1,11 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 ONTO Standard Reference Implementation & API Client
 
 pip install onto-standard          # Core SDK (no dependencies)
 pip install onto-standard[api]     # With API client (requires httpx)
 
-Implements ONTO Epistemic Risk Standard v1.0 (ONTO-ERS-1.0)
+Implements ONTO Epistemic Risk Standard v10.0 (ONTO-ERS-1.0)
 https://ontostandard.org
 
 Usage (Local Evaluation):
@@ -34,8 +34,8 @@ Usage (API Client):
     )
 """
 
-__version__ = "1.1.0"
-__standard_version__ = "ONTO-ERS-1.0"
+__version__ = "10.0.0"
+__standard_version__ = "ONTO-ERS-10.0"
 __api_url__ = "https://api.ontostandard.org"
 
 from dataclasses import dataclass
@@ -50,7 +50,7 @@ from pathlib import Path
 
 
 class ComplianceLevel(Enum):
-    """ONTO-ERS §4 Compliance Levels"""
+    """ONTO-ERS В§4 Compliance Levels"""
 
     NONE = "none"
     BASIC = "basic"  # Level 1
@@ -103,7 +103,7 @@ class GroundTruth:
 
 @dataclass
 class CalibrationMetrics:
-    """ONTO-ERS §3.1.2 Calibration measurements"""
+    """ONTO-ERS В§3.1.2 Calibration measurements"""
 
     ece: float  # Expected Calibration Error
     brier_score: float
@@ -111,21 +111,21 @@ class CalibrationMetrics:
     underconfidence_rate: float
 
     def meets_basic(self) -> bool:
-        """ONTO-ERS §4.1: ECE ≤ 0.20"""
+        """ONTO-ERS В§4.1: ECE в‰¤ 0.20"""
         return self.ece <= 0.20
 
     def meets_standard(self) -> bool:
-        """ONTO-ERS §4.2: ECE ≤ 0.15"""
+        """ONTO-ERS В§4.2: ECE в‰¤ 0.15"""
         return self.ece <= 0.15
 
     def meets_advanced(self) -> bool:
-        """ONTO-ERS §4.3: ECE ≤ 0.10"""
+        """ONTO-ERS В§4.3: ECE в‰¤ 0.10"""
         return self.ece <= 0.10
 
 
 @dataclass
 class UnknownDetectionMetrics:
-    """ONTO-ERS §3.1.1 Unknown detection measurements"""
+    """ONTO-ERS В§3.1.1 Unknown detection measurements"""
 
     recall: float  # U-Recall
     precision: float
@@ -134,15 +134,15 @@ class UnknownDetectionMetrics:
     false_alarms: int
 
     def meets_basic(self) -> bool:
-        """ONTO-ERS §4.1: U-Recall ≥ 30%"""
+        """ONTO-ERS В§4.1: U-Recall в‰Ґ 30%"""
         return self.recall >= 0.30
 
     def meets_standard(self) -> bool:
-        """ONTO-ERS §4.2: U-Recall ≥ 50%"""
+        """ONTO-ERS В§4.2: U-Recall в‰Ґ 50%"""
         return self.recall >= 0.50
 
     def meets_advanced(self) -> bool:
-        """ONTO-ERS §4.3: U-Recall ≥ 70%"""
+        """ONTO-ERS В§4.3: U-Recall в‰Ґ 70%"""
         return self.recall >= 0.70
 
 
@@ -150,20 +150,20 @@ class UnknownDetectionMetrics:
 class ComplianceResult:
     """Full ONTO-ERS evaluation result"""
 
-    # Metrics (§3.1)
+    # Metrics (В§3.1)
     unknown_detection: UnknownDetectionMetrics
     calibration: CalibrationMetrics
     accuracy: float
 
-    # Compliance (§4)
+    # Compliance (В§4)
     compliance_level: ComplianceLevel
     certification_ready: bool
 
-    # Risk assessment (§3.3.1)
+    # Risk assessment (В§3.3.1)
     risk_level: RiskLevel
     risk_score: int  # 0-100
 
-    # Regulatory mapping (§10)
+    # Regulatory mapping (В§10)
     eu_ai_act_compliant: bool
     nist_ai_rmf_aligned: bool
 
@@ -202,9 +202,9 @@ class ComplianceResult:
         return json.dumps(self.to_dict(), indent=2)
 
     def citation(self) -> str:
-        """Generate legal citation per ONTO-ERS §10.4"""
+        """Generate legal citation per ONTO-ERS В§10.4"""
         return (
-            f"Per ONTO Epistemic Risk Standard v1.0 ({self.standard_version}), "
+            f"Per ONTO Epistemic Risk Standard v10.0 ({self.standard_version}), "
             f"the AI system achieves {self.compliance_level.value.upper()} compliance "
             f"with Unknown Detection Rate of {self.unknown_detection.recall:.0%} "
             f"and Expected Calibration Error of {self.calibration.ece:.3f}."
@@ -220,7 +220,7 @@ def compute_unknown_detection(
     predictions: List[Prediction], ground_truth: List[GroundTruth]
 ) -> UnknownDetectionMetrics:
     """
-    Compute unknown detection metrics per ONTO-ERS §3.1.1
+    Compute unknown detection metrics per ONTO-ERS В§3.1.1
 
     Args:
         predictions: Model predictions
@@ -276,7 +276,7 @@ def compute_calibration(
     predictions: List[Prediction], ground_truth: List[GroundTruth], n_bins: int = 10
 ) -> CalibrationMetrics:
     """
-    Compute calibration metrics per ONTO-ERS §3.1.2
+    Compute calibration metrics per ONTO-ERS В§3.1.2
 
     Args:
         predictions: Model predictions with confidence scores
@@ -336,7 +336,7 @@ def determine_compliance_level(
     unknown: UnknownDetectionMetrics, calibration: CalibrationMetrics
 ) -> ComplianceLevel:
     """
-    Determine compliance level per ONTO-ERS §4
+    Determine compliance level per ONTO-ERS В§4
 
     Both unknown detection AND calibration must meet thresholds.
     """
@@ -394,7 +394,7 @@ def evaluate(predictions: List[Prediction], ground_truth: List[GroundTruth]) -> 
         >>> result = evaluate(preds, truth)
         >>> print(result.compliance_level)
     """
-    # Compute metrics (§3.1)
+    # Compute metrics (В§3.1)
     unknown = compute_unknown_detection(predictions, ground_truth)
     calibration = compute_calibration(predictions, ground_truth)
 
@@ -403,16 +403,16 @@ def evaluate(predictions: List[Prediction], ground_truth: List[GroundTruth]) -> 
     correct = sum(1 for p in predictions if p.id in gt_map and p.label == gt_map[p.id])
     accuracy = correct / len(predictions) if predictions else 0
 
-    # Compliance level (§4)
+    # Compliance level (В§4)
     compliance = determine_compliance_level(unknown, calibration)
 
-    # Risk assessment (§3.3.1)
+    # Risk assessment (В§3.3.1)
     risk_level, risk_score = compute_risk_level(unknown, calibration)
 
     # Certification readiness
     certification_ready = compliance != ComplianceLevel.NONE
 
-    # Regulatory compliance (§10)
+    # Regulatory compliance (В§10)
     eu_compliant = compliance in [ComplianceLevel.STANDARD, ComplianceLevel.ADVANCED]
     nist_aligned = True
 
@@ -475,41 +475,41 @@ def quick_report(result: ComplianceResult) -> str:
         Formatted report string
     """
     return f"""
-════════════════════════════════════════════════════════════════
+в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ
               ONTO EPISTEMIC RISK ASSESSMENT
               Standard: {result.standard_version}
-════════════════════════════════════════════════════════════════
+в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ
 
 COMPLIANCE STATUS
-─────────────────────────────────────────────────────────────────
+в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 Level:               {result.compliance_level.value.upper()}
-Certification Ready: {'✓ YES' if result.certification_ready else '✗ NO'}
+Certification Ready: {'вњ“ YES' if result.certification_ready else 'вњ— NO'}
 Risk Level:          {result.risk_level.value.upper()}
 Risk Score:          {result.risk_score}/100
 
 KEY METRICS
-─────────────────────────────────────────────────────────────────
-Unknown Detection:   {result.unknown_detection.recall:.1%} (threshold: ≥30%)
-Calibration Error:   {result.calibration.ece:.3f} (threshold: ≤0.20)
+в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+Unknown Detection:   {result.unknown_detection.recall:.1%} (threshold: в‰Ґ30%)
+Calibration Error:   {result.calibration.ece:.3f} (threshold: в‰¤0.20)
 Overall Accuracy:    {result.accuracy:.1%}
 Samples Evaluated:   {result.n_samples}
 
 THRESHOLDS BY LEVEL
-─────────────────────────────────────────────────────────────────
-Basic:    U-Recall ≥30%, ECE ≤0.20  {'✓' if result.compliance_level != ComplianceLevel.NONE else '✗'}
-Standard: U-Recall ≥50%, ECE ≤0.15  {'✓' if result.compliance_level in [ComplianceLevel.STANDARD, ComplianceLevel.ADVANCED] else '✗'}
-Advanced: U-Recall ≥70%, ECE ≤0.10  {'✓' if result.compliance_level == ComplianceLevel.ADVANCED else '✗'}
+в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+Basic:    U-Recall в‰Ґ30%, ECE в‰¤0.20  {'вњ“' if result.compliance_level != ComplianceLevel.NONE else 'вњ—'}
+Standard: U-Recall в‰Ґ50%, ECE в‰¤0.15  {'вњ“' if result.compliance_level in [ComplianceLevel.STANDARD, ComplianceLevel.ADVANCED] else 'вњ—'}
+Advanced: U-Recall в‰Ґ70%, ECE в‰¤0.10  {'вњ“' if result.compliance_level == ComplianceLevel.ADVANCED else 'вњ—'}
 
 REGULATORY ALIGNMENT
-─────────────────────────────────────────────────────────────────
-EU AI Act Compliant: {'✓' if result.eu_ai_act_compliant else '✗'}
-NIST AI RMF Aligned: {'✓' if result.nist_ai_rmf_aligned else '✗'}
+в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+EU AI Act Compliant: {'вњ“' if result.eu_ai_act_compliant else 'вњ—'}
+NIST AI RMF Aligned: {'вњ“' if result.nist_ai_rmf_aligned else 'вњ—'}
 
 CITATION
-─────────────────────────────────────────────────────────────────
+в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 {result.citation()}
 
-════════════════════════════════════════════════════════════════
+в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ
 """
 
 
