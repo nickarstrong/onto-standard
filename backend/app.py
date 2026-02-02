@@ -675,6 +675,42 @@ async def login(request: LoginRequest):
             "message": "Login successful"
         }
 
+
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str
+
+@app.post("/v1/auth/change-password")
+async def change_password(request: ChangePasswordRequest, org: dict = Depends(validate_api_key)):
+    """Change password for current user"""
+    if not db_pool:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    async with db_pool.acquire() as conn:
+        # Get user by org
+        user = await conn.fetchrow(
+            "SELECT id, password_hash FROM users WHERE organization_id = $1",
+            org['organization_id']
+        )
+        
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Verify current password
+        current_hash = hash_password(request.current_password)
+        if user['password_hash'] != current_hash:
+            raise HTTPException(status_code=401, detail="Current password incorrect")
+        
+        # Update password
+        new_hash = hash_password(request.new_password)
+        await conn.execute(
+            "UPDATE users SET password_hash = $1 WHERE id = $2",
+            new_hash, user['id']
+        )
+        
+        return {"message": "Password changed successfully"}
+
 @app.post("/v1/auth/api-keys")
 async def create_api_key(
     request: CreateApiKeyRequest,
