@@ -735,7 +735,7 @@ a.info-val:hover { color: var(--text); }
             </div>
             <h1 class="auth-title">Check your email</h1>
             <p class="auth-subtitle">We sent a verification link to</p>
-            <p style="color: var(--text); font-weight: 600; margin: 8px 0 24px;" id="verify-email-display"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dba2b4aea99bbeb6bab2b7f5b8b4b6">[email&#160;protected]</a></p>
+            <p style="color: var(--text); font-weight: 600; margin: 8px 0 24px;" id="verify-email-display"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2e57415b5c6e4b434f4742004d4143">[email&#160;protected]</a></p>
             <p style="color: var(--text-muted); font-size: 14px; line-height: 1.6;">Click the link in the email to verify your account. The link expires in 24 hours.</p>
             <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
                 <p style="color: var(--text-muted); font-size: 13px;">Didn't receive the email?</p>
@@ -5470,7 +5470,7 @@ async function resendVerification() {
         const data = await response.json();
         showToast(data.message || 'Verification email sent', 'success');
     } catch (error) {
-        showToast('Demo mode - email would be resent', 'info');
+        showToast('Failed to resend email. Try again.', 'error');
     }
 }
 
@@ -5498,9 +5498,7 @@ async function checkEmailVerification() {
             showToast(data.detail || 'Verification failed', 'error');
         }
     } catch (error) {
-        // Demo mode
-        showVerifySuccess();
-        showToast('Demo mode - verification simulated', 'info');
+        showToast('Verification failed. Try again or request a new link.', 'error');
         window.history.replaceState({}, '', window.location.pathname);
     }
 }
