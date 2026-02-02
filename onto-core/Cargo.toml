@@ -1,0 +1,40 @@
+[package]
+name = "onto-core"
+version = "0.1.0"
+edition = "2021"
+description = "ONTO Stealth Compliance SDK - Rust Core"
+license = "Proprietary"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# Python bindings
+pyo3 = { version = "0.20", features = ["extension-module"] }
+
+# Crypto
+hmac = "0.12"
+sha2 = "0.10"
+ed25519-dalek = "2.1"
+
+# Async & Channels
+crossbeam-channel = "0.5"
+
+# Merkle Tree
+rs_merkle = "1.4"
+
+# HTTP client (for signal fetch)
+reqwest = { version = "0.11", features = ["blocking", "json"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Utils
+hex = "0.4"
+thiserror = "1.0"
+
+[profile.release]
+opt-level = 3
+lto = true
+strip = true
