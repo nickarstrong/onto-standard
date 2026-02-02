@@ -111,6 +111,10 @@ html, body {
     color: var(--text);
     -webkit-font-smoothing: antialiased;
 }
+.landing-view {
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+}
 .mono { font-family: 'JetBrains Mono', monospace; }
 
 /* === VIEW SWITCHING === */
@@ -371,6 +375,18 @@ body.show-portal { overflow: auto; }
     align-items: flex-start;
     gap: 40px;
     margin-bottom: 12px;
+}
+@media (max-width: 480px) {
+    .cost-calc .calc-inputs {
+        gap: 16px;
+        padding: 0 8px;
+    }
+    .cost-calc .calc-field {
+        min-width: 80px;
+    }
+    .cost-calc .slider-wrap input[type="range"] {
+        width: 70px;
+    }
 }
 .cost-calc .calc-field {
     display: flex;
@@ -796,6 +812,11 @@ body.show-portal { overflow: auto; }
     opacity: 0.6;
     transition: opacity 0.3s;
     z-index: 50;
+    cursor: pointer;
+}
+
+.scroll-indicator:hover {
+    opacity: 1;
 }
 
 .scroll-indicator.hidden {
@@ -1079,7 +1100,7 @@ body.show-portal { overflow: auto; }
 </div>
 
 <!-- SCROLL INDICATOR -->
-<div class="scroll-indicator" id="scrollIndicator">
+<div class="scroll-indicator" id="scrollIndicator" onclick="if(currentScreen < 5) goToScreen(currentScreen + 1)">
     <span>scroll</span>
     <div class="scroll-arrow"></div>
 </div>
@@ -5476,6 +5497,9 @@ function continueToApp() {
 
 // === KEYBOARD NAV ===
 document.addEventListener('keydown', (e) => {
+    // Ignore if inside portal view
+    if (document.body.classList.contains('show-portal')) return;
+    
     if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
         if (currentScreen < 5) goToScreen(currentScreen + 1);
     } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
@@ -5488,6 +5512,8 @@ document.addEventListener('keydown', (e) => {
 // === SCROLL/WHEEL NAV ===
 let scrollCooldown = false;
 document.addEventListener('wheel', (e) => {
+    // Ignore if inside portal view
+    if (document.body.classList.contains('show-portal')) return;
     if (scrollCooldown) return;
     
     const delta = e.deltaY;
@@ -5507,11 +5533,34 @@ document.addEventListener('wheel', (e) => {
 
 // === TOUCH NAV ===
 let touchStartY = 0;
+let touchStartX = 0;
+let isSwiping = false;
+
 document.addEventListener('touchstart', (e) => {
+    // Ignore if inside portal view
+    if (document.body.classList.contains('show-portal')) return;
+    
     touchStartY = e.touches[0].clientY;
+    touchStartX = e.touches[0].clientX;
+    isSwiping = false;
+}, { passive: true });
+
+document.addEventListener('touchmove', (e) => {
+    if (document.body.classList.contains('show-portal')) return;
+    
+    const touchY = e.touches[0].clientY;
+    const touchX = e.touches[0].clientX;
+    const diffY = touchStartY - touchY;
+    const diffX = touchStartX - touchX;
+    
+    // Vertical swipe detected (more vertical than horizontal)
+    if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 10) {
+        isSwiping = true;
+    }
 }, { passive: true });
 
 document.addEventListener('touchend', (e) => {
+    if (document.body.classList.contains('show-portal')) return;
     if (scrollCooldown) return;
     
     const touchEndY = e.changedTouches[0].clientY;
