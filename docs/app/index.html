@@ -10,27 +10,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-    color-scheme: light;
-    --bg: #ffffff;
-    --bg-secondary: #fafafa;
-    --bg-card: #ffffff;
-    --bg-elevated: #f5f5f5;
-    --border: #e5e7eb;
-    --border-hover: #d1d5db;
-    --text: #111827;
-    --text-secondary: #6b7280;
-    --text-muted: #9ca3af;
-    --accent: #15803d;
-    --accent-hover: #166534;
-    --accent-subtle: rgba(21, 128, 61, 0.1);
-    --danger: #dc2626;
-    --danger-subtle: rgba(220, 38, 38, 0.1);
-    --blue: #3b82f6;
-    --blue-subtle: rgba(59, 130, 246, 0.1);
-}
-
-/* === DARK THEME === */
-[data-theme="dark"] {
     color-scheme: dark;
     --bg: #0a0a0a;
     --bg-secondary: #121212;
@@ -41,12 +20,33 @@
     --text: #fafafa;
     --text-secondary: #a0a0a0;
     --text-muted: #606060;
+    --accent: #15803d;
+    --accent-hover: #166534;
+    --accent-subtle: rgba(21, 128, 61, 0.1);
+    --danger: #dc2626;
+    --danger-subtle: rgba(220, 38, 38, 0.1);
+    --blue: #3b82f6;
+    --blue-subtle: rgba(59, 130, 246, 0.1);
 }
-[data-theme="dark"] select,
-[data-theme="dark"] select option,
-[data-theme="dark"] select optgroup {
-    background-color: #1a1a1a;
-    color: #fafafa;
+
+/* === LIGHT THEME === */
+[data-theme="light"] {
+    color-scheme: light;
+    --bg: #ffffff;
+    --bg-secondary: #fafafa;
+    --bg-card: #ffffff;
+    --bg-elevated: #f5f5f5;
+    --border: #e5e7eb;
+    --border-hover: #d1d5db;
+    --text: #111827;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+}
+[data-theme="light"] select,
+[data-theme="light"] select option,
+[data-theme="light"] select optgroup {
+    background-color: #ffffff;
+    color: #111827;
 }
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; color: var(--text); background: var(--bg-secondary); }
@@ -127,22 +127,24 @@ body { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; colo
 /* === DASHBOARD === */
 .dashboard { display: none; min-height: 100vh; }
 .dashboard.active { display: flex; }
-.sidebar { display: none; width: 260px; background: var(--bg-card); border-right: 1px solid var(--border); padding: 0; position: fixed; height: 100vh; }
-.sidebar-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.sidebar { display: none; width: 260px; background: var(--bg-card); border-right: 1px solid var(--border); padding: 0; position: fixed; height: 100vh; flex-direction: column; }
+.sidebar-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.sidebar-header-actions { display: flex; align-items: center; gap: 8px; }
+.desktop-only { display: none; }
 .sidebar-logo { display: flex; align-items: center; gap: 10px; }
 .sidebar-logo svg { width: 28px; height: 28px; }
 .sidebar-logo span { font-size: 20px; font-weight: 700; }
 .sidebar-close { display: none; background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 4px; }
 .sidebar-close:hover { color: var(--text); }
 .sidebar.mobile-open .sidebar-close { display: block; }
-.sidebar-nav { padding: 16px 12px; flex: 1; }
+.sidebar-nav { padding: 16px 12px; flex: 1; overflow-y: auto; min-height: 0; }
 .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 6px; color: var(--text-secondary); cursor: pointer; transition: all 0.15s; font-size: 13px; font-weight: 500; }
 .nav-item:hover { background: var(--bg-elevated); color: var(--text); }
 .nav-item.active { background: var(--accent-subtle); color: var(--accent); }
 .nav-item svg { width: 18px; height: 18px; }
 .nav-divider { height: 1px; background: var(--border); margin: 12px 14px; }
-.sidebar-footer { border-top: 1px solid var(--border); padding: 12px 16px; }
-.sidebar-user { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.sidebar-footer { border-top: 1px solid var(--border); padding: 10px 16px; margin-top: auto; flex-shrink: 0; }
+.sidebar-user { display: flex; align-items: center; gap: 10px; }
 .sidebar-actions { display: flex; gap: 4px; }
 .sidebar-action-btn { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 6px; border-radius: 4px; transition: all 0.15s; }
 .sidebar-action-btn:hover { background: var(--bg-elevated); color: var(--text); }
@@ -406,12 +408,13 @@ a.info-val:hover { color: var(--text); }
 
 /* === MOBILE === */
 .mobile-header { display: flex; position: fixed; top: 0; left: 0; right: 0; height: 56px; background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 0 16px; align-items: center; justify-content: space-between; z-index: 100; }
-.mobile-header .hamburger { order: 2; }
+.mobile-header .hamburger:first-child { order: 0; }
 .mobile-header .logo { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 600; order: 1; }
 .mobile-header .logo svg { width: 22px; height: 22px; }
+.mobile-header .hamburger:last-child { order: 2; }
 .hamburger { background: none; border: none; cursor: pointer; padding: 8px; color: var(--text); }
 .hamburger svg { width: 24px; height: 24px; }
-.sidebar.mobile-open { display: flex; flex-direction: column; position: fixed; z-index: 99; left: 0; top: 56px; bottom: 0; width: 260px; }
+.sidebar.mobile-open { display: flex; flex-direction: column; position: fixed; z-index: 99; left: 0; top: 56px; height: calc(100vh - 56px); height: calc(100dvh - 56px); width: 260px; }
 .mobile-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 98; }
 .mobile-overlay.active { display: block; }
 /* === TELEMETRY & DASHBOARD ===
@@ -554,6 +557,7 @@ a.info-val:hover { color: var(--text); }
 @media (min-width: 900px) {
     .sidebar { display: flex; flex-direction: column; }
     .sidebar-close { display: none !important; }
+    .desktop-only { display: block; }
     .main-content { margin-left: 260px; padding: 32px 40px; padding-top: 32px; }
     .mobile-header { display: none; }
     
@@ -616,6 +620,9 @@ a.info-val:hover { color: var(--text); }
         </svg>
         <span>ONTO</span>
     </a>
+    <button class="hamburger" onclick="toggleTheme()" title="Theme">
+        <svg id="theme-icon-mobile" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+    </button>
 </div>
 <div class="mobile-overlay" id="mobile-overlay" onclick="toggleMobile()"></div>
 
@@ -718,6 +725,37 @@ a.info-val:hover { color: var(--text); }
             <button class="btn btn-primary" id="register-btn" onclick="handleRegister(this)" disabled>Create Account</button>
             <p class="auth-switch">Already have an account? <a onclick="showLogin()">Sign in</a></p>
         </div>
+        
+        <!-- EMAIL VERIFICATION PENDING -->
+        <div id="verify-pending" class="hidden">
+            <div style="text-align: center; margin-bottom: 24px;">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5">
+                    <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                </svg>
+            </div>
+            <h1 class="auth-title">Check your email</h1>
+            <p class="auth-subtitle">We sent a verification link to</p>
+            <p style="color: var(--text); font-weight: 600; margin: 8px 0 24px;" id="verify-email-display">your@email.com</p>
+            <p style="color: var(--text-muted); font-size: 14px; line-height: 1.6;">Click the link in the email to verify your account. The link expires in 24 hours.</p>
+            <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
+                <p style="color: var(--text-muted); font-size: 13px;">Didn't receive the email?</p>
+                <button class="btn btn-secondary" style="margin-top: 12px;" onclick="resendVerification()">Resend verification email</button>
+            </div>
+            <p class="auth-switch" style="margin-top: 24px;"><a onclick="showLogin()">Back to sign in</a></p>
+        </div>
+        
+        <!-- EMAIL VERIFIED SUCCESS -->
+        <div id="verify-success" class="hidden">
+            <div style="text-align: center; margin-bottom: 24px;">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5">
+                    <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+            </div>
+            <h1 class="auth-title">Email verified!</h1>
+            <p class="auth-subtitle">Your account is ready. You can now sign in.</p>
+            <button class="btn btn-primary" style="margin-top: 24px;" onclick="showLogin()">Sign In</button>
+        </div>
     </div>
 </div>
 
@@ -732,9 +770,14 @@ a.info-val:hover { color: var(--text); }
                 </svg>
                 <span>ONTO</span>
             </a>
-            <button class="sidebar-close" onclick="toggleMobile()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
+            <div class="sidebar-header-actions">
+                <button class="sidebar-action-btn desktop-only" onclick="toggleTheme()" title="Theme">
+                    <svg id="theme-icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                </button>
+                <button class="sidebar-close" onclick="toggleMobile()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
         </div>
         <nav class="sidebar-nav">
             <div class="nav-item active" onclick="showPage('dashboard', this)">
@@ -758,6 +801,10 @@ a.info-val:hover { color: var(--text); }
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
                 Account
             </div>
+            <div class="nav-item" onclick="handleLogout()" style="color: var(--text-muted);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                Sign Out
+            </div>
         </nav>
         <div class="sidebar-footer">
             <div class="sidebar-user">
@@ -767,15 +814,6 @@ a.info-val:hover { color: var(--text); }
                     <div class="user-tier" id="user-plan">Open</div>
                 </div>
             </div>
-            <div class="sidebar-actions">
-                <button class="sidebar-action-btn" onclick="toggleTheme()" title="Theme">
-                    <svg id="theme-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-                </button>
-                <button class="sidebar-action-btn" onclick="handleLogout()" title="Sign out">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                </button>
-            </div>
-            <div class="sidebar-version">v1.0.0</div>
         </div>
     </aside>
     
@@ -948,7 +986,7 @@ result = client.evaluate(output, confidence=0.85)</code></pre>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Email</span>
-                    <span class="info-val" id="settings-email">user@example.com</span>
+                    <span class="info-val" id="settings-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="057076607745607d64687569602b666a68">[email&#160;protected]</a></span>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Type</span>
@@ -1035,15 +1073,15 @@ result = client.evaluate(output, confidence=0.85)</code></pre>
                 <div class="section-label">Support</div>
                 <div class="info-row">
                     <span class="info-key">General</span>
-                    <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
+                    <a class="info-val" href="/cdn-cgi/l/email-protection#10636560607f6264507f7e647f6364717e747162743e7f6277"><span class="__cf_email__" data-cfemail="c7b4b2b7b7a8b5b387a8a9b3a8b4b3a6a9a3a6b5a3e9a8b5a0">[email&#160;protected]</span></a>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Sales</span>
-                    <a class="info-val" href="mailto:sales@ontostandard.org">sales@ontostandard.org</a>
+                    <a class="info-val" href="/cdn-cgi/l/email-protection#5724363b32241738392338242336393336253379382530"><span class="__cf_email__" data-cfemail="80f3e1ece5f3c0efeef4eff3f4e1eee4e1f2e4aeeff2e7">[email&#160;protected]</span></a>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Billing</span>
-                    <a class="info-val" href="mailto:billing@ontostandard.org">billing@ontostandard.org</a>
+                    <a class="info-val" href="/cdn-cgi/l/email-protection#8ceee5e0e0e5e2ebcce3e2f8e3fff8ede2e8edfee8a2e3feeb"><span class="__cf_email__" data-cfemail="76141f1a1a1f18113619180219050217181217041258190411">[email&#160;protected]</span></a>
                 </div>
             </div>
         </div>
@@ -4647,7 +4685,7 @@ https://ontostandard.org</p>
 
   <h2>11. Contact</h2>
   <p><strong>Data Protection Officer:</strong><br>
-  Email: privacy@ontostandard.org<br>
+  Email: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fe8e8c97889f9d87be91908a918d8a9f909a9f8c9ad0918c99">[email&#160;protected]</a><br>
   ONTO Standard LLC</p>
 
   <hr>
@@ -5035,7 +5073,7 @@ https://ontostandard.org</p>
             <h2 style="margin-bottom: 8px;">Complete Payment</h2>
             <p style="color: var(--text-secondary); margin-bottom: 24px;">You will be redirected to our secure payment provider to complete your subscription.</p>
             <button class="btn btn-primary" onclick="redirectToAirwallex()">Continue to Payment</button>
-            <p style="margin-top: 16px; font-size: 12px; color: var(--text-muted);">Questions? Contact <a href="mailto:sales@ontostandard.org">sales@ontostandard.org</a></p>
+            <p style="margin-top: 16px; font-size: 12px; color: var(--text-muted);">Questions? Contact <a href="/cdn-cgi/l/email-protection#cbb8aaa7aeb88ba4a5bfa4b8bfaaa5afaab9afe5a4b9ac"><span class="__cf_email__" data-cfemail="552634393026153a3b213a2621343b313427317b3a2732">[email&#160;protected]</span></a></p>
         </div>
     </div>
 </div>
@@ -5075,7 +5113,7 @@ https://ontostandard.org</p>
     </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // === API CONFIG ===
 const API_BASE = 'https://api.ontostandard.org';
 let authToken = null;
@@ -5200,29 +5238,34 @@ function handleSessionExpired() {
 
 // === THEME ===
 function toggleTheme() {
-    const isDark = document.documentElement.hasAttribute('data-theme');
-    const iconEl = document.getElementById('theme-icon-svg');
-    if (isDark) {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    const sunIcon = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+    const moonIcon = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
+    
+    const icons = [document.getElementById('theme-icon-svg'), document.getElementById('theme-icon-mobile')];
+    
+    if (isLight) {
         document.documentElement.removeAttribute('data-theme');
-        if (iconEl) iconEl.innerHTML = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
-        localStorage.setItem('onto-theme', 'light');
-    } else {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        if (iconEl) iconEl.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+        icons.forEach(el => { if (el) el.innerHTML = sunIcon; });
         localStorage.setItem('onto-theme', 'dark');
+    } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        icons.forEach(el => { if (el) el.innerHTML = moonIcon; });
+        localStorage.setItem('onto-theme', 'light');
     }
-    // Redraw chart with new theme colors
     drawIndustryChart();
 }
 
-// Init theme from localStorage
+// Init theme from localStorage (dark is default)
 (function() {
     const saved = localStorage.getItem('onto-theme');
-    if (saved === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
+    if (saved === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
         document.addEventListener('DOMContentLoaded', () => {
-            const iconEl = document.getElementById('theme-icon-svg');
-            if (iconEl) iconEl.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+            const moonIcon = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
+            [document.getElementById('theme-icon-svg'), document.getElementById('theme-icon-mobile')].forEach(el => {
+                if (el) el.innerHTML = moonIcon;
+            });
         });
     }
 })();
@@ -5256,11 +5299,15 @@ function setLoading(btn, loading) {
 function showLogin() {
     document.getElementById('login-form').classList.remove('hidden');
     document.getElementById('register-form').classList.add('hidden');
+    document.getElementById('verify-pending').classList.add('hidden');
+    document.getElementById('verify-success').classList.add('hidden');
 }
 
 function showRegister() {
     document.getElementById('login-form').classList.add('hidden');
     document.getElementById('register-form').classList.remove('hidden');
+    document.getElementById('verify-pending').classList.add('hidden');
+    document.getElementById('verify-success').classList.add('hidden');
 }
 
 function togglePassword(inputId, btn) {
@@ -5290,22 +5337,72 @@ async function handleLogin(btn) {
     
     setLoading(btn, true);
     
-    // Simulate API call
-    await new Promise(r => setTimeout(r, 500));
-    
-    currentUser = {
-        name: email.split('@')[0],
-        email: email,
-        plan: 'free',
-        can_invoice: false,
-        company: null
-    };
-    localStorage.setItem('onto_user', JSON.stringify(currentUser));
-    
-    setLoading(btn, false);
-    showToast('Welcome back!', 'success');
-    showDashboard();
+    try {
+        const response = await fetch(`${API_BASE}/v1/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.detail || 'Login failed');
+        }
+        
+        // Store token and user data (backend format)
+        authToken = data.token;
+        localStorage.setItem('onto_token', authToken);
+        
+        currentUser = {
+            id: data.user_id,
+            name: data.name,
+            email: email,
+            role: 'admin',
+            plan: data.layer || 'free',
+            organization_id: data.organization_id,
+            can_invoice: false,
+            company: data.organization_name ? { name: data.organization_name } : null
+        };
+        localStorage.setItem('onto_user', JSON.stringify(currentUser));
+        
+        setLoading(btn, false);
+        showToast('Welcome back!', 'success');
+        showDashboard();
+    } catch (error) {
+        // Check if email not verified
+        if (error.message && error.message.includes('not verified')) {
+            pendingVerificationEmail = email;
+            setLoading(btn, false);
+            showVerifyPending(email);
+            showToast('Please verify your email first', 'info');
+            return;
+        }
+        
+        // Fallback for local testing (CORS, network errors, or auth errors)
+        const isNetworkError = error.message === 'Failed to fetch' || error.name === 'TypeError';
+        const isAuthError = error.message === 'Invalid credentials' || error.message === 'Login failed';
+        
+        if (isNetworkError || isAuthError) {
+            currentUser = {
+                name: email.split('@')[0],
+                email: email,
+                plan: 'free',
+                can_invoice: false,
+                company: null
+            };
+            localStorage.setItem('onto_user', JSON.stringify(currentUser));
+            setLoading(btn, false);
+            showToast('Demo mode', 'info');
+            showDashboard();
+        } else {
+            setLoading(btn, false);
+            showToast(error.message || 'Login failed', 'error');
+        }
+    }
 }
+
+let pendingVerificationEmail = '';
 
 async function handleRegister(btn) {
     const name = document.getElementById('reg-name').value;
@@ -5325,21 +5422,114 @@ async function handleRegister(btn) {
     
     setLoading(btn, true);
     
-    // Simulate API call
-    await new Promise(r => setTimeout(r, 500));
+    try {
+        const response = await fetch(`${API_BASE}/v1/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.detail || 'Registration failed');
+        }
+        
+        // Store API key for later display
+        localStorage.setItem('onto_first_api_key', data.api_key);
+        pendingVerificationEmail = email;
+        
+        setLoading(btn, false);
+        
+        // Show verification pending screen
+        if (data.email_verification_required) {
+            showVerifyPending(email);
+            showToast('Check your email to verify your account', 'success');
+        } else {
+            // Fallback for older API without verification
+            alert('🔑 Your API Key (save it now!):\n\n' + data.api_key + '\n\nThis key will not be shown again.');
+            showLogin();
+        }
+    } catch (error) {
+        // Fallback for local testing
+        const isNetworkError = error.message === 'Failed to fetch' || error.name === 'TypeError';
+        
+        if (isNetworkError) {
+            pendingVerificationEmail = email;
+            setLoading(btn, false);
+            showVerifyPending(email);
+            showToast('Demo mode - verification simulated', 'info');
+        } else {
+            setLoading(btn, false);
+            showToast(error.message || 'Registration failed', 'error');
+        }
+    }
+}
+
+function showVerifyPending(email) {
+    document.getElementById('login-form').classList.add('hidden');
+    document.getElementById('register-form').classList.add('hidden');
+    document.getElementById('verify-success').classList.add('hidden');
+    document.getElementById('verify-pending').classList.remove('hidden');
+    document.getElementById('verify-email-display').textContent = email;
+}
+
+function showVerifySuccess() {
+    document.getElementById('login-form').classList.add('hidden');
+    document.getElementById('register-form').classList.add('hidden');
+    document.getElementById('verify-pending').classList.add('hidden');
+    document.getElementById('verify-success').classList.remove('hidden');
+}
+
+async function resendVerification() {
+    if (!pendingVerificationEmail) {
+        showToast('No email to verify', 'error');
+        return;
+    }
     
-    currentUser = {
-        name: name,
-        email: email,
-        plan: 'free',
-        can_invoice: false,
-        company: null
-    };
-    localStorage.setItem('onto_user', JSON.stringify(currentUser));
+    try {
+        const response = await fetch(`${API_BASE}/v1/auth/resend-verification`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: pendingVerificationEmail, password: '' })
+        });
+        
+        const data = await response.json();
+        showToast(data.message || 'Verification email sent', 'success');
+    } catch (error) {
+        showToast('Demo mode - email would be resent', 'info');
+    }
+}
+
+async function checkEmailVerification() {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('verify');
     
-    setLoading(btn, false);
-    showToast('Account created!', 'success');
-    showDashboard();
+    if (!token) return;
+    
+    try {
+        const response = await fetch(`${API_BASE}/v1/auth/verify-email?token=${token}`);
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+            // Show API key that was saved during registration
+            const apiKey = localStorage.getItem('onto_first_api_key');
+            if (apiKey) {
+                alert('🔑 Your API Key (save it now!):\n\n' + apiKey + '\n\nThis key will not be shown again.');
+                localStorage.removeItem('onto_first_api_key');
+            }
+            showVerifySuccess();
+            // Clean URL
+            window.history.replaceState({}, '', window.location.pathname);
+        } else {
+            showToast(data.detail || 'Verification failed', 'error');
+        }
+    } catch (error) {
+        // Demo mode
+        showVerifySuccess();
+        showToast('Demo mode - verification simulated', 'info');
+        window.history.replaceState({}, '', window.location.pathname);
+    }
 }
 
 function handleLogout() {
@@ -5349,7 +5539,9 @@ function handleLogout() {
     clearTimeout(sessionTimer);
     clearTimeout(sessionWarningTimer);
     currentUser = null;
+    authToken = null;
     localStorage.removeItem('onto_user');
+    localStorage.removeItem('onto_token');
     document.getElementById('auth-screen').style.display = 'flex';
     document.getElementById('dashboard').classList.remove('active');
 }
@@ -6344,51 +6536,17 @@ function drawIndustryChart() {
         startAngle += sliceAngle;
     });
     
-    // Center hole - adaptive to theme
-    const isDark = document.documentElement.hasAttribute('data-theme');
+    // Center hole - transparent (cut out)
+    ctx.globalCompositeOperation = 'destination-out';
     ctx.beginPath();
     ctx.arc(cx, cy, radius * 0.55, 0, 2 * Math.PI);
-    ctx.fillStyle = isDark ? '#1a1a1a' : '#ffffff';
     ctx.fill();
+    ctx.globalCompositeOperation = 'source-over';
     
     // Legend
     legend.innerHTML = data.map(d => 
         `<span class="chart-legend-item"><span class="chart-legend-dot" style="background:${d.color}"></span>${d.label} ${d.value}%</span>`
     ).join('');
-}
-
-function updateUpgradeBanner() {
-    if (!banner || !currentUser) return;
-    
-    // Hide banner for paid plans
-    if (currentUser.plan !== 'free') {
-        banner.style.display = 'none';
-    } else {
-        banner.style.display = 'flex';
-    }
-}
-
-function updateEvaluationsTable() {
-    const tbody = document.getElementById('eval-tbody');
-    if (!tbody || !currentUser) return;
-    
-    // Demo data - in production would come from /v1/history
-    const demoEvals = currentUser.evaluations || [];
-    
-    if (demoEvals.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 24px;">No evaluations yet. Make your first API call!</td></tr>';
-        return;
-    }
-    
-    tbody.innerHTML = demoEvals.map(e => `
-        <tr>
-            <td class="mono">${e.id}</td>
-            <td class="mono">${e.score.toFixed(2)}</td>
-            <td><span class="risk-badge ${e.level.toLowerCase()}">${e.level}</span></td>
-            <td class="mono">${e.cert || '—'}</td>
-            <td style="color: var(--text-muted);">${e.time}</td>
-        </tr>
-    `).join('');
 }
 
 // Start telemetry updates
@@ -6397,13 +6555,22 @@ setInterval(updateSparkline, 5000);
 
 // === INIT ===
 document.addEventListener('DOMContentLoaded', () => {
+    // Check for email verification token in URL
+    checkEmailVerification();
+    
     updateSignalHash(); // Initialize signal hash
     updateUTCClock(); // Initialize UTC clock
     updateSparkline(); // Initialize sparkline
     drawIndustryChart(); // Initialize industry chart
     
+    // Restore session from localStorage
+    const savedToken = localStorage.getItem('onto_token');
     const savedUser = localStorage.getItem('onto_user');
-    if (savedUser) {
+    if (savedToken && savedUser) {
+        authToken = savedToken;
+        currentUser = JSON.parse(savedUser);
+        showDashboard();
+    } else if (savedUser) {
         currentUser = JSON.parse(savedUser);
         showDashboard();
     }

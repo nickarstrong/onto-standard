@@ -68,6 +68,19 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 JWT_SECRET = os.getenv("JWT_SECRET", "dev-jwt-secret-change-in-prod")
 SIGNAL_URL = os.getenv("SIGNAL_URL", "https://signal.ontostandard.org")
 NOTARY_URL = os.getenv("NOTARY_URL", "https://notary.ontostandard.org")
+RESEND_API_KEY = os.getenv("RESEND_API_KEY")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "https://ontostandard.org")
+
+# Resend email client
+resend_client = None
+try:
+    import resend
+    if RESEND_API_KEY:
+        resend.api_key = RESEND_API_KEY
+        resend_client = resend
+        print("[API] Resend email client initialized")
+except ImportError:
+    print("[API] Resend not installed - email verification disabled")
 
 # Stripe
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
@@ -259,6 +272,49 @@ def generate_api_key() -> tuple[str, str]:
     full_key = f"onto_{random_part}"
     prefix = f"onto_{random_part[:4]}"
     return full_key, prefix
+
+def generate_verification_token() -> str:
+    """Generate a secure verification token"""
+    return secrets.token_urlsafe(32)
+
+async def send_verification_email(email: str, name: str, token: str) -> bool:
+    """Send verification email via Resend"""
+    if not resend_client:
+        print(f"[API] Email disabled - would send verification to {email}")
+        return False
+    
+    verify_url = f"{FRONTEND_URL}/app/?verify={token}"
+    
+    try:
+        resend_client.Emails.send({
+            "from": "ONTO <onboarding@resend.dev>",
+            "to": email,
+            "subject": "Verify your ONTO account",
+            "html": f"""
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+                <div style="text-align: center; margin-bottom: 32px;">
+                    <div style="width: 48px; height: 48px; background: #0a0a0a; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;">
+                        <span style="color: white; font-weight: bold; font-size: 20px;">O</span>
+                    </div>
+                </div>
+                <h1 style="color: #111; font-size: 24px; margin-bottom: 16px;">Verify your email</h1>
+                <p style="color: #666; font-size: 16px; line-height: 1.6;">Hi {name},</p>
+                <p style="color: #666; font-size: 16px; line-height: 1.6;">Click the button below to verify your email address and activate your ONTO account.</p>
+                <div style="margin: 32px 0;">
+                    <a href="{verify_url}" style="background: #15803d; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">Verify Email</a>
+                </div>
+                <p style="color: #999; font-size: 14px;">Or copy this link: {verify_url}</p>
+                <p style="color: #999; font-size: 14px; margin-top: 32px;">This link expires in 24 hours.</p>
+                <hr style="border: none; border-top: 1px solid #eee; margin: 32px 0;">
+                <p style="color: #999; font-size: 12px;">ONTO - Epistemic Risk Management</p>
+            </div>
+            """
+        })
+        print(f"[API] Verification email sent to {email}")
+        return True
+    except Exception as e:
+        print(f"[API] Failed to send verification email: {e}")
+        return False
 
 async def validate_api_key(x_api_key: str = Header(...)) -> dict:
     """Validate API key and return organization info"""
@@ -480,30 +536,6 @@ async def health():
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
-# TEMPORARY - DELETE AFTER USE
-@app.get("/setup-superadmin-temp-xK9mN2pL")
-async def setup_superadmin_temp():
-    """Temporary endpoint to create superadmin - DELETE AFTER USE"""
-    if not db_pool:
-        return {"error": "No database"}
-    async with db_pool.acquire() as conn:
-        org_id = await conn.fetchval("""
-            INSERT INTO organizations (name, slug, tier, profile_data)
-            VALUES ('ONTO Admin', 'onto-admin', 'critical', '{"contact_name": "Tommy"}')
-            ON CONFLICT (slug) DO UPDATE SET tier = 'critical'
-            RETURNING id
-        """)
-        password_hash = "46fc8030058572c651870693063e74362d95d8f3de2d0b6f3da7375e874e93bf"
-        existing = await conn.fetchval("SELECT id FROM users WHERE email = $1", "aristokratrom@gmail.com")
-        if existing:
-            await conn.execute("UPDATE users SET role = 'superadmin', password_hash = $1, organization_id = $2, is_active = true WHERE email = 'aristokratrom@gmail.com'", password_hash, org_id)
-            action = "updated"
-        else:
-            await conn.execute("INSERT INTO users (email, name, password_hash, organization_id, role, is_active) VALUES ('aristokratrom@gmail.com', 'Tommy', $1, $2, 'superadmin', true)", password_hash, org_id)
-            action = "created"
-        user = await conn.fetchrow("SELECT id, email, role FROM users WHERE email = 'aristokratrom@gmail.com'")
-        return {"status": action, "user_id": str(user['id']), "role": user['role']}
-
 @app.get("/v1/pricing")
 async def get_pricing():
     return {
@@ -577,7 +609,7 @@ async def get_current_signal(org: dict = Depends(validate_api_key)):
 
 @app.post("/v1/auth/register")
 async def register(request: RegisterRequest, req: Request):
-    """Register a new user (minimal friction)"""
+    """Register a new user with email verification"""
     # Rate limit
     client_ip = req.client.host if req.client else "unknown"
     key = f"register:{client_ip}"
@@ -631,13 +663,16 @@ async def register(request: RegisterRequest, req: Request):
                 RETURNING id
             """, org_name, slug, stripe_customer_id, json.dumps(profile_data))
         
-        # Create user
+        # Create user with verification token
         password_hash = hash_password(request.password)
+        verification_token = generate_verification_token()
+        token_expires = datetime.now(timezone.utc) + timedelta(hours=24)
+        
         user_id = await conn.fetchval("""
-            INSERT INTO users (email, name, password_hash, organization_id, role)
-            VALUES ($1, $2, $3, $4, 'admin')
+            INSERT INTO users (email, name, password_hash, organization_id, role, email_verified, verification_token, verification_token_expires)
+            VALUES ($1, $2, $3, $4, 'admin', false, $5, $6)
             RETURNING id
-        """, request.email, request.name, password_hash, org_id)
+        """, request.email, request.name, password_hash, org_id, verification_token, token_expires)
         
         # Create API key
         full_key, prefix = generate_api_key()
@@ -653,12 +688,17 @@ async def register(request: RegisterRequest, req: Request):
             VALUES ($1, $2, 'register', 'organization', $3)
         """, org_id, user_id, json.dumps({"name": request.name}))
         
+        # Send verification email
+        email_sent = await send_verification_email(request.email, request.name, verification_token)
+        
         return {
             "organization_id": str(org_id),
             "user_id": str(user_id),
             "api_key": full_key,
             "layer": "open",
-            "message": "Registration successful. Save your API key - it won't be shown again."
+            "email_verification_required": True,
+            "email_sent": email_sent,
+            "message": "Registration successful. Please check your email to verify your account."
         }
 
 @app.post("/v1/auth/login")
@@ -670,7 +710,7 @@ async def login(request: LoginRequest):
     async with db_pool.acquire() as conn:
         password_hash = hash_password(request.password)
         row = await conn.fetchrow("""
-            SELECT u.id, u.name, u.organization_id, u.role, o.name as org_name, o.tier
+            SELECT u.id, u.name, u.organization_id, u.role, u.email_verified, o.name as org_name, o.tier
             FROM users u
             JOIN organizations o ON u.organization_id = o.id
             WHERE u.email = $1 AND u.password_hash = $2 AND u.is_active = true
@@ -678,6 +718,10 @@ async def login(request: LoginRequest):
         
         if not row:
             raise HTTPException(status_code=401, detail="Invalid credentials")
+        
+        # Check email verification
+        if not row.get('email_verified', True):  # Default True for old users
+            raise HTTPException(status_code=403, detail="Email not verified. Please check your inbox.")
         
         # Update last login
         await conn.execute(
@@ -697,6 +741,78 @@ async def login(request: LoginRequest):
             "role": row['role'],
             "token": token,
             "message": "Login successful"
+        }
+
+@app.get("/v1/auth/verify-email")
+async def verify_email(token: str):
+    """Verify email with token"""
+    if not db_pool:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    async with db_pool.acquire() as conn:
+        # Find user by token
+        row = await conn.fetchrow("""
+            SELECT id, email, name, verification_token_expires
+            FROM users 
+            WHERE verification_token = $1 AND email_verified = false
+        """, token)
+        
+        if not row:
+            raise HTTPException(status_code=400, detail="Invalid or expired verification link")
+        
+        # Check expiry
+        if row['verification_token_expires'] and row['verification_token_expires'] < datetime.now(timezone.utc):
+            raise HTTPException(status_code=400, detail="Verification link expired. Please request a new one.")
+        
+        # Mark as verified
+        await conn.execute("""
+            UPDATE users 
+            SET email_verified = true, verification_token = NULL, verification_token_expires = NULL
+            WHERE id = $1
+        """, row['id'])
+        
+        return {
+            "success": True,
+            "email": row['email'],
+            "message": "Email verified successfully. You can now log in."
+        }
+
+@app.post("/v1/auth/resend-verification")
+async def resend_verification(request: LoginRequest):
+    """Resend verification email"""
+    if not db_pool:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    async with db_pool.acquire() as conn:
+        # Find user
+        row = await conn.fetchrow("""
+            SELECT id, name, email_verified
+            FROM users WHERE email = $1
+        """, request.email)
+        
+        if not row:
+            # Don't reveal if email exists
+            return {"message": "If this email is registered, a verification link will be sent."}
+        
+        if row.get('email_verified', True):
+            return {"message": "Email already verified. You can log in."}
+        
+        # Generate new token
+        new_token = generate_verification_token()
+        token_expires = datetime.now(timezone.utc) + timedelta(hours=24)
+        
+        await conn.execute("""
+            UPDATE users 
+            SET verification_token = $1, verification_token_expires = $2
+            WHERE id = $3
+        """, new_token, token_expires, row['id'])
+        
+        # Send email
+        email_sent = await send_verification_email(request.email, row['name'], new_token)
+        
+        return {
+            "message": "Verification email sent. Please check your inbox.",
+            "email_sent": email_sent
         }
 
 
