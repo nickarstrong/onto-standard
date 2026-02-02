@@ -480,6 +480,30 @@ async def health():
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
+# TEMPORARY - DELETE AFTER USE
+@app.get("/setup-superadmin-temp-xK9mN2pL")
+async def setup_superadmin_temp():
+    """Temporary endpoint to create superadmin - DELETE AFTER USE"""
+    if not db_pool:
+        return {"error": "No database"}
+    async with db_pool.acquire() as conn:
+        org_id = await conn.fetchval("""
+            INSERT INTO organizations (name, slug, tier, profile_data)
+            VALUES ('ONTO Admin', 'onto-admin', 'critical', '{"contact_name": "Tommy"}')
+            ON CONFLICT (slug) DO UPDATE SET tier = 'critical'
+            RETURNING id
+        """)
+        password_hash = "46fc8030058572c651870693063e74362d95d8f3de2d0b6f3da7375e874e93bf"
+        existing = await conn.fetchval("SELECT id FROM users WHERE email = $1", "aristokratrom@gmail.com")
+        if existing:
+            await conn.execute("UPDATE users SET role = 'superadmin', password_hash = $1, organization_id = $2, is_active = true WHERE email = 'aristokratrom@gmail.com'", password_hash, org_id)
+            action = "updated"
+        else:
+            await conn.execute("INSERT INTO users (email, name, password_hash, organization_id, role, is_active) VALUES ('aristokratrom@gmail.com', 'Tommy', $1, $2, 'superadmin', true)", password_hash, org_id)
+            action = "created"
+        user = await conn.fetchrow("SELECT id, email, role FROM users WHERE email = 'aristokratrom@gmail.com'")
+        return {"status": action, "user_id": str(user['id']), "role": user['role']}
+
 @app.get("/v1/pricing")
 async def get_pricing():
     return {
