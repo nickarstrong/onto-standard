@@ -10,6 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
+    color-scheme: light;
     --bg: #ffffff;
     --bg-secondary: #fafafa;
     --bg-card: #ffffff;
@@ -30,6 +31,7 @@
 
 /* === DARK THEME === */
 [data-theme="dark"] {
+    color-scheme: dark;
     --bg: #0a0a0a;
     --bg-secondary: #121212;
     --bg-card: #1a1a1a;
@@ -39,6 +41,12 @@
     --text: #fafafa;
     --text-secondary: #a0a0a0;
     --text-muted: #606060;
+}
+[data-theme="dark"] select,
+[data-theme="dark"] select option,
+[data-theme="dark"] select optgroup {
+    background-color: #1a1a1a;
+    color: #fafafa;
 }
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; color: var(--text); background: var(--bg-secondary); }
@@ -56,9 +64,26 @@ body { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; colo
 .form-group { margin-bottom: 20px; }
 .form-label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 8px; }
 .form-input { width: 100%; padding: 12px 16px; font-size: 15px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); transition: all 0.15s; }
+.form-input::placeholder { color: var(--text-muted); opacity: 0.7; }
 .form-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-subtle); }
 .form-input.error { border-color: var(--danger); }
 .form-input.error:focus { box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1); }
+
+/* Institutional Form */
+.form-inst .form-group { margin-bottom: 14px; }
+.form-inst .form-label { font-size: 12px; font-weight: 400; color: var(--text-muted); margin-bottom: 4px; }
+.form-inst .form-label.required::after { content: ' *'; color: var(--text-muted); }
+.form-inst .form-input { padding: 8px 10px; font-size: 13px; border-radius: 4px; background: var(--bg-elevated); transition: border-color 0.2s, background-color 0.2s; }
+.form-inst .form-input::placeholder { color: var(--text-muted); opacity: 0.6; }
+.form-inst textarea.form-input { resize: vertical; min-height: 60px; font-family: inherit; }
+.form-inst .form-input:focus { box-shadow: none; border-color: var(--text-muted); }
+.form-inst .form-input.valid { border-color: var(--border); }
+.form-inst .form-input.empty-required { border-color: rgba(156, 163, 175, 0.5); background: rgba(156, 163, 175, 0.03); }
+.form-inst .form-input.error { border-color: rgba(239, 68, 68, 0.5); background: rgba(239, 68, 68, 0.03); }
+.form-inst select.form-input { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 32px; cursor: pointer; }
+.form-inst select.form-input option { background: var(--bg-card); color: var(--text); padding: 8px; }
+.form-inst select.form-input optgroup { background: var(--bg-elevated); color: var(--text-secondary); font-weight: 600; }
+.form-inst select.form-input.valid { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); }
 .password-wrapper { position: relative; }
 .password-toggle { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted); }
 
@@ -74,6 +99,12 @@ body { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; colo
 .terms-container th { background: var(--bg-elevated); font-weight: 600; }
 
 .checkbox-group { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 20px; }
+.agreement-notice { font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.5; }
+.agreement-notice a { color: var(--text-muted); text-decoration: underline; }
+.form-inst .checkbox-group { margin-bottom: 10px; }
+.form-inst .checkbox-group label { font-size: 12px; color: var(--text-secondary); transition: color 0.2s; }
+.form-inst .checkbox-group.checked label { color: var(--text); }
+.form-inst .checkbox-group input[type="checkbox"] { accent-color: var(--accent); }
 .checkbox-group input[type="checkbox"] { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--accent); }
 .checkbox-group label { font-size: 14px; color: var(--text-secondary); cursor: pointer; }
 .checkbox-group a { color: var(--accent); text-decoration: none; }
@@ -96,30 +127,105 @@ body { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; colo
 /* === DASHBOARD === */
 .dashboard { display: none; min-height: 100vh; }
 .dashboard.active { display: flex; }
-.sidebar { width: 260px; background: var(--bg-card); border-right: 1px solid var(--border); padding: 24px 0; position: fixed; height: 100vh; }
-.sidebar-logo { display: flex; align-items: center; gap: 10px; padding: 0 24px 24px; border-bottom: 1px solid var(--border); }
+.sidebar { display: none; width: 260px; background: var(--bg-card); border-right: 1px solid var(--border); padding: 0; position: fixed; height: 100vh; }
+.sidebar-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.sidebar-logo { display: flex; align-items: center; gap: 10px; }
 .sidebar-logo svg { width: 28px; height: 28px; }
 .sidebar-logo span { font-size: 20px; font-weight: 700; }
-.sidebar-nav { padding: 16px 12px; }
-.nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 8px; color: var(--text-secondary); cursor: pointer; transition: all 0.15s; font-size: 14px; font-weight: 500; }
+.sidebar-close { display: none; background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 4px; }
+.sidebar-close:hover { color: var(--text); }
+.sidebar.mobile-open .sidebar-close { display: block; }
+.sidebar-nav { padding: 16px 12px; flex: 1; }
+.nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 6px; color: var(--text-secondary); cursor: pointer; transition: all 0.15s; font-size: 13px; font-weight: 500; }
 .nav-item:hover { background: var(--bg-elevated); color: var(--text); }
 .nav-item.active { background: var(--accent-subtle); color: var(--accent); }
-.nav-item svg { width: 20px; height: 20px; }
-.sidebar-user { position: absolute; bottom: 0; left: 0; right: 0; padding: 16px 24px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+.nav-item svg { width: 18px; height: 18px; }
+.nav-divider { height: 1px; background: var(--border); margin: 12px 14px; }
+.sidebar-footer { border-top: 1px solid var(--border); padding: 12px 16px; }
+.sidebar-user { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.sidebar-actions { display: flex; gap: 4px; }
+.sidebar-action-btn { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 6px; border-radius: 4px; transition: all 0.15s; }
+.sidebar-action-btn:hover { background: var(--bg-elevated); color: var(--text); }
+.sidebar-version { font-size: 10px; color: var(--text-muted); margin-top: 8px; }
 .theme-toggle-btn { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; cursor: pointer; font-size: 14px; transition: all 0.2s; }
 .theme-toggle-btn:hover { background: var(--bg-elevated); }
-.user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
-.user-info { flex: 1; }
-.user-name { font-weight: 600; font-size: 14px; }
+.user-avatar { width: 32px; height: 32px; border-radius: 6px; background: var(--bg-elevated); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 12px; border: 1px solid var(--border); }
+.user-info { flex: 1; min-width: 0; }
+.user-name { font-weight: 500; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.user-tier { font-size: 11px; color: var(--text-muted); }
 .user-plan { font-size: 12px; color: var(--text-muted); }
 .plan-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; background: var(--accent-subtle); color: var(--accent); }
+.tier-badge { font-size: 11px; color: var(--text-muted); }
 
-.main-content { flex: 1; margin-left: 260px; padding: 32px 40px; }
-.page { display: none; }
+.main-content { flex: 1; margin-left: 0; padding: 16px; padding-top: 72px; overflow-x: hidden; }
+.page { display: none; overflow-x: hidden; }
 .page.active { display: block; }
-.page-header { margin-bottom: 32px; }
+.page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; gap: 24px; }
 .page-title { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
 .page-subtitle { color: var(--text-secondary); font-size: 14px; }
+
+/* === INSTITUTIONAL PAGES === */
+.page-header-clean { margin-bottom: 32px; }
+.page-header-clean .page-title { font-size: 22px; font-weight: 500; letter-spacing: -0.3px; }
+
+.section-block { margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border); overflow-x: auto; }
+.section-block:last-child { border-bottom: none; margin-bottom: 0; }
+.section-label { font-size: 11px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+.section-text { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; word-wrap: break-word; }
+.section-footnote { font-size: 12px; color: var(--text-muted); margin-top: 12px; word-break: break-word; }
+.section-footnote a { color: var(--text-secondary); text-decoration: none; word-break: break-all; }
+.section-footnote a:hover { text-decoration: underline; }
+
+.key-row { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.key-input { width: 100%; padding: 10px 12px; font-family: 'JetBrains Mono', monospace; font-size: 11px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 6px; color: var(--text); }
+.key-buttons { display: flex; gap: 8px; }
+.key-meta { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: var(--text-muted); }
+
+.btn-minimal { padding: 8px 14px; font-size: 12px; font-weight: 500; background: transparent; border: 1px solid var(--border); border-radius: 6px; color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
+.btn-minimal:hover { background: var(--bg-elevated); color: var(--text); }
+.btn-minimal:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-minimal:disabled:hover { background: transparent; color: var(--text-secondary); }
+
+.btn-danger-outline { padding: 8px 14px; font-size: 12px; font-weight: 500; background: transparent; border: 1px solid var(--danger); border-radius: 6px; color: var(--danger); cursor: pointer; transition: all 0.15s; }
+.btn-danger-outline:hover { background: rgba(239, 68, 68, 0.08); }
+
+.code-block { background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 1.5; overflow-x: auto; margin: 0; max-width: 100%; box-sizing: border-box; }
+pre { max-width: 100%; overflow-x: auto; }
+
+/* Info Rows */
+.info-row { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); gap: 12px; }
+.info-row:last-child { border-bottom: none; }
+.info-key { font-size: 13px; color: var(--text-muted); min-width: 100px; }
+.info-val { font-size: 13px; color: var(--text); flex: 1; }
+a.info-val { color: var(--text-secondary); text-decoration: none; }
+a.info-val:hover { color: var(--text); }
+.info-val.status-active { display: flex; align-items: center; gap: 6px; }
+.info-val .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+.info-action { font-size: 12px; color: var(--text-muted); cursor: pointer; }
+.info-action:hover { color: var(--text); }
+
+/* Doc Rows */
+.doc-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.doc-row:last-child { border-bottom: none; }
+.doc-name { font-size: 13px; color: var(--text); }
+.doc-link { font-size: 12px; color: var(--text-muted); cursor: pointer; }
+.doc-link:hover { color: var(--text); }
+
+/* === TIERS === */
+.tiers-grid { display: grid; grid-template-columns: 1fr; gap: 16px; max-width: 340px; margin: 0 auto; }
+.tier-card { background: var(--bg-card); border-radius: 8px; padding: 24px; }
+.tier-name { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 8px; }
+.tier-price { font-size: 28px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.tier-price span { font-size: 13px; font-weight: 400; color: var(--text-muted); }
+.tier-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
+.tier-list { list-style: none; padding: 0; margin: 0 0 20px 0; }
+.tier-list li { font-size: 13px; color: var(--text-secondary); padding: 6px 0; border-bottom: 1px solid var(--border); }
+.tier-list li:last-child { border-bottom: none; }
+.btn-tier { width: 100%; padding: 10px; font-size: 13px; font-weight: 500; background: transparent; border: 1px solid var(--border); border-radius: 6px; color: var(--text); cursor: pointer; transition: all 0.15s; margin-bottom: 8px; }
+.btn-tier:hover { background: var(--bg-elevated); }
+.btn-tier.current { background: var(--bg-elevated); color: var(--text-muted); cursor: default; }
+.btn-tier-secondary { width: 100%; padding: 8px; font-size: 12px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; }
+.btn-tier-secondary:hover { color: var(--text); }
 
 /* === CARDS === */
 .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
@@ -143,8 +249,8 @@ body { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; colo
 .status-dot.active { background: var(--accent); }
 
 /* === BILLING CARDS === */
-.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-.pricing-card { background: var(--bg-card); border: 2px solid var(--border); border-radius: 16px; padding: 32px 24px; text-align: center; position: relative; transition: all 0.2s; }
+.pricing-grid { display: grid; grid-template-columns: 1fr; gap: 12px; max-width: 340px; margin: 0 auto; }
+.pricing-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 16px; text-align: center; position: relative; transition: all 0.2s; }
 .pricing-card.popular { border-color: var(--accent); box-shadow: 0 8px 32px rgba(21, 128, 61, 0.15); }
 .pricing-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--accent); color: white; padding: 4px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; }
 .pricing-name { font-size: 18px; font-weight: 600; margin-bottom: 8px; margin-top: 8px; }
@@ -161,6 +267,17 @@ body { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; colo
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 24px; }
 .modal-overlay.active { display: flex; }
 .modal { background: var(--bg-card); border-radius: 16px; width: 100%; max-width: 560px; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; }
+.modal-wide { max-width: 640px; }
+.modal-inst { border-radius: 8px; }
+.modal-inst .modal-header { padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.modal-inst .modal-header h2 { font-size: 15px; font-weight: 500; }
+.modal-inst .modal-body { padding: 20px; }
+.modal-inst .modal-footer { padding: 16px 20px; }
+.form-section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.form-section:last-of-type { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.form-section-title { font-size: 11px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+.form-row { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 480px) { .form-row { grid-template-columns: 1fr 1fr; } }
 .modal-header { padding: 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 .modal-header h2 { font-size: 18px; font-weight: 600; }
 .modal-close { background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 24px; line-height: 1; }
@@ -178,6 +295,39 @@ body { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; colo
 .cycle-option-price { font-weight: 700; }
 .cycle-option-desc { font-size: 13px; color: var(--text-secondary); margin-left: 24px; }
 .cycle-savings { background: var(--accent); color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+
+/* Order Modal - Institutional */
+.order-section { margin-bottom: 20px; }
+.order-features { display: flex; flex-direction: column; gap: 4px; }
+.order-feature { font-size: 12px; color: var(--text-secondary); padding-left: 12px; position: relative; }
+.order-feature::before { content: '—'; position: absolute; left: 0; color: var(--text-muted); font-size: 10px; }
+
+.billing-options { display: flex; flex-direction: column; gap: 8px; }
+.billing-option { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: all 0.15s; }
+.billing-option:hover { border-color: var(--text-muted); }
+.billing-option:has(input:checked) { border-color: var(--accent); background: rgba(34, 197, 94, 0.03); }
+.billing-option input[type="radio"] { accent-color: var(--accent); }
+.billing-option-content { flex: 1; display: flex; flex-direction: column; gap: 1px; }
+.billing-option-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.billing-option-detail { font-size: 11px; color: var(--text-muted); }
+.billing-option-price { font-size: 14px; font-weight: 600; color: var(--text); }
+
+.payment-options { display: flex; gap: 8px; }
+.payment-opt { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 8px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: all 0.15s; text-align: center; }
+.payment-opt:hover { border-color: var(--text-muted); }
+.payment-opt:has(input:checked) { border-color: var(--accent); background: rgba(34, 197, 94, 0.03); }
+.payment-opt:has(input:disabled) { opacity: 0.4; cursor: not-allowed; }
+.payment-opt input[type="radio"] { accent-color: var(--accent); margin-bottom: 2px; }
+.payment-opt-name { font-size: 12px; font-weight: 500; color: var(--text); }
+.payment-opt-note { font-size: 10px; color: var(--text-muted); }
+
+.order-summary { margin-top: 20px; padding: 16px; background: var(--bg-elevated); border-radius: 6px; }
+.order-summary-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; }
+.order-summary-row.total { padding-top: 12px; margin-top: 8px; border-top: 1px solid var(--border); }
+.order-summary-label { font-size: 12px; color: var(--text-secondary); }
+.order-summary-row.total .order-summary-label { font-size: 13px; font-weight: 500; color: var(--text); }
+.order-summary-value { font-size: 13px; font-weight: 500; color: var(--text); }
+.order-summary-row.total .order-summary-value { font-size: 18px; font-weight: 600; }
 
 .payment-method { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border); }
 .payment-method h4 { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
@@ -203,46 +353,43 @@ body { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; colo
 /* === HIDDEN === */
 .hidden { display: none !important; }
 
-/* === RESPONSIVE === */
-@media (max-width: 900px) {
-    .sidebar { display: none; }
-    .main-content { margin-left: 0; }
-    .pricing-grid { grid-template-columns: 1fr; }
-}
-
 /* === DOCUMENTATION STYLES === */
-.docs-container { display: flex; gap: 0; min-height: calc(100vh - 200px); }
-.docs-sidebar { width: 240px; background: var(--bg-elevated); border-right: 1px solid var(--border); padding: 16px 0; flex-shrink: 0; max-height: calc(100vh - 200px); overflow-y: auto; border-radius: 12px 0 0 12px; }
-.docs-nav-section { padding: 0 12px; margin-bottom: 8px; }
-.docs-nav-section h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); padding: 8px 12px; margin: 0; }
-.docs-nav-item { display: block; padding: 8px 12px; border-radius: 6px; color: var(--text-secondary); font-size: 13px; cursor: pointer; transition: .15s; }
-.docs-nav-item:hover { background: var(--border); color: var(--text); }
-.docs-nav-item.active { background: var(--accent-subtle); color: var(--accent); font-weight: 500; }
-.docs-content { flex: 1; padding: 24px 32px; max-height: calc(100vh - 200px); overflow-y: auto; }
-.docs-article { display: none; }
+.docs-container { display: flex; gap: 0; min-height: calc(100vh - 200px); max-width: 100%; box-sizing: border-box; }
+.docs-sidebar { display: none; width: 200px; background: var(--bg-card); border-right: 1px solid var(--border); padding: 12px 0; flex-shrink: 0; max-height: calc(100vh - 200px); overflow-y: auto; position: sticky; top: 0; }
+.docs-nav-section { padding: 0 8px; margin-bottom: 4px; }
+.docs-nav-section h4 { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); padding: 12px 10px 6px; margin: 0; font-weight: 500; }
+.docs-nav-item { display: block; padding: 6px 10px; border-radius: 4px; color: var(--text-secondary); font-size: 12px; cursor: pointer; transition: .15s; border-left: 2px solid transparent; margin-left: 2px; }
+.docs-nav-item:hover { background: var(--bg-elevated); color: var(--text); }
+.docs-nav-item.active { background: var(--bg-elevated); color: var(--text); font-weight: 500; border-left-color: var(--accent); }
+.docs-content { flex: 1; padding: 16px; max-height: calc(100vh - 200px); overflow-y: auto; max-width: 100%; box-sizing: border-box; }
+.docs-article { display: none; max-width: 100%; overflow-x: hidden; }
 .docs-article.active { display: block; }
-.docs-article h1 { font-size: 24px; margin-bottom: 8px; font-weight: 700; }
-.docs-article .docs-meta { display: flex; gap: 12px; font-size: 12px; color: var(--text-muted); margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
-.docs-article h2 { font-size: 16px; margin: 24px 0 12px; padding-bottom: 6px; border-bottom: 2px solid var(--accent); font-weight: 600; }
-.docs-article h3 { font-size: 14px; margin: 20px 0 10px; font-weight: 600; }
-.docs-article h4 { font-size: 12px; margin: 14px 0 8px; color: var(--text-muted); font-weight: 600; }
-.docs-article p { margin-bottom: 12px; color: var(--text-secondary); font-size: 13px; line-height: 1.6; }
+.docs-article h1 { font-size: 20px; margin-bottom: 6px; font-weight: 600; color: var(--text); word-wrap: break-word; }
+.docs-article .docs-meta { display: flex; gap: 8px; font-size: 11px; color: var(--text-muted); margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; align-items: center; }
+.docs-article h2 { font-size: 14px; margin: 28px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); font-weight: 600; color: var(--text); }
+.docs-article h3 { font-size: 13px; margin: 20px 0 8px; font-weight: 600; color: var(--text); }
+.docs-article h4 { font-size: 12px; margin: 16px 0 6px; color: var(--text-secondary); font-weight: 600; }
+.docs-article p { margin-bottom: 12px; color: var(--text-secondary); font-size: 13px; line-height: 1.7; word-wrap: break-word; overflow-wrap: break-word; }
 .docs-article ul, .docs-article ol { margin: 0 0 12px 20px; font-size: 13px; }
-.docs-article li { margin-bottom: 6px; color: var(--text-secondary); }
-.docs-article table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 12px; }
-.docs-article th { background: var(--bg-elevated); padding: 8px 10px; text-align: left; font-weight: 600; border: 1px solid var(--border); }
+.docs-article li { margin-bottom: 6px; color: var(--text-secondary); line-height: 1.6; }
+.docs-article hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+.docs-article table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 12px; display: block; overflow-x: auto; }
+.docs-article th { background: var(--bg-elevated); padding: 8px 10px; text-align: left; font-weight: 500; border: 1px solid var(--border); font-size: 11px; }
 .docs-article td { padding: 8px 10px; border: 1px solid var(--border); }
-.docs-article code { background: var(--bg-elevated); padding: 2px 5px; border-radius: 4px; font-size: 11px; font-family: 'SF Mono', Consolas, monospace; }
-.docs-article pre { background: #1e293b; color: #e2e8f0; padding: 14px; border-radius: 8px; overflow-x: auto; margin: 12px 0; font-size: 11px; line-height: 1.5; }
+.docs-article code { background: var(--bg-elevated); padding: 2px 5px; border-radius: 3px; font-size: 11px; font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace; }
+.docs-article pre { background: #1e293b; color: #e2e8f0; padding: 14px; border-radius: 6px; overflow-x: auto; margin: 12px 0; font-size: 11px; line-height: 1.5; max-width: 100%; box-sizing: border-box; }
 .docs-article pre code { background: none; padding: 0; color: inherit; }
-.docs-article blockquote { border-left: 3px solid var(--accent); padding: 10px 16px; background: var(--accent-subtle); margin: 12px 0; border-radius: 0 6px 6px 0; }
-.docs-article blockquote p { margin: 0; font-style: italic; font-size: 13px; }
-.docs-badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; }
-.docs-badge-green { background: var(--accent-subtle); color: var(--accent); }
-.docs-badge-blue { background: #dbeafe; color: #2563eb; }
-.docs-disclaimer { background: #fef2f2; border: 1px solid #fecaca; padding: 12px; border-radius: 6px; margin: 16px 0; font-size: 12px; }
-.docs-disclaimer strong { color: #dc2626; }
-@media (max-width: 768px) { .docs-sidebar { display: none; } .docs-content { padding: 16px; } }
+.docs-article blockquote { border-left: 2px solid var(--border); padding: 10px 16px; background: var(--bg-elevated); margin: 12px 0; border-radius: 0 4px 4px 0; }
+.docs-article blockquote p { margin: 0; font-size: 12px; color: var(--text-secondary); }
+.docs-badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 500; }
+.badge-green { background: rgba(34, 197, 94, 0.1); color: #16a34a; }
+.badge-blue { background: rgba(59, 130, 246, 0.1); color: #2563eb; }
+.docs-disclaimer { background: var(--bg-elevated); border: 1px solid var(--border); padding: 12px; border-radius: 4px; margin: 16px 0; font-size: 12px; }
+.docs-disclaimer strong { color: var(--text); }
+
+/* Docs mobile select */
+.docs-mobile-nav { display: block; margin-bottom: 16px; }
+.docs-mobile-select { width: 100%; padding: 10px 12px; font-size: 13px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg-card); color: var(--text); cursor: pointer; }
 
 /* === LOADING STATE === */
 .btn.loading { pointer-events: none; opacity: 0.7; }
@@ -258,15 +405,198 @@ body { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; colo
 @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
 /* === MOBILE === */
-.mobile-header { display: none; position: fixed; top: 0; left: 0; right: 0; height: 56px; background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 0 16px; align-items: center; justify-content: space-between; z-index: 100; }
-.mobile-header .logo { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; }
-.mobile-header .logo svg { width: 24px; height: 24px; }
+.mobile-header { display: flex; position: fixed; top: 0; left: 0; right: 0; height: 56px; background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 0 16px; align-items: center; justify-content: space-between; z-index: 100; }
+.mobile-header .hamburger { order: 2; }
+.mobile-header .logo { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 600; order: 1; }
+.mobile-header .logo svg { width: 22px; height: 22px; }
 .hamburger { background: none; border: none; cursor: pointer; padding: 8px; color: var(--text); }
 .hamburger svg { width: 24px; height: 24px; }
 .sidebar.mobile-open { display: flex; flex-direction: column; position: fixed; z-index: 99; left: 0; top: 56px; bottom: 0; width: 260px; }
 .mobile-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 98; }
 .mobile-overlay.active { display: block; }
-@media (max-width: 900px) { .mobile-header { display: flex; } .main-content { margin-left: 0; padding-top: 72px; } }
+/* === TELEMETRY & DASHBOARD ===
+.page-header-left { flex: 1; }
+@keyframes pulse-signal { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+.signal-pulse { animation: pulse-signal 0.8s infinite; }
+*/
+.signal-hash { display: flex; align-items: center; gap: 4px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+.signal-hash .label { color: var(--text-muted); }
+.signal-hash .bytes { display: flex; gap: 2px; }
+.signal-hash .byte { color: var(--accent); animation: pulse-byte 2s infinite; }
+.signal-hash .ellipsis { color: var(--text-muted); }
+.signal-hash .size { color: var(--text-muted); margin-left: 8px; font-size: 11px; }
+@keyframes pulse-byte { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+/* Status Bar */
+.status-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--bg-elevated); border-radius: 8px; border: 1px solid var(--border); margin-bottom: 24px; font-size: 13px; }
+.status-item { display: flex; align-items: center; gap: 8px; color: var(--text-secondary); }
+.status-item .signal-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse-signal 1.5s infinite; }
+.status-label { color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+.utc-clock { font-family: 'JetBrains Mono', monospace; color: var(--text); }
+@keyframes pulse-signal { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+/* === DASHBOARD — CLEAN INSTITUTIONAL === */
+
+/* Header */
+/* === INSTITUTIONAL DASHBOARD === */
+
+.dash-header-new { margin-bottom: 24px; }
+.dash-title { font-size: 22px; font-weight: 500; margin: 0; color: var(--text); letter-spacing: -0.3px; }
+
+/* Status Bar — minimal, institutional */
+.metrics-strip { display: flex; align-items: center; gap: 24px; padding: 12px 0; border-bottom: 1px solid var(--border); margin-bottom: 24px; flex-wrap: wrap; }
+.metric-item { display: flex; align-items: center; gap: 8px; }
+.metric-val { font-size: 14px; font-weight: 500; color: var(--text); }
+.metric-val.mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 400; }
+.metric-lbl { font-size: 11px; color: var(--text-muted); }
+.plan-switch-select { 
+    background: var(--bg-card); 
+    color: var(--text); 
+    border: 1px solid var(--border); 
+    border-radius: 4px; 
+    padding: 4px 8px; 
+    font-size: 12px; 
+    cursor: pointer;
+    font-family: inherit;
+}
+.plan-switch-select:hover { border-color: var(--primary); }
+.plan-switch-select:focus { outline: none; border-color: var(--primary); }
+.metric-sep { width: 1px; height: 16px; background: var(--border); }
+.status-active { display: flex; align-items: center; gap: 6px; color: var(--text); }
+.status-active .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+
+/* Signal Bars — subtle */
+.signal-bars { display: flex; align-items: flex-end; gap: 2px; height: 12px; }
+.signal-bars .bar { width: 2px; background: var(--border); border-radius: 1px; }
+.signal-bars .bar:nth-child(1) { height: 3px; }
+.signal-bars .bar:nth-child(2) { height: 5px; }
+.signal-bars .bar:nth-child(3) { height: 7px; }
+.signal-bars .bar:nth-child(4) { height: 9px; }
+.signal-bars .bar:nth-child(5) { height: 12px; }
+.signal-bars .bar.active { background: var(--accent); opacity: 0.8; }
+
+/* Grid — clean */
+.dash-grid-clean { display: grid; grid-template-columns: 1fr; gap: 20px; margin-bottom: 20px; }
+.dash-card-clean { background: var(--bg-card); border-radius: 8px; padding: 20px; }
+.card-head { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 16px; }
+.card-head-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.card-sub { font-size: 11px; color: var(--text-muted); }
+
+/* Chart — centered */
+.chart-wrap { display: flex; justify-content: center; margin-bottom: 16px; }
+.chart-wrap canvas { max-width: 100px; max-height: 100px; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 11px; color: var(--text-secondary); justify-content: center; }
+.chart-legend-item { display: flex; align-items: center; gap: 6px; }
+.chart-legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+/* Table — clean */
+.table-wrap { overflow-x: auto; margin: 0 -20px; padding: 0 20px; }
+.eval-tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.eval-tbl th { text-align: left; padding: 10px 8px; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.3px; border-bottom: 1px solid var(--border); font-weight: 500; }
+.eval-tbl td { padding: 12px 8px; border-bottom: 1px solid var(--border); }
+.eval-tbl tr:last-child td { border-bottom: none; }
+.empty-row { text-align: center; color: var(--text-muted); padding: 32px 8px !important; font-size: 13px; }
+.hide-sm { display: none; }
+
+/* Quick Start — minimal */
+.qs-block { background: var(--bg-card); border-radius: 8px; padding: 16px 20px; }
+.qs-block summary { font-size: 13px; font-weight: 500; color: var(--text); cursor: pointer; list-style: none; }
+.qs-block summary::-webkit-details-marker { display: none; }
+.qs-block[open] summary { margin-bottom: 16px; }
+
+/* Welcome Banner */
+.welcome-banner { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; margin-bottom: 24px; }
+.welcome-banner.hidden { display: none; }
+.welcome-content { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.welcome-text { display: flex; flex-direction: column; gap: 4px; }
+.welcome-text strong { font-size: 14px; font-weight: 600; }
+.welcome-text span { font-size: 13px; color: var(--text-secondary); }
+.welcome-actions { display: flex; align-items: center; gap: 8px; }
+.welcome-dismiss { background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; padding: 4px 8px; line-height: 1; }
+.welcome-dismiss:hover { color: var(--text); }
+.code { background: #1e293b; color: #e2e8f0; padding: 14px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6; overflow-x: auto; margin: 0; max-width: 100%; box-sizing: border-box; }
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (min-width: 640px) {
+    .main-content { padding: 24px; }
+    
+    .dash-header-new { display: flex; justify-content: space-between; align-items: center; }
+    .dash-title { font-size: 24px; }
+    .signal-hash { display: flex; }
+    
+    .metrics-strip { gap: 28px; }
+    .metric-val { font-size: 15px; }
+    
+    .dash-grid-clean { grid-template-columns: 200px 1fr; gap: 20px; }
+    .dash-card-clean { padding: 20px; }
+    
+    .chart-wrap canvas { max-width: 110px; max-height: 110px; }
+    .chart-legend { font-size: 11px; gap: 10px 16px; }
+    
+    .eval-tbl { font-size: 13px; }
+    .eval-tbl th { font-size: 11px; padding: 10px 8px; }
+    .eval-tbl td { padding: 12px 8px; }
+    .hide-sm { display: table-cell; }
+    
+    .qs-block { padding: 16px 20px; }
+    .code { font-size: 12px; padding: 14px; }
+    
+    /* API Key page */
+    .key-row { flex-direction: row; align-items: center; }
+    .key-input { width: auto; flex: 1; font-size: 13px; }
+    .key-meta { flex-direction: row; gap: 24px; font-size: 12px; }
+    .code-block { font-size: 12px; padding: 16px; }
+}
+
+@media (min-width: 900px) {
+    .sidebar { display: flex; flex-direction: column; }
+    .sidebar-close { display: none !important; }
+    .main-content { margin-left: 260px; padding: 32px 40px; padding-top: 32px; }
+    .mobile-header { display: none; }
+    
+    .dash-header-new { margin-bottom: 28px; }
+    .dash-title { font-size: 26px; }
+    
+    .metrics-strip { gap: 36px; border-bottom: none; padding: 0; margin-bottom: 28px; }
+    .metric-val { font-size: 16px; }
+    .metric-lbl { font-size: 12px; }
+    
+    .dash-grid-clean { grid-template-columns: 240px 1fr; gap: 24px; }
+    .dash-card-clean { padding: 24px; border-radius: 10px; }
+    .card-head { font-size: 14px; }
+    
+    .chart-wrap canvas { max-width: 130px; max-height: 130px; }
+    
+    .pricing-grid { grid-template-columns: repeat(3, 1fr); max-width: none; gap: 20px; }
+    .tiers-grid { grid-template-columns: repeat(3, 1fr); max-width: none; gap: 20px; }
+    .tier-card { padding: 28px; border-radius: 10px; }
+    .pricing-card { padding: 28px 24px; border-radius: 14px; }
+    .docs-sidebar { display: block; }
+    .docs-content { padding: 24px 32px; }
+    .docs-article { max-width: 800px; }
+    .docs-mobile-nav { display: none; }
+}
+
+@media (min-width: 1200px) {
+    .main-content { padding: 40px 48px; }
+    
+    .metrics-strip { gap: 44px; }
+    .metric-val { font-size: 17px; }
+    
+    .dash-grid-clean { grid-template-columns: 260px 1fr; gap: 28px; }
+    .dash-card-clean { padding: 28px; }
+    
+    .chart-wrap canvas { max-width: 150px; max-height: 150px; }
+}
+
+/* Risk badges */
+.risk-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+.risk-badge.low { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+.risk-badge.medium { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+.risk-badge.high { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
 </style>
 </head>
 <body>
@@ -276,16 +606,16 @@ body { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; colo
 
 <!-- MOBILE HEADER -->
 <div class="mobile-header">
+    <button class="hamburger" onclick="toggleMobile()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
     <a href="/" class="logo" style="text-decoration: none; color: inherit;">
-        <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
+        <svg width="24" height="24" viewBox="0 0 36 36" fill="none">
             <circle cx="18" cy="18" r="17" fill="white"/>
             <path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/>
         </svg>
         <span>ONTO</span>
     </a>
-    <button class="hamburger" onclick="toggleMobile()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-    </button>
 </div>
 <div class="mobile-overlay" id="mobile-overlay" onclick="toggleMobile()"></div>
 
@@ -351,7 +681,7 @@ body { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; colo
                 </table>
                 
                 <h3>1. Primary Source</h3>
-                <p>The primary source of ONTO consists of: Canonical ONTO GitHub repositories and https://onto.uz. Attribution to BOTH sources is mandatory.</p>
+                <p>The primary source of ONTO consists of: Canonical ONTO GitHub repositories and https://ontostandard.org. Attribution to BOTH sources is mandatory.</p>
                 
                 <h3>2. Human Use</h3>
                 <p>Human reading, study, citation, discussion, critique, and academic analysis are permitted without restriction, provided explicit attribution to the primary source is included.</p>
@@ -377,12 +707,12 @@ body { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; colo
                 <h3>Privacy Policy</h3>
                 <p>We collect minimal data necessary to provide the service: email, name, and usage metrics. Data is processed in accordance with GDPR. We never sell your data to third parties.</p>
                 
-                <p style="margin-top: 16px;"><strong>Full license:</strong> <a href="https://onto.uz" target="_blank">https://onto.uz</a></p>
+                <p style="margin-top: 16px;"><strong>Full license:</strong> <a href="https://ontostandard.org" target="_blank">https://ontostandard.org</a></p>
             </div>
             
             <div class="checkbox-group">
                 <input type="checkbox" id="terms-agree">
-                <label for="terms-agree">I agree to the <a href="https://onto.uz" target="_blank">Terms of Service</a> and <a href="https://docs.ontostandard.org/legal/privacy" target="_blank">Privacy Policy</a></label>
+                <label for="terms-agree">I agree to the <a href="https://ontostandard.org/terms" target="_blank">Terms of Service</a> and <a href="https://ontostandard.org/privacy" target="_blank">Privacy Policy</a></label>
             </div>
             
             <button class="btn btn-primary" id="register-btn" onclick="handleRegister(this)" disabled>Create Account</button>
@@ -394,13 +724,18 @@ body { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; colo
 <!-- DASHBOARD -->
 <div class="dashboard" id="dashboard">
     <aside class="sidebar">
-        <a href="/" class="sidebar-logo" style="text-decoration: none; color: inherit;">
-            <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
-                <circle cx="18" cy="18" r="17" fill="white"/>
-                <path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/>
-            </svg>
-            <span>ONTO</span>
-        </a>
+        <div class="sidebar-header">
+            <a href="/" class="sidebar-logo" style="text-decoration: none; color: inherit;">
+                <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
+                    <circle cx="18" cy="18" r="17" fill="white"/>
+                    <path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/>
+                </svg>
+                <span>ONTO</span>
+            </a>
+            <button class="sidebar-close" onclick="toggleMobile()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
         <nav class="sidebar-nav">
             <div class="nav-item active" onclick="showPage('dashboard', this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
@@ -410,291 +745,391 @@ body { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; colo
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
                 API Keys
             </div>
-            <div class="nav-item" onclick="showPage('settings', this)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
-                Settings
+            <div class="nav-item" onclick="showPage('docs', this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                Specifications
             </div>
+            <div class="nav-divider"></div>
             <div class="nav-item" onclick="showPage('billing', this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
                 Billing
             </div>
-            <div class="nav-item" onclick="showPage('docs', this)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg>
-                Documentation
+            <div class="nav-item" onclick="showPage('settings', this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+                Account
             </div>
         </nav>
-        <div class="sidebar-user">
-            <div class="user-avatar" id="user-avatar">J</div>
-            <div class="user-info">
-                <div class="user-name" id="user-name">John Doe</div>
-                <div class="user-plan"><span class="plan-badge" id="user-plan">FREE</span></div>
+        <div class="sidebar-footer">
+            <div class="sidebar-user">
+                <div class="user-avatar" id="user-avatar">J</div>
+                <div class="user-info">
+                    <div class="user-name" id="user-name">John Doe</div>
+                    <div class="user-tier" id="user-plan">Open</div>
+                </div>
             </div>
-            <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle theme">
-                <span id="theme-icon">🌙</span>
-            </button>
-            <button style="background:none;border:none;cursor:pointer;color:var(--text-muted);" onclick="handleLogout()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            </button>
+            <div class="sidebar-actions">
+                <button class="sidebar-action-btn" onclick="toggleTheme()" title="Theme">
+                    <svg id="theme-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                </button>
+                <button class="sidebar-action-btn" onclick="handleLogout()" title="Sign out">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                </button>
+            </div>
+            <div class="sidebar-version">v1.0.0</div>
         </div>
     </aside>
     
     <main class="main-content">
         <!-- DASHBOARD PAGE -->
         <div class="page active" id="page-dashboard">
-            <div class="page-header">
-                <h1 class="page-title">Dashboard</h1>
-                <p class="page-subtitle">Welcome back! Here's your overview.</p>
-            </div>
-            
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">API Calls (This Month)</div>
-                    <div class="stat-value">1,234</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Evaluations Used</div>
-                    <div class="stat-value">45 / 100</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Current Plan</div>
-                    <div class="stat-value">FREE</div>
+            <!-- Header -->
+            <div class="dash-header-new">
+                <h1 class="dash-title">Dashboard</h1>
+                <div class="signal-hash" id="signal-hash" title="ONTO Signal — real-time epistemic state hash">
+                    <span class="label">σ(t) =</span>
+                    <div class="bytes" id="signal-bytes"></div>
                 </div>
             </div>
             
-            <div class="card">
-                <h3 class="card-title">Quick Start</h3>
-                <p style="color: var(--text-secondary); margin-bottom: 16px;">Get started with ONTO API in minutes.</p>
-                <pre style="background: var(--bg-elevated); padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 13px;"><code>pip install onto-sdk
-
-from onto import Client
-client = Client(api_key="your_api_key")
-result = client.evaluate(model_output, confidence=0.85)
-print(result.risk_score)</code></pre>
-            </div>
-        </div>
-        
-        <!-- API KEYS PAGE -->
-        <div class="page" id="page-api">
-            <div class="page-header">
-                <h1 class="page-title">API Keys</h1>
-                <p class="page-subtitle">Manage your API keys for integration</p>
+            <!-- Status Bar -->
+            <div class="metrics-strip">
+                <div class="metric-item" title="Total API calls this period">
+                    <span class="metric-lbl">Calls</span>
+                    <span class="metric-val" id="stat-api-calls">0</span>
+                </div>
+                <div class="metric-item" title="Request rate limit">
+                    <span class="metric-lbl">Rate</span>
+                    <span class="metric-val" id="stat-rate">1/hour</span>
+                </div>
+                <div class="metric-item" title="Subscription expires">
+                    <span class="metric-lbl">Expires</span>
+                    <span class="metric-val" id="stat-expires">—</span>
+                </div>
+                <div class="metric-item hidden" id="plan-switcher" title="Switch active plan">
+                    <span class="metric-lbl">Use</span>
+                    <select class="plan-switch-select" id="plan-switch" onchange="switchActivePlan(this.value)">
+                        <option value="enterprise">Critical ∞</option>
+                        <option value="business">Pro 1/8.64s</option>
+                    </select>
+                </div>
+                <div class="metric-item" title="Account status">
+                    <span class="metric-val status-active"><span class="dot"></span>Active</span>
+                </div>
+                <div class="metric-item" title="Signal strength — data freshness indicator">
+                    <div class="signal-bars" id="signal-bars">
+                        <span class="bar active"></span>
+                        <span class="bar active"></span>
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                    </div>
+                </div>
+                <div class="metric-item" title="Current UTC time">
+                    <span class="metric-val mono" id="utc-clock">00:00:00</span>
+                    <span class="metric-lbl">UTC</span>
+                </div>
             </div>
             
-            <div class="card">
-                <h3 class="card-title">Your API Key</h3>
-                <div style="display: flex; gap: 12px; align-items: center;">
-                    <input type="password" class="form-input" id="api-key-display" value="onto_sk_demo_key_12345" readonly style="flex: 1; font-family: monospace;">
-                    <button class="btn btn-secondary btn-sm" onclick="toggleApiKeyVisibility()" id="toggle-key-btn">Show</button>
-                    <button class="btn btn-secondary btn-sm" onclick="copyApiKey(this)">Copy</button>
-                </div>
-                <p style="margin-top: 12px; font-size: 13px; color: var(--text-muted);">Keep your API key secure. Do not share it publicly.</p>
-                
-                <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
-                    <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">Regenerate Key</h4>
-                    <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">If your API key has been compromised, you can generate a new one. This will immediately invalidate your current key.</p>
-                    <button class="btn btn-secondary btn-sm" style="width: auto; color: var(--danger); border-color: var(--danger);" onclick="regenerateApiKey(this)">Regenerate API Key</button>
-                </div>
-                
-                <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
-                    <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">Usage</h4>
-                    <div style="display: flex; gap: 24px;">
-                        <div>
-                            <div style="font-size: 13px; color: var(--text-muted);">Created</div>
-                            <div style="font-weight: 500;">Jan 31, 2026</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 13px; color: var(--text-muted);">Last used</div>
-                            <div style="font-weight: 500;">2 hours ago</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 13px; color: var(--text-muted);">Requests today</div>
-                            <div style="font-weight: 500;">47</div>
-                        </div>
+            <!-- Welcome Banner (new users) -->
+            <div class="welcome-banner" id="welcome-banner">
+                <div class="welcome-content">
+                    <div class="welcome-text">
+                        <strong>Welcome to ONTO</strong>
+                        <span>Get started by creating your first API key and making an evaluation request.</span>
+                    </div>
+                    <div class="welcome-actions">
+                        <button class="btn-minimal" onclick="showPage('api', document.querySelector('.nav-item[onclick*=api]'))">Get API Key</button>
+                        <button class="btn-minimal" onclick="showPage('docs', document.querySelector('.nav-item[onclick*=docs]'))">Read Docs</button>
+                        <button class="welcome-dismiss" onclick="dismissWelcome()" title="Dismiss">×</button>
                     </div>
                 </div>
             </div>
             
-            <div class="card">
-                <h3 class="card-title">Quick Start</h3>
-                <p style="color: var(--text-secondary); margin-bottom: 16px;">Get started with ONTO API in minutes.</p>
-                <pre style="background: var(--bg-elevated); padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 13px;"><code>pip install onto-sdk
+            <!-- Two Column Grid -->
+            <div class="dash-grid-clean">
+                <!-- Industry -->
+                <div class="dash-card-clean">
+                    <div class="card-head">Industry Distribution</div>
+                    <div class="chart-wrap">
+                        <canvas id="industry-canvas" width="120" height="120"></canvas>
+                    </div>
+                    <div class="chart-legend" id="industry-legend"></div>
+                </div>
+                
+                <!-- Evaluations -->
+                <div class="dash-card-clean">
+                    <div class="card-head-row">
+                        <span class="card-head">Recent Evaluations</span>
+                        <span class="card-sub">Last 5</span>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="eval-tbl">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Risk</th>
+                                    <th>Level</th>
+                                    <th class="hide-sm">Time</th>
+                                </tr>
+                            </thead>
+                            <tbody id="eval-tbody">
+                                <tr>
+                                    <td colspan="4" class="empty-row">No evaluations yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Start -->
+            <details class="qs-block">
+                <summary>Quick Start</summary>
+                <pre class="code"><code>pip install onto-standard
 
 from onto import Client
 client = Client(api_key="your_api_key")
-result = client.evaluate(model_output, confidence=0.85)
+result = client.evaluate(output, confidence=0.85)
 print(result.risk_score)</code></pre>
-                <p style="margin-top: 12px; font-size: 13px;"><a href="https://docs.ontostandard.org" target="_blank" style="color: var(--accent);">View full documentation →</a></p>
+            </details>
+        </div>
+        
+        <!-- API KEYS PAGE -->
+        <div class="page" id="page-api">
+            <div class="page-header-clean">
+                <h1 class="page-title">Access Credentials</h1>
+            </div>
+            
+            <div class="section-block">
+                <div class="section-label">API Key</div>
+                <div class="key-row">
+                    <input type="password" class="key-input" id="api-key-display" value="onto_sk_demo_key_12345" readonly>
+                    <div class="key-buttons">
+                        <button class="btn-minimal" onclick="toggleApiKeyVisibility()" id="toggle-key-btn">Show</button>
+                        <button class="btn-minimal" onclick="copyApiKey(this)">Copy</button>
+                    </div>
+                </div>
+                <div class="key-meta">
+                    <span>Created: Jan 31, 2026</span>
+                    <span>Last used: 2 hours ago</span>
+                    <span>Requests today: 47</span>
+                </div>
+            </div>
+            
+            <div class="section-block">
+                <div class="section-label">Key Management</div>
+                <p class="section-text">Regenerating will immediately invalidate the current key.</p>
+                <button class="btn-danger-outline" onclick="regenerateApiKey(this)">Regenerate Key</button>
+            </div>
+            
+            <div class="section-block">
+                <div class="section-label">Integration</div>
+                <pre class="code-block"><code>pip install onto-standard
+
+from onto import Client
+client = Client(api_key="your_api_key")
+result = client.evaluate(output, confidence=0.85)</code></pre>
+                <p class="section-footnote">Complete reference at <a href="https://github.com/nickarstrong/onto-standard" target="_blank">github.com/nickarstrong/onto-standard</a></p>
             </div>
         </div>
         
         <!-- SETTINGS PAGE -->
         <div class="page" id="page-settings">
-            <div class="page-header">
-                <h1 class="page-title">Settings</h1>
-                <p class="page-subtitle">Manage your account and company details</p>
+            <div class="page-header-clean">
+                <h1 class="page-title">Account</h1>
             </div>
             
-            <div class="card">
-                <div class="settings-section">
-                    <h3>Profile</h3>
-                    <div class="settings-row">
-                        <div>
-                            <div class="settings-label">Name</div>
-                            <div class="settings-value" id="settings-name">John Doe</div>
-                        </div>
-                        <span class="settings-action" onclick="editProfile()">Edit</span>
+            <div class="section-block">
+                <div class="section-label">Identity</div>
+                <div class="info-row">
+                    <span class="info-key">Name</span>
+                    <span class="info-val" id="settings-name">John Doe</span>
+                    <span class="info-action" onclick="editProfile()">Edit</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-key">Email</span>
+                    <span class="info-val" id="settings-email">user@example.com</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-key">Type</span>
+                    <span class="info-val" id="settings-account-type">Individual</span>
+                </div>
+            </div>
+            
+            <div class="section-block">
+                <div class="section-label">Organization</div>
+                <div id="company-not-registered">
+                    <p class="section-text">No organization registered. Required for institutional access tier.</p>
+                    <button class="btn-minimal" onclick="openCompanyModal()">Register Organization</button>
+                </div>
+                <div id="company-registered" class="hidden">
+                    <div class="info-row">
+                        <span class="info-key">Name</span>
+                        <span class="info-val" id="company-name">—</span>
+                        <span class="info-action" onclick="openCompanyModal()">Edit</span>
                     </div>
-                    <div class="settings-row">
-                        <div>
-                            <div class="settings-label">Email</div>
-                            <div class="settings-value" id="settings-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a8dbddd8d8c7dadce8c7c6dcc7dbdcc9c6ccc9dacc86c7dacf">[email&#160;protected]</a></div>
-                        </div>
+                    <div class="info-row">
+                        <span class="info-key">Industry</span>
+                        <span class="info-val" id="company-industry">—</span>
                     </div>
-                    <div class="settings-row">
-                        <div>
-                            <div class="settings-label">Account Type</div>
-                            <div class="settings-value" id="settings-account-type">Individual</div>
-                        </div>
+                    <div class="info-row">
+                        <span class="info-key">Registration</span>
+                        <span class="info-val" id="company-reg">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-key">Status</span>
+                        <span class="info-val status-active"><span class="dot"></span>Verified</span>
                     </div>
                 </div>
             </div>
             
-            <div class="card">
-                <div class="settings-section">
-                    <h3>Company Details</h3>
-                    <div id="company-not-registered">
-                        <div style="text-align: center; padding: 24px;">
-                            <p style="color: var(--text-secondary); margin-bottom: 16px;">Register your company to unlock Invoice payments and download legal documents.</p>
-                            <button class="btn btn-primary btn-sm" style="width: auto;" onclick="openCompanyModal()">Register Company</button>
-                        </div>
+            <div class="section-block" id="subscription-block">
+                <div class="section-label">Subscription</div>
+                <div id="subscription-none">
+                    <p class="section-text">No active subscription. Using Free tier (1 request/hour).</p>
+                    <button class="btn-minimal" onclick="showPage('billing')">View Plans</button>
+                </div>
+                <div id="subscription-active" class="hidden">
+                    <div class="info-row">
+                        <span class="info-key">Active Plan</span>
+                        <span class="info-val" id="sub-plan">—</span>
                     </div>
-                    <div id="company-registered" class="hidden">
-                        <div class="settings-row">
-                            <div>
-                                <div class="settings-label">Company Name</div>
-                                <div class="settings-value" id="company-name">—</div>
-                            </div>
-                            <span class="settings-action" onclick="openCompanyModal()">Edit</span>
-                        </div>
-                        <div class="settings-row">
-                            <div>
-                                <div class="settings-label">Registration Number</div>
-                                <div class="settings-value" id="company-reg">—</div>
-                            </div>
-                        </div>
-                        <div class="settings-row">
-                            <div>
-                                <div class="settings-label">Status</div>
-                                <div class="company-status">
-                                    <span class="status-dot active"></span>
-                                    <span style="color: var(--accent);">Active</span>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="info-row">
+                        <span class="info-key">Rate Limit</span>
+                        <span class="info-val" id="sub-rate">—</span>
                     </div>
+                    <div class="info-row" id="sub-critical-row">
+                        <span class="info-key">Critical</span>
+                        <span class="info-val" id="sub-critical-days">—</span>
+                    </div>
+                    <div class="info-row" id="sub-pro-row">
+                        <span class="info-key">Professional</span>
+                        <span class="info-val" id="sub-pro-days">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-key">All Expires</span>
+                        <span class="info-val" id="sub-expires">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-key">Total Paid</span>
+                        <span class="info-val" id="sub-total">—</span>
+                    </div>
+                    <button class="btn-minimal" onclick="showPage('billing')" style="margin-top: 12px;">Extend Subscription</button>
                 </div>
             </div>
             
-            <div class="card">
-                <div class="settings-section">
-                    <h3>Legal Documents</h3>
-                    <div class="doc-list">
-                        <div class="doc-item">
-                            <div class="doc-icon">📄</div>
-                            <div class="doc-info">
-                                <div class="doc-name">Legal Documents</div>
-                                <div class="doc-status">License, Privacy, Patent Policy, MSA</div>
-                            </div>
-                            <div class="doc-actions">
-                                <button class="doc-btn" onclick="showPage('docs', this); document.querySelector('.nav-item[onclick*=docs]').classList.add('active');">View All</button>
-                            </div>
-                        </div>
-                        <div class="doc-item">
-                            <div class="doc-icon">📄</div>
-                            <div class="doc-info">
-                                <div class="doc-name">Invoice</div>
-                                <div class="doc-status" id="invoice-status">🔒 Available after payment</div>
-                            </div>
-                            <div class="doc-actions" id="invoice-actions">
-                                <button class="doc-btn" id="invoice-download-btn" onclick="downloadInvoice()">Download</button>
-                            </div>
-                        </div>
-                    </div>
+            <div class="section-block">
+                <div class="section-label">Documents</div>
+                <div class="doc-row">
+                    <span class="doc-name">Specifications & Policies</span>
+                    <span class="doc-link" onclick="showPage('docs')">View</span>
+                </div>
+                <div class="doc-row" id="invoice-row">
+                    <span class="doc-name">Invoice</span>
+                    <span class="doc-status" id="invoice-status">No active subscription</span>
+                    <span class="doc-link hidden" id="invoice-download" onclick="downloadInvoice()">Download</span>
+                </div>
+            </div>
+            
+            <div class="section-block">
+                <div class="section-label">Support</div>
+                <div class="info-row">
+                    <span class="info-key">General</span>
+                    <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
+                </div>
+                <div class="info-row">
+                    <span class="info-key">Sales</span>
+                    <a class="info-val" href="mailto:sales@ontostandard.org">sales@ontostandard.org</a>
+                </div>
+                <div class="info-row">
+                    <span class="info-key">Billing</span>
+                    <a class="info-val" href="mailto:billing@ontostandard.org">billing@ontostandard.org</a>
                 </div>
             </div>
         </div>
         
         <!-- BILLING PAGE -->
         <div class="page" id="page-billing">
-            <div class="page-header">
-                <h1 class="page-title">Billing</h1>
-                <p class="page-subtitle">Choose the plan that's right for you</p>
+            <div class="page-header-clean">
+                <h1 class="page-title">Access Tiers</h1>
             </div>
             
-            <div class="pricing-grid">
-                <!-- FREE -->
-                <div class="pricing-card" id="card-free">
-                    <div class="pricing-name">FREE</div>
-                    <div class="pricing-price">$0</div>
-                    <div class="pricing-period">/month</div>
-                    <ul class="pricing-features">
-                        <li>100 evaluations/month</li>
+            <div class="tiers-grid">
+                <!-- OPEN -->
+                <div class="tier-card" id="card-free">
+                    <div class="tier-name">Open</div>
+                    <div class="tier-price">$0</div>
+                    <div class="tier-desc">Research & evaluation</div>
+                    <ul class="tier-list">
+                        <li>1 request/hour</li>
                         <li>+1 hour signal delay</li>
                         <li>Community support</li>
-                        <li>Watermark required</li>
+                        <li>Attribution required</li>
                     </ul>
-                    <div class="pricing-actions">
-                        <button class="btn btn-secondary" id="btn-free" disabled>Current Plan</button>
-                    </div>
+                    <button class="btn-tier current" id="btn-free" disabled>Current</button>
                 </div>
                 
-                <!-- BUSINESS -->
-                <div class="pricing-card popular" id="card-business">
-                    <div class="pricing-badge">★ MOST POPULAR</div>
-                    <div class="pricing-name">BUSINESS</div>
-                    <div class="pricing-price">$1,250</div>
-                    <div class="pricing-period">/month</div>
-                    <div class="pricing-annual">Billed annually · 2 months free</div>
-                    <ul class="pricing-features">
-                        <li>10,000 evaluations/year</li>
+                <!-- PROFESSIONAL -->
+                <div class="tier-card" id="card-business">
+                    <div class="tier-name">Professional</div>
+                    <div class="tier-price">$1,500<span>/month</span></div>
+                    <div class="tier-desc">Commercial deployment</div>
+                    <ul class="tier-list">
+                        <li>1 request/8.64s</li>
                         <li>Real-time signal</li>
                         <li>99.5% SLA</li>
                         <li>Business hours support</li>
-                        <li>No watermark</li>
                     </ul>
-                    <div class="pricing-actions">
-                        <button class="btn btn-primary" onclick="openSubscribeModal('business')">Subscribe</button>
-                    </div>
+                    <button class="btn-tier" id="btn-business" onclick="openSubscribeModal('business')">Select</button>
                 </div>
                 
-                <!-- ENTERPRISE -->
-                <div class="pricing-card" id="card-enterprise">
-                    <div class="pricing-name">ENTERPRISE</div>
-                    <div class="pricing-price">$8,333</div>
-                    <div class="pricing-period">/month</div>
-                    <div class="pricing-annual">Billed annually · 2 months free</div>
-                    <ul class="pricing-features">
-                        <li>Unlimited evaluations</li>
+                <!-- CRITICAL -->
+                <div class="tier-card" id="card-enterprise">
+                    <div class="tier-name">Critical</div>
+                    <div class="tier-price">$100,000<span>/year</span></div>
+                    <div class="tier-desc">Critical infrastructure</div>
+                    <ul class="tier-list">
+                        <li>Unlimited requests</li>
                         <li>Dedicated signal stream</li>
                         <li>99.99% SLA</li>
                         <li>24/7 priority support</li>
-                        <li>On-premise available</li>
                     </ul>
-                    <div class="pricing-actions">
-                        <button class="btn btn-primary" onclick="openSubscribeModal('enterprise')">Subscribe</button>
-                        <button class="btn btn-secondary" onclick="contactSales()">Contact Sales</button>
-                    </div>
+                    <button class="btn-tier" id="btn-enterprise" onclick="openSubscribeModal('enterprise')">Select</button>
+                    <button class="btn-tier-secondary" onclick="contactSales()">Contact</button>
                 </div>
             </div>
             
-            <p style="text-align: center; margin-top: 24px; font-size: 13px; color: var(--text-muted);">
-                * Invoice payments available for registered companies only. <a href="#" onclick="showPage('settings', this)" style="color: var(--accent);">Register company →</a>
+            <p class="section-footnote" style="text-align: center; margin-top: 24px;">
+                Invoice payment requires registered organization. <a href="#" onclick="showPage('settings')">Account settings</a>
             </p>
         </div>
         <div class="page" id="page-docs">
-            <div class="page-header">
-                <h1 class="page-title">Documentation</h1>
-                <p class="page-subtitle">ONTO Protocol specifications and legal documents</p>
+            <div class="page-header-clean">
+                <h1 class="page-title">Specifications</h1>
+            </div>
+            
+            <div class="docs-mobile-nav">
+                <select class="docs-mobile-select" onchange="showDocFromSelect(this.value)">
+                    <optgroup label="Standard">
+                        <option value="standard" selected>ONTO-ERS</option>
+                    </optgroup>
+                    <optgroup label="Service">
+                        <option value="layers">Layer Specification</option>
+                    </optgroup>
+                    <optgroup label="Compliance">
+                        <option value="regulatory">Regulatory Matrix</option>
+                    </optgroup>
+                    <optgroup label="Governance">
+                        <option value="charter">Foundation Charter</option>
+                        <option value="council">Standards Council</option>
+                    </optgroup>
+                    <optgroup label="Legal">
+                        <option value="license">License</option>
+                        <option value="patent">Patent Policy</option>
+                        <option value="privacy">Privacy Policy</option>
+                        <option value="msa">Service Agreement</option>
+                    </optgroup>
+                </select>
             </div>
             
             <div class="docs-container">
@@ -721,21 +1156,20 @@ print(result.risk_score)</code></pre>
                         <div class="docs-nav-item" onclick="showDoc('license', this)">License</div>
                         <div class="docs-nav-item" onclick="showDoc('patent', this)">Patent Policy</div>
                         <div class="docs-nav-item" onclick="showDoc('privacy', this)">Privacy Policy</div>
+                        <div class="docs-nav-item" onclick="showDoc('msa', this)">Service Agreement</div>
                     </div>
                 </div>
                 
                 <div class="docs-content">
 <article class="docs-article active" id="docs-standard">
   <h1>ONTO Epistemic Risk Standard (ONTO-ERS)</h1>
-  <div class="docs-meta"><span class="docs-badge badge-green">v10.0</span> <span class="docs-badge badge-blue">Published</span> <span>January 2026</span></div>
+  <div class="docs-meta">
+    <span class="docs-badge badge-green">v10.0</span>
+    <span class="docs-badge badge-blue">Published</span>
+    <span>ONTO-SPEC-001</span>
+    <span>January 2026</span>
+  </div>
 
-<h1 id="onto-epistemic-risk-standard-onto-ers">ONTO Epistemic Risk
-Standard (ONTO-ERS)</h1>
-<p><strong>Specification Version:</strong> 10.0<br />
-<strong>Document ID:</strong> ONTO-SPEC-001<br />
-<strong>Status:</strong> Published<br />
-<strong>Effective Date:</strong> January 2026</p>
-<hr />
 <h2 id="abstract">Abstract</h2>
 <p>This document specifies the ONTO Epistemic Risk Standard (ONTO-ERS),
 a framework for measuring and certifying the epistemic calibration of
@@ -1464,14 +1898,12 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a hr
 <!-- LAYER SPECIFICATION -->
 <article class="docs-article" id="docs-layers">
   <h1>ONTO Layer Specification</h1>
-  <div class="docs-meta"><span class="docs-badge badge-green">v10.0</span> <span>Service Layers & Pricing</span></div>
+  <div class="docs-meta">
+    <span class="docs-badge badge-green">v1.0</span>
+    <span>ONTO-LAYER-001</span>
+    <span>January 2026</span>
+  </div>
 
-<h1 id="onto-layer-specification">ONTO Layer Specification</h1>
-<p><strong>Document ID:</strong> ONTO-LAYER-001<br />
-<strong>Version:</strong> 1.0<br />
-<strong>Effective Date:</strong> January 2026<br />
-<strong>Status:</strong> Active</p>
-<hr />
 <h2 id="philosophy">Philosophy</h2>
 <blockquote>
 <p>We do not restrict functionality. We differentiate the degree of
@@ -1568,14 +2000,18 @@ https://ontostandard.org</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
+<td>API Rate Limit</td>
+<td>⚠️ 1 request / hour</td>
+</tr>
+<tr class="even">
 <td>Local calculations</td>
 <td>✅ Unlimited</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Signal delay</td>
 <td>⚠️ +1 hour (delayed)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Certificates</td>
 <td>⚠️ 100/month max</td>
 </tr>
@@ -1664,18 +2100,22 @@ and client-facing reports.</p>
 </thead>
 <tbody>
 <tr class="odd">
+<td>API Rate Limit</td>
+<td>1 request / 8.64 seconds</td>
+</tr>
+<tr class="even">
 <td>Full SDK access</td>
 <td>✅ Unlimited</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Local calculations</td>
 <td>✅ Unlimited</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Notary signatures (Gas)</td>
 <td>10,000 included</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Official reports</td>
 <td>✅ Unlimited generation</td>
 </tr>
@@ -1803,42 +2243,46 @@ scope)</p>
 </thead>
 <tbody>
 <tr class="odd">
+<td>API Rate Limit</td>
+<td>✅ Unlimited</td>
+</tr>
+<tr class="even">
 <td>Full SDK access</td>
 <td>✅ Unlimited</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Local calculations</td>
 <td>✅ Unlimited</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Notary signatures (Gas)</td>
 <td>100,000+ included</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Official reports</td>
 <td>✅ Unlimited</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Public verification</td>
 <td>✅ Priority queue</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Dedicated signal stream</td>
 <td>✅ Isolated channel</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Legal protocol support</td>
 <td>✅ Included</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Audit Trail archive</td>
 <td>✅ 24 months retention</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Regulatory liaison</td>
 <td>✅ Included</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Support</td>
 <td>24/7 dedicated</td>
 </tr>
@@ -1989,6 +2433,12 @@ requests</li>
 <td>$100,000+/yr</td>
 </tr>
 <tr class="even">
+<td><strong>Rate Limit</strong></td>
+<td>1 req/hour</td>
+<td>1 req/8.64s</td>
+<td>Unlimited</td>
+</tr>
+<tr class="odd">
 <td><strong>Signal Delay</strong></td>
 <td>+1 hour</td>
 <td>Real-time</td>
@@ -2182,14 +2632,12 @@ STANDARD → CRITICAL
 <!-- REGULATORY ALIGNMENT MATRIX -->
 <article class="docs-article" id="docs-regulatory">
   <h1>Regulatory Alignment Matrix</h1>
-  <div class="docs-meta"><span class="docs-badge badge-blue">Compliance</span> <span>EU AI Act · NIST RMF · ISO 42001</span></div>
+  <div class="docs-meta">
+    <span class="docs-badge badge-blue">Compliance</span>
+    <span>ONTO-REG-001</span>
+    <span>January 2026</span>
+  </div>
 
-<h1 id="onto-regulatory-alignment-matrix">ONTO Regulatory Alignment
-Matrix</h1>
-<p><strong>Document ID:</strong> ONTO-REG-001<br />
-<strong>Version:</strong> 1.0<br />
-<strong>Last Updated:</strong> January 2026</p>
-<hr />
 <h2 id="overview">Overview</h2>
 <p>This document maps ONTO-ERS capabilities to requirements of major AI
 governance frameworks, demonstrating how ONTO certification supports
@@ -2916,14 +3364,12 @@ complete compliance strategies.</p>
 <!-- FOUNDATION CHARTER -->
 <article class="docs-article" id="docs-charter">
   <h1>ONTO Foundation Charter</h1>
-  <div class="docs-meta"><span class="docs-badge badge-green">Governance</span> <span>Effective January 2026</span></div>
+  <div class="docs-meta">
+    <span class="docs-badge badge-green">Governance</span>
+    <span>ONTO-GOV-001</span>
+    <span>January 2026</span>
+  </div>
 
-<h1 id="onto-foundation-charter">ONTO Foundation Charter</h1>
-<p><strong>Document ID:</strong> ONTO-GOV-001<br />
-<strong>Version:</strong> 1.0<br />
-<strong>Effective Date:</strong> January 2026<br />
-<strong>Status:</strong> Ratified</p>
-<hr />
 <h2 id="article-i-name-and-purpose">Article I: Name and Purpose</h2>
 <h3 id="section-1.1-name">Section 1.1 — Name</h3>
 <p>The organization shall be known as <strong>ONTO Foundation</strong>
@@ -3178,13 +3624,13 @@ social and scientific significance of the result.</p>
 (Слой Познания)</h3>
 <p><strong>Purpose:</strong> Mass adoption of the standard.</p>
 <p><strong>Includes:</strong> - Full SDK access - Local evaluation
-capabilities - ONTO-Bench dataset access - Community support</p>
+capabilities - ONTO-Bench dataset access - Community support - API Rate Limit: 1 request per hour</p>
 <p><strong>Requirements:</strong> - Mandatory public attribution:
 “Verified by ONTO Open Source” - Non-commercial use only</p>
 <h3 id="section-4.3-professional-layer-слой-практики">Section 4.3 —
 Standard Layer (Слой Практики)</h3>
 <p><strong>Purpose:</strong> Commercial legitimacy for businesses.</p>
-<p><strong>Includes:</strong> - All Open Layer features - 10,000 Notary
+<p><strong>Includes:</strong> - All Open Layer features - API Rate Limit: 1 request per 8.64 seconds (~10,000/day) - 10,000 Notary
 signatures (Gas) per year - Official report generation - Public
 verification (real-time) - Business hours support - 99.5% SLA</p>
 <p><strong>Overage:</strong> $0.50 per additional Notary batch</p>
@@ -3192,7 +3638,7 @@ verification (real-time) - Business hours support - 99.5% SLA</p>
 Critical Layer (Слой Ответственности)</h3>
 <p><strong>Purpose:</strong> Reference standard for regulated
 industries.</p>
-<p><strong>Includes:</strong> - All Standard Layer features -
+<p><strong>Includes:</strong> - All Standard Layer features - Unlimited API Rate Limit -
 100,000+ Notary signatures (Gas) per year - Dedicated verification
 stream - Legal protocol support - Legally binding Audit Trail archive -
 Regulatory liaison services - 24/7 dedicated support - 99.99% SLA -
@@ -3453,14 +3899,12 @@ Date: January 2026</p>
 <!-- STANDARDS COUNCIL -->
 <article class="docs-article" id="docs-council">
   <h1>ONTO Standards Council</h1>
-  <div class="docs-meta"><span class="docs-badge badge-green">Governance</span> <span>Technical Leadership</span></div>
+  <div class="docs-meta">
+    <span class="docs-badge badge-green">Governance</span>
+    <span>ONTO-GOV-002</span>
+    <span>January 2026</span>
+  </div>
 
-<h1 id="onto-standards-council">ONTO Standards Council</h1>
-<p><strong>Document ID:</strong> ONTO-GOV-002<br />
-<strong>Version:</strong> 1.0<br />
-<strong>Effective Date:</strong> January 2026<br />
-<strong>Status:</strong> Active</p>
-<hr />
 <h2 id="purpose">1. Purpose</h2>
 <p>The Standards Council is the technical governance body responsible
 for the development, maintenance, and evolution of ONTO
@@ -3831,8 +4275,12 @@ Nick Strong<br />
 <!-- ══════════════════════════════════════════════════════════════════════ -->
 <!-- LICENSE -->
 <article class="docs-article" id="docs-license">
-  <h1>ONTO Gold Asymmetric AI License</h1>
-  <div class="docs-meta"><span class="docs-badge badge-green">v5.1</span> <span>Open Source · Commercial Terms</span></div>
+  <h1>ONTO License (Apache 2.0)</h1>
+  <div class="docs-meta">
+    <span class="docs-badge badge-green">Apache 2.0</span>
+    <span>Open Source</span>
+    <span>January 2004</span>
+  </div>
 
 <pre><code>                             Apache License
                        Version 2.0, January 2004
@@ -4011,15 +4459,13 @@ limitations under the License.</p>
 <!-- ══════════════════════════════════════════════════════════════════════ -->
 <!-- PATENT POLICY -->
 <article class="docs-article" id="docs-patent">
-  <h1>Patent Policy</h1>
-  <div class="docs-meta"><span class="docs-badge badge-blue">Legal</span> <span>RF-RAND Commitment</span></div>
+  <h1>ONTO Foundation Patent Policy</h1>
+  <div class="docs-meta">
+    <span class="docs-badge badge-blue">Legal</span>
+    <span>ONTO-LEGAL-002</span>
+    <span>January 2026</span>
+  </div>
 
-<h1 id="onto-foundation-patent-policy">ONTO Foundation Patent
-Policy</h1>
-<p><strong>Version:</strong> 1.0<br />
-<strong>Effective Date:</strong> January 2026<br />
-<strong>Status:</strong> Active</p>
-<hr />
 <h2 id="purpose">1. Purpose</h2>
 <p>This Patent Policy establishes the intellectual property framework
 for the ONTO Epistemic Risk Standard (ONTO-ERS) and all associated
@@ -4125,7 +4571,11 @@ https://ontostandard.org</p>
 <!-- PRIVACY POLICY -->
 <article class="docs-article" id="docs-privacy">
   <h1>Privacy Policy</h1>
-  <div class="docs-meta"><span class="docs-badge badge-blue">GDPR Compliant</span> <span>January 2026</span></div>
+  <div class="docs-meta">
+    <span class="docs-badge badge-blue">GDPR Compliant</span>
+    <span>ONTO-LEGAL-003</span>
+    <span>January 2026</span>
+  </div>
 
   <h2>1. Introduction</h2>
   <p>ONTO Standard LLC ("ONTO", "we", "us") is committed to protecting your privacy. This policy describes how we collect, use, and protect your personal data when you use our services.</p>
@@ -4197,11 +4647,71 @@ https://ontostandard.org</p>
 
   <h2>11. Contact</h2>
   <p><strong>Data Protection Officer:</strong><br>
-  Email: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="36454346465944427659584259454257585257445218594451">[email&#160;protected]</a><br>
+  Email: privacy@ontostandard.org<br>
   ONTO Standard LLC</p>
 
   <hr>
-  <p><em>Privacy Policy v2.1 — January 2026</em><br>
+  <p><em>Privacy Policy v2.1 — January 2026</em></p>
+</article>
+
+<article class="docs-article" id="docs-msa">
+  <h1>Master Service Agreement</h1>
+  <div class="docs-meta">
+    <span class="docs-badge badge-blue">Contract</span>
+    <span>ONTO-LEGAL-001</span>
+    <span>January 2026</span>
+  </div>
+
+  <h2>1. Parties</h2>
+  <p>This Master Service Agreement ("Agreement") is entered into between ONTO Standard LLC ("ONTO", "we", "us") and the organization registered on the ONTO platform ("Client", "you").</p>
+
+  <h2>2. Services</h2>
+  <p>ONTO provides epistemic risk measurement and verification services for AI systems according to the ONTO Epistemic Risk Standard (ONTO-ERS). Services include:</p>
+  <ul>
+    <li>API access for automated evaluation</li>
+    <li>Risk scoring and uncertainty quantification</li>
+    <li>Verification certificates</li>
+    <li>Access to ONTO Signal (real-time epistemic state)</li>
+  </ul>
+
+  <h2>3. Service Tiers</h2>
+  <table>
+    <tr><th>Tier</th><th>Rate Limit</th><th>Signal</th><th>SLA</th></tr>
+    <tr><td>Open</td><td>1 req/hour</td><td>+1hr delay</td><td>Best effort</td></tr>
+    <tr><td>Professional</td><td>1 req/8.64s</td><td>Real-time</td><td>99.5%</td></tr>
+    <tr><td>Critical</td><td>Unlimited</td><td>Dedicated</td><td>99.99%</td></tr>
+  </table>
+
+  <h2>4. Fees and Payment</h2>
+  <p>Client agrees to pay fees according to the selected service tier. Annual subscriptions are billed upfront. Invoice payment is available for registered organizations.</p>
+
+  <h2>5. Term and Termination</h2>
+  <p>This Agreement is effective upon acceptance and continues for the subscription period. Either party may terminate with 30 days written notice. Annual fees are non-refundable.</p>
+
+  <h2>6. Limitation of Liability</h2>
+  <p><strong>ONTO is a measurement instrument.</strong> ONTO provides epistemic risk assessments as informational tools only. ONTO does not:</p>
+  <ul>
+    <li>Guarantee AI model outputs or decisions</li>
+    <li>Assume liability for actions taken based on ONTO evaluations</li>
+    <li>Warrant fitness for any particular regulatory purpose</li>
+  </ul>
+  <p>ONTO's maximum liability shall not exceed fees paid in the 12 months preceding any claim.</p>
+
+  <h2>7. Intellectual Property</h2>
+  <p>ONTO retains all rights to the ONTO-ERS standard, methodology, and platform. Client retains all rights to their data and evaluation results.</p>
+
+  <h2>8. Data Handling</h2>
+  <p>See Privacy Policy for data handling practices. Client data submitted for evaluation is processed only for providing services and is not used for training or shared with third parties.</p>
+
+  <h2>9. Governing Law</h2>
+  <p>This Agreement is governed by the laws of Delaware, USA. Disputes shall be resolved through binding arbitration.</p>
+
+  <h2>10. Modifications</h2>
+  <p>ONTO may modify this Agreement with 30 days notice. Continued use after modification constitutes acceptance.</p>
+
+  <hr>
+  <p><em>Master Service Agreement v1.0 — January 2026</em></p>
+</article>
                 </div>
             </div>
         </div>
@@ -4210,78 +4720,234 @@ https://ontostandard.org</p>
 
 <!-- COMPANY REGISTRATION MODAL -->
 <div class="modal-overlay" id="company-modal">
-    <div class="modal">
+    <div class="modal modal-wide modal-inst">
         <div class="modal-header">
-            <h2>Register Company</h2>
+            <h2>Organization Registration</h2>
             <button class="modal-close" onclick="closeModal('company-modal')">&times;</button>
         </div>
-        <div class="modal-body">
-            <div class="form-group">
-                <label class="form-label">Company Name *</label>
-                <input type="text" class="form-input" id="company-name-input" placeholder="Acme Corporation">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Registration Number *</label>
-                <input type="text" class="form-input" id="company-reg-input" placeholder="12345678">
-            </div>
-            <div class="form-group">
-                <label class="form-label">VAT ID (optional)</label>
-                <input type="text" class="form-input" id="company-vat-input" placeholder="EU123456789">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Legal Address *</label>
-                <input type="text" class="form-input" id="company-address-input" placeholder="123 Main Street, Suite 100">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Country *</label>
-                <select class="form-input" id="company-country-input">
-                    <option value="">Select country</option>
-                    <option value="US">United States</option>
-                    <option value="GB">United Kingdom</option>
-                    <option value="DE">Germany</option>
-                    <option value="FR">France</option>
-                    <option value="UZ">Uzbekistan</option>
-                    <option value="OTHER">Other</option>
-                </select>
+        <div class="modal-body form-inst">
+            <div class="form-section">
+                <div class="form-section-title">Legal Entity</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Legal Name *</label>
+                        <input type="text" class="form-input" id="company-name-input" placeholder="e.g. Acme Corporation Inc.">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Entity Type *</label>
+                        <select class="form-input" id="company-type-input">
+                            <option value="">Select type...</option>
+                            <option value="corporation">Corporation</option>
+                            <option value="llc">LLC</option>
+                            <option value="llp">LLP</option>
+                            <option value="partnership">Partnership</option>
+                            <option value="foundation">Foundation</option>
+                            <option value="nonprofit">Non-Profit</option>
+                            <option value="university">University / Research</option>
+                            <option value="government">Government</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Industry *</label>
+                        <select class="form-input" id="company-industry-input">
+                            <option value="">Select industry...</option>
+                            <optgroup label="High-Risk Sectors">
+                                <option value="healthcare">Healthcare & Medical</option>
+                                <option value="financial">Financial Services</option>
+                                <option value="legal">Legal Services</option>
+                                <option value="insurance">Insurance</option>
+                                <option value="aerospace">Aerospace</option>
+                                <option value="defense">Defense & Security</option>
+                                <option value="autonomous">Autonomous Systems</option>
+                                <option value="energy">Energy & Utilities</option>
+                                <option value="infrastructure">Critical Infrastructure</option>
+                            </optgroup>
+                            <optgroup label="Technology">
+                                <option value="ai_ml">AI / Machine Learning</option>
+                                <option value="software">Software & SaaS</option>
+                                <option value="cloud">Cloud Services</option>
+                                <option value="cybersecurity">Cybersecurity</option>
+                                <option value="data">Data & Analytics</option>
+                            </optgroup>
+                            <optgroup label="Other Sectors">
+                                <option value="manufacturing">Manufacturing</option>
+                                <option value="retail">Retail & E-commerce</option>
+                                <option value="education">Education</option>
+                                <option value="media">Media & Entertainment</option>
+                                <option value="consulting">Consulting</option>
+                                <option value="research">Research & Academia</option>
+                                <option value="government">Government & Public</option>
+                                <option value="other">Other</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Registration Number *</label>
+                        <input type="text" class="form-input" id="company-reg-input" placeholder="e.g. 12-3456789">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Tax ID / VAT</label>
+                        <input type="text" class="form-input" id="company-vat-input" placeholder="Optional">
+                    </div>
+                </div>
             </div>
             
-            <div class="terms-container" style="height: 150px; margin-top: 16px;">
-                <h3>Master Service Agreement</h3>
-                <p>This Master Service Agreement ("Agreement") is entered into between ONTO Standard LLC ("ONTO") and the Client identified above.</p>
-                
-                <h3>1. Services</h3>
-                <p>ONTO provides epistemic risk measurement and certification services for AI systems according to the ONTO-ERS standard.</p>
-                
-                <h3>2. Fees</h3>
-                <p>Client agrees to pay fees according to the selected service plan. Annual subscriptions are billed upfront.</p>
-                
-                <h3>3. Term</h3>
-                <p>This Agreement is effective upon acceptance and continues for the subscription period selected.</p>
-                
-                <h3>4. Limitation of Liability</h3>
-                <p>ONTO is a measurement instrument. ONTO does not guarantee AI model outputs or decisions made based on ONTO evaluations.</p>
-                
-                <p style="margin-top: 16px;"><a href="https://docs.ontostandard.org/legal/msa" target="_blank">Full MSA document →</a></p>
+            <div class="form-section">
+                <div class="form-section-title">Registered Address</div>
+                <div class="form-group">
+                    <label class="form-label">Street Address *</label>
+                    <input type="text" class="form-input" id="company-address-input" placeholder="123 Main Street, Suite 100">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">City *</label>
+                        <input type="text" class="form-input" id="company-city-input" placeholder="New York">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">State / Province</label>
+                        <input type="text" class="form-input" id="company-state-input" placeholder="NY">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Postal Code *</label>
+                        <input type="text" class="form-input" id="company-postal-input" placeholder="10001">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Country *</label>
+                        <select class="form-input" id="company-country-input">
+                            <option value="">Select country...</option>
+                            <optgroup label="Common">
+                                <option value="US">United States</option>
+                                <option value="GB">United Kingdom</option>
+                                <option value="DE">Germany</option>
+                                <option value="FR">France</option>
+                                <option value="CH">Switzerland</option>
+                                <option value="SG">Singapore</option>
+                                <option value="AE">UAE</option>
+                                <option value="JP">Japan</option>
+                            </optgroup>
+                            <optgroup label="Americas">
+                                <option value="AR">Argentina</option>
+                                <option value="BR">Brazil</option>
+                                <option value="CA">Canada</option>
+                                <option value="CL">Chile</option>
+                                <option value="CO">Colombia</option>
+                                <option value="MX">Mexico</option>
+                                <option value="PE">Peru</option>
+                            </optgroup>
+                            <optgroup label="Europe">
+                                <option value="AT">Austria</option>
+                                <option value="BE">Belgium</option>
+                                <option value="CZ">Czech Republic</option>
+                                <option value="DK">Denmark</option>
+                                <option value="EE">Estonia</option>
+                                <option value="FI">Finland</option>
+                                <option value="GR">Greece</option>
+                                <option value="HU">Hungary</option>
+                                <option value="IE">Ireland</option>
+                                <option value="IT">Italy</option>
+                                <option value="LU">Luxembourg</option>
+                                <option value="NL">Netherlands</option>
+                                <option value="NO">Norway</option>
+                                <option value="PL">Poland</option>
+                                <option value="PT">Portugal</option>
+                                <option value="RO">Romania</option>
+                                <option value="ES">Spain</option>
+                                <option value="SE">Sweden</option>
+                            </optgroup>
+                            <optgroup label="Asia Pacific">
+                                <option value="AU">Australia</option>
+                                <option value="CN">China</option>
+                                <option value="HK">Hong Kong</option>
+                                <option value="IN">India</option>
+                                <option value="ID">Indonesia</option>
+                                <option value="KR">South Korea</option>
+                                <option value="MY">Malaysia</option>
+                                <option value="NZ">New Zealand</option>
+                                <option value="PH">Philippines</option>
+                                <option value="TW">Taiwan</option>
+                                <option value="TH">Thailand</option>
+                                <option value="VN">Vietnam</option>
+                            </optgroup>
+                            <optgroup label="Middle East & Africa">
+                                <option value="BH">Bahrain</option>
+                                <option value="EG">Egypt</option>
+                                <option value="IL">Israel</option>
+                                <option value="KW">Kuwait</option>
+                                <option value="QA">Qatar</option>
+                                <option value="SA">Saudi Arabia</option>
+                                <option value="ZA">South Africa</option>
+                                <option value="TR">Turkey</option>
+                            </optgroup>
+                            <optgroup label="CIS">
+                                <option value="KZ">Kazakhstan</option>
+                                <option value="UZ">Uzbekistan</option>
+                                <option value="AZ">Azerbaijan</option>
+                                <option value="GE">Georgia</option>
+                                <option value="AM">Armenia</option>
+                            </optgroup>
+                            <optgroup label="Other">
+                                <option value="OTHER">Other</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
             </div>
             
-            <div class="checkbox-group" style="margin-top: 16px;">
-                <input type="checkbox" id="msa-agree">
-                <label for="msa-agree">I agree to the Master Service Agreement</label>
-            </div>
-            <div class="checkbox-group">
-                <input type="checkbox" id="msa-authorized">
-                <label for="msa-authorized">I am authorized to sign on behalf of this company</label>
+            <div class="form-section">
+                <div class="form-section-title">Contact</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Organization Email *</label>
+                        <input type="email" class="form-input" id="company-email-input" placeholder="contact@company.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" class="form-input" id="company-phone-input" placeholder="+1 (555) 123-4567">
+                    </div>
+                </div>
             </div>
             
-            <div class="form-group">
-                <label class="form-label">Authorized Signatory Name *</label>
-                <input type="text" class="form-input" id="signatory-name-input" placeholder="Your full name">
+            <div class="form-section">
+                <div class="form-section-title">Authorized Representative</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        <input type="text" class="form-input" id="signatory-name-input" placeholder="John Smith">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Title *</label>
+                        <input type="text" class="form-input" id="signatory-title-input" placeholder="Chief Technology Officer">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-section" style="border-bottom: none; padding-bottom: 0;">
+                <div class="form-section-title">Agreement</div>
+                <div class="agreement-notice">
+                    By registering, the organization agrees to the Master Service Agreement including limitation of liability provisions. 
+                    <a href="#" onclick="closeModal('company-modal'); showPage('docs'); setTimeout(() => showDoc('msa'), 100); return false;">View MSA</a>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="msa-agree">
+                    <label for="msa-agree">I have read and accept the Master Service Agreement</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="msa-authorized">
+                    <label for="msa-authorized">I am authorized to bind this organization</label>
+                </div>
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="closeModal('company-modal')">Cancel</button>
-            <div onclick="if(document.getElementById('register-company-btn').disabled) highlightEmptyFields();" style="display:inline-block;width:100%;">
-                <button class="btn btn-primary" id="register-company-btn" onclick="registerCompany()" disabled>Register Company</button>
+            <button class="btn-minimal" onclick="closeModal('company-modal')">Cancel</button>
+            <div onclick="if(document.getElementById('register-company-btn').disabled) highlightEmptyFields();" style="display:inline-block;">
+                <button class="btn-minimal" id="register-company-btn" onclick="registerCompany()" disabled style="background: var(--accent); color: white; border-color: var(--accent);">Register</button>
             </div>
         </div>
     </div>
@@ -4289,54 +4955,74 @@ https://ontostandard.org</p>
 
 <!-- SUBSCRIBE MODAL -->
 <div class="modal-overlay" id="subscribe-modal">
-    <div class="modal">
+    <div class="modal modal-inst" style="max-width: 480px;">
         <div class="modal-header">
-            <h2>Subscribe to <span id="subscribe-plan-name">BUSINESS</span></h2>
+            <h2><span id="subscribe-plan-name">Professional</span> Tier</h2>
             <button class="modal-close" onclick="closeModal('subscribe-modal')">&times;</button>
         </div>
         <div class="modal-body">
-            <h4 style="margin-bottom: 16px; font-size: 14px; font-weight: 600;">Choose billing cycle</h4>
-            
-            <div class="cycle-option" onclick="selectCycle('monthly')" id="cycle-monthly">
-                <div class="cycle-option-header">
-                    <div class="cycle-option-title">
-                        <input type="radio" name="billing-cycle" value="monthly">
-                        Monthly
-                    </div>
-                    <div class="cycle-option-price" id="price-monthly">$1,500/month</div>
+            <div class="order-section">
+                <div class="form-section-title">Includes</div>
+                <div class="order-features" id="order-features">
+                    <div class="order-feature">1 request/8.64s rate limit</div>
+                    <div class="order-feature">Real-time signal access</div>
+                    <div class="order-feature">99.5% SLA</div>
+                    <div class="order-feature">Business hours support</div>
                 </div>
-                <div class="cycle-option-desc">Billed monthly</div>
             </div>
             
-            <div class="cycle-option selected" onclick="selectCycle('annual')" id="cycle-annual">
-                <div class="cycle-option-header">
-                    <div class="cycle-option-title">
-                        <input type="radio" name="billing-cycle" value="annual" checked>
-                        Annual
-                        <span class="cycle-savings">2 months free</span>
-                    </div>
-                    <div class="cycle-option-price" id="price-annual">$1,250/month</div>
+            <div class="order-section">
+                <div class="form-section-title">Billing</div>
+                <div class="billing-options">
+                    <label class="billing-option" id="billing-annual">
+                        <input type="radio" name="billing-cycle" value="annual" checked onchange="updateOrderSummary()">
+                        <span class="billing-option-content">
+                            <span class="billing-option-name">Annual</span>
+                            <span class="billing-option-detail">Billed once per year</span>
+                        </span>
+                        <span class="billing-option-price" id="price-annual-display">$15,000</span>
+                    </label>
+                    <label class="billing-option" id="billing-monthly">
+                        <input type="radio" name="billing-cycle" value="monthly" onchange="updateOrderSummary()">
+                        <span class="billing-option-content">
+                            <span class="billing-option-name">Monthly</span>
+                            <span class="billing-option-detail">Billed each month</span>
+                        </span>
+                        <span class="billing-option-price" id="price-monthly-display">$1,500/mo</span>
+                    </label>
                 </div>
-                <div class="cycle-option-desc" id="price-annual-total">$15,000 billed annually</div>
             </div>
             
-            <div class="payment-method">
-                <h4>Payment method</h4>
-                <div class="payment-option disabled" onclick="selectPayment('card')" id="payment-card">
-                    <input type="radio" name="payment-method" value="card" disabled>
-                    <span class="payment-option-label">💳 Pay by card</span>
-                    <span style="font-size: 11px; color: var(--text-muted);">Monthly only</span>
+            <div class="order-section">
+                <div class="form-section-title">Payment Method</div>
+                <div class="payment-options">
+                    <label class="payment-opt" id="payment-invoice">
+                        <input type="radio" name="payment-method" value="invoice" checked>
+                        <span class="payment-opt-name">Invoice</span>
+                        <span class="payment-opt-note">Annual billing only</span>
+                    </label>
+                    <label class="payment-opt" id="payment-card">
+                        <input type="radio" name="payment-method" value="card">
+                        <span class="payment-opt-name">Card</span>
+                        <span class="payment-opt-note">Monthly billing only</span>
+                    </label>
                 </div>
-                <div class="payment-option" onclick="selectPayment('invoice')" id="payment-invoice">
-                    <input type="radio" name="payment-method" value="invoice" checked>
-                    <span class="payment-option-label">📄 Pay by invoice</span>
-                    <span style="font-size: 11px; color: var(--text-muted);">Annual only</span>
+            </div>
+            
+            <div class="order-summary">
+                <div class="order-summary-row">
+                    <span class="order-summary-label" id="summary-plan">Professional Tier — Annual</span>
+                    <span class="order-summary-value" id="summary-price">$15,000</span>
+                </div>
+                <div class="order-summary-row total">
+                    <span class="order-summary-label">Total due</span>
+                    <span class="order-summary-value" id="summary-total">$15,000</span>
                 </div>
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="closeModal('subscribe-modal')">Cancel</button>
-            <button class="btn btn-primary" onclick="processPayment()">Continue to Payment</button>
+            <button class="btn-minimal" onclick="closeModal('subscribe-modal')">Cancel</button>
+            <button class="btn-minimal" onclick="processPayment()" style="background: var(--accent); color: white; border-color: var(--accent);">Proceed to Payment</button>
         </div>
     </div>
 </div>
@@ -4346,38 +5032,187 @@ https://ontostandard.org</p>
     <div class="modal" style="max-width: 400px; text-align: center;">
         <div class="modal-body" style="padding: 48px;">
             <div style="font-size: 48px; margin-bottom: 16px;">🚀</div>
-            <h2 style="margin-bottom: 8px;">Redirecting to Payment</h2>
-            <p style="color: var(--text-secondary); margin-bottom: 24px;">You will be redirected to Airwallex to complete your payment securely.</p>
-            <button class="btn btn-primary" onclick="redirectToAirwallex()">Continue to Airwallex</button>
-            <p style="margin-top: 16px; font-size: 12px; color: var(--text-muted);">Payment integration coming soon.<br>Contact <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="384b4d4848574a4c7857564c574b4c59565c594a5c16574a5f">[email&#160;protected]</a></p>
+            <h2 style="margin-bottom: 8px;">Complete Payment</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 24px;">You will be redirected to our secure payment provider to complete your subscription.</p>
+            <button class="btn btn-primary" onclick="redirectToAirwallex()">Continue to Payment</button>
+            <p style="margin-top: 16px; font-size: 12px; color: var(--text-muted);">Questions? Contact <a href="mailto:sales@ontostandard.org">sales@ontostandard.org</a></p>
+        </div>
+    </div>
+</div>
+
+<!-- CONTACT SALES MODAL -->
+<div class="modal-overlay" id="contact-modal">
+    <div class="modal modal-inst" style="max-width: 440px;">
+        <div class="modal-header">
+            <h2>Contact Sales</h2>
+            <button class="modal-close" onclick="closeModal('contact-modal')">&times;</button>
+        </div>
+        <div class="modal-body form-inst">
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">
+                For Critical tier, custom integrations, or enterprise requirements.
+            </p>
+            <div class="form-group">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-input" id="contact-name" placeholder="Your name">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Organization</label>
+                <input type="text" class="form-input" id="contact-org" placeholder="Company name">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="contact-email" placeholder="work@company.com">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Message</label>
+                <textarea class="form-input" id="contact-message" rows="3" placeholder="Tell us about your requirements..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-minimal" onclick="closeModal('contact-modal')">Cancel</button>
+            <button class="btn-minimal" onclick="submitContactForm()" style="background: var(--accent); color: white; border-color: var(--accent);">Send</button>
         </div>
     </div>
 </div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// === API CONFIG ===
+const API_BASE = 'https://api.ontostandard.org';
+let authToken = null;
+
+// === API HELPER ===
+async function api(endpoint, options = {}) {
+    const headers = {
+        'Content-Type': 'application/json',
+        ...options.headers
+    };
+    
+    if (authToken) {
+        headers['Authorization'] = `Bearer ${authToken}`;
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE}${endpoint}`, {
+            ...options,
+            headers
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.detail || data.message || 'Request failed');
+        }
+        
+        return data;
+    } catch (error) {
+        console.error('API Error:', error);
+        throw error;
+    }
+}
+
 // === STATE ===
 let currentUser = null;
 let selectedPlan = 'business';
 let selectedCycle = 'annual';
 let selectedPayment = 'card';
+let sessionTimer = null;
+let sessionWarningTimer = null;
+const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+const SESSION_WARNING = 5 * 60 * 1000; // 5 minutes before timeout
+
+// === i18n STRINGS (preparation) ===
+const STRINGS = {
+    welcome: 'Welcome to ONTO',
+    welcomeDesc: 'Get started by creating your first API key and making an evaluation request.',
+    getApiKey: 'Get API Key',
+    readDocs: 'Read Docs',
+    copied: 'Copied to clipboard',
+    sessionWarning: 'Your session will expire in 5 minutes. Click to stay signed in.',
+    sessionExpired: 'Session expired. Please sign in again.',
+    orgRegistered: 'Organization registered',
+    messageSent: 'Message sent. We\'ll be in touch within 24 hours.',
+    fillRequired: 'Please fill in all required fields',
+    confirmLogout: 'Are you sure you want to sign out?',
+    confirmRegenerate: 'Are you sure you want to regenerate your API key?\n\nThis will immediately invalidate your current key.'
+};
 
 const PLANS = {
     business: { monthly: 1500, annual: 15000, monthlyEquiv: 1250 },
     enterprise: { monthly: null, annual: 100000, monthlyEquiv: 8333 }
 };
 
+// === SESSION MANAGEMENT ===
+function resetSessionTimer() {
+    clearTimeout(sessionTimer);
+    clearTimeout(sessionWarningTimer);
+    
+    if (!currentUser) return;
+    
+    // Warning 5 min before timeout
+    sessionWarningTimer = setTimeout(() => {
+        showSessionWarning();
+    }, SESSION_TIMEOUT - SESSION_WARNING);
+    
+    // Actual timeout
+    sessionTimer = setTimeout(() => {
+        handleSessionExpired();
+    }, SESSION_TIMEOUT);
+}
+
+function showSessionWarning() {
+    const toast = document.createElement('div');
+    toast.className = 'toast session-warning';
+    toast.innerHTML = `
+        <span>${STRINGS.sessionWarning}</span>
+        <button onclick="extendSession(this.parentElement)" style="margin-left:8px;background:white;color:#333;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;">Stay signed in</button>
+    `;
+    toast.style.cssText = 'background: #f59e0b; color: white; cursor: pointer;';
+    
+    let container = document.querySelector('.toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+    container.appendChild(toast);
+}
+
+function extendSession(toastEl) {
+    if (toastEl) toastEl.remove();
+    resetSessionTimer();
+    showToast('Session extended', 'success');
+}
+
+function handleSessionExpired() {
+    currentUser = null;
+    localStorage.removeItem('onto_user');
+    document.getElementById('auth-screen').style.display = 'flex';
+    document.getElementById('dashboard').classList.remove('active');
+    showToast(STRINGS.sessionExpired, 'error');
+}
+
+// Activity listener to reset timer
+['click', 'keypress', 'scroll', 'mousemove'].forEach(event => {
+    document.addEventListener(event, () => {
+        if (currentUser) resetSessionTimer();
+    }, { passive: true });
+});
+
 // === THEME ===
 function toggleTheme() {
     const isDark = document.documentElement.hasAttribute('data-theme');
+    const iconEl = document.getElementById('theme-icon-svg');
     if (isDark) {
         document.documentElement.removeAttribute('data-theme');
-        document.getElementById('theme-icon').textContent = '🌙';
+        if (iconEl) iconEl.innerHTML = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
         localStorage.setItem('onto-theme', 'light');
     } else {
         document.documentElement.setAttribute('data-theme', 'dark');
-        document.getElementById('theme-icon').textContent = '☀️';
+        if (iconEl) iconEl.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
         localStorage.setItem('onto-theme', 'dark');
     }
+    // Redraw chart with new theme colors
+    drawIndustryChart();
 }
 
 // Init theme from localStorage
@@ -4386,8 +5221,8 @@ function toggleTheme() {
     if (saved === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
         document.addEventListener('DOMContentLoaded', () => {
-            const icon = document.getElementById('theme-icon');
-            if (icon) icon.textContent = '☀️';
+            const iconEl = document.getElementById('theme-icon-svg');
+            if (iconEl) iconEl.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
         });
     }
 })();
@@ -4508,9 +5343,11 @@ async function handleRegister(btn) {
 }
 
 function handleLogout() {
-    if (!confirm('Are you sure you want to sign out?')) {
+    if (!confirm(STRINGS.confirmLogout)) {
         return;
     }
+    clearTimeout(sessionTimer);
+    clearTimeout(sessionWarningTimer);
     currentUser = null;
     localStorage.removeItem('onto_user');
     document.getElementById('auth-screen').style.display = 'flex';
@@ -4525,13 +5362,103 @@ function showDashboard() {
     if (currentUser) {
         document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
         document.getElementById('user-name').textContent = currentUser.name;
-        document.getElementById('user-plan').textContent = currentUser.plan.toUpperCase();
+        document.getElementById('user-plan').textContent = currentUser.plan === 'enterprise' ? 'CRITICAL' : currentUser.plan === 'business' ? 'PRO' : 'FREE';
         document.getElementById('settings-name').textContent = currentUser.name;
         document.getElementById('settings-email').textContent = currentUser.email;
         
         updateCompanyUI();
         updateBillingUI();
+        updateDashboardMetrics();
+        checkWelcomeBanner();
+        resetSessionTimer();
     }
+}
+
+function updateDashboardMetrics() {
+    if (!currentUser) return;
+    
+    const sub = currentUser.subscription;
+    const rateEl = document.getElementById('stat-rate');
+    const expiresEl = document.getElementById('stat-expires');
+    const switcherEl = document.getElementById('plan-switcher');
+    const switchSelect = document.getElementById('plan-switch');
+    
+    // Rate limit based on plan
+    const rateLimits = {
+        free: '1/hour',
+        business: '1/8.64s',
+        enterprise: '∞'
+    };
+    
+    const plan = currentUser.plan || 'free';
+    rateEl.textContent = rateLimits[plan] || '1/hour';
+    
+    // Show plan switcher if both plans available
+    if (sub && sub.critical_days > 0 && sub.pro_days > 0) {
+        switcherEl.classList.remove('hidden');
+        switchSelect.value = plan;
+    } else {
+        switcherEl.classList.add('hidden');
+    }
+    
+    // Expires — total days remaining
+    if (sub) {
+        const criticalDays = sub.critical_days || 0;
+        const proDays = sub.pro_days || 0;
+        const totalDays = criticalDays + proDays;
+        
+        if (totalDays > 365) {
+            const years = Math.floor(totalDays / 365);
+            const months = Math.floor((totalDays % 365) / 30);
+            expiresEl.textContent = years + 'y ' + months + 'm';
+        } else if (totalDays > 30) {
+            const months = Math.floor(totalDays / 30);
+            const days = totalDays % 30;
+            expiresEl.textContent = months + 'm ' + days + 'd';
+        } else if (totalDays > 0) {
+            expiresEl.textContent = totalDays + 'd';
+        } else {
+            expiresEl.textContent = '—';
+        }
+        expiresEl.style.color = '';
+    } else {
+        expiresEl.textContent = '—';
+    }
+}
+
+function switchActivePlan(newPlan) {
+    if (!currentUser || !currentUser.subscription) return;
+    
+    const sub = currentUser.subscription;
+    const criticalDays = sub.critical_days || 0;
+    const proDays = sub.pro_days || 0;
+    
+    // Can only switch to plans that have days remaining
+    if (newPlan === 'enterprise' && criticalDays <= 0) {
+        showToast('No Critical days remaining', 'error');
+        document.getElementById('plan-switch').value = currentUser.plan;
+        return;
+    }
+    if (newPlan === 'business' && proDays <= 0) {
+        showToast('No Pro days remaining', 'error');
+        document.getElementById('plan-switch').value = currentUser.plan;
+        return;
+    }
+    
+    currentUser.plan = newPlan;
+    currentUser.subscription.plan = newPlan;
+    localStorage.setItem('onto_user', JSON.stringify(currentUser));
+    
+    // Update UI
+    const planLabel = newPlan === 'enterprise' ? 'CRITICAL' : 'PRO';
+    document.getElementById('user-plan').textContent = planLabel;
+    
+    const rateLimits = { business: '1/8.64s', enterprise: '∞' };
+    document.getElementById('stat-rate').textContent = rateLimits[newPlan];
+    
+    updateBillingUI();
+    
+    showToast('Switched to ' + (newPlan === 'enterprise' ? 'Critical' : 'Professional'), 'success');
 }
 
 function showPage(page, el) {
@@ -4552,6 +5479,33 @@ function showDoc(docId, el) {
         targetDoc.classList.add('active');
     }
     if (el) el.classList.add('active');
+    
+    // Scroll to top
+    const docsContent = document.querySelector('.docs-content');
+    if (docsContent) docsContent.scrollTop = 0;
+    
+    // Sync mobile select
+    const mobileSelect = document.querySelector('.docs-mobile-select');
+    if (mobileSelect) mobileSelect.value = docId;
+}
+
+function showDocFromSelect(docId) {
+    document.querySelectorAll('.docs-article').forEach(d => d.classList.remove('active'));
+    document.querySelectorAll('.docs-nav-item').forEach(n => n.classList.remove('active'));
+    const targetDoc = document.getElementById('docs-' + docId);
+    if (targetDoc) {
+        targetDoc.classList.add('active');
+    }
+    // Sync sidebar active state
+    document.querySelectorAll('.docs-nav-item').forEach(item => {
+        if (item.getAttribute('onclick')?.includes(`'${docId}'`)) {
+            item.classList.add('active');
+        }
+    });
+    
+    // Scroll to top
+    const docsContent = document.querySelector('.docs-content');
+    if (docsContent) docsContent.scrollTop = 0;
 }
 
 // === COMPANY ===
@@ -4560,6 +5514,7 @@ function updateCompanyUI() {
         document.getElementById('company-not-registered').classList.add('hidden');
         document.getElementById('company-registered').classList.remove('hidden');
         document.getElementById('company-name').textContent = currentUser.company.name;
+        document.getElementById('company-industry').textContent = formatIndustry(currentUser.company.industry);
         document.getElementById('company-reg').textContent = currentUser.company.reg;
         document.getElementById('settings-account-type').textContent = 'Individual + Company';
     } else {
@@ -4569,53 +5524,134 @@ function updateCompanyUI() {
     }
 }
 
+function formatIndustry(code) {
+    const industries = {
+        'healthcare': 'Healthcare & Medical',
+        'financial': 'Financial Services',
+        'legal': 'Legal Services',
+        'insurance': 'Insurance',
+        'aerospace': 'Aerospace',
+        'defense': 'Defense & Security',
+        'autonomous': 'Autonomous Systems',
+        'energy': 'Energy & Utilities',
+        'infrastructure': 'Critical Infrastructure',
+        'ai_ml': 'AI / Machine Learning',
+        'software': 'Software & SaaS',
+        'cloud': 'Cloud Services',
+        'cybersecurity': 'Cybersecurity',
+        'data': 'Data & Analytics',
+        'manufacturing': 'Manufacturing',
+        'retail': 'Retail & E-commerce',
+        'education': 'Education',
+        'media': 'Media & Entertainment',
+        'consulting': 'Consulting',
+        'research': 'Research & Academia',
+        'government': 'Government & Public',
+        'other': 'Other'
+    };
+    return industries[code] || code || '—';
+}
+
 function openCompanyModal() {
-    document.getElementById('company-modal').classList.add('active');
+    const modal = document.getElementById('company-modal');
+    const isEdit = currentUser?.company != null;
+    
+    // Update modal title and button for edit mode
+    const title = modal.querySelector('.modal-header h2');
+    const submitBtn = document.getElementById('register-company-btn');
+    if (title) title.textContent = isEdit ? 'Edit Organization' : 'Organization Registration';
+    if (submitBtn) submitBtn.textContent = isEdit ? 'Save Changes' : 'Register';
+    
+    modal.classList.add('active');
     
     // Reset form
-    document.getElementById('register-company-btn').disabled = true;
+    submitBtn.disabled = true;
     
-    // Add validation listeners
-    const companyFields = ['company-name-input', 'company-reg-input', 'company-address-input', 'company-country-input', 'signatory-name-input'];
+    // Field mapping
+    const fieldMap = {
+        'company-name-input': 'name',
+        'company-type-input': 'type',
+        'company-industry-input': 'industry',
+        'company-reg-input': 'reg',
+        'company-vat-input': 'vat',
+        'company-address-input': 'address',
+        'company-city-input': 'city',
+        'company-state-input': 'state',
+        'company-postal-input': 'postal',
+        'company-country-input': 'country',
+        'company-email-input': 'email',
+        'company-phone-input': 'phone',
+        'signatory-name-input': 'signatory',
+        'signatory-title-input': 'signatoryTitle'
+    };
+    
+    // Add validation listeners and pre-fill if editing
+    const companyFields = ['company-name-input', 'company-type-input', 'company-industry-input', 'company-reg-input', 'company-address-input', 'company-city-input', 'company-postal-input', 'company-country-input', 'company-email-input', 'signatory-name-input', 'signatory-title-input'];
     companyFields.forEach(id => {
         const el = document.getElementById(id);
         if (el) {
-            el.classList.remove('error');
+            el.classList.remove('error', 'valid', 'empty-required');
+            
+            // Pre-fill with existing data
+            const dataKey = fieldMap[id];
+            if (isEdit && currentUser.company && dataKey) {
+                el.value = currentUser.company[dataKey] || '';
+            } else {
+                el.value = '';
+            }
+            
             el.oninput = function() {
                 this.classList.remove('error');
                 validateCompanyForm();
             };
-            el.onblur = function() {
-                if (!this.value || !this.value.trim()) {
-                    this.classList.add('error');
-                }
-            };
             el.onchange = validateCompanyForm;
         }
     });
+    
+    // Also fill optional fields
+    ['company-vat-input', 'company-state-input', 'company-phone-input'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            const dataKey = fieldMap[id];
+            if (isEdit && currentUser.company && dataKey) {
+                el.value = currentUser.company[dataKey] || '';
+            } else {
+                el.value = '';
+            }
+        }
+    });
+    
     ['msa-agree', 'msa-authorized'].forEach(id => {
         const el = document.getElementById(id);
         if (el) {
-            el.onchange = function() {
-                this.parentElement.style.color = this.checked ? '' : '';
-                validateCompanyForm();
-            };
+            el.checked = isEdit; // Pre-check if editing (already agreed)
+            el.onchange = validateCompanyForm;
         }
     });
+    
+    // Show initial state after short delay
+    setTimeout(validateCompanyForm, 50);
 }
 
 function downloadInvoice() {
+    if (!currentUser?.subscription) {
+        showToast('No active subscription', 'error');
+        return;
+    }
+    
     const now = new Date();
-    const invoiceId = 'INV-' + now.getFullYear() + '-' + Date.now().toString(36).toUpperCase();
-    const plan = currentUser?.plan || 'business';
-    const amount = plan === 'enterprise' ? 100000 : 15000;
+    const sub = currentUser.subscription;
+    const invoiceId = 'INV-' + new Date(sub.started).getFullYear() + '-' + Date.now().toString(36).toUpperCase();
+    const plan = sub.plan;
+    const amount = sub.amount;
+    const planNames = { business: 'Professional', enterprise: 'Critical' };
     
     const invoice = {
         schema: 'onto-invoice/v1',
         id: invoiceId,
-        created_at: now.toISOString(),
-        due_date: new Date(now.getTime() + 30*24*60*60*1000).toISOString(),
-        status: 'DRAFT',
+        created_at: sub.started,
+        due_date: new Date(new Date(sub.started).getTime() + 30*24*60*60*1000).toISOString(),
+        status: 'PAID',
         
         provider: {
             name: 'ONTO Standard LLC',
@@ -4626,72 +5662,73 @@ function downloadInvoice() {
         },
         
         client: {
-            company: currentUser?.company?.name || null,
-            legal_name: currentUser?.company?.legalName || null,
+            company: currentUser?.company?.name || currentUser.name,
+            legal_name: currentUser?.company?.name || null,
             tax_id: currentUser?.company?.reg || null,
+            industry: currentUser?.company?.industry || null,
             address: {
                 street: currentUser?.company?.address || null,
+                city: currentUser?.company?.city || null,
+                postal: currentUser?.company?.postal || null,
                 country: currentUser?.company?.country || null
             },
-            signatory: currentUser?.company?.signatory || null
+            signatory: currentUser?.company?.signatory || currentUser.name,
+            email: currentUser?.company?.email || currentUser.email
         },
         
         line_items: [{
-            description: 'ONTO Protocol — ' + plan.toUpperCase() + ' Layer',
-            details: 'Annual subscription (12 months)',
+            description: 'ONTO Protocol — ' + planNames[plan] + ' Layer',
+            details: sub.cycle === 'annual' ? 'Annual subscription (12 months)' : 'Monthly subscription',
             quantity: 1,
             unit_price: amount,
             amount: amount
         }],
         
         subtotal: amount,
+        total_paid: sub.total_paid || amount,
         tax: { rate: 0, amount: 0 },
         total: amount,
         currency: 'USD',
         
         payment: {
-            terms: 'NET_30',
-            method: 'wire_transfer',
+            terms: sub.cycle === 'annual' ? 'PREPAID' : 'NET_30',
+            method: 'card',
             provider: 'Airwallex',
             reference: invoiceId,
-            instructions: {
-                bank_name: '[To be provided]',
-                account_name: 'ONTO Standard LLC',
-                account_number: '[To be provided]',
-                routing_ach: '[To be provided]',
-                swift_bic: '[To be provided]',
-                note: 'Please include invoice number ' + invoiceId + ' in payment reference'
-            }
+            paid_at: sub.started
         },
         
         service: {
-            layer: plan.toUpperCase(),
-            term_months: 12,
+            layer: planNames[plan],
+            cycle: sub.cycle,
+            term_months: sub.cycle === 'annual' ? 12 : 1,
+            started: sub.started,
+            expires_at: sub.expires_at || null,
             features: plan === 'enterprise' ? {
+                rate_limit: 'unlimited',
                 signal: 'dedicated',
-                certificates: 'unlimited',
-                gas_units: 100000,
-                support: '24/7',
-                sla_uptime: '99.99%'
+                sla: '99.99%',
+                support: '24/7'
             } : {
-                signal: 'realtime',
-                certificates: 10000,
-                gas_units: 10000,
-                support: 'business_hours',
-                sla_uptime: '99.5%'
+                rate_limit: '1/8.64s',
+                signal: 'real-time',
+                sla: '99.5%',
+                support: 'business hours'
             }
         },
         
-        hash: simpleHash(invoiceId + (currentUser?.company?.name || '') + plan + amount)
+        hash: simpleHash(invoiceId + (currentUser?.company?.name || currentUser.name) + plan + amount)
     };
     
     const blob = new Blob([JSON.stringify(invoice, null, 2)], {type: 'application/json'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'ONTO_Invoice_' + plan.toUpperCase() + '_' + now.toISOString().split('T')[0] + '.json';
+    a.download = 'ONTO_Invoice_' + planNames[plan] + '_' + new Date(sub.started).toISOString().split('T')[0] + '.json';
     a.click();
     URL.revokeObjectURL(url);
+    
+    showToast('Invoice downloaded', 'success');
 }
 
 function simpleHash(str) {
@@ -4704,24 +5741,36 @@ function simpleHash(str) {
 }
 
 function registerCompany() {
+    const btn = document.getElementById('register-company-btn');
     const fields = {
         name: document.getElementById('company-name-input'),
+        type: document.getElementById('company-type-input'),
+        industry: document.getElementById('company-industry-input'),
         reg: document.getElementById('company-reg-input'),
+        vat: document.getElementById('company-vat-input'),
         address: document.getElementById('company-address-input'),
+        city: document.getElementById('company-city-input'),
+        state: document.getElementById('company-state-input'),
+        postal: document.getElementById('company-postal-input'),
         country: document.getElementById('company-country-input'),
-        signatory: document.getElementById('signatory-name-input')
+        email: document.getElementById('company-email-input'),
+        phone: document.getElementById('company-phone-input'),
+        signatory: document.getElementById('signatory-name-input'),
+        signatoryTitle: document.getElementById('signatory-title-input')
     };
     const msaAgree = document.getElementById('msa-agree');
     const msaAuth = document.getElementById('msa-authorized');
     
+    const requiredFields = ['name', 'type', 'industry', 'reg', 'address', 'city', 'postal', 'country', 'email', 'signatory', 'signatoryTitle'];
     let valid = true;
     
     // Clear previous errors
-    Object.values(fields).forEach(f => f.classList.remove('error'));
+    Object.values(fields).forEach(f => { if(f) f.classList.remove('error'); });
     
-    // Validate fields
-    Object.entries(fields).forEach(([key, field]) => {
-        if (!field.value.trim()) {
+    // Validate required fields
+    requiredFields.forEach(key => {
+        const field = fields[key];
+        if (field && (!field.value || !field.value.trim())) {
             field.classList.add('error');
             valid = false;
         }
@@ -4735,27 +5784,53 @@ function registerCompany() {
         return;
     }
     
-    currentUser.company = { 
-        name: fields.name.value, 
-        reg: fields.reg.value, 
-        address: fields.address.value, 
-        country: fields.country.value 
-    };
-    currentUser.can_invoice = true;
-    localStorage.setItem('onto_user', JSON.stringify(currentUser));
+    // Loading state
+    const isEdit = currentUser?.company != null;
+    const originalText = btn.textContent;
+    btn.textContent = isEdit ? 'Saving...' : 'Registering...';
+    btn.disabled = true;
     
-    closeModal('company-modal');
-    updateCompanyUI();
-    showToast('Company registered!', 'success');
+    // Simulate API call
+    setTimeout(() => {
+        currentUser.company = { 
+            name: fields.name.value,
+            type: fields.type.value,
+            industry: fields.industry.value,
+            reg: fields.reg.value, 
+            vat: fields.vat?.value || '',
+            address: fields.address.value,
+            city: fields.city.value,
+            state: fields.state?.value || '',
+            postal: fields.postal.value,
+            country: fields.country.value,
+            email: fields.email.value,
+            phone: fields.phone?.value || '',
+            signatory: fields.signatory.value,
+            signatoryTitle: fields.signatoryTitle.value
+        };
+        currentUser.can_invoice = true;
+        localStorage.setItem('onto_user', JSON.stringify(currentUser));
+        
+        btn.textContent = originalText;
+        closeModal('company-modal');
+        updateCompanyUI();
+        showToast(isEdit ? 'Organization updated' : 'Organization registered', 'success');
+    }, 800);
 }
 
 function validateCompanyForm() {
-    const fields = {
+    const requiredFields = {
         'company-name-input': document.getElementById('company-name-input'),
+        'company-type-input': document.getElementById('company-type-input'),
+        'company-industry-input': document.getElementById('company-industry-input'),
         'company-reg-input': document.getElementById('company-reg-input'),
         'company-address-input': document.getElementById('company-address-input'),
+        'company-city-input': document.getElementById('company-city-input'),
+        'company-postal-input': document.getElementById('company-postal-input'),
         'company-country-input': document.getElementById('company-country-input'),
-        'signatory-name-input': document.getElementById('signatory-name-input')
+        'company-email-input': document.getElementById('company-email-input'),
+        'signatory-name-input': document.getElementById('signatory-name-input'),
+        'signatory-title-input': document.getElementById('signatory-title-input')
     };
     
     const msaAgree = document.getElementById('msa-agree').checked;
@@ -4763,26 +5838,40 @@ function validateCompanyForm() {
     
     let allFilled = true;
     
-    // Check each field and highlight if empty
-    Object.values(fields).forEach(field => {
-        if (!field.value || !field.value.trim()) {
+    // Check each required field and update visual state
+    Object.values(requiredFields).forEach(field => {
+        if (!field) return;
+        field.classList.remove('error'); // Clear error state on validation
+        
+        if (field.value && field.value.trim()) {
+            field.classList.add('valid');
+            field.classList.remove('empty-required');
+        } else {
+            field.classList.remove('valid');
+            field.classList.add('empty-required');
             allFilled = false;
         }
     });
+    
+    // Update checkboxes visual
+    const msaAgreeEl = document.getElementById('msa-agree');
+    const msaAuthEl = document.getElementById('msa-authorized');
+    msaAgreeEl.parentElement.classList.toggle('checked', msaAgree);
+    msaAuthEl.parentElement.classList.toggle('checked', msaAuth);
     
     const btn = document.getElementById('register-company-btn');
     btn.disabled = !(allFilled && msaAgree && msaAuth);
 }
 
 function highlightEmptyFields() {
-    const fieldIds = ['company-name-input', 'company-reg-input', 'company-address-input', 'company-country-input', 'signatory-name-input'];
+    const fieldIds = ['company-name-input', 'company-type-input', 'company-industry-input', 'company-reg-input', 'company-address-input', 'company-city-input', 'company-postal-input', 'company-country-input', 'company-email-input', 'signatory-name-input', 'signatory-title-input'];
     
     fieldIds.forEach(id => {
         const field = document.getElementById(id);
+        if (!field) return;
         if (!field.value || !field.value.trim()) {
+            field.classList.remove('valid', 'empty-required');
             field.classList.add('error');
-        } else {
-            field.classList.remove('error');
         }
     });
     
@@ -4796,66 +5885,185 @@ function highlightEmptyFields() {
 
 // === BILLING ===
 function updateBillingUI() {
+    const invoiceStatus = document.getElementById('invoice-status');
+    const invoiceDownload = document.getElementById('invoice-download');
+    const subNone = document.getElementById('subscription-none');
+    const subActive = document.getElementById('subscription-active');
+    
+    // Reset all buttons first
+    document.getElementById('btn-free').textContent = 'Current';
+    document.getElementById('btn-free').disabled = true;
+    document.getElementById('btn-business').textContent = 'Select';
+    document.getElementById('btn-business').disabled = false;
+    document.getElementById('btn-enterprise').textContent = 'Select';
+    document.getElementById('btn-enterprise').disabled = false;
+    
+    const planNames = { free: 'Open (Free)', business: 'Professional', enterprise: 'Critical' };
+    const rateLimits = { free: '1/hour', business: '1/8.64s', enterprise: 'Unlimited' };
+    
     // Update current plan indicator
-    if (currentUser.plan === 'free') {
-        document.getElementById('btn-free').textContent = 'Current Plan';
+    if (currentUser.plan === 'free' || !currentUser.subscription) {
+        document.getElementById('btn-free').textContent = 'Current';
         document.getElementById('btn-free').disabled = true;
+        invoiceStatus.textContent = 'No active subscription';
+        invoiceStatus.classList.remove('hidden');
+        invoiceDownload.classList.add('hidden');
+        
+        if (subNone) subNone.classList.remove('hidden');
+        if (subActive) subActive.classList.add('hidden');
+    } else {
+        const sub = currentUser.subscription;
+        const criticalDays = sub.critical_days || 0;
+        const proDays = sub.pro_days || 0;
+        
+        if (currentUser.plan === 'business') {
+            document.getElementById('btn-business').textContent = 'Extend';
+        } else if (currentUser.plan === 'enterprise') {
+            document.getElementById('btn-enterprise').textContent = 'Extend';
+        }
+        
+        invoiceStatus.classList.add('hidden');
+        invoiceDownload.classList.remove('hidden');
+        
+        if (subNone) subNone.classList.add('hidden');
+        if (subActive) subActive.classList.remove('hidden');
+        
+        document.getElementById('sub-plan').textContent = planNames[currentUser.plan] || currentUser.plan;
+        document.getElementById('sub-rate').textContent = rateLimits[currentUser.plan] || '—';
+        document.getElementById('sub-expires').textContent = sub.expires_at ? new Date(sub.expires_at).toLocaleDateString() : '—';
+        document.getElementById('sub-total').textContent = sub.total_paid ? '$' + sub.total_paid.toLocaleString() : '—';
+        
+        // Show/hide day counters
+        const criticalRow = document.getElementById('sub-critical-row');
+        const proRow = document.getElementById('sub-pro-row');
+        
+        if (criticalDays > 0) {
+            criticalRow.classList.remove('hidden');
+            document.getElementById('sub-critical-days').textContent = criticalDays + ' days';
+        } else {
+            criticalRow.classList.add('hidden');
+        }
+        
+        if (proDays > 0) {
+            proRow.classList.remove('hidden');
+            document.getElementById('sub-pro-days').textContent = proDays + ' days' + (criticalDays > 0 ? ' (after Critical)' : '');
+        } else {
+            proRow.classList.add('hidden');
+        }
     }
 }
 
 function openSubscribeModal(plan) {
     selectedPlan = plan;
-    document.getElementById('subscribe-plan-name').textContent = plan.toUpperCase();
     
+    const planNames = { business: 'Professional', enterprise: 'Critical' };
+    
+    document.getElementById('subscribe-plan-name').textContent = planNames[plan] || plan;
+    
+    // Update prices
     const prices = PLANS[plan];
-    if (prices.monthly) {
-        document.getElementById('price-monthly').textContent = '$' + prices.monthly.toLocaleString() + '/month';
-        document.getElementById('cycle-monthly').style.display = 'block';
+    document.getElementById('price-annual-display').textContent = '$' + prices.annual.toLocaleString();
+    document.getElementById('price-monthly-display').textContent = '$' + (prices.monthly ? prices.monthly.toLocaleString() + '/mo' : 'N/A');
+    
+    // Show/hide monthly option for enterprise
+    const monthlyOption = document.getElementById('billing-monthly');
+    if (plan === 'enterprise') {
+        monthlyOption.style.display = 'none';
+        document.querySelector('input[name="billing-cycle"][value="annual"]').checked = true;
     } else {
-        document.getElementById('cycle-monthly').style.display = 'none';
+        monthlyOption.style.display = 'flex';
     }
     
-    document.getElementById('price-annual').textContent = '$' + prices.monthlyEquiv.toLocaleString() + '/month';
-    document.getElementById('price-annual-total').textContent = '$' + prices.annual.toLocaleString() + ' billed annually';
-    
     document.getElementById('subscribe-modal').classList.add('active');
-    selectCycle('annual'); // Default to annual with invoice
+    selectedCycle = 'annual';
+    updateOrderSummary();
+}
+
+function updateOrderSummary() {
+    const cycle = document.querySelector('input[name="billing-cycle"]:checked')?.value || 'annual';
+    selectedCycle = cycle;
+    
+    const prices = PLANS[selectedPlan];
+    const planNames = { business: 'Professional', enterprise: 'Critical' };
+    const planName = planNames[selectedPlan] || selectedPlan;
+    
+    // Update features based on plan AND cycle
+    const planFeatures = {
+        business: {
+            annual: [
+                '1 request/8.64s',
+                'Real-time signal access',
+                '99.5% SLA',
+                'Business hours support'
+            ],
+            monthly: [
+                '1 request/8.64s',
+                'Real-time signal access',
+                '99.5% SLA',
+                'Business hours support'
+            ]
+        },
+        enterprise: {
+            annual: [
+                'Unlimited requests',
+                'Dedicated signal stream',
+                '99.99% SLA',
+                '24/7 priority support'
+            ],
+            monthly: [
+                'Unlimited requests',
+                'Dedicated signal stream',
+                '99.99% SLA',
+                '24/7 priority support'
+            ]
+        }
+    };
+    
+    const featuresEl = document.getElementById('order-features');
+    const features = planFeatures[selectedPlan]?.[cycle] || planFeatures[selectedPlan]?.annual || [];
+    featuresEl.innerHTML = features.map(f => `<div class="order-feature">${f}</div>`).join('');
+    
+    let price, period;
+    if (cycle === 'annual') {
+        price = prices.annual;
+        period = 'Annual';
+    } else {
+        price = prices.monthly;
+        period = 'Monthly';
+    }
+    
+    document.getElementById('summary-plan').textContent = `${planName} Tier — ${period}`;
+    document.getElementById('summary-price').textContent = '$' + price.toLocaleString();
+    document.getElementById('summary-total').textContent = '$' + price.toLocaleString();
+    
+    // Update payment method availability
+    const invoiceOpt = document.getElementById('payment-invoice');
+    const cardOpt = document.getElementById('payment-card');
+    const invoiceInput = invoiceOpt.querySelector('input');
+    const cardInput = cardOpt.querySelector('input');
+    
+    if (cycle === 'annual') {
+        invoiceInput.disabled = false;
+        cardInput.disabled = true;
+        invoiceInput.checked = true;
+    } else {
+        invoiceInput.disabled = true;
+        cardInput.disabled = false;
+        cardInput.checked = true;
+    }
 }
 
 function selectCycle(cycle) {
     selectedCycle = cycle;
-    document.getElementById('cycle-monthly').classList.toggle('selected', cycle === 'monthly');
-    document.getElementById('cycle-annual').classList.toggle('selected', cycle === 'annual');
     document.querySelector('input[name="billing-cycle"][value="' + cycle + '"]').checked = true;
-    
-    // Annual = Invoice only, Monthly = Card only
-    const cardOption = document.getElementById('payment-card');
-    const invoiceOption = document.getElementById('payment-invoice');
-    
-    if (cycle === 'annual') {
-        cardOption.classList.add('disabled');
-        cardOption.querySelector('input').disabled = true;
-        invoiceOption.classList.remove('disabled');
-        invoiceOption.querySelector('input').disabled = false;
-        selectPayment('invoice');
-    } else {
-        invoiceOption.classList.add('disabled');
-        invoiceOption.querySelector('input').disabled = true;
-        cardOption.classList.remove('disabled');
-        cardOption.querySelector('input').disabled = false;
-        selectPayment('card');
-    }
+    updateOrderSummary();
 }
 
 function selectPayment(method) {
-    const cardOption = document.getElementById('payment-card');
-    const invoiceOption = document.getElementById('payment-invoice');
-    
-    if (method === 'invoice' && invoiceOption.classList.contains('disabled')) return;
-    if (method === 'card' && cardOption.classList.contains('disabled')) return;
-    
-    selectedPayment = method;
-    document.querySelector('input[name="payment-method"][value="' + method + '"]').checked = true;
+    const input = document.querySelector(`input[name="payment-method"][value="${method}"]`);
+    if (input && !input.disabled) {
+        input.checked = true;
+    }
 }
 
 function processPayment() {
@@ -4864,12 +6072,119 @@ function processPayment() {
 }
 
 function redirectToAirwallex() {
-    window.open('https://www.airwallex.com/', '_blank');
+    const isAnnual = selectedCycle === 'annual';
+    const daysToAdd = isAnnual ? 365 : 30;
+    const amount = isAnnual ? PLANS[selectedPlan].annual : PLANS[selectedPlan].monthly;
+    
+    const now = new Date();
+    const sub = currentUser.subscription || {};
+    
+    // Get existing day banks
+    let proDays = sub.pro_days || 0;
+    let criticalDays = sub.critical_days || 0;
+    
+    // Add new purchase
+    if (selectedPlan === 'business') {
+        proDays += daysToAdd;
+    } else if (selectedPlan === 'enterprise') {
+        criticalDays += daysToAdd;
+    }
+    
+    // Active plan = Critical first (if any), then Pro
+    const activePlan = criticalDays > 0 ? 'enterprise' : (proDays > 0 ? 'business' : 'free');
+    
+    // Total days = Critical + Pro (sequential)
+    const totalDays = criticalDays + proDays;
+    const expiresAt = totalDays > 0 ? new Date(now.getTime() + totalDays * 24 * 60 * 60 * 1000) : null;
+    
+    const totalPaid = (sub.total_paid || 0) + amount;
+    
+    currentUser.subscription = {
+        plan: activePlan,
+        cycle: selectedCycle,
+        started: sub.started || now.toISOString(),
+        last_payment: now.toISOString(),
+        expires_at: expiresAt ? expiresAt.toISOString() : null,
+        pro_days: proDays,
+        critical_days: criticalDays,
+        amount: amount,
+        total_paid: totalPaid
+    };
+    
+    currentUser.plan = activePlan;
+    localStorage.setItem('onto_user', JSON.stringify(currentUser));
+    
     closeModal('payment-modal');
+    updateBillingUI();
+    updateDashboardMetrics();
+    
+    const planLabel = activePlan === 'enterprise' ? 'CRITICAL' : (activePlan === 'business' ? 'PRO' : 'FREE');
+    document.getElementById('user-plan').textContent = planLabel;
+    
+    // Toast message
+    let msg = 'Subscription activated!';
+    if (criticalDays > 0 && proDays > 0) {
+        msg = `Activated! ${criticalDays} days Critical → then ${proDays} days Pro`;
+    } else if (criticalDays > 0) {
+        msg = `Activated! ${criticalDays} days Critical`;
+    } else if (proDays > 0) {
+        msg = `Activated! ${proDays} days Pro`;
+    }
+    showToast(msg, 'success');
 }
 
 function contactSales() {
-    window.location.href = 'mailto:sales@ontostandard.org?subject=ONTO Enterprise Inquiry';
+    document.getElementById('contact-modal').classList.add('active');
+    // Pre-fill if user logged in
+    if (currentUser) {
+        document.getElementById('contact-name').value = currentUser.name || '';
+        document.getElementById('contact-email').value = currentUser.email || '';
+        if (currentUser.company) {
+            document.getElementById('contact-org').value = currentUser.company.name || '';
+        }
+    }
+}
+
+function submitContactForm() {
+    const name = document.getElementById('contact-name').value.trim();
+    const org = document.getElementById('contact-org').value.trim();
+    const email = document.getElementById('contact-email').value.trim();
+    const message = document.getElementById('contact-message').value.trim();
+    
+    if (!name || !email) {
+        showToast('Please fill in name and email', 'error');
+        return;
+    }
+    
+    // Simulate sending
+    const btn = document.querySelector('#contact-modal .modal-footer button:last-child');
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+    
+    setTimeout(() => {
+        closeModal('contact-modal');
+        showToast('Message sent. We\'ll be in touch within 24 hours.', 'success');
+        btn.textContent = 'Send';
+        btn.disabled = false;
+        // Clear form
+        document.getElementById('contact-message').value = '';
+    }, 800);
+}
+
+function dismissWelcome() {
+    const banner = document.getElementById('welcome-banner');
+    banner.classList.add('hidden');
+    localStorage.setItem('onto_welcome_dismissed', 'true');
+}
+
+function checkWelcomeBanner() {
+    const dismissed = localStorage.getItem('onto_welcome_dismissed');
+    const banner = document.getElementById('welcome-banner');
+    if (dismissed || (currentUser && currentUser.apiCalls > 0)) {
+        banner.classList.add('hidden');
+    } else {
+        banner.classList.remove('hidden');
+    }
 }
 
 // === UTILS ===
@@ -4889,6 +6204,7 @@ function copyApiKey(btn) {
     // Visual feedback
     btn.textContent = 'Copied!';
     btn.disabled = true;
+    showToast('API key copied to clipboard', 'success');
     setTimeout(() => {
         btn.textContent = 'Copy';
         btn.disabled = false;
@@ -4910,4 +6226,222 @@ function toggleApiKeyVisibility() {
 function regenerateApiKey(btn) {
     if (!confirm('⚠️ Are you sure you want to regenerate your API key?\n\nThis will immediately invalidate your current key. Any applications using the old key will stop working.')) {
         return;
- 
+     }
+    
+    btn.disabled = true;
+    btn.textContent = 'Regenerating...';
+    
+    // Simulate API call
+    setTimeout(() => {
+        const newKey = 'onto_sk_' + Math.random().toString(36).substring(2, 18);
+        document.getElementById('api-key-display').value = newKey;
+        document.getElementById('api-key-display').type = 'text';
+        document.getElementById('toggle-key-btn').textContent = 'Hide';
+        
+        btn.textContent = 'Regenerate API Key';
+        btn.disabled = false;
+        
+        showToast('New API key generated! Copy it now.', 'success');
+    }, 1500);
+}
+
+function debounceButton(btn, ms = 2000) {
+    btn.disabled = true;
+    setTimeout(() => btn.disabled = false, ms);
+}
+
+function editProfile() {
+    const newName = prompt('Enter new name:', currentUser.name);
+    if (newName && newName.trim()) {
+        currentUser.name = newName.trim();
+        localStorage.setItem('onto_user', JSON.stringify(currentUser));
+        document.getElementById('user-name').textContent = currentUser.name;
+        document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
+        document.getElementById('settings-name').textContent = currentUser.name;
+    }
+}
+
+// === SIGNAL HASH ===
+function updateSignalHash() {
+    const container = document.getElementById('signal-bytes');
+    if (!container) return;
+    
+    const bytes = Array(13).fill(0).map(() => 
+        Math.floor(Math.random() * 256).toString(16).padStart(2, '0')
+    );
+    
+    container.innerHTML = bytes.map((b, i) => 
+        `<span class="byte" style="animation-delay: ${i * 0.1}s">${b}</span>`
+    ).join('');
+}
+
+// Start signal hash updates
+setInterval(updateSignalHash, 3000);
+
+// === TELEMETRY ===
+function updateUTCClock() {
+    const el = document.getElementById('utc-clock');
+    if (!el) return;
+    const now = new Date();
+    el.textContent = now.toISOString().substr(11, 8) + ' UTC';
+}
+
+function updateSignalQuality() {
+    const container = document.getElementById('signal-bars');
+    if (!container || !currentUser) return;
+    
+    const planBars = { free: 2, business: 4, enterprise: 5 };
+    const activeBars = planBars[currentUser.plan] || 2;
+    
+    const bars = container.querySelectorAll('.signal-bar');
+    bars.forEach((bar, i) => {
+        bar.classList.toggle('active', i < activeBars);
+    });
+}
+
+function updateSparkline() {
+    const container = document.getElementById('sparkline');
+    if (!container) return;
+    
+    // Generate 7 random bars for week activity
+    const heights = Array(7).fill(0).map(() => Math.floor(Math.random() * 16) + 4);
+    container.innerHTML = heights.map(h => 
+        `<div class="spark" style="height: ${h}px"></div>`
+    ).join('');
+}
+
+function drawIndustryChart() {
+    const canvas = document.getElementById('industry-canvas');
+    const legend = document.getElementById('industry-legend');
+    if (!canvas || !legend) return;
+    
+    const ctx = canvas.getContext('2d');
+    const data = [
+        { label: 'Finance', value: 28, color: '#f59e0b' },
+        { label: 'Healthcare', value: 22, color: '#ef4444' },
+        { label: 'AI Labs', value: 18, color: '#22c55e' },
+        { label: 'Enterprise', value: 12, color: '#3b82f6' },
+        { label: 'Other', value: 20, color: '#6b7280' }
+    ];
+    
+    const total = data.reduce((sum, d) => sum + d.value, 0);
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+    const radius = Math.min(cx, cy) - 10;
+    
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    let startAngle = -Math.PI / 2;
+    data.forEach(d => {
+        const sliceAngle = (d.value / total) * 2 * Math.PI;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, radius, startAngle, startAngle + sliceAngle);
+        ctx.closePath();
+        ctx.fillStyle = d.color;
+        ctx.fill();
+        startAngle += sliceAngle;
+    });
+    
+    // Center hole - adaptive to theme
+    const isDark = document.documentElement.hasAttribute('data-theme');
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius * 0.55, 0, 2 * Math.PI);
+    ctx.fillStyle = isDark ? '#1a1a1a' : '#ffffff';
+    ctx.fill();
+    
+    // Legend
+    legend.innerHTML = data.map(d => 
+        `<span class="chart-legend-item"><span class="chart-legend-dot" style="background:${d.color}"></span>${d.label} ${d.value}%</span>`
+    ).join('');
+}
+
+function updateUpgradeBanner() {
+    if (!banner || !currentUser) return;
+    
+    // Hide banner for paid plans
+    if (currentUser.plan !== 'free') {
+        banner.style.display = 'none';
+    } else {
+        banner.style.display = 'flex';
+    }
+}
+
+function updateEvaluationsTable() {
+    const tbody = document.getElementById('eval-tbody');
+    if (!tbody || !currentUser) return;
+    
+    // Demo data - in production would come from /v1/history
+    const demoEvals = currentUser.evaluations || [];
+    
+    if (demoEvals.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 24px;">No evaluations yet. Make your first API call!</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = demoEvals.map(e => `
+        <tr>
+            <td class="mono">${e.id}</td>
+            <td class="mono">${e.score.toFixed(2)}</td>
+            <td><span class="risk-badge ${e.level.toLowerCase()}">${e.level}</span></td>
+            <td class="mono">${e.cert || '—'}</td>
+            <td style="color: var(--text-muted);">${e.time}</td>
+        </tr>
+    `).join('');
+}
+
+// Start telemetry updates
+setInterval(updateUTCClock, 1000);
+setInterval(updateSparkline, 5000);
+
+// === INIT ===
+document.addEventListener('DOMContentLoaded', () => {
+    updateSignalHash(); // Initialize signal hash
+    updateUTCClock(); // Initialize UTC clock
+    updateSparkline(); // Initialize sparkline
+    drawIndustryChart(); // Initialize industry chart
+    
+    const savedUser = localStorage.getItem('onto_user');
+    if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        showDashboard();
+    }
+    
+    // Check welcome banner
+    checkWelcomeBanner();
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        // Esc to close modals
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+                modal.classList.remove('active');
+            });
+            // Close mobile sidebar
+            const sidebar = document.querySelector('.sidebar.mobile-open');
+            if (sidebar) toggleMobile();
+        }
+    });
+    
+    // Close modals on overlay click
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                overlay.classList.remove('active');
+            }
+        });
+    });
+    
+    // Company form validation listeners
+    const companyFields = ['company-name-input', 'company-type-input', 'company-industry-input', 'company-reg-input', 'company-address-input', 'company-city-input', 'company-postal-input', 'company-country-input', 'company-email-input', 'signatory-name-input', 'signatory-title-input'];
+    companyFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', validateCompanyForm);
+        }
+    });
+});
+</script>
+</body>
+</html>
