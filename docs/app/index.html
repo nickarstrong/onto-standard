@@ -735,7 +735,7 @@ a.info-val:hover { color: var(--text); }
             </div>
             <h1 class="auth-title">Check your email</h1>
             <p class="auth-subtitle">We sent a verification link to</p>
-            <p style="color: var(--text); font-weight: 600; margin: 8px 0 24px;" id="verify-email-display">your@email.com</p>
+            <p style="color: var(--text); font-weight: 600; margin: 8px 0 24px;" id="verify-email-display"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dba2b4aea99bbeb6bab2b7f5b8b4b6">[email&#160;protected]</a></p>
             <p style="color: var(--text-muted); font-size: 14px; line-height: 1.6;">Click the link in the email to verify your account. The link expires in 24 hours.</p>
             <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
                 <p style="color: var(--text-muted); font-size: 13px;">Didn't receive the email?</p>
@@ -5113,7 +5113,7 @@ https://ontostandard.org</p>
     </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // === API CONFIG ===
 const API_BASE = 'https://api.ontostandard.org';
 let authToken = null;
@@ -5370,35 +5370,18 @@ async function handleLogin(btn) {
         showToast('Welcome back!', 'success');
         showDashboard();
     } catch (error) {
+        setLoading(btn, false);
+        
         // Check if email not verified
         if (error.message && error.message.includes('not verified')) {
             pendingVerificationEmail = email;
-            setLoading(btn, false);
             showVerifyPending(email);
             showToast('Please verify your email first', 'info');
             return;
         }
         
-        // Fallback for local testing (CORS, network errors, or auth errors)
-        const isNetworkError = error.message === 'Failed to fetch' || error.name === 'TypeError';
-        const isAuthError = error.message === 'Invalid credentials' || error.message === 'Login failed';
-        
-        if (isNetworkError || isAuthError) {
-            currentUser = {
-                name: email.split('@')[0],
-                email: email,
-                plan: 'free',
-                can_invoice: false,
-                company: null
-            };
-            localStorage.setItem('onto_user', JSON.stringify(currentUser));
-            setLoading(btn, false);
-            showToast('Demo mode', 'info');
-            showDashboard();
-        } else {
-            setLoading(btn, false);
-            showToast(error.message || 'Login failed', 'error');
-        }
+        // Show actual error
+        showToast(error.message || 'Login failed. Check your connection.', 'error');
     }
 }
 
@@ -5451,18 +5434,8 @@ async function handleRegister(btn) {
             showLogin();
         }
     } catch (error) {
-        // Fallback for local testing
-        const isNetworkError = error.message === 'Failed to fetch' || error.name === 'TypeError';
-        
-        if (isNetworkError) {
-            pendingVerificationEmail = email;
-            setLoading(btn, false);
-            showVerifyPending(email);
-            showToast('Demo mode - verification simulated', 'info');
-        } else {
-            setLoading(btn, false);
-            showToast(error.message || 'Registration failed', 'error');
-        }
+        setLoading(btn, false);
+        showToast(error.message || 'Registration failed. Check your connection.', 'error');
     }
 }
 
@@ -6601,14 +6574,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Company form validation listeners
-    const companyFields = ['company-name-input', 'company-type-input', 'company-industry-input', 'company-reg-input', 'company-address-input', 'company-city-input', 'company-postal-input', 'company-country-input', 'company-email-input', 'signatory-name-input', 'signatory-title-input'];
-    companyFields.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-            el.addEventListener('input', validateCompanyForm);
-        }
-    });
-});
-</script>
-</body>
-</html>
+    const companyFields = ['company-name-input', 'company-type-input', 'company-industry-input', 'company-reg-input', 'company-address-input', 'company-city-input', 'company-postal-input', 'company-country-input', 'company-email-input', 'signatory-name-input', 'signatory-t
