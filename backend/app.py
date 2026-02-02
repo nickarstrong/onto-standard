@@ -261,7 +261,25 @@ class PortalRequest(BaseModel):
 # ============================================================
 
 def hash_password(password: str) -> str:
-    return hashlib.sha256(password.encode()).hexdigest()
+    """Hash password with bcrypt"""
+    try:
+        import bcrypt
+        return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+    except ImportError:
+        # Fallback to SHA256 if bcrypt not installed
+        return hashlib.sha256(password.encode()).hexdigest()
+
+def verify_password(password: str, hashed: str) -> bool:
+    """Verify password against hash (supports bcrypt and legacy SHA256)"""
+    try:
+        import bcrypt
+        # Try bcrypt first
+        if hashed.startswith('$2'):
+            return bcrypt.checkpw(password.encode(), hashed.encode())
+    except ImportError:
+        pass
+    # Fallback to SHA256 for legacy hashes
+    return hashlib.sha256(password.encode()).hexdigest() == hashed
 
 def hash_api_key(key: str) -> str:
     return hashlib.sha256(key.encode()).hexdigest()
@@ -445,7 +463,15 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://ontostandard.org",
+        "https://www.ontostandard.org",
+        "https://api.ontostandard.org",
+        "http://localhost:3000",
+        "http://localhost:8000",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:8000",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -486,7 +512,6 @@ async def rate_limit_middleware(request: Request, call_next):
         key = f"ip:{client_ip}"
     
     limit = RATE_LIMITS.get(layer, RATE_LIMITS["public"])
-    allowed, remaining = rate_limiter.is_allowed(key, limit)
     allowed, remaining = rate_limiter.is_allowed(key, limit)
     
     if not allowed:
@@ -708,15 +733,19 @@ async def login(request: LoginRequest):
         return {"message": "Login disabled (no database)", "status": "demo_mode"}
     
     async with db_pool.acquire() as conn:
-        password_hash = hash_password(request.password)
+        # Get user by email first
         row = await conn.fetchrow("""
-            SELECT u.id, u.name, u.organization_id, u.role, u.email_verified, o.name as org_name, o.tier
+            SELECT u.id, u.name, u.organization_id, u.role, u.email_verified, u.password_hash, o.name as org_name, o.tier
             FROM users u
             JOIN organizations o ON u.organization_id = o.id
-            WHERE u.email = $1 AND u.password_hash = $2 AND u.is_active = true
-        """, request.email, password_hash)
+            WHERE u.email = $1 AND u.is_active = true
+        """, request.email)
         
         if not row:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+        
+        # Verify password (supports bcrypt and legacy SHA256)
+        if not verify_password(request.password, row['password_hash']):
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
         # Check email verification
