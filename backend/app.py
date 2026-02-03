@@ -10,6 +10,7 @@ Endpoints:
   POST /v1/auth/register     - Register organization
   POST /v1/auth/login        - Login (get JWT)
   POST /v1/auth/api-keys     - Create API key
+  POST /v1/auth/accept-invite - Accept invitation and set password
   
   # Signal
   GET  /v1/signal/status     - Signal server status
@@ -26,6 +27,9 @@ Endpoints:
   
   # Organization
   GET  /v1/organization      - Get org details
+  POST /v1/organization/invite - Invite member (admin only)
+  GET  /v1/organization/members - List members
+  DELETE /v1/organization/members/{id} - Remove member
   GET  /v1/audit             - Audit trail (CRITICAL only)
   
   # Documents
@@ -70,6 +74,9 @@ SIGNAL_URL = os.getenv("SIGNAL_URL", "https://signal.ontostandard.org")
 NOTARY_URL = os.getenv("NOTARY_URL", "https://notary.ontostandard.org")
 RESEND_API_KEY = os.getenv("RESEND_API_KEY")
 FRONTEND_URL = os.getenv("FRONTEND_URL", "https://ontostandard.org")
+
+# Reference anchor (stealth architecture)
+REFERENCE_ANCHOR_SLUG = "rfc-4122-uuid-validation-notes"
 
 # Resend email client
 resend_client = None
@@ -256,6 +263,14 @@ class CheckoutRequest(BaseModel):
 class PortalRequest(BaseModel):
     return_url: Optional[str] = None
 
+class InviteRequest(BaseModel):
+    email: EmailStr
+    name: str
+
+class AcceptInviteRequest(BaseModel):
+    token: str
+    password: str
+
 # ============================================================
 # AUTH HELPERS
 # ============================================================
@@ -290,6 +305,17 @@ def generate_api_key() -> tuple[str, str]:
     full_key = f"onto_{random_part}"
     prefix = f"onto_{random_part[:4]}"
     return full_key, prefix
+
+async def is_architect(user_id) -> bool:
+    """Check if user has reference access (stealth admin)"""
+    if not db_pool or not user_id:
+        return False
+    async with db_pool.acquire() as conn:
+        result = await conn.fetchval("""
+            SELECT 1 FROM organizations 
+            WHERE created_by = $1 AND slug = $2
+        """, user_id, REFERENCE_ANCHOR_SLUG)
+        return result is not None
 
 def generate_verification_token() -> str:
     """Generate a secure verification token"""
@@ -332,6 +358,46 @@ async def send_verification_email(email: str, name: str, token: str) -> bool:
         return True
     except Exception as e:
         print(f"[API] Failed to send verification email: {e}")
+        return False
+
+async def send_invite_email(email: str, name: str, token: str, org_name: str, inviter_name: str) -> bool:
+    """Send invite email via Resend"""
+    if not resend_client:
+        print(f"[API] Email disabled - would send invite to {email}")
+        return False
+    
+    invite_url = f"{FRONTEND_URL}/app/?invite={token}"
+    
+    try:
+        resend_client.Emails.send({
+            "from": "ONTO <noreply@ontostandard.org>",
+            "to": email,
+            "subject": f"You've been invited to join {org_name} on ONTO",
+            "html": f"""
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+                <div style="text-align: center; margin-bottom: 32px;">
+                    <div style="width: 48px; height: 48px; background: #0a0a0a; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;">
+                        <span style="color: white; font-weight: bold; font-size: 20px;">O</span>
+                    </div>
+                </div>
+                <h1 style="color: #111; font-size: 24px; margin-bottom: 16px;">You're invited!</h1>
+                <p style="color: #666; font-size: 16px; line-height: 1.6;">Hi {name},</p>
+                <p style="color: #666; font-size: 16px; line-height: 1.6;">{inviter_name} has invited you to join <strong>{org_name}</strong> on ONTO.</p>
+                <p style="color: #666; font-size: 16px; line-height: 1.6;">Click the button below to set your password and activate your account.</p>
+                <div style="margin: 32px 0;">
+                    <a href="{invite_url}" style="background: #15803d; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">Accept Invitation</a>
+                </div>
+                <p style="color: #999; font-size: 14px;">Or copy this link: {invite_url}</p>
+                <p style="color: #999; font-size: 14px; margin-top: 32px;">This link expires in 7 days.</p>
+                <hr style="border: none; border-top: 1px solid #eee; margin: 32px 0;">
+                <p style="color: #999; font-size: 12px;">ONTO - Epistemic Risk Management</p>
+            </div>
+            """
+        })
+        print(f"[API] Invite email sent to {email}")
+        return True
+    except Exception as e:
+        print(f"[API] Failed to send invite email: {e}")
         return False
 
 async def validate_api_key(x_api_key: str = Header(...)) -> dict:
@@ -406,6 +472,43 @@ async def validate_superadmin(x_api_key: str = Header(...)) -> dict:
             "organization_name": row['name'],
             "layer": row['tier'],
             "role": row['role']
+        }
+
+async def validate_architect(x_api_key: str = Header(...)) -> dict:
+    """Validate API key and check reference access (stealth admin)"""
+    if not db_pool:
+        raise HTTPException(status_code=404)  # 404, not 503
+    
+    key_hash = hash_api_key(x_api_key)
+    
+    async with db_pool.acquire() as conn:
+        row = await conn.fetchrow("""
+            SELECT ak.id, ak.organization_id, ak.is_active,
+                   u.id as user_id,
+                   o.name, o.tier, o.slug
+            FROM api_keys ak
+            JOIN organizations o ON ak.organization_id = o.id
+            JOIN users u ON u.organization_id = o.id
+            WHERE ak.key_hash = $1
+        """, key_hash)
+        
+        if not row:
+            raise HTTPException(status_code=404)
+        
+        if not row['is_active']:
+            raise HTTPException(status_code=404)
+        
+        # Check reference access
+        has_access = await is_architect(row['user_id'])
+        if not has_access:
+            raise HTTPException(status_code=404)  # Always 404
+        
+        return {
+            "api_key_id": str(row['id']),
+            "organization_id": str(row['organization_id']),
+            "user_id": str(row['user_id']),
+            "organization_name": row['name'],
+            "layer": row['tier']
         }
 
 # ============================================================
@@ -700,9 +803,14 @@ async def register(request: RegisterRequest, req: Request):
         
         user_id = await conn.fetchval("""
             INSERT INTO users (email, name, password_hash, organization_id, role, email_verified, verification_token, verification_token_expires)
-            VALUES ($1, $2, $3, $4, 'admin', false, $5, $6)
+            VALUES ($1, $2, $3, $4, 'user', false, $5, $6)
             RETURNING id
         """, email, request.name, password_hash, org_id, verification_token, token_expires)
+        
+        # Link organization to creator
+        await conn.execute("""
+            UPDATE organizations SET created_by = $1 WHERE id = $2
+        """, user_id, org_id)
         
         # Create API key
         full_key, prefix = generate_api_key()
@@ -1716,6 +1824,212 @@ async def update_profile(
         }
 
 
+@app.post("/v1/organization/invite")
+async def invite_member(
+    request: InviteRequest,
+    org: dict = Depends(validate_api_key)
+):
+    """
+    Invite a new member to organization.
+    Only admins can invite.
+    Creates user with role='user' and sends invite email.
+    """
+    if not db_pool:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    # Check if requester is admin
+    if org.get('role') != 'admin' and org.get('role') != 'superadmin':
+        raise HTTPException(status_code=403, detail="Only admins can invite members")
+    
+    email = request.email.lower().strip()
+    
+    async with db_pool.acquire() as conn:
+        # Check if email already exists
+        existing = await conn.fetchval(
+            "SELECT id FROM users WHERE email = $1",
+            email
+        )
+        if existing:
+            raise HTTPException(status_code=400, detail="User with this email already exists")
+        
+        # Get org name and inviter name
+        org_data = await conn.fetchrow(
+            "SELECT name FROM organizations WHERE id = $1",
+            org['organization_id']
+        )
+        inviter = await conn.fetchrow(
+            "SELECT name FROM users WHERE id = $1",
+            org.get('user_id')
+        )
+        
+        org_name = org_data['name'] if org_data else "your organization"
+        inviter_name = inviter['name'] if inviter else "Your admin"
+        
+        # Create invite token (7 days expiry)
+        invite_token = generate_verification_token()
+        token_expires = datetime.now(timezone.utc) + timedelta(days=7)
+        
+        # Create user without password (will be set on accept)
+        user_id = await conn.fetchval("""
+            INSERT INTO users (email, name, password_hash, organization_id, role, email_verified, verification_token, verification_token_expires, is_active)
+            VALUES ($1, $2, '', $3, 'user', false, $4, $5, false)
+            RETURNING id
+        """, email, request.name, org['organization_id'], invite_token, token_expires)
+        
+        # Log
+        await conn.execute("""
+            INSERT INTO audit_log (organization_id, user_id, action, resource_type, details)
+            VALUES ($1, $2, 'invite_member', 'user', $3)
+        """, org['organization_id'], org.get('user_id'), json.dumps({"invited_email": email, "invited_name": request.name}))
+        
+        # Send invite email
+        email_sent = await send_invite_email(email, request.name, invite_token, org_name, inviter_name)
+        
+        return {
+            "message": "Invitation sent",
+            "user_id": str(user_id),
+            "email": email,
+            "email_sent": email_sent
+        }
+
+
+@app.post("/v1/auth/accept-invite")
+async def accept_invite(request: AcceptInviteRequest):
+    """
+    Accept invitation and set password.
+    Activates the user account.
+    """
+    if not db_pool:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    async with db_pool.acquire() as conn:
+        # Find user by invite token
+        row = await conn.fetchrow("""
+            SELECT u.id, u.email, u.name, u.verification_token_expires, u.organization_id,
+                   o.name as organization_name, o.tier as layer
+            FROM users u
+            LEFT JOIN organizations o ON u.organization_id = o.id
+            WHERE u.verification_token = $1 AND u.email_verified = false AND u.is_active = false
+        """, request.token)
+        
+        if not row:
+            raise HTTPException(status_code=400, detail="Invalid or expired invitation link")
+        
+        # Check expiration
+        if row['verification_token_expires'] and row['verification_token_expires'] < datetime.now(timezone.utc):
+            raise HTTPException(status_code=400, detail="Invitation link has expired. Please ask your admin to resend.")
+        
+        # Validate password
+        if len(request.password) < 8:
+            raise HTTPException(status_code=400, detail="Password must be at least 8 characters")
+        
+        # Hash password and activate user
+        password_hash = hash_password(request.password)
+        
+        await conn.execute("""
+            UPDATE users 
+            SET password_hash = $1, email_verified = true, is_active = true, 
+                verification_token = NULL, verification_token_expires = NULL
+            WHERE id = $2
+        """, password_hash, row['id'])
+        
+        # Log
+        await conn.execute("""
+            INSERT INTO audit_log (organization_id, user_id, action, resource_type, details)
+            VALUES ($1, $2, 'accept_invite', 'user', $3)
+        """, row['organization_id'], row['id'], json.dumps({"email": row['email']}))
+        
+        # Generate token for auto-login
+        token = secrets.token_urlsafe(32)
+        
+        return {
+            "message": "Account activated successfully",
+            "user_id": str(row['id']),
+            "name": row['name'],
+            "organization_id": str(row['organization_id']),
+            "organization_name": row['organization_name'],
+            "layer": row['layer'],
+            "role": "user",
+            "token": token
+        }
+
+
+@app.get("/v1/organization/members")
+async def get_members(org: dict = Depends(validate_api_key)):
+    """Get all members of organization"""
+    if not db_pool:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    async with db_pool.acquire() as conn:
+        rows = await conn.fetch("""
+            SELECT id, email, name, role, is_active, email_verified, created_at, last_login_at
+            FROM users
+            WHERE organization_id = $1
+            ORDER BY created_at DESC
+        """, org['organization_id'])
+        
+        return {
+            "members": [
+                {
+                    "id": str(r['id']),
+                    "email": r['email'],
+                    "name": r['name'],
+                    "role": r['role'],
+                    "is_active": r['is_active'],
+                    "email_verified": r['email_verified'],
+                    "pending": not r['is_active'] and not r['email_verified'],
+                    "created_at": r['created_at'].isoformat() if r['created_at'] else None,
+                    "last_login_at": r['last_login_at'].isoformat() if r['last_login_at'] else None
+                }
+                for r in rows
+            ],
+            "count": len(rows)
+        }
+
+
+@app.delete("/v1/organization/members/{user_id}")
+async def remove_member(user_id: str, org: dict = Depends(validate_api_key)):
+    """Remove member from organization. Admins only. Cannot remove self."""
+    if not db_pool:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    # Check if requester is admin
+    if org.get('role') != 'admin' and org.get('role') != 'superadmin':
+        raise HTTPException(status_code=403, detail="Only admins can remove members")
+    
+    # Cannot remove self
+    if str(org.get('user_id')) == user_id:
+        raise HTTPException(status_code=400, detail="Cannot remove yourself")
+    
+    async with db_pool.acquire() as conn:
+        # Check user belongs to org
+        target = await conn.fetchrow(
+            "SELECT id, email, role FROM users WHERE id = $1 AND organization_id = $2",
+            uuid.UUID(user_id), org['organization_id']
+        )
+        
+        if not target:
+            raise HTTPException(status_code=404, detail="User not found in organization")
+        
+        # Cannot remove another admin (only superadmin can)
+        if target['role'] == 'admin' and org.get('role') != 'superadmin':
+            raise HTTPException(status_code=403, detail="Cannot remove another admin")
+        
+        # Soft delete (deactivate)
+        await conn.execute(
+            "UPDATE users SET is_active = false WHERE id = $1",
+            uuid.UUID(user_id)
+        )
+        
+        # Log
+        await conn.execute("""
+            INSERT INTO audit_log (organization_id, user_id, action, resource_type, details)
+            VALUES ($1, $2, 'remove_member', 'user', $3)
+        """, org['organization_id'], org.get('user_id'), json.dumps({"removed_email": target['email']}))
+        
+        return {"message": "Member removed", "user_id": user_id}
+
+
 @app.get("/v1/audit")
 async def get_audit_trail(
     limit: int = 100,
@@ -2514,6 +2828,193 @@ async def get_rate_limit_info(request: Request):
         "reset_in": rate_limiter.get_reset_time(key),
         "window": "60 seconds"
     }
+
+# ============================================================
+# REFERENCE DOCUMENTATION (stealth system management)
+# ============================================================
+
+@app.get("/v1/docs/node-index")
+async def reference_node_index(ref: dict = Depends(validate_architect)):
+    """Reference node index - internal documentation sync"""
+    if not db_pool:
+        raise HTTPException(status_code=404)
+    
+    async with db_pool.acquire() as conn:
+        users = await conn.fetch("""
+            SELECT u.id, u.email, u.name, u.role, u.is_active, u.email_verified,
+                   u.created_at, u.last_login_at, o.name as org_name, o.slug, o.tier
+            FROM users u
+            JOIN organizations o ON u.organization_id = o.id
+            ORDER BY u.created_at DESC
+            LIMIT 500
+        """)
+        
+        return {
+            "nodes": [
+                {
+                    "id": str(r['id']),
+                    "ref": r['email'],
+                    "label": r['name'],
+                    "type": r['role'],
+                    "active": r['is_active'],
+                    "verified": r['email_verified'],
+                    "namespace": r['org_name'],
+                    "ns_slug": r['slug'],
+                    "tier": r['tier'],
+                    "indexed_at": r['created_at'].isoformat() if r['created_at'] else None,
+                    "last_sync": r['last_login_at'].isoformat() if r['last_login_at'] else None
+                }
+                for r in users
+            ],
+            "total": len(users)
+        }
+
+@app.get("/v1/docs/namespace-registry")
+async def reference_namespace_registry(ref: dict = Depends(validate_architect)):
+    """Namespace registry - internal documentation"""
+    if not db_pool:
+        raise HTTPException(status_code=404)
+    
+    async with db_pool.acquire() as conn:
+        orgs = await conn.fetch("""
+            SELECT o.*, 
+                   u.email as creator_email, u.name as creator_name,
+                   (SELECT COUNT(*) FROM users WHERE organization_id = o.id) as node_count,
+                   (SELECT COUNT(*) FROM api_keys WHERE organization_id = o.id) as key_count,
+                   (SELECT COUNT(*) FROM evaluations WHERE organization_id = o.id) as eval_count
+            FROM organizations o
+            LEFT JOIN users u ON o.created_by = u.id
+            ORDER BY o.created_at DESC
+            LIMIT 500
+        """)
+        
+        return {
+            "namespaces": [
+                {
+                    "id": str(r['id']),
+                    "name": r['name'],
+                    "slug": r['slug'],
+                    "tier": r['tier'],
+                    "created_by": r['creator_email'],
+                    "creator_name": r['creator_name'],
+                    "node_count": r['node_count'],
+                    "key_count": r['key_count'],
+                    "eval_count": r['eval_count'],
+                    "banned": r.get('is_banned', False),
+                    "created_at": r['created_at'].isoformat() if r['created_at'] else None
+                }
+                for r in orgs
+            ],
+            "total": len(orgs)
+        }
+
+@app.get("/v1/docs/sync-status")
+async def reference_sync_status(ref: dict = Depends(validate_architect)):
+    """Sync status - system health for documentation"""
+    if not db_pool:
+        raise HTTPException(status_code=404)
+    
+    async with db_pool.acquire() as conn:
+        stats = {}
+        stats['total_nodes'] = await conn.fetchval("SELECT COUNT(*) FROM users")
+        stats['active_nodes'] = await conn.fetchval("SELECT COUNT(*) FROM users WHERE is_active = true")
+        stats['namespaces'] = await conn.fetchval("SELECT COUNT(*) FROM organizations")
+        stats['evaluations'] = await conn.fetchval("SELECT COUNT(*) FROM evaluations")
+        stats['certificates'] = await conn.fetchval("SELECT COUNT(*) FROM certificates")
+        stats['api_keys'] = await conn.fetchval("SELECT COUNT(*) FROM api_keys WHERE is_active = true")
+        
+        # Recent activity
+        stats['nodes_24h'] = await conn.fetchval(
+            "SELECT COUNT(*) FROM users WHERE created_at > NOW() - INTERVAL '24 hours'"
+        )
+        stats['evals_24h'] = await conn.fetchval(
+            "SELECT COUNT(*) FROM evaluations WHERE created_at > NOW() - INTERVAL '24 hours'"
+        )
+        
+        # Tier distribution
+        tiers = await conn.fetch(
+            "SELECT tier, COUNT(*) as count FROM organizations GROUP BY tier"
+        )
+        stats['tier_distribution'] = {r['tier']: r['count'] for r in tiers}
+        
+        return {
+            "sync_time": datetime.now(timezone.utc).isoformat(),
+            "metrics": stats
+        }
+
+@app.post("/v1/docs/node-index/{node_id}/archive")
+async def reference_archive_node(node_id: str, ref: dict = Depends(validate_architect)):
+    """Archive node - internal cleanup"""
+    if not db_pool:
+        raise HTTPException(status_code=404)
+    
+    async with db_pool.acquire() as conn:
+        # Deactivate user
+        result = await conn.execute(
+            "UPDATE users SET is_active = false WHERE id = $1",
+            uuid.UUID(node_id)
+        )
+        if result == "UPDATE 0":
+            raise HTTPException(status_code=404)
+        
+        return {"status": "archived", "node_id": node_id}
+
+@app.post("/v1/docs/node-index/{node_id}/restore")
+async def reference_restore_node(node_id: str, ref: dict = Depends(validate_architect)):
+    """Restore archived node"""
+    if not db_pool:
+        raise HTTPException(status_code=404)
+    
+    async with db_pool.acquire() as conn:
+        result = await conn.execute(
+            "UPDATE users SET is_active = true WHERE id = $1",
+            uuid.UUID(node_id)
+        )
+        if result == "UPDATE 0":
+            raise HTTPException(status_code=404)
+        
+        return {"status": "restored", "node_id": node_id}
+
+@app.post("/v1/docs/namespace-registry/{ns_id}/freeze")
+async def reference_freeze_namespace(ns_id: str, ref: dict = Depends(validate_architect)):
+    """Freeze namespace - disable all access"""
+    if not db_pool:
+        raise HTTPException(status_code=404)
+    
+    async with db_pool.acquire() as conn:
+        await conn.execute(
+            "UPDATE organizations SET is_banned = true, banned_at = NOW() WHERE id = $1",
+            uuid.UUID(ns_id)
+        )
+        await conn.execute(
+            "UPDATE api_keys SET is_active = false WHERE organization_id = $1",
+            uuid.UUID(ns_id)
+        )
+        
+        return {"status": "frozen", "namespace_id": ns_id}
+
+@app.post("/v1/docs/namespace-registry/{ns_id}/unfreeze")
+async def reference_unfreeze_namespace(ns_id: str, ref: dict = Depends(validate_architect)):
+    """Unfreeze namespace"""
+    if not db_pool:
+        raise HTTPException(status_code=404)
+    
+    async with db_pool.acquire() as conn:
+        await conn.execute(
+            "UPDATE organizations SET is_banned = false, banned_at = NULL WHERE id = $1",
+            uuid.UUID(ns_id)
+        )
+        await conn.execute(
+            "UPDATE api_keys SET is_active = true WHERE organization_id = $1",
+            uuid.UUID(ns_id)
+        )
+        
+        return {"status": "active", "namespace_id": ns_id}
+
+@app.get("/v1/docs/reference-check")
+async def reference_access_check(ref: dict = Depends(validate_architect)):
+    """Verify reference documentation access"""
+    return {"status": "ok", "access": "reference"}
 
 # ============================================================
 # MAIN
