@@ -601,6 +601,24 @@ a.info-val:hover { color: var(--text); }
 .risk-badge.low { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
 .risk-badge.medium { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
 .risk-badge.high { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+
+/* === REFERENCE PAGE === */
+.ref-tabs { display: flex; gap: 4px; margin-bottom: 20px; flex-wrap: wrap; }
+.ref-tab { padding: 8px 16px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 6px; color: var(--text-secondary); cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.15s; }
+.ref-tab:hover { background: var(--bg-card); color: var(--text); }
+.ref-tab.active { background: var(--accent-subtle); border-color: var(--accent); color: var(--accent); }
+.ref-content { display: none; }
+.ref-content.active { display: block; }
+.ref-status { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+.ref-status.active { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+.ref-status.archived { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+.ref-status.frozen { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+.ref-action-btn { padding: 4px 8px; font-size: 11px; border-radius: 4px; cursor: pointer; transition: all 0.15s; }
+.ref-action-btn.archive { background: var(--danger-subtle); color: var(--danger); border: 1px solid var(--danger); }
+.ref-action-btn.restore { background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--accent); }
+.ref-action-btn.export { background: var(--blue-subtle); color: var(--blue); border: 1px solid var(--blue); }
+.ref-action-btn:hover { opacity: 0.8; }
+.table-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
 </style>
 </head>
 <body>
@@ -800,6 +818,10 @@ a.info-val:hover { color: var(--text); }
             <div class="nav-item" onclick="showPage('settings', this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
                 Account
+            </div>
+            <div class="nav-item" id="nav-reference" onclick="showReferencePage(this)" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                Reference
             </div>
             <div class="nav-item" onclick="handleLogout()" style="color: var(--text-muted);">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -4752,6 +4774,141 @@ https://ontostandard.org</p>
                 </div>
             </div>
         </div>
+
+        <!-- REFERENCE PAGE (STEALTH ADMIN) -->
+        <div class="page" id="page-reference">
+            <div class="page-header">
+                <div>
+                    <h1>Reference Documentation</h1>
+                    <p class="page-subtitle">Internal sync status and node management</p>
+                </div>
+                <button class="btn btn-secondary" onclick="loadReferenceData()">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                    Refresh
+                </button>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid" id="ref-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="ref-total-nodes">-</div>
+                    <div class="stat-label">Total Nodes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="ref-active-nodes">-</div>
+                    <div class="stat-label">Active Nodes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="ref-namespaces">-</div>
+                    <div class="stat-label">Namespaces</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="ref-honeypot">-</div>
+                    <div class="stat-label">Trap Hits</div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="ref-tabs">
+                <button class="ref-tab active" onclick="showRefTab('nodes', this)">Nodes</button>
+                <button class="ref-tab" onclick="showRefTab('namespaces', this)">Namespaces</button>
+                <button class="ref-tab" onclick="showRefTab('violations', this)">Violations</button>
+                <button class="ref-tab" onclick="showRefTab('honeypot', this)">Trap Log</button>
+                <button class="ref-tab" onclick="showRefTab('broadcast', this)">Broadcast</button>
+            </div>
+
+            <!-- Nodes Tab -->
+            <div class="ref-content active" id="ref-tab-nodes">
+                <div class="table-header">
+                    <input type="text" class="form-input" placeholder="Search nodes..." id="ref-search-nodes" oninput="filterRefNodes()" style="max-width: 300px;">
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Name</th>
+                                <th>Org</th>
+                                <th>Tier</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ref-nodes-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Namespaces Tab -->
+            <div class="ref-content" id="ref-tab-namespaces">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Slug</th>
+                                <th>Tier</th>
+                                <th>Nodes</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ref-namespaces-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Violations Tab -->
+            <div class="ref-content" id="ref-tab-violations">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Org</th>
+                                <th>Endpoint</th>
+                                <th>IP</th>
+                                <th>Count/Limit</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ref-violations-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Honeypot Tab -->
+            <div class="ref-content" id="ref-tab-honeypot">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>IP</th>
+                                <th>Endpoint</th>
+                                <th>Method</th>
+                                <th>User Agent</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ref-honeypot-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Broadcast Tab -->
+            <div class="ref-content" id="ref-tab-broadcast">
+                <div class="card" style="max-width: 500px;">
+                    <h3 style="margin-bottom: 16px;">Signal Broadcast Control</h3>
+                    <div id="ref-broadcast-status" style="margin-bottom: 20px; padding: 12px; background: var(--bg-elevated); border-radius: 8px;">
+                        Loading status...
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn btn-secondary" onclick="refBroadcastAction('pause')">Pause</button>
+                        <button class="btn btn-secondary" onclick="refBroadcastAction('resume')">Resume</button>
+                        <button class="btn btn-primary" onclick="refBroadcastAction('force')">Force Broadcast</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 </div>
 
@@ -6170,6 +6327,337 @@ function updateSignalHash() {
 
 // Start signal hash updates
 setInterval(updateSignalHash, 3000);
+
+// === REFERENCE (STEALTH ADMIN) ===
+let refAccessGranted = false;
+let refNodesData = [];
+let refNamespacesData = [];
+
+async function checkReferenceAccess() {
+    const apiKey = localStorage.getItem('apiKey');
+    if (!apiKey) return false;
+    
+    try {
+        const res = await fetch(`${API}/v1/docs/reference-check`, {
+            headers: { 'x-api-key': apiKey }
+        });
+        if (res.ok) {
+            const data = await res.json();
+            if (data.status === 'ok') {
+                refAccessGranted = true;
+                document.getElementById('nav-reference').style.display = 'flex';
+                return true;
+            }
+        }
+    } catch (e) {}
+    return false;
+}
+
+async function showReferencePage(el) {
+    if (!refAccessGranted) {
+        const hasAccess = await checkReferenceAccess();
+        if (!hasAccess) {
+            showToast('Access denied', 'error');
+            return;
+        }
+    }
+    showPage('reference', el);
+    loadReferenceData();
+}
+
+async function loadReferenceData() {
+    const apiKey = localStorage.getItem('apiKey');
+    if (!apiKey) return;
+    
+    const headers = { 'x-api-key': apiKey };
+    
+    // Load sync status
+    try {
+        const res = await fetch(`${API}/v1/docs/sync-status`, { headers });
+        if (res.ok) {
+            const data = await res.json();
+            const m = data.metrics;
+            document.getElementById('ref-total-nodes').textContent = m.total_nodes || 0;
+            document.getElementById('ref-active-nodes').textContent = m.active_nodes || 0;
+            document.getElementById('ref-namespaces').textContent = m.namespaces || 0;
+        }
+    } catch (e) {}
+    
+    // Load nodes
+    try {
+        const res = await fetch(`${API}/v1/docs/node-index`, { headers });
+        if (res.ok) {
+            const data = await res.json();
+            refNodesData = data.nodes || [];
+            renderRefNodes();
+        }
+    } catch (e) {}
+    
+    // Load namespaces
+    try {
+        const res = await fetch(`${API}/v1/docs/namespace-registry`, { headers });
+        if (res.ok) {
+            const data = await res.json();
+            refNamespacesData = data.namespaces || [];
+            renderRefNamespaces();
+        }
+    } catch (e) {}
+    
+    // Load violations
+    try {
+        const res = await fetch(`${API}/v1/docs/rate-violations`, { headers });
+        if (res.ok) {
+            const data = await res.json();
+            renderRefViolations(data.violations || []);
+        }
+    } catch (e) {}
+    
+    // Load honeypot
+    try {
+        const res = await fetch(`${API}/v1/docs/trap-log`, { headers });
+        if (res.ok) {
+            const data = await res.json();
+            document.getElementById('ref-honeypot').textContent = data.total_in_memory || 0;
+            renderRefHoneypot(data.recent || []);
+        }
+    } catch (e) {}
+    
+    // Load broadcast status
+    try {
+        const res = await fetch(`${API}/v1/docs/broadcast-status`, { headers });
+        if (res.ok) {
+            const data = await res.json();
+            document.getElementById('ref-broadcast-status').innerHTML = `
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                    <span>Status:</span>
+                    <strong>${data.is_paused ? 'PAUSED' : 'ACTIVE'}</strong>
+                </div>
+                <div style="display:flex;justify-content:space-between;">
+                    <span>Last broadcast:</span>
+                    <span>${data.last_broadcast || 'N/A'}</span>
+                </div>
+            `;
+        }
+    } catch (e) {
+        document.getElementById('ref-broadcast-status').textContent = 'Signal server unavailable';
+    }
+}
+
+function renderRefNodes() {
+    const tbody = document.getElementById('ref-nodes-tbody');
+    tbody.innerHTML = refNodesData.map(n => `
+        <tr>
+            <td>${n.ref || n.email}</td>
+            <td>${n.label || n.name}</td>
+            <td>${n.org_name || '-'}</td>
+            <td><span class="tier-badge tier-${n.tier || 'open'}">${n.tier || 'open'}</span></td>
+            <td><span class="ref-status ${n.active ? 'active' : 'archived'}">${n.active ? 'Active' : 'Archived'}</span></td>
+            <td>
+                ${n.active 
+                    ? `<button class="ref-action-btn archive" onclick="refArchiveNode('${n.id}')">Archive</button>`
+                    : `<button class="ref-action-btn restore" onclick="refRestoreNode('${n.id}')">Restore</button>`
+                }
+            </td>
+        </tr>
+    `).join('');
+}
+
+function filterRefNodes() {
+    const search = document.getElementById('ref-search-nodes').value.toLowerCase();
+    const filtered = refNodesData.filter(n => 
+        (n.ref || n.email || '').toLowerCase().includes(search) ||
+        (n.label || n.name || '').toLowerCase().includes(search) ||
+        (n.org_name || '').toLowerCase().includes(search)
+    );
+    const tbody = document.getElementById('ref-nodes-tbody');
+    tbody.innerHTML = filtered.map(n => `
+        <tr>
+            <td>${n.ref || n.email}</td>
+            <td>${n.label || n.name}</td>
+            <td>${n.org_name || '-'}</td>
+            <td><span class="tier-badge tier-${n.tier || 'open'}">${n.tier || 'open'}</span></td>
+            <td><span class="ref-status ${n.active ? 'active' : 'archived'}">${n.active ? 'Active' : 'Archived'}</span></td>
+            <td>
+                ${n.active 
+                    ? `<button class="ref-action-btn archive" onclick="refArchiveNode('${n.id}')">Archive</button>`
+                    : `<button class="ref-action-btn restore" onclick="refRestoreNode('${n.id}')">Restore</button>`
+                }
+            </td>
+        </tr>
+    `).join('');
+}
+
+function renderRefNamespaces() {
+    const tbody = document.getElementById('ref-namespaces-tbody');
+    tbody.innerHTML = refNamespacesData.map(ns => `
+        <tr>
+            <td>${ns.name}</td>
+            <td><code style="font-size:11px;">${ns.slug}</code></td>
+            <td><span class="tier-badge tier-${ns.tier || 'open'}">${ns.tier || 'open'}</span></td>
+            <td>${ns.node_count || 0}</td>
+            <td><span class="ref-status ${ns.is_banned ? 'frozen' : 'active'}">${ns.is_banned ? 'Frozen' : 'Active'}</span></td>
+            <td>
+                ${ns.is_banned 
+                    ? `<button class="ref-action-btn restore" onclick="refUnfreezeNamespace('${ns.id}')">Unfreeze</button>`
+                    : `<button class="ref-action-btn archive" onclick="refFreezeNamespace('${ns.id}')">Freeze</button>`
+                }
+                <button class="ref-action-btn export" onclick="refExportNamespace('${ns.id}')">Export</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function renderRefViolations(violations) {
+    const tbody = document.getElementById('ref-violations-tbody');
+    tbody.innerHTML = violations.length ? violations.map(v => `
+        <tr>
+            <td>${new Date(v.created_at).toLocaleString()}</td>
+            <td>${v.org_name || v.org_slug || '-'}</td>
+            <td><code style="font-size:11px;">${v.endpoint}</code></td>
+            <td>${v.ip_address}</td>
+            <td>${v.request_count}/${v.limit_value}</td>
+        </tr>
+    `).join('') : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">No violations</td></tr>';
+}
+
+function renderRefHoneypot(attempts) {
+    const tbody = document.getElementById('ref-honeypot-tbody');
+    tbody.innerHTML = attempts.length ? attempts.slice().reverse().map(a => `
+        <tr>
+            <td>${new Date(a.timestamp).toLocaleString()}</td>
+            <td>${a.ip}</td>
+            <td><code style="font-size:11px;">${a.endpoint}</code></td>
+            <td>${a.method}</td>
+            <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;">${a.user_agent || '-'}</td>
+        </tr>
+    `).join('') : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">No trap hits yet 🎣</td></tr>';
+}
+
+function showRefTab(tabId, el) {
+    document.querySelectorAll('.ref-content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.ref-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('ref-tab-' + tabId).classList.add('active');
+    if (el) el.classList.add('active');
+}
+
+async function refArchiveNode(nodeId) {
+    if (!confirm('Archive this node?')) return;
+    const apiKey = localStorage.getItem('apiKey');
+    try {
+        const res = await fetch(`${API}/v1/docs/node-index/${nodeId}/archive`, {
+            method: 'POST',
+            headers: { 'x-api-key': apiKey }
+        });
+        if (res.ok) {
+            showToast('Node archived', 'success');
+            loadReferenceData();
+        } else {
+            showToast('Failed to archive', 'error');
+        }
+    } catch (e) {
+        showToast('Error: ' + e.message, 'error');
+    }
+}
+
+async function refRestoreNode(nodeId) {
+    const apiKey = localStorage.getItem('apiKey');
+    try {
+        const res = await fetch(`${API}/v1/docs/node-index/${nodeId}/restore`, {
+            method: 'POST',
+            headers: { 'x-api-key': apiKey }
+        });
+        if (res.ok) {
+            showToast('Node restored', 'success');
+            loadReferenceData();
+        } else {
+            showToast('Failed to restore', 'error');
+        }
+    } catch (e) {
+        showToast('Error: ' + e.message, 'error');
+    }
+}
+
+async function refFreezeNamespace(nsId) {
+    if (!confirm('Freeze this namespace? All API keys will be disabled.')) return;
+    const apiKey = localStorage.getItem('apiKey');
+    try {
+        const res = await fetch(`${API}/v1/docs/namespace-registry/${nsId}/freeze`, {
+            method: 'POST',
+            headers: { 'x-api-key': apiKey }
+        });
+        if (res.ok) {
+            showToast('Namespace frozen', 'success');
+            loadReferenceData();
+        } else {
+            showToast('Failed to freeze', 'error');
+        }
+    } catch (e) {
+        showToast('Error: ' + e.message, 'error');
+    }
+}
+
+async function refUnfreezeNamespace(nsId) {
+    const apiKey = localStorage.getItem('apiKey');
+    try {
+        const res = await fetch(`${API}/v1/docs/namespace-registry/${nsId}/unfreeze`, {
+            method: 'POST',
+            headers: { 'x-api-key': apiKey }
+        });
+        if (res.ok) {
+            showToast('Namespace unfrozen', 'success');
+            loadReferenceData();
+        } else {
+            showToast('Failed to unfreeze', 'error');
+        }
+    } catch (e) {
+        showToast('Error: ' + e.message, 'error');
+    }
+}
+
+async function refExportNamespace(nsId) {
+    const apiKey = localStorage.getItem('apiKey');
+    try {
+        const res = await fetch(`${API}/v1/docs/namespace-export/${nsId}`, {
+            headers: { 'x-api-key': apiKey }
+        });
+        if (res.ok) {
+            const data = await res.json();
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `namespace-${nsId}-export.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Export downloaded', 'success');
+        } else {
+            showToast('Failed to export', 'error');
+        }
+    } catch (e) {
+        showToast('Error: ' + e.message, 'error');
+    }
+}
+
+async function refBroadcastAction(action) {
+    const apiKey = localStorage.getItem('apiKey');
+    try {
+        const res = await fetch(`${API}/v1/docs/broadcast-control?action=${action}`, {
+            method: 'POST',
+            headers: { 'x-api-key': apiKey }
+        });
+        if (res.ok) {
+            showToast(`Broadcast ${action} successful`, 'success');
+            loadReferenceData();
+        } else {
+            showToast('Failed: ' + action, 'error');
+        }
+    } catch (e) {
+        showToast('Error: ' + e.message, 'error');
+    }
+}
+
+// Check reference access on load
+setTimeout(checkReferenceAccess, 1000);
 
 // === TELEMETRY ===
 function updateUTCClock() {
