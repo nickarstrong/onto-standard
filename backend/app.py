@@ -305,7 +305,7 @@ async def send_verification_email(email: str, name: str, token: str) -> bool:
     
     try:
         resend_client.Emails.send({
-            "from": "ONTO <onboarding@resend.dev>",
+            "from": "ONTO <noreply@ontostandard.org>",
             "to": email,
             "subject": "Verify your ONTO account",
             "html": f"""
