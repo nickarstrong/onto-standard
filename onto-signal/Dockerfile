@@ -18,3 +18,4 @@ ENV PORT=8081
 
 # Запуск
 CMD ["python", "server.py"]
+# force rebuild v1.1
