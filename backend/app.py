@@ -644,12 +644,15 @@ async def register(request: RegisterRequest, req: Request):
     if not allowed:
         raise HTTPException(status_code=429, detail="Too many registration attempts")
     
+    # Normalize email to lowercase
+    email = request.email.lower().strip()
+    
     if not db_pool:
         return {"message": "Registration disabled (no database)", "status": "demo_mode"}
     
     async with db_pool.acquire() as conn:
         # Check if email exists
-        existing = await conn.fetchval("SELECT id FROM users WHERE email = $1", request.email)
+        existing = await conn.fetchval("SELECT id FROM users WHERE email = $1", email)
         if existing:
             raise HTTPException(status_code=400, detail="Email already registered")
         
@@ -658,7 +661,7 @@ async def register(request: RegisterRequest, req: Request):
         if stripe:
             try:
                 customer = stripe.Customer.create(
-                    email=request.email,
+                    email=email,
                     name=request.name
                 )
                 stripe_customer_id = customer.id
@@ -699,7 +702,7 @@ async def register(request: RegisterRequest, req: Request):
             INSERT INTO users (email, name, password_hash, organization_id, role, email_verified, verification_token, verification_token_expires)
             VALUES ($1, $2, $3, $4, 'admin', false, $5, $6)
             RETURNING id
-        """, request.email, request.name, password_hash, org_id, verification_token, token_expires)
+        """, email, request.name, password_hash, org_id, verification_token, token_expires)
         
         # Create API key
         full_key, prefix = generate_api_key()
@@ -716,7 +719,7 @@ async def register(request: RegisterRequest, req: Request):
         """, org_id, user_id, json.dumps({"name": request.name}))
         
         # Send verification email
-        email_sent = await send_verification_email(request.email, request.name, verification_token)
+        email_sent = await send_verification_email(email, request.name, verification_token)
         
         return {
             "organization_id": str(org_id),
@@ -734,6 +737,9 @@ async def login(request: LoginRequest):
     if not db_pool:
         return {"message": "Login disabled (no database)", "status": "demo_mode"}
     
+    # Normalize email to lowercase
+    email = request.email.lower().strip()
+    
     async with db_pool.acquire() as conn:
         # Get user by email first
         row = await conn.fetchrow("""
@@ -741,7 +747,7 @@ async def login(request: LoginRequest):
             FROM users u
             JOIN organizations o ON u.organization_id = o.id
             WHERE u.email = $1 AND u.is_active = true
-        """, request.email)
+        """, email)
         
         if not row:
             raise HTTPException(status_code=401, detail="Invalid credentials")
@@ -783,9 +789,11 @@ async def verify_email(token: str):
     async with db_pool.acquire() as conn:
         # Find user by token
         row = await conn.fetchrow("""
-            SELECT id, email, name, verification_token_expires
-            FROM users 
-            WHERE verification_token = $1 AND email_verified = false
+            SELECT u.id, u.email, u.name, u.verification_token_expires, u.organization_id,
+                   o.name as organization_name, o.tier as layer
+            FROM users u
+            LEFT JOIN organizations o ON u.organization_id = o.id
+            WHERE u.verification_token = $1 AND u.email_verified = false
         """, token)
         
         if not row:
@@ -802,10 +810,19 @@ async def verify_email(token: str):
             WHERE id = $1
         """, row['id'])
         
+        # Generate auth token for auto-login
+        auth_token = secrets.token_hex(32)
+        
         return {
             "success": True,
             "email": row['email'],
-            "message": "Email verified successfully. You can now log in."
+            "message": "Email verified successfully!",
+            "token": auth_token,
+            "user_id": str(row['id']),
+            "name": row['name'],
+            "organization_id": str(row['organization_id']) if row['organization_id'] else None,
+            "organization_name": row['organization_name'],
+            "layer": row['layer'] or "open"
         }
 
 @app.post("/v1/auth/resend-verification")
@@ -814,12 +831,15 @@ async def resend_verification(request: LoginRequest):
     if not db_pool:
         raise HTTPException(status_code=503, detail="Database not available")
     
+    # Normalize email to lowercase
+    email = request.email.lower().strip()
+    
     async with db_pool.acquire() as conn:
         # Find user
         row = await conn.fetchrow("""
             SELECT id, name, email_verified
             FROM users WHERE email = $1
-        """, request.email)
+        """, email)
         
         if not row:
             # Don't reveal if email exists
@@ -839,7 +859,7 @@ async def resend_verification(request: LoginRequest):
         """, new_token, token_expires, row['id'])
         
         # Send email
-        email_sent = await send_verification_email(request.email, row['name'], new_token)
+        email_sent = await send_verification_email(email, row['name'], new_token)
         
         return {
             "message": "Verification email sent. Please check your inbox.",

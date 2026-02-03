@@ -763,7 +763,7 @@ a.info-val:hover { color: var(--text); }
 <div class="dashboard" id="dashboard">
     <aside class="sidebar">
         <div class="sidebar-header">
-            <a href="/" class="sidebar-logo" style="text-decoration: none; color: inherit;">
+            <a href="#" onclick="showSection('dashboard'); return false;" class="sidebar-logo" style="text-decoration: none; color: inherit;">
                 <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
                     <circle cx="18" cy="18" r="17" fill="white"/>
                     <path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/>
@@ -5484,15 +5484,32 @@ async function checkEmailVerification() {
         const data = await response.json();
         
         if (response.ok && data.success) {
-            // Show API key that was saved during registration
-            const apiKey = localStorage.getItem('onto_first_api_key');
-            if (apiKey) {
-                alert('🔑 Your API Key (save it now!):\n\n' + apiKey + '\n\nThis key will not be shown again.');
-                localStorage.removeItem('onto_first_api_key');
-            }
-            showVerifySuccess();
-            // Clean URL
+            // Clean URL first
             window.history.replaceState({}, '', window.location.pathname);
+            
+            // Auto-login with returned data
+            if (data.token) {
+                authToken = data.token;
+                localStorage.setItem('onto_token', authToken);
+                
+                currentUser = {
+                    id: data.user_id,
+                    name: data.name,
+                    email: data.email,
+                    role: 'admin',
+                    plan: data.layer || 'open',
+                    organization_id: data.organization_id,
+                    can_invoice: false,
+                    company: data.organization_name ? { name: data.organization_name } : null
+                };
+                localStorage.setItem('onto_user', JSON.stringify(currentUser));
+                
+                showToast('Email verified! Welcome to ONTO.', 'success');
+                showDashboard();
+            } else {
+                showVerifySuccess();
+                showToast('Email verified! Please sign in.', 'success');
+            }
         } else {
             showToast(data.detail || 'Verification failed', 'error');
         }
