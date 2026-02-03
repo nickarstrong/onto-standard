@@ -2928,7 +2928,7 @@ async def reference_sync_status(ref: dict = Depends(validate_architect)):
             "SELECT COUNT(*) FROM users WHERE created_at > NOW() - INTERVAL '24 hours'"
         )
         stats['evals_24h'] = await conn.fetchval(
-            "SELECT COUNT(*) FROM evaluations WHERE created_at > NOW() - INTERVAL '24 hours'"
+            "SELECT COUNT(*) FROM evaluations WHERE submitted_at > NOW() - INTERVAL '24 hours'"
         )
         
         # Tier distribution
