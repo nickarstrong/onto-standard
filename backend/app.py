@@ -2428,6 +2428,142 @@ async def get_rate_limit_info(request: Request):
     }
 
 # ============================================================
+# HONEYPOT - FAKE ADMIN ENDPOINTS (trap for attackers)
+# ============================================================
+
+# In-memory honeypot log (also saves to audit_log if db available)
+honeypot_attempts = []
+
+async def log_honeypot(request: Request, endpoint: str):
+    """Log honeypot access attempt"""
+    import asyncio
+    
+    client_ip = request.client.host if request.client else "unknown"
+    user_agent = request.headers.get("user-agent", "")
+    api_key = request.headers.get("x-api-key", "")
+    auth_header = request.headers.get("authorization", "")
+    
+    attempt = {
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "ip": client_ip,
+        "endpoint": endpoint,
+        "method": request.method,
+        "api_key_prefix": api_key[:20] + "..." if api_key else None,
+        "auth_header": auth_header[:30] + "..." if auth_header else None,
+        "user_agent": user_agent[:100],
+        "headers": dict(list(request.headers.items())[:10])
+    }
+    
+    # Keep last 1000 attempts in memory
+    honeypot_attempts.append(attempt)
+    if len(honeypot_attempts) > 1000:
+        honeypot_attempts.pop(0)
+    
+    # Log to database if available
+    if db_pool:
+        try:
+            async with db_pool.acquire() as conn:
+                await conn.execute("""
+                    INSERT INTO audit_log (action, resource_type, details)
+                    VALUES ('honeypot', 'admin_attempt', $1)
+                """, json.dumps(attempt))
+        except:
+            pass  # Silent fail
+    
+    # Artificial delay to waste attacker's time (1-3 seconds)
+    await asyncio.sleep(1 + secrets.randbelow(2000) / 1000)
+    
+    print(f"[HONEYPOT] {client_ip} -> {endpoint}")
+
+@app.get("/v1/admin/stats")
+async def honeypot_stats(request: Request):
+    """[HONEYPOT] Fake admin stats"""
+    await log_honeypot(request, "/v1/admin/stats")
+    raise HTTPException(status_code=401, detail="Invalid API key")
+
+@app.get("/v1/admin/users")
+async def honeypot_users(request: Request):
+    """[HONEYPOT] Fake admin users list"""
+    await log_honeypot(request, "/v1/admin/users")
+    api_key = request.headers.get("x-api-key", "")
+    if api_key:
+        raise HTTPException(status_code=403, detail="Superadmin access required")
+    raise HTTPException(status_code=401, detail="Invalid API key")
+
+@app.get("/v1/admin/users/{user_id}")
+async def honeypot_user_detail(user_id: str, request: Request):
+    """[HONEYPOT] Fake admin user detail"""
+    await log_honeypot(request, f"/v1/admin/users/{user_id}")
+    api_key = request.headers.get("x-api-key", "")
+    if api_key:
+        raise HTTPException(status_code=403, detail="Superadmin access required")
+    raise HTTPException(status_code=401, detail="Invalid API key")
+
+@app.post("/v1/admin/users/{user_id}/ban")
+async def honeypot_ban(user_id: str, request: Request):
+    """[HONEYPOT] Fake ban endpoint"""
+    await log_honeypot(request, f"/v1/admin/users/{user_id}/ban")
+    api_key = request.headers.get("x-api-key", "")
+    if api_key:
+        raise HTTPException(status_code=403, detail="Superadmin access required")
+    raise HTTPException(status_code=401, detail="Invalid API key")
+
+@app.post("/v1/admin/users/{user_id}/unban")
+async def honeypot_unban(user_id: str, request: Request):
+    """[HONEYPOT] Fake unban endpoint"""
+    await log_honeypot(request, f"/v1/admin/users/{user_id}/unban")
+    api_key = request.headers.get("x-api-key", "")
+    if api_key:
+        raise HTTPException(status_code=403, detail="Superadmin access required")
+    raise HTTPException(status_code=401, detail="Invalid API key")
+
+@app.get("/v1/admin/violations")
+async def honeypot_violations(request: Request):
+    """[HONEYPOT] Fake violations list"""
+    await log_honeypot(request, "/v1/admin/violations")
+    api_key = request.headers.get("x-api-key", "")
+    if api_key:
+        raise HTTPException(status_code=403, detail="Superadmin access required")
+    raise HTTPException(status_code=401, detail="Invalid API key")
+
+@app.get("/v1/admin/broadcast")
+async def honeypot_broadcast_get(request: Request):
+    """[HONEYPOT] Fake broadcast status"""
+    await log_honeypot(request, "/v1/admin/broadcast")
+    api_key = request.headers.get("x-api-key", "")
+    if api_key:
+        raise HTTPException(status_code=403, detail="Superadmin access required")
+    raise HTTPException(status_code=401, detail="Invalid API key")
+
+@app.post("/v1/admin/broadcast")
+async def honeypot_broadcast_post(request: Request):
+    """[HONEYPOT] Fake broadcast control"""
+    await log_honeypot(request, "/v1/admin/broadcast")
+    api_key = request.headers.get("x-api-key", "")
+    if api_key:
+        raise HTTPException(status_code=403, detail="Superadmin access required")
+    raise HTTPException(status_code=401, detail="Invalid API key")
+
+@app.get("/v1/admin/export/{org_id}")
+async def honeypot_export(org_id: str, request: Request):
+    """[HONEYPOT] Fake export endpoint"""
+    await log_honeypot(request, f"/v1/admin/export/{org_id}")
+    api_key = request.headers.get("x-api-key", "")
+    if api_key:
+        raise HTTPException(status_code=403, detail="Superadmin access required")
+    raise HTTPException(status_code=401, detail="Invalid API key")
+
+# Stealth endpoint to view honeypot logs
+@app.get("/v1/docs/trap-log")
+async def reference_trap_log(ref: dict = Depends(validate_architect)):
+    """View honeypot attempts (stealth only)"""
+    return {
+        "total_in_memory": len(honeypot_attempts),
+        "recent": honeypot_attempts[-50:] if honeypot_attempts else [],
+        "message": "Last 50 attempts. Full log in audit_log table with action='honeypot'"
+    }
+
+# ============================================================
 # REFERENCE DOCUMENTATION (stealth system management)
 # ============================================================
 
