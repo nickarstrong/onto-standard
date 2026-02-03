@@ -6334,7 +6334,7 @@ let refNodesData = [];
 let refNamespacesData = [];
 
 async function checkReferenceAccess() {
-    const apiKey = localStorage.getItem('apiKey');
+    const apiKey = localStorage.getItem('onto_first_api_key');
     if (!apiKey) return false;
     
     try {
@@ -6366,7 +6366,7 @@ async function showReferencePage(el) {
 }
 
 async function loadReferenceData() {
-    const apiKey = localStorage.getItem('apiKey');
+    const apiKey = localStorage.getItem('onto_first_api_key');
     if (!apiKey) return;
     
     const headers = { 'x-api-key': apiKey };
@@ -6542,7 +6542,7 @@ function showRefTab(tabId, el) {
 
 async function refArchiveNode(nodeId) {
     if (!confirm('Archive this node?')) return;
-    const apiKey = localStorage.getItem('apiKey');
+    const apiKey = localStorage.getItem('onto_first_api_key');
     try {
         const res = await fetch(`${API}/v1/docs/node-index/${nodeId}/archive`, {
             method: 'POST',
@@ -6560,7 +6560,7 @@ async function refArchiveNode(nodeId) {
 }
 
 async function refRestoreNode(nodeId) {
-    const apiKey = localStorage.getItem('apiKey');
+    const apiKey = localStorage.getItem('onto_first_api_key');
     try {
         const res = await fetch(`${API}/v1/docs/node-index/${nodeId}/restore`, {
             method: 'POST',
@@ -6579,7 +6579,7 @@ async function refRestoreNode(nodeId) {
 
 async function refFreezeNamespace(nsId) {
     if (!confirm('Freeze this namespace? All API keys will be disabled.')) return;
-    const apiKey = localStorage.getItem('apiKey');
+    const apiKey = localStorage.getItem('onto_first_api_key');
     try {
         const res = await fetch(`${API}/v1/docs/namespace-registry/${nsId}/freeze`, {
             method: 'POST',
@@ -6597,7 +6597,7 @@ async function refFreezeNamespace(nsId) {
 }
 
 async function refUnfreezeNamespace(nsId) {
-    const apiKey = localStorage.getItem('apiKey');
+    const apiKey = localStorage.getItem('onto_first_api_key');
     try {
         const res = await fetch(`${API}/v1/docs/namespace-registry/${nsId}/unfreeze`, {
             method: 'POST',
@@ -6615,7 +6615,7 @@ async function refUnfreezeNamespace(nsId) {
 }
 
 async function refExportNamespace(nsId) {
-    const apiKey = localStorage.getItem('apiKey');
+    const apiKey = localStorage.getItem('onto_first_api_key');
     try {
         const res = await fetch(`${API}/v1/docs/namespace-export/${nsId}`, {
             headers: { 'x-api-key': apiKey }
@@ -6639,7 +6639,7 @@ async function refExportNamespace(nsId) {
 }
 
 async function refBroadcastAction(action) {
-    const apiKey = localStorage.getItem('apiKey');
+    const apiKey = localStorage.getItem('onto_first_api_key');
     try {
         const res = await fetch(`${API}/v1/docs/broadcast-control?action=${action}`, {
             method: 'POST',
