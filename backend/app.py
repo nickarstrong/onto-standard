@@ -3011,6 +3011,207 @@ async def reference_unfreeze_namespace(ns_id: str, ref: dict = Depends(validate_
         
         return {"status": "active", "namespace_id": ns_id}
 
+@app.get("/v1/docs/rate-violations")
+async def reference_rate_violations(
+    ref: dict = Depends(validate_architect),
+    limit: int = 100,
+    offset: int = 0
+):
+    """Rate limit violations log"""
+    if not db_pool:
+        raise HTTPException(status_code=404)
+    
+    async with db_pool.acquire() as conn:
+        rows = await conn.fetch("""
+            SELECT v.*, o.name as org_name, o.slug as org_slug, o.tier
+            FROM rate_limit_violations v
+            LEFT JOIN organizations o ON v.organization_id = o.id
+            ORDER BY v.created_at DESC
+            LIMIT $1 OFFSET $2
+        """, limit, offset)
+        
+        total = await conn.fetchval("SELECT COUNT(*) FROM rate_limit_violations")
+        
+        return {
+            "violations": [
+                {
+                    "id": str(r['id']),
+                    "organization_id": str(r['organization_id']) if r['organization_id'] else None,
+                    "org_name": r['org_name'],
+                    "org_slug": r['org_slug'],
+                    "tier": r['tier'],
+                    "violation_type": r['violation_type'],
+                    "endpoint": r['endpoint'],
+                    "ip_address": r['ip_address'],
+                    "request_count": r['request_count'],
+                    "limit_value": r['limit_value'],
+                    "details": r['details'],
+                    "created_at": r['created_at'].isoformat() if r['created_at'] else None
+                }
+                for r in rows
+            ],
+            "total": total,
+            "limit": limit,
+            "offset": offset
+        }
+
+@app.get("/v1/docs/broadcast-status")
+async def reference_broadcast_status(ref: dict = Depends(validate_architect)):
+    """Get signal broadcast status"""
+    try:
+        import httpx
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            # Get signal server admin status
+            response = await client.get(
+                f"{SIGNAL_URL}/admin/status",
+                headers={"X-Admin-Key": os.getenv("SIGNAL_ADMIN_SECRET", "onto-admin-2026-secret")}
+            )
+            if response.status_code == 200:
+                return response.json()
+            return {"error": "Signal server unavailable", "status_code": response.status_code}
+    except Exception as e:
+        return {"error": str(e), "status": "unavailable"}
+
+@app.post("/v1/docs/broadcast-control")
+async def reference_broadcast_control(
+    action: str,
+    ref: dict = Depends(validate_architect)
+):
+    """Control signal broadcast (pause/resume/force)"""
+    if action not in ["pause", "resume", "force"]:
+        raise HTTPException(status_code=400, detail="Invalid action. Use: pause, resume, force")
+    
+    try:
+        import httpx
+        endpoint_map = {
+            "pause": "/admin/pause",
+            "resume": "/admin/resume",
+            "force": "/admin/broadcast"
+        }
+        
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.post(
+                f"{SIGNAL_URL}{endpoint_map[action]}",
+                headers={"X-Admin-Key": os.getenv("SIGNAL_ADMIN_SECRET", "onto-admin-2026-secret")}
+            )
+            if response.status_code == 200:
+                return {"action": action, "result": response.json()}
+            return {"error": "Signal server error", "status_code": response.status_code}
+    except Exception as e:
+        return {"error": str(e), "action": action}
+
+@app.get("/v1/docs/namespace-export/{ns_id}")
+async def reference_namespace_export(ns_id: str, ref: dict = Depends(validate_architect)):
+    """Export all data for a namespace (organization)"""
+    if not db_pool:
+        raise HTTPException(status_code=404)
+    
+    async with db_pool.acquire() as conn:
+        # Get organization
+        org = await conn.fetchrow(
+            "SELECT * FROM organizations WHERE id = $1",
+            uuid.UUID(ns_id)
+        )
+        if not org:
+            raise HTTPException(status_code=404)
+        
+        # Get users
+        users = await conn.fetch(
+            "SELECT id, email, name, role, is_active, email_verified, created_at, last_login_at FROM users WHERE organization_id = $1",
+            uuid.UUID(ns_id)
+        )
+        
+        # Get API keys
+        api_keys = await conn.fetch(
+            "SELECT id, name, key_prefix, is_active, scopes, created_at FROM api_keys WHERE organization_id = $1",
+            uuid.UUID(ns_id)
+        )
+        
+        # Get evaluations
+        evaluations = await conn.fetch(
+            "SELECT id, model_name, status, risk_score, submitted_at, completed_at FROM evaluations WHERE organization_id = $1",
+            uuid.UUID(ns_id)
+        )
+        
+        # Get certificates
+        certificates = await conn.fetch(
+            "SELECT id, evaluation_id, level, status, issued_at, expires_at FROM certificates WHERE organization_id = $1",
+            uuid.UUID(ns_id)
+        )
+        
+        # Get audit log
+        audit = await conn.fetch(
+            "SELECT id, user_id, action, resource_type, details, created_at FROM audit_log WHERE organization_id = $1 ORDER BY created_at DESC LIMIT 500",
+            uuid.UUID(ns_id)
+        )
+        
+        return {
+            "export_time": datetime.now(timezone.utc).isoformat(),
+            "namespace": {
+                "id": str(org['id']),
+                "name": org['name'],
+                "slug": org['slug'],
+                "tier": org['tier'],
+                "created_at": org['created_at'].isoformat() if org['created_at'] else None
+            },
+            "nodes": [
+                {
+                    "id": str(u['id']),
+                    "email": u['email'],
+                    "name": u['name'],
+                    "role": u['role'],
+                    "is_active": u['is_active'],
+                    "email_verified": u['email_verified'],
+                    "created_at": u['created_at'].isoformat() if u['created_at'] else None,
+                    "last_login_at": u['last_login_at'].isoformat() if u['last_login_at'] else None
+                }
+                for u in users
+            ],
+            "api_keys": [
+                {
+                    "id": str(k['id']),
+                    "name": k['name'],
+                    "prefix": k['key_prefix'],
+                    "is_active": k['is_active'],
+                    "created_at": k['created_at'].isoformat() if k['created_at'] else None
+                }
+                for k in api_keys
+            ],
+            "evaluations": [
+                {
+                    "id": str(e['id']),
+                    "model_name": e['model_name'],
+                    "status": e['status'],
+                    "risk_score": e['risk_score'],
+                    "submitted_at": e['submitted_at'].isoformat() if e['submitted_at'] else None,
+                    "completed_at": e['completed_at'].isoformat() if e['completed_at'] else None
+                }
+                for e in evaluations
+            ],
+            "certificates": [
+                {
+                    "id": str(c['id']),
+                    "evaluation_id": str(c['evaluation_id']),
+                    "level": c['level'],
+                    "status": c['status'],
+                    "issued_at": c['issued_at'].isoformat() if c['issued_at'] else None,
+                    "expires_at": c['expires_at'].isoformat() if c['expires_at'] else None
+                }
+                for c in certificates
+            ],
+            "audit_log": [
+                {
+                    "id": str(a['id']),
+                    "user_id": str(a['user_id']) if a['user_id'] else None,
+                    "action": a['action'],
+                    "resource_type": a['resource_type'],
+                    "details": a['details'],
+                    "created_at": a['created_at'].isoformat() if a['created_at'] else None
+                }
+                for a in audit
+            ]
+        }
+
 @app.get("/v1/docs/reference-check")
 async def reference_access_check(ref: dict = Depends(validate_architect)):
     """Verify reference documentation access"""
