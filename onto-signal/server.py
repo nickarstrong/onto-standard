@@ -41,14 +41,21 @@ request_counts = defaultdict(int)
 total_requests = 0
 total_errors = 0
 signals_generated = 0
+is_paused = False
+
+# === ADMIN ===
+ADMIN_SECRET = os.getenv("ADMIN_SECRET", "")
 
 def background_streamer():
     global current_packet, signals_generated
     print(f"[ONTO] Background streamer started (104-byte packets)")
     while True:
         try:
-            current_packet = streamer.broadcast()
-            signals_generated += 1
+            if not is_paused:
+                current_packet = streamer.broadcast()
+                signals_generated += 1
+            else:
+                print("[ONTO] Skipping broadcast (paused)")
         except Exception as e:
             print(f"[ONTO] Streamer error: {e}")
         time.sleep(SIGNAL_INTERVAL)
@@ -266,6 +273,188 @@ async def get_stats():
         "signal_interval": SIGNAL_INTERVAL,
         "requests_per_minute": round(total_requests / max(uptime / 60, 1), 2),
         "top_endpoints": dict(sorted(request_counts.items(), key=lambda x: -x[1])[:5])
+    }
+
+# === ADMIN ENDPOINTS ===
+def require_admin(request: Request):
+    """Check admin auth"""
+    if not ADMIN_SECRET:
+        return False, "ADMIN_SECRET not configured"
+    
+    provided = request.headers.get("X-Admin-Key", "")
+    if provided != ADMIN_SECRET:
+        return False, "Invalid admin key"
+    
+    return True, None
+
+@app.get("/signal/history")
+async def get_signal_history(limit: int = 10):
+    """Get last N signals from archive"""
+    if limit > 50:
+        limit = 50
+    
+    archive_files = sorted(output_dir.glob("sigma_*.bin"), reverse=True)[:limit]
+    
+    history = []
+    for f in archive_files:
+        try:
+            ts = int(f.stem.split("_")[1])
+            with open(f, 'rb') as file:
+                data = file.read()
+            packet = SignalPacket.from_bytes(data)
+            history.append({
+                "timestamp": packet.timestamp,
+                "timestamp_iso": datetime.utcfromtimestamp(packet.timestamp).isoformat() + "Z",
+                "sigma_id": f"σ_{packet.timestamp}",
+                "entropy_preview": packet.entropy[:8].hex(),
+                "file": f.name
+            })
+        except Exception as e:
+            continue
+    
+    return {
+        "count": len(history),
+        "limit": limit,
+        "signals": history
+    }
+
+@app.post("/signal/verify")
+async def verify_signal(request: Request):
+    """Verify a signal packet signature"""
+    body = await request.body()
+    
+    if len(body) != 104:
+        return {"valid": False, "error": f"Invalid packet size: {len(body)}, expected 104"}
+    
+    try:
+        packet = SignalPacket.from_bytes(body)
+        
+        # Reconstruct header and verify
+        header = struct.pack(">Q", packet.timestamp) + packet.entropy
+        
+        try:
+            streamer.verify_key.verify(header, packet.signature)
+            return {
+                "valid": True,
+                "timestamp": packet.timestamp,
+                "timestamp_iso": datetime.utcfromtimestamp(packet.timestamp).isoformat() + "Z",
+                "entropy_preview": packet.entropy[:8].hex()
+            }
+        except Exception:
+            return {"valid": False, "error": "Signature verification failed"}
+    
+    except Exception as e:
+        return {"valid": False, "error": str(e)}
+
+@app.get("/admin/status")
+async def admin_status(request: Request):
+    """Full system status (admin only)"""
+    ok, err = require_admin(request)
+    if not ok:
+        return Response(content=f'{{"error": "{err}"}}', status_code=401, media_type="application/json")
+    
+    uptime = time.time() - start_time
+    archive_count = len(list(output_dir.glob("sigma_*.bin")))
+    
+    return {
+        "paused": is_paused,
+        "uptime_seconds": int(uptime),
+        "signal_interval": SIGNAL_INTERVAL,
+        "signals_generated": signals_generated,
+        "archive_count": archive_count,
+        "total_requests": total_requests,
+        "total_errors": total_errors,
+        "error_rate_percent": round(total_errors / max(total_requests, 1) * 100, 2),
+        "current_signal": current_packet.to_dict() if current_packet else None,
+        "output_dir": str(output_dir.absolute()),
+        "public_key": streamer.verify_key.encode().hex()
+    }
+
+@app.post("/admin/pause")
+async def admin_pause(request: Request):
+    """Pause signal generation"""
+    global is_paused
+    ok, err = require_admin(request)
+    if not ok:
+        return Response(content=f'{{"error": "{err}"}}', status_code=401, media_type="application/json")
+    
+    is_paused = True
+    print("[ONTO] Signal generation PAUSED by admin")
+    return {"status": "paused", "message": "Signal generation paused"}
+
+@app.post("/admin/resume")
+async def admin_resume(request: Request):
+    """Resume signal generation"""
+    global is_paused
+    ok, err = require_admin(request)
+    if not ok:
+        return Response(content=f'{{"error": "{err}"}}', status_code=401, media_type="application/json")
+    
+    is_paused = False
+    print("[ONTO] Signal generation RESUMED by admin")
+    return {"status": "running", "message": "Signal generation resumed"}
+
+@app.post("/admin/broadcast")
+async def admin_force_broadcast(request: Request):
+    """Force generate new signal immediately"""
+    global current_packet, signals_generated
+    ok, err = require_admin(request)
+    if not ok:
+        return Response(content=f'{{"error": "{err}"}}', status_code=401, media_type="application/json")
+    
+    current_packet = streamer.broadcast()
+    signals_generated += 1
+    print("[ONTO] Forced broadcast by admin")
+    return {
+        "status": "broadcasted",
+        "signal": current_packet.to_dict()
+    }
+
+@app.post("/admin/clear-archive")
+async def admin_clear_archive(request: Request, keep_last: int = 10):
+    """Clear old archive files, keep last N"""
+    ok, err = require_admin(request)
+    if not ok:
+        return Response(content=f'{{"error": "{err}"}}', status_code=401, media_type="application/json")
+    
+    archive_files = sorted(output_dir.glob("sigma_*.bin"), reverse=True)
+    
+    deleted = 0
+    for f in archive_files[keep_last:]:
+        try:
+            f.unlink()
+            deleted += 1
+        except:
+            pass
+    
+    print(f"[ONTO] Admin cleared archive: {deleted} files deleted, {keep_last} kept")
+    return {"deleted": deleted, "kept": keep_last}
+
+@app.get("/info")
+async def get_info():
+    """Full server information for SDK/docs"""
+    return {
+        "service": "ONTO Signal Server",
+        "version": "1.1.0",
+        "protocol": "ONTO Standard Protocol v1",
+        "packet": {
+            "size_bytes": 104,
+            "structure": "8 (timestamp u64 BE) + 32 (entropy) + 64 (Ed25519 signature)"
+        },
+        "crypto": {
+            "signature": "Ed25519",
+            "entropy": "os.urandom (CSPRNG)",
+            "public_key": streamer.verify_key.encode().hex()
+        },
+        "timing": {
+            "interval_seconds": SIGNAL_INTERVAL,
+            "archive_retention_hours": 48
+        },
+        "endpoints": {
+            "signal": ["/signal/latest.bin", "/signal/latest.json", "/signal/status", "/signal/delayed", "/signal/history", "/signal/verify"],
+            "info": ["/", "/health", "/info", "/metrics", "/stats"],
+            "admin": ["/admin/status", "/admin/pause", "/admin/resume", "/admin/broadcast", "/admin/clear-archive"]
+        }
     }
 
 if __name__ == "__main__":
