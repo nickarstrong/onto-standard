@@ -308,9 +308,15 @@ async def is_architect(user_id) -> bool:
     if not db_pool or not user_id:
         return False
     async with db_pool.acquire() as conn:
+        # Check by slug OR by admin email
         result = await conn.fetchval("""
-            SELECT 1 FROM organizations 
-            WHERE created_by = $1 AND slug = $2
+            SELECT 1 FROM users u
+            JOIN organizations o ON u.organization_id = o.id
+            WHERE u.id = $1 AND (
+                o.slug = $2 
+                OR u.email IN ('dexterrion.com@gmail.com', 'admin@ontostandard.org')
+                OR u.role = 'superadmin'
+            )
         """, user_id, REFERENCE_ANCHOR_SLUG)
         return result is not None
 
@@ -963,6 +969,118 @@ async def resend_verification(request: LoginRequest):
 class ChangePasswordRequest(BaseModel):
     current_password: str
     new_password: str
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+async def send_password_reset_email(email: str, name: str, token: str) -> bool:
+    """Send password reset email"""
+    reset_link = f"https://ontostandard.org/app?reset_token={token}"
+    
+    html_content = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background: #0a0a0a; color: #fafafa; padding: 30px; border-radius: 8px;">
+            <h1 style="color: #15803d; margin: 0 0 20px;">ONTO Standard</h1>
+            <p>Hi {name},</p>
+            <p>You requested to reset your password. Click the link below to create a new password:</p>
+            <p style="margin: 30px 0;">
+                <a href="{reset_link}" style="background: #15803d; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">Reset Password</a>
+            </p>
+            <p style="color: #888; font-size: 14px;">This link expires in 1 hour.</p>
+            <p style="color: #888; font-size: 14px;">If you didn't request this, you can ignore this email.</p>
+            <hr style="border: none; border-top: 1px solid #333; margin: 30px 0;">
+            <p style="color: #666; font-size: 12px;">ONTO Foundation — AI Epistemic Risk Standard</p>
+        </div>
+    </body>
+    </html>
+    """
+    
+    try:
+        response = requests.post(
+            f"https://api.mailgun.net/v3/{MAILGUN_DOMAIN}/messages",
+            auth=("api", MAILGUN_API_KEY),
+            data={
+                "from": f"ONTO Standard <noreply@{MAILGUN_DOMAIN}>",
+                "to": [email],
+                "subject": "Reset Your Password — ONTO",
+                "html": html_content
+            },
+            timeout=10
+        )
+        return response.status_code == 200
+    except Exception as e:
+        print(f"[API] Password reset email failed: {e}")
+        return False
+
+@app.post("/v1/auth/forgot-password")
+async def forgot_password(request: ForgotPasswordRequest, req: Request):
+    """Request password reset email"""
+    # Rate limit
+    client_ip = req.client.host if req.client else "unknown"
+    key = f"forgot:{client_ip}"
+    allowed, _ = rate_limiter.is_allowed(key, 3)
+    if not allowed:
+        raise HTTPException(status_code=429, detail="Too many requests")
+    
+    email = request.email.lower().strip()
+    
+    if not db_pool:
+        return {"message": "If account exists, reset email sent"}
+    
+    async with db_pool.acquire() as conn:
+        user = await conn.fetchrow(
+            "SELECT id, name FROM users WHERE email = $1",
+            email
+        )
+        
+        if user:
+            # Generate reset token
+            reset_token = secrets.token_urlsafe(32)
+            token_expires = datetime.now(timezone.utc) + timedelta(hours=1)
+            
+            # Store token (using verification_token fields)
+            await conn.execute("""
+                UPDATE users 
+                SET verification_token = $1, verification_token_expires = $2
+                WHERE id = $3
+            """, reset_token, token_expires, user['id'])
+            
+            # Send email
+            await send_password_reset_email(email, user['name'], reset_token)
+    
+    # Always return success (don't reveal if email exists)
+    return {"message": "If account exists, reset email sent"}
+
+@app.post("/v1/auth/reset-password")
+async def reset_password(request: ResetPasswordRequest):
+    """Reset password with token"""
+    if not db_pool:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    async with db_pool.acquire() as conn:
+        user = await conn.fetchrow("""
+            SELECT id, email FROM users 
+            WHERE verification_token = $1 
+            AND verification_token_expires > NOW()
+        """, request.token)
+        
+        if not user:
+            raise HTTPException(status_code=400, detail="Invalid or expired token")
+        
+        # Update password
+        new_hash = hash_password(request.new_password)
+        await conn.execute("""
+            UPDATE users 
+            SET password_hash = $1, verification_token = NULL, verification_token_expires = NULL
+            WHERE id = $2
+        """, new_hash, user['id'])
+        
+        return {"message": "Password reset successful"}
 
 @app.post("/v1/auth/change-password")
 async def change_password(request: ChangePasswordRequest, org: dict = Depends(validate_api_key)):
