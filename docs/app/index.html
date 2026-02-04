@@ -3528,7 +3528,7 @@ async function checkReferenceAccess() {
     if (!apiKey) return false;
     
     try {
-        const res = await fetch(`${API}/v1/docs/reference-check`, {
+        const res = await fetch(`${API_BASE}/v1/docs/reference-check`, {
             headers: { 'x-api-key': apiKey }
         });
         if (res.ok) {
@@ -3563,7 +3563,7 @@ async function loadReferenceData() {
     
     // Load sync status
     try {
-        const res = await fetch(`${API}/v1/docs/sync-status`, { headers });
+        const res = await fetch(`${API_BASE}/v1/docs/sync-status`, { headers });
         if (res.ok) {
             const data = await res.json();
             const m = data.metrics;
@@ -3575,7 +3575,7 @@ async function loadReferenceData() {
     
     // Load nodes
     try {
-        const res = await fetch(`${API}/v1/docs/node-index`, { headers });
+        const res = await fetch(`${API_BASE}/v1/docs/node-index`, { headers });
         if (res.ok) {
             const data = await res.json();
             refNodesData = data.nodes || [];
@@ -3585,7 +3585,7 @@ async function loadReferenceData() {
     
     // Load namespaces
     try {
-        const res = await fetch(`${API}/v1/docs/namespace-registry`, { headers });
+        const res = await fetch(`${API_BASE}/v1/docs/namespace-registry`, { headers });
         if (res.ok) {
             const data = await res.json();
             refNamespacesData = data.namespaces || [];
@@ -3595,7 +3595,7 @@ async function loadReferenceData() {
     
     // Load violations
     try {
-        const res = await fetch(`${API}/v1/docs/rate-violations`, { headers });
+        const res = await fetch(`${API_BASE}/v1/docs/rate-violations`, { headers });
         if (res.ok) {
             const data = await res.json();
             renderRefViolations(data.violations || []);
@@ -3604,7 +3604,7 @@ async function loadReferenceData() {
     
     // Load honeypot
     try {
-        const res = await fetch(`${API}/v1/docs/trap-log`, { headers });
+        const res = await fetch(`${API_BASE}/v1/docs/trap-log`, { headers });
         if (res.ok) {
             const data = await res.json();
             document.getElementById('ref-honeypot').textContent = data.total_in_memory || 0;
@@ -3614,7 +3614,7 @@ async function loadReferenceData() {
     
     // Load broadcast status
     try {
-        const res = await fetch(`${API}/v1/docs/broadcast-status`, { headers });
+        const res = await fetch(`${API_BASE}/v1/docs/broadcast-status`, { headers });
         if (res.ok) {
             const data = await res.json();
             document.getElementById('ref-broadcast-status').innerHTML = `
@@ -3734,7 +3734,7 @@ async function refArchiveNode(nodeId) {
     if (!confirm('Archive this node?')) return;
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API}/v1/docs/node-index/${nodeId}/archive`, {
+        const res = await fetch(`${API_BASE}/v1/docs/node-index/${nodeId}/archive`, {
             method: 'POST',
             headers: { 'x-api-key': apiKey }
         });
@@ -3752,7 +3752,7 @@ async function refArchiveNode(nodeId) {
 async function refRestoreNode(nodeId) {
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API}/v1/docs/node-index/${nodeId}/restore`, {
+        const res = await fetch(`${API_BASE}/v1/docs/node-index/${nodeId}/restore`, {
             method: 'POST',
             headers: { 'x-api-key': apiKey }
         });
@@ -3771,7 +3771,7 @@ async function refFreezeNamespace(nsId) {
     if (!confirm('Freeze this namespace? All API keys will be disabled.')) return;
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API}/v1/docs/namespace-registry/${nsId}/freeze`, {
+        const res = await fetch(`${API_BASE}/v1/docs/namespace-registry/${nsId}/freeze`, {
             method: 'POST',
             headers: { 'x-api-key': apiKey }
         });
@@ -3789,7 +3789,7 @@ async function refFreezeNamespace(nsId) {
 async function refUnfreezeNamespace(nsId) {
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API}/v1/docs/namespace-registry/${nsId}/unfreeze`, {
+        const res = await fetch(`${API_BASE}/v1/docs/namespace-registry/${nsId}/unfreeze`, {
             method: 'POST',
             headers: { 'x-api-key': apiKey }
         });
@@ -3807,7 +3807,7 @@ async function refUnfreezeNamespace(nsId) {
 async function refExportNamespace(nsId) {
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API}/v1/docs/namespace-export/${nsId}`, {
+        const res = await fetch(`${API_BASE}/v1/docs/namespace-export/${nsId}`, {
             headers: { 'x-api-key': apiKey }
         });
         if (res.ok) {
@@ -3831,7 +3831,7 @@ async function refExportNamespace(nsId) {
 async function refBroadcastAction(action) {
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API}/v1/docs/broadcast-control?action=${action}`, {
+        const res = await fetch(`${API_BASE}/v1/docs/broadcast-control?action=${action}`, {
             method: 'POST',
             headers: { 'x-api-key': apiKey }
         });
