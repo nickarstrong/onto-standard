@@ -666,6 +666,40 @@ async def get_signal_status():
     except Exception as e:
         return {"error": str(e), "signal_url": SIGNAL_URL}
 
+@app.get("/v1/signal/latest")
+async def get_latest_signal(ref: dict = Depends(validate_architect)):
+    """Get latest signal (admin only, no delay)"""
+    import httpx
+    
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(f"{SIGNAL_URL}/signal/current", timeout=5)
+            return resp.json()
+    except Exception as e:
+        # Return mock data if streamer unavailable
+        ts = int(time.time())
+        return {
+            "timestamp": ts,
+            "timestamp_iso": datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
+            "sigma_id": f"σ_{ts}",
+            "entropy_hex": "7a3f9c2e1b8d4f6a0c5e3d7b9a1f2c4e8d6b0a3f5c7e9d1b4a6f8c2e0d3b5a7",
+            "entropy_hash": "7a3f9c2e",
+            "status": "mock",
+            "error": str(e)
+        }
+
+@app.post("/v1/signal/broadcast")
+async def force_signal_broadcast(ref: dict = Depends(validate_architect)):
+    """Force signal broadcast (admin only)"""
+    import httpx
+    
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.post(f"{SIGNAL_URL}/signal/broadcast", timeout=10)
+            return resp.json()
+    except Exception as e:
+        return {"error": str(e), "status": "failed"}
+
 
 @app.get("/v1/signal/current")
 async def get_current_signal(org: dict = Depends(validate_api_key)):
