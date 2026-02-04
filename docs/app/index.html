@@ -1170,7 +1170,7 @@ result = client.evaluate(output, confidence=0.85)</code></pre>
             </div>
             
             <div class="docs-mobile-nav">
-                <a href="/documentation.html" target="_blank" class="btn btn-secondary" style="width: 100%; text-align: center;">
+                <a href="/documentation.html" target="_blank" class="btn btn-secondary" style="width: 100%; text-align: center; text-decoration: none;">
                     View All Documentation ↗
                 </a>
             </div>
@@ -1182,11 +1182,8 @@ result = client.evaluate(output, confidence=0.85)</code></pre>
                         <div class="docs-nav-item active" onclick="showDoc('standard', this)">ONTO-ERS</div>
                     </div>
                     <div class="docs-nav-section">
-                        <h4>Service</h4>
+                        <h4>Specifications</h4>
                         <a class="docs-nav-item" href="/layer-spec.html" target="_blank">Layer Specification ↗</a>
-                    </div>
-                    <div class="docs-nav-section">
-                        <h4>Compliance</h4>
                         <a class="docs-nav-item" href="/regulatory.html" target="_blank">Regulatory Matrix ↗</a>
                     </div>
                     <div class="docs-nav-section">
@@ -1199,7 +1196,6 @@ result = client.evaluate(output, confidence=0.85)</code></pre>
                         <a class="docs-nav-item" href="/license.html" target="_blank">License ↗</a>
                         <a class="docs-nav-item" href="/terms.html" target="_blank">Terms of Service ↗</a>
                         <a class="docs-nav-item" href="/privacy.html" target="_blank">Privacy Policy ↗</a>
-                        <a class="docs-nav-item" href="/refund.html" target="_blank">Refund Policy ↗</a>
                     </div>
                 </div>
                 
@@ -1936,7 +1932,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a hr
 <em>© 2026 ONTO Foundation</em><br />
 <em>Licensed under ONTO Gold Asymmetric AI License</em></p>
 </article>
-</article>
+
                 </div>
             </div>
         </div>
@@ -2878,9 +2874,6 @@ function showPage(page, el) {
 }
 
 function showDoc(docId, el) {
-    // Only ONTO-ERS (standard) is internal, others are external links
-    if (docId !== 'standard') return;
-    
     document.querySelectorAll('.docs-article').forEach(d => d.classList.remove('active'));
     document.querySelectorAll('.docs-nav-item').forEach(n => n.classList.remove('active'));
     const targetDoc = document.getElementById('docs-' + docId);
@@ -2888,6 +2881,29 @@ function showDoc(docId, el) {
         targetDoc.classList.add('active');
     }
     if (el) el.classList.add('active');
+    
+    // Scroll to top
+    const docsContent = document.querySelector('.docs-content');
+    if (docsContent) docsContent.scrollTop = 0;
+    
+    // Sync mobile select
+    const mobileSelect = document.querySelector('.docs-mobile-select');
+    if (mobileSelect) mobileSelect.value = docId;
+}
+
+function showDocFromSelect(docId) {
+    document.querySelectorAll('.docs-article').forEach(d => d.classList.remove('active'));
+    document.querySelectorAll('.docs-nav-item').forEach(n => n.classList.remove('active'));
+    const targetDoc = document.getElementById('docs-' + docId);
+    if (targetDoc) {
+        targetDoc.classList.add('active');
+    }
+    // Sync sidebar active state
+    document.querySelectorAll('.docs-nav-item').forEach(item => {
+        if (item.getAttribute('onclick')?.includes(`'${docId}'`)) {
+            item.classList.add('active');
+        }
+    });
     
     // Scroll to top
     const docsContent = document.querySelector('.docs-content');
@@ -3878,3 +3894,41 @@ function drawIndustryChart() {
     data.forEach(d => {
         const sliceAngle = (d.value / total) * 2 * Math.PI;
         ctx.begi
+nPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, radius, startAngle, startAngle + sliceAngle);
+        ctx.closePath();
+        ctx.fillStyle = d.color;
+        ctx.fill();
+        startAngle += sliceAngle;
+    });
+    
+    // Legend
+    legend.innerHTML = data.map(d => 
+        `<div class="legend-item">
+            <span class="legend-dot" style="background: ${d.color}"></span>
+            <span>${d.label}</span>
+            <span class="legend-value">${d.value}%</span>
+        </div>`
+    ).join('');
+}
+
+// === INIT ===
+document.addEventListener('DOMContentLoaded', () => {
+    checkWelcomeBanner();
+    updateSignalHash();
+    drawIndustryChart();
+    generateTelemetryBars();
+});
+
+// Check for email verification callback
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('verified') === 'true') {
+    showVerifySuccess();
+}
+
+// Check reference access on load
+setTimeout(checkReferenceAccess, 1000);
+</script>
+</body>
+</html>
