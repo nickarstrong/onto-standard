@@ -3156,7 +3156,7 @@ async def reference_namespace_export(ns_id: str, ref: dict = Depends(validate_ar
 # ADMIN PANEL ENDPOINTS
 # ============================================================
 
-@app.get("/v1/admin/users")
+@app.get("/v1/docs/admin/users")
 async def admin_list_users(
     search: str = "",
     limit: int = 5,
@@ -3218,7 +3218,7 @@ async def admin_list_users(
             "offset": offset
         }
 
-@app.get("/v1/admin/users/{user_id}")
+@app.get("/v1/docs/admin/users/{user_id}")
 async def admin_get_user(user_id: str, ref: dict = Depends(validate_architect)):
     """Get user details (admin only)"""
     if not db_pool:
@@ -3253,7 +3253,7 @@ async def admin_get_user(user_id: str, ref: dict = Depends(validate_architect)):
             "has_stripe": bool(user['stripe_customer_id'])
         }
 
-@app.put("/v1/admin/users/{user_id}/tier")
+@app.put("/v1/docs/admin/users/{user_id}/tier")
 async def admin_update_tier(
     user_id: str,
     tier: str,
@@ -3282,7 +3282,7 @@ async def admin_update_tier(
         
         return {"message": f"Tier updated to {tier}", "expires": expiry.isoformat() if expiry else None}
 
-@app.put("/v1/admin/users/{user_id}/suspend")
+@app.put("/v1/docs/admin/users/{user_id}/suspend")
 async def admin_suspend_user(user_id: str, suspend: bool = True, ref: dict = Depends(validate_architect)):
     """Suspend or unsuspend user (admin only)"""
     if not db_pool:
@@ -3303,7 +3303,7 @@ async def admin_suspend_user(user_id: str, suspend: bool = True, ref: dict = Dep
         
         return {"message": f"User {'suspended' if suspend else 'activated'}"}
 
-@app.delete("/v1/admin/users/{user_id}")
+@app.delete("/v1/docs/admin/users/{user_id}")
 async def admin_delete_user(user_id: str, ref: dict = Depends(validate_architect)):
     """Delete user and their organization (admin only)"""
     if not db_pool:
@@ -3333,180 +3333,6 @@ async def admin_delete_user(user_id: str, ref: dict = Depends(validate_architect
                 await conn.execute("DELETE FROM users WHERE id = $1", user_id)
                 
                 # Delete org if no other users
-                await conn.execute("""
-                    DELETE FROM organizations WHERE id = $1
-                    AND NOT EXISTS (SELECT 1 FROM users WHERE organization_id = $1)
-                """, org_id)
-            
-            return {"message": f"User {user['email']} deleted"}
-    except Exception as e:
-        print(f"[API] Delete user error: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-# ============================================================
-# ADMIN PANEL (REAL ENDPOINTS)
-# ============================================================
-
-@app.get("/v1/admin/users")
-async def admin_list_users(
-    search: str = "",
-    limit: int = 5,
-    offset: int = 0,
-    ref: dict = Depends(validate_architect)
-):
-    """List users with search and pagination (admin only)"""
-    if not db_pool:
-        raise HTTPException(status_code=404)
-    
-    async with db_pool.acquire() as conn:
-        if search:
-            users = await conn.fetch("""
-                SELECT u.id, u.email, u.name, u.role, u.is_active, u.email_verified,
-                       u.created_at, u.last_login_at,
-                       o.id as org_id, o.name as org_name, o.slug, o.tier, o.profile_data,
-                       o.is_banned as org_suspended
-                FROM users u
-                JOIN organizations o ON u.organization_id = o.id
-                WHERE LOWER(u.email) LIKE $1 OR LOWER(u.name) LIKE $1
-                ORDER BY u.created_at DESC
-                LIMIT $2 OFFSET $3
-            """, f"%{search.lower()}%", limit, offset)
-        else:
-            users = await conn.fetch("""
-                SELECT u.id, u.email, u.name, u.role, u.is_active, u.email_verified,
-                       u.created_at, u.last_login_at,
-                       o.id as org_id, o.name as org_name, o.slug, o.tier, o.profile_data,
-                       o.is_banned as org_suspended
-                FROM users u
-                JOIN organizations o ON u.organization_id = o.id
-                ORDER BY u.created_at DESC
-                LIMIT $1 OFFSET $2
-            """, limit, offset)
-        
-        total = await conn.fetchval("SELECT COUNT(*) FROM users")
-        
-        return {
-            "users": [
-                {
-                    "id": str(r['id']),
-                    "email": r['email'],
-                    "name": r['name'],
-                    "role": r['role'],
-                    "is_active": r['is_active'],
-                    "email_verified": r['email_verified'],
-                    "created_at": r['created_at'].isoformat() if r['created_at'] else None,
-                    "last_login": r['last_login_at'].isoformat() if r['last_login_at'] else None,
-                    "org_id": str(r['org_id']),
-                    "org_name": r['org_name'],
-                    "tier": r['tier'],
-                    "suspended": r['org_suspended'] or False,
-                    "profile": json.loads(r['profile_data']) if r['profile_data'] else {}
-                }
-                for r in users
-            ],
-            "total": total,
-            "limit": limit,
-            "offset": offset
-        }
-
-@app.get("/v1/admin/users/{user_id}")
-async def admin_get_user(user_id: str, ref: dict = Depends(validate_architect)):
-    """Get user details (admin only)"""
-    if not db_pool:
-        raise HTTPException(status_code=404)
-    
-    async with db_pool.acquire() as conn:
-        user = await conn.fetchrow("""
-            SELECT u.*, o.name as org_name, o.slug, o.tier, o.profile_data,
-                   o.is_banned as org_suspended, o.stripe_customer_id
-            FROM users u
-            JOIN organizations o ON u.organization_id = o.id
-            WHERE u.id = $1
-        """, user_id)
-        
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
-        
-        return {
-            "id": str(user['id']),
-            "email": user['email'],
-            "name": user['name'],
-            "role": user['role'],
-            "is_active": user['is_active'],
-            "email_verified": user['email_verified'],
-            "created_at": user['created_at'].isoformat() if user['created_at'] else None,
-            "last_login": user['last_login_at'].isoformat() if user['last_login_at'] else None,
-            "org_id": str(user['organization_id']),
-            "org_name": user['org_name'],
-            "tier": user['tier'],
-            "suspended": user['org_suspended'] or False,
-            "profile": json.loads(user['profile_data']) if user['profile_data'] else {},
-            "has_stripe": bool(user['stripe_customer_id'])
-        }
-
-@app.put("/v1/admin/users/{user_id}/tier")
-async def admin_update_tier(
-    user_id: str,
-    tier: str,
-    days: int = 30,
-    ref: dict = Depends(validate_architect)
-):
-    """Update user tier (admin only)"""
-    if not db_pool:
-        raise HTTPException(status_code=404)
-    
-    if tier not in ['open', 'standard', 'critical']:
-        raise HTTPException(status_code=400, detail="Invalid tier")
-    
-    async with db_pool.acquire() as conn:
-        user = await conn.fetchrow("SELECT organization_id FROM users WHERE id = $1", user_id)
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
-        
-        expiry = datetime.now(timezone.utc) + timedelta(days=days) if tier != 'open' else None
-        await conn.execute("""
-            UPDATE organizations 
-            SET tier = $1, subscription_ends_at = $2 
-            WHERE id = $3
-        """, tier, expiry, user['organization_id'])
-        
-        return {"message": f"Tier updated to {tier}", "expires": expiry.isoformat() if expiry else None}
-
-@app.put("/v1/admin/users/{user_id}/suspend")
-async def admin_suspend_user(user_id: str, suspend: bool = True, ref: dict = Depends(validate_architect)):
-    """Suspend or unsuspend user (admin only)"""
-    if not db_pool:
-        raise HTTPException(status_code=404)
-    
-    async with db_pool.acquire() as conn:
-        user = await conn.fetchrow("SELECT organization_id FROM users WHERE id = $1", user_id)
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
-        
-        await conn.execute("UPDATE organizations SET is_banned = $1 WHERE id = $2", suspend, user['organization_id'])
-        await conn.execute("UPDATE users SET is_active = $1 WHERE id = $2", not suspend, user_id)
-        
-        return {"message": f"User {'suspended' if suspend else 'activated'}"}
-
-@app.delete("/v1/admin/users/{user_id}")
-async def admin_delete_user(user_id: str, ref: dict = Depends(validate_architect)):
-    """Delete user and their organization (admin only)"""
-    if not db_pool:
-        raise HTTPException(status_code=404)
-    
-    try:
-        async with db_pool.acquire() as conn:
-            user = await conn.fetchrow("SELECT id, organization_id, email FROM users WHERE id = $1", user_id)
-            if not user:
-                raise HTTPException(status_code=404, detail="User not found")
-            
-            org_id = user['organization_id']
-            
-            async with conn.transaction():
-                await conn.execute("UPDATE organizations SET created_by = NULL WHERE created_by = $1", user_id)
-                await conn.execute("DELETE FROM api_keys WHERE organization_id = $1", org_id)
-                await conn.execute("DELETE FROM audit_log WHERE organization_id = $1", org_id)
-                await conn.execute("DELETE FROM users WHERE id = $1", user_id)
                 await conn.execute("""
                     DELETE FROM organizations WHERE id = $1
                     AND NOT EXISTS (SELECT 1 FROM users WHERE organization_id = $1)
