@@ -3611,7 +3611,7 @@ async function loadAdminData() {
     if (container) container.innerHTML = '<p style="color: var(--text-muted);">Loading...</p>';
     
     try {
-        const res = await fetch(`${API_BASE}/v1/admin/users?search=${encodeURIComponent(search)}&limit=5&offset=${adminOffset}`, {
+        const res = await fetch(`${API_BASE}/v1/docs/admin/users?search=${encodeURIComponent(search)}&limit=5&offset=${adminOffset}`, {
             headers: { 'x-api-key': apiKey }
         });
         
@@ -3722,7 +3722,7 @@ function showTierEditor(userId, currentTier) {
 async function changeTier(userId, tier, days) {
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API_BASE}/v1/admin/users/${userId}/tier?tier=${tier}&days=${days}`, {
+        const res = await fetch(`${API_BASE}/v1/docs/admin/users/${userId}/tier?tier=${tier}&days=${days}`, {
             method: 'PUT',
             headers: { 'x-api-key': apiKey }
         });
@@ -3743,7 +3743,7 @@ async function toggleSuspend(userId, suspend) {
     
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API_BASE}/v1/admin/users/${userId}/suspend?suspend=${suspend}`, {
+        const res = await fetch(`${API_BASE}/v1/docs/admin/users/${userId}/suspend?suspend=${suspend}`, {
             method: 'PUT',
             headers: { 'x-api-key': apiKey }
         });
@@ -3767,7 +3767,7 @@ async function deleteUser(userId, email) {
     
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API_BASE}/v1/admin/users/${userId}`, {
+        const res = await fetch(`${API_BASE}/v1/docs/admin/users/${userId}`, {
             method: 'DELETE',
             headers: { 'x-api-key': apiKey }
         });
