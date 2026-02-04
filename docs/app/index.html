@@ -5416,6 +5416,11 @@ async function handleLogin(btn) {
         authToken = data.token;
         localStorage.setItem('onto_token', authToken);
         
+        // Store API key for Reference panel
+        if (data.api_key) {
+            localStorage.setItem('onto_first_api_key', data.api_key);
+        }
+        
         currentUser = {
             id: data.user_id,
             name: data.name,
