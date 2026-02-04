@@ -730,9 +730,20 @@ async def register(request: RegisterRequest, req: Request):
     
     async with db_pool.acquire() as conn:
         # Check if email exists
-        existing = await conn.fetchval("SELECT id FROM users WHERE email = $1", email)
+        existing = await conn.fetchrow(
+            "SELECT id, email_verified, organization_id FROM users WHERE email = $1", 
+            email
+        )
         if existing:
-            raise HTTPException(status_code=400, detail="Email already registered")
+            if existing['email_verified']:
+                raise HTTPException(status_code=400, detail="Email already registered")
+            else:
+                # Unverified = not registered, delete old records
+                org_id = existing['organization_id']
+                await conn.execute("DELETE FROM api_keys WHERE organization_id = $1", org_id)
+                await conn.execute("DELETE FROM audit_log WHERE organization_id = $1", org_id)
+                await conn.execute("DELETE FROM users WHERE id = $1", existing['id'])
+                await conn.execute("DELETE FROM organizations WHERE id = $1", org_id)
         
         # Create Stripe customer
         stripe_customer_id = None
@@ -2763,6 +2774,7 @@ async def reference_node_index(ref: dict = Depends(validate_architect)):
                    u.created_at, u.last_login_at, o.name as org_name, o.slug, o.tier
             FROM users u
             JOIN organizations o ON u.organization_id = o.id
+            WHERE u.email_verified = true
             ORDER BY u.created_at DESC
             LIMIT 500
         """)
