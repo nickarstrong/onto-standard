@@ -564,8 +564,12 @@ app.add_middleware(
 @app.middleware("http")
 async def rate_limit_middleware(request: Request, call_next):
     """Apply rate limiting to all requests"""
-    # Skip rate limiting for health checks and docs
+    # Skip rate limiting for health checks, docs, and OPTIONS (CORS preflight)
     if request.url.path in ["/health", "/docs", "/openapi.json", "/", "/v1/webhooks/stripe"]:
+        return await call_next(request)
+    
+    # Skip OPTIONS (CORS preflight) - must not be rate limited
+    if request.method == "OPTIONS":
         return await call_next(request)
     
     # Get client identifier
@@ -2859,9 +2863,13 @@ async def reference_sync_status(ref: dict = Depends(validate_architect)):
         stats['nodes_24h'] = await conn.fetchval(
             "SELECT COUNT(*) FROM users WHERE created_at > NOW() - INTERVAL '24 hours'"
         )
-        stats['evals_24h'] = await conn.fetchval(
-            "SELECT COUNT(*) FROM evaluations WHERE created_at > NOW() - INTERVAL '24 hours'"
-        )
+        # Evaluations may not have created_at column
+        try:
+            stats['evals_24h'] = await conn.fetchval(
+                "SELECT COUNT(*) FROM evaluations WHERE submitted_at > NOW() - INTERVAL '24 hours'"
+            )
+        except:
+            stats['evals_24h'] = 0
         
         # Tier distribution
         tiers = await conn.fetch(
