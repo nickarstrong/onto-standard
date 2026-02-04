@@ -363,7 +363,6 @@ a.info-val:hover { color: var(--text); }
 .docs-nav-item { display: block; padding: 6px 10px; border-radius: 4px; color: var(--text-secondary); font-size: 12px; cursor: pointer; transition: .15s; border-left: 2px solid transparent; margin-left: 2px; }
 .docs-nav-item:hover { background: var(--bg-elevated); color: var(--text); }
 .docs-nav-item.active { background: var(--bg-elevated); color: var(--text); font-weight: 500; border-left-color: var(--accent); }
-a.docs-nav-item { text-decoration: none; }
 .docs-content { flex: 1; padding: 16px; max-height: calc(100vh - 200px); overflow-y: auto; max-width: 100%; box-sizing: border-box; }
 .docs-article { display: none; max-width: 100%; overflow-x: hidden; }
 .docs-article.active { display: block; }
@@ -1170,9 +1169,27 @@ result = client.evaluate(output, confidence=0.85)</code></pre>
             </div>
             
             <div class="docs-mobile-nav">
-                <a href="/documentation.html" target="_blank" class="btn btn-secondary" style="width: 100%; text-align: center; text-decoration: none;">
-                    View All Documentation ↗
-                </a>
+                <select class="docs-mobile-select" onchange="showDocFromSelect(this.value)">
+                    <optgroup label="Standard">
+                        <option value="standard" selected>ONTO-ERS</option>
+                    </optgroup>
+                    <optgroup label="Service">
+                        <option value="layers">Layer Specification</option>
+                    </optgroup>
+                    <optgroup label="Compliance">
+                        <option value="regulatory">Regulatory Matrix</option>
+                    </optgroup>
+                    <optgroup label="Governance">
+                        <option value="charter">Foundation Charter</option>
+                        <option value="council">Standards Council</option>
+                    </optgroup>
+                    <optgroup label="Legal">
+                        <option value="license">License</option>
+                        <option value="patent">Patent Policy</option>
+                        <option value="privacy">Privacy Policy</option>
+                        <option value="msa">Service Agreement</option>
+                    </optgroup>
+                </select>
             </div>
             
             <div class="docs-container">
@@ -1182,20 +1199,24 @@ result = client.evaluate(output, confidence=0.85)</code></pre>
                         <div class="docs-nav-item active" onclick="showDoc('standard', this)">ONTO-ERS</div>
                     </div>
                     <div class="docs-nav-section">
-                        <h4>Specifications</h4>
-                        <a class="docs-nav-item" href="/layer-spec.html" target="_blank">Layer Specification ↗</a>
-                        <a class="docs-nav-item" href="/regulatory.html" target="_blank">Regulatory Matrix ↗</a>
+                        <h4>Service</h4>
+                        <div class="docs-nav-item" onclick="showDoc('layers', this)">Layer Specification</div>
+                    </div>
+                    <div class="docs-nav-section">
+                        <h4>Compliance</h4>
+                        <div class="docs-nav-item" onclick="showDoc('regulatory', this)">Regulatory Matrix</div>
                     </div>
                     <div class="docs-nav-section">
                         <h4>Governance</h4>
-                        <a class="docs-nav-item" href="/charter.html" target="_blank">Foundation Charter ↗</a>
-                        <a class="docs-nav-item" href="/council.html" target="_blank">Standards Council ↗</a>
+                        <div class="docs-nav-item" onclick="showDoc('charter', this)">Foundation Charter</div>
+                        <div class="docs-nav-item" onclick="showDoc('council', this)">Standards Council</div>
                     </div>
                     <div class="docs-nav-section">
                         <h4>Legal</h4>
-                        <a class="docs-nav-item" href="/license.html" target="_blank">License ↗</a>
-                        <a class="docs-nav-item" href="/terms.html" target="_blank">Terms of Service ↗</a>
-                        <a class="docs-nav-item" href="/privacy.html" target="_blank">Privacy Policy ↗</a>
+                        <div class="docs-nav-item" onclick="showDoc('license', this)">License</div>
+                        <div class="docs-nav-item" onclick="showDoc('patent', this)">Patent Policy</div>
+                        <div class="docs-nav-item" onclick="showDoc('privacy', this)">Privacy Policy</div>
+                        <div class="docs-nav-item" onclick="showDoc('msa', this)">Service Agreement</div>
                     </div>
                 </div>
                 
@@ -1932,7 +1953,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a hr
 <em>© 2026 ONTO Foundation</em><br />
 <em>Licensed under ONTO Gold Asymmetric AI License</em></p>
 </article>
-
+</article>
                 </div>
             </div>
         </div>
@@ -2288,7 +2309,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a hr
                 <div class="form-section-title">Agreement</div>
                 <div class="agreement-notice">
                     By registering, the organization agrees to the Master Service Agreement including limitation of liability provisions. 
-                    <a href="/terms.html" target="_blank">View Terms of Service ↗</a>
+                    <a href="#" onclick="closeModal('company-modal'); showPage('docs'); setTimeout(() => showDoc('msa'), 100); return false;">View MSA</a>
                 </div>
                 <div class="checkbox-group">
                     <input type="checkbox" id="msa-agree">
@@ -3528,7 +3549,7 @@ async function checkReferenceAccess() {
     if (!apiKey) return false;
     
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/reference-check`, {
+        const res = await fetch(`${API}/v1/docs/reference-check`, {
             headers: { 'x-api-key': apiKey }
         });
         if (res.ok) {
@@ -3563,7 +3584,7 @@ async function loadReferenceData() {
     
     // Load sync status
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/sync-status`, { headers });
+        const res = await fetch(`${API}/v1/docs/sync-status`, { headers });
         if (res.ok) {
             const data = await res.json();
             const m = data.metrics;
@@ -3575,7 +3596,7 @@ async function loadReferenceData() {
     
     // Load nodes
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/node-index`, { headers });
+        const res = await fetch(`${API}/v1/docs/node-index`, { headers });
         if (res.ok) {
             const data = await res.json();
             refNodesData = data.nodes || [];
@@ -3585,7 +3606,7 @@ async function loadReferenceData() {
     
     // Load namespaces
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/namespace-registry`, { headers });
+        const res = await fetch(`${API}/v1/docs/namespace-registry`, { headers });
         if (res.ok) {
             const data = await res.json();
             refNamespacesData = data.namespaces || [];
@@ -3595,7 +3616,7 @@ async function loadReferenceData() {
     
     // Load violations
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/rate-violations`, { headers });
+        const res = await fetch(`${API}/v1/docs/rate-violations`, { headers });
         if (res.ok) {
             const data = await res.json();
             renderRefViolations(data.violations || []);
@@ -3604,7 +3625,7 @@ async function loadReferenceData() {
     
     // Load honeypot
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/trap-log`, { headers });
+        const res = await fetch(`${API}/v1/docs/trap-log`, { headers });
         if (res.ok) {
             const data = await res.json();
             document.getElementById('ref-honeypot').textContent = data.total_in_memory || 0;
@@ -3614,7 +3635,7 @@ async function loadReferenceData() {
     
     // Load broadcast status
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/broadcast-status`, { headers });
+        const res = await fetch(`${API}/v1/docs/broadcast-status`, { headers });
         if (res.ok) {
             const data = await res.json();
             document.getElementById('ref-broadcast-status').innerHTML = `
@@ -3734,7 +3755,7 @@ async function refArchiveNode(nodeId) {
     if (!confirm('Archive this node?')) return;
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/node-index/${nodeId}/archive`, {
+        const res = await fetch(`${API}/v1/docs/node-index/${nodeId}/archive`, {
             method: 'POST',
             headers: { 'x-api-key': apiKey }
         });
@@ -3752,7 +3773,7 @@ async function refArchiveNode(nodeId) {
 async function refRestoreNode(nodeId) {
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/node-index/${nodeId}/restore`, {
+        const res = await fetch(`${API}/v1/docs/node-index/${nodeId}/restore`, {
             method: 'POST',
             headers: { 'x-api-key': apiKey }
         });
@@ -3771,7 +3792,7 @@ async function refFreezeNamespace(nsId) {
     if (!confirm('Freeze this namespace? All API keys will be disabled.')) return;
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/namespace-registry/${nsId}/freeze`, {
+        const res = await fetch(`${API}/v1/docs/namespace-registry/${nsId}/freeze`, {
             method: 'POST',
             headers: { 'x-api-key': apiKey }
         });
@@ -3789,7 +3810,7 @@ async function refFreezeNamespace(nsId) {
 async function refUnfreezeNamespace(nsId) {
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/namespace-registry/${nsId}/unfreeze`, {
+        const res = await fetch(`${API}/v1/docs/namespace-registry/${nsId}/unfreeze`, {
             method: 'POST',
             headers: { 'x-api-key': apiKey }
         });
@@ -3807,7 +3828,7 @@ async function refUnfreezeNamespace(nsId) {
 async function refExportNamespace(nsId) {
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/namespace-export/${nsId}`, {
+        const res = await fetch(`${API}/v1/docs/namespace-export/${nsId}`, {
             headers: { 'x-api-key': apiKey }
         });
         if (res.ok) {
@@ -3831,7 +3852,7 @@ async function refExportNamespace(nsId) {
 async function refBroadcastAction(action) {
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/broadcast-control?action=${action}`, {
+        const res = await fetch(`${API}/v1/docs/broadcast-control?action=${action}`, {
             method: 'POST',
             headers: { 'x-api-key': apiKey }
         });
@@ -3893,41 +3914,4 @@ function drawIndustryChart() {
     let startAngle = -Math.PI / 2;
     data.forEach(d => {
         const sliceAngle = (d.value / total) * 2 * Math.PI;
-        ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        ctx.arc(cx, cy, radius, startAngle, startAngle + sliceAngle);
-        ctx.closePath();
-        ctx.fillStyle = d.color;
-        ctx.fill();
-        startAngle += sliceAngle;
-    });
-    
-    // Legend
-    legend.innerHTML = data.map(d => 
-        `<div class="legend-item">
-            <span class="legend-dot" style="background: ${d.color}"></span>
-            <span>${d.label}</span>
-            <span class="legend-value">${d.value}%</span>
-        </div>`
-    ).join('');
-}
-
-// === INIT ===
-document.addEventListener('DOMContentLoaded', () => {
-    checkWelcomeBanner();
-    updateSignalHash();
-    drawIndustryChart();
-    generateTelemetryBars();
-});
-
-// Check for email verification callback
-const urlParams = new URLSearchParams(window.location.search);
-if (urlParams.get('verified') === 'true') {
-    showVerifySuccess();
-}
-
-// Check reference access on load
-setTimeout(checkReferenceAccess, 1000);
-</script>
-</body>
-</html>
+        ctx.begi

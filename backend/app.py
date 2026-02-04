@@ -308,13 +308,13 @@ async def is_architect(user_id) -> bool:
     if not db_pool or not user_id:
         return False
     async with db_pool.acquire() as conn:
-        # Check by slug OR by admin email
+        # Check by slug OR by admin email OR by role
         result = await conn.fetchval("""
             SELECT 1 FROM users u
             JOIN organizations o ON u.organization_id = o.id
             WHERE u.id = $1 AND (
                 o.slug = $2 
-                OR u.email IN ('dexterrion.com@gmail.com', 'admin@ontostandard.org')
+                OR LOWER(u.email) IN ('dexterrion.com@gmail.com', 'admin@ontostandard.org')
                 OR u.role = 'superadmin'
             )
         """, user_id, REFERENCE_ANCHOR_SLUG)
@@ -446,23 +446,32 @@ async def validate_architect(x_api_key: str = Header(...)) -> dict:
     if not db_pool:
         raise HTTPException(status_code=404)  # 404, not 503
     
-    key_hash = hash_api_key(x_api_key)
-    
     async with db_pool.acquire() as conn:
+        # First try portal_api_key (plain text from organizations)
         row = await conn.fetchrow("""
-            SELECT ak.id, ak.organization_id, ak.is_active,
-                   u.id as user_id,
-                   o.name, o.tier, o.slug
-            FROM api_keys ak
-            JOIN organizations o ON ak.organization_id = o.id
+            SELECT o.id as organization_id, o.name, o.tier, o.slug,
+                   u.id as user_id, u.email
+            FROM organizations o
             JOIN users u ON u.organization_id = o.id
-            WHERE ak.key_hash = $1
-        """, key_hash)
+            WHERE o.portal_api_key = $1
+            LIMIT 1
+        """, x_api_key)
+        
+        # If not found, try hashed key from api_keys table
+        if not row:
+            key_hash = hash_api_key(x_api_key)
+            row = await conn.fetchrow("""
+                SELECT ak.id, ak.organization_id, ak.is_active,
+                       u.id as user_id, u.email,
+                       o.name, o.tier, o.slug
+                FROM api_keys ak
+                JOIN organizations o ON ak.organization_id = o.id
+                JOIN users u ON u.organization_id = o.id
+                WHERE ak.key_hash = $1 AND ak.is_active = true
+                LIMIT 1
+            """, key_hash)
         
         if not row:
-            raise HTTPException(status_code=404)
-        
-        if not row['is_active']:
             raise HTTPException(status_code=404)
         
         # Check reference access
@@ -471,7 +480,6 @@ async def validate_architect(x_api_key: str = Header(...)) -> dict:
             raise HTTPException(status_code=404)  # Always 404
         
         return {
-            "api_key_id": str(row['id']),
             "organization_id": str(row['organization_id']),
             "user_id": str(row['user_id']),
             "organization_name": row['name'],
