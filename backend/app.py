@@ -3158,31 +3158,43 @@ async def cleanup_unverified_users(ref: dict = Depends(validate_architect)):
     if not db_pool:
         raise HTTPException(status_code=404)
     
-    async with db_pool.acquire() as conn:
-        # Get unverified user org_ids
-        unverified = await conn.fetch("""
-            SELECT id, organization_id, email FROM users 
-            WHERE email_verified = false OR email_verified IS NULL
-        """)
-        
-        if not unverified:
-            return {"deleted": 0, "message": "No unverified users found"}
-        
-        org_ids = [r['organization_id'] for r in unverified]
-        user_ids = [r['id'] for r in unverified]
-        emails = [r['email'] for r in unverified]
-        
-        # Delete in order (foreign keys)
-        await conn.execute("DELETE FROM api_keys WHERE organization_id = ANY($1)", org_ids)
-        await conn.execute("DELETE FROM audit_log WHERE organization_id = ANY($1)", org_ids)
-        await conn.execute("DELETE FROM users WHERE id = ANY($1)", user_ids)
-        await conn.execute("DELETE FROM organizations WHERE id = ANY($1)", org_ids)
-        
-        return {
-            "deleted": len(unverified),
-            "emails": emails,
-            "message": f"Cleaned up {len(unverified)} unverified accounts"
-        }
+    try:
+        async with db_pool.acquire() as conn:
+            # Get unverified user org_ids
+            unverified = await conn.fetch("""
+                SELECT u.id, u.organization_id, u.email FROM users u
+                WHERE u.email_verified = false OR u.email_verified IS NULL
+            """)
+            
+            if not unverified:
+                return {"deleted": 0, "message": "No unverified users found"}
+            
+            org_ids = [r['organization_id'] for r in unverified if r['organization_id']]
+            user_ids = [r['id'] for r in unverified]
+            emails = [r['email'] for r in unverified]
+            
+            # Delete in transaction
+            async with conn.transaction():
+                if org_ids:
+                    await conn.execute("DELETE FROM api_keys WHERE organization_id = ANY($1::uuid[])", org_ids)
+                    await conn.execute("DELETE FROM audit_log WHERE organization_id = ANY($1::uuid[])", org_ids)
+                if user_ids:
+                    await conn.execute("DELETE FROM users WHERE id = ANY($1::uuid[])", user_ids)
+                if org_ids:
+                    # Only delete orgs that don't have other users
+                    await conn.execute("""
+                        DELETE FROM organizations WHERE id = ANY($1::uuid[])
+                        AND id NOT IN (SELECT organization_id FROM users WHERE organization_id IS NOT NULL)
+                    """, org_ids)
+            
+            return {
+                "deleted": len(unverified),
+                "emails": emails,
+                "message": f"Cleaned up {len(unverified)} unverified accounts"
+            }
+    except Exception as e:
+        print(f"[API] Cleanup error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/v1/docs/reference-check")
 async def reference_access_check(ref: dict = Depends(validate_architect)):
