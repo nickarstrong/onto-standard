@@ -623,6 +623,74 @@ a.docs-nav-item { text-decoration: none; }
 .admin-detail-section { animation: slideDown 0.2s ease; }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
+/* Signal Panel */
+.signal-panel { background: linear-gradient(135deg, #0a1a0f 0%, #0d2818 50%, #0a1a0f 100%); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 12px; padding: 24px; margin-bottom: 20px; position: relative; overflow: hidden; }
+.signal-panel::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(34, 197, 94, 0.08) 0%, transparent 70%); pointer-events: none; }
+.signal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; position: relative; }
+.signal-title { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; color: var(--text); }
+.signal-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #15803d, #22c55e); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; font-family: 'Times New Roman', serif; font-style: italic; }
+.signal-live { display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(34, 197, 94, 0.15); border-radius: 12px; font-size: 10px; font-weight: 600; color: #22c55e; text-transform: uppercase; letter-spacing: 0.5px; }
+.signal-dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.signal-body { text-align: center; position: relative; }
+.signal-id { font-size: 28px; font-weight: 700; color: #22c55e; font-family: 'JetBrains Mono', monospace; margin-bottom: 16px; text-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
+.signal-entropy-wrap { display: flex; justify-content: center; margin-bottom: 12px; }
+#signal-entropy-canvas { border-radius: 4px; background: rgba(0,0,0,0.3); }
+.signal-hash { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); margin-bottom: 20px; letter-spacing: 1px; }
+.signal-meta { display: flex; justify-content: center; gap: 32px; padding-top: 16px; border-top: 1px solid rgba(34, 197, 94, 0.15); }
+.signal-meta-item { text-align: center; }
+.signal-meta-label { display: block; font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.signal-meta-value { font-size: 13px; font-weight: 500; color: var(--text); font-family: 'JetBrains Mono', monospace; }
+.signal-controls { display: flex; justify-content: center; gap: 8px; margin-top: 20px; }
+.signal-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; font-size: 11px; font-weight: 500; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 6px; color: #22c55e; cursor: pointer; transition: all 0.15s; }
+.signal-btn:hover { background: rgba(34, 197, 94, 0.2); border-color: rgba(34, 197, 94, 0.5); }
+.signal-btn svg { opacity: 0.8; }
+
+/* Accounts Panel */
+.accounts-panel { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.accounts-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+.accounts-title { font-size: 13px; font-weight: 600; color: var(--text); }
+.accounts-search { width: 180px; padding: 6px 10px; font-size: 11px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; color: var(--text); }
+.accounts-search:focus { outline: none; border-color: var(--accent); }
+.accounts-filters { display: flex; gap: 8px; padding: 10px 16px; background: var(--bg-secondary); border-bottom: 1px solid var(--border); }
+.accounts-filter { padding: 5px 8px; font-size: 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; color: var(--text-secondary); cursor: pointer; }
+.accounts-list { max-height: 300px; overflow-y: auto; }
+.accounts-loading { padding: 20px; text-align: center; color: var(--text-muted); font-size: 12px; }
+.account-row { display: flex; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; }
+.account-row:hover { background: var(--bg-secondary); }
+.account-row:last-child { border-bottom: none; }
+.account-email { flex: 1; font-size: 12px; color: var(--text); font-weight: 500; }
+.account-type { width: 70px; font-size: 10px; color: var(--text-muted); }
+.account-plan { width: 60px; }
+.account-plan .tier-badge { font-size: 9px; padding: 2px 6px; }
+.account-status { width: 50px; font-size: 10px; }
+.account-status.active { color: #22c55e; }
+.account-status.paused { color: #f59e0b; }
+.account-date { width: 70px; font-size: 10px; color: var(--text-muted); text-align: right; }
+.account-details { display: none; padding: 12px 16px; background: var(--bg-secondary); border-bottom: 1px solid var(--border); animation: slideDown 0.2s ease; }
+.account-details.open { display: block; }
+.account-details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.account-detail-item { font-size: 11px; }
+.account-detail-label { color: var(--text-muted); margin-bottom: 2px; }
+.account-detail-value { color: var(--text); font-weight: 500; }
+.account-actions { display: flex; gap: 8px; padding-top: 12px; border-top: 1px solid var(--border); }
+.account-action-btn { padding: 5px 10px; font-size: 10px; font-weight: 500; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
+.account-action-btn:hover { background: var(--bg-elevated); color: var(--text); }
+.account-action-btn.danger { color: #ef4444; border-color: rgba(239, 68, 68, 0.3); }
+.account-action-btn.danger:hover { background: rgba(239, 68, 68, 0.1); }
+.account-action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Signal 104b Log */
+.signal-log-panel { position: fixed; bottom: 20px; right: 20px; width: 360px; max-height: 300px; background: var(--bg-elevated); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); z-index: 1000; overflow: hidden; }
+.signal-log-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: rgba(239, 68, 68, 0.1); border-bottom: 1px solid rgba(239, 68, 68, 0.2); font-size: 11px; font-weight: 600; color: #ef4444; }
+.signal-log-close { background: none; border: none; color: #ef4444; font-size: 18px; cursor: pointer; line-height: 1; }
+.signal-log-list { max-height: 240px; overflow-y: auto; }
+.signal-log-item { padding: 8px 14px; border-bottom: 1px solid var(--border); font-size: 10px; }
+.signal-log-item:last-child { border-bottom: none; }
+.signal-log-code { font-weight: 600; color: #ef4444; }
+.signal-log-endpoint { color: var(--text-muted); font-family: monospace; }
+.signal-log-time { color: var(--text-muted); float: right; }
+
 /* Disable text selection globally */
 body, .auth-card, .sidebar, .main-content, .page, .card, .nav-item, button, .admin-user-card { user-select: none; -webkit-user-select: none; }
 input, textarea, .form-input { user-select: text; -webkit-user-select: text; }
@@ -1949,154 +2017,93 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a hr
             </div>
         </div>
 
-        <!-- REFERENCE PAGE (STEALTH ADMIN) -->
+        <!-- REFERENCE PAGE (ADMIN) -->
         <div class="page" id="page-reference">
-            <div class="page-header">
-                <div>
-                    <h1>Admin Panel</h1>
-                    <p class="page-subtitle">User management and system monitoring</p>
-                </div>
-                <button class="btn btn-secondary" onclick="loadAdminData()">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-                    Refresh
-                </button>
-            </div>
-
-            <!-- Search -->
-            <div style="margin-bottom: 20px;">
-                <input type="text" class="form-input" id="admin-search" placeholder="Search by email or name..." 
-                       oninput="debounceAdminSearch()" style="max-width: 400px;">
-            </div>
-
-            <!-- Users List -->
-            <div class="card" style="margin-bottom: 20px;">
-                <h3 style="margin-bottom: 16px;">Recent Users</h3>
-                <div id="admin-users-list">Loading...</div>
-                <div style="margin-top: 16px; display: flex; gap: 8px;">
-                    <button class="btn btn-secondary" onclick="loadMoreUsers(-1)" id="admin-prev-btn" disabled>← Previous</button>
-                    <button class="btn btn-secondary" onclick="loadMoreUsers(1)" id="admin-next-btn">Next →</button>
-                </div>
-            </div>
-
-            <!-- Stats Cards -->
-            <div class="stats-grid" id="ref-stats">
-                <div class="stat-card">
-                    <div class="stat-value" id="ref-total-nodes">-</div>
-                    <div class="stat-label">Total Nodes</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="ref-active-nodes">-</div>
-                    <div class="stat-label">Active Nodes</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="ref-namespaces">-</div>
-                    <div class="stat-label">Namespaces</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="ref-honeypot">-</div>
-                    <div class="stat-label">Trap Hits</div>
-                </div>
-            </div>
-
-            <!-- Tabs -->
-            <div class="ref-tabs">
-                <button class="ref-tab active" onclick="showRefTab('nodes', this)">Nodes</button>
-                <button class="ref-tab" onclick="showRefTab('namespaces', this)">Namespaces</button>
-                <button class="ref-tab" onclick="showRefTab('violations', this)">Violations</button>
-                <button class="ref-tab" onclick="showRefTab('honeypot', this)">Trap Log</button>
-                <button class="ref-tab" onclick="showRefTab('broadcast', this)">Broadcast</button>
-            </div>
-
-            <!-- Nodes Tab -->
-            <div class="ref-content active" id="ref-tab-nodes">
-                <div class="table-header">
-                    <input type="text" class="form-input" placeholder="Search nodes..." id="ref-search-nodes" oninput="filterRefNodes()" style="max-width: 300px;">
-                </div>
-                <div class="table-wrap">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Email</th>
-                                <th>Name</th>
-                                <th>Org</th>
-                                <th>Tier</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ref-nodes-tbody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Namespaces Tab -->
-            <div class="ref-content" id="ref-tab-namespaces">
-                <div class="table-wrap">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Slug</th>
-                                <th>Tier</th>
-                                <th>Nodes</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ref-namespaces-tbody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Violations Tab -->
-            <div class="ref-content" id="ref-tab-violations">
-                <div class="table-wrap">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Time</th>
-                                <th>Org</th>
-                                <th>Endpoint</th>
-                                <th>IP</th>
-                                <th>Count/Limit</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ref-violations-tbody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Honeypot Tab -->
-            <div class="ref-content" id="ref-tab-honeypot">
-                <div class="table-wrap">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Time</th>
-                                <th>IP</th>
-                                <th>Endpoint</th>
-                                <th>Method</th>
-                                <th>User Agent</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ref-honeypot-tbody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Broadcast Tab -->
-            <div class="ref-content" id="ref-tab-broadcast">
-                <div class="card" style="max-width: 500px;">
-                    <h3 style="margin-bottom: 16px;">Signal Broadcast Control</h3>
-                    <div id="ref-broadcast-status" style="margin-bottom: 20px; padding: 12px; background: var(--bg-elevated); border-radius: 8px;">
-                        Loading status...
+            <!-- SIGNAL VISUALIZATION - MAIN ELEMENT -->
+            <div class="signal-panel">
+                <div class="signal-header">
+                    <div class="signal-title">
+                        <span class="signal-icon">σ</span>
+                        <span>Entropy Signal</span>
                     </div>
-                    <div style="display: flex; gap: 12px;">
-                        <button class="btn btn-secondary" onclick="refBroadcastAction('pause')">Pause</button>
-                        <button class="btn btn-secondary" onclick="refBroadcastAction('resume')">Resume</button>
-                        <button class="btn btn-primary" onclick="refBroadcastAction('force')">Force Broadcast</button>
+                    <div class="signal-live" id="signal-live-indicator">
+                        <span class="signal-dot"></span>
+                        <span>LIVE</span>
                     </div>
                 </div>
+                <div class="signal-body">
+                    <div class="signal-id" id="signal-id">σ_—</div>
+                    <div class="signal-entropy-wrap">
+                        <canvas id="signal-entropy-canvas" width="320" height="40"></canvas>
+                    </div>
+                    <div class="signal-hash" id="signal-hash">Loading...</div>
+                    <div class="signal-meta">
+                        <div class="signal-meta-item">
+                            <span class="signal-meta-label">Timestamp</span>
+                            <span class="signal-meta-value" id="signal-timestamp">—</span>
+                        </div>
+                        <div class="signal-meta-item">
+                            <span class="signal-meta-label">Next broadcast</span>
+                            <span class="signal-meta-value" id="signal-countdown">—</span>
+                        </div>
+                        <div class="signal-meta-item">
+                            <span class="signal-meta-label">Packet</span>
+                            <span class="signal-meta-value">104 bytes</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="signal-controls">
+                    <button class="signal-btn" onclick="forceSignalBroadcast()">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                        Force
+                    </button>
+                    <button class="signal-btn" onclick="toggleSignalPause()" id="signal-pause-btn">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                        Pause
+                    </button>
+                    <button class="signal-btn" onclick="refreshSignal()">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- ACCOUNTS LIST - COMPACT -->
+            <div class="accounts-panel">
+                <div class="accounts-header">
+                    <span class="accounts-title">Accounts</span>
+                    <input type="text" class="accounts-search" id="accounts-search" placeholder="Search email..." oninput="debounceAccountSearch()">
+                </div>
+                <div class="accounts-filters">
+                    <select class="accounts-filter" id="filter-type" onchange="filterAccounts()">
+                        <option value="">All Types</option>
+                        <option value="individual">Individual</option>
+                        <option value="company">Company</option>
+                    </select>
+                    <select class="accounts-filter" id="filter-status" onchange="filterAccounts()">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="paused">Paused</option>
+                    </select>
+                    <select class="accounts-filter" id="filter-plan" onchange="filterAccounts()">
+                        <option value="">All Plans</option>
+                        <option value="open">Open</option>
+                        <option value="standard">Standard</option>
+                        <option value="critical">Critical</option>
+                    </select>
+                </div>
+                <div class="accounts-list" id="accounts-list">
+                    <div class="accounts-loading">Loading...</div>
+                </div>
+            </div>
+
+            <!-- SIGNAL 104b LOG -->
+            <div class="signal-log-panel" id="signal-log-panel" style="display: none;">
+                <div class="signal-log-header">
+                    <span>Signal 104b — Security Events</span>
+                    <button class="signal-log-close" onclick="closeSignalLog()">×</button>
+                </div>
+                <div class="signal-log-list" id="signal-log-list"></div>
             </div>
         </div>
     </main>
@@ -3580,176 +3587,303 @@ async function showReferencePage(el) {
         }
     }
     showPage('reference', el);
-    loadAdminData();
-    loadReferenceData();
+    initAdminPanel();
 }
 
-// === ADMIN PANEL FUNCTIONS ===
-let adminUsersData = [];
-let adminOffset = 0;
-let adminSearchTimeout = null;
+// === SIGNAL & ACCOUNTS PANEL ===
+let accountsData = [];
+let currentUserId = null; // For self-protection
+let signalData = null;
+let signalInterval = null;
+let accountSearchTimeout = null;
 
-function debounceAdminSearch() {
-    clearTimeout(adminSearchTimeout);
-    adminSearchTimeout = setTimeout(() => {
-        adminOffset = 0;
-        loadAdminData();
-    }, 300);
+// Get current user ID on load
+function initAdminPanel() {
+    currentUserId = currentUser?.id || null;
+    loadSignalData();
+    loadAccountsData();
+    startSignalCountdown();
 }
 
-function loadMoreUsers(direction) {
-    adminOffset = Math.max(0, adminOffset + (direction * 5));
-    loadAdminData();
-}
-
-async function loadAdminData() {
+// === SIGNAL FUNCTIONS ===
+async function loadSignalData() {
     const apiKey = localStorage.getItem('onto_first_api_key');
     if (!apiKey) return;
     
-    const search = document.getElementById('admin-search')?.value || '';
-    const container = document.getElementById('admin-users-list');
-    if (container) container.innerHTML = '<p style="color: var(--text-muted);">Loading...</p>';
-    
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/admin/users?search=${encodeURIComponent(search)}&limit=5&offset=${adminOffset}`, {
+        const res = await fetch(`${API_BASE}/v1/signal/latest`, {
             headers: { 'x-api-key': apiKey }
         });
+        if (res.ok) {
+            signalData = await res.json();
+            renderSignal();
+        }
+    } catch (e) {
+        console.error('Signal load error:', e);
+    }
+}
+
+function renderSignal() {
+    if (!signalData) return;
+    
+    document.getElementById('signal-id').textContent = signalData.sigma_id || `σ_${signalData.timestamp}`;
+    document.getElementById('signal-hash').textContent = signalData.entropy_hex || signalData.entropy_hash || '—';
+    document.getElementById('signal-timestamp').textContent = signalData.timestamp_iso?.replace('T', ' ').replace('Z', '') || new Date(signalData.timestamp * 1000).toISOString().replace('T', ' ').slice(0, -5);
+    
+    // Draw entropy visualization
+    drawEntropyCanvas(signalData.entropy_hex || signalData.entropy_hash);
+}
+
+function drawEntropyCanvas(entropyHex) {
+    const canvas = document.getElementById('signal-entropy-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    if (!entropyHex) return;
+    
+    const bytes = entropyHex.match(/.{1,2}/g) || [];
+    const barWidth = canvas.width / Math.min(bytes.length, 32);
+    
+    bytes.slice(0, 32).forEach((byte, i) => {
+        const val = parseInt(byte, 16);
+        const height = (val / 255) * canvas.height;
+        const hue = 140 + (val / 255) * 20; // Green range
+        
+        ctx.fillStyle = `hsla(${hue}, 70%, 50%, 0.8)`;
+        ctx.fillRect(i * barWidth, canvas.height - height, barWidth - 1, height);
+    });
+}
+
+function startSignalCountdown() {
+    if (signalInterval) clearInterval(signalInterval);
+    
+    signalInterval = setInterval(() => {
+        if (!signalData?.timestamp) return;
+        
+        const now = Math.floor(Date.now() / 1000);
+        const nextBroadcast = signalData.timestamp + 300; // 5 min interval
+        const remaining = nextBroadcast - now;
+        
+        if (remaining <= 0) {
+            document.getElementById('signal-countdown').textContent = 'Broadcasting...';
+            loadSignalData();
+        } else {
+            const mins = Math.floor(remaining / 60);
+            const secs = remaining % 60;
+            document.getElementById('signal-countdown').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+    }, 1000);
+}
+
+async function forceSignalBroadcast() {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) return;
+    
+    try {
+        const res = await fetch(`${API_BASE}/v1/signal/broadcast`, {
+            method: 'POST',
+            headers: { 'x-api-key': apiKey }
+        });
+        if (res.ok) {
+            showToast('Signal broadcasted', 'success');
+            loadSignalData();
+        } else {
+            showToast('Broadcast failed', 'error');
+        }
+    } catch (e) {
+        showToast('Broadcast failed', 'error');
+    }
+}
+
+function toggleSignalPause() {
+    // TODO: Implement pause/resume
+    showToast('Pause/Resume not implemented', 'info');
+}
+
+function refreshSignal() {
+    loadSignalData();
+    showToast('Signal refreshed', 'success');
+}
+
+// === ACCOUNTS FUNCTIONS ===
+function debounceAccountSearch() {
+    clearTimeout(accountSearchTimeout);
+    accountSearchTimeout = setTimeout(loadAccountsData, 300);
+}
+
+function filterAccounts() {
+    loadAccountsData();
+}
+
+async function loadAccountsData() {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) return;
+    
+    const search = document.getElementById('accounts-search')?.value || '';
+    const typeFilter = document.getElementById('filter-type')?.value || '';
+    const statusFilter = document.getElementById('filter-status')?.value || '';
+    const planFilter = document.getElementById('filter-plan')?.value || '';
+    
+    const container = document.getElementById('accounts-list');
+    if (container) container.innerHTML = '<div class="accounts-loading">Loading...</div>';
+    
+    try {
+        let url = `${API_BASE}/v1/docs/admin/users?limit=50`;
+        if (search) url += `&search=${encodeURIComponent(search)}`;
+        
+        const res = await fetch(url, { headers: { 'x-api-key': apiKey } });
         
         if (res.ok) {
             const data = await res.json();
-            adminUsersData = data.users || [];
-            renderAdminUsers();
+            accountsData = data.users || [];
             
-            const prevBtn = document.getElementById('admin-prev-btn');
-            const nextBtn = document.getElementById('admin-next-btn');
-            if (prevBtn) prevBtn.disabled = adminOffset === 0;
-            if (nextBtn) nextBtn.disabled = adminUsersData.length < 5;
+            // Client-side filtering
+            let filtered = accountsData;
+            if (typeFilter) {
+                filtered = filtered.filter(u => {
+                    const hasCompany = u.profile?.company_name;
+                    return typeFilter === 'company' ? hasCompany : !hasCompany;
+                });
+            }
+            if (statusFilter) {
+                filtered = filtered.filter(u => {
+                    const isActive = !u.suspended && u.is_active;
+                    return statusFilter === 'active' ? isActive : !isActive;
+                });
+            }
+            if (planFilter) {
+                filtered = filtered.filter(u => u.tier === planFilter);
+            }
+            
+            renderAccounts(filtered);
         }
     } catch (e) {
-        console.error('Admin load error:', e);
-        if (container) container.innerHTML = '<p style="color: var(--text-muted);">Failed to load users</p>';
+        console.error('Accounts load error:', e);
+        if (container) container.innerHTML = '<div class="accounts-loading">Failed to load</div>';
     }
 }
 
-function renderAdminUsers() {
-    const container = document.getElementById('admin-users-list');
+function renderAccounts(accounts) {
+    const container = document.getElementById('accounts-list');
     if (!container) return;
     
-    if (!adminUsersData.length) {
-        container.innerHTML = '<p style="color: var(--text-muted);">No users found</p>';
+    if (!accounts.length) {
+        container.innerHTML = '<div class="accounts-loading">No accounts found</div>';
         return;
     }
     
-    container.innerHTML = adminUsersData.map(u => `
-        <div class="admin-user-card" style="border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px; overflow: hidden;">
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--bg-elevated);">
-                <div>
-                    <div style="font-weight: 600; font-size: 14px;">${u.email}</div>
-                    <div style="font-size: 12px; color: var(--text-muted);">
-                        ${u.name} • Registered: ${u.created_at ? new Date(u.created_at).toLocaleDateString() : 'N/A'}
-                        ${u.suspended ? ' • <span style="color: #ef4444;">Suspended</span>' : ''}
-                        ${!u.email_verified ? ' • <span style="color: #f59e0b;">Unverified</span>' : ''}
+    container.innerHTML = accounts.map(u => {
+        const isSelf = u.id === currentUserId;
+        const hasCompany = u.profile?.company_name;
+        const isActive = !u.suspended && u.is_active !== false;
+        const date = u.created_at ? new Date(u.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '—';
+        
+        return `
+            <div class="account-row" onclick="toggleAccountDetails('${u.id}')">
+                <div class="account-email">${u.email}${isSelf ? ' <span style="color: var(--accent); font-size: 9px;">(you)</span>' : ''}</div>
+                <div class="account-type">${hasCompany ? 'Company' : 'Individual'}</div>
+                <div class="account-plan"><span class="tier-badge tier-${u.tier}">${u.tier}</span></div>
+                <div class="account-status ${isActive ? 'active' : 'paused'}">${isActive ? 'Active' : 'Paused'}</div>
+                <div class="account-date">${date}</div>
+            </div>
+            <div class="account-details" id="details-${u.id}">
+                <div class="account-details-grid">
+                    <div class="account-detail-item">
+                        <div class="account-detail-label">Name</div>
+                        <div class="account-detail-value">${u.name || '—'}</div>
                     </div>
+                    <div class="account-detail-item">
+                        <div class="account-detail-label">Email Verified</div>
+                        <div class="account-detail-value">${u.email_verified ? 'Yes' : 'No'}</div>
+                    </div>
+                    <div class="account-detail-item">
+                        <div class="account-detail-label">Last Login</div>
+                        <div class="account-detail-value">${u.last_login ? new Date(u.last_login).toLocaleString() : 'Never'}</div>
+                    </div>
+                    <div class="account-detail-item">
+                        <div class="account-detail-label">Organization</div>
+                        <div class="account-detail-value">${u.org_name || '—'}</div>
+                    </div>
+                    ${hasCompany ? `
+                    <div class="account-detail-item">
+                        <div class="account-detail-label">Company</div>
+                        <div class="account-detail-value">${u.profile.company_name}</div>
+                    </div>
+                    <div class="account-detail-item">
+                        <div class="account-detail-label">Industry</div>
+                        <div class="account-detail-value">${u.profile.industry || '—'}</div>
+                    </div>
+                    ` : ''}
                 </div>
-                <div style="display: flex; align-items: center; gap: 6px;">
-                    <span class="tier-badge tier-${u.tier}">${u.tier}</span>
-                </div>
-            </div>
-            <div style="padding: 12px 16px; display: flex; flex-wrap: wrap; gap: 8px;">
-                <button class="admin-action-btn" onclick="toggleAdminSection('individual-${u.id}')">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    Individual
-                </button>
-                <button class="admin-action-btn" onclick="toggleAdminSection('company-${u.id}')">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
-                    Company
-                </button>
-                <button class="admin-action-btn" onclick="showTierEditor('${u.id}', '${u.tier}')">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-                    Tier
-                </button>
-                <button class="admin-action-btn" onclick="toggleSuspend('${u.id}', ${!u.suspended})">
-                    ${u.suspended 
-                        ? '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Activate'
-                        : '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Suspend'
-                    }
-                </button>
-                <button class="admin-action-btn admin-delete-btn" onclick="deleteUser('${u.id}', '${u.email}')">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                    Delete
-                </button>
-            </div>
-            <div id="individual-${u.id}" class="admin-detail-section hidden" style="padding: 12px 16px; background: var(--bg-secondary); border-top: 1px solid var(--border);">
-                <h4 style="margin: 0 0 8px; font-size: 13px;">Individual Profile</h4>
-                <div style="font-size: 12px; color: var(--text-secondary);">
-                    <div><strong>Name:</strong> ${u.name}</div>
-                    <div><strong>Email:</strong> ${u.email}</div>
-                    <div><strong>Role:</strong> ${u.role || 'user'}</div>
-                    <div><strong>Last Login:</strong> ${u.last_login ? new Date(u.last_login).toLocaleString() : 'Never'}</div>
+                <div class="account-actions">
+                    <button class="account-action-btn" onclick="event.stopPropagation(); editPlan('${u.id}', '${u.tier}')" ${isSelf ? 'disabled title="Cannot modify own plan"' : ''}>Edit Plan</button>
+                    <button class="account-action-btn" onclick="event.stopPropagation(); toggleAccountStatus('${u.id}', ${isActive})" ${isSelf ? 'disabled title="Cannot pause own account"' : ''}>${isActive ? 'Pause' : 'Activate'}</button>
+                    <button class="account-action-btn danger" onclick="event.stopPropagation(); deleteAccount('${u.id}', '${u.email}')" ${isSelf ? 'disabled title="Cannot delete own account"' : ''}>Delete</button>
                 </div>
             </div>
-            <div id="company-${u.id}" class="admin-detail-section hidden" style="padding: 12px 16px; background: var(--bg-secondary); border-top: 1px solid var(--border);">
-                <h4 style="margin: 0 0 8px; font-size: 13px;">Company Profile</h4>
-                <div style="font-size: 12px; color: var(--text-secondary);">
-                    ${u.profile && u.profile.company_name 
-                        ? `<div><strong>Company:</strong> ${u.profile.company_name}</div>
-                           <div><strong>Industry:</strong> ${u.profile.industry || 'N/A'}</div>
-                           <div><strong>Reg Number:</strong> ${u.profile.reg_number || 'N/A'}</div>
-                           <button class="admin-action-btn admin-delete-btn" style="margin-top: 8px;" onclick="deleteCompany('${u.id}')">Delete Company</button>`
-                        : '<div style="color: var(--text-muted);">No company registered</div>'
-                    }
-                </div>
-            </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
-function toggleAdminSection(sectionId) {
-    const section = document.getElementById(sectionId);
-    if (section) section.classList.toggle('hidden');
+function toggleAccountDetails(id) {
+    const details = document.getElementById(`details-${id}`);
+    if (details) {
+        const isOpen = details.classList.contains('open');
+        // Close all others
+        document.querySelectorAll('.account-details').forEach(d => d.classList.remove('open'));
+        if (!isOpen) details.classList.add('open');
+    }
 }
 
-function showTierEditor(userId, currentTier) {
-    const tier = prompt('Select tier:\\n1. open\\n2. standard\\n3. critical\\n\\nEnter tier name:', currentTier);
-    if (!tier || !['open', 'standard', 'critical'].includes(tier.toLowerCase())) {
-        if (tier) showToast('Invalid tier. Use: open, standard, critical', 'error');
+async function editPlan(userId, currentTier) {
+    if (userId === currentUserId) {
+        showSignal104b('self_action_attempt', '/admin/users/tier');
         return;
     }
-    const days = prompt('Duration in days (default 30):', '30');
-    changeTier(userId, tier.toLowerCase(), parseInt(days) || 30);
-}
-
-async function changeTier(userId, tier, days) {
+    
+    const tier = prompt('Select tier: open, standard, critical', currentTier);
+    if (!tier || !['open', 'standard', 'critical'].includes(tier.toLowerCase())) {
+        if (tier) showToast('Invalid tier', 'error');
+        return;
+    }
+    const days = prompt('Duration (days):', '30');
+    
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/admin/users/${userId}/tier?tier=${tier}&days=${days}`, {
+        const res = await fetch(`${API_BASE}/v1/docs/admin/users/${userId}/tier?tier=${tier.toLowerCase()}&days=${days || 30}`, {
             method: 'PUT',
             headers: { 'x-api-key': apiKey }
         });
         if (res.ok) {
-            showToast(`Tier updated to ${tier} for ${days} days`, 'success');
-            loadAdminData();
+            showToast(`Plan updated to ${tier}`, 'success');
+            loadAccountsData();
         } else {
-            const data = await res.json();
-            showToast(data.detail || 'Update failed', 'error');
+            showToast('Update failed', 'error');
         }
     } catch (e) {
         showToast('Update failed', 'error');
     }
 }
 
-async function toggleSuspend(userId, suspend) {
-    if (!confirm(`${suspend ? 'Suspend' : 'Activate'} this user?`)) return;
+async function toggleAccountStatus(userId, isCurrentlyActive) {
+    if (userId === currentUserId) {
+        showSignal104b('self_action_attempt', '/admin/users/suspend');
+        return;
+    }
+    
+    const action = isCurrentlyActive ? 'pause' : 'activate';
+    if (!confirm(`${action.charAt(0).toUpperCase() + action.slice(1)} this account?`)) return;
     
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/admin/users/${userId}/suspend?suspend=${suspend}`, {
+        const res = await fetch(`${API_BASE}/v1/docs/admin/users/${userId}/suspend?suspend=${isCurrentlyActive}`, {
             method: 'PUT',
             headers: { 'x-api-key': apiKey }
         });
         if (res.ok) {
-            showToast(`User ${suspend ? 'suspended' : 'activated'}`, 'success');
-            loadAdminData();
+            showToast(`Account ${action}d`, 'success');
+            loadAccountsData();
         } else {
             showToast('Action failed', 'error');
         }
@@ -3758,9 +3892,13 @@ async function toggleSuspend(userId, suspend) {
     }
 }
 
-async function deleteUser(userId, email) {
-    if (!confirm(`⚠️ DELETE user ${email}?\\n\\nThis will permanently remove:\\n• User account\\n• Organization\\n• All API keys\\n• Audit history\\n\\nThis cannot be undone!`)) return;
-    if (prompt(`Type "${email}" to confirm deletion:`) !== email) {
+async function deleteAccount(userId, email) {
+    if (userId === currentUserId) {
+        showSignal104b('self_action_attempt', '/admin/users/delete');
+        return;
+    }
+    
+    if (prompt(`Type the email to confirm deletion:\n${email}`) !== email) {
         showToast('Deletion cancelled', 'info');
         return;
     }
@@ -3772,8 +3910,8 @@ async function deleteUser(userId, email) {
             headers: { 'x-api-key': apiKey }
         });
         if (res.ok) {
-            showToast('User deleted', 'success');
-            loadAdminData();
+            showToast('Account deleted', 'success');
+            loadAccountsData();
         } else {
             const data = await res.json();
             showToast(data.detail || 'Delete failed', 'error');
@@ -3783,88 +3921,35 @@ async function deleteUser(userId, email) {
     }
 }
 
-async function deleteCompany(userId) {
-    if (!confirm('Delete company profile from this user?')) return;
-    // TODO: Implement company deletion endpoint
-    showToast('Company deletion not yet implemented', 'info');
+// === SIGNAL 104b ===
+function showSignal104b(action, endpoint) {
+    showToast('Action rejected. Signal: 104b', 'error');
+    
+    // Show log panel
+    const panel = document.getElementById('signal-log-panel');
+    if (panel) panel.style.display = 'block';
+    
+    const list = document.getElementById('signal-log-list');
+    if (list) {
+        const item = document.createElement('div');
+        item.className = 'signal-log-item';
+        item.innerHTML = `
+            <span class="signal-log-code">104b</span>
+            <span class="signal-log-endpoint">${endpoint}</span>
+            <span class="signal-log-time">${new Date().toLocaleTimeString()}</span>
+            <div style="margin-top: 4px; color: var(--text-muted);">${action.replace(/_/g, ' ')}</div>
+        `;
+        list.insertBefore(item, list.firstChild);
+    }
+}
+
+function closeSignalLog() {
+    const panel = document.getElementById('signal-log-panel');
+    if (panel) panel.style.display = 'none';
 }
 
 async function loadReferenceData() {
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    if (!apiKey) return;
-    
-    const headers = { 'x-api-key': apiKey };
-    
-    // Load sync status
-    try {
-        const res = await fetch(`${API_BASE}/v1/docs/sync-status`, { headers });
-        if (res.ok) {
-            const data = await res.json();
-            const m = data.metrics;
-            document.getElementById('ref-total-nodes').textContent = m.total_nodes || 0;
-            document.getElementById('ref-active-nodes').textContent = m.active_nodes || 0;
-            document.getElementById('ref-namespaces').textContent = m.namespaces || 0;
-        }
-    } catch (e) {}
-    
-    // Load nodes
-    try {
-        const res = await fetch(`${API_BASE}/v1/docs/node-index`, { headers });
-        if (res.ok) {
-            const data = await res.json();
-            refNodesData = data.nodes || [];
-            renderRefNodes();
-        }
-    } catch (e) {}
-    
-    // Load namespaces
-    try {
-        const res = await fetch(`${API_BASE}/v1/docs/namespace-registry`, { headers });
-        if (res.ok) {
-            const data = await res.json();
-            refNamespacesData = data.namespaces || [];
-            renderRefNamespaces();
-        }
-    } catch (e) {}
-    
-    // Load violations
-    try {
-        const res = await fetch(`${API_BASE}/v1/docs/rate-violations`, { headers });
-        if (res.ok) {
-            const data = await res.json();
-            renderRefViolations(data.violations || []);
-        }
-    } catch (e) {}
-    
-    // Load honeypot
-    try {
-        const res = await fetch(`${API_BASE}/v1/docs/trap-log`, { headers });
-        if (res.ok) {
-            const data = await res.json();
-            document.getElementById('ref-honeypot').textContent = data.total_in_memory || 0;
-            renderRefHoneypot(data.recent || []);
-        }
-    } catch (e) {}
-    
-    // Load broadcast status
-    try {
-        const res = await fetch(`${API_BASE}/v1/docs/broadcast-status`, { headers });
-        if (res.ok) {
-            const data = await res.json();
-            document.getElementById('ref-broadcast-status').innerHTML = `
-                <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
-                    <span>Status:</span>
-                    <strong>${data.is_paused ? 'PAUSED' : 'ACTIVE'}</strong>
-                </div>
-                <div style="display:flex;justify-content:space-between;">
-                    <span>Last broadcast:</span>
-                    <span>${data.last_broadcast || 'N/A'}</span>
-                </div>
-            `;
-        }
-    } catch (e) {
-        document.getElementById('ref-broadcast-status').textContent = 'Signal server unavailable';
-    }
+    // Legacy - no longer used
 }
 
 function renderRefNodes() {
