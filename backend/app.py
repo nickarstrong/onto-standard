@@ -1,4 +1,4 @@
-"""
+﻿"""
 ONTO API - Unified Backend
 Epistemic Calibration Infrastructure
 
@@ -107,26 +107,26 @@ if STRIPE_SECRET_KEY:
 # See ONTO_PROTOCOL_MASTER.md Section 3
 LAYERS = {
     "open": {
-        "certificates_per_month": 100,  # 100 сертификатов в месяц
-        "signal_delay_hours": 1,        # +1 час задержка сигнала
+        "certificates_per_month": 100,  # 100 СЃРµСЂС‚РёС„РёРєР°С‚РѕРІ РІ РјРµСЃСЏС†
+        "signal_delay_hours": 1,        # +1 С‡Р°СЃ Р·Р°РґРµСЂР¶РєР° СЃРёРіРЅР°Р»Р°
         "price": 0,
         "watermark": True,
         "attribution_required": True
     },
     "standard": {
-        "certificates_per_year": 10000,  # 10,000 сертификатов в год
-        "signal_delay_hours": 0,         # Real-time сигнал
-        "price": 15000,                  # $15,000/год
+        "certificates_per_year": 10000,  # 10,000 СЃРµСЂС‚РёС„РёРєР°С‚РѕРІ РІ РіРѕРґ
+        "signal_delay_hours": 0,         # Real-time СЃРёРіРЅР°Р»
+        "price": 15000,                  # $15,000/РіРѕРґ
         "watermark": False,
         "attribution_required": False
     },
     "critical": {
-        "certificates_per_year": -1,     # Unlimited сертификатов
-        "signal_delay_hours": 0,         # Real-time сигнал
-        "price": 100000,                 # $100,000+/год
+        "certificates_per_year": -1,     # Unlimited СЃРµСЂС‚РёС„РёРєР°С‚РѕРІ
+        "signal_delay_hours": 0,         # Real-time СЃРёРіРЅР°Р»
+        "price": 100000,                 # $100,000+/РіРѕРґ
         "watermark": False,
         "attribution_required": False,
-        "audit_trail_months": 24         # 24 месяца хранения audit trail
+        "audit_trail_months": 24         # 24 РјРµСЃСЏС†Р° С…СЂР°РЅРµРЅРёСЏ audit trail
     }
 }
 
@@ -1325,7 +1325,7 @@ async def submit_evaluation(
     async with db_pool.acquire() as conn:
         # Check certificate/evaluation limits based on layer
         if layer == 'open':
-            # OPEN: 100 сертификатов в месяц
+            # OPEN: 100 СЃРµСЂС‚РёС„РёРєР°С‚РѕРІ РІ РјРµСЃСЏС†
             limit = layer_info.get('certificates_per_month', 100)
             count = await conn.fetchval("""
                 SELECT COUNT(*) FROM evaluations
@@ -1339,7 +1339,7 @@ async def submit_evaluation(
                     detail=f"Monthly certificate limit reached ({limit} certs/month). Upgrade to STANDARD layer."
                 )
         elif layer == 'standard':
-            # STANDARD: 10,000 сертификатов в год
+            # STANDARD: 10,000 СЃРµСЂС‚РёС„РёРєР°С‚РѕРІ РІ РіРѕРґ
             limit = layer_info.get('certificates_per_year', 10000)
             count = await conn.fetchval("""
                 SELECT COUNT(*) FROM evaluations
@@ -1999,7 +1999,7 @@ async def get_audit_trail(
 ):
     """
     Get audit trail for organization.
-    CRITICAL layer only — 24 months retention.
+    CRITICAL layer only вЂ” 24 months retention.
     Other layers: 403 Forbidden.
     """
     layer = org.get('tier', 'open')
@@ -2289,11 +2289,11 @@ async def generate_document(doc_type: str, org: dict = Depends(validate_api_key)
 </head>
 <body>
     <div class="no-print" style="background: #22c55e; color: white; padding: 15px; margin: -40px -40px 40px -40px; text-align: center;">
-        <strong>Preview Mode</strong> — Press Ctrl+P (Cmd+P on Mac) to save as PDF
+        <strong>Preview Mode</strong> вЂ” Press Ctrl+P (Cmd+P on Mac) to save as PDF
     </div>
 
     <div class="header">
-        <div class="logo">◆ ONTO</div>
+        <div class="logo">в—† ONTO</div>
         <h1>{doc['name']}</h1>
         <div class="doc-id">Document ID: {doc_id} | Effective Date: {today}</div>
     </div>
@@ -2330,19 +2330,19 @@ async def generate_document(doc_type: str, org: dict = Depends(validate_api_key)
             <th>Annual Fee</th>
         </tr>
         <tr style="background: {'#e8f5e9' if layer == 'open' else '#fff'};">
-            <td><strong>{'✓ ' if layer == 'open' else ''}OPEN</strong></td>
+            <td><strong>{'вњ“ ' if layer == 'open' else ''}OPEN</strong></td>
             <td>+1h delay</td>
             <td>100/month</td>
             <td>$0</td>
         </tr>
         <tr style="background: {'#e3f2fd' if layer == 'standard' else '#fff'};">
-            <td><strong>{'✓ ' if layer == 'standard' else ''}STANDARD</strong></td>
+            <td><strong>{'вњ“ ' if layer == 'standard' else ''}STANDARD</strong></td>
             <td>Real-time</td>
             <td>10,000/year</td>
             <td>$15,000</td>
         </tr>
         <tr style="background: {'#fce4ec' if layer == 'critical' else '#fff'};">
-            <td><strong>{'✓ ' if layer == 'critical' else ''}CRITICAL</strong></td>
+            <td><strong>{'вњ“ ' if layer == 'critical' else ''}CRITICAL</strong></td>
             <td>Real-time</td>
             <td>Unlimited</td>
             <td>$100,000+</td>
@@ -2380,7 +2380,7 @@ async def generate_document(doc_type: str, org: dict = Depends(validate_api_key)
     </div>
 
     <div class="footer">
-        <p>ONTO Standard LLC — AI Epistemic Risk Infrastructure</p>
+        <p>ONTO Standard LLC вЂ” AI Epistemic Risk Infrastructure</p>
         <p>Document generated: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")}</p>
     </div>
 </body>
@@ -2962,3 +2962,4 @@ if __name__ == "__main__":
     
     port = int(os.getenv("PORT", "8080"))
     uvicorn.run(app, host="0.0.0.0", port=port, log_level="info")
+
