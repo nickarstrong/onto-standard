@@ -3946,6 +3946,21 @@ function drawIndustryChart() {
 
 // === INIT ===
 document.addEventListener('DOMContentLoaded', () => {
+    // Check saved session first
+    const savedUser = localStorage.getItem('onto_user');
+    const savedToken = localStorage.getItem('onto_token');
+    
+    if (savedUser && savedToken) {
+        try {
+            currentUser = JSON.parse(savedUser);
+            authToken = savedToken;
+            showDashboard();
+        } catch (e) {
+            localStorage.removeItem('onto_user');
+            localStorage.removeItem('onto_token');
+        }
+    }
+    
     checkWelcomeBanner();
     updateSignalHash();
     drawIndustryChart();
