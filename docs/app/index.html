@@ -6291,18 +6291,41 @@ function regenerateApiKey(btn) {
     btn.disabled = true;
     btn.textContent = 'Regenerating...';
     
-    // Simulate API call
-    setTimeout(() => {
-        const newKey = 'onto_sk_' + Math.random().toString(36).substring(2, 18);
-        document.getElementById('api-key-display').value = newKey;
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) {
+        showToast('No API key found. Please log in again.', 'error');
+        btn.textContent = 'Regenerate Key';
+        btn.disabled = false;
+        return;
+    }
+    
+    fetch(`${API_BASE}/v1/keys/regenerate-portal`, {
+        method: 'POST',
+        headers: { 'x-api-key': apiKey }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to regenerate key');
+        return response.json();
+    })
+    .then(data => {
+        // Update stored key
+        localStorage.setItem('onto_first_api_key', data.api_key);
+        
+        // Update display
+        document.getElementById('api-key-display').value = data.api_key;
         document.getElementById('api-key-display').type = 'text';
         document.getElementById('toggle-key-btn').textContent = 'Hide';
         
-        btn.textContent = 'Regenerate API Key';
+        btn.textContent = 'Regenerate Key';
         btn.disabled = false;
         
         showToast('New API key generated! Copy it now.', 'success');
-    }, 1500);
+    })
+    .catch(error => {
+        btn.textContent = 'Regenerate Key';
+        btn.disabled = false;
+        showToast(error.message || 'Failed to regenerate key', 'error');
+    });
 }
 
 function editProfile() {

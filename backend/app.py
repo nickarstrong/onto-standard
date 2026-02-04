@@ -742,20 +742,23 @@ async def register(request: RegisterRequest, req: Request):
             "email": request.email
         }
         
+        # Create portal API key (stored in plain text for easy retrieval)
+        full_key, prefix = generate_api_key()
+        
         try:
             org_id = await conn.fetchval("""
-                INSERT INTO organizations (name, slug, tier, stripe_customer_id, profile_data)
-                VALUES ($1, $2, 'open', $3, $4)
+                INSERT INTO organizations (name, slug, tier, stripe_customer_id, profile_data, portal_api_key)
+                VALUES ($1, $2, 'open', $3, $4, $5)
                 RETURNING id
-            """, org_name, slug, stripe_customer_id, json.dumps(profile_data))
+            """, org_name, slug, stripe_customer_id, json.dumps(profile_data), full_key)
         except asyncpg.UniqueViolationError:
             # Add random suffix if slug taken
             slug = f"{slug}-{secrets.token_hex(2)}"
             org_id = await conn.fetchval("""
-                INSERT INTO organizations (name, slug, tier, stripe_customer_id, profile_data)
-                VALUES ($1, $2, 'open', $3, $4)
+                INSERT INTO organizations (name, slug, tier, stripe_customer_id, profile_data, portal_api_key)
+                VALUES ($1, $2, 'open', $3, $4, $5)
                 RETURNING id
-            """, org_name, slug, stripe_customer_id, json.dumps(profile_data))
+            """, org_name, slug, stripe_customer_id, json.dumps(profile_data), full_key)
         
         # Create user with verification token
         password_hash = hash_password(request.password)
@@ -773,8 +776,7 @@ async def register(request: RegisterRequest, req: Request):
             UPDATE organizations SET created_by = $1 WHERE id = $2
         """, user_id, org_id)
         
-        # Create API key
-        full_key, prefix = generate_api_key()
+        # Create API key record (hash for security, full_key already generated above)
         key_hash = hash_api_key(full_key)
         await conn.execute("""
             INSERT INTO api_keys (organization_id, name, key_hash, key_prefix, scopes)
@@ -812,7 +814,8 @@ async def login(request: LoginRequest):
     async with db_pool.acquire() as conn:
         # Get user by email first
         row = await conn.fetchrow("""
-            SELECT u.id, u.name, u.organization_id, u.role, u.email_verified, u.password_hash, o.name as org_name, o.tier
+            SELECT u.id, u.name, u.organization_id, u.role, u.email_verified, u.password_hash, 
+                   o.name as org_name, o.tier, o.portal_api_key
             FROM users u
             JOIN organizations o ON u.organization_id = o.id
             WHERE u.email = $1 AND u.is_active = true
@@ -838,15 +841,24 @@ async def login(request: LoginRequest):
         # Generate simple token (in production use proper JWT)
         token = secrets.token_urlsafe(32)
         
-        # Create new API key for this login session
-        full_key = f"ont_{secrets.token_hex(24)}"
-        prefix = full_key[:12]
-        key_hash = hashlib.sha256(full_key.encode()).hexdigest()
-        
-        await conn.execute("""
-            INSERT INTO api_keys (organization_id, name, key_hash, key_prefix, scopes)
-            VALUES ($1, $2, $3, $4, '{"read", "write"}')
-        """, row['organization_id'], f"Session {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M')}", key_hash, prefix)
+        # Get or create portal_api_key (for existing users who don't have one)
+        portal_key = row['portal_api_key']
+        if not portal_key:
+            portal_key, prefix = generate_api_key()
+            await conn.execute("""
+                UPDATE organizations SET portal_api_key = $1 WHERE id = $2
+            """, portal_key, row['organization_id'])
+            # Also update Default Key in api_keys (for API validation to work)
+            key_hash = hash_api_key(portal_key)
+            result = await conn.execute("""
+                UPDATE api_keys SET key_hash = $1, key_prefix = $2 
+                WHERE organization_id = $3 AND name = 'Default Key'
+            """, key_hash, prefix, row['organization_id'])
+            if result == "UPDATE 0":
+                await conn.execute("""
+                    INSERT INTO api_keys (organization_id, name, key_hash, key_prefix, scopes)
+                    VALUES ($1, 'Default Key', $2, $3, '{"read", "write"}')
+                """, row['organization_id'], key_hash, prefix)
         
         return {
             "user_id": str(row['id']),
@@ -856,7 +868,7 @@ async def login(request: LoginRequest):
             "layer": row['tier'],
             "role": row['role'],
             "token": token,
-            "api_key": full_key,
+            "api_key": portal_key,
             "message": "Login successful"
         }
 
@@ -1055,6 +1067,41 @@ async def revoke_api_key(
             raise HTTPException(status_code=404, detail="API key not found")
         
         return {"status": "revoked", "key_id": key_id}
+
+@app.post("/v1/keys/regenerate-portal")
+async def regenerate_portal_key(
+    org: dict = Depends(validate_api_key)
+):
+    """Regenerate the portal API key for an organization"""
+    if not db_pool:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    # Generate new key
+    new_key, prefix = generate_api_key()
+    
+    async with db_pool.acquire() as conn:
+        # Update portal_api_key in organizations
+        await conn.execute("""
+            UPDATE organizations 
+            SET portal_api_key = $1 
+            WHERE id = $2
+        """, new_key, org['organization_id'])
+        
+        # Also update the Default Key in api_keys table (for API validation)
+        key_hash = hash_api_key(new_key)
+        await conn.execute("""
+            UPDATE api_keys 
+            SET key_hash = $1, key_prefix = $2 
+            WHERE organization_id = $3 AND name = 'Default Key'
+        """, key_hash, prefix, org['organization_id'])
+        
+        # Audit log
+        await conn.execute("""
+            INSERT INTO audit_log (organization_id, action, resource_type, details)
+            VALUES ($1, 'regenerate_portal_key', 'api_key', '{"type": "portal"}')
+        """, org['organization_id'])
+    
+    return {"api_key": new_key, "message": "Portal API key regenerated successfully"}
 
 # ============================================================
 # BILLING ENDPOINTS (Stripe)
