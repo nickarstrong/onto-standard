@@ -838,16 +838,6 @@ async def login(request: LoginRequest):
         # Generate simple token (in production use proper JWT)
         token = secrets.token_urlsafe(32)
         
-        # Create new API key for this login session
-        full_key = f"ont_{secrets.token_hex(24)}"
-        prefix = full_key[:12]
-        key_hash = hashlib.sha256(full_key.encode()).hexdigest()
-        
-        await conn.execute("""
-            INSERT INTO api_keys (organization_id, name, key_hash, key_prefix, scopes)
-            VALUES ($1, $2, $3, $4, '{"read", "write"}')
-        """, row['organization_id'], f"Session {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M')}", key_hash, prefix)
-        
         return {
             "user_id": str(row['id']),
             "name": row['name'],
@@ -856,7 +846,6 @@ async def login(request: LoginRequest):
             "layer": row['tier'],
             "role": row['role'],
             "token": token,
-            "api_key": full_key,
             "message": "Login successful"
         }
 
