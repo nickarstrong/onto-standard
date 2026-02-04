@@ -3175,16 +3175,27 @@ async def cleanup_unverified_users(ref: dict = Depends(validate_architect)):
             
             # Delete in transaction
             async with conn.transaction():
+                # First: remove created_by references
+                if user_ids:
+                    await conn.execute(
+                        "UPDATE organizations SET created_by = NULL WHERE created_by = ANY($1::uuid[])", 
+                        user_ids
+                    )
+                
+                # Then: delete related records
                 if org_ids:
                     await conn.execute("DELETE FROM api_keys WHERE organization_id = ANY($1::uuid[])", org_ids)
                     await conn.execute("DELETE FROM audit_log WHERE organization_id = ANY($1::uuid[])", org_ids)
+                
+                # Then: delete users
                 if user_ids:
                     await conn.execute("DELETE FROM users WHERE id = ANY($1::uuid[])", user_ids)
+                
+                # Finally: delete orphan orgs (no users left)
                 if org_ids:
-                    # Only delete orgs that don't have other users
                     await conn.execute("""
                         DELETE FROM organizations WHERE id = ANY($1::uuid[])
-                        AND id NOT IN (SELECT organization_id FROM users WHERE organization_id IS NOT NULL)
+                        AND NOT EXISTS (SELECT 1 FROM users WHERE organization_id = organizations.id)
                     """, org_ids)
             
             return {
