@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Standards Council — ONTO Standard</title>
-    <meta name="description" content="ONTO Standards Council: technical governance, working groups, specification development process, and voting procedures">
+    <meta name="description" content="ONTO Standards Council: technical governance, working groups, specification development process">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --bg: #0a0a0a; --bg-card: #1a1a1a; --bg-elevated: #242424; --border: #333333; --text: #fafafa; --text-secondary: #a0a0a0; --text-muted: #606060; --safe: #15803d; --safe-subtle: rgba(21, 128, 61, 0.15); --blue: #3b82f6; --blue-subtle: rgba(59, 130, 246, 0.15); }
+        :root { --bg: #0a0a0a; --bg-card: #1a1a1a; --bg-elevated: #242424; --border: #333333; --text: #fafafa; --text-secondary: #a0a0a0; --text-muted: #606060; --safe: #15803d; --blue: #3b82f6; --blue-subtle: rgba(59, 130, 246, 0.15); }
         body { font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); line-height: 1.8; }
         .container { max-width: 800px; margin: 0 auto; padding: 80px 24px; }
         .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-muted); text-decoration: none; font-size: 14px; margin-bottom: 32px; }
@@ -25,18 +25,28 @@
         li { margin-bottom: 8px; }
         a { color: var(--safe); }
         hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
-        pre { background: #1e293b; color: #e2e8f0; padding: 20px; border-radius: 8px; overflow-x: auto; margin: 16px 0; font-size: 13px; line-height: 1.5; font-family: 'SF Mono', monospace; }
+        pre { background: #1e293b; color: #e2e8f0; padding: 20px; border-radius: 8px; overflow-x: auto; margin: 16px 0; font-size: 13px; font-family: 'SF Mono', monospace; }
         table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 14px; }
         th { background: var(--bg-elevated); padding: 12px 16px; text-align: left; font-weight: 500; border: 1px solid var(--border); }
         td { padding: 12px 16px; border: 1px solid var(--border); color: var(--text-secondary); }
         footer { text-align: center; margin-top: 80px; padding-top: 40px; border-top: 1px solid var(--border); }
         footer a { color: var(--text-secondary); text-decoration: none; margin: 0 16px; font-size: 14px; }
         footer a:hover { color: var(--safe); }
+        
+        @media (max-width: 768px) {
+            .container { padding: 48px 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 18px; margin-top: 36px; }
+            pre { padding: 14px; font-size: 11px; }
+            table { font-size: 12px; display: block; overflow-x: auto; }
+            th, td { padding: 8px 10px; }
+            footer a { display: block; margin: 12px 0; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <a href="/docs/" class="back-link">← All Documentation</a>
+        <a href="/documentation.html" class="back-link">← All Documentation</a>
         <header>
             <div class="logo"><a href="/">ONTO STANDARD</a></div>
             <h1>ONTO Standards Council</h1>
@@ -53,8 +63,6 @@
         <hr>
 
         <h2>2. Composition</h2>
-        
-        <h3>2.1 Council Members</h3>
         <table>
             <thead><tr><th>Role</th><th>Count</th><th>Selection</th></tr></thead>
             <tbody>
@@ -69,79 +77,56 @@
         <hr>
 
         <h2>3. Working Groups</h2>
-        
-        <h3>3.1 Active Working Groups</h3>
         <table>
             <thead><tr><th>WG</th><th>Focus Area</th><th>Status</th></tr></thead>
             <tbody>
                 <tr><td>WG-CORE</td><td>Core metrics and methodology</td><td>Active</td></tr>
                 <tr><td>WG-BENCH</td><td>Benchmark development</td><td>Active</td></tr>
                 <tr><td>WG-CERT</td><td>Certification processes</td><td>Active</td></tr>
-                <tr><td>WG-FIN</td><td>Financial sector applications</td><td>Proposed</td></tr>
-                <tr><td>WG-MED</td><td>Medical/Healthcare applications</td><td>Proposed</td></tr>
+                <tr><td>WG-FIN</td><td>Financial sector</td><td>Proposed</td></tr>
+                <tr><td>WG-MED</td><td>Medical/Healthcare</td><td>Proposed</td></tr>
             </tbody>
         </table>
-        
-        <h3>3.2 Forming a Working Group</h3>
-        <ol>
-            <li>Submit charter proposal to Council</li>
-            <li>Minimum 5 supporting members</li>
-            <li>Council vote (simple majority)</li>
-            <li>6-month review for continuation</li>
-        </ol>
 
         <hr>
 
-        <h2>4. Specification Development Process</h2>
-        
-        <h3>4.1 Stages</h3>
+        <h2>4. Specification Development</h2>
         <table>
             <thead><tr><th>Stage</th><th>Duration</th><th>Requirements</th></tr></thead>
             <tbody>
                 <tr><td>Draft</td><td>Variable</td><td>WG approval</td></tr>
                 <tr><td>Candidate</td><td>90 days min</td><td>Council approval, public review</td></tr>
-                <tr><td>Recommendation</td><td>—</td><td>2/3 Council vote, Board ratification</td></tr>
+                <tr><td>Recommendation</td><td>—</td><td>2/3 Council vote</td></tr>
                 <tr><td>Standard</td><td>—</td><td>2+ implementations, 12 months stable</td></tr>
             </tbody>
         </table>
         
-        <h3>4.2 Version Numbering</h3>
+        <h3>Version Numbering</h3>
         <pre><code>ONTO-ERS-[MAJOR].[MINOR].[PATCH]
 
-MAJOR: Breaking changes (requires migration)
+MAJOR: Breaking changes
 MINOR: New features (backward compatible)
 PATCH: Bug fixes, clarifications</code></pre>
 
         <hr>
 
         <h2>5. Voting Procedures</h2>
-        
-        <h3>5.1 Quorum</h3>
-        <p>50% of voting members must be present for valid votes.</p>
-        
-        <h3>5.2 Vote Types</h3>
         <table>
             <thead><tr><th>Decision Type</th><th>Threshold</th></tr></thead>
             <tbody>
                 <tr><td>Procedural matters</td><td>Simple majority</td></tr>
                 <tr><td>Specification advancement</td><td>2/3 majority</td></tr>
                 <tr><td>Charter amendments</td><td>3/4 majority</td></tr>
-                <tr><td>Emergency decisions</td><td>Unanimous present</td></tr>
             </tbody>
         </table>
 
         <hr>
 
-        <h2>6. Intellectual Property</h2>
-        <p>All contributions to specifications must be made under the ONTO Contributor Agreement, which grants royalty-free patent licenses for standard-essential patents.</p>
-
-        <hr>
-
-        <h2>7. Meetings</h2>
+        <h2>6. Meetings</h2>
         <ul>
             <li><strong>Council:</strong> Monthly (virtual)</li>
-            <li><strong>Working Groups:</strong> As needed (minimum biweekly)</li>
-            <li><strong>Annual Summit:</strong> In-person, location rotating</li>
+            <li><strong>Working Groups:</strong> Biweekly minimum</li>
+            <li><strong>Annual Summit:</strong> In-person, rotating location</li>
         </ul>
 
         <hr>
@@ -150,9 +135,9 @@ PATCH: Bug fixes, clarifications</code></pre>
         <p>Standards Council: <a href="mailto:council@ontostandard.org">council@ontostandard.org</a></p>
 
         <footer>
-            <a href="/docs/">Documentation</a>
-            <a href="/docs/charter.html">Charter</a>
-            <a href="/docs/regulatory.html">Regulatory</a>
+            <a href="/documentation.html">Documentation</a>
+            <a href="/charter.html">Charter</a>
+            <a href="/regulatory.html">Regulatory</a>
             <a href="/app">Portal</a>
         </footer>
     </div>

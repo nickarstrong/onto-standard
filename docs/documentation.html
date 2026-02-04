@@ -47,6 +47,11 @@
             margin-bottom: 24px;
         }
         
+        .logo a {
+            color: inherit;
+            text-decoration: none;
+        }
+        
         h1 {
             font-size: 42px;
             font-weight: 300;
@@ -144,26 +149,77 @@
         footer a:hover {
             color: var(--safe);
         }
+        
+        /* Mobile */
+        @media (max-width: 768px) {
+            .container {
+                padding: 48px 20px;
+            }
+            
+            h1 {
+                font-size: 32px;
+            }
+            
+            .subtitle {
+                font-size: 16px;
+            }
+            
+            .docs-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .doc-card {
+                padding: 20px;
+            }
+            
+            .doc-card h3 {
+                font-size: 16px;
+            }
+            
+            footer a {
+                display: block;
+                margin: 12px 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 32px 16px;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+            
+            header {
+                margin-bottom: 40px;
+            }
+            
+            .section-title {
+                margin-top: 32px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <div class="logo">ONTO STANDARD</div>
+            <div class="logo"><a href="/">ONTO STANDARD</a></div>
             <h1>Documentation</h1>
             <p class="subtitle">Protocol specifications, governance, and legal information</p>
         </header>
         
         <div class="section-title">Specifications</div>
         <div class="docs-grid">
-            <a href="/docs/layer-spec.html" class="doc-card">
+            <a href="/layer-spec.html" class="doc-card">
                 <span class="doc-badge spec">Specification</span>
                 <h3>Layer Specification</h3>
                 <p>Access tiers, pricing philosophy, and eligibility requirements for Open, Standard, and Critical layers.</p>
                 <div class="doc-meta">ONTO-LAYER-001 • v1.0</div>
             </a>
             
-            <a href="/docs/regulatory.html" class="doc-card">
+            <a href="/regulatory.html" class="doc-card">
                 <span class="doc-badge spec">Compliance</span>
                 <h3>Regulatory Alignment Matrix</h3>
                 <p>Mapping ONTO capabilities to EU AI Act, FDA, NIST AI RMF, and other regulatory frameworks.</p>
@@ -173,14 +229,14 @@
         
         <div class="section-title">Governance</div>
         <div class="docs-grid">
-            <a href="/docs/charter.html" class="doc-card">
+            <a href="/charter.html" class="doc-card">
                 <span class="doc-badge gov">Governance</span>
                 <h3>Foundation Charter</h3>
                 <p>ONTO Foundation mission, governance structure, board composition, and core philosophy.</p>
                 <div class="doc-meta">ONTO-GOV-001 • January 2026</div>
             </a>
             
-            <a href="/docs/council.html" class="doc-card">
+            <a href="/council.html" class="doc-card">
                 <span class="doc-badge gov">Governance</span>
                 <h3>Standards Council</h3>
                 <p>Technical governance, working groups, specification development process, and voting procedures.</p>
@@ -190,7 +246,7 @@
         
         <div class="section-title">Legal</div>
         <div class="docs-grid">
-            <a href="/docs/license.html" class="doc-card">
+            <a href="/license.html" class="doc-card">
                 <span class="doc-badge legal">License</span>
                 <h3>Apache License 2.0</h3>
                 <p>Open source license for ONTO software, SDKs, and reference implementations.</p>
