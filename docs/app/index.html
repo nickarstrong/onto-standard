@@ -1944,10 +1944,15 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a hr
                     <h1>Reference Documentation</h1>
                     <p class="page-subtitle">Internal sync status and node management</p>
                 </div>
-                <button class="btn btn-secondary" onclick="loadReferenceData()">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-                    Refresh
-                </button>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn btn-secondary" onclick="cleanupUnverified()">
+                        Cleanup Unverified
+                    </button>
+                    <button class="btn btn-secondary" onclick="loadReferenceData()">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                        Refresh
+                    </button>
+                </div>
             </div>
 
             <!-- Stats Cards -->
@@ -3553,6 +3558,33 @@ async function showReferencePage(el) {
     }
     showPage('reference', el);
     loadReferenceData();
+}
+
+async function cleanupUnverified() {
+    if (!confirm('Delete all unverified users and their data?')) return;
+    
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) {
+        showToast('No API key', 'error');
+        return;
+    }
+    
+    try {
+        const res = await fetch(`${API_BASE}/v1/docs/cleanup-unverified`, {
+            method: 'POST',
+            headers: { 'x-api-key': apiKey }
+        });
+        const data = await res.json();
+        
+        if (res.ok) {
+            showToast(`Cleaned up ${data.deleted} unverified accounts`, 'success');
+            loadReferenceData();
+        } else {
+            showToast(data.detail || 'Cleanup failed', 'error');
+        }
+    } catch (e) {
+        showToast('Cleanup failed', 'error');
+    }
 }
 
 async function loadReferenceData() {
