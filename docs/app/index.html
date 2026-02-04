@@ -3639,7 +3639,7 @@ function renderRefNodes() {
         <tr>
             <td>${n.ref || n.email}</td>
             <td>${n.label || n.name}</td>
-            <td>${n.org_name || '-'}</td>
+            <td>${n.namespace || n.org_name || '-'}</td>
             <td><span class="tier-badge tier-${n.tier || 'open'}">${n.tier || 'open'}</span></td>
             <td><span class="ref-status ${n.active ? 'active' : 'archived'}">${n.active ? 'Active' : 'Archived'}</span></td>
             <td>
@@ -3657,14 +3657,14 @@ function filterRefNodes() {
     const filtered = refNodesData.filter(n => 
         (n.ref || n.email || '').toLowerCase().includes(search) ||
         (n.label || n.name || '').toLowerCase().includes(search) ||
-        (n.org_name || '').toLowerCase().includes(search)
+        (n.namespace || n.org_name || '').toLowerCase().includes(search)
     );
     const tbody = document.getElementById('ref-nodes-tbody');
     tbody.innerHTML = filtered.map(n => `
         <tr>
             <td>${n.ref || n.email}</td>
             <td>${n.label || n.name}</td>
-            <td>${n.org_name || '-'}</td>
+            <td>${n.namespace || n.org_name || '-'}</td>
             <td><span class="tier-badge tier-${n.tier || 'open'}">${n.tier || 'open'}</span></td>
             <td><span class="ref-status ${n.active ? 'active' : 'archived'}">${n.active ? 'Active' : 'Archived'}</span></td>
             <td>
