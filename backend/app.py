@@ -735,10 +735,12 @@ async def register(request: RegisterRequest, req: Request):
             email
         )
         if existing:
-            if existing['email_verified']:
+            # email_verified can be NULL, false, or true
+            is_verified = existing['email_verified'] is True
+            if is_verified:
                 raise HTTPException(status_code=400, detail="Email already registered")
             else:
-                # Unverified = not registered, delete old records
+                # Unverified (false or NULL) = not registered, delete old records
                 org_id = existing['organization_id']
                 await conn.execute("DELETE FROM api_keys WHERE organization_id = $1", org_id)
                 await conn.execute("DELETE FROM audit_log WHERE organization_id = $1", org_id)
@@ -3140,6 +3142,38 @@ async def reference_namespace_export(ns_id: str, ref: dict = Depends(validate_ar
                 }
                 for a in audit
             ]
+        }
+
+@app.post("/v1/docs/cleanup-unverified")
+async def cleanup_unverified_users(ref: dict = Depends(validate_architect)):
+    """Remove unverified users and their organizations (admin only)"""
+    if not db_pool:
+        raise HTTPException(status_code=404)
+    
+    async with db_pool.acquire() as conn:
+        # Get unverified user org_ids
+        unverified = await conn.fetch("""
+            SELECT id, organization_id, email FROM users 
+            WHERE email_verified = false OR email_verified IS NULL
+        """)
+        
+        if not unverified:
+            return {"deleted": 0, "message": "No unverified users found"}
+        
+        org_ids = [r['organization_id'] for r in unverified]
+        user_ids = [r['id'] for r in unverified]
+        emails = [r['email'] for r in unverified]
+        
+        # Delete in order (foreign keys)
+        await conn.execute("DELETE FROM api_keys WHERE organization_id = ANY($1)", org_ids)
+        await conn.execute("DELETE FROM audit_log WHERE organization_id = ANY($1)", org_ids)
+        await conn.execute("DELETE FROM users WHERE id = ANY($1)", user_ids)
+        await conn.execute("DELETE FROM organizations WHERE id = ANY($1)", org_ids)
+        
+        return {
+            "deleted": len(unverified),
+            "emails": emails,
+            "message": f"Cleaned up {len(unverified)} unverified accounts"
         }
 
 @app.get("/v1/docs/reference-check")
