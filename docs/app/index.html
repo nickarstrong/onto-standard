@@ -2740,13 +2740,24 @@ async function handleLogin(btn) {
             id: data.user_id,
             name: data.name,
             email: email,
-            role: 'admin',
+            role: data.role || 'admin',
             plan: data.layer || 'free',
             organization_id: data.organization_id,
+            organization_name: data.organization_name,
             can_invoice: false,
             company: null  // Company set only after explicit registration
         };
         localStorage.setItem('onto_user', JSON.stringify(currentUser));
+        
+        // Also store in new format for consistency
+        localStorage.setItem('onto_user_id', data.user_id);
+        localStorage.setItem('onto_user_name', data.name || '');
+        localStorage.setItem('onto_user_email', email);
+        localStorage.setItem('onto_org_id', data.organization_id);
+        localStorage.setItem('onto_org_name', data.organization_name || '');
+        localStorage.setItem('onto_layer', data.layer || 'open');
+        localStorage.setItem('onto_role', data.role || 'admin');
+        localStorage.setItem('onto_logged_in', 'true');
         
         setLoading(btn, false);
         showToast('Welcome back!', 'success');
@@ -2903,8 +2914,20 @@ function handleLogout() {
     clearTimeout(sessionWarningTimer);
     currentUser = null;
     authToken = null;
+    
+    // Clear all auth data
     localStorage.removeItem('onto_user');
     localStorage.removeItem('onto_token');
+    localStorage.removeItem('onto_first_api_key');
+    localStorage.removeItem('onto_logged_in');
+    localStorage.removeItem('onto_user_id');
+    localStorage.removeItem('onto_user_name');
+    localStorage.removeItem('onto_user_email');
+    localStorage.removeItem('onto_org_id');
+    localStorage.removeItem('onto_org_name');
+    localStorage.removeItem('onto_layer');
+    localStorage.removeItem('onto_role');
+    
     document.getElementById('auth-screen').style.display = 'flex';
     document.getElementById('dashboard').classList.remove('active');
 }
@@ -4448,11 +4471,28 @@ function drawIndustryChart() {
 
 // === INIT ===
 document.addEventListener('DOMContentLoaded', () => {
-    // Check saved session first
+    // Check saved session - support both old and new format
     const savedUser = localStorage.getItem('onto_user');
     const savedToken = localStorage.getItem('onto_token');
+    const savedApiKey = localStorage.getItem('onto_first_api_key');
+    const savedLoggedIn = localStorage.getItem('onto_logged_in');
     
-    if (savedUser && savedToken) {
+    // New format from verify-email auto-login
+    if (savedLoggedIn === 'true' && savedApiKey) {
+        currentUser = {
+            id: localStorage.getItem('onto_user_id'),
+            name: localStorage.getItem('onto_user_name'),
+            email: localStorage.getItem('onto_user_email'),
+            organization_id: localStorage.getItem('onto_org_id'),
+            organization_name: localStorage.getItem('onto_org_name'),
+            layer: localStorage.getItem('onto_layer'),
+            role: localStorage.getItem('onto_role')
+        };
+        authToken = savedApiKey;
+        showDashboard();
+    }
+    // Old format
+    else if (savedUser && savedToken) {
         try {
             currentUser = JSON.parse(savedUser);
             authToken = savedToken;
