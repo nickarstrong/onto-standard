@@ -592,10 +592,14 @@ app.add_middleware(
 async def rate_limit_middleware(request: Request, call_next):
     """Apply rate limiting to all requests"""
     # Skip rate limiting for health checks, docs, admin, and OPTIONS
-    skip_paths = ["/health", "/docs", "/openapi.json", "/", "/v1/webhooks/stripe", "/ping"]
+    skip_paths = ["/health", "/docs", "/openapi.json", "/", "/v1/webhooks/stripe", "/ping", "/test"]
     
     # Skip admin endpoints (Reference page)
     if request.url.path in skip_paths or request.url.path.startswith("/v1/docs/"):
+        return await call_next(request)
+    
+    # Skip auth endpoints - they have their own rate limits
+    if request.url.path.startswith("/v1/auth/"):
         return await call_next(request)
     
     # Skip signal admin endpoints
@@ -971,10 +975,17 @@ async def register(request: RegisterRequest, req: Request):
         }
 
 @app.post("/v1/auth/login")
-async def login(request: LoginRequest):
+async def login(request: LoginRequest, req: Request):
     """Login and get JWT token"""
     if not db_pool:
         return {"message": "Login disabled (no database)", "status": "demo_mode"}
+    
+    # Rate limit (10 per minute per IP)
+    client_ip = req.client.host if req.client else "unknown"
+    key = f"login:{client_ip}"
+    allowed, _ = rate_limiter.is_allowed(key, 10, 60)
+    if not allowed:
+        raise HTTPException(status_code=429, detail="Too many login attempts. Try again in a minute.")
     
     # Normalize email to lowercase
     email = request.email.lower().strip()
