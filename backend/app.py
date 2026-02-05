@@ -139,10 +139,10 @@ STRIPE_PRICE_IDS = {
 
 # Rate limits per layer (requests per minute)
 RATE_LIMITS = {
-    "open": 30,
-    "standard": 500,
-    "critical": 2000,
-    "public": 10,  # Unauthenticated requests
+    "open": {"limit": 1, "window": 3600},      # 1 req/hour (pricing: Free tier)
+    "standard": {"limit": 7, "window": 60},    # ~10K req/day (pricing: Pro)
+    "critical": {"limit": 10000, "window": 60}, # Unlimited (pricing: Enterprise)
+    "public": {"limit": 1, "window": 60},      # Unauthenticated requests
 }
 
 # ============================================================
@@ -155,23 +155,22 @@ class RateLimiter:
     def __init__(self):
         # {key: [(timestamp, count), ...]}
         self.requests = defaultdict(list)
-        self.window_seconds = 60
     
-    def _cleanup(self, key: str):
+    def _cleanup(self, key: str, window_seconds: int):
         """Remove old entries outside the window"""
-        cutoff = time.time() - self.window_seconds
+        cutoff = time.time() - window_seconds
         self.requests[key] = [
             (ts, count) for ts, count in self.requests[key] 
             if ts > cutoff
         ]
     
-    def is_allowed(self, key: str, limit: int) -> tuple[bool, int]:
+    def is_allowed(self, key: str, limit: int, window: int = 60) -> tuple[bool, int]:
         """
         Check if request is allowed.
         Returns (allowed, remaining_requests)
         """
         now = time.time()
-        self._cleanup(key)
+        self._cleanup(key, window)
         
         # Count requests in current window
         total = sum(count for _, count in self.requests[key])
@@ -185,12 +184,12 @@ class RateLimiter:
         
         return True, max(0, remaining)
     
-    def get_reset_time(self, key: str) -> int:
+    def get_reset_time(self, key: str, window: int = 60) -> int:
         """Get seconds until rate limit resets"""
         if not self.requests[key]:
             return 0
         oldest = min(ts for ts, _ in self.requests[key])
-        reset = int(oldest + self.window_seconds - time.time())
+        reset = int(oldest + window - time.time())
         return max(0, reset)
 
 rate_limiter = RateLimiter()
@@ -521,11 +520,13 @@ async def check_rate_limit(request: Request, layer: str = "public") -> None:
     else:
         key = f"ip:{client_ip}"
     
-    limit = RATE_LIMITS.get(layer, RATE_LIMITS["public"])
-    allowed, remaining = rate_limiter.is_allowed(key, limit)
+    rate_config = RATE_LIMITS.get(layer, RATE_LIMITS["public"])
+    limit = rate_config["limit"]
+    window = rate_config["window"]
+    allowed, remaining = rate_limiter.is_allowed(key, limit, window)
     
     if not allowed:
-        reset_time = rate_limiter.get_reset_time(key)
+        reset_time = rate_limiter.get_reset_time(key, window)
         raise HTTPException(
             status_code=429,
             detail="Rate limit exceeded",
@@ -614,11 +615,13 @@ async def rate_limit_middleware(request: Request, call_next):
     else:
         key = f"ip:{client_ip}"
     
-    limit = RATE_LIMITS.get(layer, RATE_LIMITS["public"])
-    allowed, remaining = rate_limiter.is_allowed(key, limit)
+    rate_config = RATE_LIMITS.get(layer, RATE_LIMITS["public"])
+    limit = rate_config["limit"]
+    window = rate_config["window"]
+    allowed, remaining = rate_limiter.is_allowed(key, limit, window)
     
     if not allowed:
-        reset_time = rate_limiter.get_reset_time(key)
+        reset_time = rate_limiter.get_reset_time(key, window)
         return JSONResponse(
             status_code=429,
             content={"detail": "Rate limit exceeded", "retry_after": reset_time},
@@ -820,10 +823,10 @@ async def get_current_signal(org: dict = Depends(validate_api_key)):
 @app.post("/v1/auth/register")
 async def register(request: RegisterRequest, req: Request):
     """Register a new user with email verification"""
-    # Rate limit
+    # Rate limit (5 per minute)
     client_ip = req.client.host if req.client else "unknown"
     key = f"register:{client_ip}"
-    allowed, _ = rate_limiter.is_allowed(key, 5)
+    allowed, _ = rate_limiter.is_allowed(key, 5, 60)
     if not allowed:
         raise HTTPException(status_code=429, detail="Too many registration attempts")
     
@@ -1154,10 +1157,10 @@ async def send_password_reset_email(email: str, name: str, token: str) -> bool:
 @app.post("/v1/auth/forgot-password")
 async def forgot_password(request: ForgotPasswordRequest, req: Request):
     """Request password reset email"""
-    # Rate limit
+    # Rate limit (3 per minute)
     client_ip = req.client.host if req.client else "unknown"
     key = f"forgot:{client_ip}"
-    allowed, _ = rate_limiter.is_allowed(key, 3)
+    allowed, _ = rate_limiter.is_allowed(key, 3, 60)
     if not allowed:
         raise HTTPException(status_code=429, detail="Too many requests")
     
@@ -2015,13 +2018,15 @@ async def get_organization(org: dict = Depends(validate_api_key)):
             else:
                 profile_data = row['profile_data'] or {}
         
+        rate_config = RATE_LIMITS.get(row['tier'], RATE_LIMITS['open'])
         return {
             "id": str(row['id']),
             "name": row['name'],
             "slug": row['slug'],
             "layer": row['tier'],
             "layer_info": layer_info,
-            "rate_limit": RATE_LIMITS.get(row['tier'], RATE_LIMITS['open']),
+            "rate_limit": rate_config["limit"],
+            "rate_window": rate_config["window"],
             "evaluations_count": row['eval_count'],
             "certificates_count": row['cert_count'],
             "stripe_customer_id": row['stripe_customer_id'],
@@ -2723,18 +2728,20 @@ async def get_rate_limit_info(request: Request):
     else:
         key = f"ip:{client_ip}"
     
-    limit = RATE_LIMITS.get(layer, RATE_LIMITS["public"])
+    rate_config = RATE_LIMITS.get(layer, RATE_LIMITS["public"])
+    limit = rate_config["limit"]
+    window = rate_config["window"]
     
     # Count current usage
-    rate_limiter._cleanup(key)
+    rate_limiter._cleanup(key, window)
     used = sum(count for _, count in rate_limiter.requests.get(key, []))
     
     return {
         "layer": layer,
         "limit": limit,
         "remaining": max(0, limit - used),
-        "reset_in": rate_limiter.get_reset_time(key),
-        "window": "60 seconds"
+        "reset_in": rate_limiter.get_reset_time(key, window),
+        "window_seconds": window
     }
 
 # ============================================================
