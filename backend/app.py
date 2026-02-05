@@ -609,8 +609,15 @@ app.add_middleware(
 @app.middleware("http")
 async def rate_limit_middleware(request: Request, call_next):
     """Apply rate limiting to all requests"""
-    # Skip rate limiting for health checks, docs, and OPTIONS (CORS preflight)
-    if request.url.path in ["/health", "/docs", "/openapi.json", "/", "/v1/webhooks/stripe"]:
+    # Skip rate limiting for health checks, docs, admin, and OPTIONS
+    skip_paths = ["/health", "/docs", "/openapi.json", "/", "/v1/webhooks/stripe", "/ping"]
+    
+    # Skip admin endpoints (Reference page)
+    if request.url.path in skip_paths or request.url.path.startswith("/v1/docs/"):
+        return await call_next(request)
+    
+    # Skip signal admin endpoints
+    if request.url.path.startswith("/v1/signal/admin"):
         return await call_next(request)
     
     # Skip OPTIONS (CORS preflight) - must not be rate limited
