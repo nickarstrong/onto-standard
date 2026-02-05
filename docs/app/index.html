@@ -685,7 +685,9 @@ a.docs-nav-item { text-decoration: none; }
 .signal-metrics { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
 .signal-metric { text-align: center; padding: 8px; background: rgba(0,0,0,0.2); border-radius: 6px; border: 1px solid rgba(34, 197, 94, 0.1); transition: all 0.3s; }
 .signal-metric.updated { border-color: rgba(34, 197, 94, 0.4); background: rgba(34, 197, 94, 0.1); }
-.signal-metric-value { font-size: 14px; font-weight: 600; color: #22c55e; font-family: 'JetBrains Mono', monospace; margin-bottom: 2px; }
+.signal-metric-value { font-size: 14px; font-weight: 600; color: #22c55e; font-family: 'JetBrains Mono', monospace; margin-bottom: 2px; transition: color 0.3s; }
+.signal-metric-value.metric-good { color: #22c55e; }
+.signal-metric-value.metric-warn { color: #f59e0b; }
 .signal-metric-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
 .signal-controls { display: flex; justify-content: flex-end; margin-top: 16px; }
 .signal-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; font-size: 11px; font-weight: 500; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 6px; color: #22c55e; cursor: pointer; transition: all 0.15s; }
@@ -3752,7 +3754,13 @@ async function loadSignalData() {
             updateMetric('signal-uptime', formatUptime(stats.uptime_seconds));
             updateMetric('signal-generated', stats.signals_generated || 0);
             updateMetric('signal-requests', stats.total_requests || 0);
-            updateMetric('signal-errors', (stats.error_rate_percent || 0).toFixed(1) + '%');
+            // Error rate: show only if > 5%, otherwise "OK"
+            const errorRate = stats.error_rate_percent || 0;
+            if (errorRate < 5) {
+                updateMetric('signal-errors', 'OK', 'good');
+            } else {
+                updateMetric('signal-errors', errorRate.toFixed(1) + '%', 'warn');
+            }
             
             // Update pause state
             signalPaused = stats.paused || false;
@@ -3779,10 +3787,16 @@ async function loadSignalData() {
     }
 }
 
-function updateMetric(id, value) {
+function updateMetric(id, value, style) {
     const el = document.getElementById(id);
     if (el) {
         el.textContent = value;
+        
+        // Apply style class (good/warn)
+        el.classList.remove('metric-good', 'metric-warn');
+        if (style === 'good') el.classList.add('metric-good');
+        if (style === 'warn') el.classList.add('metric-warn');
+        
         const metric = el.closest('.signal-metric');
         if (metric) {
             metric.classList.add('updated');
