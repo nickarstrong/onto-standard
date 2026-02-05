@@ -3611,37 +3611,46 @@ async function loadSignalData() {
     if (!apiKey) return;
     
     try {
-        // Get signal data
-        const res = await fetch(`${API_BASE}/v1/signal/latest`, {
-            headers: { 'x-api-key': apiKey }
-        });
+        // Get signal data from public status (works without auth)
+        const res = await fetch(`${API_BASE}/v1/signal/status`);
         if (res.ok) {
-            signalData = await res.json();
+            const data = await res.json();
+            signalData = {
+                timestamp: data.timestamp,
+                sigma_id: data.sigma_id || `σ_${data.timestamp}`,
+                entropy_hex: data.entropy_preview || data.entropy_hex,
+                age_seconds: data.age_seconds,
+                next_update_in: data.next_update_in
+            };
             renderSignal();
         }
         
-        // Get admin status (paused state)
-        const statusRes = await fetch(`${API_BASE}/v1/signal/admin-status`, {
-            headers: { 'x-api-key': apiKey }
-        });
-        if (statusRes.ok) {
-            const status = await statusRes.json();
-            signalPaused = status.paused || false;
-            updatePauseButton();
-            
-            // Update live indicator
-            const indicator = document.getElementById('signal-live-indicator');
-            if (indicator) {
-                if (signalPaused) {
-                    indicator.innerHTML = '<span class="signal-dot" style="background:#f59e0b;animation:none;"></span><span>PAUSED</span>';
-                    indicator.style.background = 'rgba(245, 158, 11, 0.15)';
-                    indicator.style.color = '#f59e0b';
-                } else {
-                    indicator.innerHTML = '<span class="signal-dot"></span><span>LIVE</span>';
-                    indicator.style.background = 'rgba(34, 197, 94, 0.15)';
-                    indicator.style.color = '#22c55e';
+        // Get admin status (paused state) - requires auth
+        try {
+            const statusRes = await fetch(`${API_BASE}/v1/signal/admin-status`, {
+                headers: { 'x-api-key': apiKey }
+            });
+            if (statusRes.ok) {
+                const status = await statusRes.json();
+                signalPaused = status.paused || false;
+                updatePauseButton();
+                
+                // Update live indicator
+                const indicator = document.getElementById('signal-live-indicator');
+                if (indicator) {
+                    if (signalPaused) {
+                        indicator.innerHTML = '<span class="signal-dot" style="background:#f59e0b;animation:none;"></span><span>PAUSED</span>';
+                        indicator.style.background = 'rgba(245, 158, 11, 0.15)';
+                        indicator.style.color = '#f59e0b';
+                    } else {
+                        indicator.innerHTML = '<span class="signal-dot"></span><span>LIVE</span>';
+                        indicator.style.background = 'rgba(34, 197, 94, 0.15)';
+                        indicator.style.color = '#22c55e';
+                    }
                 }
             }
+        } catch (e) {
+            // Admin status not available - ok for non-admins
         }
     } catch (e) {
         console.error('Signal load error:', e);
@@ -3652,11 +3661,55 @@ function renderSignal() {
     if (!signalData) return;
     
     document.getElementById('signal-id').textContent = signalData.sigma_id || `σ_${signalData.timestamp}`;
-    document.getElementById('signal-hash').textContent = signalData.entropy_hex || signalData.entropy_hash || '—';
-    document.getElementById('signal-timestamp').textContent = signalData.timestamp_iso?.replace('T', ' ').replace('Z', '') || new Date(signalData.timestamp * 1000).toISOString().replace('T', ' ').slice(0, -5);
+    
+    // Start animated hash
+    startHashAnimation(signalData.entropy_hex || signalData.entropy_hash || '');
+    
+    // Timestamp
+    if (signalData.timestamp) {
+        const date = new Date(signalData.timestamp * 1000);
+        document.getElementById('signal-timestamp').textContent = date.toLocaleTimeString();
+    }
     
     // Draw entropy visualization
     drawEntropyCanvas(signalData.entropy_hex || signalData.entropy_hash);
+    
+    // Update countdown with fresh data
+    startSignalCountdown();
+}
+
+let hashAnimationInterval = null;
+
+function startHashAnimation(baseHash) {
+    const hashEl = document.getElementById('signal-hash');
+    if (!hashEl || !baseHash) return;
+    
+    // Stop previous animation
+    if (hashAnimationInterval) clearInterval(hashAnimationInterval);
+    
+    const chars = '0123456789abcdef';
+    const hashArray = baseHash.split('');
+    let frame = 0;
+    
+    hashAnimationInterval = setInterval(() => {
+        frame++;
+        
+        // Animate 2-3 random positions
+        const display = hashArray.map((char, i) => {
+            // Every 10 frames, "glitch" a few characters
+            if (frame % 3 === 0 && Math.random() > 0.85) {
+                return `<span style="color:#22c55e;text-shadow:0 0 8px #22c55e;">${chars[Math.floor(Math.random() * 16)]}</span>`;
+            }
+            return char;
+        }).join('');
+        
+        hashEl.innerHTML = display;
+        
+        // Every 30 frames, reset to real hash briefly
+        if (frame % 30 === 0) {
+            hashEl.textContent = baseHash;
+        }
+    }, 100);
 }
 
 function drawEntropyCanvas(entropyHex) {
@@ -3683,16 +3736,15 @@ function drawEntropyCanvas(entropyHex) {
 function startSignalCountdown() {
     if (signalInterval) clearInterval(signalInterval);
     
+    let remaining = signalData?.next_update_in || 300;
+    
     signalInterval = setInterval(() => {
-        if (!signalData?.timestamp) return;
-        
-        const now = Math.floor(Date.now() / 1000);
-        const nextBroadcast = signalData.timestamp + 300; // 5 min interval
-        const remaining = nextBroadcast - now;
+        remaining--;
         
         if (remaining <= 0) {
             document.getElementById('signal-countdown').textContent = 'Broadcasting...';
             loadSignalData();
+            remaining = 300;
         } else {
             const mins = Math.floor(remaining / 60);
             const secs = remaining % 60;
