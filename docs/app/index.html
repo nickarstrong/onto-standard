@@ -1778,6 +1778,7 @@ let sessionTimer = null;
 let sessionWarningTimer = null;
 const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
 const SESSION_WARNING = 5 * 60 * 1000; // 5 minutes before timeout
+let pendingVerificationEmail = "";
 
 // === i18n STRINGS (preparation) ===
 const STRINGS = {
@@ -2032,7 +2033,6 @@ async function handleLogin(btn) {
     }
 }
 
-let pendingVerificationEmail = '';
 
 async function handleRegister(btn) {
     const name = document.getElementById('reg-name').value;
