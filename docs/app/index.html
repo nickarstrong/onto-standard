@@ -623,28 +623,36 @@ a.docs-nav-item { text-decoration: none; }
 .admin-detail-section { animation: slideDown 0.2s ease; }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Signal Panel */
-.signal-panel { background: linear-gradient(135deg, #0a1a0f 0%, #0d2818 50%, #0a1a0f 100%); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 12px; padding: 24px; margin-bottom: 20px; position: relative; overflow: hidden; }
+/* Signal Panel - Bloomberg Terminal Style */
+.signal-panel { background: linear-gradient(135deg, #0a1a0f 0%, #0d2818 50%, #0a1a0f 100%); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; position: relative; overflow: hidden; }
 .signal-panel::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(34, 197, 94, 0.08) 0%, transparent 70%); pointer-events: none; }
-.signal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; position: relative; }
+.signal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; position: relative; }
 .signal-title { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; color: var(--text); }
 .signal-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #15803d, #22c55e); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; font-family: 'Times New Roman', serif; font-style: italic; }
 .signal-live { display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(34, 197, 94, 0.15); border-radius: 12px; font-size: 10px; font-weight: 600; color: #22c55e; text-transform: uppercase; letter-spacing: 0.5px; }
 .signal-dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-.signal-body { text-align: center; position: relative; }
-.signal-id { font-size: 28px; font-weight: 700; color: #22c55e; font-family: 'JetBrains Mono', monospace; margin-bottom: 16px; text-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
-.signal-entropy-wrap { display: flex; justify-content: center; margin-bottom: 12px; }
-#signal-entropy-canvas { border-radius: 4px; background: rgba(0,0,0,0.3); }
-.signal-hash { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); margin-bottom: 20px; letter-spacing: 1px; }
-.signal-meta { display: flex; justify-content: center; gap: 32px; padding-top: 16px; border-top: 1px solid rgba(34, 197, 94, 0.15); }
-.signal-meta-item { text-align: center; }
-.signal-meta-label { display: block; font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-.signal-meta-value { font-size: 13px; font-weight: 500; color: var(--text); font-family: 'JetBrains Mono', monospace; }
-.signal-controls { display: flex; justify-content: center; gap: 8px; margin-top: 20px; }
+.signal-body { position: relative; }
+.signal-main-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid rgba(34, 197, 94, 0.15); }
+.signal-id-block { flex: 1; }
+.signal-id { font-size: 24px; font-weight: 700; color: #22c55e; font-family: 'JetBrains Mono', monospace; margin-bottom: 6px; text-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
+.signal-hash { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); letter-spacing: 0.5px; word-break: break-all; max-width: 400px; }
+.signal-countdown-block { text-align: right; }
+.signal-countdown-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+.signal-countdown-value { font-size: 28px; font-weight: 700; color: #22c55e; font-family: 'JetBrains Mono', monospace; }
+.signal-metrics { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+.signal-metric { text-align: center; padding: 8px; background: rgba(0,0,0,0.2); border-radius: 6px; border: 1px solid rgba(34, 197, 94, 0.1); }
+.signal-metric-value { font-size: 14px; font-weight: 600; color: #22c55e; font-family: 'JetBrains Mono', monospace; margin-bottom: 2px; }
+.signal-metric-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.signal-controls { display: flex; justify-content: flex-end; margin-top: 16px; }
 .signal-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; font-size: 11px; font-weight: 500; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 6px; color: #22c55e; cursor: pointer; transition: all 0.15s; }
 .signal-btn:hover { background: rgba(34, 197, 94, 0.2); border-color: rgba(34, 197, 94, 0.5); }
 .signal-btn svg { opacity: 0.8; }
+@media (max-width: 768px) {
+    .signal-metrics { grid-template-columns: repeat(3, 1fr); }
+    .signal-main-row { flex-direction: column; gap: 16px; }
+    .signal-countdown-block { text-align: left; }
+}
 
 /* Accounts Panel */
 .accounts-panel { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
@@ -2032,35 +2040,44 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a hr
                     </div>
                 </div>
                 <div class="signal-body">
-                    <div class="signal-id" id="signal-id">σ_—</div>
-                    <div class="signal-entropy-wrap">
-                        <canvas id="signal-entropy-canvas" width="320" height="40"></canvas>
+                    <div class="signal-main-row">
+                        <div class="signal-id-block">
+                            <div class="signal-id" id="signal-id">σ_—</div>
+                            <div class="signal-hash" id="signal-hash">Loading entropy...</div>
+                        </div>
+                        <div class="signal-countdown-block">
+                            <div class="signal-countdown-label">NEXT</div>
+                            <div class="signal-countdown-value" id="signal-countdown">—</div>
+                        </div>
                     </div>
-                    <div class="signal-hash" id="signal-hash">Loading...</div>
-                    <div class="signal-meta">
-                        <div class="signal-meta-item">
-                            <span class="signal-meta-label">Timestamp</span>
-                            <span class="signal-meta-value" id="signal-timestamp">—</span>
+                    <div class="signal-metrics">
+                        <div class="signal-metric">
+                            <div class="signal-metric-value" id="signal-uptime">—</div>
+                            <div class="signal-metric-label">UPTIME</div>
                         </div>
-                        <div class="signal-meta-item">
-                            <span class="signal-meta-label">Next broadcast</span>
-                            <span class="signal-meta-value" id="signal-countdown">—</span>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value" id="signal-generated">—</div>
+                            <div class="signal-metric-label">GENERATED</div>
                         </div>
-                        <div class="signal-meta-item">
-                            <span class="signal-meta-label">Packet</span>
-                            <span class="signal-meta-value">104 bytes</span>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value" id="signal-requests">—</div>
+                            <div class="signal-metric-label">REQUESTS</div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value" id="signal-errors">—</div>
+                            <div class="signal-metric-label">ERROR RATE</div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value">104</div>
+                            <div class="signal-metric-label">PACKET</div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value">ED25519</div>
+                            <div class="signal-metric-label">SIGNATURE</div>
                         </div>
                     </div>
                 </div>
                 <div class="signal-controls">
-                    <button class="signal-btn" onclick="forceSignalBroadcast()">
-                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                        Force
-                    </button>
-                    <button class="signal-btn" onclick="toggleSignalPause()" id="signal-pause-btn">
-                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                        Pause
-                    </button>
                     <button class="signal-btn" onclick="refreshSignal()">
                         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
                         Refresh
@@ -3611,78 +3628,69 @@ async function loadSignalData() {
     if (!apiKey) return;
     
     try {
-        // Get signal data from public status (works without auth)
-        const res = await fetch(`${API_BASE}/v1/signal/status`);
-        if (res.ok) {
-            const data = await res.json();
-            signalData = {
-                timestamp: data.timestamp,
-                sigma_id: data.sigma_id || `σ_${data.timestamp}`,
-                entropy_hex: data.entropy_preview || data.entropy_hex,
-                age_seconds: data.age_seconds,
-                next_update_in: data.next_update_in
-            };
-            renderSignal();
-        }
+        // Get admin status with full stats
+        const statusRes = await fetch(`${API_BASE}/v1/signal/admin-status`, {
+            headers: { 'x-api-key': apiKey }
+        });
         
-        // Get admin status (paused state) - requires auth
-        try {
-            const statusRes = await fetch(`${API_BASE}/v1/signal/admin-status`, {
-                headers: { 'x-api-key': apiKey }
-            });
-            if (statusRes.ok) {
-                const status = await statusRes.json();
-                signalPaused = status.paused || false;
-                updatePauseButton();
-                
-                // Update live indicator
-                const indicator = document.getElementById('signal-live-indicator');
-                if (indicator) {
-                    if (signalPaused) {
-                        indicator.innerHTML = '<span class="signal-dot" style="background:#f59e0b;animation:none;"></span><span>PAUSED</span>';
-                        indicator.style.background = 'rgba(245, 158, 11, 0.15)';
-                        indicator.style.color = '#f59e0b';
-                    } else {
-                        indicator.innerHTML = '<span class="signal-dot"></span><span>LIVE</span>';
-                        indicator.style.background = 'rgba(34, 197, 94, 0.15)';
-                        indicator.style.color = '#22c55e';
-                    }
+        if (statusRes.ok) {
+            const stats = await statusRes.json();
+            
+            // Update signal ID and hash from current_signal
+            if (stats.current_signal) {
+                document.getElementById('signal-id').textContent = stats.current_signal.sigma_id || `σ_${stats.current_signal.timestamp}`;
+                startHashAnimation(stats.current_signal.entropy_hex || '');
+            }
+            
+            // Update metrics
+            document.getElementById('signal-uptime').textContent = formatUptime(stats.uptime_seconds);
+            document.getElementById('signal-generated').textContent = stats.signals_generated || 0;
+            document.getElementById('signal-requests').textContent = stats.total_requests || 0;
+            document.getElementById('signal-errors').textContent = (stats.error_rate_percent || 0).toFixed(1) + '%';
+            
+            // Update pause state
+            signalPaused = stats.paused || false;
+            const indicator = document.getElementById('signal-live-indicator');
+            if (indicator) {
+                if (signalPaused) {
+                    indicator.innerHTML = '<span class="signal-dot" style="background:#f59e0b;animation:none;"></span><span>PAUSED</span>';
+                    indicator.style.background = 'rgba(245, 158, 11, 0.15)';
+                    indicator.style.color = '#f59e0b';
+                } else {
+                    indicator.innerHTML = '<span class="signal-dot"></span><span>LIVE</span>';
+                    indicator.style.background = 'rgba(34, 197, 94, 0.15)';
+                    indicator.style.color = '#22c55e';
                 }
             }
-        } catch (e) {
-            // Admin status not available - ok for non-admins
+            
+            // Start countdown
+            signalData = { next_update_in: stats.signal_interval - (stats.uptime_seconds % stats.signal_interval) };
+            startSignalCountdown();
         }
     } catch (e) {
         console.error('Signal load error:', e);
+        document.getElementById('signal-hash').textContent = 'Connection error';
     }
 }
 
-function renderSignal() {
-    if (!signalData) return;
-    
-    document.getElementById('signal-id').textContent = signalData.sigma_id || `σ_${signalData.timestamp}`;
-    
-    // Start animated hash
-    startHashAnimation(signalData.entropy_hex || signalData.entropy_hash || '');
-    
-    // Timestamp
-    if (signalData.timestamp) {
-        const date = new Date(signalData.timestamp * 1000);
-        document.getElementById('signal-timestamp').textContent = date.toLocaleTimeString();
-    }
-    
-    // Draw entropy visualization
-    drawEntropyCanvas(signalData.entropy_hex || signalData.entropy_hash);
-    
-    // Update countdown with fresh data
-    startSignalCountdown();
+function formatUptime(seconds) {
+    if (!seconds) return '—';
+    const hours = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    if (hours > 0) return `${hours}h ${mins}m`;
+    return `${mins}m`;
 }
 
 let hashAnimationInterval = null;
 
 function startHashAnimation(baseHash) {
     const hashEl = document.getElementById('signal-hash');
-    if (!hashEl || !baseHash) return;
+    if (!hashEl) return;
+    
+    if (!baseHash) {
+        hashEl.textContent = 'Waiting for signal...';
+        return;
+    }
     
     // Stop previous animation
     if (hashAnimationInterval) clearInterval(hashAnimationInterval);
@@ -3694,10 +3702,9 @@ function startHashAnimation(baseHash) {
     hashAnimationInterval = setInterval(() => {
         frame++;
         
-        // Animate 2-3 random positions
+        // Animate random positions with green glow
         const display = hashArray.map((char, i) => {
-            // Every 10 frames, "glitch" a few characters
-            if (frame % 3 === 0 && Math.random() > 0.85) {
+            if (frame % 3 === 0 && Math.random() > 0.9) {
                 return `<span style="color:#22c55e;text-shadow:0 0 8px #22c55e;">${chars[Math.floor(Math.random() * 16)]}</span>`;
             }
             return char;
@@ -3705,32 +3712,15 @@ function startHashAnimation(baseHash) {
         
         hashEl.innerHTML = display;
         
-        // Every 30 frames, reset to real hash briefly
-        if (frame % 30 === 0) {
+        // Reset to real hash periodically
+        if (frame % 40 === 0) {
             hashEl.textContent = baseHash;
         }
-    }, 100);
+    }, 80);
 }
 
-function drawEntropyCanvas(entropyHex) {
-    const canvas = document.getElementById('signal-entropy-canvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    if (!entropyHex) return;
-    
-    const bytes = entropyHex.match(/.{1,2}/g) || [];
-    const barWidth = canvas.width / Math.min(bytes.length, 32);
-    
-    bytes.slice(0, 32).forEach((byte, i) => {
-        const val = parseInt(byte, 16);
-        const height = (val / 255) * canvas.height;
-        const hue = 140 + (val / 255) * 20; // Green range
-        
-        ctx.fillStyle = `hsla(${hue}, 70%, 50%, 0.8)`;
-        ctx.fillRect(i * barWidth, canvas.height - height, barWidth - 1, height);
-    });
+function renderSignal() {
+    // Now handled in loadSignalData directly
 }
 
 function startSignalCountdown() {
@@ -3742,7 +3732,7 @@ function startSignalCountdown() {
         remaining--;
         
         if (remaining <= 0) {
-            document.getElementById('signal-countdown').textContent = 'Broadcasting...';
+            document.getElementById('signal-countdown').textContent = '0:00';
             loadSignalData();
             remaining = 300;
         } else {
@@ -3753,61 +3743,7 @@ function startSignalCountdown() {
     }, 1000);
 }
 
-async function forceSignalBroadcast() {
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    if (!apiKey) return;
-    
-    try {
-        const res = await fetch(`${API_BASE}/v1/signal/broadcast`, {
-            method: 'POST',
-            headers: { 'x-api-key': apiKey }
-        });
-        if (res.ok) {
-            showToast('Signal broadcasted', 'success');
-            loadSignalData();
-        } else {
-            showToast('Broadcast failed', 'error');
-        }
-    } catch (e) {
-        showToast('Broadcast failed', 'error');
-    }
-}
-
 let signalPaused = false;
-
-async function toggleSignalPause() {
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    if (!apiKey) return;
-    
-    const endpoint = signalPaused ? 'resume' : 'pause';
-    
-    try {
-        const res = await fetch(`${API_BASE}/v1/signal/${endpoint}`, {
-            method: 'POST',
-            headers: { 'x-api-key': apiKey }
-        });
-        if (res.ok) {
-            const data = await res.json();
-            signalPaused = !signalPaused;
-            updatePauseButton();
-            showToast(`Signal ${signalPaused ? 'paused' : 'resumed'}`, 'success');
-            loadSignalData();
-        } else {
-            showToast('Action failed', 'error');
-        }
-    } catch (e) {
-        showToast('Action failed', 'error');
-    }
-}
-
-function updatePauseButton() {
-    const btn = document.getElementById('signal-pause-btn');
-    if (btn) {
-        btn.innerHTML = signalPaused 
-            ? '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Resume'
-            : '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause';
-    }
-}
 
 function refreshSignal() {
     loadSignalData();
