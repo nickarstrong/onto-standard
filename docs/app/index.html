@@ -420,6 +420,18 @@ a.info-val:hover { color: var(--text); }
 .sidebar.mobile-open { display: flex; flex-direction: column; position: fixed; z-index: 99; left: 0; top: 56px; height: calc(100vh - 56px); height: calc(100dvh - 56px); width: 240px; }
 .mobile-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 98; }
 .mobile-overlay.active { display: block; }
+.auth-menu { position: fixed; top: 0; left: 0; width: 280px; height: 100vh; height: 100dvh; background: var(--bg-card); border-right: 1px solid var(--border); z-index: 200; transform: translateX(-100%); transition: transform 0.25s ease; }
+.auth-menu.open { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,0.4); }
+.auth-menu-header { display: flex; align-items: center; gap: 10px; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.auth-menu-close { background: none; border: none; color: var(--text-muted); cursor: pointer; margin-left: auto; padding: 4px; }
+.auth-menu-nav { padding: 16px 12px; display: flex; flex-direction: column; gap: 2px; }
+.auth-menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: var(--text); text-decoration: none; border-radius: 8px; font-size: 15px; font-weight: 500; transition: background 0.15s; }
+.auth-menu-item:hover { background: var(--bg-elevated); }
+.auth-menu-item svg { width: 20px; height: 20px; flex-shrink: 0; }
+.auth-menu-sub { display: block; padding: 8px 16px 8px 48px; color: var(--text-muted); text-decoration: none; font-size: 13px; border-radius: 6px; transition: all 0.15s; }
+.auth-menu-sub:hover { color: var(--text-secondary); background: var(--bg-elevated); }
+.auth-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 199; display: none; }
+.auth-menu-overlay.visible { display: block; }
 /* === TELEMETRY & DASHBOARD ===
 .page-header-left { flex: 1; }
 @keyframes pulse-signal { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
@@ -792,16 +804,7 @@ body, .sidebar, .main-content, .page, .card, .nav-item, button, .admin-user-card
 
 <!-- AUTH SCREEN -->
 <div class="auth-container" id="auth-screen">
-    <div class="auth-card">
-        <div class="auth-logo">
-            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                <circle cx="18" cy="18" r="17" fill="white"/>
-                <path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/>
-            </svg>
-            <span>ONTO</span>
-        </div>
-        
-        <!-- LOGIN FORM -->
+    <div class="auth-card"><!-- LOGIN FORM -->
         <div id="login-form">
             <h1 class="auth-title">Welcome back</h1>
             <p class="auth-subtitle">Sign in to your account</p>
@@ -1705,7 +1708,7 @@ result = client.evaluate(output, confidence=0.85)</code></pre>
         </div>
         <div class="modal-body">
             <div class="tier-user-info" id="tier-user-info">
-                <div class="tier-user-email">user@example.com</div>
+                <div class="tier-user-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1e6b6d7b6c5e7b667f736e727b307d7173">[email&#160;protected]</a></div>
             </div>
             <div class="tier-options">
                 <label class="tier-option" data-tier="open">
@@ -1751,7 +1754,7 @@ result = client.evaluate(output, confidence=0.85)</code></pre>
     </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // === API CONFIG ===
 const API_BASE = 'https://api.ontostandard.org';
 let authToken = null;
@@ -3849,18 +3852,4 @@ document.addEventListener('DOMContentLoaded', () => {
             showDashboard();
         } catch (e) {
             localStorage.removeItem('onto_user');
-            localStorage.removeItem('onto_token');
-        }
-    }
-    
-    checkWelcomeBanner();
-    updateSignalHash();
-    drawIndustryChart();
-    updateSparkline();
-});
-
-// Check reference access on load
-setTimeout(checkReferenceAccess, 1000);
-</script>
-</body>
-</html>
+            localStorage.removeItem('onto_token'
