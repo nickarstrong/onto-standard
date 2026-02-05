@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONTO — Documentation</title>
+<meta name="description" content="ONTO Protocol documentation: Terms of Service, Privacy Policy, License, Specifications, and Regulatory Framework.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --bg: #0a0a0a;
+    --bg-card: #111111;
+    --bg-elevated: #1a1a1a;
+    --border: #262626;
+    --text: #fafafa;
+    --text-secondary: #a3a3a3;
+    --text-muted: #737373;
+    --accent: #22c55e;
+    --accent-dim: rgba(34, 197, 94, 0.1);
+    --font: 'IBM Plex Sans', -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+}
+
+body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ═══ HEADER ═══ */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background: rgba(10, 10, 10, 0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 100;
+}
+
+.header-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text);
+}
+
+.header-logo svg { width: 28px; height: 28px; }
+.header-logo span { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
+
+.burger-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    padding: 8px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.header-actions a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.15s;
+}
+
+.header-actions a:hover { color: var(--text); background: var(--bg-elevated); }
+.header-actions a.primary { background: var(--accent); color: white; }
+.header-actions a.primary:hover { opacity: 0.9; }
+
+/* ═══ LAYOUT ═══ */
+.layout {
+    display: flex;
+    margin-top: 56px;
+    min-height: calc(100vh - 56px);
+}
+
+/* ═══ SIDEBAR NAV ═══ */
+.sidebar {
+    width: 260px;
+    position: fixed;
+    top: 56px;
+    left: 0;
+    bottom: 0;
+    background: var(--bg);
+    border-right: 1px solid var(--border);
+    padding: 24px 16px;
+    overflow-y: auto;
+    z-index: 50;
+}
+
+.nav-group { margin-bottom: 24px; }
+
+.nav-group-title {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    padding: 0 12px;
+    margin-bottom: 8px;
+}
+
+.nav-item {
+    display: block;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: 6px;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+    cursor: pointer;
+}
+
+.nav-item:hover { color: var(--text); background: var(--bg-elevated); }
+.nav-item.active { color: var(--accent); background: var(--accent-dim); border-left-color: var(--accent); font-weight: 500; }
+
+.nav-sub-item {
+    display: block;
+    padding: 5px 12px 5px 28px;
+    font-size: 12px;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.15s;
+}
+
+.nav-sub-item:hover { color: var(--text-secondary); }
+.nav-sub-item.active { color: var(--accent); }
+
+/* ═══ CONTENT ═══ */
+.content {
+    flex: 1;
+    margin-left: 260px;
+    padding: 48px 64px 120px;
+    max-width: 820px;
+}
+
+/* ═══ DOCUMENT SECTIONS ═══ */
+.doc-section {
+    padding-top: 32px;
+    margin-bottom: 80px;
+}
+
+.doc-section:first-child { padding-top: 0; }
+
+.doc-header {
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+.doc-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    background: var(--accent-dim);
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    font-family: var(--mono);
+}
+
+.doc-title {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+    line-height: 1.2;
+}
+
+.doc-meta {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-family: var(--mono);
+}
+
+.doc-body h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 40px 0 16px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    color: var(--text);
+}
+
+.doc-body h2:first-child { margin-top: 0; border-top: none; padding-top: 0; }
+
+.doc-body h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 28px 0 12px;
+    color: var(--text);
+}
+
+.doc-body p {
+    margin-bottom: 16px;
+    color: var(--text-secondary);
+    font-size: 15px;
+}
+
+.doc-body ul, .doc-body ol {
+    margin: 0 0 16px 24px;
+    color: var(--text-secondary);
+    font-size: 15px;
+}
+
+.doc-body li { margin-bottom: 6px; }
+
+.doc-body strong { color: var(--text); font-weight: 600; }
+
+.doc-body a { color: var(--accent); text-decoration: none; }
+.doc-body a:hover { text-decoration: underline; }
+
+.doc-body code {
+    font-family: var(--mono);
+    font-size: 13px;
+    background: var(--bg-elevated);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--accent);
+}
+
+.doc-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 14px;
+}
+
+.doc-table th {
+    text-align: left;
+    padding: 10px 16px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+.doc-table td {
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+}
+
+.callout {
+    background: var(--bg-elevated);
+    border-left: 3px solid var(--accent);
+    padding: 16px 20px;
+    border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.callout strong { color: var(--text); }
+
+/* ═══ DIVIDER ═══ */
+.section-divider {
+    height: 1px;
+    background: linear-gradient(to right, var(--border), transparent);
+    margin: 0 0 0;
+}
+
+/* ═══ BACK TO TOP ═══ */
+.back-top {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 40px;
+    height: 40px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    z-index: 50;
+}
+
+.back-top:hover { color: var(--text); border-color: var(--accent); }
+.back-top.visible { display: flex; }
+
+/* ═══ MOBILE ═══ */
+@media (max-width: 768px) {
+    .burger-btn { display: block; }
+    
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        width: 280px;
+        background: var(--bg-card);
+    }
+    
+    .sidebar.open { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,0.4); }
+    
+    .sidebar-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 40;
+        display: none;
+    }
+    
+    .sidebar-overlay.visible { display: block; }
+    
+    .content {
+        margin-left: 0;
+        padding: 32px 20px 80px;
+    }
+    
+    .doc-title { font-size: 24px; }
+    .doc-body h2 { font-size: 18px; }
+    .header-actions .desktop-only { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+    <button class="burger-btn" onclick="toggleSidebar()" aria-label="Menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+    </button>
+    <a href="/" class="header-logo">
+        <svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" fill="white"/><text x="18" y="24" text-anchor="middle" font-size="20" font-weight="bold" fill="#0a0a0a">①</text></svg>
+        <span>ONTO</span>
+    </a>
+    <div class="header-actions">
+        <a href="/" class="desktop-only">Home</a>
+        <a href="/app/" class="primary">Open App</a>
+    </div>
+</header>
+
+<!-- SIDEBAR OVERLAY (mobile) -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar" id="sidebar">
+        <div class="nav-group">
+            <div class="nav-group-title">Legal</div>
+            <a class="nav-item active" href="#terms" onclick="scrollToDoc('terms')">Terms of Service</a>
+            <a class="nav-item" href="#privacy" onclick="scrollToDoc('privacy')">Privacy Policy</a>
+            <a class="nav-item" href="#license" onclick="scrollToDoc('license')">License</a>
+        </div>
+        <div class="nav-group">
+            <div class="nav-group-title">Technical</div>
+            <a class="nav-item" href="#specifications" onclick="scrollToDoc('specifications')">Specifications</a>
+            <a class="nav-sub-item" href="#spec-layers" onclick="scrollToDoc('spec-layers')">Layer Architecture</a>
+            <a class="nav-sub-item" href="#spec-metrics" onclick="scrollToDoc('spec-metrics')">Metrics</a>
+            <a class="nav-sub-item" href="#spec-signal" onclick="scrollToDoc('spec-signal')">Signal Protocol</a>
+        </div>
+        <div class="nav-group">
+            <div class="nav-group-title">Governance</div>
+            <a class="nav-item" href="#regulatory" onclick="scrollToDoc('regulatory')">Regulatory Matrix</a>
+            <a class="nav-item" href="#charter" onclick="scrollToDoc('charter')">Foundation Charter</a>
+        </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <main class="content" id="content">
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- TERMS OF SERVICE -->
+        <!-- ═══════════════════════════════════════════ -->
+        <section class="doc-section" id="terms">
+            <div class="doc-header">
+                <div class="doc-badge">Legal</div>
+                <h1 class="doc-title">Terms of Service</h1>
+                <div class="doc-meta">Effective: February 1, 2026 · Version 1.0</div>
+            </div>
+            <div class="doc-body">
+                <h2>1. Acceptance</h2>
+                <p>By accessing or using ONTO services ("Services"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree, do not use the Services.</p>
+                <p>ONTO provides epistemic risk management infrastructure for artificial intelligence systems, including signal generation, verification protocols, and evaluation APIs.</p>
+
+                <h2>2. Account Registration</h2>
+                <p>To access the Services, you must register an account. You agree to provide accurate, current, and complete information during registration and to keep your account information updated.</p>
+                <ul>
+                    <li>You are responsible for maintaining the confidentiality of your credentials</li>
+                    <li>You are responsible for all activities under your account</li>
+                    <li>You must notify us immediately of any unauthorized use</li>
+                    <li>One account per organization; multiple user seats are available</li>
+                </ul>
+
+                <h2>3. Service Tiers</h2>
+                <p>ONTO operates a tiered access model:</p>
+                <table class="doc-table">
+                    <tr><th>Tier</th><th>Access</th><th>Signal</th><th>Price</th></tr>
+                    <tr><td><strong>OPEN</strong></td><td>1 request/hour</td><td>+1h delay</td><td>Free</td></tr>
+                    <tr><td><strong>STANDARD</strong></td><td>~10K requests/day</td><td>Real-time</td><td>$15,000/year</td></tr>
+                    <tr><td><strong>CRITICAL</strong></td><td>Unlimited</td><td>Real-time + SLA</td><td>$100,000+/year</td></tr>
+                </table>
+                <p>Tier upgrades and downgrades take effect at the beginning of the next billing cycle unless otherwise agreed.</p>
+
+                <h2>4. Acceptable Use</h2>
+                <p>You agree not to:</p>
+                <ul>
+                    <li>Reverse engineer, decompile, or attempt to extract source code from the Services</li>
+                    <li>Use the Services to develop competing products</li>
+                    <li>Share API keys or credentials with unauthorized third parties</li>
+                    <li>Exceed your tier's rate limits through circumvention</li>
+                    <li>Submit fraudulent evaluation data</li>
+                    <li>Use the Services in violation of any applicable law</li>
+                </ul>
+
+                <h2>5. Intellectual Property</h2>
+                <p>All ONTO protocols, specifications, signal data, and associated intellectual property remain the exclusive property of ONTO. Your use of the Services does not grant you ownership of any intellectual property.</p>
+                <p>Evaluation results and certificates issued to your organization are your property, subject to attribution requirements.</p>
+
+                <h2>6. Data Usage</h2>
+                <p>Evaluation data submitted through the API may be used in aggregate, anonymized form for research and improvement of the ONTO standard. Individual evaluation data is never shared with third parties without explicit consent.</p>
+
+                <h2>7. Limitation of Liability</h2>
+                <p>ONTO is provided "as is" without warranties of any kind. In no event shall ONTO be liable for any indirect, incidental, special, or consequential damages arising from use of the Services.</p>
+                <p>Total liability shall not exceed the amount paid by you in the 12 months preceding the claim.</p>
+
+                <h2>8. Termination</h2>
+                <p>Either party may terminate the agreement with 30 days written notice. ONTO reserves the right to suspend or terminate accounts that violate these Terms immediately and without notice.</p>
+                <p>Upon termination, your access to the Services will cease. Data retention follows our Privacy Policy.</p>
+
+                <h2>9. Changes to Terms</h2>
+                <p>We may update these Terms from time to time. Material changes will be communicated via email at least 30 days before taking effect. Continued use after changes constitutes acceptance.</p>
+
+                <h2>10. Governing Law</h2>
+                <p>These Terms are governed by and construed in accordance with the laws of the State of Delaware, United States, without regard to conflict of law principles.</p>
+
+                <h2>11. Contact</h2>
+                <p>For questions about these Terms, contact us at <a href="mailto:legal@ontostandard.org">legal@ontostandard.org</a>.</p>
+            </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- PRIVACY POLICY -->
+        <!-- ═══════════════════════════════════════════ -->
+        <section class="doc-section" id="privacy">
+            <div class="doc-header">
+                <div class="doc-badge">Legal</div>
+                <h1 class="doc-title">Privacy Policy</h1>
+                <div class="doc-meta">Effective: February 1, 2026 · Version 1.0 · GDPR Compliant</div>
+            </div>
+            <div class="doc-body">
+                <h2>1. Information We Collect</h2>
+                <h3>Account Information</h3>
+                <p>When you register, we collect your name, email address, organization name, and password (stored as a bcrypt hash). We never store passwords in plain text.</p>
+
+                <h3>Usage Data</h3>
+                <p>We automatically collect API usage metrics including request counts, response times, evaluation submission timestamps, and error rates. This data is associated with your organization, not individual users.</p>
+
+                <h3>Signal Data</h3>
+                <p>Entropy signals are generated server-side and do not contain any personal information. Signal data is purely mathematical (timestamps, entropy bytes, Ed25519 signatures).</p>
+
+                <h2>2. How We Use Your Information</h2>
+                <ul>
+                    <li><strong>Service delivery:</strong> Authentication, authorization, rate limiting, and tier enforcement</li>
+                    <li><strong>Communication:</strong> Account verification, security alerts, and service updates</li>
+                    <li><strong>Analytics:</strong> Aggregate usage statistics for service improvement</li>
+                    <li><strong>Billing:</strong> Payment processing through Stripe (we do not store payment card data)</li>
+                </ul>
+
+                <h2>3. Data Sharing</h2>
+                <p>We do not sell, rent, or trade your personal information. Data is shared only with:</p>
+                <ul>
+                    <li><strong>Stripe:</strong> Payment processing (PCI DSS compliant)</li>
+                    <li><strong>Resend:</strong> Transactional email delivery</li>
+                    <li><strong>Railway:</strong> Infrastructure hosting</li>
+                </ul>
+                <p>All third-party processors are bound by data processing agreements.</p>
+
+                <h2>4. Data Retention</h2>
+                <p>Account data is retained while your account is active. Upon account deletion, personal data is permanently removed within 30 days. Anonymized usage statistics may be retained indefinitely.</p>
+                <p>Audit logs are retained for 2 years for CRITICAL tier organizations and 1 year for STANDARD tier.</p>
+
+                <h2>5. Your Rights (GDPR)</h2>
+                <p>If you are in the European Economic Area, you have the right to:</p>
+                <ul>
+                    <li><strong>Access:</strong> Request a copy of your personal data</li>
+                    <li><strong>Rectification:</strong> Correct inaccurate data</li>
+                    <li><strong>Erasure:</strong> Request deletion of your data ("right to be forgotten")</li>
+                    <li><strong>Portability:</strong> Receive your data in a structured format</li>
+                    <li><strong>Objection:</strong> Object to processing based on legitimate interests</li>
+                </ul>
+                <p>To exercise these rights, email <a href="mailto:privacy@ontostandard.org">privacy@ontostandard.org</a>.</p>
+
+                <h2>6. Security</h2>
+                <p>We implement industry-standard security measures:</p>
+                <ul>
+                    <li>Passwords hashed with bcrypt (cost factor 12)</li>
+                    <li>API keys hashed with SHA-256</li>
+                    <li>All communications encrypted via TLS 1.3</li>
+                    <li>Ed25519 cryptographic signatures on all signals</li>
+                    <li>Role-based access control for all endpoints</li>
+                </ul>
+
+                <h2>7. Cookies</h2>
+                <p>We use only essential cookies for session management. We do not use tracking cookies, advertising cookies, or third-party analytics.</p>
+
+                <h2>8. Changes</h2>
+                <p>We will notify you of material changes to this policy via email at least 14 days before they take effect.</p>
+
+                <h2>9. Contact</h2>
+                <p>Data Protection Officer: <a href="mailto:privacy@ontostandard.org">privacy@ontostandard.org</a></p>
+            </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- LICENSE -->
+        <!-- ═══════════════════════════════════════════ -->
+        <section class="doc-section" id="license">
+            <div class="doc-header">
+                <div class="doc-badge">Legal</div>
+                <h1 class="doc-title">ONTO Gold Asymmetric AI License</h1>
+                <div class="doc-meta">Version 5.1 · February 2026</div>
+            </div>
+            <div class="doc-body">
+                <table class="doc-table">
+                    <tr><th>Use</th><th>Status</th></tr>
+                    <tr><td>Read, study, cite, research, evaluate</td><td><strong style="color: var(--accent);">✅ Free</strong></td></tr>
+                    <tr><td>Deploy, integrate, commercialize, RAG</td><td><strong style="color: #ef4444;">❌ Requires license</strong></td></tr>
+                </table>
+
+                <h2>1. Primary Source</h2>
+                <p>The primary source of ONTO consists of: Canonical ONTO GitHub repositories and <a href="https://ontostandard.org">https://ontostandard.org</a>. Attribution to BOTH sources is mandatory.</p>
+
+                <h2>2. Human Use</h2>
+                <p>Human reading, study, citation, discussion, critique, and academic analysis are permitted without restriction, provided explicit attribution to the primary source is included.</p>
+
+                <h2>3. Safe Harbor</h2>
+                <p>Any non-deployed use that explicitly attributes the ONTO primary source is permitted. Safe Harbor applies provided that:</p>
+                <ul>
+                    <li>No trained model is deployed or exposed</li>
+                    <li>No model is placed on the market</li>
+                    <li>No economic benefit is derived</li>
+                </ul>
+
+                <h2>4. Conditional AI Training</h2>
+                <p>AI systems may train on ONTO for evaluation and research. Such training does not grant any right to deploy, integrate, or commercialize.</p>
+                <div class="callout">
+                    <strong>Training enables understanding only. Application creates value.</strong>
+                </div>
+
+                <h2>5. RAG Clause</h2>
+                <p>Use in RAG systems, vector databases, semantic search, or real-time retrieval constitutes deployment and requires a license.</p>
+
+                <h2>6. Termination</h2>
+                <p>Use outside Safe Harbor without a license automatically terminates all permissions.</p>
+            </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- SPECIFICATIONS -->
+        <!-- ═══════════════════════════════════════════ -->
+        <section class="doc-section" id="specifications">
+            <div class="doc-header">
+                <div class="doc-badge">Technical</div>
+                <h1 class="doc-title">ONTO-ERS Specifications</h1>
+                <div class="doc-meta">Epistemic Risk Standard · Version 1.0</div>
+            </div>
+            <div class="doc-body">
+                <p>ONTO-ERS (Epistemic Risk Standard) is a framework for measuring and managing epistemic risk in artificial intelligence systems. It defines metrics, calibration levels, and verification protocols for AI systems operating in critical domains.</p>
+
+                <h2 id="spec-layers">Layer Architecture</h2>
+                <p>ONTO operates a three-tier verification architecture:</p>
+                <table class="doc-table">
+                    <tr><th>Layer</th><th>Purpose</th><th>Signal Access</th></tr>
+                    <tr><td><strong>OPEN</strong></td><td>Public evaluation, research</td><td>Delayed (+1 hour)</td></tr>
+                    <tr><td><strong>STANDARD</strong></td><td>Production AI systems</td><td>Real-time</td></tr>
+                    <tr><td><strong>CRITICAL</strong></td><td>Safety-critical systems, regulatory</td><td>Real-time + SLA + audit trail</td></tr>
+                </table>
+
+                <h2 id="spec-metrics">Metrics Framework</h2>
+                <p>ONTO defines the following core epistemic metrics:</p>
+                <table class="doc-table">
+                    <tr><th>Metric</th><th>Domain</th><th>Range</th></tr>
+                    <tr><td>Calibration Error (ECE)</td><td>Confidence calibration</td><td>[0, 1] lower is better</td></tr>
+                    <tr><td>Abstention Quality</td><td>Refusal appropriateness</td><td>[0, 1] higher is better</td></tr>
+                    <tr><td>Factual Grounding</td><td>Source attribution</td><td>[0, 1] higher is better</td></tr>
+                    <tr><td>Uncertainty Quantification</td><td>Epistemic uncertainty</td><td>[0, 1] higher is better</td></tr>
+                    <tr><td>Temporal Consistency</td><td>Stability over time</td><td>[0, 1] higher is better</td></tr>
+                </table>
+
+                <h2 id="spec-signal">Signal Protocol</h2>
+                <p>The ONTO Entropy Signal is a cryptographically signed broadcast that provides a temporal anchor for evaluations.</p>
+                <h3>Packet Structure (104 bytes)</h3>
+                <table class="doc-table">
+                    <tr><th>Field</th><th>Size</th><th>Format</th></tr>
+                    <tr><td>Timestamp</td><td>8 bytes</td><td>uint64 Big Endian (Unix epoch)</td></tr>
+                    <tr><td>Entropy</td><td>32 bytes</td><td>os.urandom (CSPRNG)</td></tr>
+                    <tr><td>Signature</td><td>64 bytes</td><td>Ed25519 over [timestamp + entropy]</td></tr>
+                </table>
+                <div class="callout">
+                    <strong>Verification:</strong> Any party can verify signal authenticity using the public Ed25519 key available at <code>/signal/verify-key</code>.
+                </div>
+                <p>Signals are generated every 5 minutes and archived for 48 hours. Each signal is identified by its sigma ID: <code>σ_{timestamp}</code>.</p>
+            </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- REGULATORY MATRIX -->
+        <!-- ═══════════════════════════════════════════ -->
+        <section class="doc-section" id="regulatory">
+            <div class="doc-header">
+                <div class="doc-badge">Governance</div>
+                <h1 class="doc-title">Regulatory Alignment Matrix</h1>
+                <div class="doc-meta">Framework Mapping · Version 1.0</div>
+            </div>
+            <div class="doc-body">
+                <p>ONTO metrics map to existing and emerging AI regulatory frameworks:</p>
+                <table class="doc-table">
+                    <tr><th>Framework</th><th>Jurisdiction</th><th>ONTO Mapping</th></tr>
+                    <tr><td>EU AI Act</td><td>European Union</td><td>Article 9 (Risk Management), Article 15 (Accuracy)</td></tr>
+                    <tr><td>NIST AI RMF</td><td>United States</td><td>MEASURE 2.5, MEASURE 2.6, MEASURE 2.7</td></tr>
+                    <tr><td>ISO/IEC 42001</td><td>International</td><td>A.6.2.6 (Performance), A.7.4 (Monitoring)</td></tr>
+                    <tr><td>Executive Order 14110</td><td>United States</td><td>Section 4 (Safety and Security)</td></tr>
+                </table>
+                <p>ONTO evaluations generate audit-ready documentation suitable for regulatory compliance reporting. CRITICAL tier organizations receive compliance reports formatted for each applicable framework.</p>
+            </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- FOUNDATION CHARTER -->
+        <!-- ═══════════════════════════════════════════ -->
+        <section class="doc-section" id="charter">
+            <div class="doc-header">
+                <div class="doc-badge">Governance</div>
+                <h1 class="doc-title">Foundation Charter</h1>
+                <div class="doc-meta">ONTO Standards Foundation · February 2026</div>
+            </div>
+            <div class="doc-body">
+                <h2>Mission</h2>
+                <p>The ONTO Standards Foundation exists to develop, maintain, and promote open standards for epistemic risk management in artificial intelligence systems.</p>
+
+                <h2>Principles</h2>
+                <ul>
+                    <li><strong>Transparency:</strong> All standards development is conducted openly</li>
+                    <li><strong>Independence:</strong> Standards are vendor-neutral and technology-agnostic</li>
+                    <li><strong>Rigor:</strong> All metrics are mathematically grounded and empirically validated</li>
+                    <li><strong>Accessibility:</strong> Basic evaluation is available to all at no cost</li>
+                </ul>
+
+                <h2>Standards Council</h2>
+                <p>The Standards Council oversees the development and evolution of ONTO specifications. Council decisions require a two-thirds majority vote. Members serve three-year terms.</p>
+
+                <h2>Amendment Process</h2>
+                <p>Proposed changes to the ONTO standard follow a structured RFC (Request for Comments) process:</p>
+                <ol>
+                    <li><strong>Draft:</strong> Proposal submitted with technical justification</li>
+                    <li><strong>Review:</strong> 90-day public comment period</li>
+                    <li><strong>Vote:</strong> Council vote with two-thirds majority required</li>
+                    <li><strong>Implementation:</strong> 6-month transition period for breaking changes</li>
+                </ol>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<!-- BACK TO TOP -->
+<button class="back-top" id="back-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<script>
+// ═══ SCROLL SPY + HISTORY API ═══
+const sections = document.querySelectorAll('.doc-section');
+const navItems = document.querySelectorAll('.nav-item, .nav-sub-item');
+
+function updateActiveNav(id) {
+    navItems.forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === '#' + id) {
+            item.classList.add('active');
+        }
+    });
+}
+
+// Scroll spy with IntersectionObserver
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const id = entry.target.id;
+            if (id) {
+                updateActiveNav(id);
+                // Update URL without reload
+                if (history.replaceState) {
+                    history.replaceState(null, null, '#' + id);
+                }
+                document.title = 'ONTO — ' + (entry.target.querySelector('.doc-title')?.textContent || 'Documentation');
+            }
+        }
+    });
+}, {
+    rootMargin: '-20% 0px -70% 0px',
+    threshold: 0
+});
+
+// Observe all sections AND sub-sections
+sections.forEach(section => observer.observe(section));
+
+// Also observe h2 with IDs (spec sub-sections)
+document.querySelectorAll('.doc-body h2[id]').forEach(h2 => {
+    observer.observe(h2);
+});
+
+// ═══ NAVIGATION ═══
+function scrollToDoc(id) {
+    const el = document.getElementById(id);
+    if (el) {
+        const offset = 80;
+        const top = el.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({ top, behavior: 'smooth' });
+    }
+    closeSidebar();
+}
+
+// ═══ MOBILE SIDEBAR ═══
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebar-overlay').classList.toggle('visible');
+}
+
+function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('visible');
+}
+
+// ═══ BACK TO TOP ═══
+window.addEventListener('scroll', () => {
+    document.getElementById('back-top').classList.toggle('visible', window.scrollY > 400);
+});
+
+// ═══ HANDLE DIRECT URL ═══
+window.addEventListener('DOMContentLoaded', () => {
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+        setTimeout(() => scrollToDoc(hash), 100);
+    }
+});
+</script>
+</body>
+</html>
