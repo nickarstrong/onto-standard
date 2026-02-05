@@ -61,7 +61,8 @@ from fastapi.responses import JSONResponse, HTMLResponse
 from pydantic import BaseModel, EmailStr
 import asyncpg
 import uvicorn
-import httpx
+
+# httpx imported locally where needed to handle missing dependency gracefully
 
 # ============================================================
 # CONFIG
@@ -548,6 +549,12 @@ keep_alive_task = None
 
 async def signal_keep_alive():
     """Ping signal server every 4 minutes to prevent cold starts"""
+    try:
+        import httpx
+    except ImportError:
+        print("[KEEP-ALIVE] httpx not installed, skipping")
+        return
+    
     while True:
         try:
             async with httpx.AsyncClient() as client:
