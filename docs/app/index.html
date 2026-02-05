@@ -624,29 +624,50 @@ a.docs-nav-item { text-decoration: none; }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
 /* Signal Panel - Bloomberg Terminal Style */
-.signal-panel { background: linear-gradient(135deg, #0a1a0f 0%, #0d2818 50%, #0a1a0f 100%); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; position: relative; overflow: hidden; }
+.signal-panel { background: linear-gradient(135deg, #0a1a0f 0%, #0d2818 50%, #0a1a0f 100%); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; position: relative; overflow: hidden; animation: borderGlow 4s ease-in-out infinite; }
+@keyframes borderGlow {
+    0%, 100% { border-color: rgba(34, 197, 94, 0.2); box-shadow: 0 0 20px rgba(34, 197, 94, 0.05), inset 0 0 30px rgba(34, 197, 94, 0.02); }
+    50% { border-color: rgba(34, 197, 94, 0.4); box-shadow: 0 0 30px rgba(34, 197, 94, 0.1), inset 0 0 40px rgba(34, 197, 94, 0.05); }
+}
 .signal-panel::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(34, 197, 94, 0.08) 0%, transparent 70%); pointer-events: none; }
-.signal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; position: relative; }
+.signal-panel::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent 0%, rgba(34, 197, 94, 0.8) 50%, transparent 100%); animation: scanline 6s linear infinite; pointer-events: none; box-shadow: 0 0 10px rgba(34, 197, 94, 0.6), 0 0 20px rgba(34, 197, 94, 0.4), 0 0 30px rgba(34, 197, 94, 0.2); }
+@keyframes scanline {
+    0% { top: -2px; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: calc(100% + 2px); opacity: 0; }
+}
+.signal-panel-grid { position: absolute; inset: 0; background-image: 
+    linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px; pointer-events: none; opacity: 0.5; }
+.signal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; position: relative; z-index: 1; }
 .signal-title { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; color: var(--text); }
-.signal-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #15803d, #22c55e); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; font-family: 'Times New Roman', serif; font-style: italic; }
+.signal-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #15803d, #22c55e); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; font-family: 'Times New Roman', serif; font-style: italic; box-shadow: 0 0 15px rgba(34, 197, 94, 0.5), 0 0 30px rgba(34, 197, 94, 0.2); }
 .signal-live { display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(34, 197, 94, 0.15); border-radius: 12px; font-size: 10px; font-weight: 600; color: #22c55e; text-transform: uppercase; letter-spacing: 0.5px; }
-.signal-dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
-@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-.signal-body { position: relative; }
+.signal-dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; box-shadow: 0 0 6px #22c55e, 0 0 12px rgba(34, 197, 94, 0.5); }
+@keyframes pulse { 0%, 100% { opacity: 1; box-shadow: 0 0 6px #22c55e, 0 0 12px rgba(34, 197, 94, 0.5); } 50% { opacity: 0.6; box-shadow: 0 0 3px #22c55e; } }
+.signal-body { position: relative; z-index: 1; }
 .signal-main-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid rgba(34, 197, 94, 0.15); }
 .signal-id-block { flex: 1; }
-.signal-id { font-size: 24px; font-weight: 700; color: #22c55e; font-family: 'JetBrains Mono', monospace; margin-bottom: 6px; text-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
-.signal-hash { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); letter-spacing: 0.5px; word-break: break-all; max-width: 400px; }
+.signal-id { font-size: 24px; font-weight: 700; color: #22c55e; font-family: 'JetBrains Mono', monospace; margin-bottom: 6px; text-shadow: 0 0 20px rgba(34, 197, 94, 0.4); animation: idGlow 3s ease-in-out infinite; }
+@keyframes idGlow {
+    0%, 100% { text-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
+    50% { text-shadow: 0 0 25px rgba(34, 197, 94, 0.5), 0 0 35px rgba(34, 197, 94, 0.2); }
+}
+.signal-hash { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); letter-spacing: 0.5px; word-break: break-all; max-width: 400px; transition: text-shadow 0.3s; }
+.signal-hash.pulse { text-shadow: 0 0 10px rgba(34, 197, 94, 0.8); color: #22c55e; }
 .signal-countdown-block { text-align: right; }
 .signal-countdown-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-.signal-countdown-value { font-size: 28px; font-weight: 700; color: #22c55e; font-family: 'JetBrains Mono', monospace; }
+.signal-countdown-value { font-size: 28px; font-weight: 700; color: #22c55e; font-family: 'JetBrains Mono', monospace; text-shadow: 0 0 15px rgba(34, 197, 94, 0.4); }
 .signal-metrics { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
-.signal-metric { text-align: center; padding: 8px; background: rgba(0,0,0,0.2); border-radius: 6px; border: 1px solid rgba(34, 197, 94, 0.1); }
+.signal-metric { text-align: center; padding: 8px; background: rgba(0,0,0,0.2); border-radius: 6px; border: 1px solid rgba(34, 197, 94, 0.1); transition: all 0.3s; }
+.signal-metric.updated { border-color: rgba(34, 197, 94, 0.4); background: rgba(34, 197, 94, 0.1); }
 .signal-metric-value { font-size: 14px; font-weight: 600; color: #22c55e; font-family: 'JetBrains Mono', monospace; margin-bottom: 2px; }
 .signal-metric-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
 .signal-controls { display: flex; justify-content: flex-end; margin-top: 16px; }
 .signal-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; font-size: 11px; font-weight: 500; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 6px; color: #22c55e; cursor: pointer; transition: all 0.15s; }
-.signal-btn:hover { background: rgba(34, 197, 94, 0.2); border-color: rgba(34, 197, 94, 0.5); }
+.signal-btn:hover { background: rgba(34, 197, 94, 0.2); border-color: rgba(34, 197, 94, 0.5); box-shadow: 0 0 15px rgba(34, 197, 94, 0.3); }
 .signal-btn svg { opacity: 0.8; }
 @media (max-width: 768px) {
     .signal-metrics { grid-template-columns: repeat(3, 1fr); }
@@ -2029,6 +2050,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a hr
         <div class="page" id="page-reference">
             <!-- SIGNAL VISUALIZATION - MAIN ELEMENT -->
             <div class="signal-panel">
+                <div class="signal-panel-grid"></div>
                 <div class="signal-header">
                     <div class="signal-title">
                         <span class="signal-icon">σ</span>
@@ -3640,13 +3662,20 @@ async function loadSignalData() {
             if (stats.current_signal) {
                 document.getElementById('signal-id').textContent = stats.current_signal.sigma_id || `σ_${stats.current_signal.timestamp}`;
                 startHashAnimation(stats.current_signal.entropy_hex || '');
+                
+                // Pulse effect on hash
+                const hashEl = document.getElementById('signal-hash');
+                if (hashEl) {
+                    hashEl.classList.add('pulse');
+                    setTimeout(() => hashEl.classList.remove('pulse'), 1000);
+                }
             }
             
-            // Update metrics
-            document.getElementById('signal-uptime').textContent = formatUptime(stats.uptime_seconds);
-            document.getElementById('signal-generated').textContent = stats.signals_generated || 0;
-            document.getElementById('signal-requests').textContent = stats.total_requests || 0;
-            document.getElementById('signal-errors').textContent = (stats.error_rate_percent || 0).toFixed(1) + '%';
+            // Update metrics with pulse effect
+            updateMetric('signal-uptime', formatUptime(stats.uptime_seconds));
+            updateMetric('signal-generated', stats.signals_generated || 0);
+            updateMetric('signal-requests', stats.total_requests || 0);
+            updateMetric('signal-errors', (stats.error_rate_percent || 0).toFixed(1) + '%');
             
             // Update pause state
             signalPaused = stats.paused || false;
@@ -3670,6 +3699,18 @@ async function loadSignalData() {
     } catch (e) {
         console.error('Signal load error:', e);
         document.getElementById('signal-hash').textContent = 'Connection error';
+    }
+}
+
+function updateMetric(id, value) {
+    const el = document.getElementById(id);
+    if (el) {
+        el.textContent = value;
+        const metric = el.closest('.signal-metric');
+        if (metric) {
+            metric.classList.add('updated');
+            setTimeout(() => metric.classList.remove('updated'), 800);
+        }
     }
 }
 
