@@ -285,6 +285,28 @@ a.info-val:hover { color: var(--text); }
 .modal-close { background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 24px; line-height: 1; }
 .modal-body { padding: 24px; overflow-y: auto; flex: 1; }
 .modal-footer { padding: 24px; border-top: 1px solid var(--border); display: flex; gap: 12px; justify-content: flex-end; }
+
+/* Tier Editor */
+.tier-user-info { padding: 12px; background: var(--bg-secondary); border-radius: 8px; margin-bottom: 16px; }
+.tier-user-email { font-size: 13px; font-weight: 500; color: var(--text); }
+.tier-options { display: flex; flex-direction: column; gap: 8px; }
+.tier-option { display: block; cursor: pointer; }
+.tier-option input { display: none; }
+.tier-option-content { padding: 12px 14px; border: 1px solid var(--border); border-radius: 8px; transition: all 0.2s; }
+.tier-option:hover .tier-option-content { border-color: var(--accent); background: rgba(99, 102, 241, 0.05); }
+.tier-option input:checked + .tier-option-content { border-color: var(--accent); background: rgba(99, 102, 241, 0.1); box-shadow: 0 0 0 1px var(--accent); }
+.tier-option-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.tier-option-price { font-size: 12px; font-weight: 600; color: var(--text); }
+.tier-option-desc { font-size: 11px; color: var(--text-muted); }
+
+/* Skeleton Loading */
+.skeleton { background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--bg-elevated) 50%, var(--bg-secondary) 75%); background-size: 200% 100%; animation: skeleton-loading 1.5s infinite; border-radius: 4px; }
+@keyframes skeleton-loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.skeleton-text { height: 14px; width: 60%; }
+.skeleton-text-sm { height: 11px; width: 80%; }
+.skeleton-metric { height: 20px; width: 50px; margin: 0 auto; }
+.signal-skeleton-hash { height: 11px; width: 280px; background: linear-gradient(90deg, rgba(34,197,94,0.1) 25%, rgba(34,197,94,0.2) 50%, rgba(34,197,94,0.1) 75%); background-size: 200% 100%; animation: skeleton-loading 1.5s infinite; border-radius: 4px; }
+.signal-skeleton-id { height: 24px; width: 180px; background: linear-gradient(90deg, rgba(34,197,94,0.15) 25%, rgba(34,197,94,0.25) 50%, rgba(34,197,94,0.15) 75%); background-size: 200% 100%; animation: skeleton-loading 1.5s infinite; border-radius: 4px; margin-bottom: 6px; }
 .modal-footer .btn { width: auto; min-width: 120px; }
 
 /* === BILLING CYCLE SELECTOR === */
@@ -2064,8 +2086,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a hr
                 <div class="signal-body">
                     <div class="signal-main-row">
                         <div class="signal-id-block">
-                            <div class="signal-id" id="signal-id">σ_—</div>
-                            <div class="signal-hash" id="signal-hash">Loading entropy...</div>
+                            <div class="signal-id" id="signal-id"><div class="signal-skeleton-id"></div></div>
+                            <div class="signal-hash" id="signal-hash"><div class="signal-skeleton-hash"></div></div>
                         </div>
                         <div class="signal-countdown-block">
                             <div class="signal-countdown-label">NEXT</div>
@@ -2074,19 +2096,19 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a hr
                     </div>
                     <div class="signal-metrics">
                         <div class="signal-metric">
-                            <div class="signal-metric-value" id="signal-uptime">—</div>
+                            <div class="signal-metric-value" id="signal-uptime"><div class="skeleton skeleton-metric"></div></div>
                             <div class="signal-metric-label">UPTIME</div>
                         </div>
                         <div class="signal-metric">
-                            <div class="signal-metric-value" id="signal-generated">—</div>
+                            <div class="signal-metric-value" id="signal-generated"><div class="skeleton skeleton-metric"></div></div>
                             <div class="signal-metric-label">GENERATED</div>
                         </div>
                         <div class="signal-metric">
-                            <div class="signal-metric-value" id="signal-requests">—</div>
+                            <div class="signal-metric-value" id="signal-requests"><div class="skeleton skeleton-metric"></div></div>
                             <div class="signal-metric-label">REQUESTS</div>
                         </div>
                         <div class="signal-metric">
-                            <div class="signal-metric-value" id="signal-errors">—</div>
+                            <div class="signal-metric-value" id="signal-errors"><div class="skeleton skeleton-metric"></div></div>
                             <div class="signal-metric-label">ERROR RATE</div>
                         </div>
                         <div class="signal-metric">
@@ -2415,6 +2437,61 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a hr
         <div class="modal-footer">
             <button class="btn-minimal" onclick="closeModal('contact-modal')">Cancel</button>
             <button class="btn-minimal" onclick="submitContactForm()" style="background: var(--accent); color: white; border-color: var(--accent);">Send</button>
+        </div>
+    </div>
+</div>
+
+<!-- TIER EDITOR MODAL -->
+<div class="modal-overlay" id="tier-modal">
+    <div class="modal modal-inst" style="max-width: 400px;">
+        <div class="modal-header">
+            <h2>Edit Plan</h2>
+            <button class="modal-close" onclick="closeModal('tier-modal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="tier-user-info" id="tier-user-info">
+                <div class="tier-user-email">user@example.com</div>
+            </div>
+            <div class="tier-options">
+                <label class="tier-option" data-tier="open">
+                    <input type="radio" name="tier-select" value="open">
+                    <div class="tier-option-content">
+                        <div class="tier-option-header">
+                            <span class="tier-badge tier-open">OPEN</span>
+                            <span class="tier-option-price">Free</span>
+                        </div>
+                        <div class="tier-option-desc">1 req/hour, +1hr delay</div>
+                    </div>
+                </label>
+                <label class="tier-option" data-tier="standard">
+                    <input type="radio" name="tier-select" value="standard">
+                    <div class="tier-option-content">
+                        <div class="tier-option-header">
+                            <span class="tier-badge tier-standard">STANDARD</span>
+                            <span class="tier-option-price">$15K/yr</span>
+                        </div>
+                        <div class="tier-option-desc">~10K req/day, real-time</div>
+                    </div>
+                </label>
+                <label class="tier-option" data-tier="critical">
+                    <input type="radio" name="tier-select" value="critical">
+                    <div class="tier-option-content">
+                        <div class="tier-option-header">
+                            <span class="tier-badge tier-critical">CRITICAL</span>
+                            <span class="tier-option-price">$100K+/yr</span>
+                        </div>
+                        <div class="tier-option-desc">Unlimited, real-time + SLA</div>
+                    </div>
+                </label>
+            </div>
+            <div class="form-group" style="margin-top: 16px;">
+                <label class="form-label">Duration (days)</label>
+                <input type="number" class="form-input" id="tier-days" value="30" min="1" max="365">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-minimal" onclick="closeModal('tier-modal')">Cancel</button>
+            <button class="btn-minimal" onclick="saveTierChange()" style="background: var(--accent); color: white; border-color: var(--accent);">Save</button>
         </div>
     </div>
 </div>
@@ -3811,7 +3888,16 @@ async function loadAccountsData() {
     const planFilter = document.getElementById('filter-plan')?.value || '';
     
     const container = document.getElementById('accounts-list');
-    if (container) container.innerHTML = '<div class="accounts-loading">Loading...</div>';
+    if (container) container.innerHTML = `
+        <div class="account-row" style="padding: 16px;">
+            <div class="skeleton skeleton-text" style="width: 200px; margin-bottom: 8px;"></div>
+            <div class="skeleton skeleton-text-sm" style="width: 120px;"></div>
+        </div>
+        <div class="account-row" style="padding: 16px;">
+            <div class="skeleton skeleton-text" style="width: 180px; margin-bottom: 8px;"></div>
+            <div class="skeleton skeleton-text-sm" style="width: 100px;"></div>
+        </div>
+    `;
     
     try {
         let url = `${API_BASE}/v1/docs/admin/users?limit=50`;
@@ -3902,7 +3988,7 @@ function renderAccounts(accounts) {
                     ` : ''}
                 </div>
                 <div class="account-actions">
-                    <button class="account-action-btn" onclick="event.stopPropagation(); editPlan('${u.id}', '${u.tier}')" ${isSelf ? 'disabled title="Cannot modify own plan"' : ''}>Edit Plan</button>
+                    <button class="account-action-btn" onclick="event.stopPropagation(); editPlan('${u.id}', '${u.tier}', '${u.email}')" ${isSelf ? 'disabled title="Cannot modify own plan"' : ''}>Edit Plan</button>
                     <button class="account-action-btn" onclick="event.stopPropagation(); toggleAccountStatus('${u.id}', ${isActive})" ${isSelf ? 'disabled title="Cannot pause own account"' : ''}>${isActive ? 'Pause' : 'Activate'}</button>
                     <button class="account-action-btn danger" onclick="event.stopPropagation(); deleteAccount('${u.id}', '${u.email}')" ${isSelf ? 'disabled title="Cannot delete own account"' : ''}>Delete</button>
                 </div>
@@ -3921,30 +4007,60 @@ function toggleAccountDetails(id) {
     }
 }
 
-async function editPlan(userId, currentTier) {
+let editingUserId = null;
+let editingUserEmail = null;
+
+function editPlan(userId, currentTier, userEmail) {
     if (userId === currentUserId) {
         showSignal104b('self_action_attempt', '/admin/users/tier');
         return;
     }
     
-    const tier = prompt('Select tier: open, standard, critical', currentTier);
-    if (!tier || !['open', 'standard', 'critical'].includes(tier.toLowerCase())) {
-        if (tier) showToast('Invalid tier', 'error');
+    editingUserId = userId;
+    editingUserEmail = userEmail || 'User';
+    
+    // Set user info
+    document.getElementById('tier-user-info').innerHTML = `<div class="tier-user-email">${editingUserEmail}</div>`;
+    
+    // Reset selection
+    document.querySelectorAll('input[name="tier-select"]').forEach(r => r.checked = false);
+    
+    // Select current tier
+    const currentRadio = document.querySelector(`input[name="tier-select"][value="${currentTier}"]`);
+    if (currentRadio) currentRadio.checked = true;
+    
+    // Reset days
+    document.getElementById('tier-days').value = 30;
+    
+    // Show modal
+    document.getElementById('tier-modal').classList.add('active');
+}
+
+async function saveTierChange() {
+    if (!editingUserId) return;
+    
+    const selectedTier = document.querySelector('input[name="tier-select"]:checked');
+    if (!selectedTier) {
+        showToast('Select a tier', 'error');
         return;
     }
-    const days = prompt('Duration (days):', '30');
+    
+    const tier = selectedTier.value;
+    const days = document.getElementById('tier-days').value || 30;
     
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/admin/users/${userId}/tier?tier=${tier.toLowerCase()}&days=${days || 30}`, {
+        const res = await fetch(`${API_BASE}/v1/docs/admin/users/${editingUserId}/tier?tier=${tier}&days=${days}`, {
             method: 'PUT',
             headers: { 'x-api-key': apiKey }
         });
         if (res.ok) {
-            showToast(`Plan updated to ${tier}`, 'success');
+            showToast(`Plan updated to ${tier.toUpperCase()}`, 'success');
+            closeModal('tier-modal');
             loadAccountsData();
         } else {
-            showToast('Update failed', 'error');
+            const err = await res.json();
+            showToast(err.detail || 'Update failed', 'error');
         }
     } catch (e) {
         showToast('Update failed', 'error');
