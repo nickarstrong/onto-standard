@@ -1710,6 +1710,15 @@ let sessionWarningTimer = null;
 const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
 const SESSION_WARNING = 5 * 60 * 1000; // 5 minutes before timeout
 
+// === BOOT: redirect to docs if no session, restore if exists ===
+(function(){
+const t=localStorage.getItem('onto_token'),u=localStorage.getItem('onto_user');
+const params=new URLSearchParams(window.location.search);
+if(!t&&!params.get('verify')){window.location='/docs';return}
+if(t&&u){try{authToken=t;currentUser=JSON.parse(u);document.addEventListener('DOMContentLoaded',()=>{checkEmailVerification();if(currentUser)showDashboard()})}catch(e){}}
+else{document.addEventListener('DOMContentLoaded',()=>checkEmailVerification())}
+})();
+
 // === i18n STRINGS (preparation) ===
 const STRINGS = {
     welcome: 'Welcome to ONTO',
