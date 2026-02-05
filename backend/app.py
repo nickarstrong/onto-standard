@@ -414,10 +414,13 @@ async def validate_api_key(x_api_key: str = Header(...)) -> dict:
     async with db_pool.acquire() as conn:
         row = await conn.fetchrow("""
             SELECT ak.id, ak.organization_id, ak.is_active, 
-                   o.name, o.tier, o.slug, o.stripe_customer_id
+                   o.name, o.tier, o.slug, o.stripe_customer_id, o.is_banned,
+                   u.id as user_id, u.is_active as user_active
             FROM api_keys ak
             JOIN organizations o ON ak.organization_id = o.id
+            LEFT JOIN users u ON u.organization_id = o.id
             WHERE ak.key_hash = $1
+            LIMIT 1
         """, key_hash)
         
         if not row:
@@ -425,6 +428,14 @@ async def validate_api_key(x_api_key: str = Header(...)) -> dict:
         
         if not row['is_active']:
             raise HTTPException(status_code=401, detail="API key revoked")
+        
+        # Check organization banned status
+        if row.get('is_banned'):
+            raise HTTPException(status_code=403, detail="Account suspended")
+        
+        # Check user status (if user exists)
+        if row['user_id'] and row['user_active'] is False:
+            raise HTTPException(status_code=403, detail="Account deactivated")
         
         # Update last_used_at
         await conn.execute(
@@ -449,8 +460,8 @@ async def validate_architect(x_api_key: str = Header(...)) -> dict:
     async with db_pool.acquire() as conn:
         # First try portal_api_key (plain text from organizations)
         row = await conn.fetchrow("""
-            SELECT o.id as organization_id, o.name, o.tier, o.slug,
-                   u.id as user_id, u.email
+            SELECT o.id as organization_id, o.name, o.tier, o.slug, o.is_banned,
+                   u.id as user_id, u.email, u.is_active as user_active
             FROM organizations o
             JOIN users u ON u.organization_id = o.id
             WHERE o.portal_api_key = $1
@@ -462,8 +473,8 @@ async def validate_architect(x_api_key: str = Header(...)) -> dict:
             key_hash = hash_api_key(x_api_key)
             row = await conn.fetchrow("""
                 SELECT ak.id, ak.organization_id, ak.is_active,
-                       u.id as user_id, u.email,
-                       o.name, o.tier, o.slug
+                       u.id as user_id, u.email, u.is_active as user_active,
+                       o.name, o.tier, o.slug, o.is_banned
                 FROM api_keys ak
                 JOIN organizations o ON ak.organization_id = o.id
                 JOIN users u ON u.organization_id = o.id
@@ -473,6 +484,14 @@ async def validate_architect(x_api_key: str = Header(...)) -> dict:
         
         if not row:
             raise HTTPException(status_code=404)
+        
+        # Check organization banned status
+        if row.get('is_banned'):
+            raise HTTPException(status_code=403, detail="Account suspended")
+        
+        # Check user status
+        if row['user_active'] is False:
+            raise HTTPException(status_code=403, detail="Account deactivated")
         
         # Check reference access
         has_access = await is_architect(row['user_id'])
@@ -927,15 +946,23 @@ async def login(request: LoginRequest):
     async with db_pool.acquire() as conn:
         # Get user by email first
         row = await conn.fetchrow("""
-            SELECT u.id, u.name, u.organization_id, u.role, u.email_verified, u.password_hash, 
-                   o.name as org_name, o.tier, o.portal_api_key
+            SELECT u.id, u.name, u.organization_id, u.role, u.email_verified, u.password_hash,
+                   u.is_active,
+                   o.name as org_name, o.tier, o.portal_api_key, o.is_banned
             FROM users u
             JOIN organizations o ON u.organization_id = o.id
-            WHERE u.email = $1 AND u.is_active = true
+            WHERE u.email = $1
         """, email)
         
         if not row:
             raise HTTPException(status_code=401, detail="Invalid credentials")
+        
+        # Check account status BEFORE password verification (prevent timing attacks)
+        if not row.get('is_active', True):
+            raise HTTPException(status_code=403, detail="Account deactivated")
+        
+        if row.get('is_banned', False):
+            raise HTTPException(status_code=403, detail="Account suspended. Contact support.")
         
         # Verify password (supports bcrypt and legacy SHA256)
         if not verify_password(request.password, row['password_hash']):
@@ -3346,6 +3373,10 @@ async def admin_update_tier(
     if not db_pool:
         raise HTTPException(status_code=404)
     
+    # Self-protection: cannot modify own tier
+    if user_id == ref.get('user_id'):
+        raise HTTPException(status_code=403, detail="Signal 104b: Cannot modify own account")
+    
     if tier not in ['open', 'standard', 'critical']:
         raise HTTPException(status_code=400, detail="Invalid tier")
     
@@ -3370,6 +3401,10 @@ async def admin_suspend_user(user_id: str, suspend: bool = True, ref: dict = Dep
     if not db_pool:
         raise HTTPException(status_code=404)
     
+    # Self-protection: cannot suspend yourself
+    if user_id == ref.get('user_id'):
+        raise HTTPException(status_code=403, detail="Signal 104b: Cannot modify own account")
+    
     async with db_pool.acquire() as conn:
         user = await conn.fetchrow("SELECT organization_id FROM users WHERE id = $1", user_id)
         if not user:
@@ -3390,6 +3425,10 @@ async def admin_delete_user(user_id: str, ref: dict = Depends(validate_architect
     """Delete user and their organization (admin only)"""
     if not db_pool:
         raise HTTPException(status_code=404)
+    
+    # Self-protection: cannot delete yourself
+    if user_id == ref.get('user_id'):
+        raise HTTPException(status_code=403, detail="Signal 104b: Cannot delete own account")
     
     try:
         async with db_pool.acquire() as conn:
