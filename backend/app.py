@@ -545,39 +545,14 @@ async def check_rate_limit(request: Request, layer: str = "public") -> None:
 # LIFESPAN
 # ============================================================
 
-keep_alive_task = None
-
-async def signal_keep_alive():
-    """Ping signal server every 4 minutes to prevent cold starts"""
-    try:
-        import httpx
-    except ImportError:
-        print("[KEEP-ALIVE] httpx not installed, skipping")
-        return
-    
-    while True:
-        try:
-            async with httpx.AsyncClient() as client:
-                await client.get(f"{SIGNAL_URL}/ping", timeout=5)
-                print("[KEEP-ALIVE] Signal server pinged")
-        except Exception as e:
-            print(f"[KEEP-ALIVE] Failed: {e}")
-        await asyncio.sleep(240)  # 4 minutes
+# Keep-alive disabled until httpx added to Railway
+# TODO: Enable when httpx in requirements.txt on Railway
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    global keep_alive_task
     await init_db()
-    
-    # Start keep-alive task
-    keep_alive_task = asyncio.create_task(signal_keep_alive())
-    print("[STARTUP] Keep-alive task started (4 min interval)")
-    
+    print("[STARTUP] Database initialized")
     yield
-    
-    # Cancel keep-alive on shutdown
-    if keep_alive_task:
-        keep_alive_task.cancel()
     await close_db()
 
 # ============================================================
