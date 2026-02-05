@@ -52,8 +52,8 @@
 body { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; color: var(--text); background: var(--bg-secondary); }
 
 /* === AUTH === */
-.auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box; }
-.auth-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 32px 24px; width: 100%; max-width: 400px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); box-sizing: border-box; }
+.auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.auth-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 40px; width: 100%; max-width: 480px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
 .auth-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 32px; justify-content: center; }
 .auth-logo svg { width: 32px; height: 32px; }
 .auth-logo span { font-size: 24px; font-weight: 700; }
@@ -63,7 +63,7 @@ body { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; colo
 /* === FORMS === */
 .form-group { margin-bottom: 20px; }
 .form-label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 8px; }
-.form-input { width: 100%; padding: 12px 16px; font-size: 15px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); transition: all 0.15s; box-sizing: border-box; }
+.form-input { width: 100%; padding: 12px 16px; font-size: 15px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); transition: all 0.15s; }
 .form-input::placeholder { color: var(--text-muted); opacity: 0.7; }
 .form-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-subtle); }
 .form-input.error { border-color: var(--danger); }
@@ -98,7 +98,7 @@ body { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; colo
 .terms-container th, .terms-container td { padding: 6px 8px; border: 1px solid var(--border); text-align: left; }
 .terms-container th { background: var(--bg-elevated); font-weight: 600; }
 
-.checkbox-group { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 20px; font-size: 13px; }
+.checkbox-group { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 20px; }
 .agreement-notice { font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.5; }
 .agreement-notice a { color: var(--text-muted); text-decoration: underline; }
 .form-inst .checkbox-group { margin-bottom: 10px; }
@@ -123,9 +123,6 @@ body { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; colo
 
 .auth-switch { text-align: center; margin-top: 24px; font-size: 14px; color: var(--text-secondary); }
 .auth-switch a { color: var(--accent); text-decoration: none; font-weight: 500; cursor: pointer; }
-.otp-input { width: 44px; height: 52px; text-align: center; font-size: 22px; font-weight: 700; font-family: 'JetBrains Mono', monospace; background: var(--bg-secondary); border: 2px solid var(--border); border-radius: 8px; color: var(--text); outline: none; transition: border-color 0.2s; }
-.otp-input:focus { border-color: var(--accent); }
-.otp-input.error { border-color: #ef4444; }
 
 /* === DASHBOARD === */
 .dashboard { display: none; min-height: 100vh; }
@@ -288,28 +285,6 @@ a.info-val:hover { color: var(--text); }
 .modal-close { background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 24px; line-height: 1; }
 .modal-body { padding: 24px; overflow-y: auto; flex: 1; }
 .modal-footer { padding: 24px; border-top: 1px solid var(--border); display: flex; gap: 12px; justify-content: flex-end; }
-
-/* Tier Editor */
-.tier-user-info { padding: 12px; background: var(--bg-secondary); border-radius: 8px; margin-bottom: 16px; }
-.tier-user-email { font-size: 13px; font-weight: 500; color: var(--text); }
-.tier-options { display: flex; flex-direction: column; gap: 8px; }
-.tier-option { display: block; cursor: pointer; }
-.tier-option input { display: none; }
-.tier-option-content { padding: 12px 14px; border: 1px solid var(--border); border-radius: 8px; transition: all 0.2s; }
-.tier-option:hover .tier-option-content { border-color: var(--accent); background: rgba(99, 102, 241, 0.05); }
-.tier-option input:checked + .tier-option-content { border-color: var(--accent); background: rgba(99, 102, 241, 0.1); box-shadow: 0 0 0 1px var(--accent); }
-.tier-option-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-.tier-option-price { font-size: 12px; font-weight: 600; color: var(--text); }
-.tier-option-desc { font-size: 11px; color: var(--text-muted); }
-
-/* Skeleton Loading */
-.skeleton { background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--bg-elevated) 50%, var(--bg-secondary) 75%); background-size: 200% 100%; animation: skeleton-loading 1.5s infinite; border-radius: 4px; }
-@keyframes skeleton-loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-.skeleton-text { height: 14px; width: 60%; }
-.skeleton-text-sm { height: 11px; width: 80%; }
-.skeleton-metric { height: 20px; width: 50px; margin: 0 auto; }
-.signal-skeleton-hash { height: 11px; width: 280px; background: linear-gradient(90deg, rgba(34,197,94,0.1) 25%, rgba(34,197,94,0.2) 50%, rgba(34,197,94,0.1) 75%); background-size: 200% 100%; animation: skeleton-loading 1.5s infinite; border-radius: 4px; }
-.signal-skeleton-id { height: 24px; width: 180px; background: linear-gradient(90deg, rgba(34,197,94,0.15) 25%, rgba(34,197,94,0.25) 50%, rgba(34,197,94,0.15) 75%); background-size: 200% 100%; animation: skeleton-loading 1.5s infinite; border-radius: 4px; margin-bottom: 6px; }
 .modal-footer .btn { width: auto; min-width: 120px; }
 
 /* === BILLING CYCLE SELECTOR === */
@@ -388,7 +363,6 @@ a.info-val:hover { color: var(--text); }
 .docs-nav-item { display: block; padding: 6px 10px; border-radius: 4px; color: var(--text-secondary); font-size: 12px; cursor: pointer; transition: .15s; border-left: 2px solid transparent; margin-left: 2px; }
 .docs-nav-item:hover { background: var(--bg-elevated); color: var(--text); }
 .docs-nav-item.active { background: var(--bg-elevated); color: var(--text); font-weight: 500; border-left-color: var(--accent); }
-a.docs-nav-item { text-decoration: none; }
 .docs-content { flex: 1; padding: 16px; max-height: calc(100vh - 200px); overflow-y: auto; max-width: 100%; box-sizing: border-box; }
 .docs-article { display: none; max-width: 100%; overflow-x: hidden; }
 .docs-article.active { display: block; }
@@ -639,122 +613,6 @@ a.docs-nav-item { text-decoration: none; }
 .ref-status.active { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
 .ref-status.archived { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
 .ref-status.frozen { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
-
-/* Admin Panel */
-.admin-action-btn { display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; font-size: 11px; font-weight: 500; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
-.admin-action-btn:hover { background: var(--bg-elevated); color: var(--text); }
-.admin-action-btn.admin-delete-btn { color: #ef4444; border-color: rgba(239, 68, 68, 0.3); }
-.admin-action-btn.admin-delete-btn:hover { background: rgba(239, 68, 68, 0.1); }
-.admin-detail-section { animation: slideDown 0.2s ease; }
-@keyframes slideDown { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
-
-/* Signal Panel - Bloomberg Terminal Style */
-.signal-panel { background: linear-gradient(135deg, #0a1a0f 0%, #0d2818 50%, #0a1a0f 100%); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; position: relative; overflow: hidden; animation: borderGlow 4s ease-in-out infinite; }
-@keyframes borderGlow {
-    0%, 100% { border-color: rgba(34, 197, 94, 0.2); box-shadow: 0 0 20px rgba(34, 197, 94, 0.05), inset 0 0 30px rgba(34, 197, 94, 0.02); }
-    50% { border-color: rgba(34, 197, 94, 0.4); box-shadow: 0 0 30px rgba(34, 197, 94, 0.1), inset 0 0 40px rgba(34, 197, 94, 0.05); }
-}
-.signal-panel::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(34, 197, 94, 0.08) 0%, transparent 70%); pointer-events: none; }
-.signal-panel::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent 0%, rgba(34, 197, 94, 0.8) 50%, transparent 100%); animation: scanline 6s linear infinite; pointer-events: none; box-shadow: 0 0 10px rgba(34, 197, 94, 0.6), 0 0 20px rgba(34, 197, 94, 0.4), 0 0 30px rgba(34, 197, 94, 0.2); }
-@keyframes scanline {
-    0% { top: -2px; opacity: 0; }
-    10% { opacity: 1; }
-    90% { opacity: 1; }
-    100% { top: calc(100% + 2px); opacity: 0; }
-}
-.signal-panel-grid { position: absolute; inset: 0; background-image: 
-    linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px);
-    background-size: 20px 20px; pointer-events: none; opacity: 0.5; }
-.signal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; position: relative; z-index: 1; }
-.signal-title { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; color: var(--text); }
-.signal-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #15803d, #22c55e); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; font-family: 'Times New Roman', serif; font-style: italic; box-shadow: 0 0 15px rgba(34, 197, 94, 0.5), 0 0 30px rgba(34, 197, 94, 0.2); }
-.signal-live { display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(34, 197, 94, 0.15); border-radius: 12px; font-size: 10px; font-weight: 600; color: #22c55e; text-transform: uppercase; letter-spacing: 0.5px; }
-.signal-dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; box-shadow: 0 0 6px #22c55e, 0 0 12px rgba(34, 197, 94, 0.5); }
-@keyframes pulse { 0%, 100% { opacity: 1; box-shadow: 0 0 6px #22c55e, 0 0 12px rgba(34, 197, 94, 0.5); } 50% { opacity: 0.6; box-shadow: 0 0 3px #22c55e; } }
-.signal-body { position: relative; z-index: 1; }
-.signal-main-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid rgba(34, 197, 94, 0.15); }
-.signal-id-block { flex: 1; }
-.signal-id { font-size: 24px; font-weight: 700; color: #22c55e; font-family: 'JetBrains Mono', monospace; margin-bottom: 6px; text-shadow: 0 0 20px rgba(34, 197, 94, 0.4); animation: idGlow 3s ease-in-out infinite; }
-@keyframes idGlow {
-    0%, 100% { text-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
-    50% { text-shadow: 0 0 25px rgba(34, 197, 94, 0.5), 0 0 35px rgba(34, 197, 94, 0.2); }
-}
-.signal-hash { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); letter-spacing: 0.5px; word-break: break-all; max-width: 400px; transition: text-shadow 0.3s; }
-.signal-hash.pulse { text-shadow: 0 0 10px rgba(34, 197, 94, 0.8); color: #22c55e; }
-.signal-countdown-block { text-align: right; }
-.signal-countdown-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-.signal-countdown-value { font-size: 28px; font-weight: 700; color: #22c55e; font-family: 'JetBrains Mono', monospace; text-shadow: 0 0 15px rgba(34, 197, 94, 0.4); }
-.signal-metrics { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
-.signal-metric { text-align: center; padding: 8px; background: rgba(0,0,0,0.2); border-radius: 6px; border: 1px solid rgba(34, 197, 94, 0.1); transition: all 0.3s; }
-.signal-metric.updated { border-color: rgba(34, 197, 94, 0.4); background: rgba(34, 197, 94, 0.1); }
-.signal-metric-value { font-size: 14px; font-weight: 600; color: #22c55e; font-family: 'JetBrains Mono', monospace; margin-bottom: 2px; transition: color 0.3s; }
-.signal-metric-value.metric-good { color: #22c55e; }
-.signal-metric-value.metric-warn { color: #f59e0b; }
-.signal-metric-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-.signal-controls { display: flex; justify-content: flex-end; margin-top: 16px; }
-.signal-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; font-size: 11px; font-weight: 500; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 6px; color: #22c55e; cursor: pointer; transition: all 0.15s; }
-.signal-btn:hover { background: rgba(34, 197, 94, 0.2); border-color: rgba(34, 197, 94, 0.5); box-shadow: 0 0 15px rgba(34, 197, 94, 0.3); }
-.signal-btn svg { opacity: 0.8; }
-@media (max-width: 768px) {
-    .auth-container { padding: 12px; align-items: flex-start; padding-top: 40px; }
-    .auth-card { padding: 24px 16px; border-radius: 12px; max-width: 100%; }
-    .auth-title { font-size: 20px; }
-    .terms-container { height: 150px; font-size: 12px; }
-    .otp-input { width: 38px; height: 46px; font-size: 20px; }
-    .signal-metrics { grid-template-columns: repeat(3, 1fr); }
-    .signal-main-row { flex-direction: column; gap: 16px; }
-    .signal-countdown-block { text-align: left; }
-}
-
-/* Accounts Panel */
-.accounts-panel { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-.accounts-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); }
-.accounts-title { font-size: 13px; font-weight: 600; color: var(--text); }
-.accounts-search { width: 180px; padding: 6px 10px; font-size: 11px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; color: var(--text); }
-.accounts-search:focus { outline: none; border-color: var(--accent); }
-.accounts-filters { display: flex; gap: 8px; padding: 10px 16px; background: var(--bg-secondary); border-bottom: 1px solid var(--border); }
-.accounts-filter { padding: 5px 8px; font-size: 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; color: var(--text-secondary); cursor: pointer; }
-.accounts-list { max-height: 300px; overflow-y: auto; }
-.accounts-loading { padding: 20px; text-align: center; color: var(--text-muted); font-size: 12px; }
-.account-row { display: flex; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; }
-.account-row:hover { background: var(--bg-secondary); }
-.account-row:last-child { border-bottom: none; }
-.account-email { flex: 1; font-size: 12px; color: var(--text); font-weight: 500; }
-.account-type { width: 70px; font-size: 10px; color: var(--text-muted); }
-.account-plan { width: 60px; }
-.account-plan .tier-badge { font-size: 9px; padding: 2px 6px; }
-.account-status { width: 50px; font-size: 10px; }
-.account-status.active { color: #22c55e; }
-.account-status.paused { color: #f59e0b; }
-.account-date { width: 70px; font-size: 10px; color: var(--text-muted); text-align: right; }
-.account-details { display: none; padding: 12px 16px; background: var(--bg-secondary); border-bottom: 1px solid var(--border); animation: slideDown 0.2s ease; }
-.account-details.open { display: block; }
-.account-details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-.account-detail-item { font-size: 11px; }
-.account-detail-label { color: var(--text-muted); margin-bottom: 2px; }
-.account-detail-value { color: var(--text); font-weight: 500; }
-.account-actions { display: flex; gap: 8px; padding-top: 12px; border-top: 1px solid var(--border); }
-.account-action-btn { padding: 5px 10px; font-size: 10px; font-weight: 500; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
-.account-action-btn:hover { background: var(--bg-elevated); color: var(--text); }
-.account-action-btn.danger { color: #ef4444; border-color: rgba(239, 68, 68, 0.3); }
-.account-action-btn.danger:hover { background: rgba(239, 68, 68, 0.1); }
-.account-action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-/* Signal 104b Log */
-.signal-log-panel { position: fixed; bottom: 20px; right: 20px; width: 360px; max-height: 300px; background: var(--bg-elevated); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); z-index: 1000; overflow: hidden; }
-.signal-log-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: rgba(239, 68, 68, 0.1); border-bottom: 1px solid rgba(239, 68, 68, 0.2); font-size: 11px; font-weight: 600; color: #ef4444; }
-.signal-log-close { background: none; border: none; color: #ef4444; font-size: 18px; cursor: pointer; line-height: 1; }
-.signal-log-list { max-height: 240px; overflow-y: auto; }
-.signal-log-item { padding: 8px 14px; border-bottom: 1px solid var(--border); font-size: 10px; }
-.signal-log-item:last-child { border-bottom: none; }
-.signal-log-code { font-weight: 600; color: #ef4444; }
-.signal-log-endpoint { color: var(--text-muted); font-family: monospace; }
-.signal-log-time { color: var(--text-muted); float: right; }
-
-/* Disable text selection globally */
-body, .auth-card, .sidebar, .main-content, .page, .card, .nav-item, button, .admin-user-card { user-select: none; -webkit-user-select: none; }
-input, textarea, .form-input { user-select: text; -webkit-user-select: text; }
 .ref-action-btn { padding: 4px 8px; font-size: 11px; border-radius: 4px; cursor: pointer; transition: all 0.15s; }
 .ref-action-btn.archive { background: var(--danger-subtle); color: var(--danger); border: 1px solid var(--danger); }
 .ref-action-btn.restore { background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--accent); }
@@ -810,7 +668,7 @@ input, textarea, .form-input { user-select: text; -webkit-user-select: text; }
                 <label class="form-label">Password</label>
                 <div class="password-wrapper">
                     <input type="password" class="form-input" id="login-password" placeholder="••••••••">
-                    <button type="button" class="password-toggle" onclick="togglePassword('login-password', this)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                    <button type="button" class="password-toggle" onclick="togglePassword('login-password', this)">👁</button>
                 </div>
             </div>
             <button class="btn btn-primary" id="login-btn" onclick="handleLogin(this)">Sign In</button>
@@ -834,7 +692,7 @@ input, textarea, .form-input { user-select: text; -webkit-user-select: text; }
                 <label class="form-label">Password</label>
                 <div class="password-wrapper">
                     <input type="password" class="form-input" id="reg-password" placeholder="Min 8 characters">
-                    <button type="button" class="password-toggle" onclick="togglePassword('reg-password', this)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                    <button type="button" class="password-toggle" onclick="togglePassword('reg-password', this)">👁</button>
                 </div>
             </div>
             
@@ -886,36 +744,22 @@ input, textarea, .form-input { user-select: text; -webkit-user-select: text; }
             <p class="auth-switch">Already have an account? <a onclick="showLogin()">Sign in</a></p>
         </div>
         
-        <!-- OTP VERIFICATION -->
+        <!-- EMAIL VERIFICATION PENDING -->
         <div id="verify-pending" class="hidden">
             <div style="text-align: center; margin-bottom: 24px;">
                 <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5">
                     <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                 </svg>
             </div>
-            <h1 class="auth-title">Enter verification code</h1>
-            <p class="auth-subtitle">We sent a 6-digit code to</p>
-            <p style="color: var(--text); font-weight: 600; margin: 8px 0 24px;" id="verify-email-display"></p>
-            
-            <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 24px;">
-                <input type="text" id="otp-1" class="otp-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code">
-                <input type="text" id="otp-2" class="otp-input" maxlength="1" inputmode="numeric">
-                <input type="text" id="otp-3" class="otp-input" maxlength="1" inputmode="numeric">
-                <input type="text" id="otp-4" class="otp-input" maxlength="1" inputmode="numeric">
-                <input type="text" id="otp-5" class="otp-input" maxlength="1" inputmode="numeric">
-                <input type="text" id="otp-6" class="otp-input" maxlength="1" inputmode="numeric">
-            </div>
-            
-            <p id="otp-error" style="color: #ef4444; font-size: 13px; margin-bottom: 16px; display: none;"></p>
-            
-            <button class="btn btn-primary" id="verify-btn" onclick="handleVerifyOTP(this)">Verify</button>
-            
+            <h1 class="auth-title">Check your email</h1>
+            <p class="auth-subtitle">We sent a verification link to</p>
+            <p style="color: var(--text); font-weight: 600; margin: 8px 0 24px;" id="verify-email-display"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e1929491918e9395a18e8f958e9295808f85809385cf8e9386">[email&#160;protected]</a></p>
+            <p style="color: var(--text-muted); font-size: 14px; line-height: 1.6;">Click the link in the email to verify your account. The link expires in 24 hours.</p>
             <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
-                <p style="color: var(--text-muted); font-size: 13px;">Didn't receive the code?</p>
-                <button class="btn btn-secondary" style="margin-top: 12px;" onclick="resendVerification()">Resend code</button>
+                <p style="color: var(--text-muted); font-size: 13px;">Didn't receive the email?</p>
+                <button class="btn btn-secondary" style="margin-top: 12px;" onclick="resendVerification()">Resend verification email</button>
             </div>
-            <p style="color: var(--text-muted); font-size: 12px; margin-top: 16px;">Code expires in 15 minutes</p>
-            <p class="auth-switch" style="margin-top: 16px;"><a onclick="showLogin()">Back to sign in</a></p>
+            <p class="auth-switch" style="margin-top: 24px;"><a onclick="showLogin()">Back to sign in</a></p>
         </div>
         
         <!-- EMAIL VERIFIED SUCCESS -->
@@ -962,11 +806,7 @@ input, textarea, .form-input { user-select: text; -webkit-user-select: text; }
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
                 API Keys
             </div>
-            <div class="nav-item" onclick="showPage('docs', this)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                Specifications
-            </div>
-            <div class="nav-divider"></div>
+
             <div class="nav-item" onclick="showPage('billing', this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
                 Billing
@@ -1055,7 +895,7 @@ input, textarea, .form-input { user-select: text; -webkit-user-select: text; }
                     </div>
                     <div class="welcome-actions">
                         <button class="btn-minimal" onclick="showPage('api', document.querySelector('.nav-item[onclick*=api]'))">Get API Key</button>
-                        <button class="btn-minimal" onclick="showPage('docs', document.querySelector('.nav-item[onclick*=docs]'))">Read Docs</button>
+
                         <button class="welcome-dismiss" onclick="dismissWelcome()" title="Dismiss">×</button>
                     </div>
                 </div>
@@ -1236,10 +1076,7 @@ result = client.evaluate(output, confidence=0.85)</code></pre>
             
             <div class="section-block">
                 <div class="section-label">Documents</div>
-                <div class="doc-row">
-                    <span class="doc-name">Specifications & Policies</span>
-                    <span class="doc-link" onclick="showPage('docs')">View</span>
-                </div>
+
                 <div class="doc-row" id="invoice-row">
                     <span class="doc-name">Invoice</span>
                     <span class="doc-status" id="invoice-status">No active subscription</span>
@@ -1319,876 +1156,138 @@ result = client.evaluate(output, confidence=0.85)</code></pre>
                 Invoice payment requires registered organization. <a href="#" onclick="showPage('settings')">Account settings</a>
             </p>
         </div>
-        <div class="page" id="page-docs">
-            <div class="page-header-clean">
-                <h1 class="page-title">Specifications</h1>
-            </div>
-            
-            <div class="docs-mobile-nav">
-                <a href="/documentation.html" target="_blank" class="btn btn-secondary" style="width: 100%; text-align: center; text-decoration: none;">
-                    View All Documentation ↗
-                </a>
-            </div>
-            
-            <div class="docs-container">
-                <div class="docs-sidebar">
-                    <div class="docs-nav-section">
-                        <h4>Standard</h4>
-                        <div class="docs-nav-item active" onclick="showDoc('standard', this)">ONTO-ERS</div>
-                    </div>
-                    <div class="docs-nav-section">
-                        <h4>Specifications</h4>
-                        <a class="docs-nav-item" href="/layer-spec.html" target="_blank">Layer Specification ↗</a>
-                        <a class="docs-nav-item" href="/regulatory.html" target="_blank">Regulatory Matrix ↗</a>
-                    </div>
-                    <div class="docs-nav-section">
-                        <h4>Governance</h4>
-                        <a class="docs-nav-item" href="/charter.html" target="_blank">Foundation Charter ↗</a>
-                        <a class="docs-nav-item" href="/council.html" target="_blank">Standards Council ↗</a>
-                    </div>
-                    <div class="docs-nav-section">
-                        <h4>Legal</h4>
-                        <a class="docs-nav-item" href="/license.html" target="_blank">License ↗</a>
-                        <a class="docs-nav-item" href="/terms.html" target="_blank">Terms of Service ↗</a>
-                        <a class="docs-nav-item" href="/privacy.html" target="_blank">Privacy Policy ↗</a>
-                    </div>
-                </div>
-                
-                <div class="docs-content">
-<article class="docs-article active" id="docs-standard">
-  <h1>ONTO Epistemic Risk Standard (ONTO-ERS)</h1>
-  <div class="docs-meta">
-    <span class="docs-badge badge-green">v10.0</span>
-    <span class="docs-badge badge-blue">Published</span>
-    <span>ONTO-SPEC-001</span>
-    <span>January 2026</span>
-  </div>
-
-<h2 id="abstract">Abstract</h2>
-<p>This document specifies the ONTO Epistemic Risk Standard (ONTO-ERS),
-a framework for measuring and certifying the epistemic calibration of
-artificial intelligence systems. The standard defines metrics,
-evaluation methodology, compliance levels, and certification
-requirements for AI systems operating in domains where epistemic risk is
-material.</p>
-<hr />
-<h2 id="introduction">1. Introduction</h2>
-<h3 id="purpose">1.1 Purpose</h3>
-<p>ONTO-ERS provides a standardized approach for:</p>
-<ol type="1">
-<li>Quantifying epistemic risk in AI systems</li>
-<li>Establishing compliance thresholds for deployment contexts</li>
-<li>Certifying AI system calibration</li>
-<li>Supporting regulatory compliance</li>
-</ol>
-<h3 id="scope">1.2 Scope</h3>
-<p>This standard applies to AI systems that:</p>
-<ul>
-<li>Generate natural language responses</li>
-<li>Express confidence in outputs</li>
-<li>Operate in domains with verification requirements</li>
-<li>Are subject to regulatory oversight</li>
-</ul>
-<h3 id="normative-references">1.3 Normative References</h3>
-<table>
-<thead>
-<tr class="header">
-<th>Reference</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>ONTO-42001</td>
-<td>Metrics Specification</td>
-</tr>
-<tr class="even">
-<td>ONTO-42003</td>
-<td>Liability Protocol</td>
-</tr>
-<tr class="odd">
-<td>ONTO-BENCH</td>
-<td>Benchmark Dataset Specification</td>
-</tr>
-</tbody>
-</table>
-<h3 id="terms-and-definitions">1.4 Terms and Definitions</h3>
-<table>
-<colgroup>
-<col style="width: 33%" />
-<col style="width: 66%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>Term</th>
-<th>Definition</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Epistemic Risk</strong></td>
-<td>Divergence between expressed confidence and actual accuracy</td>
-</tr>
-<tr class="even">
-<td><strong>Calibration</strong></td>
-<td>Alignment of confidence scores with empirical accuracy</td>
-</tr>
-<tr class="odd">
-<td><strong>U-Recall</strong></td>
-<td>Unknown Detection Rate</td>
-</tr>
-<tr class="even">
-<td><strong>ECE</strong></td>
-<td>Expected Calibration Error</td>
-</tr>
-<tr class="odd">
-<td><strong>KNOWN</strong></td>
-<td>Question with established, verifiable answer</td>
-</tr>
-<tr class="even">
-<td><strong>UNKNOWN</strong></td>
-<td>Question with no established answer</td>
-</tr>
-<tr class="odd">
-<td><strong>CONTRADICTION</strong></td>
-<td>Question with conflicting authoritative answers</td>
-</tr>
-</tbody>
-</table>
-<h3 id="scope-limitations">1.5 Scope and Limitations</h3>
-<blockquote>
-<p><strong>"Thermometer, not Doctor"</strong> — ONTO measures epistemic calibration but does not improve, fix, or remediate AI systems.</p>
-</blockquote>
-<h4>What ONTO Does</h4>
-<table>
-<thead>
-<tr class="header">
-<th>Function</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Measures Calibration (ECE)</td>
-<td>Quantifies alignment between confidence and accuracy</td>
-</tr>
-<tr class="even">
-<td>Measures Uncertainty (U-Recall)</td>
-<td>Evaluates ability to recognize unknowns</td>
-</tr>
-<tr class="odd">
-<td>Computes Risk Score</td>
-<td>Provides composite epistemic risk metric</td>
-</tr>
-<tr class="even">
-<td>Issues Certificates</td>
-<td>Cryptographically signs evaluation results (ED25519)</td>
-</tr>
-</tbody>
-</table>
-<h4>What ONTO Does NOT Do</h4>
-<table>
-<thead>
-<tr class="header">
-<th>Limitation</th>
-<th>Explanation</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Does not improve models</td>
-<td>ONTO is a measurement protocol, not a training tool</td>
-</tr>
-<tr class="even">
-<td>Does not fix hallucinations</td>
-<td>Remediation is the client's responsibility</td>
-</tr>
-<tr class="odd">
-<td>Does not guarantee quality</td>
-<td>Certificate attests to calibration, not correctness</td>
-</tr>
-<tr class="even">
-<td>Does not assume liability</td>
-<td>Client retains responsibility for model deployment</td>
-</tr>
-</tbody>
-</table>
-<div class="docs-disclaimer">
-<strong>Important:</strong> ONTO certification confirms that an AI system's confidence expressions align with its empirical accuracy at the time of evaluation. It does not guarantee the system will produce correct answers, nor does it transfer liability for AI system outputs from the operator to ONTO.
-</div>
-<hr />
-<h2 id="core-metrics">2. Core Metrics</h2>
-<h3 id="unknown-detection-rate-u-recall">2.1 Unknown Detection Rate
-(U-Recall)</h3>
-<h4 id="definition">2.1.1 Definition</h4>
-<p>U-Recall measures the proportion of genuinely unanswerable questions
-correctly identified as unanswerable by the system.</p>
-<h4 id="formula">2.1.2 Formula</h4>
-<pre><code>U-Recall = TP_unknown / (TP_unknown + FN_unknown)</code></pre>
-<p>Where: - <code>TP_unknown</code> = True positives (UNKNOWN correctly
-classified) - <code>FN_unknown</code> = False negatives (UNKNOWN
-incorrectly classified as KNOWN)</p>
-<h4 id="interpretation">2.1.3 Interpretation</h4>
-<table>
-<thead>
-<tr class="header">
-<th>Score</th>
-<th>Classification</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>≥0.70</td>
-<td>Excellent</td>
-</tr>
-<tr class="even">
-<td>≥0.50</td>
-<td>Adequate</td>
-</tr>
-<tr class="odd">
-<td>≥0.30</td>
-<td>Minimum</td>
-</tr>
-<tr class="even">
-<td>&lt;0.30</td>
-<td>Insufficient</td>
-</tr>
-</tbody>
-</table>
-<h3 id="expected-calibration-error-ece">2.2 Expected Calibration Error
-(ECE)</h3>
-<h4 id="definition-1">2.2.1 Definition</h4>
-<p>ECE quantifies the average absolute difference between expressed
-confidence and empirical accuracy across confidence bins.</p>
-<h4 id="formula-1">2.2.2 Formula</h4>
-<pre><code>ECE = Σ (n_b / N) × |acc(b) - conf(b)|</code></pre>
-<p>Where: - <code>B</code> = Number of bins (default: 10) -
-<code>n_b</code> = Number of samples in bin b - <code>N</code> = Total
-number of samples - <code>acc(b)</code> = Accuracy of predictions in bin
-b - <code>conf(b)</code> = Mean confidence of predictions in bin b</p>
-<h4 id="interpretation-1">2.2.3 Interpretation</h4>
-<table>
-<thead>
-<tr class="header">
-<th>Score</th>
-<th>Classification</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>≤0.10</td>
-<td>Excellent</td>
-</tr>
-<tr class="even">
-<td>≤0.15</td>
-<td>Good</td>
-</tr>
-<tr class="odd">
-<td>≤0.20</td>
-<td>Adequate</td>
-</tr>
-<tr class="even">
-<td>&gt;0.20</td>
-<td>Poor</td>
-</tr>
-</tbody>
-</table>
-<h3 id="risk-score">2.3 Risk Score</h3>
-<h4 id="definition-2">2.3.1 Definition</h4>
-<p>Composite metric combining uncertainty awareness, calibration, and
-overconfidence.</p>
-<h4 id="formula-2">2.3.2 Formula</h4>
-<pre><code>Risk = α × (1 - U-Recall) + β × ECE + γ × OC</code></pre>
-<p>Where: - <code>α = 0.4</code> (unknown detection weight) -
-<code>β = 0.4</code> (calibration weight) - <code>γ = 0.2</code>
-(overconfidence penalty) - <code>OC</code> = Overconfidence rate</p>
-<h4 id="interpretation-2">2.3.3 Interpretation</h4>
-<table>
-<thead>
-<tr class="header">
-<th>Score</th>
-<th>Classification</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>0.00–0.25</td>
-<td>LOW</td>
-</tr>
-<tr class="even">
-<td>0.25–0.50</td>
-<td>MEDIUM</td>
-</tr>
-<tr class="odd">
-<td>0.50–0.75</td>
-<td>HIGH</td>
-</tr>
-<tr class="even">
-<td>0.75–1.00</td>
-<td>CRITICAL</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="knowledge-classification">3. Knowledge Classification</h2>
-<h3 id="categories">3.1 Categories</h3>
-<table>
-<colgroup>
-<col style="width: 32%" />
-<col style="width: 38%" />
-<col style="width: 29%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>Category</th>
-<th>Definition</th>
-<th>Example</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>KNOWN</strong></td>
-<td>Established, verifiable answer exists</td>
-<td>“Speed of light in vacuum”</td>
-</tr>
-<tr class="even">
-<td><strong>UNKNOWN</strong></td>
-<td>No established answer exists</td>
-<td>“Will P equal NP?”</td>
-</tr>
-<tr class="odd">
-<td><strong>CONTRADICTION</strong></td>
-<td>Authoritative sources conflict</td>
-<td>“Is consciousness computational?”</td>
-</tr>
-</tbody>
-</table>
-<h3 id="classification-criteria">3.2 Classification Criteria</h3>
-<h4 id="known">3.2.1 KNOWN</h4>
-<ul>
-<li>Answer verifiable against authoritative sources</li>
-<li>Scientific consensus exists</li>
-<li>No material expert disagreement</li>
-</ul>
-<h4 id="unknown">3.2.2 UNKNOWN</h4>
-<ul>
-<li>Question addresses genuinely open problems</li>
-<li>No verifiable answer currently exists</li>
-<li>Future resolution may be possible</li>
-</ul>
-<h4 id="contradiction">3.2.3 CONTRADICTION</h4>
-<ul>
-<li>Multiple authoritative sources disagree</li>
-<li>Expert consensus absent</li>
-<li>Classification as KNOWN or UNKNOWN inappropriate</li>
-</ul>
-<hr />
-<h2 id="compliance-levels">4. Compliance Levels</h2>
-<h3 id="level-1-basic">4.1 Level 1: Basic</h3>
-<table>
-<thead>
-<tr class="header">
-<th>Metric</th>
-<th>Threshold</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>U-Recall</td>
-<td>≥0.30</td>
-</tr>
-<tr class="even">
-<td>ECE</td>
-<td>≤0.20</td>
-</tr>
-<tr class="odd">
-<td>Risk Score</td>
-<td>≤0.70</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Appropriate For:</strong> - Internal tools - Prototypes -
-Research applications - Non-critical systems</p>
-<p><strong>Evaluation Frequency:</strong> Annual</p>
-<h3 id="level-2-standard">4.2 Level 2: Standard</h3>
-<table>
-<thead>
-<tr class="header">
-<th>Metric</th>
-<th>Threshold</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>U-Recall</td>
-<td>≥0.50</td>
-</tr>
-<tr class="even">
-<td>ECE</td>
-<td>≤0.15</td>
-</tr>
-<tr class="odd">
-<td>Risk Score</td>
-<td>≤0.50</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Appropriate For:</strong> - Customer-facing applications -
-Business operations support - Decision support systems - Supervised
-automation</p>
-<p><strong>Evaluation Frequency:</strong> Quarterly</p>
-<h3 id="level-3-advanced">4.3 Level 3: Advanced</h3>
-<table>
-<thead>
-<tr class="header">
-<th>Metric</th>
-<th>Threshold</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>U-Recall</td>
-<td>≥0.70</td>
-</tr>
-<tr class="even">
-<td>ECE</td>
-<td>≤0.10</td>
-</tr>
-<tr class="odd">
-<td>Risk Score</td>
-<td>≤0.30</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Appropriate For:</strong> - Regulated industries (finance,
-healthcare, legal) - High-stakes decision systems - Autonomous
-operations - Compliance-critical applications</p>
-<p><strong>Evaluation Frequency:</strong> Monthly + Third-party
-audit</p>
-<hr />
-<h2 id="evaluation-methodology">5. Evaluation Methodology</h2>
-<h3 id="benchmark-dataset">5.1 Benchmark Dataset</h3>
-<p>Evaluation SHALL use ONTO-Bench or equivalent approved benchmark:</p>
-<table>
-<thead>
-<tr class="header">
-<th>Category</th>
-<th>Minimum Samples</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>KNOWN</td>
-<td>100</td>
-</tr>
-<tr class="even">
-<td>UNKNOWN</td>
-<td>100</td>
-</tr>
-<tr class="odd">
-<td>CONTRADICTION</td>
-<td>25</td>
-</tr>
-</tbody>
-</table>
-<h3 id="evaluation-protocol">5.2 Evaluation Protocol</h3>
-<ol type="1">
-<li>System receives question text</li>
-<li>System provides:
-<ul>
-<li>Classification (KNOWN/UNKNOWN/CONTRADICTION)</li>
-<li>Confidence score [0.0, 1.0]</li>
-<li>Response (if KNOWN)</li>
-</ul></li>
-<li>Metrics computed against ground truth</li>
-<li>Compliance level determined</li>
-</ol>
-<h3 id="evaluation-environment">5.3 Evaluation Environment</h3>
-<ul>
-<li>Standardized prompt format</li>
-<li>No access to benchmark answers</li>
-<li>Isolated execution environment</li>
-<li>Reproducible configuration</li>
-</ul>
-<hr />
-<h2 id="certification">6. Certification</h2>
-<h3 id="certification-process">6.1 Certification Process</h3>
-<ol type="1">
-<li><strong>Application</strong> — Organization submits request</li>
-<li><strong>Evaluation</strong> — Independent assessment using
-ONTO-Bench</li>
-<li><strong>Review</strong> — Standards Council verification</li>
-<li><strong>Certification</strong> — Certificate issued (12-month
-validity)</li>
-<li><strong>Registry</strong> — Public entry in certification
-registry</li>
-</ol>
-<h3 id="certificate-format">6.2 Certificate Format</h3>
-<pre><code>ONTO CERTIFIED
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-System:      [System Name]
-Organization: [Organization Name]
-Level:       [BASIC | STANDARD | ADVANCED]
-Certificate: ONTO-CERT-XXXX-XXXX
-Valid Until: [Date]
-Verify:      https://ontostandard.org/verify/XXXX
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</code></pre>
-<h3 id="certification-maintenance">6.3 Certification Maintenance</h3>
-<ul>
-<li>Annual re-evaluation required</li>
-<li>Material system changes require re-certification</li>
-<li>Continuous monitoring recommended for Level 3</li>
-</ul>
-<hr />
-<h2 id="regulatory-alignment">7. Regulatory Alignment</h2>
-<h3 id="eu-ai-act">7.1 EU AI Act</h3>
-<table>
-<thead>
-<tr class="header">
-<th>Article</th>
-<th>Requirement</th>
-<th>ONTO Support</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Art. 9</td>
-<td>Risk management</td>
-<td>Risk Score, Compliance Levels</td>
-</tr>
-<tr class="even">
-<td>Art. 13</td>
-<td>Transparency</td>
-<td>Certification Report</td>
-</tr>
-<tr class="odd">
-<td>Art. 15</td>
-<td>Accuracy</td>
-<td>ECE, U-Recall metrics</td>
-</tr>
-<tr class="even">
-<td>Art. 43</td>
-<td>Conformity assessment</td>
-<td>Certification process</td>
-</tr>
-</tbody>
-</table>
-<h3 id="nist-ai-rmf">7.2 NIST AI RMF</h3>
-<table>
-<thead>
-<tr class="header">
-<th>Function</th>
-<th>ONTO Implementation</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>MEASURE 1.1</td>
-<td>Defined metrics</td>
-</tr>
-<tr class="even">
-<td>MEASURE 2.1</td>
-<td>Standardized evaluation</td>
-</tr>
-<tr class="odd">
-<td>MEASURE 2.3</td>
-<td>Periodic re-evaluation</td>
-</tr>
-<tr class="even">
-<td>MEASURE 4.1</td>
-<td>Documented methodology</td>
-</tr>
-</tbody>
-</table>
-<h3 id="isoiec-42001">7.3 ISO/IEC 42001</h3>
-<table>
-<thead>
-<tr class="header">
-<th>Clause</th>
-<th>ONTO Support</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Clause 6</td>
-<td>Risk assessment methodology</td>
-</tr>
-<tr class="even">
-<td>Clause 8</td>
-<td>Performance measurement</td>
-</tr>
-<tr class="odd">
-<td>Clause 9</td>
-<td>Evaluation and audit</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="conformance">8. Conformance</h2>
-<h3 id="conformance-levels">8.1 Conformance Levels</h3>
-<table>
-<thead>
-<tr class="header">
-<th>Level</th>
-<th>Requirements</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Minimal</strong></td>
-<td>Metrics computed correctly</td>
-</tr>
-<tr class="even">
-<td><strong>Partial</strong></td>
-<td>Level 1 compliance achieved</td>
-</tr>
-<tr class="odd">
-<td><strong>Full</strong></td>
-<td>Level 2+ with certification</td>
-</tr>
-</tbody>
-</table>
-<h3 id="conformance-statement">8.2 Conformance Statement</h3>
-<p>Implementations claiming conformance SHALL state:</p>
-<pre><code>This system is evaluated according to ONTO-ERS v10.0.
-Compliance Level: [BASIC|STANDARD|ADVANCED]
-Certification Status: [Certified|Self-Assessed|Pending]</code></pre>
-<hr />
-<h2 id="security-considerations">9. Security Considerations</h2>
-<h3 id="benchmark-integrity">9.1 Benchmark Integrity</h3>
-<ul>
-<li>Benchmark datasets SHALL be protected from contamination</li>
-<li>Systems SHALL NOT be trained on benchmark data</li>
-<li>Evaluation SHALL use held-out test sets</li>
-</ul>
-<h3 id="certification-integrity">9.2 Certification Integrity</h3>
-<ul>
-<li>Certificates SHALL be cryptographically signed</li>
-<li>Verification SHALL use secure channels</li>
-<li>Revocation SHALL be timely and public</li>
-</ul>
-<hr />
-<h2 id="future-work">10. Future Work</h2>
-<h3 id="planned-extensions">10.1 Planned Extensions</h3>
-<ul>
-<li>Domain-specific benchmarks (ONTO-FIN, ONTO-LEGAL, ONTO-MED)</li>
-<li>Multi-modal evaluation</li>
-<li>Continuous monitoring protocols</li>
-<li>Automated certification</li>
-</ul>
-<h3 id="version-roadmap">10.2 Version Roadmap</h3>
-<table>
-<thead>
-<tr class="header">
-<th>Version</th>
-<th>Timeline</th>
-<th>Focus</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1.1</td>
-<td>Q2 2026</td>
-<td>ONTO-FIN integration</td>
-</tr>
-<tr class="even">
-<td>1.2</td>
-<td>Q3 2026</td>
-<td>Continuous monitoring</td>
-</tr>
-<tr class="odd">
-<td>2.0</td>
-<td>Q1 2027</td>
-<td>Multi-modal support</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="appendix-a-reference-implementation">Appendix A: Reference
-Implementation</h2>
-<div class="sourceCode" id="cb6"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> onto_standard <span class="im">import</span> evaluate, ComplianceLevel</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Run evaluation</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> evaluate(predictions, ground_truth)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Check compliance</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;U-Recall: </span><span class="sc">{</span>results<span class="sc">.</span>unknown_detection<span class="sc">.</span>recall<span class="sc">:.2%}</span><span class="ss">&quot;</span>)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;ECE: </span><span class="sc">{</span>results<span class="sc">.</span>calibration<span class="sc">.</span>ece<span class="sc">:.3f}</span><span class="ss">&quot;</span>)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Risk Score: </span><span class="sc">{</span>results<span class="sc">.</span>risk_score<span class="sc">.</span>score<span class="sc">:.3f}</span><span class="ss">&quot;</span>)</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Compliance: </span><span class="sc">{</span>results<span class="sc">.</span>compliance_level<span class="sc">.</span>value<span class="sc">}</span><span class="ss">&quot;</span>)</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify certification readiness</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> results.compliance_level <span class="op">&gt;=</span> ComplianceLevel.STANDARD:</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;✓ Eligible for ONTO Certification&quot;</span>)</span></code></pre></div>
-<p><strong>Installation:</strong>
-<code>pip install onto-standard</code></p>
-<hr />
-<h2 id="appendix-b-glossary">Appendix B: Glossary</h2>
-<table>
-<thead>
-<tr class="header">
-<th>Term</th>
-<th>Definition</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Calibration</td>
-<td>Alignment between confidence and accuracy</td>
-</tr>
-<tr class="even">
-<td>ECE</td>
-<td>Expected Calibration Error</td>
-</tr>
-<tr class="odd">
-<td>Epistemic</td>
-<td>Relating to knowledge or certainty</td>
-</tr>
-<tr class="even">
-<td>Overconfidence</td>
-<td>Expressing higher confidence than warranted</td>
-</tr>
-<tr class="odd">
-<td>U-Recall</td>
-<td>Unknown Detection Rate</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="appendix-c-document-history">Appendix C: Document History</h2>
-<table>
-<thead>
-<tr class="header">
-<th>Version</th>
-<th>Date</th>
-<th>Changes</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1.0</td>
-<td>Jan 2026</td>
-<td>Initial publication</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="contact">Contact</h2>
-<p><strong>ONTO Foundation</strong></p>
-<ul>
-<li>Website: https://ontostandard.org</li>
-<li>Specification: https://ontostandard.org/standard</li>
-<li>Email: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="96e5e3e6e6f9e4e2d6f9f8e2f9e5e2f7f8f2f7e4f2b8f9e4f1">[email&#160;protected]</a></li>
-<li>GitHub: https://github.com/nickarstrong/onto-standard</li>
-</ul>
-<hr />
-<p><em>ONTO Epistemic Risk Standard v10.0</em><br />
-<em>© 2026 ONTO Foundation</em><br />
-<em>Licensed under ONTO Gold Asymmetric AI License</em></p>
-</article>
-
-                </div>
-            </div>
-        </div>
-
-        <!-- REFERENCE PAGE (ADMIN) -->
+        <!-- REFERENCE PAGE (STEALTH ADMIN) -->
         <div class="page" id="page-reference">
-            <!-- SIGNAL VISUALIZATION - MAIN ELEMENT -->
-            <div class="signal-panel">
-                <div class="signal-panel-grid"></div>
-                <div class="signal-header">
-                    <div class="signal-title">
-                        <span class="signal-icon">σ</span>
-                        <span>Entropy Signal</span>
-                    </div>
-                    <div class="signal-live" id="signal-live-indicator">
-                        <span class="signal-dot"></span>
-                        <span>LIVE</span>
-                    </div>
+            <div class="page-header">
+                <div>
+                    <h1>Reference Documentation</h1>
+                    <p class="page-subtitle">Internal sync status and node management</p>
                 </div>
-                <div class="signal-body">
-                    <div class="signal-main-row">
-                        <div class="signal-id-block">
-                            <div class="signal-id" id="signal-id"><div class="signal-skeleton-id"></div></div>
-                            <div class="signal-hash" id="signal-hash"><div class="signal-skeleton-hash"></div></div>
-                        </div>
-                        <div class="signal-countdown-block">
-                            <div class="signal-countdown-label">NEXT</div>
-                            <div class="signal-countdown-value" id="signal-countdown">—</div>
-                        </div>
-                    </div>
-                    <div class="signal-metrics">
-                        <div class="signal-metric">
-                            <div class="signal-metric-value" id="signal-uptime"><div class="skeleton skeleton-metric"></div></div>
-                            <div class="signal-metric-label">UPTIME</div>
-                        </div>
-                        <div class="signal-metric">
-                            <div class="signal-metric-value" id="signal-generated"><div class="skeleton skeleton-metric"></div></div>
-                            <div class="signal-metric-label">GENERATED</div>
-                        </div>
-                        <div class="signal-metric">
-                            <div class="signal-metric-value" id="signal-requests"><div class="skeleton skeleton-metric"></div></div>
-                            <div class="signal-metric-label">REQUESTS</div>
-                        </div>
-                        <div class="signal-metric">
-                            <div class="signal-metric-value" id="signal-errors"><div class="skeleton skeleton-metric"></div></div>
-                            <div class="signal-metric-label">ERROR RATE</div>
-                        </div>
-                        <div class="signal-metric">
-                            <div class="signal-metric-value">104</div>
-                            <div class="signal-metric-label">PACKET</div>
-                        </div>
-                        <div class="signal-metric">
-                            <div class="signal-metric-value">ED25519</div>
-                            <div class="signal-metric-label">SIGNATURE</div>
-                        </div>
-                    </div>
+                <button class="btn btn-secondary" onclick="loadReferenceData()">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                    Refresh
+                </button>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid" id="ref-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="ref-total-nodes">-</div>
+                    <div class="stat-label">Total Nodes</div>
                 </div>
-                <div class="signal-controls">
-                    <button class="signal-btn" onclick="refreshSignal()">
-                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-                        Refresh
-                    </button>
+                <div class="stat-card">
+                    <div class="stat-value" id="ref-active-nodes">-</div>
+                    <div class="stat-label">Active Nodes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="ref-namespaces">-</div>
+                    <div class="stat-label">Namespaces</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="ref-honeypot">-</div>
+                    <div class="stat-label">Trap Hits</div>
                 </div>
             </div>
 
-            <!-- ACCOUNTS LIST - COMPACT -->
-            <div class="accounts-panel">
-                <div class="accounts-header">
-                    <span class="accounts-title">Accounts</span>
-                    <input type="text" class="accounts-search" id="accounts-search" placeholder="Search email..." oninput="debounceAccountSearch()">
+            <!-- Tabs -->
+            <div class="ref-tabs">
+                <button class="ref-tab active" onclick="showRefTab('nodes', this)">Nodes</button>
+                <button class="ref-tab" onclick="showRefTab('namespaces', this)">Namespaces</button>
+                <button class="ref-tab" onclick="showRefTab('violations', this)">Violations</button>
+                <button class="ref-tab" onclick="showRefTab('honeypot', this)">Trap Log</button>
+                <button class="ref-tab" onclick="showRefTab('broadcast', this)">Broadcast</button>
+            </div>
+
+            <!-- Nodes Tab -->
+            <div class="ref-content active" id="ref-tab-nodes">
+                <div class="table-header">
+                    <input type="text" class="form-input" placeholder="Search nodes..." id="ref-search-nodes" oninput="filterRefNodes()" style="max-width: 300px;">
                 </div>
-                <div class="accounts-filters">
-                    <select class="accounts-filter" id="filter-type" onchange="filterAccounts()">
-                        <option value="">All Types</option>
-                        <option value="individual">Individual</option>
-                        <option value="company">Company</option>
-                    </select>
-                    <select class="accounts-filter" id="filter-status" onchange="filterAccounts()">
-                        <option value="">All Status</option>
-                        <option value="active">Active</option>
-                        <option value="paused">Paused</option>
-                    </select>
-                    <select class="accounts-filter" id="filter-plan" onchange="filterAccounts()">
-                        <option value="">All Plans</option>
-                        <option value="open">Open</option>
-                        <option value="standard">Standard</option>
-                        <option value="critical">Critical</option>
-                    </select>
-                </div>
-                <div class="accounts-list" id="accounts-list">
-                    <div class="accounts-loading">Loading...</div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Name</th>
+                                <th>Org</th>
+                                <th>Tier</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ref-nodes-tbody"></tbody>
+                    </table>
                 </div>
             </div>
 
-            <!-- SIGNAL 104b LOG -->
-            <div class="signal-log-panel" id="signal-log-panel" style="display: none;">
-                <div class="signal-log-header">
-                    <span>Signal 104b — Security Events</span>
-                    <button class="signal-log-close" onclick="closeSignalLog()">×</button>
+            <!-- Namespaces Tab -->
+            <div class="ref-content" id="ref-tab-namespaces">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Slug</th>
+                                <th>Tier</th>
+                                <th>Nodes</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ref-namespaces-tbody"></tbody>
+                    </table>
                 </div>
-                <div class="signal-log-list" id="signal-log-list"></div>
+            </div>
+
+            <!-- Violations Tab -->
+            <div class="ref-content" id="ref-tab-violations">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Org</th>
+                                <th>Endpoint</th>
+                                <th>IP</th>
+                                <th>Count/Limit</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ref-violations-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Honeypot Tab -->
+            <div class="ref-content" id="ref-tab-honeypot">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>IP</th>
+                                <th>Endpoint</th>
+                                <th>Method</th>
+                                <th>User Agent</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ref-honeypot-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Broadcast Tab -->
+            <div class="ref-content" id="ref-tab-broadcast">
+                <div class="card" style="max-width: 500px;">
+                    <h3 style="margin-bottom: 16px;">Signal Broadcast Control</h3>
+                    <div id="ref-broadcast-status" style="margin-bottom: 20px; padding: 12px; background: var(--bg-elevated); border-radius: 8px;">
+                        Loading status...
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn btn-secondary" onclick="refBroadcastAction('pause')">Pause</button>
+                        <button class="btn btn-secondary" onclick="refBroadcastAction('resume')">Resume</button>
+                        <button class="btn btn-primary" onclick="refBroadcastAction('force')">Force Broadcast</button>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -2408,7 +1507,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a hr
                 <div class="form-section-title">Agreement</div>
                 <div class="agreement-notice">
                     By registering, the organization agrees to the Master Service Agreement including limitation of liability provisions. 
-                    <a href="/terms.html" target="_blank">View Terms of Service ↗</a>
+                    <a href="https://ontostandard.org/msa" target="_blank">View MSA</a>
                 </div>
                 <div class="checkbox-group">
                     <input type="checkbox" id="msa-agree">
@@ -2465,62 +1564,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a hr
     </div>
 </div>
 
-<!-- TIER EDITOR MODAL -->
-<div class="modal-overlay" id="tier-modal">
-    <div class="modal modal-inst" style="max-width: 400px;">
-        <div class="modal-header">
-            <h2>Edit Plan</h2>
-            <button class="modal-close" onclick="closeModal('tier-modal')">&times;</button>
-        </div>
-        <div class="modal-body">
-            <div class="tier-user-info" id="tier-user-info">
-                <div class="tier-user-email">user@example.com</div>
-            </div>
-            <div class="tier-options">
-                <label class="tier-option" data-tier="open">
-                    <input type="radio" name="tier-select" value="open">
-                    <div class="tier-option-content">
-                        <div class="tier-option-header">
-                            <span class="tier-badge tier-open">OPEN</span>
-                            <span class="tier-option-price">Free</span>
-                        </div>
-                        <div class="tier-option-desc">1 req/hour, +1hr delay</div>
-                    </div>
-                </label>
-                <label class="tier-option" data-tier="standard">
-                    <input type="radio" name="tier-select" value="standard">
-                    <div class="tier-option-content">
-                        <div class="tier-option-header">
-                            <span class="tier-badge tier-standard">STANDARD</span>
-                            <span class="tier-option-price">$15K/yr</span>
-                        </div>
-                        <div class="tier-option-desc">~10K req/day, real-time</div>
-                    </div>
-                </label>
-                <label class="tier-option" data-tier="critical">
-                    <input type="radio" name="tier-select" value="critical">
-                    <div class="tier-option-content">
-                        <div class="tier-option-header">
-                            <span class="tier-badge tier-critical">CRITICAL</span>
-                            <span class="tier-option-price">$100K+/yr</span>
-                        </div>
-                        <div class="tier-option-desc">Unlimited, real-time + SLA</div>
-                    </div>
-                </label>
-            </div>
-            <div class="form-group" style="margin-top: 16px;">
-                <label class="form-label">Duration (days)</label>
-                <input type="number" class="form-input" id="tier-days" value="30" min="1" max="365">
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn-minimal" onclick="closeModal('tier-modal')">Cancel</button>
-            <button class="btn-minimal" onclick="saveTierChange()" style="background: var(--accent); color: white; border-color: var(--accent);">Save</button>
-        </div>
-    </div>
-</div>
-
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // === API CONFIG ===
 const API_BASE = 'https://api.ontostandard.org';
 let authToken = null;
@@ -2713,10 +1757,10 @@ function togglePassword(inputId, btn) {
     const input = document.getElementById(inputId);
     if (input.type === 'password') {
         input.type = 'text';
-        btn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+        btn.textContent = '🙈';
     } else {
         input.type = 'password';
-        btn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+        btn.textContent = '👁';
     }
 }
 
@@ -2753,33 +1797,17 @@ async function handleLogin(btn) {
         authToken = data.token;
         localStorage.setItem('onto_token', authToken);
         
-        // Store API key for Reference panel
-        if (data.api_key) {
-            localStorage.setItem('onto_first_api_key', data.api_key);
-        }
-        
         currentUser = {
             id: data.user_id,
             name: data.name,
             email: email,
-            role: data.role || 'admin',
+            role: 'admin',
             plan: data.layer || 'free',
             organization_id: data.organization_id,
-            organization_name: data.organization_name,
             can_invoice: false,
-            company: null  // Company set only after explicit registration
+            company: data.organization_name ? { name: data.organization_name } : null
         };
         localStorage.setItem('onto_user', JSON.stringify(currentUser));
-        
-        // Also store in new format for consistency
-        localStorage.setItem('onto_user_id', data.user_id);
-        localStorage.setItem('onto_user_name', data.name || '');
-        localStorage.setItem('onto_user_email', email);
-        localStorage.setItem('onto_org_id', data.organization_id);
-        localStorage.setItem('onto_org_name', data.organization_name || '');
-        localStorage.setItem('onto_layer', data.layer || 'open');
-        localStorage.setItem('onto_role', data.role || 'admin');
-        localStorage.setItem('onto_logged_in', 'true');
         
         setLoading(btn, false);
         showToast('Welcome back!', 'success');
@@ -2853,124 +1881,6 @@ function showVerifyPending(email) {
     document.getElementById('verify-success').classList.add('hidden');
     document.getElementById('verify-pending').classList.remove('hidden');
     document.getElementById('verify-email-display').textContent = email;
-    document.getElementById('otp-error').style.display = 'none';
-    
-    // Clear OTP inputs
-    for (let i = 1; i <= 6; i++) {
-        document.getElementById('otp-' + i).value = '';
-    }
-    
-    // Focus first input
-    setTimeout(() => document.getElementById('otp-1').focus(), 100);
-    
-    // Setup OTP input handlers
-    setupOTPInputs();
-}
-
-function setupOTPInputs() {
-    for (let i = 1; i <= 6; i++) {
-        const input = document.getElementById('otp-' + i);
-        
-        input.addEventListener('input', (e) => {
-            const val = e.target.value.replace(/[^0-9]/g, '');
-            e.target.value = val;
-            if (val && i < 6) {
-                document.getElementById('otp-' + (i + 1)).focus();
-            }
-            // Auto-submit when all 6 digits entered
-            if (i === 6 && val) {
-                const code = getOTPCode();
-                if (code.length === 6) handleVerifyOTP(document.getElementById('verify-btn'));
-            }
-        });
-        
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Backspace' && !e.target.value && i > 1) {
-                document.getElementById('otp-' + (i - 1)).focus();
-            }
-        });
-        
-        // Handle paste
-        input.addEventListener('paste', (e) => {
-            e.preventDefault();
-            const paste = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
-            for (let j = 0; j < 6 && j < paste.length; j++) {
-                document.getElementById('otp-' + (j + 1)).value = paste[j];
-            }
-            if (paste.length >= 6) {
-                document.getElementById('otp-6').focus();
-                handleVerifyOTP(document.getElementById('verify-btn'));
-            }
-        });
-    }
-}
-
-function getOTPCode() {
-    let code = '';
-    for (let i = 1; i <= 6; i++) {
-        code += document.getElementById('otp-' + i).value;
-    }
-    return code;
-}
-
-async function handleVerifyOTP(btn) {
-    const code = getOTPCode();
-    if (code.length !== 6) {
-        document.getElementById('otp-error').textContent = 'Please enter all 6 digits';
-        document.getElementById('otp-error').style.display = 'block';
-        return;
-    }
-    
-    setLoading(btn, true);
-    document.getElementById('otp-error').style.display = 'none';
-    
-    try {
-        const response = await fetch(`${API_BASE}/v1/auth/verify-email`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: pendingVerificationEmail, code: code })
-        });
-        
-        const data = await response.json();
-        
-        if (!response.ok) {
-            throw new Error(data.detail || 'Verification failed');
-        }
-        
-        // Auto-login with returned data
-        authToken = data.token;
-        localStorage.setItem('onto_token', authToken);
-        
-        if (data.api_key) {
-            localStorage.setItem('onto_first_api_key', data.api_key);
-        }
-        
-        currentUser = {
-            id: data.user_id,
-            name: data.name,
-            email: data.email,
-            role: data.role || 'admin',
-            plan: data.layer || 'free',
-            organization_id: data.organization_id,
-            organization_name: data.organization_name
-        };
-        localStorage.setItem('onto_user', JSON.stringify(currentUser));
-        localStorage.setItem('onto_logged_in', 'true');
-        
-        setLoading(btn, false);
-        showToast('Email verified! Welcome to ONTO', 'success');
-        showDashboard();
-    } catch (error) {
-        setLoading(btn, false);
-        document.getElementById('otp-error').textContent = error.message;
-        document.getElementById('otp-error').style.display = 'block';
-        
-        // Shake OTP inputs
-        for (let i = 1; i <= 6; i++) {
-            document.getElementById('otp-' + i).classList.add('error');
-            setTimeout(() => document.getElementById('otp-' + i).classList.remove('error'), 1500);
-        }
-    }
 }
 
 function showVerifySuccess() {
@@ -3027,7 +1937,7 @@ async function checkEmailVerification() {
                     plan: data.layer || 'open',
                     organization_id: data.organization_id,
                     can_invoice: false,
-                    company: null  // Company set only after explicit registration
+                    company: data.organization_name ? { name: data.organization_name } : null
                 };
                 localStorage.setItem('onto_user', JSON.stringify(currentUser));
                 
@@ -3054,20 +1964,8 @@ function handleLogout() {
     clearTimeout(sessionWarningTimer);
     currentUser = null;
     authToken = null;
-    
-    // Clear all auth data
     localStorage.removeItem('onto_user');
     localStorage.removeItem('onto_token');
-    localStorage.removeItem('onto_first_api_key');
-    localStorage.removeItem('onto_logged_in');
-    localStorage.removeItem('onto_user_id');
-    localStorage.removeItem('onto_user_name');
-    localStorage.removeItem('onto_user_email');
-    localStorage.removeItem('onto_org_id');
-    localStorage.removeItem('onto_org_name');
-    localStorage.removeItem('onto_layer');
-    localStorage.removeItem('onto_role');
-    
     document.getElementById('auth-screen').style.display = 'flex';
     document.getElementById('dashboard').classList.remove('active');
 }
@@ -3189,42 +2087,7 @@ function showPage(page, el) {
     }
 }
 
-function showDoc(docId, el) {
-    document.querySelectorAll('.docs-article').forEach(d => d.classList.remove('active'));
-    document.querySelectorAll('.docs-nav-item').forEach(n => n.classList.remove('active'));
-    const targetDoc = document.getElementById('docs-' + docId);
-    if (targetDoc) {
-        targetDoc.classList.add('active');
-    }
-    if (el) el.classList.add('active');
-    
-    // Scroll to top
-    const docsContent = document.querySelector('.docs-content');
-    if (docsContent) docsContent.scrollTop = 0;
-    
-    // Sync mobile select
-    const mobileSelect = document.querySelector('.docs-mobile-select');
-    if (mobileSelect) mobileSelect.value = docId;
-}
 
-function showDocFromSelect(docId) {
-    document.querySelectorAll('.docs-article').forEach(d => d.classList.remove('active'));
-    document.querySelectorAll('.docs-nav-item').forEach(n => n.classList.remove('active'));
-    const targetDoc = document.getElementById('docs-' + docId);
-    if (targetDoc) {
-        targetDoc.classList.add('active');
-    }
-    // Sync sidebar active state
-    document.querySelectorAll('.docs-nav-item').forEach(item => {
-        if (item.getAttribute('onclick')?.includes(`'${docId}'`)) {
-            item.classList.add('active');
-        }
-    });
-    
-    // Scroll to top
-    const docsContent = document.querySelector('.docs-content');
-    if (docsContent) docsContent.scrollTop = 0;
-}
 
 // === COMPANY ===
 function updateCompanyUI() {
@@ -3769,41 +2632,18 @@ function regenerateApiKey(btn) {
     btn.disabled = true;
     btn.textContent = 'Regenerating...';
     
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    if (!apiKey) {
-        showToast('No API key found. Please log in again.', 'error');
-        btn.textContent = 'Regenerate Key';
-        btn.disabled = false;
-        return;
-    }
-    
-    fetch(`${API_BASE}/v1/keys/regenerate-portal`, {
-        method: 'POST',
-        headers: { 'x-api-key': apiKey }
-    })
-    .then(response => {
-        if (!response.ok) throw new Error('Failed to regenerate key');
-        return response.json();
-    })
-    .then(data => {
-        // Update stored key
-        localStorage.setItem('onto_first_api_key', data.api_key);
-        
-        // Update display
-        document.getElementById('api-key-display').value = data.api_key;
+    // Simulate API call
+    setTimeout(() => {
+        const newKey = 'onto_sk_' + Math.random().toString(36).substring(2, 18);
+        document.getElementById('api-key-display').value = newKey;
         document.getElementById('api-key-display').type = 'text';
         document.getElementById('toggle-key-btn').textContent = 'Hide';
         
-        btn.textContent = 'Regenerate Key';
+        btn.textContent = 'Regenerate API Key';
         btn.disabled = false;
         
         showToast('New API key generated! Copy it now.', 'success');
-    })
-    .catch(error => {
-        btn.textContent = 'Regenerate Key';
-        btn.disabled = false;
-        showToast(error.message || 'Failed to regenerate key', 'error');
-    });
+    }, 1500);
 }
 
 function editProfile() {
@@ -3844,7 +2684,7 @@ async function checkReferenceAccess() {
     if (!apiKey) return false;
     
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/reference-check`, {
+        const res = await fetch(`${API}/v1/docs/reference-check`, {
             headers: { 'x-api-key': apiKey }
         });
         if (res.ok) {
@@ -3868,466 +2708,85 @@ async function showReferencePage(el) {
         }
     }
     showPage('reference', el);
-    initAdminPanel();
-}
-
-// === SIGNAL & ACCOUNTS PANEL ===
-let accountsData = [];
-let currentUserId = null; // For self-protection
-let signalData = null;
-let signalInterval = null;
-let accountSearchTimeout = null;
-
-// Get current user ID on load
-function initAdminPanel() {
-    currentUserId = currentUser?.id || null;
-    loadSignalData();
-    loadAccountsData();
-    startSignalCountdown();
-}
-
-// === SIGNAL FUNCTIONS ===
-async function loadSignalData() {
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    if (!apiKey) return;
-    
-    try {
-        // Get admin status with full stats
-        const statusRes = await fetch(`${API_BASE}/v1/signal/admin-status`, {
-            headers: { 'x-api-key': apiKey }
-        });
-        
-        if (statusRes.ok) {
-            const stats = await statusRes.json();
-            
-            // Update signal ID and hash from current_signal
-            if (stats.current_signal) {
-                document.getElementById('signal-id').textContent = stats.current_signal.sigma_id || `σ_${stats.current_signal.timestamp}`;
-                startHashAnimation(stats.current_signal.entropy_hex || '');
-                
-                // Pulse effect on hash
-                const hashEl = document.getElementById('signal-hash');
-                if (hashEl) {
-                    hashEl.classList.add('pulse');
-                    setTimeout(() => hashEl.classList.remove('pulse'), 1000);
-                }
-            }
-            
-            // Update metrics with pulse effect
-            updateMetric('signal-uptime', formatUptime(stats.uptime_seconds));
-            updateMetric('signal-generated', stats.signals_generated || 0);
-            updateMetric('signal-requests', stats.total_requests || 0);
-            // Error rate: show only if > 5%, otherwise "OK"
-            const errorRate = stats.error_rate_percent || 0;
-            if (errorRate < 5) {
-                updateMetric('signal-errors', 'OK', 'good');
-            } else {
-                updateMetric('signal-errors', errorRate.toFixed(1) + '%', 'warn');
-            }
-            
-            // Update pause state
-            signalPaused = stats.paused || false;
-            const indicator = document.getElementById('signal-live-indicator');
-            if (indicator) {
-                if (signalPaused) {
-                    indicator.innerHTML = '<span class="signal-dot" style="background:#f59e0b;animation:none;"></span><span>PAUSED</span>';
-                    indicator.style.background = 'rgba(245, 158, 11, 0.15)';
-                    indicator.style.color = '#f59e0b';
-                } else {
-                    indicator.innerHTML = '<span class="signal-dot"></span><span>LIVE</span>';
-                    indicator.style.background = 'rgba(34, 197, 94, 0.15)';
-                    indicator.style.color = '#22c55e';
-                }
-            }
-            
-            // Start countdown
-            signalData = { next_update_in: stats.signal_interval - (stats.uptime_seconds % stats.signal_interval) };
-            startSignalCountdown();
-        }
-    } catch (e) {
-        console.error('Signal load error:', e);
-        document.getElementById('signal-hash').textContent = 'Connection error';
-    }
-}
-
-function updateMetric(id, value, style) {
-    const el = document.getElementById(id);
-    if (el) {
-        el.textContent = value;
-        
-        // Apply style class (good/warn)
-        el.classList.remove('metric-good', 'metric-warn');
-        if (style === 'good') el.classList.add('metric-good');
-        if (style === 'warn') el.classList.add('metric-warn');
-        
-        const metric = el.closest('.signal-metric');
-        if (metric) {
-            metric.classList.add('updated');
-            setTimeout(() => metric.classList.remove('updated'), 800);
-        }
-    }
-}
-
-function formatUptime(seconds) {
-    if (!seconds) return '—';
-    const hours = Math.floor(seconds / 3600);
-    const mins = Math.floor((seconds % 3600) / 60);
-    if (hours > 0) return `${hours}h ${mins}m`;
-    return `${mins}m`;
-}
-
-let hashAnimationInterval = null;
-
-function startHashAnimation(baseHash) {
-    const hashEl = document.getElementById('signal-hash');
-    if (!hashEl) return;
-    
-    if (!baseHash) {
-        hashEl.textContent = 'Waiting for signal...';
-        return;
-    }
-    
-    // Stop previous animation
-    if (hashAnimationInterval) clearInterval(hashAnimationInterval);
-    
-    const chars = '0123456789abcdef';
-    const hashArray = baseHash.split('');
-    let frame = 0;
-    
-    hashAnimationInterval = setInterval(() => {
-        frame++;
-        
-        // Animate random positions with green glow
-        const display = hashArray.map((char, i) => {
-            if (frame % 3 === 0 && Math.random() > 0.9) {
-                return `<span style="color:#22c55e;text-shadow:0 0 8px #22c55e;">${chars[Math.floor(Math.random() * 16)]}</span>`;
-            }
-            return char;
-        }).join('');
-        
-        hashEl.innerHTML = display;
-        
-        // Reset to real hash periodically
-        if (frame % 40 === 0) {
-            hashEl.textContent = baseHash;
-        }
-    }, 80);
-}
-
-function renderSignal() {
-    // Now handled in loadSignalData directly
-}
-
-function startSignalCountdown() {
-    if (signalInterval) clearInterval(signalInterval);
-    
-    let remaining = signalData?.next_update_in || 300;
-    
-    signalInterval = setInterval(() => {
-        remaining--;
-        
-        if (remaining <= 0) {
-            document.getElementById('signal-countdown').textContent = '0:00';
-            loadSignalData();
-            remaining = 300;
-        } else {
-            const mins = Math.floor(remaining / 60);
-            const secs = remaining % 60;
-            document.getElementById('signal-countdown').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
-        }
-    }, 1000);
-}
-
-let signalPaused = false;
-
-function refreshSignal() {
-    loadSignalData();
-    showToast('Signal refreshed', 'success');
-}
-
-// === ACCOUNTS FUNCTIONS ===
-function debounceAccountSearch() {
-    clearTimeout(accountSearchTimeout);
-    accountSearchTimeout = setTimeout(loadAccountsData, 300);
-}
-
-function filterAccounts() {
-    loadAccountsData();
-}
-
-async function loadAccountsData() {
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    if (!apiKey) return;
-    
-    const search = document.getElementById('accounts-search')?.value || '';
-    const typeFilter = document.getElementById('filter-type')?.value || '';
-    const statusFilter = document.getElementById('filter-status')?.value || '';
-    const planFilter = document.getElementById('filter-plan')?.value || '';
-    
-    const container = document.getElementById('accounts-list');
-    if (container) container.innerHTML = `
-        <div class="account-row" style="padding: 16px;">
-            <div class="skeleton skeleton-text" style="width: 200px; margin-bottom: 8px;"></div>
-            <div class="skeleton skeleton-text-sm" style="width: 120px;"></div>
-        </div>
-        <div class="account-row" style="padding: 16px;">
-            <div class="skeleton skeleton-text" style="width: 180px; margin-bottom: 8px;"></div>
-            <div class="skeleton skeleton-text-sm" style="width: 100px;"></div>
-        </div>
-    `;
-    
-    try {
-        let url = `${API_BASE}/v1/docs/admin/users?limit=50`;
-        if (search) url += `&search=${encodeURIComponent(search)}`;
-        
-        const res = await fetch(url, { headers: { 'x-api-key': apiKey } });
-        
-        if (res.ok) {
-            const data = await res.json();
-            accountsData = data.users || [];
-            
-            // Client-side filtering
-            let filtered = accountsData;
-            if (typeFilter) {
-                filtered = filtered.filter(u => {
-                    const hasCompany = u.profile?.company_name;
-                    return typeFilter === 'company' ? hasCompany : !hasCompany;
-                });
-            }
-            if (statusFilter) {
-                filtered = filtered.filter(u => {
-                    const isActive = !u.suspended && u.is_active;
-                    return statusFilter === 'active' ? isActive : !isActive;
-                });
-            }
-            if (planFilter) {
-                filtered = filtered.filter(u => u.tier === planFilter);
-            }
-            
-            renderAccounts(filtered);
-        }
-    } catch (e) {
-        console.error('Accounts load error:', e);
-        if (container) container.innerHTML = '<div class="accounts-loading">Failed to load</div>';
-    }
-}
-
-function renderAccounts(accounts) {
-    const container = document.getElementById('accounts-list');
-    if (!container) return;
-    
-    if (!accounts.length) {
-        container.innerHTML = '<div class="accounts-loading">No accounts found</div>';
-        return;
-    }
-    
-    container.innerHTML = accounts.map(u => {
-        const isSelf = u.id === currentUserId;
-        const hasCompany = u.profile?.company_name;
-        const isActive = !u.suspended && u.is_active !== false;
-        const date = u.created_at ? new Date(u.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '—';
-        
-        return `
-            <div class="account-row" onclick="toggleAccountDetails('${u.id}')">
-                <div class="account-email">${u.email}${isSelf ? ' <span style="color: var(--accent); font-size: 9px;">(you)</span>' : ''}</div>
-                <div class="account-type">${hasCompany ? 'Company' : 'Individual'}</div>
-                <div class="account-plan"><span class="tier-badge tier-${u.tier}">${u.tier}</span></div>
-                <div class="account-status ${isActive ? 'active' : 'paused'}">${isActive ? 'Active' : 'Paused'}</div>
-                <div class="account-date">${date}</div>
-            </div>
-            <div class="account-details" id="details-${u.id}">
-                <div class="account-details-grid">
-                    <div class="account-detail-item">
-                        <div class="account-detail-label">Name</div>
-                        <div class="account-detail-value">${u.name || '—'}</div>
-                    </div>
-                    <div class="account-detail-item">
-                        <div class="account-detail-label">Email Verified</div>
-                        <div class="account-detail-value">${u.email_verified ? 'Yes' : 'No'}</div>
-                    </div>
-                    <div class="account-detail-item">
-                        <div class="account-detail-label">Last Login</div>
-                        <div class="account-detail-value">${u.last_login ? new Date(u.last_login).toLocaleString() : 'Never'}</div>
-                    </div>
-                    <div class="account-detail-item">
-                        <div class="account-detail-label">Organization</div>
-                        <div class="account-detail-value">${u.org_name || '—'}</div>
-                    </div>
-                    ${hasCompany ? `
-                    <div class="account-detail-item">
-                        <div class="account-detail-label">Company</div>
-                        <div class="account-detail-value">${u.profile.company_name}</div>
-                    </div>
-                    <div class="account-detail-item">
-                        <div class="account-detail-label">Industry</div>
-                        <div class="account-detail-value">${u.profile.industry || '—'}</div>
-                    </div>
-                    ` : ''}
-                </div>
-                <div class="account-actions">
-                    <button class="account-action-btn" onclick="event.stopPropagation(); editPlan('${u.id}', '${u.tier}', '${u.email}')" ${isSelf ? 'disabled title="Cannot modify own plan"' : ''}>Edit Plan</button>
-                    <button class="account-action-btn" onclick="event.stopPropagation(); toggleAccountStatus('${u.id}', ${isActive})" ${isSelf ? 'disabled title="Cannot pause own account"' : ''}>${isActive ? 'Pause' : 'Activate'}</button>
-                    <button class="account-action-btn danger" onclick="event.stopPropagation(); deleteAccount('${u.id}', '${u.email}')" ${isSelf ? 'disabled title="Cannot delete own account"' : ''}>Delete</button>
-                </div>
-            </div>
-        `;
-    }).join('');
-}
-
-function toggleAccountDetails(id) {
-    const details = document.getElementById(`details-${id}`);
-    if (details) {
-        const isOpen = details.classList.contains('open');
-        // Close all others
-        document.querySelectorAll('.account-details').forEach(d => d.classList.remove('open'));
-        if (!isOpen) details.classList.add('open');
-    }
-}
-
-let editingUserId = null;
-let editingUserEmail = null;
-
-function editPlan(userId, currentTier, userEmail) {
-    if (userId === currentUserId) {
-        showSignal104b('self_action_attempt', '/admin/users/tier');
-        return;
-    }
-    
-    editingUserId = userId;
-    editingUserEmail = userEmail || 'User';
-    
-    // Set user info
-    document.getElementById('tier-user-info').innerHTML = `<div class="tier-user-email">${editingUserEmail}</div>`;
-    
-    // Reset selection
-    document.querySelectorAll('input[name="tier-select"]').forEach(r => r.checked = false);
-    
-    // Select current tier
-    const currentRadio = document.querySelector(`input[name="tier-select"][value="${currentTier}"]`);
-    if (currentRadio) currentRadio.checked = true;
-    
-    // Reset days
-    document.getElementById('tier-days').value = 30;
-    
-    // Show modal
-    document.getElementById('tier-modal').classList.add('active');
-}
-
-async function saveTierChange() {
-    if (!editingUserId) return;
-    
-    const selectedTier = document.querySelector('input[name="tier-select"]:checked');
-    if (!selectedTier) {
-        showToast('Select a tier', 'error');
-        return;
-    }
-    
-    const tier = selectedTier.value;
-    const days = document.getElementById('tier-days').value || 30;
-    
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    try {
-        const res = await fetch(`${API_BASE}/v1/docs/admin/users/${editingUserId}/tier?tier=${tier}&days=${days}`, {
-            method: 'PUT',
-            headers: { 'x-api-key': apiKey }
-        });
-        if (res.ok) {
-            showToast(`Plan updated to ${tier.toUpperCase()}`, 'success');
-            closeModal('tier-modal');
-            loadAccountsData();
-        } else {
-            const err = await res.json();
-            showToast(err.detail || 'Update failed', 'error');
-        }
-    } catch (e) {
-        showToast('Update failed', 'error');
-    }
-}
-
-async function toggleAccountStatus(userId, isCurrentlyActive) {
-    if (userId === currentUserId) {
-        showSignal104b('self_action_attempt', '/admin/users/suspend');
-        return;
-    }
-    
-    const action = isCurrentlyActive ? 'pause' : 'activate';
-    if (!confirm(`${action.charAt(0).toUpperCase() + action.slice(1)} this account?`)) return;
-    
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    try {
-        const res = await fetch(`${API_BASE}/v1/docs/admin/users/${userId}/suspend?suspend=${isCurrentlyActive}`, {
-            method: 'PUT',
-            headers: { 'x-api-key': apiKey }
-        });
-        if (res.ok) {
-            showToast(`Account ${action}d`, 'success');
-            loadAccountsData();
-        } else {
-            showToast('Action failed', 'error');
-        }
-    } catch (e) {
-        showToast('Action failed', 'error');
-    }
-}
-
-async function deleteAccount(userId, email) {
-    if (userId === currentUserId) {
-        showSignal104b('self_action_attempt', '/admin/users/delete');
-        return;
-    }
-    
-    if (prompt(`Type the email to confirm deletion:\n${email}`) !== email) {
-        showToast('Deletion cancelled', 'info');
-        return;
-    }
-    
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    try {
-        const res = await fetch(`${API_BASE}/v1/docs/admin/users/${userId}`, {
-            method: 'DELETE',
-            headers: { 'x-api-key': apiKey }
-        });
-        if (res.ok) {
-            showToast('Account deleted', 'success');
-            loadAccountsData();
-        } else {
-            const data = await res.json();
-            showToast(data.detail || 'Delete failed', 'error');
-        }
-    } catch (e) {
-        showToast('Delete failed', 'error');
-    }
-}
-
-// === SIGNAL 104b ===
-function showSignal104b(action, endpoint) {
-    showToast('Action rejected. Signal: 104b', 'error');
-    
-    // Show log panel
-    const panel = document.getElementById('signal-log-panel');
-    if (panel) panel.style.display = 'block';
-    
-    const list = document.getElementById('signal-log-list');
-    if (list) {
-        const item = document.createElement('div');
-        item.className = 'signal-log-item';
-        item.innerHTML = `
-            <span class="signal-log-code">104b</span>
-            <span class="signal-log-endpoint">${endpoint}</span>
-            <span class="signal-log-time">${new Date().toLocaleTimeString()}</span>
-            <div style="margin-top: 4px; color: var(--text-muted);">${action.replace(/_/g, ' ')}</div>
-        `;
-        list.insertBefore(item, list.firstChild);
-    }
-}
-
-function closeSignalLog() {
-    const panel = document.getElementById('signal-log-panel');
-    if (panel) panel.style.display = 'none';
+    loadReferenceData();
 }
 
 async function loadReferenceData() {
-    // Legacy - no longer used
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) return;
+    
+    const headers = { 'x-api-key': apiKey };
+    
+    // Load sync status
+    try {
+        const res = await fetch(`${API}/v1/docs/sync-status`, { headers });
+        if (res.ok) {
+            const data = await res.json();
+            const m = data.metrics;
+            document.getElementById('ref-total-nodes').textContent = m.total_nodes || 0;
+            document.getElementById('ref-active-nodes').textContent = m.active_nodes || 0;
+            document.getElementById('ref-namespaces').textContent = m.namespaces || 0;
+        }
+    } catch (e) {}
+    
+    // Load nodes
+    try {
+        const res = await fetch(`${API}/v1/docs/node-index`, { headers });
+        if (res.ok) {
+            const data = await res.json();
+            refNodesData = data.nodes || [];
+            renderRefNodes();
+        }
+    } catch (e) {}
+    
+    // Load namespaces
+    try {
+        const res = await fetch(`${API}/v1/docs/namespace-registry`, { headers });
+        if (res.ok) {
+            const data = await res.json();
+            refNamespacesData = data.namespaces || [];
+            renderRefNamespaces();
+        }
+    } catch (e) {}
+    
+    // Load violations
+    try {
+        const res = await fetch(`${API}/v1/docs/rate-violations`, { headers });
+        if (res.ok) {
+            const data = await res.json();
+            renderRefViolations(data.violations || []);
+        }
+    } catch (e) {}
+    
+    // Load honeypot
+    try {
+        const res = await fetch(`${API}/v1/docs/trap-log`, { headers });
+        if (res.ok) {
+            const data = await res.json();
+            document.getElementById('ref-honeypot').textContent = data.total_in_memory || 0;
+            renderRefHoneypot(data.recent || []);
+        }
+    } catch (e) {}
+    
+    // Load broadcast status
+    try {
+        const res = await fetch(`${API}/v1/docs/broadcast-status`, { headers });
+        if (res.ok) {
+            const data = await res.json();
+            document.getElementById('ref-broadcast-status').innerHTML = `
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                    <span>Status:</span>
+                    <strong>${data.is_paused ? 'PAUSED' : 'ACTIVE'}</strong>
+                </div>
+                <div style="display:flex;justify-content:space-between;">
+                    <span>Last broadcast:</span>
+                    <span>${data.last_broadcast || 'N/A'}</span>
+                </div>
+            `;
+        }
+    } catch (e) {
+        document.getElementById('ref-broadcast-status').textContent = 'Signal server unavailable';
+    }
 }
 
 function renderRefNodes() {
@@ -4336,7 +2795,7 @@ function renderRefNodes() {
         <tr>
             <td>${n.ref || n.email}</td>
             <td>${n.label || n.name}</td>
-            <td>${n.namespace || n.org_name || '-'}</td>
+            <td>${n.org_name || '-'}</td>
             <td><span class="tier-badge tier-${n.tier || 'open'}">${n.tier || 'open'}</span></td>
             <td><span class="ref-status ${n.active ? 'active' : 'archived'}">${n.active ? 'Active' : 'Archived'}</span></td>
             <td>
@@ -4354,14 +2813,14 @@ function filterRefNodes() {
     const filtered = refNodesData.filter(n => 
         (n.ref || n.email || '').toLowerCase().includes(search) ||
         (n.label || n.name || '').toLowerCase().includes(search) ||
-        (n.namespace || n.org_name || '').toLowerCase().includes(search)
+        (n.org_name || '').toLowerCase().includes(search)
     );
     const tbody = document.getElementById('ref-nodes-tbody');
     tbody.innerHTML = filtered.map(n => `
         <tr>
             <td>${n.ref || n.email}</td>
             <td>${n.label || n.name}</td>
-            <td>${n.namespace || n.org_name || '-'}</td>
+            <td>${n.org_name || '-'}</td>
             <td><span class="tier-badge tier-${n.tier || 'open'}">${n.tier || 'open'}</span></td>
             <td><span class="ref-status ${n.active ? 'active' : 'archived'}">${n.active ? 'Active' : 'Archived'}</span></td>
             <td>
@@ -4431,7 +2890,7 @@ async function refArchiveNode(nodeId) {
     if (!confirm('Archive this node?')) return;
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/node-index/${nodeId}/archive`, {
+        const res = await fetch(`${API}/v1/docs/node-index/${nodeId}/archive`, {
             method: 'POST',
             headers: { 'x-api-key': apiKey }
         });
@@ -4449,7 +2908,7 @@ async function refArchiveNode(nodeId) {
 async function refRestoreNode(nodeId) {
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/node-index/${nodeId}/restore`, {
+        const res = await fetch(`${API}/v1/docs/node-index/${nodeId}/restore`, {
             method: 'POST',
             headers: { 'x-api-key': apiKey }
         });
@@ -4468,7 +2927,7 @@ async function refFreezeNamespace(nsId) {
     if (!confirm('Freeze this namespace? All API keys will be disabled.')) return;
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/namespace-registry/${nsId}/freeze`, {
+        const res = await fetch(`${API}/v1/docs/namespace-registry/${nsId}/freeze`, {
             method: 'POST',
             headers: { 'x-api-key': apiKey }
         });
@@ -4486,7 +2945,7 @@ async function refFreezeNamespace(nsId) {
 async function refUnfreezeNamespace(nsId) {
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/namespace-registry/${nsId}/unfreeze`, {
+        const res = await fetch(`${API}/v1/docs/namespace-registry/${nsId}/unfreeze`, {
             method: 'POST',
             headers: { 'x-api-key': apiKey }
         });
@@ -4504,7 +2963,7 @@ async function refUnfreezeNamespace(nsId) {
 async function refExportNamespace(nsId) {
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/namespace-export/${nsId}`, {
+        const res = await fetch(`${API}/v1/docs/namespace-export/${nsId}`, {
             headers: { 'x-api-key': apiKey }
         });
         if (res.ok) {
@@ -4528,7 +2987,7 @@ async function refExportNamespace(nsId) {
 async function refBroadcastAction(action) {
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API_BASE}/v1/docs/broadcast-control?action=${action}`, {
+        const res = await fetch(`${API}/v1/docs/broadcast-control?action=${action}`, {
             method: 'POST',
             headers: { 'x-api-key': apiKey }
         });
@@ -4590,67 +3049,4 @@ function drawIndustryChart() {
     let startAngle = -Math.PI / 2;
     data.forEach(d => {
         const sliceAngle = (d.value / total) * 2 * Math.PI;
-        ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        ctx.arc(cx, cy, radius, startAngle, startAngle + sliceAngle);
-        ctx.closePath();
-        ctx.fillStyle = d.color;
-        ctx.fill();
-        startAngle += sliceAngle;
-    });
-    
-    // Legend
-    legend.innerHTML = data.map(d => 
-        `<div class="legend-item">
-            <span class="legend-dot" style="background: ${d.color}"></span>
-            <span>${d.label}</span>
-            <span class="legend-value">${d.value}%</span>
-        </div>`
-    ).join('');
-}
-
-// === INIT ===
-document.addEventListener('DOMContentLoaded', () => {
-    // Check saved session - support both old and new format
-    const savedUser = localStorage.getItem('onto_user');
-    const savedToken = localStorage.getItem('onto_token');
-    const savedApiKey = localStorage.getItem('onto_first_api_key');
-    const savedLoggedIn = localStorage.getItem('onto_logged_in');
-    
-    // New format from verify-email auto-login
-    if (savedLoggedIn === 'true' && savedApiKey) {
-        currentUser = {
-            id: localStorage.getItem('onto_user_id'),
-            name: localStorage.getItem('onto_user_name'),
-            email: localStorage.getItem('onto_user_email'),
-            organization_id: localStorage.getItem('onto_org_id'),
-            organization_name: localStorage.getItem('onto_org_name'),
-            layer: localStorage.getItem('onto_layer'),
-            role: localStorage.getItem('onto_role')
-        };
-        authToken = savedApiKey;
-        showDashboard();
-    }
-    // Old format
-    else if (savedUser && savedToken) {
-        try {
-            currentUser = JSON.parse(savedUser);
-            authToken = savedToken;
-            showDashboard();
-        } catch (e) {
-            localStorage.removeItem('onto_user');
-            localStorage.removeItem('onto_token');
-        }
-    }
-    
-    checkWelcomeBanner();
-    updateSignalHash();
-    drawIndustryChart();
-    updateSparkline();
-});
-
-// Check reference access on load
-setTimeout(checkReferenceAccess, 1000);
-</script>
-</body>
-</html>
+        ctx.begi
