@@ -123,6 +123,9 @@ body { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; colo
 
 .auth-switch { text-align: center; margin-top: 24px; font-size: 14px; color: var(--text-secondary); }
 .auth-switch a { color: var(--accent); text-decoration: none; font-weight: 500; cursor: pointer; }
+.otp-input { width: 44px; height: 52px; text-align: center; font-size: 22px; font-weight: 700; font-family: 'JetBrains Mono', monospace; background: var(--bg-secondary); border: 2px solid var(--border); border-radius: 8px; color: var(--text); outline: none; transition: border-color 0.2s; }
+.otp-input:focus { border-color: var(--accent); }
+.otp-input.error { border-color: #ef4444; }
 
 /* === DASHBOARD === */
 .dashboard { display: none; min-height: 100vh; }
@@ -523,6 +526,11 @@ a.info-val:hover { color: var(--text); }
    RESPONSIVE
    ============================================ */
 
+@media (max-width: 639px) {
+    .auth-title { font-size: 20px; }
+    .otp-input { width: 38px; height: 46px; font-size: 20px; }
+}
+
 @media (min-width: 640px) {
     .main-content { padding: 24px; }
     
@@ -745,21 +753,36 @@ a.info-val:hover { color: var(--text); }
         </div>
         
         <!-- EMAIL VERIFICATION PENDING -->
+        <!-- OTP VERIFICATION -->
         <div id="verify-pending" class="hidden">
             <div style="text-align: center; margin-bottom: 24px;">
                 <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5">
                     <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                 </svg>
             </div>
-            <h1 class="auth-title">Check your email</h1>
-            <p class="auth-subtitle">We sent a verification link to</p>
-            <p style="color: var(--text); font-weight: 600; margin: 8px 0 24px;" id="verify-email-display"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e1929491918e9395a18e8f958e9295808f85809385cf8e9386">[email&#160;protected]</a></p>
-            <p style="color: var(--text-muted); font-size: 14px; line-height: 1.6;">Click the link in the email to verify your account. The link expires in 24 hours.</p>
-            <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
-                <p style="color: var(--text-muted); font-size: 13px;">Didn't receive the email?</p>
-                <button class="btn btn-secondary" style="margin-top: 12px;" onclick="resendVerification()">Resend verification email</button>
+            <h1 class="auth-title">Enter verification code</h1>
+            <p class="auth-subtitle">We sent a 6-digit code to</p>
+            <p style="color: var(--text); font-weight: 600; margin: 8px 0 24px;" id="verify-email-display"></p>
+            
+            <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 24px;">
+                <input type="text" id="otp-1" class="otp-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code">
+                <input type="text" id="otp-2" class="otp-input" maxlength="1" inputmode="numeric">
+                <input type="text" id="otp-3" class="otp-input" maxlength="1" inputmode="numeric">
+                <input type="text" id="otp-4" class="otp-input" maxlength="1" inputmode="numeric">
+                <input type="text" id="otp-5" class="otp-input" maxlength="1" inputmode="numeric">
+                <input type="text" id="otp-6" class="otp-input" maxlength="1" inputmode="numeric">
             </div>
-            <p class="auth-switch" style="margin-top: 24px;"><a onclick="showLogin()">Back to sign in</a></p>
+            
+            <p id="otp-error" style="color: #ef4444; font-size: 13px; margin-bottom: 16px; display: none;"></p>
+            
+            <button class="btn btn-primary" id="verify-btn" onclick="handleVerifyOTP(this)">Verify</button>
+            
+            <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
+                <p style="color: var(--text-muted); font-size: 13px;">Didn't receive the code?</p>
+                <button class="btn btn-secondary" style="margin-top: 12px;" onclick="resendVerification()">Resend code</button>
+            </div>
+            <p style="color: var(--text-muted); font-size: 12px; margin-top: 16px;">Code expires in 15 minutes</p>
+            <p class="auth-switch" style="margin-top: 16px;"><a onclick="showLogin()">Back to sign in</a></p>
         </div>
         
         <!-- EMAIL VERIFIED SUCCESS -->
@@ -1881,6 +1904,124 @@ function showVerifyPending(email) {
     document.getElementById('verify-success').classList.add('hidden');
     document.getElementById('verify-pending').classList.remove('hidden');
     document.getElementById('verify-email-display').textContent = email;
+    document.getElementById('otp-error').style.display = 'none';
+    
+    // Clear OTP inputs
+    for (let i = 1; i <= 6; i++) {
+        document.getElementById('otp-' + i).value = '';
+    }
+    
+    // Focus first input
+    setTimeout(() => document.getElementById('otp-1').focus(), 100);
+    
+    // Setup OTP input handlers
+    setupOTPInputs();
+}
+
+function setupOTPInputs() {
+    for (let i = 1; i <= 6; i++) {
+        const input = document.getElementById('otp-' + i);
+        
+        input.addEventListener('input', (e) => {
+            const val = e.target.value.replace(/[^0-9]/g, '');
+            e.target.value = val;
+            if (val && i < 6) {
+                document.getElementById('otp-' + (i + 1)).focus();
+            }
+            // Auto-submit when all 6 digits entered
+            if (i === 6 && val) {
+                const code = getOTPCode();
+                if (code.length === 6) handleVerifyOTP(document.getElementById('verify-btn'));
+            }
+        });
+        
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !e.target.value && i > 1) {
+                document.getElementById('otp-' + (i - 1)).focus();
+            }
+        });
+        
+        // Handle paste
+        input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const paste = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
+            for (let j = 0; j < 6 && j < paste.length; j++) {
+                document.getElementById('otp-' + (j + 1)).value = paste[j];
+            }
+            if (paste.length >= 6) {
+                document.getElementById('otp-6').focus();
+                handleVerifyOTP(document.getElementById('verify-btn'));
+            }
+        });
+    }
+}
+
+function getOTPCode() {
+    let code = '';
+    for (let i = 1; i <= 6; i++) {
+        code += document.getElementById('otp-' + i).value;
+    }
+    return code;
+}
+
+async function handleVerifyOTP(btn) {
+    const code = getOTPCode();
+    if (code.length !== 6) {
+        document.getElementById('otp-error').textContent = 'Please enter all 6 digits';
+        document.getElementById('otp-error').style.display = 'block';
+        return;
+    }
+    
+    setLoading(btn, true);
+    document.getElementById('otp-error').style.display = 'none';
+    
+    try {
+        const response = await fetch(`${API_BASE}/v1/auth/verify-email`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: pendingVerificationEmail, code: code })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.detail || 'Verification failed');
+        }
+        
+        // Auto-login with returned data
+        authToken = data.token;
+        localStorage.setItem('onto_token', authToken);
+        
+        if (data.api_key) {
+            localStorage.setItem('onto_first_api_key', data.api_key);
+        }
+        
+        currentUser = {
+            id: data.user_id,
+            name: data.name,
+            email: data.email,
+            role: data.role || 'admin',
+            plan: data.layer || 'free',
+            organization_id: data.organization_id,
+            organization_name: data.organization_name
+        };
+        localStorage.setItem('onto_user', JSON.stringify(currentUser));
+        localStorage.setItem('onto_logged_in', 'true');
+        
+        setLoading(btn, false);
+        showToast('Email verified! Welcome to ONTO', 'success');
+        showDashboard();
+    } catch (error) {
+        setLoading(btn, false);
+        document.getElementById('otp-error').textContent = error.message;
+        document.getElementById('otp-error').style.display = 'block';
+        
+        // Shake OTP inputs
+        for (let i = 1; i <= 6; i++) {
+            document.getElementById('otp-' + i).classList.add('error');
+            setTimeout(() => document.getElementById('otp-' + i).classList.remove('error'), 1500);
+        }
+    }
 }
 
 function showVerifySuccess() {
