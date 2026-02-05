@@ -527,7 +527,7 @@ localStorage.setItem('onto_token',d.token);
 localStorage.setItem('onto_user',JSON.stringify({id:d.user_id,name:d.name,email:email,role:'admin',plan:d.layer||'free',organization_id:d.organization_id,can_invoice:false,company:d.organization_name?{name:d.organization_name}:null}));
 afSetLoad(btn,false);
 afToast('Welcome back!','success');
-setTimeout(()=>{window.location='/'},500);
+setTimeout(()=>{window.location='/app/'},500);
 }catch(e){
 afSetLoad(btn,false);
 if(e.message&&e.message.includes('not verified')){afPendingEmail=email;afShowVerify(email);afToast('Please verify your email first','info');return}
@@ -583,7 +583,7 @@ localStorage.setItem('onto_user',JSON.stringify({id:d.user_id,name:d.name,email:
 localStorage.setItem('onto_logged_in','true');
 afSetLoad(btn,false);
 afToast('Email verified! Welcome to ONTO','success');
-setTimeout(()=>{window.location='/'},500);
+setTimeout(()=>{window.location='/app/'},500);
 }catch(e){
 afSetLoad(btn,false);
 document.getElementById('af-otp-error').textContent=e.message;document.getElementById('af-otp-error').style.display='block';
