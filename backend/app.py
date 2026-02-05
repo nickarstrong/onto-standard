@@ -49,6 +49,7 @@ import secrets
 import json
 import time
 import uuid
+import asyncio
 from collections import defaultdict
 from datetime import datetime, timezone, timedelta
 from typing import Optional, List
@@ -60,6 +61,7 @@ from fastapi.responses import JSONResponse, HTMLResponse
 from pydantic import BaseModel, EmailStr
 import asyncpg
 import uvicorn
+import httpx
 
 # ============================================================
 # CONFIG
@@ -542,10 +544,33 @@ async def check_rate_limit(request: Request, layer: str = "public") -> None:
 # LIFESPAN
 # ============================================================
 
+keep_alive_task = None
+
+async def signal_keep_alive():
+    """Ping signal server every 4 minutes to prevent cold starts"""
+    while True:
+        try:
+            async with httpx.AsyncClient() as client:
+                await client.get(f"{SIGNAL_URL}/ping", timeout=5)
+                print("[KEEP-ALIVE] Signal server pinged")
+        except Exception as e:
+            print(f"[KEEP-ALIVE] Failed: {e}")
+        await asyncio.sleep(240)  # 4 minutes
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    global keep_alive_task
     await init_db()
+    
+    # Start keep-alive task
+    keep_alive_task = asyncio.create_task(signal_keep_alive())
+    print("[STARTUP] Keep-alive task started (4 min interval)")
+    
     yield
+    
+    # Cancel keep-alive on shutdown
+    if keep_alive_task:
+        keep_alive_task.cancel()
     await close_db()
 
 # ============================================================

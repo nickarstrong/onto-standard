@@ -39,7 +39,8 @@ current_packet = None
 start_time = time.time()
 request_counts = defaultdict(int)
 total_requests = 0
-total_errors = 0
+client_errors = 0  # 4xx - client's fault
+server_errors = 0  # 5xx - our fault
 signals_generated = 0
 is_paused = False
 
@@ -62,15 +63,24 @@ def background_streamer():
 
 @app.middleware("http")
 async def count_requests(request: Request, call_next):
-    global total_requests, total_errors
-    total_requests += 1
+    global total_requests, client_errors, server_errors
+    
     path = request.url.path
+    
+    # Skip counting for keep-alive ping
+    if path == "/ping":
+        return await call_next(request)
+    
+    total_requests += 1
     request_counts[path] += 1
     
     response = await call_next(request)
     
-    if response.status_code >= 400:
-        total_errors += 1
+    # Separate client errors (4xx) from server errors (5xx)
+    if 400 <= response.status_code < 500:
+        client_errors += 1
+    elif response.status_code >= 500:
+        server_errors += 1
     
     return response
 
@@ -103,6 +113,11 @@ async def health():
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "uptime_seconds": int(time.time() - start_time)
     }
+
+@app.get("/ping")
+async def ping():
+    """Keep-alive endpoint (not counted in stats)"""
+    return Response(content="pong", media_type="text/plain")
 
 @app.get("/signal/latest.bin")
 async def get_signal_binary():
@@ -229,9 +244,13 @@ async def get_metrics():
         "# TYPE onto_signal_requests_total counter",
         f"onto_signal_requests_total {total_requests}",
         "",
-        "# HELP onto_signal_errors_total Total HTTP errors (4xx, 5xx)",
-        "# TYPE onto_signal_errors_total counter",
-        f"onto_signal_errors_total {total_errors}",
+        "# HELP onto_signal_client_errors_total Client errors (4xx)",
+        "# TYPE onto_signal_client_errors_total counter",
+        f"onto_signal_client_errors_total {client_errors}",
+        "",
+        "# HELP onto_signal_server_errors_total Server errors (5xx)",
+        "# TYPE onto_signal_server_errors_total counter",
+        f"onto_signal_server_errors_total {server_errors}",
         "",
         "# HELP onto_signal_signals_generated_total Total signals generated",
         "# TYPE onto_signal_signals_generated_total counter",
@@ -263,12 +282,16 @@ async def get_stats():
     """JSON stats for dashboard"""
     uptime = time.time() - start_time
     
+    # Error rate based on SERVER errors only (5xx), not client errors (4xx)
+    server_error_rate = round(server_errors / max(total_requests, 1) * 100, 2)
+    
     return {
         "uptime_seconds": int(uptime),
         "uptime_human": f"{int(uptime // 3600)}h {int((uptime % 3600) // 60)}m",
         "total_requests": total_requests,
-        "total_errors": total_errors,
-        "error_rate": round(total_errors / max(total_requests, 1) * 100, 2),
+        "client_errors": client_errors,
+        "server_errors": server_errors,
+        "error_rate_percent": server_error_rate,  # Only 5xx errors
         "signals_generated": signals_generated,
         "signal_interval": SIGNAL_INTERVAL,
         "requests_per_minute": round(total_requests / max(uptime / 60, 1), 2),
@@ -356,6 +379,9 @@ async def admin_status(request: Request):
     uptime = time.time() - start_time
     archive_count = len(list(output_dir.glob("sigma_*.bin")))
     
+    # Error rate based on SERVER errors only (5xx)
+    server_error_rate = round(server_errors / max(total_requests, 1) * 100, 2)
+    
     return {
         "paused": is_paused,
         "uptime_seconds": int(uptime),
@@ -363,8 +389,9 @@ async def admin_status(request: Request):
         "signals_generated": signals_generated,
         "archive_count": archive_count,
         "total_requests": total_requests,
-        "total_errors": total_errors,
-        "error_rate_percent": round(total_errors / max(total_requests, 1) * 100, 2),
+        "client_errors": client_errors,
+        "server_errors": server_errors,
+        "error_rate_percent": server_error_rate,  # Only 5xx
         "current_signal": current_packet.to_dict() if current_packet else None,
         "output_dir": str(output_dir.absolute()),
         "public_key": streamer.verify_key.encode().hex()
