@@ -323,22 +323,21 @@ async def is_architect(user_id) -> bool:
         return result is not None
 
 def generate_verification_token() -> str:
-    """Generate a secure verification token"""
-    return secrets.token_urlsafe(32)
+    """Generate a 6-digit OTP code"""
+    import random
+    return str(random.randint(100000, 999999))
 
-async def send_verification_email(email: str, name: str, token: str) -> bool:
-    """Send verification email via Resend"""
+async def send_verification_email(email: str, name: str, code: str) -> bool:
+    """Send OTP verification code via Resend"""
     if not resend_client:
-        print(f"[API] Email disabled - would send verification to {email}")
+        print(f"[API] Email disabled - OTP code for {email}: {code}")
         return False
-    
-    verify_url = f"{FRONTEND_URL}/app/?verify={token}"
     
     try:
         resend_client.Emails.send({
             "from": "ONTO <noreply@ontostandard.org>",
             "to": email,
-            "subject": "Verify your ONTO account",
+            "subject": f"Your ONTO verification code: {code}",
             "html": f"""
             <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
                 <div style="text-align: center; margin-bottom: 32px;">
@@ -346,23 +345,25 @@ async def send_verification_email(email: str, name: str, token: str) -> bool:
                         <span style="color: white; font-weight: bold; font-size: 20px;">O</span>
                     </div>
                 </div>
-                <h1 style="color: #111; font-size: 24px; margin-bottom: 16px;">Verify your email</h1>
+                <h1 style="color: #111; font-size: 24px; margin-bottom: 16px; text-align: center;">Verify your email</h1>
                 <p style="color: #666; font-size: 16px; line-height: 1.6;">Hi {name},</p>
-                <p style="color: #666; font-size: 16px; line-height: 1.6;">Click the button below to verify your email address and activate your ONTO account.</p>
-                <div style="margin: 32px 0;">
-                    <a href="{verify_url}" style="background: #15803d; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">Verify Email</a>
+                <p style="color: #666; font-size: 16px; line-height: 1.6;">Enter this code in the app to verify your account:</p>
+                <div style="margin: 32px 0; text-align: center;">
+                    <div style="background: #f5f5f5; border: 2px solid #e5e5e5; border-radius: 12px; padding: 24px; display: inline-block;">
+                        <span style="font-size: 36px; font-weight: 700; letter-spacing: 8px; color: #111; font-family: monospace;">{code}</span>
+                    </div>
                 </div>
-                <p style="color: #999; font-size: 14px;">Or copy this link: {verify_url}</p>
-                <p style="color: #999; font-size: 14px; margin-top: 32px;">This link expires in 24 hours.</p>
+                <p style="color: #999; font-size: 14px;">This code expires in 15 minutes.</p>
+                <p style="color: #999; font-size: 14px;">If you didn't create an ONTO account, ignore this email.</p>
                 <hr style="border: none; border-top: 1px solid #eee; margin: 32px 0;">
-                <p style="color: #999; font-size: 12px;">ONTO - Epistemic Risk Management</p>
+                <p style="color: #999; font-size: 12px;">ONTO — Epistemic Risk Management</p>
             </div>
             """
         })
-        print(f"[API] Verification email sent to {email}")
+        print(f"[API] OTP code sent to {email}")
         return True
     except Exception as e:
-        print(f"[API] Failed to send verification email: {e}")
+        print(f"[API] Failed to send OTP email: {e}")
         return False
 
 async def send_invite_email(email: str, name: str, token: str, org_name: str, inviter_name: str) -> bool:
@@ -932,10 +933,10 @@ async def register(request: RegisterRequest, req: Request):
                 RETURNING id
             """, org_name, slug, stripe_customer_id, json.dumps(profile_data), full_key)
         
-        # Create user with verification token
+        # Create user with OTP code
         password_hash = hash_password(request.password)
         verification_token = generate_verification_token()
-        token_expires = datetime.now(timezone.utc) + timedelta(hours=24)
+        token_expires = datetime.now(timezone.utc) + timedelta(minutes=15)
         
         user_id = await conn.fetchval("""
             INSERT INTO users (email, name, password_hash, organization_id, role, email_verified, verification_token, verification_token_expires)
@@ -1059,146 +1060,63 @@ async def login(request: LoginRequest, req: Request):
             "message": "Login successful"
         }
 
-@app.get("/v1/auth/verify-email")
-async def verify_email(token: str):
-    """Verify email with token and auto-login"""
+class VerifyOTPRequest(BaseModel):
+    email: EmailStr
+    code: str
+
+@app.post("/v1/auth/verify-email")
+async def verify_email(request: VerifyOTPRequest):
+    """Verify email with 6-digit OTP code and auto-login"""
     if not db_pool:
         raise HTTPException(status_code=503, detail="Database not available")
     
+    email = request.email.lower().strip()
+    code = request.code.strip()
+    
     async with db_pool.acquire() as conn:
-        # Find user by token
+        # Find user by email + code
         row = await conn.fetchrow("""
             SELECT u.id, u.email, u.name, u.verification_token_expires, u.organization_id, u.role,
                    o.name as organization_name, o.tier as layer, o.portal_api_key
             FROM users u
             LEFT JOIN organizations o ON u.organization_id = o.id
-            WHERE u.verification_token = $1 AND u.email_verified = false
-        """, token)
+            WHERE u.email = $1 AND u.verification_token = $2 AND u.email_verified = false
+        """, email, code)
         
         if not row:
-            # Return error page
-            return HTMLResponse(content=f"""
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Verification Failed - ONTO</title>
-                <meta charset="utf-8">
-                <style>
-                    body {{ font-family: -apple-system, sans-serif; background: #0a0a0a; color: #fafafa; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }}
-                    .card {{ background: #141414; padding: 40px; border-radius: 12px; text-align: center; max-width: 400px; border: 1px solid #262626; }}
-                    h1 {{ color: #ef4444; margin-bottom: 16px; }}
-                    p {{ color: #a3a3a3; margin-bottom: 24px; }}
-                    a {{ color: #22c55e; text-decoration: none; }}
-                </style>
-            </head>
-            <body>
-                <div class="card">
-                    <h1>Verification Failed</h1>
-                    <p>Invalid or expired verification link.</p>
-                    <a href="https://ontostandard.org/app/">Back to ONTO</a>
-                </div>
-            </body>
-            </html>
-            """, status_code=400)
+            raise HTTPException(status_code=400, detail="Invalid code. Please check and try again.")
         
         # Check expiry
         if row['verification_token_expires'] and row['verification_token_expires'] < datetime.now(timezone.utc):
-            return HTMLResponse(content=f"""
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Link Expired - ONTO</title>
-                <meta charset="utf-8">
-                <style>
-                    body {{ font-family: -apple-system, sans-serif; background: #0a0a0a; color: #fafafa; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }}
-                    .card {{ background: #141414; padding: 40px; border-radius: 12px; text-align: center; max-width: 400px; border: 1px solid #262626; }}
-                    h1 {{ color: #f59e0b; margin-bottom: 16px; }}
-                    p {{ color: #a3a3a3; margin-bottom: 24px; }}
-                    a {{ color: #22c55e; text-decoration: none; }}
-                </style>
-            </head>
-            <body>
-                <div class="card">
-                    <h1>Link Expired</h1>
-                    <p>This verification link has expired. Please request a new one.</p>
-                    <a href="https://ontostandard.org/app/">Back to ONTO</a>
-                </div>
-            </body>
-            </html>
-            """, status_code=400)
+            raise HTTPException(status_code=400, detail="Code expired. Please request a new one.")
         
-        # Mark as verified and clear token (one-time use)
+        # Mark as verified
         await conn.execute("""
             UPDATE users 
             SET email_verified = true, verification_token = NULL, verification_token_expires = NULL, last_login_at = NOW()
             WHERE id = $1
         """, row['id'])
         
-        # Get or create portal_api_key
-        portal_key = row['portal_api_key']
-        if not portal_key:
-            portal_key, prefix = generate_api_key()
-            await conn.execute("""
-                UPDATE organizations SET portal_api_key = $1 WHERE id = $2
-            """, portal_key, row['organization_id'])
-            # Also update api_keys table
-            key_hash = hash_api_key(portal_key)
-            await conn.execute("""
-                INSERT INTO api_keys (organization_id, name, key_hash, key_prefix, scopes)
-                VALUES ($1, 'Default Key', $2, $3, '{"read", "write"}')
-                ON CONFLICT DO NOTHING
-            """, row['organization_id'], key_hash, prefix)
+        # Generate session token
+        token = secrets.token_hex(32)
         
-        # Return auto-login page
-        return HTMLResponse(content=f"""
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Email Verified - ONTO</title>
-            <meta charset="utf-8">
-            <style>
-                body {{ font-family: -apple-system, sans-serif; background: #0a0a0a; color: #fafafa; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }}
-                .card {{ background: #141414; padding: 40px; border-radius: 12px; text-align: center; max-width: 400px; border: 1px solid #262626; }}
-                .icon {{ width: 64px; height: 64px; background: rgba(34, 197, 94, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }}
-                .icon svg {{ width: 32px; height: 32px; color: #22c55e; }}
-                h1 {{ color: #22c55e; margin-bottom: 8px; font-size: 24px; }}
-                p {{ color: #a3a3a3; margin-bottom: 24px; }}
-                .loading {{ color: #737373; font-size: 14px; }}
-            </style>
-        </head>
-        <body>
-            <div class="card">
-                <div class="icon">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                </div>
-                <h1>Email Verified!</h1>
-                <p>Welcome to ONTO, {row['name'] or 'User'}.</p>
-                <p class="loading">Redirecting to dashboard...</p>
-            </div>
-            <script>
-                // Store credentials
-                localStorage.setItem('onto_user_id', '{row['id']}');
-                localStorage.setItem('onto_user_name', '{row['name'] or ''}');
-                localStorage.setItem('onto_user_email', '{row['email']}');
-                localStorage.setItem('onto_org_id', '{row['organization_id']}');
-                localStorage.setItem('onto_org_name', '{row['organization_name'] or ''}');
-                localStorage.setItem('onto_layer', '{row['layer'] or 'open'}');
-                localStorage.setItem('onto_role', '{row['role'] or 'admin'}');
-                localStorage.setItem('onto_first_api_key', '{portal_key}');
-                localStorage.setItem('onto_logged_in', 'true');
-                
-                // Redirect to dashboard
-                setTimeout(() => {{
-                    window.location.href = 'https://ontostandard.org/app/';
-                }}, 1500);
-            </script>
-        </body>
-        </html>
-        """)
+        return {
+            "success": True,
+            "token": token,
+            "user_id": str(row['id']),
+            "name": row['name'],
+            "email": row['email'],
+            "organization_id": str(row['organization_id']),
+            "organization_name": row['organization_name'],
+            "layer": row['layer'] or "open",
+            "role": row['role'] or "admin",
+            "api_key": row['portal_api_key'],
+            "message": "Email verified successfully!"
+        }
 
 @app.post("/v1/auth/resend-verification")
 async def resend_verification(request: LoginRequest):
-    """Resend verification email"""
+    """Resend OTP verification code"""
     if not db_pool:
         raise HTTPException(status_code=503, detail="Database not available")
     
@@ -1214,26 +1132,26 @@ async def resend_verification(request: LoginRequest):
         
         if not row:
             # Don't reveal if email exists
-            return {"message": "If this email is registered, a verification link will be sent."}
+            return {"message": "If this email is registered, a new code will be sent."}
         
         if row.get('email_verified', True):
             return {"message": "Email already verified. You can log in."}
         
-        # Generate new token
-        new_token = generate_verification_token()
-        token_expires = datetime.now(timezone.utc) + timedelta(hours=24)
+        # Generate new OTP code
+        new_code = generate_verification_token()
+        token_expires = datetime.now(timezone.utc) + timedelta(minutes=15)
         
         await conn.execute("""
             UPDATE users 
             SET verification_token = $1, verification_token_expires = $2
             WHERE id = $3
-        """, new_token, token_expires, row['id'])
+        """, new_code, token_expires, row['id'])
         
         # Send email
-        email_sent = await send_verification_email(email, row['name'], new_token)
+        email_sent = await send_verification_email(email, row['name'], new_code)
         
         return {
-            "message": "Verification email sent. Please check your inbox.",
+            "message": "New verification code sent. Check your inbox.",
             "email_sent": email_sent
         }
 
