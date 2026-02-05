@@ -700,6 +700,54 @@ async def force_signal_broadcast(ref: dict = Depends(validate_architect)):
     except Exception as e:
         return {"error": str(e), "status": "failed"}
 
+@app.post("/v1/signal/pause")
+async def pause_signal(ref: dict = Depends(validate_architect)):
+    """Pause signal generation (admin only)"""
+    import httpx
+    
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.post(
+                f"{SIGNAL_URL}/admin/pause",
+                headers={"X-Admin-Key": os.getenv("SIGNAL_ADMIN_KEY", "onto-admin-2026-secret")},
+                timeout=10
+            )
+            return resp.json()
+    except Exception as e:
+        return {"error": str(e), "status": "failed"}
+
+@app.post("/v1/signal/resume")
+async def resume_signal(ref: dict = Depends(validate_architect)):
+    """Resume signal generation (admin only)"""
+    import httpx
+    
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.post(
+                f"{SIGNAL_URL}/admin/resume",
+                headers={"X-Admin-Key": os.getenv("SIGNAL_ADMIN_KEY", "onto-admin-2026-secret")},
+                timeout=10
+            )
+            return resp.json()
+    except Exception as e:
+        return {"error": str(e), "status": "failed"}
+
+@app.get("/v1/signal/admin-status")
+async def get_signal_admin_status(ref: dict = Depends(validate_architect)):
+    """Get full signal admin status (admin only)"""
+    import httpx
+    
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(
+                f"{SIGNAL_URL}/admin/status",
+                headers={"X-Admin-Key": os.getenv("SIGNAL_ADMIN_KEY", "onto-admin-2026-secret")},
+                timeout=5
+            )
+            return resp.json()
+    except Exception as e:
+        return {"error": str(e), "status": "unavailable"}
+
 
 @app.get("/v1/signal/current")
 async def get_current_signal(org: dict = Depends(validate_api_key)):

@@ -3611,12 +3611,37 @@ async function loadSignalData() {
     if (!apiKey) return;
     
     try {
+        // Get signal data
         const res = await fetch(`${API_BASE}/v1/signal/latest`, {
             headers: { 'x-api-key': apiKey }
         });
         if (res.ok) {
             signalData = await res.json();
             renderSignal();
+        }
+        
+        // Get admin status (paused state)
+        const statusRes = await fetch(`${API_BASE}/v1/signal/admin-status`, {
+            headers: { 'x-api-key': apiKey }
+        });
+        if (statusRes.ok) {
+            const status = await statusRes.json();
+            signalPaused = status.paused || false;
+            updatePauseButton();
+            
+            // Update live indicator
+            const indicator = document.getElementById('signal-live-indicator');
+            if (indicator) {
+                if (signalPaused) {
+                    indicator.innerHTML = '<span class="signal-dot" style="background:#f59e0b;animation:none;"></span><span>PAUSED</span>';
+                    indicator.style.background = 'rgba(245, 158, 11, 0.15)';
+                    indicator.style.color = '#f59e0b';
+                } else {
+                    indicator.innerHTML = '<span class="signal-dot"></span><span>LIVE</span>';
+                    indicator.style.background = 'rgba(34, 197, 94, 0.15)';
+                    indicator.style.color = '#22c55e';
+                }
+            }
         }
     } catch (e) {
         console.error('Signal load error:', e);
@@ -3696,9 +3721,40 @@ async function forceSignalBroadcast() {
     }
 }
 
-function toggleSignalPause() {
-    // TODO: Implement pause/resume
-    showToast('Pause/Resume not implemented', 'info');
+let signalPaused = false;
+
+async function toggleSignalPause() {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) return;
+    
+    const endpoint = signalPaused ? 'resume' : 'pause';
+    
+    try {
+        const res = await fetch(`${API_BASE}/v1/signal/${endpoint}`, {
+            method: 'POST',
+            headers: { 'x-api-key': apiKey }
+        });
+        if (res.ok) {
+            const data = await res.json();
+            signalPaused = !signalPaused;
+            updatePauseButton();
+            showToast(`Signal ${signalPaused ? 'paused' : 'resumed'}`, 'success');
+            loadSignalData();
+        } else {
+            showToast('Action failed', 'error');
+        }
+    } catch (e) {
+        showToast('Action failed', 'error');
+    }
+}
+
+function updatePauseButton() {
+    const btn = document.getElementById('signal-pause-btn');
+    if (btn) {
+        btn.innerHTML = signalPaused 
+            ? '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Resume'
+            : '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause';
+    }
 }
 
 function refreshSignal() {
