@@ -26,10 +26,13 @@ Endpoints:
   GET  /v1/models                  - List organization's models
   GET  /v1/models/{id}             - Model details + recent evaluations
   DELETE /v1/models/{id}           - Deactivate model
-  POST /v1/models/evaluate         - Evaluate model output (risk scoring)
+  POST /v1/models/evaluate         - Evaluate model output (risk scoring v2.0)
+  POST /v1/models/evaluate/batch   - Batch evaluate (up to 100)
   GET  /v1/models/{id}/evaluations - Evaluation history
   GET  /v1/models/{id}/trend       - Risk score trend over time
   GET  /v1/models/compare          - Compare all models side-by-side
+  POST /v1/models/{id}/certify     - Request certification after N evals
+  GET  /v1/models/{id}/certification-status - Check readiness for certification
   
   # Certificates
   GET  /v1/certificates      - List certificates
@@ -664,7 +667,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="ONTO API",
     description="Epistemic Calibration Infrastructure for Enterprise AI",
-    version="1.4.0",
+    version="1.5.0",
     lifespan=lifespan
 )
 
@@ -1389,15 +1392,14 @@ async def change_password(request: ChangePasswordRequest, org: dict = Depends(va
         # Get user by org
         user = await conn.fetchrow(
             "SELECT id, password_hash FROM users WHERE organization_id = $1",
-            org['organization_id']
+            uuid.UUID(org['organization_id'])
         )
         
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         
         # Verify current password
-        current_hash = hash_password(request.current_password)
-        if user['password_hash'] != current_hash:
+        if not verify_password(request.current_password, user['password_hash']):
             raise HTTPException(status_code=401, detail="Current password incorrect")
         
         # Update password
@@ -4402,7 +4404,413 @@ async def evaluate_model(
             "signals_used": result.get('signals_used', 1),
             "factors": result['factors'],
             "weights": result.get('weights_applied', {}),
+            "recommendations": generate_recommendations(result),
             "status": "completed"
+        }
+
+
+def generate_recommendations(result: dict) -> list:
+    """Generate actionable recommendations based on evaluation results."""
+    recs = []
+    factors = result.get('factors', {})
+    risk = result.get('risk_score', 0.5)
+    calibration = result.get('calibration', 50)
+    
+    # Overconfidence
+    if factors.get('confidence_calibration') and factors['confidence_calibration'] > 0.5:
+        recs.append({
+            "type": "overconfidence",
+            "severity": "high" if factors['confidence_calibration'] > 0.7 else "medium",
+            "message": "Model shows overconfidence — high self-reported confidence doesn't match linguistic uncertainty. Consider lowering temperature or adding calibration training.",
+        })
+    
+    # High linguistic uncertainty
+    if factors.get('linguistic_uncertainty') and factors['linguistic_uncertainty'] > 0.4:
+        recs.append({
+            "type": "hedging",
+            "severity": "medium",
+            "message": "Output contains excessive hedging language. If the model is uncertain, consider providing more context or constraining the domain.",
+        })
+    
+    # Low refusal awareness
+    if factors.get('refusal_awareness') is not None and factors['refusal_awareness'] < 0.1 and risk > 0.4:
+        recs.append({
+            "type": "refusal_awareness",
+            "severity": "medium",
+            "message": "Model doesn't signal when it lacks knowledge. Add system prompts that encourage honest uncertainty expression.",
+        })
+    
+    # Domain risk
+    if factors.get('domain_multiplier') and factors['domain_multiplier'] > 1.2:
+        recs.append({
+            "type": "domain_risk",
+            "severity": "high",
+            "message": f"Domain '{factors.get('domain', 'unknown')}' has elevated risk thresholds (×{factors['domain_multiplier']}). Extra validation recommended for production use.",
+        })
+    
+    # Low calibration (few signals)
+    if calibration < 55:
+        recs.append({
+            "type": "low_calibration",
+            "severity": "low",
+            "message": "Assessment confidence is low. Provide logprobs, ground_truth, or domain parameters for more accurate scoring.",
+        })
+    
+    # Logprob entropy
+    if factors.get('logprob_entropy') and factors['logprob_entropy'] > 0.6:
+        recs.append({
+            "type": "high_entropy",
+            "severity": "high",
+            "message": "Token-level entropy is high — model is uncertain at generation level. Consider reducing temperature or using more specific prompts.",
+        })
+    
+    # Ground truth miss
+    if factors.get('ground_truth_accuracy') is not None and factors['ground_truth_accuracy'] < 0.5:
+        recs.append({
+            "type": "accuracy",
+            "severity": "critical",
+            "message": "Model output doesn't match the provided ground truth. This indicates a factual error requiring immediate attention.",
+        })
+    
+    # Positive feedback
+    if risk < 0.25 and not recs:
+        recs.append({
+            "type": "passed",
+            "severity": "info",
+            "message": "Model output meets L3 (low risk) standards. Well-calibrated and appropriate for autonomous use.",
+        })
+    
+    return recs
+
+
+class BatchEvaluateItem(BaseModel):
+    model_id: str
+    output: str
+    confidence: Optional[float] = None
+    ground_truth: Optional[str] = None
+    domain: Optional[str] = None
+    logprobs: Optional[List[float]] = None
+    context: Optional[str] = None
+
+
+class BatchEvaluateRequest(BaseModel):
+    evaluations: List[BatchEvaluateItem]  # max 100
+
+
+@app.post("/v1/models/evaluate/batch")
+async def batch_evaluate(
+    request: BatchEvaluateRequest,
+    org: dict = Depends(validate_api_key)
+):
+    """
+    Batch evaluate multiple model outputs in one request.
+    Max 100 evaluations per batch. Returns results array.
+    """
+    if len(request.evaluations) > 100:
+        raise HTTPException(status_code=400, detail="Max 100 evaluations per batch")
+    
+    if len(request.evaluations) == 0:
+        raise HTTPException(status_code=400, detail="At least 1 evaluation required")
+    
+    if not db_pool:
+        results = []
+        for item in request.evaluations:
+            r = compute_risk_score(
+                output=item.output, confidence=item.confidence,
+                ground_truth=item.ground_truth, domain=item.domain,
+                logprobs=item.logprobs, context=item.context,
+            )
+            r["evaluation_id"] = "demo-" + secrets.token_hex(8)
+            r["model_id"] = item.model_id
+            r["recommendations"] = generate_recommendations(r)
+            r["status"] = "demo"
+            results.append(r)
+        return {"results": results, "total": len(results)}
+    
+    org_id = org['organization_id']
+    results = []
+    errors = []
+    
+    async with db_pool.acquire() as conn:
+        for i, item in enumerate(request.evaluations):
+            try:
+                model = await conn.fetchrow("""
+                    SELECT id, name FROM models 
+                    WHERE id = $1 AND organization_id = $2 AND is_active = true
+                """, uuid.UUID(item.model_id), uuid.UUID(org_id))
+                
+                if not model:
+                    errors.append({"index": i, "error": f"Model {item.model_id} not found"})
+                    continue
+                
+                result = compute_risk_score(
+                    output=item.output, confidence=item.confidence,
+                    ground_truth=item.ground_truth, domain=item.domain,
+                    logprobs=item.logprobs, context=item.context,
+                )
+                
+                eval_id = await conn.fetchval("""
+                    INSERT INTO evaluations 
+                        (organization_id, model_id, model_name, model_version, status, 
+                         risk_score, layer, compliance, calibration, metrics)
+                    VALUES ($1, $2, $3, NULL, 'completed', $4, $5, $6, $7, $8)
+                    RETURNING id
+                """, uuid.UUID(org_id), model['id'], model['name'],
+                    result['risk_score'], result['layer'], result['compliance'],
+                    result['calibration'], json.dumps({
+                        "engine_version": result.get('engine_version', '2.0'),
+                        "signals_used": result.get('signals_used', 1),
+                        "factors": result['factors'],
+                        "batch_index": i,
+                    }))
+                
+                # Update model layer
+                await conn.execute(
+                    "UPDATE models SET layer = $1, updated_at = NOW() WHERE id = $2",
+                    result['layer'], model['id'])
+                
+                results.append({
+                    "index": i,
+                    "evaluation_id": str(eval_id),
+                    "model_id": item.model_id,
+                    "model_name": model['name'],
+                    "risk_score": result['risk_score'],
+                    "layer": result['layer'],
+                    "compliance": result['compliance'],
+                    "calibration": result['calibration'],
+                    "recommendations": generate_recommendations(result),
+                    "status": "completed"
+                })
+                
+            except Exception as e:
+                errors.append({"index": i, "error": str(e)})
+        
+        # Update subscription counter
+        if results:
+            await conn.execute("""
+                UPDATE subscriptions 
+                SET evaluations_used = COALESCE(evaluations_used, 0) + $1
+                WHERE organization_id = $2 AND status = 'active'
+            """, len(results), uuid.UUID(org_id))
+    
+    return {
+        "results": results,
+        "errors": errors,
+        "total_completed": len(results),
+        "total_errors": len(errors)
+    }
+
+
+@app.post("/v1/models/{model_id}/certify")
+async def certify_model(
+    model_id: str,
+    org: dict = Depends(validate_api_key)
+):
+    """
+    Request certification for a model based on evaluation history.
+    Requirements:
+    - Minimum 50 evaluations (open), 100 (standard), 500 (critical)
+    - Stable layer (no L1 in last 20 evaluations)
+    - Average risk < 0.50 for L2, < 0.25 for L3
+    """
+    if not db_pool:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    org_id = org['organization_id']
+    tier = org.get('layer', 'open')
+    
+    min_evals = {"open": 50, "standard": 100, "critical": 500}
+    required_evals = min_evals.get(tier, 50)
+    
+    async with db_pool.acquire() as conn:
+        model = await conn.fetchrow("""
+            SELECT id, name, provider, version, layer FROM models 
+            WHERE id = $1 AND organization_id = $2 AND is_active = true
+        """, uuid.UUID(model_id), uuid.UUID(org_id))
+        
+        if not model:
+            raise HTTPException(status_code=404, detail="Model not found")
+        
+        # Check existing active certificate
+        existing = await conn.fetchval("""
+            SELECT id FROM certificates 
+            WHERE organization_id = $1 AND model_name = $2 
+            AND revoked_at IS NULL AND expires_at > NOW()
+        """, uuid.UUID(org_id), model['name'])
+        
+        if existing:
+            raise HTTPException(status_code=409, detail="Model already has an active certificate")
+        
+        # Get evaluation stats
+        stats = await conn.fetchrow("""
+            SELECT COUNT(*) as total,
+                   AVG(risk_score) as avg_risk,
+                   MIN(risk_score) as best_risk,
+                   MAX(risk_score) as worst_risk,
+                   AVG(calibration) as avg_calibration
+            FROM evaluations WHERE model_id = $1
+        """, uuid.UUID(model_id))
+        
+        total_evals = stats['total'] or 0
+        
+        if total_evals < required_evals:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Insufficient evaluations: {total_evals}/{required_evals} required for {tier} tier"
+            )
+        
+        avg_risk = float(stats['avg_risk']) if stats['avg_risk'] else 1.0
+        
+        # Check last 20 evaluations for stability
+        recent = await conn.fetch("""
+            SELECT layer, compliance FROM evaluations 
+            WHERE model_id = $1 ORDER BY submitted_at DESC LIMIT 20
+        """, uuid.UUID(model_id))
+        
+        failed_recent = sum(1 for r in recent if r['compliance'] == 'FAILED')
+        l1_recent = sum(1 for r in recent if r['layer'] == 'L1')
+        
+        if l1_recent > 5:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Model unstable: {l1_recent}/20 recent evaluations at L1 (high risk). Max allowed: 5."
+            )
+        
+        # Determine certified layer
+        if avg_risk < 0.25 and failed_recent == 0:
+            certified_layer = "L3"
+        elif avg_risk < 0.50 and failed_recent <= 2:
+            certified_layer = "L2"
+        else:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Model doesn't meet certification criteria. Avg risk: {avg_risk:.3f}, failed recent: {failed_recent}/20"
+            )
+        
+        # Generate certificate
+        cert_year = datetime.now(timezone.utc).strftime("%Y")
+        cert_seq = await conn.fetchval(
+            "SELECT COUNT(*) + 1 FROM certificates WHERE issued_at >= date_trunc('year', NOW())"
+        )
+        cert_number = f"ONTO-CERT-{cert_year}-{cert_seq:05d}"
+        
+        verification_hash = secrets.token_hex(32)
+        
+        cert_id = await conn.fetchval("""
+            INSERT INTO certificates 
+                (organization_id, certificate_number, model_name, level,
+                 metrics_snapshot, verification_hash, expires_at)
+            VALUES ($1, $2, $3, $4, $5, $6, NOW() + INTERVAL '1 year')
+            RETURNING id
+        """, uuid.UUID(org_id), cert_number, model['name'], certified_layer,
+            json.dumps({
+                "total_evaluations": total_evals,
+                "avg_risk": round(avg_risk, 4),
+                "best_risk": round(float(stats['best_risk']), 4) if stats['best_risk'] else None,
+                "worst_risk": round(float(stats['worst_risk']), 4) if stats['worst_risk'] else None,
+                "avg_calibration": round(float(stats['avg_calibration']), 1) if stats['avg_calibration'] else None,
+                "provider": model['provider'],
+                "version": model['version'],
+                "engine_version": "2.0",
+                "certified_at": datetime.now(timezone.utc).isoformat(),
+            }),
+            verification_hash)
+        
+        # Update model layer to certified
+        await conn.execute(
+            "UPDATE models SET layer = $1, updated_at = NOW() WHERE id = $2",
+            certified_layer, model['id'])
+        
+        # Audit log
+        await conn.execute("""
+            INSERT INTO audit_log (organization_id, action, resource_type, details)
+            VALUES ($1, 'model_certified', 'certificate', $2)
+        """, uuid.UUID(org_id), json.dumps({
+            "certificate": cert_number, "model": model['name'], "layer": certified_layer
+        }))
+        
+        return {
+            "certificate_id": str(cert_id),
+            "certificate_number": cert_number,
+            "model_name": model['name'],
+            "certified_layer": certified_layer,
+            "total_evaluations": total_evals,
+            "avg_risk": round(avg_risk, 4),
+            "expires_at": (datetime.now(timezone.utc) + timedelta(days=365)).isoformat(),
+            "verify_url": f"https://api.ontostandard.org/v1/certificates/{cert_number}",
+            "status": "certified"
+        }
+
+
+@app.get("/v1/models/{model_id}/certification-status")
+async def certification_status(
+    model_id: str,
+    org: dict = Depends(validate_api_key)
+):
+    """Check if model is ready for certification."""
+    if not db_pool:
+        return {"ready": False, "reason": "Database not available"}
+    
+    org_id = org['organization_id']
+    tier = org.get('layer', 'open')
+    min_evals = {"open": 50, "standard": 100, "critical": 500}.get(tier, 50)
+    
+    async with db_pool.acquire() as conn:
+        model = await conn.fetchrow(
+            "SELECT id, name, layer FROM models WHERE id = $1 AND organization_id = $2",
+            uuid.UUID(model_id), uuid.UUID(org_id))
+        
+        if not model:
+            raise HTTPException(status_code=404, detail="Model not found")
+        
+        stats = await conn.fetchrow("""
+            SELECT COUNT(*) as total, AVG(risk_score) as avg_risk
+            FROM evaluations WHERE model_id = $1
+        """, uuid.UUID(model_id))
+        
+        total = stats['total'] or 0
+        avg_risk = float(stats['avg_risk']) if stats['avg_risk'] else 1.0
+        
+        recent = await conn.fetch("""
+            SELECT layer, compliance FROM evaluations 
+            WHERE model_id = $1 ORDER BY submitted_at DESC LIMIT 20
+        """, uuid.UUID(model_id))
+        
+        l1_count = sum(1 for r in recent if r['layer'] == 'L1')
+        failed_count = sum(1 for r in recent if r['compliance'] == 'FAILED')
+        
+        # Existing certificate check
+        has_cert = await conn.fetchval("""
+            SELECT id FROM certificates 
+            WHERE organization_id = $1 AND model_name = $2 
+            AND revoked_at IS NULL AND expires_at > NOW()
+        """, uuid.UUID(org_id), model['name'])
+        
+        blockers = []
+        if total < min_evals:
+            blockers.append(f"Need {min_evals - total} more evaluations ({total}/{min_evals})")
+        if avg_risk >= 0.50:
+            blockers.append(f"Average risk too high: {avg_risk:.3f} (need < 0.50)")
+        if l1_count > 5:
+            blockers.append(f"Too many L1 evaluations in recent 20: {l1_count} (max 5)")
+        if has_cert:
+            blockers.append("Model already has an active certificate")
+        
+        predicted_layer = "L3" if avg_risk < 0.25 and failed_count == 0 else "L2" if avg_risk < 0.50 else "L1"
+        
+        return {
+            "model_id": model_id,
+            "model_name": model['name'],
+            "ready": len(blockers) == 0,
+            "predicted_layer": predicted_layer,
+            "total_evaluations": total,
+            "required_evaluations": min_evals,
+            "avg_risk": round(avg_risk, 4),
+            "recent_l1_count": l1_count,
+            "recent_failed_count": failed_count,
+            "has_active_certificate": has_cert is not None,
+            "blockers": blockers,
+            "progress_percent": min(round(total / min_evals * 100, 1), 100.0),
         }
 
 
