@@ -1865,7 +1865,7 @@ result = client.evaluate(output, confidence=0.85)</code></pre>
         </div>
         <div class="modal-body">
             <div class="tier-user-info" id="tier-user-info">
-                <div class="tier-user-email">user@example.com</div>
+                <div class="tier-user-email">support@ontostandard.org</div>
             </div>
             <div class="tier-options">
                 <label class="tier-option" data-tier="open">
@@ -4164,4 +4164,28 @@ document.addEventListener('DOMContentLoaded', () => {
             showDashboard();
         } catch (e) {
             localStorage.removeItem('onto_user');
-            localStorage.removeItem('onto_token'
+            localStorage.removeItem('onto_token');
+        }
+    }
+    
+    // Init UI components
+    checkWelcomeBanner();
+    updateSignalHash();
+    updateUTCClock();
+    updateSparkline();
+    drawIndustryChart();
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+                modal.classList.remove('active');
+            });
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar) sidebar.classList.remove('open');
+        }
+    });
+});
+</script>
+</body>
+</html>
