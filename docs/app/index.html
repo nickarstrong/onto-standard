@@ -1292,7 +1292,7 @@ result = client.evaluate(output, confidence=0.85)</code></pre>
                         <li>99.5% SLA</li>
                         <li>Business hours support</li>
                     </ul>
-                    <button class="btn-tier" id="btn-business" onclick="contactSales()">Select</button>
+                    <button class="btn-tier" id="btn-business" onclick="openSubscribeModal('business')">Select</button>
                 </div>
                 
                 <!-- CRITICAL -->
@@ -1306,7 +1306,7 @@ result = client.evaluate(output, confidence=0.85)</code></pre>
                         <li>99.99% SLA</li>
                         <li>24/7 priority support</li>
                     </ul>
-                    <button class="btn-tier" id="btn-enterprise" onclick="contactSales()">Select</button>
+                    <button class="btn-tier" id="btn-enterprise" onclick="openSubscribeModal('enterprise')">Select</button>
                     <button class="btn-tier-secondary" onclick="contactSales()">Contact</button>
                 </div>
             </div>
@@ -1654,6 +1654,90 @@ result = client.evaluate(output, confidence=0.85)</code></pre>
 
 <!-- SUBSCRIBE MODAL -->
 <!-- CONTACT SALES MODAL -->
+<!-- SUBSCRIBE MODAL -->
+<div class="modal-overlay" id="subscribe-modal">
+    <div class="modal modal-inst" style="max-width: 440px;">
+        <div class="modal-header">
+            <h2><span id="subscribe-plan-name">Professional</span> Tier</h2>
+            <button class="modal-close" onclick="closeModal('subscribe-modal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="order-section">
+                <div class="form-section-title">Includes</div>
+                <div class="order-features" id="order-features">
+                    <div class="order-feature">1 request/8.64s rate limit</div>
+                    <div class="order-feature">Real-time signal access</div>
+                    <div class="order-feature">99.5% SLA</div>
+                    <div class="order-feature">Business hours support</div>
+                </div>
+            </div>
+            <div class="order-section">
+                <div class="form-section-title">Billing</div>
+                <div class="billing-options">
+                    <label class="billing-option" id="billing-annual">
+                        <input type="radio" name="billing-cycle" value="annual" checked onchange="updateOrderSummary()">
+                        <span class="billing-option-content">
+                            <span class="billing-option-name">Annual</span>
+                            <span class="billing-option-detail">Billed once per year</span>
+                        </span>
+                        <span class="billing-option-price" id="price-annual-display">$15,000</span>
+                    </label>
+                    <label class="billing-option" id="billing-monthly">
+                        <input type="radio" name="billing-cycle" value="monthly" onchange="updateOrderSummary()">
+                        <span class="billing-option-content">
+                            <span class="billing-option-name">Monthly</span>
+                            <span class="billing-option-detail">Billed each month</span>
+                        </span>
+                        <span class="billing-option-price" id="price-monthly-display">$1,500/mo</span>
+                    </label>
+                </div>
+            </div>
+            <div class="order-section">
+                <div class="form-section-title">Payment Method</div>
+                <div class="payment-options">
+                    <label class="payment-opt" id="payment-invoice">
+                        <input type="radio" name="payment-method" value="invoice" checked>
+                        <span class="payment-opt-name">Invoice</span>
+                        <span class="payment-opt-note">Annual only</span>
+                    </label>
+                    <label class="payment-opt" id="payment-card">
+                        <input type="radio" name="payment-method" value="card">
+                        <span class="payment-opt-name">Card</span>
+                        <span class="payment-opt-note">Monthly only</span>
+                    </label>
+                </div>
+            </div>
+            <div class="order-summary">
+                <div class="order-summary-row">
+                    <span class="order-summary-label" id="summary-plan">Professional Tier - Annual</span>
+                    <span class="order-summary-value" id="summary-price">$15,000</span>
+                </div>
+                <div class="order-summary-row total">
+                    <span class="order-summary-label">Total due</span>
+                    <span class="order-summary-value" id="summary-total">$15,000</span>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-minimal" onclick="closeModal('subscribe-modal')">Cancel</button>
+            <button class="btn-minimal" onclick="processPayment()" style="background: var(--accent); color: white; border-color: var(--accent);">Proceed to Payment</button>
+        </div>
+    </div>
+</div>
+
+<!-- PAYMENT PENDING MODAL -->
+<div class="modal-overlay" id="payment-modal">
+    <div class="modal modal-inst" style="max-width: 380px; text-align: center;">
+        <div class="modal-body" style="padding: 36px;">
+            <div style="font-size: 36px; margin-bottom: 12px;">&#x1F680;</div>
+            <h2 style="font-size: 15px; font-weight: 500; margin-bottom: 6px;">Complete Payment</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 12px;">You will be redirected to our secure payment provider.</p>
+            <button class="btn btn-primary" onclick="redirectToAirwallex()">Continue to Payment</button>
+            <p style="margin-top: 12px; font-size: 11px; color: var(--text-muted);">Questions? Contact support@ontostandard.org</p>
+        </div>
+    </div>
+</div>
+
 <div class="modal-overlay" id="contact-modal">
     <div class="modal modal-inst" style="max-width: 440px;">
         <div class="modal-header">
@@ -1801,7 +1885,12 @@ const STRINGS = {
     confirmLogout: 'Are you sure you want to sign out?',
     confirmRegenerate: 'Are you sure you want to regenerate your API key?\n\nThis will immediately invalidate your current key.'
 };
-
+const PLANS = {
+    business: { monthly: 1500, annual: 15000, monthlyEquiv: 1250 },
+    enterprise: { monthly: null, annual: 100000, monthlyEquiv: 8333 }
+};
+let selectedPlan = 'business';
+let selectedCycle = 'annual';
 // === SESSION MANAGEMENT ===
 function resetSessionTimer() {
     clearTimeout(sessionTimer);
@@ -2873,6 +2962,81 @@ function updateBillingUI() {
 }
 
 
+// === SUBSCRIBE MODAL ===
+function openSubscribeModal(plan) {
+    selectedPlan = plan;
+    const planNames = { business: 'Professional', enterprise: 'Critical' };
+    document.getElementById('subscribe-plan-name').textContent = planNames[plan] || plan;
+    const prices = PLANS[plan];
+    document.getElementById('price-annual-display').textContent = '$' + prices.annual.toLocaleString();
+    document.getElementById('price-monthly-display').textContent = '$' + (prices.monthly ? prices.monthly.toLocaleString() + '/mo' : 'N/A');
+    const monthlyOption = document.getElementById('billing-monthly');
+    if (plan === 'enterprise') {
+        monthlyOption.style.display = 'none';
+        document.querySelector('input[name="billing-cycle"][value="annual"]').checked = true;
+    } else { monthlyOption.style.display = 'flex'; }
+    document.getElementById('subscribe-modal').classList.add('active');
+    selectedCycle = 'annual';
+    updateOrderSummary();
+}
+
+function updateOrderSummary() {
+    const cycle = document.querySelector('input[name="billing-cycle"]:checked')?.value || 'annual';
+    selectedCycle = cycle;
+    const prices = PLANS[selectedPlan];
+    const planNames = { business: 'Professional', enterprise: 'Critical' };
+    const planName = planNames[selectedPlan] || selectedPlan;
+    const planFeatures = {
+        business: ['1 request/8.64s', 'Real-time signal access', '99.5% SLA', 'Business hours support'],
+        enterprise: ['Unlimited requests', 'Dedicated signal stream', '99.99% SLA', '24/7 priority support']
+    };
+    const featuresEl = document.getElementById('order-features');
+    featuresEl.innerHTML = (planFeatures[selectedPlan]||[]).map(f => '<div class="order-feature">'+f+'</div>').join('');
+    let price = cycle === 'annual' ? prices.annual : prices.monthly;
+    document.getElementById('summary-plan').textContent = planName + ' Tier \u2014 ' + (cycle==='annual'?'Annual':'Monthly');
+    document.getElementById('summary-price').textContent = '$' + price.toLocaleString();
+    document.getElementById('summary-total').textContent = '$' + price.toLocaleString();
+    const invoiceInput = document.querySelector('#payment-invoice input');
+    const cardInput = document.querySelector('#payment-card input');
+    if (cycle === 'annual') { invoiceInput.disabled=false; cardInput.disabled=true; invoiceInput.checked=true; }
+    else { invoiceInput.disabled=true; cardInput.disabled=false; cardInput.checked=true; }
+}
+
+function processPayment() {
+    closeModal('subscribe-modal');
+    document.getElementById('payment-modal').classList.add('active');
+}
+
+function redirectToAirwallex() {
+    const isAnnual = selectedCycle === 'annual';
+    const daysToAdd = isAnnual ? 365 : 30;
+    const amount = isAnnual ? PLANS[selectedPlan].annual : PLANS[selectedPlan].monthly;
+    const now = new Date();
+    const sub = currentUser.subscription || {};
+    let proDays = sub.pro_days || 0, criticalDays = sub.critical_days || 0;
+    if (selectedPlan === 'business') proDays += daysToAdd;
+    else if (selectedPlan === 'enterprise') criticalDays += daysToAdd;
+    const activePlan = criticalDays > 0 ? 'enterprise' : (proDays > 0 ? 'business' : 'free');
+    const totalDays = criticalDays + proDays;
+    const expiresAt = totalDays > 0 ? new Date(now.getTime() + totalDays * 86400000) : null;
+    currentUser.subscription = {
+        plan: activePlan, cycle: selectedCycle,
+        started: sub.started || now.toISOString(), last_payment: now.toISOString(),
+        expires_at: expiresAt ? expiresAt.toISOString() : null,
+        pro_days: proDays, critical_days: criticalDays,
+        amount: amount, total_paid: (sub.total_paid||0) + amount
+    };
+    currentUser.plan = activePlan;
+    localStorage.setItem('onto_user', JSON.stringify(currentUser));
+    closeModal('payment-modal');
+    updateBillingUI(); updateDashboardMetrics();
+    document.getElementById('user-plan').textContent = activePlan==='enterprise'?'CRITICAL':(activePlan==='business'?'PRO':'FREE');
+    let msg = 'Subscription activated!';
+    if (criticalDays>0 && proDays>0) msg = 'Activated! '+criticalDays+'d Critical then '+proDays+'d Pro';
+    else if (criticalDays>0) msg = 'Activated! '+criticalDays+' days Critical';
+    else if (proDays>0) msg = 'Activated! '+proDays+' days Pro';
+    showToast(msg, 'success');
+}
 function contactSales() {
     document.getElementById('contact-modal').classList.add('active');
     // Pre-fill if user logged in
