@@ -259,7 +259,7 @@ async def init_db():
             # Add compliance, calibration, layer to evaluations (if not exist)
             for col, coltype, default in [
                 ('compliance', 'VARCHAR(20)', "'PENDING'"),
-                ('calibration', 'FLOAT', 'NULL'),
+                ('calibration', 'DOUBLE PRECISION', 'NULL'),
                 ('layer', 'VARCHAR(20)', 'NULL'),
             ]:
                 exists = await conn.fetchval("""
@@ -270,14 +270,21 @@ async def init_db():
                     await conn.execute(f"ALTER TABLE evaluations ADD COLUMN {col} {coltype} DEFAULT {default}")
                     print(f"[API] Migration: added {col} to evaluations")
             
-            # Alter risk_score from INTEGER to FLOAT (legacy was int 0-100, new is float 0.0-1.0)
+            # Alter risk_score to FLOAT (legacy might be int, varchar, or text)
             rs_type = await conn.fetchval("""
                 SELECT data_type FROM information_schema.columns 
                 WHERE table_name = 'evaluations' AND column_name = 'risk_score'
             """)
-            if rs_type and rs_type == 'integer':
-                await conn.execute("ALTER TABLE evaluations ALTER COLUMN risk_score TYPE DOUBLE PRECISION USING risk_score::double precision")
-                print("[API] Migration: risk_score INTEGER → FLOAT")
+            if rs_type and rs_type not in ('double precision', 'real'):
+                try:
+                    await conn.execute("""
+                        ALTER TABLE evaluations 
+                        ALTER COLUMN risk_score TYPE DOUBLE PRECISION 
+                        USING NULLIF(risk_score::text, '')::double precision
+                    """)
+                    print(f"[API] Migration: risk_score {rs_type} → DOUBLE PRECISION")
+                except Exception as e:
+                    print(f"[API] Migration risk_score failed: {e}")
             
             print("[API] Migrations complete")
     except Exception as e:
