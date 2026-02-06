@@ -123,26 +123,32 @@ if STRIPE_SECRET_KEY:
 # See ONTO_PROTOCOL_MASTER.md Section 3
 LAYERS = {
     "open": {
-        "certificates_per_month": 100,  # 100 СЃРµСЂС‚РёС„РёРєР°С‚РѕРІ РІ РјРµСЃСЏС†
-        "signal_delay_hours": 1,        # +1 С‡Р°СЃ Р·Р°РґРµСЂР¶РєР° СЃРёРіРЅР°Р»Р°
+        "evaluations_per_hour": 1,           # Free: 1 eval per 60 min
+        "evaluations_per_day": 24,           # ~24/day max
+        "evaluations_per_month": 720,        # ~720/month
+        "signal_delay_hours": 1,             # +1 час задержка сигнала
         "price": 0,
         "watermark": True,
         "attribution_required": True
     },
     "standard": {
-        "certificates_per_year": 10000,  # 10,000 СЃРµСЂС‚РёС„РёРєР°С‚РѕРІ РІ РіРѕРґ
-        "signal_delay_hours": 0,         # Real-time СЃРёРіРЅР°Р»
-        "price": 15000,                  # $15,000/РіРѕРґ
+        "evaluations_per_hour": 420,         # ~1 per 8.64s = 10K/day
+        "evaluations_per_day": 10000,        # 10,000/day
+        "evaluations_per_month": 300000,     # ~300K/month
+        "signal_delay_hours": 0,             # Real-time сигнал
+        "price": 15000,                      # $15,000/год
         "watermark": False,
         "attribution_required": False
     },
     "critical": {
-        "certificates_per_year": -1,     # Unlimited СЃРµСЂС‚РёС„РёРєР°С‚РѕРІ
-        "signal_delay_hours": 0,         # Real-time СЃРёРіРЅР°Р»
-        "price": 100000,                 # $100,000+/РіРѕРґ
+        "evaluations_per_hour": -1,          # Unlimited
+        "evaluations_per_day": -1,           # Unlimited
+        "evaluations_per_month": -1,         # Unlimited
+        "signal_delay_hours": 0,             # Real-time сигнал
+        "price": 100000,                     # $100,000+/год
         "watermark": False,
         "attribution_required": False,
-        "audit_trail_months": 24         # 24 РјРµСЃСЏС†Р° С…СЂР°РЅРµРЅРёСЏ audit trail
+        "audit_trail_months": 24             # 24 месяца хранения audit trail
     }
 }
 
@@ -288,6 +294,33 @@ async def init_db():
                     print(f"[API] Migration: risk_score {rs_type} → DOUBLE PRECISION")
                 except Exception as e:
                     print(f"[API] Migration risk_score failed: {e}")
+            
+            # Ensure usage_events table exists
+            await conn.execute("""
+                CREATE TABLE IF NOT EXISTS usage_events (
+                    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    organization_id UUID REFERENCES organizations(id) ON DELETE CASCADE,
+                    event_type      VARCHAR(100),
+                    resource_id     UUID,
+                    event_metadata  JSONB DEFAULT '{}',
+                    created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+                )
+            """)
+            
+            # Ensure subscriptions table exists
+            await conn.execute("""
+                CREATE TABLE IF NOT EXISTS subscriptions (
+                    id                      UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    organization_id         UUID UNIQUE REFERENCES organizations(id) ON DELETE CASCADE,
+                    tier                    VARCHAR(50) DEFAULT 'open',
+                    stripe_subscription_id  VARCHAR(255),
+                    status                  VARCHAR(50) DEFAULT 'active',
+                    evaluations_used        INTEGER DEFAULT 0,
+                    current_period_end      TIMESTAMP WITH TIME ZONE,
+                    created_at              TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+                    updated_at              TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+                )
+            """)
             
             print("[API] Migrations complete")
     except Exception as e:
@@ -928,7 +961,7 @@ async def get_current_signal(org: dict = Depends(validate_api_key)):
     import httpx
     
     # Get layer info
-    layer = org.get('tier', 'open')  # DB column is 'tier'
+    layer = org.get('layer', 'open')  # DB column is 'tier'
     layer_info = LAYERS.get(layer, LAYERS['open'])
     delay_hours = layer_info.get('signal_delay_hours', 1)
     
@@ -1707,12 +1740,13 @@ async def stripe_webhook(request: Request):
             customer_id = data.get('customer')
             
             if org_id and layer:
+                org_uuid = uuid.UUID(org_id)
                 # Update organization layer (DB column is 'tier')
                 await conn.execute("""
                     UPDATE organizations 
                     SET tier = $1, stripe_customer_id = $2, updated_at = NOW()
                     WHERE id = $3
-                """, layer, customer_id, org_id)
+                """, layer, customer_id, org_uuid)
                 
                 # Create subscription record
                 await conn.execute("""
@@ -1720,13 +1754,13 @@ async def stripe_webhook(request: Request):
                     VALUES ($1, $2, $3, 'active')
                     ON CONFLICT (organization_id) 
                     DO UPDATE SET tier = $2, stripe_subscription_id = $3, status = 'active', updated_at = NOW()
-                """, org_id, layer, subscription_id)
+                """, org_uuid, layer, subscription_id)
                 
                 # Log event
                 await conn.execute("""
                     INSERT INTO audit_log (organization_id, action, resource_type, details)
                     VALUES ($1, 'subscription_created', 'subscription', $2)
-                """, org_id, json.dumps({"layer": layer, "subscription_id": subscription_id}))
+                """, org_uuid, json.dumps({"layer": layer, "subscription_id": subscription_id}))
                 
                 print(f"[Stripe] Org {org_id} upgraded to {layer}")
         
@@ -1794,66 +1828,66 @@ async def submit_evaluation(
             "predictions_received": len(request.predictions)
         }
     
-    layer = org.get('tier', 'open')  # DB column is 'tier'
+    layer = org.get('layer', 'open')  # DB column is 'tier'
     layer_info = LAYERS.get(layer, LAYERS['open'])
     
     async with db_pool.acquire() as conn:
-        # Check certificate/evaluation limits based on layer
-        if layer == 'open':
-            # OPEN: 100 СЃРµСЂС‚РёС„РёРєР°С‚РѕРІ РІ РјРµСЃСЏС†
-            limit = layer_info.get('certificates_per_month', 100)
-            count = await conn.fetchval("""
+        org_id = uuid.UUID(org['organization_id'])
+        
+        # Rate limit check — hourly + daily for all tiers
+        hourly_limit = layer_info.get('evaluations_per_hour', 1)
+        if hourly_limit > 0:
+            hourly_count = await conn.fetchval("""
                 SELECT COUNT(*) FROM evaluations
                 WHERE organization_id = $1
-                AND submitted_at >= date_trunc('month', NOW())
-            """, org['organization_id'])
-            
-            if count >= limit:
+                AND submitted_at >= NOW() - INTERVAL '1 hour'
+            """, org_id)
+            if hourly_count >= hourly_limit:
                 raise HTTPException(
-                    status_code=403, 
-                    detail=f"Monthly certificate limit reached ({limit} certs/month). Upgrade to STANDARD layer."
+                    status_code=429,
+                    detail=f"Hourly evaluation limit reached ({hourly_limit}/hour on {layer} tier). Upgrade for higher limits."
                 )
-        elif layer == 'standard':
-            # STANDARD: 10,000 СЃРµСЂС‚РёС„РёРєР°С‚РѕРІ РІ РіРѕРґ
-            limit = layer_info.get('certificates_per_year', 10000)
-            count = await conn.fetchval("""
+        
+        daily_limit = layer_info.get('evaluations_per_day', 24)
+        if daily_limit > 0:
+            daily_count = await conn.fetchval("""
                 SELECT COUNT(*) FROM evaluations
                 WHERE organization_id = $1
-                AND submitted_at >= date_trunc('year', NOW())
-            """, org['organization_id'])
-            
-            if count >= limit:
+                AND submitted_at >= date_trunc('day', NOW())
+            """, org_id)
+            if daily_count >= daily_limit:
                 raise HTTPException(
-                    status_code=403, 
-                    detail=f"Yearly certificate limit reached ({limit} certs/year). Contact sales for overage or upgrade to CRITICAL."
+                    status_code=429,
+                    detail=f"Daily evaluation limit reached ({daily_limit}/day on {layer} tier). Upgrade for higher limits."
                 )
-        # CRITICAL: unlimited (-1)
         
         # Create evaluation
         eval_id = await conn.fetchval("""
             INSERT INTO evaluations (organization_id, model_name, model_version, status, metrics)
             VALUES ($1, $2, $3, 'pending', $4)
             RETURNING id
-        """, org['organization_id'], request.model_name, request.model_version,
+        """, org_id, request.model_name, request.model_version,
             json.dumps({
                 "predictions_count": len(request.predictions),
                 "layer": layer,
                 "watermark": layer_info.get('watermark', False)
             }))
         
-        # Log usage
-        await conn.execute("""
-            INSERT INTO usage_events (organization_id, event_type, resource_id, event_metadata)
-            VALUES ($1, 'evaluation_submitted', $2, $3)
-        """, org['organization_id'], eval_id, 
-            json.dumps({"model": request.model_name, "predictions": len(request.predictions), "layer": layer}))
-        
-        # Update subscription usage counter
-        await conn.execute("""
-            UPDATE subscriptions 
-            SET evaluations_used = COALESCE(evaluations_used, 0) + 1
-            WHERE organization_id = $1 AND status = 'active'
-        """, org['organization_id'])
+        # Log usage (non-critical)
+        try:
+            await conn.execute("""
+                INSERT INTO usage_events (organization_id, event_type, resource_id, event_metadata)
+                VALUES ($1, 'evaluation_submitted', $2, $3)
+            """, org_id, eval_id, 
+                json.dumps({"model": request.model_name, "predictions": len(request.predictions), "layer": layer}))
+            
+            await conn.execute("""
+                UPDATE subscriptions 
+                SET evaluations_used = COALESCE(evaluations_used, 0) + 1
+                WHERE organization_id = $1 AND status = 'active'
+            """, org_id)
+        except Exception:
+            pass  # Usage tracking failure should not block evaluation
         
         response = {
             "evaluation_id": str(eval_id),
@@ -1948,7 +1982,7 @@ async def process_evaluation(
     if not db_pool:
         raise HTTPException(status_code=503, detail="Database not available")
     
-    layer = org.get('tier', 'open')
+    layer = org.get('layer', 'open')
     layer_info = LAYERS.get(layer, LAYERS['open'])
     
     try:
@@ -1970,7 +2004,8 @@ async def process_evaluation(
             import random
             ece = round(random.uniform(0.02, 0.15), 4)
             u_recall = round(random.uniform(0.75, 0.95), 4)
-            risk_score = int((ece * 100) + ((1 - u_recall) * 50))
+            # Normalize to 0-1 scale (consistent with v2 engine)
+            risk_score = round(min(max(ece + (1 - u_recall) * 0.5, 0.01), 0.99), 4)
             
             # Parse existing metrics if stored as JSON string
             existing_metrics = {}
@@ -1987,19 +2022,13 @@ async def process_evaluation(
                 "predictions_count": existing_metrics.get('predictions_count', 0)
             }
             
-            # Determine level based on risk score (1=best, 4=worst)
-            if risk_score < 25:
-                level = 1  # A
-                level_letter = "A"
-            elif risk_score < 50:
-                level = 2  # B
-                level_letter = "B"
-            elif risk_score < 75:
-                level = 3  # C
-                level_letter = "C"
+            # Determine level based on risk score (aligned with v2 engine)
+            if risk_score < 0.35:
+                level_letter = "L3"
+            elif risk_score < 0.65:
+                level_letter = "L2"
             else:
-                level = 4  # D
-                level_letter = "D"
+                level_letter = "L1"
             
             # Generate certificate number
             cert_number = f"ONTO-{secrets.token_hex(4).upper()}"
@@ -2014,7 +2043,7 @@ async def process_evaluation(
                 VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW() + INTERVAL '1 year')
                 RETURNING id
             """, org['organization_id'], uuid.UUID(evaluation_id), cert_number, row['model_name'],
-                level, json.dumps(metrics), secrets.token_hex(16))
+                level_letter, json.dumps(metrics), secrets.token_hex(16))
             
             # Update evaluation
             await conn.execute("""
@@ -2024,7 +2053,7 @@ async def process_evaluation(
                     risk_score = $2,
                     completed_at = NOW()
                 WHERE id = $3
-            """, json.dumps(metrics), str(risk_score), uuid.UUID(evaluation_id))
+            """, json.dumps(metrics), risk_score, uuid.UUID(evaluation_id))
             
             # Log event
             await conn.execute("""
@@ -2479,7 +2508,7 @@ async def get_audit_trail(
     CRITICAL layer only вЂ” 24 months retention.
     Other layers: 403 Forbidden.
     """
-    layer = org.get('tier', 'open')
+    layer = org.get('layer', 'open')
     layer_info = LAYERS.get(layer, LAYERS['open'])
     
     # Only CRITICAL layer has audit trail access
@@ -2576,7 +2605,7 @@ async def list_documents(org: dict = Depends(validate_api_key)):
             }
             for doc_id, doc in DOCUMENT_TEMPLATES.items()
         ],
-        "layer": org.get('tier', 'open')
+        "layer": org.get('layer', 'open')
     }
 
 @app.get("/v1/documents/{doc_type}")
@@ -2586,7 +2615,7 @@ async def get_document(doc_type: str, org: dict = Depends(validate_api_key)):
         raise HTTPException(status_code=404, detail=f"Document '{doc_type}' not found")
     
     doc = DOCUMENT_TEMPLATES[doc_type]
-    layer = org.get('tier', 'open')
+    layer = org.get('layer', 'open')
     layer_info = LAYERS.get(layer, LAYERS['open'])
     
     # Return document info with organization-specific data
@@ -2606,7 +2635,7 @@ async def get_document(doc_type: str, org: dict = Depends(validate_api_key)):
         "layer_info": {
             "name": layer.upper(),
             "price": layer_info.get('price', 0),
-            "certificates": layer_info.get('certificates_per_year', layer_info.get('certificates_per_month', 0))
+            "evaluations_per_month": layer_info.get('evaluations_per_month', 0)
         },
         "note": "PDF generation available in client portal. Contact support for signed copies.",
         "support_email": "legal@ontostandard.org"
@@ -2906,6 +2935,76 @@ async def get_rate_limit_info(request: Request):
         "window_seconds": window
     }
 
+
+@app.get("/v1/usage")
+async def get_usage(org: dict = Depends(validate_api_key)):
+    """
+    Get evaluation usage counters for current tier.
+    Frontend uses this to display quota bars and remaining limits.
+    """
+    layer = org.get('layer', 'open')
+    layer_info = LAYERS.get(layer, LAYERS['open'])
+    
+    hourly_limit = layer_info.get('evaluations_per_hour', 1)
+    daily_limit = layer_info.get('evaluations_per_day', 24)
+    monthly_limit = layer_info.get('evaluations_per_month', 720)
+    batch_limits = {"open": 5, "standard": 100, "critical": 100}
+    
+    usage = {
+        "tier": layer,
+        "hourly":  {"used": 0, "limit": hourly_limit,  "unlimited": hourly_limit < 0},
+        "daily":   {"used": 0, "limit": daily_limit,    "unlimited": daily_limit < 0},
+        "monthly": {"used": 0, "limit": monthly_limit,  "unlimited": monthly_limit < 0},
+        "batch_max": batch_limits.get(layer, 5),
+    }
+    
+    if not db_pool:
+        return usage
+    
+    org_id = uuid.UUID(org['organization_id'])
+    
+    async with db_pool.acquire() as conn:
+        usage["hourly"]["used"] = await conn.fetchval("""
+            SELECT COUNT(*) FROM evaluations
+            WHERE organization_id = $1 AND submitted_at >= NOW() - INTERVAL '1 hour'
+        """, org_id) or 0
+        
+        usage["daily"]["used"] = await conn.fetchval("""
+            SELECT COUNT(*) FROM evaluations
+            WHERE organization_id = $1 AND submitted_at >= date_trunc('day', NOW())
+        """, org_id) or 0
+        
+        usage["monthly"]["used"] = await conn.fetchval("""
+            SELECT COUNT(*) FROM evaluations
+            WHERE organization_id = $1 AND submitted_at >= date_trunc('month', NOW())
+        """, org_id) or 0
+        
+        # Models count vs limit
+        model_limits = {"open": 5, "standard": 20, "critical": 100}
+        model_count = await conn.fetchval("""
+            SELECT COUNT(*) FROM models
+            WHERE organization_id = $1 AND is_active = true
+        """, org_id) or 0
+        
+        usage["models"] = {
+            "used": model_count,
+            "limit": model_limits.get(layer, 5)
+        }
+        
+        # Add remaining and percent for each
+        for key in ["hourly", "daily", "monthly"]:
+            u = usage[key]
+            if u["unlimited"]:
+                u["remaining"] = -1
+                u["percent"] = 0
+            else:
+                u["remaining"] = max(0, u["limit"] - u["used"])
+                u["percent"] = round(u["used"] / u["limit"] * 100, 1) if u["limit"] > 0 else 0
+        
+        usage["models"]["remaining"] = max(0, usage["models"]["limit"] - usage["models"]["used"])
+    
+    return usage
+
 # ============================================================
 # HONEYPOT - FAKE ADMIN ENDPOINTS (trap for attackers)
 # ============================================================
@@ -2946,7 +3045,7 @@ async def log_honeypot(request: Request, endpoint: str):
                     INSERT INTO audit_log (action, resource_type, details)
                     VALUES ('honeypot', 'admin_attempt', $1)
                 """, json.dumps(attempt))
-        except:
+        except Exception:
             pass  # Silent fail
     
     # Artificial delay to waste attacker's time (1-3 seconds)
@@ -3146,7 +3245,7 @@ async def reference_sync_status(ref: dict = Depends(validate_architect)):
             stats['evals_24h'] = await conn.fetchval(
                 "SELECT COUNT(*) FROM evaluations WHERE submitted_at > NOW() - INTERVAL '24 hours'"
             )
-        except:
+        except Exception:
             stats['evals_24h'] = 0
         
         # Tier distribution
@@ -3509,7 +3608,7 @@ async def admin_get_user(user_id: str, ref: dict = Depends(validate_architect)):
             FROM users u
             JOIN organizations o ON u.organization_id = o.id
             WHERE u.id = $1
-        """, user_id)
+        """, uuid.UUID(user_id))
         
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
@@ -3550,7 +3649,7 @@ async def admin_update_tier(
         raise HTTPException(status_code=400, detail="Invalid tier")
     
     async with db_pool.acquire() as conn:
-        user = await conn.fetchrow("SELECT organization_id FROM users WHERE id = $1", user_id)
+        user = await conn.fetchrow("SELECT organization_id FROM users WHERE id = $1", uuid.UUID(user_id))
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         
@@ -3575,7 +3674,7 @@ async def admin_suspend_user(user_id: str, suspend: bool = True, ref: dict = Dep
         raise HTTPException(status_code=403, detail="Signal 104b: Cannot modify own account")
     
     async with db_pool.acquire() as conn:
-        user = await conn.fetchrow("SELECT organization_id FROM users WHERE id = $1", user_id)
+        user = await conn.fetchrow("SELECT organization_id FROM users WHERE id = $1", uuid.UUID(user_id))
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         
@@ -3585,7 +3684,7 @@ async def admin_suspend_user(user_id: str, suspend: bool = True, ref: dict = Dep
         
         await conn.execute("""
             UPDATE users SET is_active = $1 WHERE id = $2
-        """, not suspend, user_id)
+        """, not suspend, uuid.UUID(user_id))
         
         return {"message": f"User {'suspended' if suspend else 'activated'}"}
 
@@ -3603,7 +3702,7 @@ async def admin_delete_user(user_id: str, ref: dict = Depends(validate_architect
         async with db_pool.acquire() as conn:
             user = await conn.fetchrow(
                 "SELECT id, organization_id, email FROM users WHERE id = $1", 
-                user_id
+                uuid.UUID(user_id)
             )
             if not user:
                 raise HTTPException(status_code=404, detail="User not found")
@@ -3614,13 +3713,13 @@ async def admin_delete_user(user_id: str, ref: dict = Depends(validate_architect
                 # Remove created_by reference
                 await conn.execute(
                     "UPDATE organizations SET created_by = NULL WHERE created_by = $1", 
-                    user_id
+                    uuid.UUID(user_id)
                 )
                 
                 # Delete related records
                 await conn.execute("DELETE FROM api_keys WHERE organization_id = $1", org_id)
                 await conn.execute("DELETE FROM audit_log WHERE organization_id = $1", org_id)
-                await conn.execute("DELETE FROM users WHERE id = $1", user_id)
+                await conn.execute("DELETE FROM users WHERE id = $1", uuid.UUID(user_id))
                 
                 # Delete org if no other users
                 await conn.execute("""
@@ -4013,21 +4112,12 @@ def compute_risk_score(
     # LAYER & COMPLIANCE ASSIGNMENT
     # ================================================================
     
-    if risk_score < 0.20:
+    if risk_score < 0.35:
         layer = "L3"
         compliance = "PASSED"
-    elif risk_score < 0.35:
-        layer = "L3"
-        compliance = "PASSED"
-    elif risk_score < 0.50:
-        layer = "L2"
-        compliance = "REVIEW"
     elif risk_score < 0.65:
         layer = "L2"
         compliance = "REVIEW"
-    elif risk_score < 0.80:
-        layer = "L1"
-        compliance = "FAILED"
     else:
         layer = "L1"
         compliance = "FAILED"
@@ -4329,18 +4419,32 @@ async def evaluate_model(
         if not model:
             raise HTTPException(status_code=404, detail="Model not found or inactive")
         
-        # Rate limit check (same as existing evaluate)
-        if layer == 'open':
-            limit = layer_info.get('certificates_per_month', 100)
-            count = await conn.fetchval("""
+        # Rate limit check — per hour for all tiers
+        hourly_limit = layer_info.get('evaluations_per_hour', 1)
+        if hourly_limit > 0:  # -1 = unlimited
+            hourly_count = await conn.fetchval("""
                 SELECT COUNT(*) FROM evaluations
                 WHERE organization_id = $1
-                AND submitted_at >= date_trunc('month', NOW())
+                AND submitted_at >= NOW() - INTERVAL '1 hour'
             """, uuid.UUID(org_id))
-            if count >= limit:
+            if hourly_count >= hourly_limit:
                 raise HTTPException(
-                    status_code=403,
-                    detail=f"Monthly evaluation limit reached ({limit}/month). Upgrade tier."
+                    status_code=429,
+                    detail=f"Hourly evaluation limit reached ({hourly_limit}/hour on {layer} tier). Upgrade for higher limits."
+                )
+        
+        # Daily limit check
+        daily_limit = layer_info.get('evaluations_per_day', 24)
+        if daily_limit > 0:
+            daily_count = await conn.fetchval("""
+                SELECT COUNT(*) FROM evaluations
+                WHERE organization_id = $1
+                AND submitted_at >= date_trunc('day', NOW())
+            """, uuid.UUID(org_id))
+            if daily_count >= daily_limit:
+                raise HTTPException(
+                    status_code=429,
+                    detail=f"Daily evaluation limit reached ({daily_limit}/day on {layer} tier). Upgrade for higher limits."
                 )
         
         # Compute risk
@@ -4378,19 +4482,21 @@ async def evaluate_model(
             UPDATE models SET layer = $1, updated_at = NOW() WHERE id = $2
         """, result['layer'], model['id'])
         
-        # Usage tracking
-        await conn.execute("""
-            INSERT INTO usage_events (organization_id, event_type, resource_id, event_metadata)
-            VALUES ($1, 'model_evaluation', $2, $3)
-        """, uuid.UUID(org_id), eval_id,
-            json.dumps({"model": model['name'], "risk_score": result['risk_score']}))
-        
-        # Update subscription counter
-        await conn.execute("""
-            UPDATE subscriptions 
-            SET evaluations_used = COALESCE(evaluations_used, 0) + 1
-            WHERE organization_id = $1 AND status = 'active'
-        """, uuid.UUID(org_id))
+        # Usage tracking (non-critical)
+        try:
+            await conn.execute("""
+                INSERT INTO usage_events (organization_id, event_type, resource_id, event_metadata)
+                VALUES ($1, 'model_evaluation', $2, $3)
+            """, uuid.UUID(org_id), eval_id,
+                json.dumps({"model": model['name'], "risk_score": result['risk_score']}))
+            
+            await conn.execute("""
+                UPDATE subscriptions 
+                SET evaluations_used = COALESCE(evaluations_used, 0) + 1
+                WHERE organization_id = $1 AND status = 'active'
+            """, uuid.UUID(org_id))
+        except Exception:
+            pass  # Usage tracking failure should not block evaluation
         
         return {
             "evaluation_id": str(eval_id),
@@ -4512,6 +4618,16 @@ async def batch_evaluate(
     if len(request.evaluations) == 0:
         raise HTTPException(status_code=400, detail="At least 1 evaluation required")
     
+    # Tier-specific batch limits
+    layer = org.get('layer', 'open')
+    batch_limits = {"open": 5, "standard": 100, "critical": 100}
+    max_batch = batch_limits.get(layer, 5)
+    if len(request.evaluations) > max_batch:
+        raise HTTPException(
+            status_code=403,
+            detail=f"Batch size {len(request.evaluations)} exceeds {layer} tier limit ({max_batch}). Upgrade for larger batches."
+        )
+    
     if not db_pool:
         results = []
         for item in request.evaluations:
@@ -4528,10 +4644,52 @@ async def batch_evaluate(
         return {"results": results, "total": len(results)}
     
     org_id = org['organization_id']
+    layer = org.get('layer', 'open')
+    layer_info = LAYERS.get(layer, LAYERS['open'])
     results = []
     errors = []
     
     async with db_pool.acquire() as conn:
+        # Pre-check hourly limit for entire batch
+        hourly_limit = layer_info.get('evaluations_per_hour', 1)
+        if hourly_limit > 0:
+            hourly_count = await conn.fetchval("""
+                SELECT COUNT(*) FROM evaluations
+                WHERE organization_id = $1
+                AND submitted_at >= NOW() - INTERVAL '1 hour'
+            """, uuid.UUID(org_id))
+            hourly_remaining = hourly_limit - hourly_count
+            if hourly_remaining <= 0:
+                raise HTTPException(
+                    status_code=429,
+                    detail=f"Hourly evaluation limit reached ({hourly_limit}/hour on {layer} tier)."
+                )
+            if len(request.evaluations) > hourly_remaining:
+                raise HTTPException(
+                    status_code=429,
+                    detail=f"Batch size ({len(request.evaluations)}) exceeds remaining hourly quota ({hourly_remaining}/{hourly_limit})."
+                )
+        
+        # Pre-check daily limit for entire batch
+        daily_limit = layer_info.get('evaluations_per_day', 24)
+        if daily_limit > 0:
+            daily_count = await conn.fetchval("""
+                SELECT COUNT(*) FROM evaluations
+                WHERE organization_id = $1
+                AND submitted_at >= date_trunc('day', NOW())
+            """, uuid.UUID(org_id))
+            remaining = daily_limit - daily_count
+            if remaining <= 0:
+                raise HTTPException(
+                    status_code=429,
+                    detail=f"Daily evaluation limit reached ({daily_limit}/day on {layer} tier)."
+                )
+            if len(request.evaluations) > remaining:
+                raise HTTPException(
+                    status_code=429,
+                    detail=f"Batch size ({len(request.evaluations)}) exceeds remaining daily quota ({remaining}/{daily_limit})."
+                )
+        
         for i, item in enumerate(request.evaluations):
             try:
                 model = await conn.fetchrow("""
@@ -4585,13 +4743,16 @@ async def batch_evaluate(
             except Exception as e:
                 errors.append({"index": i, "error": str(e)})
         
-        # Update subscription counter
+        # Update subscription counter (non-critical)
         if results:
-            await conn.execute("""
-                UPDATE subscriptions 
-                SET evaluations_used = COALESCE(evaluations_used, 0) + $1
-                WHERE organization_id = $2 AND status = 'active'
-            """, len(results), uuid.UUID(org_id))
+            try:
+                await conn.execute("""
+                    UPDATE subscriptions 
+                    SET evaluations_used = COALESCE(evaluations_used, 0) + $1
+                    WHERE organization_id = $2 AND status = 'active'
+                """, len(results), uuid.UUID(org_id))
+            except Exception:
+                pass
     
     return {
         "results": results,
@@ -4699,8 +4860,8 @@ async def certify_model(
         cert_id = await conn.fetchval("""
             INSERT INTO certificates 
                 (organization_id, certificate_number, model_name, level,
-                 metrics_snapshot, verification_hash, expires_at)
-            VALUES ($1, $2, $3, $4, $5, $6, NOW() + INTERVAL '1 year')
+                 metrics_snapshot, verification_hash, issued_at, expires_at)
+            VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW() + INTERVAL '1 year')
             RETURNING id
         """, uuid.UUID(org_id), cert_number, model['name'], certified_layer,
             json.dumps({
@@ -4793,6 +4954,8 @@ async def certification_status(
             blockers.append(f"Average risk too high: {avg_risk:.3f} (need < 0.50)")
         if l1_count > 5:
             blockers.append(f"Too many L1 evaluations in recent 20: {l1_count} (max 5)")
+        if failed_count > 2 and avg_risk >= 0.25:
+            blockers.append(f"Too many FAILED in recent 20: {failed_count} (max 2 for L2 certification)")
         if has_cert:
             blockers.append("Model already has an active certificate")
         
