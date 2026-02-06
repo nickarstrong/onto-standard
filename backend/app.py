@@ -152,10 +152,10 @@ STRIPE_PRICE_IDS = {
 
 # Rate limits per layer (requests per minute)
 RATE_LIMITS = {
-    "open": {"limit": 1, "window": 3600},      # 1 req/hour (pricing: Free tier)
-    "standard": {"limit": 7, "window": 60},    # ~10K req/day (pricing: Pro)
-    "critical": {"limit": 10000, "window": 60}, # Unlimited (pricing: Enterprise)
-    "public": {"limit": 1, "window": 60},      # Unauthenticated requests
+    "open": {"limit": 30, "window": 60},       # 30 req/min (Free tier — portal usable)
+    "standard": {"limit": 500, "window": 60},   # 500 req/min (Pro)
+    "critical": {"limit": 10000, "window": 60},  # Unlimited (Enterprise)
+    "public": {"limit": 10, "window": 60},       # Unauthenticated requests
 }
 
 # ============================================================
