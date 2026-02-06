@@ -3734,7 +3734,7 @@ async def register_model(
             "SELECT COUNT(*) FROM models WHERE organization_id = $1 AND is_active = true",
             uuid.UUID(org_id)
         )
-        tier_limits = {"open": 3, "standard": 20, "critical": 100}
+        tier_limits = {"open": 5, "standard": 20, "critical": 100}
         limit = tier_limits.get(org.get('layer', 'open'), 3)
         
         if model_count >= limit:
