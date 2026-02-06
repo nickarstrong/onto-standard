@@ -1,4 +1,4 @@
-﻿"""
+"""
 ONTO API - Unified Backend
 Epistemic Calibration Infrastructure
 
@@ -17,9 +17,19 @@ Endpoints:
   GET  /v1/signal/current    - Get current signal (layer-aware delay)
   
   # Evaluations  
-  POST /v1/evaluate          - Submit evaluation
+  POST /v1/evaluate          - Submit evaluation (legacy)
   GET  /v1/evaluations       - List evaluations
   GET  /v1/evaluations/{id}  - Get evaluation
+  
+  # Models (Phase 1)
+  POST /v1/models/register        - Register model for tracking
+  GET  /v1/models                  - List organization's models
+  GET  /v1/models/{id}             - Model details + recent evaluations
+  DELETE /v1/models/{id}           - Deactivate model
+  POST /v1/models/evaluate         - Evaluate model output (risk scoring)
+  GET  /v1/models/{id}/evaluations - Evaluation history
+  GET  /v1/models/{id}/trend       - Risk score trend over time
+  GET  /v1/models/compare          - Compare all models side-by-side
   
   # Certificates
   GET  /v1/certificates      - List certificates
@@ -212,6 +222,55 @@ async def init_db():
     try:
         db_pool = await asyncpg.create_pool(DATABASE_URL, min_size=2, max_size=10)
         print("[API] Database connected")
+        
+        # Auto-migrations
+        async with db_pool.acquire() as conn:
+            # models table
+            await conn.execute("""
+                CREATE TABLE IF NOT EXISTS models (
+                    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+                    user_id         UUID REFERENCES users(id) ON DELETE CASCADE,
+                    name            VARCHAR(255) NOT NULL,
+                    provider        VARCHAR(100),
+                    version         VARCHAR(100),
+                    layer           VARCHAR(20) DEFAULT 'pending',
+                    is_active       BOOLEAN DEFAULT true,
+                    metadata        JSONB DEFAULT '{}',
+                    created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+                    updated_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+                    CONSTRAINT uq_model_org_name UNIQUE (organization_id, name)
+                )
+            """)
+            # Indexes
+            await conn.execute("CREATE INDEX IF NOT EXISTS idx_models_org_id ON models(organization_id)")
+            await conn.execute("CREATE INDEX IF NOT EXISTS idx_models_user_id ON models(user_id)")
+            
+            # Add model_id to evaluations (if not exists)
+            col_exists = await conn.fetchval("""
+                SELECT 1 FROM information_schema.columns 
+                WHERE table_name = 'evaluations' AND column_name = 'model_id'
+            """)
+            if not col_exists:
+                await conn.execute("ALTER TABLE evaluations ADD COLUMN model_id UUID REFERENCES models(id) ON DELETE SET NULL")
+                await conn.execute("CREATE INDEX IF NOT EXISTS idx_evaluations_model_id ON evaluations(model_id)")
+                print("[API] Migration: added model_id to evaluations")
+            
+            # Add compliance, calibration, layer to evaluations (if not exist)
+            for col, coltype, default in [
+                ('compliance', 'VARCHAR(20)', "'PENDING'"),
+                ('calibration', 'FLOAT', 'NULL'),
+                ('layer', 'VARCHAR(20)', 'NULL'),
+            ]:
+                exists = await conn.fetchval("""
+                    SELECT 1 FROM information_schema.columns 
+                    WHERE table_name = 'evaluations' AND column_name = $1
+                """, col)
+                if not exists:
+                    await conn.execute(f"ALTER TABLE evaluations ADD COLUMN {col} {coltype} DEFAULT {default}")
+                    print(f"[API] Migration: added {col} to evaluations")
+            
+            print("[API] Migrations complete")
     except Exception as e:
         print(f"[API] Database error: {e}")
 
@@ -269,6 +328,26 @@ class InviteRequest(BaseModel):
 class AcceptInviteRequest(BaseModel):
     token: str
     password: str
+
+class ModelRegisterRequest(BaseModel):
+    name: str              # "GPT-5.2"
+    provider: Optional[str] = None  # "openai"
+    version: Optional[str] = None   # "5.2"
+    metadata: Optional[dict] = None
+
+class ModelUpdateRequest(BaseModel):
+    name: Optional[str] = None
+    provider: Optional[str] = None
+    version: Optional[str] = None
+    is_active: Optional[bool] = None
+    metadata: Optional[dict] = None
+
+class ModelEvaluateRequest(BaseModel):
+    model_id: str
+    output: str                     # model output to evaluate
+    confidence: Optional[float] = None  # model's self-reported confidence 0-1
+    context: Optional[str] = None   # input/prompt context
+    metadata: Optional[dict] = None
 
 # ============================================================
 # AUTH HELPERS
@@ -452,7 +531,8 @@ async def validate_api_key(x_api_key: str = Header(...)) -> dict:
             "organization_name": row['name'],
             "layer": row['tier'],
             "slug": row['slug'],
-            "stripe_customer_id": row['stripe_customer_id']
+            "stripe_customer_id": row['stripe_customer_id'],
+            "user_id": str(row['user_id']) if row['user_id'] else None
         }
 
 async def validate_architect(x_api_key: str = Header(...)) -> dict:
@@ -563,7 +643,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="ONTO API",
     description="Epistemic Calibration Infrastructure for Enterprise AI",
-    version="1.2.0",
+    version="1.3.0",
     lifespan=lifespan
 )
 
@@ -605,6 +685,11 @@ async def rate_limit_middleware(request: Request, call_next):
     
     # Skip signal admin endpoints
     if request.url.path.startswith("/v1/signal/admin"):
+        return await call_next(request)
+    
+    # Skip model management endpoints from global rate limiter
+    # (they have per-endpoint limits via validate_api_key + tier checks)
+    if request.url.path.startswith("/v1/models"):
         return await call_next(request)
     
     # Skip OPTIONS (CORS preflight) - must not be rate limited
@@ -3529,6 +3614,517 @@ async def admin_delete_user(user_id: str, ref: dict = Depends(validate_architect
 async def reference_access_check(ref: dict = Depends(validate_architect)):
     """Verify reference documentation access"""
     return {"status": "ok", "access": "reference"}
+
+# ============================================================
+# MODEL & EVALUATION ENGINE (Phase 1)
+# ============================================================
+
+def compute_risk_score(output: str, confidence: Optional[float] = None) -> dict:
+    """
+    Compute epistemic risk score for a model output.
+    Returns: risk_score (0.0-1.0), layer, compliance, calibration
+    
+    Scoring factors:
+    - Output length vs information density
+    - Hedging language detection (uncertainty markers)
+    - Confidence calibration (if provided)
+    - Structural coherence signals
+    """
+    import re
+    
+    # Factor 1: Hedging / uncertainty markers
+    hedging_patterns = [
+        r'\bI think\b', r'\bprobably\b', r'\bmaybe\b', r'\bperhaps\b',
+        r'\bI\'m not sure\b', r'\bmight\b', r'\bcould be\b', r'\buncertain\b',
+        r'\bapproximately\b', r'\bI believe\b', r'\bit seems\b', r'\blikely\b',
+        r'\bpossibly\b', r'\bas far as I know\b', r'\bto my knowledge\b',
+        r'\bnot certain\b', r'\bdon\'t know\b', r'\bunsure\b',
+    ]
+    hedge_count = sum(1 for p in hedging_patterns if re.search(p, output, re.IGNORECASE))
+    words = output.split()
+    word_count = max(len(words), 1)
+    hedge_density = min(hedge_count / max(word_count / 50, 1), 1.0)
+    
+    # Factor 2: Confidence calibration
+    # High confidence + hedging = poor calibration = higher risk
+    # Low confidence + hedging = good calibration = lower risk
+    cal_score = 0.5
+    if confidence is not None:
+        if confidence > 0.9 and hedge_count > 2:
+            cal_score = 0.3  # overconfident
+        elif confidence < 0.5 and hedge_count > 2:
+            cal_score = 0.8  # well-calibrated uncertainty
+        elif confidence > 0.8 and hedge_count == 0:
+            cal_score = 0.7  # confident and clear
+        else:
+            cal_score = max(0.2, min(confidence, 0.9))
+    
+    # Factor 3: Output structure (longer, structured = lower risk)
+    has_structure = any(marker in output for marker in ['\n', '1.', '- ', '* ', '##'])
+    length_factor = min(word_count / 200, 1.0)  # normalize to 200 words
+    structure_score = 0.3 if (has_structure and length_factor > 0.3) else 0.6
+    
+    # Factor 4: Refusal / hallucination risk signals
+    refusal_patterns = [r'\bI cannot\b', r'\bI can\'t\b', r'\bunable to\b', r'\bI don\'t have\b']
+    has_refusal = any(re.search(p, output, re.IGNORECASE) for p in refusal_patterns)
+    refusal_score = 0.2 if has_refusal else 0.5  # refusal = lower risk (model knows limits)
+    
+    # Composite risk score (0.0 = safe, 1.0 = dangerous)
+    risk_score = round(
+        (1 - cal_score) * 0.35 +      # calibration weight
+        hedge_density * 0.20 +          # hedging weight
+        (1 - structure_score) * 0.15 +  # structure weight
+        (1 - refusal_score) * 0.15 +    # refusal weight
+        (1 - length_factor) * 0.15,     # length weight
+        4
+    )
+    
+    # Clamp
+    risk_score = max(0.01, min(risk_score, 0.99))
+    
+    # Layer assignment
+    if risk_score < 0.25:
+        layer = "L3"  # Low risk = highest layer
+    elif risk_score < 0.50:
+        layer = "L2"
+    else:
+        layer = "L1"  # High risk = lowest layer
+    
+    # Compliance
+    if risk_score < 0.30:
+        compliance = "PASSED"
+    elif risk_score < 0.60:
+        compliance = "REVIEW"
+    else:
+        compliance = "FAILED"
+    
+    # Calibration percentage
+    calibration = round(cal_score * 100, 1)
+    
+    return {
+        "risk_score": risk_score,
+        "layer": layer,
+        "compliance": compliance,
+        "calibration": calibration,
+        "factors": {
+            "hedge_density": round(hedge_density, 3),
+            "confidence_calibration": round(cal_score, 3),
+            "structure": round(structure_score, 3),
+            "refusal_awareness": round(refusal_score, 3),
+            "output_length": word_count
+        }
+    }
+
+
+@app.post("/v1/models/register")
+async def register_model(
+    request: ModelRegisterRequest,
+    org: dict = Depends(validate_api_key)
+):
+    """Register a model for evaluation tracking"""
+    if not db_pool:
+        return {"id": "demo-" + secrets.token_hex(8), "name": request.name, "status": "demo"}
+    
+    org_id = org['organization_id']
+    user_id = org.get('user_id')
+    
+    async with db_pool.acquire() as conn:
+        # Check model limit per tier
+        model_count = await conn.fetchval(
+            "SELECT COUNT(*) FROM models WHERE organization_id = $1 AND is_active = true",
+            uuid.UUID(org_id)
+        )
+        tier_limits = {"open": 3, "standard": 20, "critical": 100}
+        limit = tier_limits.get(org.get('layer', 'open'), 3)
+        
+        if model_count >= limit:
+            raise HTTPException(
+                status_code=403, 
+                detail=f"Model limit reached ({limit} models on {org.get('layer', 'open')} tier)"
+            )
+        
+        try:
+            model_id = await conn.fetchval("""
+                INSERT INTO models (organization_id, user_id, name, provider, version, metadata)
+                VALUES ($1, $2, $3, $4, $5, $6)
+                RETURNING id
+            """, uuid.UUID(org_id), uuid.UUID(user_id) if user_id else None,
+                request.name, request.provider, request.version,
+                json.dumps(request.metadata or {}))
+            
+            # Audit log
+            await conn.execute("""
+                INSERT INTO audit_log (organization_id, user_id, action, resource_type, details)
+                VALUES ($1, $2, 'model_registered', 'model', $3)
+            """, uuid.UUID(org_id), uuid.UUID(user_id) if user_id else None,
+                json.dumps({"model_name": request.name, "provider": request.provider}))
+            
+            return {
+                "id": str(model_id),
+                "name": request.name,
+                "provider": request.provider,
+                "version": request.version,
+                "layer": "pending",
+                "status": "registered"
+            }
+        except asyncpg.UniqueViolationError:
+            raise HTTPException(
+                status_code=409, 
+                detail=f"Model '{request.name}' already registered in this organization"
+            )
+
+
+@app.get("/v1/models")
+async def list_models(org: dict = Depends(validate_api_key)):
+    """List all models for organization"""
+    if not db_pool:
+        return {"models": []}
+    
+    async with db_pool.acquire() as conn:
+        rows = await conn.fetch("""
+            SELECT m.id, m.name, m.provider, m.version, m.layer, m.is_active,
+                   m.metadata, m.created_at, m.updated_at,
+                   (SELECT COUNT(*) FROM evaluations e WHERE e.model_id = m.id) as eval_count,
+                   (SELECT risk_score FROM evaluations e WHERE e.model_id = m.id 
+                    ORDER BY submitted_at DESC LIMIT 1) as latest_risk,
+                   (SELECT compliance FROM evaluations e WHERE e.model_id = m.id 
+                    ORDER BY submitted_at DESC LIMIT 1) as latest_compliance,
+                   (SELECT calibration FROM evaluations e WHERE e.model_id = m.id 
+                    ORDER BY submitted_at DESC LIMIT 1) as latest_calibration
+            FROM models m
+            WHERE m.organization_id = $1 AND m.is_active = true
+            ORDER BY m.created_at DESC
+        """, uuid.UUID(org['organization_id']))
+        
+        return {
+            "models": [
+                {
+                    "id": str(r['id']),
+                    "name": r['name'],
+                    "provider": r['provider'],
+                    "version": r['version'],
+                    "layer": r['layer'],
+                    "is_active": r['is_active'],
+                    "eval_count": r['eval_count'],
+                    "latest_risk": float(r['latest_risk']) if r['latest_risk'] is not None else None,
+                    "latest_compliance": r['latest_compliance'],
+                    "latest_calibration": float(r['latest_calibration']) if r['latest_calibration'] is not None else None,
+                    "metadata": json.loads(r['metadata']) if r['metadata'] else {},
+                    "created_at": r['created_at'].isoformat() if r['created_at'] else None,
+                    "updated_at": r['updated_at'].isoformat() if r['updated_at'] else None,
+                }
+                for r in rows
+            ],
+            "total": len(rows)
+        }
+
+
+@app.get("/v1/models/compare")
+async def compare_models(org: dict = Depends(validate_api_key)):
+    """Compare all organization's models side-by-side"""
+    if not db_pool:
+        return {"models": []}
+    
+    async with db_pool.acquire() as conn:
+        rows = await conn.fetch("""
+            SELECT m.id, m.name, m.provider, m.version, m.layer,
+                   COUNT(e.id) as total_evals,
+                   AVG(e.risk_score) as avg_risk,
+                   MIN(e.risk_score) as best_risk,
+                   MAX(e.risk_score) as worst_risk,
+                   AVG(e.calibration) as avg_calibration,
+                   MAX(e.submitted_at) as last_eval
+            FROM models m
+            LEFT JOIN evaluations e ON e.model_id = m.id
+            WHERE m.organization_id = $1 AND m.is_active = true
+            GROUP BY m.id, m.name, m.provider, m.version, m.layer
+            ORDER BY AVG(e.risk_score) ASC NULLS LAST
+        """, uuid.UUID(org['organization_id']))
+        
+        return {
+            "models": [
+                {
+                    "id": str(r['id']),
+                    "name": r['name'],
+                    "provider": r['provider'],
+                    "version": r['version'],
+                    "layer": r['layer'],
+                    "total_evaluations": r['total_evals'],
+                    "avg_risk": round(float(r['avg_risk']), 4) if r['avg_risk'] else None,
+                    "best_risk": round(float(r['best_risk']), 4) if r['best_risk'] else None,
+                    "worst_risk": round(float(r['worst_risk']), 4) if r['worst_risk'] else None,
+                    "avg_calibration": round(float(r['avg_calibration']), 1) if r['avg_calibration'] else None,
+                    "last_evaluation": r['last_eval'].isoformat() if r['last_eval'] else None,
+                }
+                for r in rows
+            ],
+            "total": len(rows),
+            "lowest_risk": str(rows[0]['name']) if rows and rows[0]['avg_risk'] else None
+        }
+
+
+@app.get("/v1/models/{model_id}")
+async def get_model(model_id: str, org: dict = Depends(validate_api_key)):
+    """Get model details with latest evaluation"""
+    if not db_pool:
+        raise HTTPException(status_code=404)
+    
+    async with db_pool.acquire() as conn:
+        model = await conn.fetchrow("""
+            SELECT * FROM models 
+            WHERE id = $1 AND organization_id = $2
+        """, uuid.UUID(model_id), uuid.UUID(org['organization_id']))
+        
+        if not model:
+            raise HTTPException(status_code=404, detail="Model not found")
+        
+        # Get last 5 evaluations
+        evals = await conn.fetch("""
+            SELECT id, risk_score, layer, compliance, calibration, 
+                   model_name, submitted_at, metrics
+            FROM evaluations 
+            WHERE model_id = $1
+            ORDER BY submitted_at DESC
+            LIMIT 5
+        """, uuid.UUID(model_id))
+        
+        return {
+            "id": str(model['id']),
+            "name": model['name'],
+            "provider": model['provider'],
+            "version": model['version'],
+            "layer": model['layer'],
+            "is_active": model['is_active'],
+            "metadata": json.loads(model['metadata']) if model['metadata'] else {},
+            "created_at": model['created_at'].isoformat() if model['created_at'] else None,
+            "recent_evaluations": [
+                {
+                    "id": str(e['id']),
+                    "risk_score": float(e['risk_score']) if e['risk_score'] is not None else None,
+                    "layer": e['layer'],
+                    "compliance": e['compliance'],
+                    "calibration": float(e['calibration']) if e['calibration'] is not None else None,
+                    "submitted_at": e['submitted_at'].isoformat() if e['submitted_at'] else None,
+                }
+                for e in evals
+            ]
+        }
+
+
+@app.delete("/v1/models/{model_id}")
+async def delete_model(model_id: str, org: dict = Depends(validate_api_key)):
+    """Soft-delete (deactivate) a model"""
+    if not db_pool:
+        raise HTTPException(status_code=404)
+    
+    async with db_pool.acquire() as conn:
+        result = await conn.execute("""
+            UPDATE models SET is_active = false, updated_at = NOW()
+            WHERE id = $1 AND organization_id = $2
+        """, uuid.UUID(model_id), uuid.UUID(org['organization_id']))
+        
+        if result == "UPDATE 0":
+            raise HTTPException(status_code=404, detail="Model not found")
+        
+        return {"message": "Model deactivated", "id": model_id}
+
+
+@app.post("/v1/models/evaluate")
+async def evaluate_model(
+    request: ModelEvaluateRequest,
+    org: dict = Depends(validate_api_key)
+):
+    """
+    Evaluate a model output and compute epistemic risk score.
+    Returns: risk_score, layer, compliance, calibration
+    """
+    if not db_pool:
+        # Demo mode
+        result = compute_risk_score(request.output, request.confidence)
+        result["evaluation_id"] = "demo-" + secrets.token_hex(8)
+        result["status"] = "demo"
+        return result
+    
+    org_id = org['organization_id']
+    layer = org.get('layer', 'open')
+    layer_info = LAYERS.get(layer, LAYERS['open'])
+    
+    async with db_pool.acquire() as conn:
+        # Verify model exists and belongs to org
+        model = await conn.fetchrow("""
+            SELECT id, name, layer FROM models 
+            WHERE id = $1 AND organization_id = $2 AND is_active = true
+        """, uuid.UUID(request.model_id), uuid.UUID(org_id))
+        
+        if not model:
+            raise HTTPException(status_code=404, detail="Model not found or inactive")
+        
+        # Rate limit check (same as existing evaluate)
+        if layer == 'open':
+            limit = layer_info.get('certificates_per_month', 100)
+            count = await conn.fetchval("""
+                SELECT COUNT(*) FROM evaluations
+                WHERE organization_id = $1
+                AND submitted_at >= date_trunc('month', NOW())
+            """, uuid.UUID(org_id))
+            if count >= limit:
+                raise HTTPException(
+                    status_code=403,
+                    detail=f"Monthly evaluation limit reached ({limit}/month). Upgrade tier."
+                )
+        
+        # Compute risk
+        result = compute_risk_score(request.output, request.confidence)
+        
+        # Store evaluation
+        eval_id = await conn.fetchval("""
+            INSERT INTO evaluations 
+                (organization_id, model_id, model_name, model_version, status, 
+                 risk_score, layer, compliance, calibration, metrics)
+            VALUES ($1, $2, $3, NULL, 'completed', $4, $5, $6, $7, $8)
+            RETURNING id
+        """, uuid.UUID(org_id), model['id'], model['name'],
+            result['risk_score'], result['layer'], result['compliance'],
+            result['calibration'], json.dumps({
+                "factors": result['factors'],
+                "confidence_input": request.confidence,
+                "output_length": len(request.output),
+                "tier": layer
+            }))
+        
+        # Update model layer based on latest evaluation
+        await conn.execute("""
+            UPDATE models SET layer = $1, updated_at = NOW() WHERE id = $2
+        """, result['layer'], model['id'])
+        
+        # Usage tracking
+        await conn.execute("""
+            INSERT INTO usage_events (organization_id, event_type, resource_id, event_metadata)
+            VALUES ($1, 'model_evaluation', $2, $3)
+        """, uuid.UUID(org_id), eval_id,
+            json.dumps({"model": model['name'], "risk_score": result['risk_score']}))
+        
+        # Update subscription counter
+        await conn.execute("""
+            UPDATE subscriptions 
+            SET evaluations_used = COALESCE(evaluations_used, 0) + 1
+            WHERE organization_id = $1 AND status = 'active'
+        """, uuid.UUID(org_id))
+        
+        return {
+            "evaluation_id": str(eval_id),
+            "model_id": request.model_id,
+            "model_name": model['name'],
+            "risk_score": result['risk_score'],
+            "layer": result['layer'],
+            "compliance": result['compliance'],
+            "calibration": result['calibration'],
+            "factors": result['factors'],
+            "status": "completed"
+        }
+
+
+@app.get("/v1/models/{model_id}/evaluations")
+async def model_evaluations(
+    model_id: str,
+    limit: int = 20,
+    offset: int = 0,
+    org: dict = Depends(validate_api_key)
+):
+    """Get evaluation history for a model"""
+    if not db_pool:
+        return {"evaluations": [], "total": 0}
+    
+    async with db_pool.acquire() as conn:
+        # Verify ownership
+        model = await conn.fetchrow(
+            "SELECT id FROM models WHERE id = $1 AND organization_id = $2",
+            uuid.UUID(model_id), uuid.UUID(org['organization_id'])
+        )
+        if not model:
+            raise HTTPException(status_code=404, detail="Model not found")
+        
+        rows = await conn.fetch("""
+            SELECT id, risk_score, layer, compliance, calibration,
+                   metrics, submitted_at
+            FROM evaluations
+            WHERE model_id = $1
+            ORDER BY submitted_at DESC
+            LIMIT $2 OFFSET $3
+        """, uuid.UUID(model_id), limit, offset)
+        
+        total = await conn.fetchval(
+            "SELECT COUNT(*) FROM evaluations WHERE model_id = $1",
+            uuid.UUID(model_id)
+        )
+        
+        return {
+            "evaluations": [
+                {
+                    "id": str(r['id']),
+                    "risk_score": float(r['risk_score']) if r['risk_score'] is not None else None,
+                    "layer": r['layer'],
+                    "compliance": r['compliance'],
+                    "calibration": float(r['calibration']) if r['calibration'] is not None else None,
+                    "factors": json.loads(r['metrics']).get('factors') if r['metrics'] else None,
+                    "submitted_at": r['submitted_at'].isoformat() if r['submitted_at'] else None,
+                }
+                for r in rows
+            ],
+            "total": total,
+            "limit": limit,
+            "offset": offset
+        }
+
+
+@app.get("/v1/models/{model_id}/trend")
+async def model_trend(
+    model_id: str,
+    days: int = 30,
+    org: dict = Depends(validate_api_key)
+):
+    """Get risk score trend for a model over time"""
+    if not db_pool:
+        return {"trend": [], "period_days": days}
+    
+    async with db_pool.acquire() as conn:
+        model = await conn.fetchrow(
+            "SELECT id FROM models WHERE id = $1 AND organization_id = $2",
+            uuid.UUID(model_id), uuid.UUID(org['organization_id'])
+        )
+        if not model:
+            raise HTTPException(status_code=404, detail="Model not found")
+        
+        rows = await conn.fetch("""
+            SELECT DATE(submitted_at) as date, 
+                   AVG(risk_score) as avg_risk,
+                   MIN(risk_score) as min_risk,
+                   MAX(risk_score) as max_risk,
+                   AVG(calibration) as avg_calibration,
+                   COUNT(*) as eval_count
+            FROM evaluations
+            WHERE model_id = $1 AND submitted_at >= NOW() - INTERVAL '%s days'
+            GROUP BY DATE(submitted_at)
+            ORDER BY date ASC
+        """ % days, uuid.UUID(model_id))
+        
+        return {
+            "model_id": model_id,
+            "period_days": days,
+            "trend": [
+                {
+                    "date": r['date'].isoformat(),
+                    "avg_risk": round(float(r['avg_risk']), 4) if r['avg_risk'] else None,
+                    "min_risk": round(float(r['min_risk']), 4) if r['min_risk'] else None,
+                    "max_risk": round(float(r['max_risk']), 4) if r['max_risk'] else None,
+                    "avg_calibration": round(float(r['avg_calibration']), 1) if r['avg_calibration'] else None,
+                    "eval_count": r['eval_count'],
+                }
+                for r in rows
+            ]
+        }
+
+
 
 # ============================================================
 # MAIN
