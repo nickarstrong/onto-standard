@@ -1223,16 +1223,55 @@ body, .sidebar, .main-content, .page, .card, .nav-item, button, .admin-user-card
                 </div>
             </div>
 
-            <!-- Entropy Signal (compact) -->
-            <div class="signal-compact" id="signal-compact">
-                <div class="signal-compact-left">
-                    <span class="signal-dot"></span>
-                    <span class="signal-compact-label">Entropy Signal</span>
-                    <span class="signal-compact-id" id="user-signal-id">—</span>
+            <!-- Entropy Signal -->
+            <div class="signal-panel" id="user-signal-panel">
+                <div class="signal-header">
+                    <div class="signal-title-row">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent)"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                        <span class="signal-title">Entropy Signal</span>
+                    </div>
+                    <div class="signal-live-indicator" id="user-signal-live">
+                        <span class="signal-dot"></span>
+                        <span>LIVE</span>
+                    </div>
                 </div>
-                <div class="signal-compact-right">
-                    <span class="signal-compact-hash" id="user-signal-hash">—</span>
-                    <span class="signal-compact-next">NEXT <span id="user-signal-countdown">—</span></span>
+                <div class="signal-body">
+                    <div class="signal-main-row">
+                        <div class="signal-id-block">
+                            <div class="signal-id" id="user-signal-id"><div class="signal-skeleton-id"></div></div>
+                            <div class="signal-hash" id="user-signal-hash"><div class="signal-skeleton-hash"></div></div>
+                        </div>
+                        <div class="signal-countdown-block">
+                            <div class="signal-countdown-label">NEXT</div>
+                            <div class="signal-countdown-value" id="user-signal-countdown">—</div>
+                        </div>
+                    </div>
+                    <div class="signal-metrics">
+                        <div class="signal-metric">
+                            <div class="signal-metric-value" id="user-signal-uptime"><div class="skeleton skeleton-metric"></div></div>
+                            <div class="signal-metric-label">UPTIME</div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value" id="user-signal-generated"><div class="skeleton skeleton-metric"></div></div>
+                            <div class="signal-metric-label">GENERATED</div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value" id="user-signal-requests"><div class="skeleton skeleton-metric"></div></div>
+                            <div class="signal-metric-label">REQUESTS</div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value" id="user-signal-errors"><div class="skeleton skeleton-metric"></div></div>
+                            <div class="signal-metric-label">ERROR RATE</div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value">104</div>
+                            <div class="signal-metric-label">PACKET</div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value">ED25519</div>
+                            <div class="signal-metric-label">SIGNATURE</div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -3482,16 +3521,51 @@ async function loadUserSignal() {
             if (stats.current_signal) {
                 const el = document.getElementById('user-signal-id');
                 if (el) el.textContent = stats.current_signal.sigma_id || `σ_${stats.current_signal.timestamp}`;
-                const hashEl = document.getElementById('user-signal-hash');
-                if (hashEl) hashEl.textContent = (stats.current_signal.entropy_hex || '').substring(0, 32) + '…';
+                startUserHashAnimation(stats.current_signal.entropy_hex || '');
             }
+            updateUserMetric('user-signal-uptime', formatUptime(stats.uptime_seconds));
+            updateUserMetric('user-signal-generated', stats.signals_generated || 0);
+            updateUserMetric('user-signal-requests', stats.total_requests || 0);
+            const errorRate = stats.error_rate_percent || 0;
+            updateUserMetric('user-signal-errors', errorRate < 5 ? 'OK' : errorRate.toFixed(1) + '%');
             const remaining = stats.signal_interval - (stats.uptime_seconds % stats.signal_interval);
             startUserCountdown(remaining);
         }
     } catch (e) {
-        document.getElementById('user-signal-id').textContent = `σ_${Date.now()}`;
+        const el = document.getElementById('user-signal-id');
+        if (el) el.textContent = `σ_${Date.now()}`;
+        updateUserMetric('user-signal-uptime', '—');
+        updateUserMetric('user-signal-generated', '—');
+        updateUserMetric('user-signal-requests', '—');
+        updateUserMetric('user-signal-errors', '—');
         startUserCountdown(300);
     }
+}
+
+function updateUserMetric(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+}
+
+let userHashAnimInterval = null;
+function startUserHashAnimation(baseHash) {
+    const hashEl = document.getElementById('user-signal-hash');
+    if (!hashEl || !baseHash) return;
+    if (userHashAnimInterval) clearInterval(userHashAnimInterval);
+    const chars = '0123456789abcdef';
+    const hashArray = baseHash.split('');
+    let frame = 0;
+    userHashAnimInterval = setInterval(() => {
+        frame++;
+        const display = hashArray.map((char) => {
+            if (frame % 3 === 0 && Math.random() > 0.9) {
+                return `<span style="color:#15803d;text-shadow:0 0 8px #15803d;">${chars[Math.floor(Math.random() * 16)]}</span>`;
+            }
+            return char;
+        }).join('');
+        hashEl.innerHTML = display;
+        if (frame % 40 === 0) hashEl.textContent = baseHash;
+    }, 80);
 }
 
 function startUserCountdown(seconds) {
