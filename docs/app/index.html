@@ -2489,6 +2489,13 @@ function showDashboard() {
     document.getElementById('auth-screen').style.display = 'none';
     document.getElementById('dashboard').classList.add('active');
     
+    // Handle ?page= URL parameter
+    const params = new URLSearchParams(window.location.search);
+    const targetPage = params.get('page');
+    if (targetPage && document.getElementById('page-' + targetPage)) {
+        showPage(targetPage);
+    }
+    
     if (currentUser) {
         document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
         document.getElementById('user-name').textContent = currentUser.name;
@@ -4168,14 +4175,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Init UI components
     checkWelcomeBanner();
     updateSignalHash();
     updateUTCClock();
     updateSparkline();
     drawIndustryChart();
     
-    // Keyboard navigation
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             document.querySelectorAll('.modal-overlay.active').forEach(modal => {
