@@ -2618,6 +2618,11 @@ function showPage(page, el) {
     if (el) {
         const navItem = el.closest('.nav-item');
         if (navItem) navItem.classList.add('active');
+    } else {
+        document.querySelectorAll('.nav-item').forEach(n => {
+            const oc = n.getAttribute('onclick');
+            if (oc && oc.includes("'" + page + "'")) n.classList.add('active');
+        });
     }
 }
 
