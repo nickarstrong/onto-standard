@@ -270,6 +270,15 @@ async def init_db():
                     await conn.execute(f"ALTER TABLE evaluations ADD COLUMN {col} {coltype} DEFAULT {default}")
                     print(f"[API] Migration: added {col} to evaluations")
             
+            # Alter risk_score from INTEGER to FLOAT (legacy was int 0-100, new is float 0.0-1.0)
+            rs_type = await conn.fetchval("""
+                SELECT data_type FROM information_schema.columns 
+                WHERE table_name = 'evaluations' AND column_name = 'risk_score'
+            """)
+            if rs_type and rs_type == 'integer':
+                await conn.execute("ALTER TABLE evaluations ALTER COLUMN risk_score TYPE DOUBLE PRECISION USING risk_score::double precision")
+                print("[API] Migration: risk_score INTEGER → FLOAT")
+            
             print("[API] Migrations complete")
     except Exception as e:
         print(f"[API] Database error: {e}")
