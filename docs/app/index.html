@@ -635,6 +635,7 @@ a.info-val:hover { color: var(--text); }
 .plan-detail { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
 .btn-upgrade { width: 100%; padding: 10px; background: transparent; border: 1px solid var(--accent); color: var(--accent); border-radius: 4px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all .15s; }
 .btn-upgrade:hover { background: var(--accent); color: #fff; }
+.plan-switcher { margin-top: 12px; }
 .welcome-banner.hidden { display: none; }
 .welcome-content { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
 .welcome-text { display: flex; flex-direction: column; gap: 4px; }
@@ -1218,6 +1219,12 @@ body, .sidebar, .main-content, .page, .card, .nav-item, button, .admin-user-card
                         <div class="plan-detail" id="dash-plan-rate">1 request / hour</div>
                         <div class="plan-detail" id="dash-plan-calls">0 / 10 calls used</div>
                         <div class="plan-detail" id="dash-plan-expires">No expiration</div>
+                        <div class="plan-switcher hidden" id="plan-switcher">
+                            <select class="plan-switch-select" id="plan-switch" onchange="switchActivePlan(this.value)">
+                                <option value="enterprise">Critical ∞</option>
+                                <option value="business">Pro 1/8.64s</option>
+                            </select>
+                        </div>
                     </div>
                     <button class="btn-upgrade" id="dash-upgrade-btn" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))">Upgrade Plan →</button>
                 </div>
@@ -2656,6 +2663,12 @@ function showDashboard() {
         updateDashboardMetrics();
         checkWelcomeBanner();
         resetSessionTimer();
+        
+        // Init dashboard components
+        renderModelsGrid();
+        renderComparison('risk');
+        loadUserSignal();
+        checkReferenceAccess();
     }
 }
 
@@ -2674,12 +2687,22 @@ function updateDashboardMetrics() {
     const callsEl = document.getElementById('dash-plan-calls');
     const expiresEl = document.getElementById('dash-plan-expires');
     const upgradeBtn = document.getElementById('dash-upgrade-btn');
+    const switcherEl = document.getElementById('plan-switcher');
+    const switchSelect = document.getElementById('plan-switch');
     
     if (nameEl) nameEl.textContent = planNames[plan] || 'Open';
     if (rateEl) rateEl.textContent = rateLimits[plan] || '1 request / hour';
     
     // Hide upgrade for paid plans
     if (upgradeBtn) upgradeBtn.style.display = plan === 'free' ? 'block' : 'none';
+    
+    // Show plan switcher if both plans available
+    if (sub && sub.critical_days > 0 && sub.pro_days > 0 && switcherEl) {
+        switcherEl.classList.remove('hidden');
+        if (switchSelect) switchSelect.value = plan;
+    } else if (switcherEl) {
+        switcherEl.classList.add('hidden');
+    }
     
     // Expires
     if (sub && expiresEl) {
