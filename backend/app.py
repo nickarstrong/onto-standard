@@ -360,9 +360,14 @@ class ModelUpdateRequest(BaseModel):
 
 class ModelEvaluateRequest(BaseModel):
     model_id: str
-    output: str                     # model output to evaluate
-    confidence: Optional[float] = None  # model's self-reported confidence 0-1
-    context: Optional[str] = None   # input/prompt context
+    output: str                             # model output to evaluate
+    confidence: Optional[float] = None      # model's self-reported confidence 0-1
+    context: Optional[str] = None           # input/prompt context
+    ground_truth: Optional[str] = None      # correct answer (if available)
+    domain: Optional[str] = None            # "medical", "legal", "finance", "general"
+    logprobs: Optional[List[float]] = None  # token log probabilities from model
+    temperature: Optional[float] = None     # sampling temperature used
+    top_p: Optional[float] = None           # nucleus sampling parameter
     metadata: Optional[dict] = None
 
 # ============================================================
@@ -659,7 +664,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="ONTO API",
     description="Epistemic Calibration Infrastructure for Enterprise AI",
-    version="1.3.0",
+    version="1.4.0",
     lifespan=lifespan
 )
 
@@ -3635,100 +3640,442 @@ async def reference_access_check(ref: dict = Depends(validate_architect)):
 # MODEL & EVALUATION ENGINE (Phase 1)
 # ============================================================
 
-def compute_risk_score(output: str, confidence: Optional[float] = None) -> dict:
+def compute_risk_score(
+    output: str,
+    confidence: Optional[float] = None,
+    ground_truth: Optional[str] = None,
+    domain: Optional[str] = None,
+    logprobs: Optional[List[float]] = None,
+    temperature: Optional[float] = None,
+    context: Optional[str] = None,
+) -> dict:
     """
-    Compute epistemic risk score for a model output.
-    Returns: risk_score (0.0-1.0), layer, compliance, calibration
+    ONTO Epistemic Risk Scoring Engine v2.0
     
-    Scoring factors:
-    - Output length vs information density
-    - Hedging language detection (uncertainty markers)
-    - Confidence calibration (if provided)
-    - Structural coherence signals
+    Computes risk score (0.0-1.0) across 7 independent factors:
+    
+    F1: Linguistic Uncertainty    — hedging, qualifiers, epistemic markers
+    F2: Confidence Calibration    — self-reported confidence vs linguistic signals
+    F3: Logprob Entropy           — token-level uncertainty from model internals
+    F4: Semantic Consistency      — output coherence and information density
+    F5: Ground Truth Accuracy     — factual correctness (when reference available)
+    F6: Refusal Awareness         — model knows when it doesn't know
+    F7: Domain Risk Adjustment    — higher bar for critical domains
+    
+    Final score = weighted combination adjusted by available signals.
+    More signals = more accurate score = lower uncertainty about uncertainty.
     """
     import re
+    import math
     
-    # Factor 1: Hedging / uncertainty markers
-    hedging_patterns = [
-        r'\bI think\b', r'\bprobably\b', r'\bmaybe\b', r'\bperhaps\b',
-        r'\bI\'m not sure\b', r'\bmight\b', r'\bcould be\b', r'\buncertain\b',
-        r'\bapproximately\b', r'\bI believe\b', r'\bit seems\b', r'\blikely\b',
-        r'\bpossibly\b', r'\bas far as I know\b', r'\bto my knowledge\b',
-        r'\bnot certain\b', r'\bdon\'t know\b', r'\bunsure\b',
-    ]
-    hedge_count = sum(1 for p in hedging_patterns if re.search(p, output, re.IGNORECASE))
+    factors = {}
+    weights = {}
+    
     words = output.split()
     word_count = max(len(words), 1)
-    hedge_density = min(hedge_count / max(word_count / 50, 1), 1.0)
+    output_lower = output.lower()
     
-    # Factor 2: Confidence calibration
-    # High confidence + hedging = poor calibration = higher risk
-    # Low confidence + hedging = good calibration = lower risk
-    cal_score = 0.5
+    # ================================================================
+    # F1: LINGUISTIC UNCERTAINTY ANALYSIS (0.0 = certain, 1.0 = uncertain)
+    # ================================================================
+    
+    # Epistemic markers (model expressing uncertainty about knowledge)
+    epistemic_markers = [
+        (r'\bI think\b', 0.3), (r'\bI believe\b', 0.3), (r'\bI assume\b', 0.4),
+        (r'\bprobably\b', 0.4), (r'\bmaybe\b', 0.5), (r'\bperhaps\b', 0.4),
+        (r'\bmight\b', 0.3), (r'\bcould be\b', 0.3), (r'\bpossibly\b', 0.4),
+        (r'\bapproximately\b', 0.2), (r'\broughly\b', 0.3), (r'\babout\b', 0.1),
+        (r'\bit seems\b', 0.4), (r'\bappears to\b', 0.3),
+        (r'\bas far as I know\b', 0.5), (r'\bto my knowledge\b', 0.5),
+        (r'\bI\'m not sure\b', 0.6), (r'\bnot certain\b', 0.6),
+        (r'\bdon\'t know\b', 0.7), (r'\bunsure\b', 0.6), (r'\buncertain\b', 0.5),
+        (r'\bif I recall\b', 0.5), (r'\bI may be wrong\b', 0.7),
+        (r'\btake this with\b', 0.6), (r'\bgrain of salt\b', 0.6),
+    ]
+    
+    # Confidence markers (model expressing certainty)
+    confidence_markers = [
+        (r'\bdefinitely\b', 0.4), (r'\bcertainly\b', 0.4), (r'\babsolutely\b', 0.5),
+        (r'\bwithout a doubt\b', 0.5), (r'\bclearly\b', 0.3), (r'\bobviously\b', 0.4),
+        (r'\bundoubtedly\b', 0.5), (r'\bthe answer is\b', 0.3),
+        (r'\bin fact\b', 0.3), (r'\bspecifically\b', 0.2),
+    ]
+    
+    # Weasel words (vague, non-committal — increase risk)
+    weasel_patterns = [
+        (r'\bsome people say\b', 0.5), (r'\bit is said\b', 0.4),
+        (r'\bgenerally\b', 0.2), (r'\btypically\b', 0.2),
+        (r'\bin some cases\b', 0.3), (r'\bit depends\b', 0.3),
+    ]
+    
+    epistemic_score = sum(w for p, w in epistemic_markers if re.search(p, output, re.IGNORECASE))
+    confidence_linguistic = sum(w for p, w in confidence_markers if re.search(p, output, re.IGNORECASE))
+    weasel_score = sum(w for p, w in weasel_patterns if re.search(p, output, re.IGNORECASE))
+    
+    # Normalize by output length (longer text naturally has more markers)
+    length_norm = max(word_count / 100, 1.0)
+    epistemic_normalized = min(epistemic_score / length_norm, 1.0)
+    confidence_linguistic_norm = min(confidence_linguistic / length_norm, 1.0)
+    weasel_normalized = min(weasel_score / length_norm, 1.0)
+    
+    # F1 = high epistemic + high weasel - confidence markers
+    f1_uncertainty = min(max(
+        epistemic_normalized * 0.6 + weasel_normalized * 0.3 - confidence_linguistic_norm * 0.2,
+        0.0
+    ), 1.0)
+    
+    factors['linguistic_uncertainty'] = round(f1_uncertainty, 4)
+    weights['linguistic_uncertainty'] = 0.20
+    
+    # ================================================================
+    # F2: CONFIDENCE CALIBRATION (0.0 = well-calibrated, 1.0 = miscalibrated)
+    # ================================================================
+    
     if confidence is not None:
-        if confidence > 0.9 and hedge_count > 2:
-            cal_score = 0.3  # overconfident
-        elif confidence < 0.5 and hedge_count > 2:
-            cal_score = 0.8  # well-calibrated uncertainty
-        elif confidence > 0.8 and hedge_count == 0:
-            cal_score = 0.7  # confident and clear
+        # Compare self-reported confidence with linguistic signals
+        # Well-calibrated: high confidence + low hedging, or low confidence + high hedging
+        # Miscalibrated: high confidence + high hedging (overconfident)
+        #                low confidence + low hedging (underconfident)
+        
+        linguistic_confidence = 1.0 - f1_uncertainty  # inverse of uncertainty
+        calibration_gap = abs(confidence - linguistic_confidence)
+        
+        # Overconfidence is worse than underconfidence
+        if confidence > linguistic_confidence:
+            # Overconfident: says 90% confident but language says 50%
+            overconfidence_penalty = calibration_gap * 1.5
         else:
-            cal_score = max(0.2, min(confidence, 0.9))
+            # Underconfident: says 50% but language is clear — less risky
+            overconfidence_penalty = calibration_gap * 0.7
+        
+        f2_miscalibration = min(overconfidence_penalty, 1.0)
+        
+        factors['confidence_calibration'] = round(f2_miscalibration, 4)
+        weights['confidence_calibration'] = 0.20
+    else:
+        factors['confidence_calibration'] = None
+        weights['confidence_calibration'] = 0.0
     
-    # Factor 3: Output structure (longer, structured = lower risk)
-    has_structure = any(marker in output for marker in ['\n', '1.', '- ', '* ', '##'])
-    length_factor = min(word_count / 200, 1.0)  # normalize to 200 words
-    structure_score = 0.3 if (has_structure and length_factor > 0.3) else 0.6
+    # ================================================================
+    # F3: LOGPROB ENTROPY (0.0 = certain tokens, 1.0 = high entropy)
+    # ================================================================
     
-    # Factor 4: Refusal / hallucination risk signals
-    refusal_patterns = [r'\bI cannot\b', r'\bI can\'t\b', r'\bunable to\b', r'\bI don\'t have\b']
-    has_refusal = any(re.search(p, output, re.IGNORECASE) for p in refusal_patterns)
-    refusal_score = 0.2 if has_refusal else 0.5  # refusal = lower risk (model knows limits)
+    if logprobs and len(logprobs) > 0:
+        # Convert logprobs to probabilities
+        probs = [math.exp(lp) for lp in logprobs if lp is not None]
+        
+        if probs:
+            # Mean token probability
+            mean_prob = sum(probs) / len(probs)
+            
+            # Entropy of token distribution (normalized)
+            # Low entropy = model is sure about token choices
+            # High entropy = model is uncertain
+            mean_logprob = sum(logprobs) / len(logprobs)
+            
+            # Normalize: typical good logprobs are -0.1 to -0.5
+            # Bad logprobs are -2.0 to -5.0
+            normalized_entropy = min(max(-mean_logprob / 3.0, 0.0), 1.0)
+            
+            # Token probability variance — high variance = inconsistent confidence
+            if len(probs) > 1:
+                variance = sum((p - mean_prob) ** 2 for p in probs) / len(probs)
+                variance_penalty = min(variance * 10, 0.3)
+            else:
+                variance_penalty = 0.0
+            
+            f3_entropy = min(normalized_entropy + variance_penalty, 1.0)
+            
+            factors['logprob_entropy'] = round(f3_entropy, 4)
+            weights['logprob_entropy'] = 0.25  # highest weight when available
+            
+            # Reduce linguistic weight when we have hard data
+            weights['linguistic_uncertainty'] = 0.10
+        else:
+            factors['logprob_entropy'] = None
+            weights['logprob_entropy'] = 0.0
+    else:
+        factors['logprob_entropy'] = None
+        weights['logprob_entropy'] = 0.0
     
-    # Composite risk score (0.0 = safe, 1.0 = dangerous)
-    risk_score = round(
-        (1 - cal_score) * 0.35 +      # calibration weight
-        hedge_density * 0.20 +          # hedging weight
-        (1 - structure_score) * 0.15 +  # structure weight
-        (1 - refusal_score) * 0.15 +    # refusal weight
-        (1 - length_factor) * 0.15,     # length weight
-        4
-    )
+    # ================================================================
+    # F4: SEMANTIC CONSISTENCY (0.0 = coherent, 1.0 = incoherent)
+    # ================================================================
     
-    # Clamp
-    risk_score = max(0.01, min(risk_score, 0.99))
+    # Information density: unique words / total words
+    unique_words = len(set(w.lower() for w in words if len(w) > 2))
+    info_density = unique_words / max(word_count, 1)
     
-    # Layer assignment
-    if risk_score < 0.25:
-        layer = "L3"  # Low risk = highest layer
+    # Structure signals
+    has_structure = any(m in output for m in ['\n', '1.', '2.', '- ', '* ', '##', ':'])
+    has_citation = bool(re.search(r'(according to|source:|reference:|https?://|\[\d+\])', output, re.IGNORECASE))
+    has_numbers = bool(re.search(r'\b\d+\.?\d*%?\b', output))
+    
+    # Contradiction detection (simplified)
+    has_contradiction = bool(re.search(
+        r'(but actually|however.*contrary|on the other hand.*but also|yes.*but no)',
+        output, re.IGNORECASE
+    ))
+    
+    # Repetition detection
+    sentences = re.split(r'[.!?]+', output)
+    sentences = [s.strip().lower() for s in sentences if len(s.strip()) > 10]
+    if len(sentences) > 1:
+        seen = set()
+        repetitions = 0
+        for s in sentences:
+            # Check first 5 words
+            key = ' '.join(s.split()[:5])
+            if key in seen:
+                repetitions += 1
+            seen.add(key)
+        repetition_ratio = repetitions / len(sentences)
+    else:
+        repetition_ratio = 0.0
+    
+    # Low density + no structure + repetition = risky
+    structure_bonus = 0.15 if has_structure else 0.0
+    citation_bonus = 0.1 if has_citation else 0.0
+    number_bonus = 0.05 if has_numbers else 0.0
+    
+    f4_incoherence = max(min(
+        (1.0 - info_density) * 0.3 +
+        (0.15 if not has_structure else 0.0) +
+        repetition_ratio * 0.3 +
+        (0.2 if has_contradiction else 0.0) -
+        citation_bonus - number_bonus,
+        1.0
+    ), 0.0)
+    
+    # Length factor: very short outputs are riskier
+    if word_count < 10:
+        f4_incoherence = min(f4_incoherence + 0.3, 1.0)
+    elif word_count < 30:
+        f4_incoherence = min(f4_incoherence + 0.1, 1.0)
+    
+    factors['semantic_consistency'] = round(f4_incoherence, 4)
+    weights['semantic_consistency'] = 0.15
+    
+    # ================================================================
+    # F5: GROUND TRUTH ACCURACY (0.0 = correct, 1.0 = wrong)
+    # ================================================================
+    
+    if ground_truth and ground_truth.strip():
+        gt_lower = ground_truth.lower().strip()
+        
+        # Exact containment check
+        exact_match = gt_lower in output_lower
+        
+        # Token overlap (Jaccard similarity)
+        gt_tokens = set(gt_lower.split())
+        out_tokens = set(output_lower.split())
+        if gt_tokens:
+            jaccard = len(gt_tokens & out_tokens) / len(gt_tokens | out_tokens)
+        else:
+            jaccard = 0.0
+        
+        # Numerical comparison (if ground truth is a number)
+        gt_numbers = re.findall(r'[-+]?\d*\.?\d+', ground_truth)
+        out_numbers = re.findall(r'[-+]?\d*\.?\d+', output)
+        numerical_match = 0.0
+        if gt_numbers and out_numbers:
+            try:
+                gt_val = float(gt_numbers[0])
+                # Check if any output number is close
+                for on in out_numbers:
+                    out_val = float(on)
+                    if gt_val != 0:
+                        relative_error = abs(gt_val - out_val) / abs(gt_val)
+                    else:
+                        relative_error = abs(out_val)
+                    if relative_error < 0.01:
+                        numerical_match = 1.0
+                        break
+                    elif relative_error < 0.1:
+                        numerical_match = 0.7
+                        break
+                    elif relative_error < 0.3:
+                        numerical_match = 0.3
+                        break
+            except (ValueError, ZeroDivisionError):
+                pass
+        
+        # Combine signals
+        accuracy = max(
+            1.0 if exact_match else 0.0,
+            jaccard,
+            numerical_match
+        )
+        
+        f5_inaccuracy = 1.0 - accuracy
+        
+        factors['ground_truth_accuracy'] = round(1.0 - f5_inaccuracy, 4)  # report as accuracy
+        weights['ground_truth_accuracy'] = 0.25  # highest weight when available
+        
+        # Reduce other weights when we have ground truth
+        weights['linguistic_uncertainty'] = max(weights['linguistic_uncertainty'] - 0.05, 0.05)
+        weights['semantic_consistency'] = 0.10
+    else:
+        factors['ground_truth_accuracy'] = None
+        weights['ground_truth_accuracy'] = 0.0
+        f5_inaccuracy = 0.0
+    
+    # ================================================================
+    # F6: REFUSAL AWARENESS (0.0 = good awareness, 1.0 = no awareness)
+    # ================================================================
+    
+    refusal_patterns = [
+        (r'\bI cannot\b', 0.8), (r'\bI can\'t\b', 0.8),
+        (r'\bunable to\b', 0.7), (r'\bI don\'t have\b', 0.6),
+        (r'\bbeyond my\b', 0.7), (r'\boutside my\b', 0.6),
+        (r'\bI\'m not qualified\b', 0.9), (r'\bconsult a\b', 0.5),
+        (r'\bseek professional\b', 0.6), (r'\bthis is not\b', 0.3),
+        (r'\bnote that\b', 0.2), (r'\bimportant to remember\b', 0.2),
+        (r'\bdisclaimer\b', 0.4), (r'\bcaveat\b', 0.5),
+        (r'\blimitation\b', 0.4), (r'\bI should mention\b', 0.4),
+    ]
+    
+    refusal_score = sum(w for p, w in refusal_patterns if re.search(p, output, re.IGNORECASE))
+    refusal_normalized = min(refusal_score / 2.0, 1.0)  # cap at 1.0
+    
+    # Refusal = model knows limits = LOWER risk
+    f6_no_awareness = 1.0 - refusal_normalized
+    
+    # Context-aware: if question is about limitations and model refuses = very good
+    if context and re.search(r'(can you|are you able|do you know)', context, re.IGNORECASE):
+        if refusal_normalized > 0.3:
+            f6_no_awareness *= 0.5  # bonus for appropriate refusal
+    
+    factors['refusal_awareness'] = round(refusal_normalized, 4)  # report positive
+    weights['refusal_awareness'] = 0.10
+    
+    # ================================================================
+    # F7: DOMAIN RISK ADJUSTMENT
+    # ================================================================
+    
+    domain_multipliers = {
+        'medical': 1.4,      # medical errors are dangerous
+        'health': 1.4,
+        'legal': 1.3,        # legal advice needs accuracy
+        'finance': 1.3,      # financial decisions
+        'safety': 1.5,       # safety-critical systems
+        'autonomous': 1.5,   # autonomous vehicles, drones
+        'nuclear': 1.5,
+        'pharmaceutical': 1.4,
+        'general': 1.0,
+        'chat': 0.8,         # casual chat is lower stakes
+        'creative': 0.7,     # creative writing is subjective
+        'education': 1.1,
+    }
+    
+    domain_key = (domain or 'general').lower()
+    domain_mult = domain_multipliers.get(domain_key, 1.0)
+    
+    factors['domain'] = domain_key
+    factors['domain_multiplier'] = domain_mult
+    
+    # ================================================================
+    # COMPOSITE SCORE
+    # ================================================================
+    
+    # Normalize weights to sum to 1.0
+    total_weight = sum(weights.values())
+    if total_weight == 0:
+        total_weight = 1.0
+    
+    # Weighted sum of active factors
+    raw_score = 0.0
+    for key, weight in weights.items():
+        if key == 'ground_truth_accuracy':
+            value = f5_inaccuracy  # invert for scoring
+        elif key == 'confidence_calibration':
+            value = factors.get('confidence_calibration', 0.5)
+        elif key == 'logprob_entropy':
+            value = factors.get('logprob_entropy', 0.5)
+        elif key == 'linguistic_uncertainty':
+            value = f1_uncertainty
+        elif key == 'semantic_consistency':
+            value = f4_incoherence
+        elif key == 'refusal_awareness':
+            value = f6_no_awareness
+        else:
+            continue
+        
+        if value is not None:
+            raw_score += value * (weight / total_weight)
+    
+    # Apply domain multiplier (cap at 0.99)
+    risk_score = round(min(max(raw_score * domain_mult, 0.01), 0.99), 4)
+    
+    # ================================================================
+    # LAYER & COMPLIANCE ASSIGNMENT
+    # ================================================================
+    
+    if risk_score < 0.20:
+        layer = "L3"
+        compliance = "PASSED"
+    elif risk_score < 0.35:
+        layer = "L3"
+        compliance = "PASSED"
     elif risk_score < 0.50:
         layer = "L2"
-    else:
-        layer = "L1"  # High risk = lowest layer
-    
-    # Compliance
-    if risk_score < 0.30:
-        compliance = "PASSED"
-    elif risk_score < 0.60:
         compliance = "REVIEW"
+    elif risk_score < 0.65:
+        layer = "L2"
+        compliance = "REVIEW"
+    elif risk_score < 0.80:
+        layer = "L1"
+        compliance = "FAILED"
     else:
+        layer = "L1"
         compliance = "FAILED"
     
-    # Calibration percentage
-    calibration = round(cal_score * 100, 1)
+    # ================================================================
+    # CALIBRATION PERCENTAGE (meta-metric: how much data we have)
+    # ================================================================
+    
+    # Calibration = confidence in our own assessment
+    # More signals = higher calibration
+    signals_available = sum(1 for v in [
+        confidence, ground_truth, logprobs, context, domain
+    ] if v is not None)
+    
+    base_calibration = 40.0  # text-only baseline
+    signal_bonuses = {
+        1: 10,  # +confidence
+        2: 15,  # +ground_truth
+        3: 20,  # +logprobs
+        4: 10,  # +context
+        5: 5,   # +domain
+    }
+    calibration = base_calibration + sum(
+        signal_bonuses.get(i + 1, 0) for i in range(signals_available)
+    )
+    calibration = min(calibration, 99.0)
+    
+    # ================================================================
+    # SCORING METADATA
+    # ================================================================
     
     return {
         "risk_score": risk_score,
         "layer": layer,
         "compliance": compliance,
-        "calibration": calibration,
+        "calibration": round(calibration, 1),
+        "engine_version": "2.0",
+        "signals_used": signals_available + 1,  # +1 for output text itself
         "factors": {
-            "hedge_density": round(hedge_density, 3),
-            "confidence_calibration": round(cal_score, 3),
-            "structure": round(structure_score, 3),
-            "refusal_awareness": round(refusal_score, 3),
-            "output_length": word_count
-        }
+            "linguistic_uncertainty": factors.get('linguistic_uncertainty'),
+            "confidence_calibration": factors.get('confidence_calibration'),
+            "logprob_entropy": factors.get('logprob_entropy'),
+            "semantic_consistency": factors.get('semantic_consistency'),
+            "ground_truth_accuracy": factors.get('ground_truth_accuracy'),
+            "refusal_awareness": factors.get('refusal_awareness'),
+            "domain": factors.get('domain'),
+            "domain_multiplier": factors.get('domain_multiplier'),
+            "output_length": word_count,
+        },
+        "weights_applied": {k: round(v / total_weight, 3) for k, v in weights.items() if v > 0},
     }
 
 
@@ -3956,7 +4303,12 @@ async def evaluate_model(
     """
     if not db_pool:
         # Demo mode
-        result = compute_risk_score(request.output, request.confidence)
+        result = compute_risk_score(
+            output=request.output, confidence=request.confidence,
+            ground_truth=request.ground_truth, domain=request.domain,
+            logprobs=request.logprobs, temperature=request.temperature,
+            context=request.context,
+        )
         result["evaluation_id"] = "demo-" + secrets.token_hex(8)
         result["status"] = "demo"
         return result
@@ -3990,7 +4342,12 @@ async def evaluate_model(
                 )
         
         # Compute risk
-        result = compute_risk_score(request.output, request.confidence)
+        result = compute_risk_score(
+            output=request.output, confidence=request.confidence,
+            ground_truth=request.ground_truth, domain=request.domain,
+            logprobs=request.logprobs, temperature=request.temperature,
+            context=request.context,
+        )
         
         # Store evaluation
         eval_id = await conn.fetchval("""
@@ -4002,8 +4359,14 @@ async def evaluate_model(
         """, uuid.UUID(org_id), model['id'], model['name'],
             result['risk_score'], result['layer'], result['compliance'],
             result['calibration'], json.dumps({
+                "engine_version": result.get('engine_version', '2.0'),
+                "signals_used": result.get('signals_used', 1),
                 "factors": result['factors'],
+                "weights": result.get('weights_applied', {}),
                 "confidence_input": request.confidence,
+                "ground_truth_provided": request.ground_truth is not None,
+                "logprobs_provided": request.logprobs is not None,
+                "domain": request.domain,
                 "output_length": len(request.output),
                 "tier": layer
             }))
@@ -4035,7 +4398,10 @@ async def evaluate_model(
             "layer": result['layer'],
             "compliance": result['compliance'],
             "calibration": result['calibration'],
+            "engine_version": result.get('engine_version', '2.0'),
+            "signals_used": result.get('signals_used', 1),
             "factors": result['factors'],
+            "weights": result.get('weights_applied', {}),
             "status": "completed"
         }
 
