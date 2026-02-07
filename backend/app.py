@@ -9,6 +9,7 @@ Endpoints:
   # Auth
   POST /v1/auth/register     - Register organization
   POST /v1/auth/login        - Login (get JWT)
+  GET  /v1/auth/me           - Session restore (user + org + tier)
   POST /v1/auth/api-keys     - Create API key
   POST /v1/auth/accept-invite - Accept invitation and set password
   
@@ -562,6 +563,31 @@ async def validate_api_key(x_api_key: str = Header(...)) -> dict:
             ORDER BY u.is_active DESC NULLS LAST, u.role ASC
             LIMIT 1
         """, key_hash)
+        
+        if not row:
+            # Fallback: check portal_api_key plain text (old users without Default Key)
+            row = await conn.fetchrow("""
+                SELECT NULL as id, o.id as organization_id, true as is_active,
+                       o.name, o.tier, o.slug, o.stripe_customer_id, o.is_banned,
+                       o.subscription_ends_at,
+                       u.id as user_id, u.is_active as user_active, u.role as user_role
+                FROM organizations o
+                LEFT JOIN users u ON u.organization_id = o.id
+                WHERE o.portal_api_key = $1
+                ORDER BY u.is_active DESC NULLS LAST, u.role ASC
+                LIMIT 1
+            """, x_api_key)
+            
+            # If found via portal_api_key, auto-create Default Key entry
+            if row:
+                try:
+                    await conn.execute("""
+                        INSERT INTO api_keys (organization_id, name, key_hash, key_prefix, scopes)
+                        VALUES ($1, 'Default Key', $2, $3, '{"read", "write"}')
+                        ON CONFLICT DO NOTHING
+                    """, row['organization_id'], key_hash, x_api_key[:12])
+                except Exception:
+                    pass  # Non-critical
         
         if not row:
             raise HTTPException(status_code=401, detail="Invalid API key")
@@ -1216,6 +1242,44 @@ async def login(request: LoginRequest, req: Request):
             "message": "Login successful"
         }
 
+
+@app.get("/v1/auth/me")
+async def get_current_user(org: dict = Depends(validate_api_key)):
+    """Session restore — return user + org + tier by API key.
+    Portal calls this on reload to restore full session state."""
+    if not db_pool:
+        return {"user": None, "organization": None}
+    
+    async with db_pool.acquire() as conn:
+        row = await conn.fetchrow("""
+            SELECT u.id, u.name, u.email, u.role,
+                   o.id as org_id, o.name as org_name, o.tier, o.slug,
+                   o.portal_api_key, o.stripe_customer_id,
+                   o.subscription_ends_at
+            FROM users u
+            JOIN organizations o ON u.organization_id = o.id
+            WHERE o.id = $1 AND u.is_active = true
+            ORDER BY u.role ASC
+            LIMIT 1
+        """, org['organization_id'])
+        
+        if not row:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        return {
+            "user_id": str(row['id']),
+            "name": row['name'],
+            "email": row['email'],
+            "role": row['role'],
+            "organization_id": str(row['org_id']),
+            "organization_name": row['org_name'],
+            "layer": row['tier'],
+            "api_key": row['portal_api_key'],
+            "has_payment": bool(row['stripe_customer_id']),
+            "subscription_ends_at": row['subscription_ends_at'].isoformat() if row['subscription_ends_at'] else None
+        }
+
+
 class VerifyOTPRequest(BaseModel):
     email: EmailStr
     code: str
@@ -1593,11 +1657,18 @@ async def regenerate_portal_key(
         
         # Also update the Default Key in api_keys table (for API validation)
         key_hash = hash_api_key(new_key)
-        await conn.execute("""
+        result = await conn.execute("""
             UPDATE api_keys 
             SET key_hash = $1, key_prefix = $2 
             WHERE organization_id = $3 AND name = 'Default Key'
         """, key_hash, prefix, org['organization_id'])
+        
+        # If no Default Key exists, create one (fixes BUG-006)
+        if result == "UPDATE 0":
+            await conn.execute("""
+                INSERT INTO api_keys (organization_id, name, key_hash, key_prefix, scopes)
+                VALUES ($1, 'Default Key', $2, $3, '{"read", "write"}')
+            """, org['organization_id'], key_hash, prefix)
         
         # Audit log
         await conn.execute("""
