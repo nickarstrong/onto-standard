@@ -460,8 +460,7 @@ async def is_architect(user_id) -> bool:
 
 def generate_verification_token() -> str:
     """Generate a 6-digit OTP code"""
-    import random
-    return str(random.randint(100000, 999999))
+    return f"{secrets.randbelow(900000) + 100000}"
 
 async def send_verification_email(email: str, name: str, code: str) -> bool:
     """Send OTP verification code via Resend"""
@@ -554,11 +553,13 @@ async def validate_api_key(x_api_key: str = Header(...)) -> dict:
         row = await conn.fetchrow("""
             SELECT ak.id, ak.organization_id, ak.is_active, 
                    o.name, o.tier, o.slug, o.stripe_customer_id, o.is_banned,
-                   u.id as user_id, u.is_active as user_active
+                   o.subscription_ends_at,
+                   u.id as user_id, u.is_active as user_active, u.role as user_role
             FROM api_keys ak
             JOIN organizations o ON ak.organization_id = o.id
             LEFT JOIN users u ON u.organization_id = o.id
             WHERE ak.key_hash = $1
+            ORDER BY u.is_active DESC NULLS LAST, u.role ASC
             LIMIT 1
         """, key_hash)
         
@@ -576,6 +577,17 @@ async def validate_api_key(x_api_key: str = Header(...)) -> dict:
         if row['user_id'] and row['user_active'] is False:
             raise HTTPException(status_code=403, detail="Account deactivated")
         
+        # Auto-downgrade expired subscriptions
+        tier = row['tier']
+        if tier != 'open' and row['subscription_ends_at']:
+            if row['subscription_ends_at'] < datetime.now(timezone.utc):
+                tier = 'open'
+                await conn.execute(
+                    "UPDATE organizations SET tier = 'open', subscription_ends_at = NULL WHERE id = $1",
+                    row['organization_id']
+                )
+                print(f"[API] Auto-downgrade org {row['organization_id']} — subscription expired")
+        
         # Update last_used_at
         await conn.execute(
             "UPDATE api_keys SET last_used_at = NOW() WHERE id = $1",
@@ -586,10 +598,11 @@ async def validate_api_key(x_api_key: str = Header(...)) -> dict:
             "api_key_id": str(row['id']),
             "organization_id": str(row['organization_id']),
             "organization_name": row['name'],
-            "layer": row['tier'],
+            "layer": tier,
             "slug": row['slug'],
             "stripe_customer_id": row['stripe_customer_id'],
-            "user_id": str(row['user_id']) if row['user_id'] else None
+            "user_id": str(row['user_id']) if row['user_id'] else None,
+            "role": row.get('user_role', 'admin')  # Default admin for single-user orgs
         }
 
 async def validate_architect(x_api_key: str = Header(...)) -> dict:
@@ -605,6 +618,7 @@ async def validate_architect(x_api_key: str = Header(...)) -> dict:
             FROM organizations o
             JOIN users u ON u.organization_id = o.id
             WHERE o.portal_api_key = $1
+            ORDER BY u.is_active DESC, u.role ASC
             LIMIT 1
         """, x_api_key)
         
@@ -619,6 +633,7 @@ async def validate_architect(x_api_key: str = Header(...)) -> dict:
                 JOIN organizations o ON ak.organization_id = o.id
                 JOIN users u ON u.organization_id = o.id
                 WHERE ak.key_hash = $1 AND ak.is_active = true
+                ORDER BY u.is_active DESC, u.role ASC
                 LIMIT 1
             """, key_hash)
         
@@ -742,11 +757,6 @@ async def rate_limit_middleware(request: Request, call_next):
     
     # Skip signal admin endpoints
     if request.url.path.startswith("/v1/signal/admin"):
-        return await call_next(request)
-    
-    # Skip model management endpoints from global rate limiter
-    # (they have per-endpoint limits via validate_api_key + tier checks)
-    if request.url.path.startswith("/v1/models"):
         return await call_next(request)
     
     # Skip OPTIONS (CORS preflight) - must not be rate limited
@@ -1075,6 +1085,10 @@ async def register(request: RegisterRequest, req: Request):
                 RETURNING id
             """, org_name, slug, stripe_customer_id, json.dumps(profile_data), full_key)
         
+        # Validate password
+        if len(request.password) < 8:
+            raise HTTPException(status_code=400, detail="Password must be at least 8 characters")
+        
         # Create user with OTP code
         password_hash = hash_password(request.password)
         verification_token = generate_verification_token()
@@ -1082,7 +1096,7 @@ async def register(request: RegisterRequest, req: Request):
         
         user_id = await conn.fetchval("""
             INSERT INTO users (email, name, password_hash, organization_id, role, email_verified, verification_token, verification_token_expires)
-            VALUES ($1, $2, $3, $4, 'user', false, $5, $6)
+            VALUES ($1, $2, $3, $4, 'admin', false, $5, $6)
             RETURNING id
         """, email, request.name, password_hash, org_id, verification_token, token_expires)
         
@@ -1207,12 +1221,18 @@ class VerifyOTPRequest(BaseModel):
     code: str
 
 @app.post("/v1/auth/verify-email")
-async def verify_email(request: VerifyOTPRequest):
+async def verify_email(request: VerifyOTPRequest, req: Request):
     """Verify email with 6-digit OTP code and auto-login"""
     if not db_pool:
         raise HTTPException(status_code=503, detail="Database not available")
     
+    # Rate limit: 5 attempts per email per 15 minutes
     email = request.email.lower().strip()
+    key = f"verify:{email}"
+    allowed, _ = rate_limiter.is_allowed(key, 5, 900)
+    if not allowed:
+        raise HTTPException(status_code=429, detail="Too many verification attempts. Try again later.")
+    
     code = request.code.strip()
     
     async with db_pool.acquire() as conn:
@@ -1257,10 +1277,17 @@ async def verify_email(request: VerifyOTPRequest):
         }
 
 @app.post("/v1/auth/resend-verification")
-async def resend_verification(request: LoginRequest):
+async def resend_verification(request: LoginRequest, req: Request):
     """Resend OTP verification code"""
     if not db_pool:
         raise HTTPException(status_code=503, detail="Database not available")
+    
+    # Rate limit (3 per minute per IP)
+    client_ip = req.client.host if req.client else "unknown"
+    key = f"resend:{client_ip}"
+    allowed, _ = rate_limiter.is_allowed(key, 3, 60)
+    if not allowed:
+        raise HTTPException(status_code=429, detail="Too many requests. Try again in a minute.")
     
     # Normalize email to lowercase
     email = request.email.lower().strip()
@@ -1390,10 +1417,17 @@ async def forgot_password(request: ForgotPasswordRequest, req: Request):
     return {"message": "If account exists, reset email sent"}
 
 @app.post("/v1/auth/reset-password")
-async def reset_password(request: ResetPasswordRequest):
+async def reset_password(request: ResetPasswordRequest, req: Request):
     """Reset password with token"""
     if not db_pool:
         raise HTTPException(status_code=503, detail="Database not available")
+    
+    # Rate limit: 5 per IP per 15 minutes
+    client_ip = req.client.host if req.client else "unknown"
+    key = f"reset:{client_ip}"
+    allowed, _ = rate_limiter.is_allowed(key, 5, 900)
+    if not allowed:
+        raise HTTPException(status_code=429, detail="Too many attempts. Try again later.")
     
     async with db_pool.acquire() as conn:
         user = await conn.fetchrow("""
@@ -1404,6 +1438,10 @@ async def reset_password(request: ResetPasswordRequest):
         
         if not user:
             raise HTTPException(status_code=400, detail="Invalid or expired token")
+        
+        # Validate new password
+        if len(request.new_password) < 8:
+            raise HTTPException(status_code=400, detail="Password must be at least 8 characters")
         
         # Update password
         new_hash = hash_password(request.new_password)
@@ -1422,10 +1460,14 @@ async def change_password(request: ChangePasswordRequest, org: dict = Depends(va
         raise HTTPException(status_code=503, detail="Database not available")
     
     async with db_pool.acquire() as conn:
-        # Get user by org
+        # Get user by user_id (not org_id — multi-user org safety)
+        user_id = org.get('user_id')
+        if not user_id:
+            raise HTTPException(status_code=400, detail="User context not available")
+        
         user = await conn.fetchrow(
-            "SELECT id, password_hash FROM users WHERE organization_id = $1",
-            uuid.UUID(org['organization_id'])
+            "SELECT id, password_hash FROM users WHERE id = $1",
+            uuid.UUID(user_id)
         )
         
         if not user:
@@ -1434,6 +1476,10 @@ async def change_password(request: ChangePasswordRequest, org: dict = Depends(va
         # Verify current password
         if not verify_password(request.current_password, user['password_hash']):
             raise HTTPException(status_code=401, detail="Current password incorrect")
+        
+        # Validate new password
+        if len(request.new_password) < 8:
+            raise HTTPException(status_code=400, detail="Password must be at least 8 characters")
         
         # Update password
         new_hash = hash_password(request.new_password)
@@ -1457,6 +1503,14 @@ async def create_api_key(
     key_hash = hash_api_key(full_key)
     
     async with db_pool.acquire() as conn:
+        # Limit: max 10 active keys per org
+        key_count = await conn.fetchval(
+            "SELECT COUNT(*) FROM api_keys WHERE organization_id = $1 AND is_active = true",
+            org['organization_id']
+        )
+        if key_count >= 10:
+            raise HTTPException(status_code=403, detail="Maximum 10 active API keys per organization")
+        
         await conn.execute("""
             INSERT INTO api_keys (organization_id, name, key_hash, key_prefix, scopes)
             VALUES ($1, $2, $3, $4, '{"read", "write"}')
@@ -1739,6 +1793,11 @@ async def stripe_webhook(request: Request):
             subscription_id = data.get('subscription')
             customer_id = data.get('customer')
             
+            # Validate layer is a known tier
+            if layer and layer not in LAYERS:
+                print(f"[Stripe] Invalid layer in metadata: {layer}")
+                layer = None
+            
             if org_id and layer:
                 org_uuid = uuid.UUID(org_id)
                 # Update organization layer (DB column is 'tier')
@@ -1911,6 +1970,7 @@ async def list_evaluations(
     org: dict = Depends(validate_api_key)
 ):
     """List evaluations for organization"""
+    limit = min(limit, 100)
     if not db_pool:
         return {"evaluations": []}
     
@@ -2030,20 +2090,22 @@ async def process_evaluation(
             else:
                 level_letter = "L1"
             
-            # Generate certificate number
-            cert_number = f"ONTO-{secrets.token_hex(4).upper()}"
-            
-            # Create certificate
-            cert_id = await conn.fetchval("""
-                INSERT INTO certificates (
-                    organization_id, evaluation_id, certificate_number, model_name, 
-                    level, metrics_snapshot, verification_hash,
-                    issued_at, expires_at
-                )
-                VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW() + INTERVAL '1 year')
-                RETURNING id
-            """, org['organization_id'], uuid.UUID(evaluation_id), cert_number, row['model_name'],
-                level_letter, json.dumps(metrics), secrets.token_hex(16))
+            # Generate certificate only for passing scores
+            cert_id = None
+            cert_number = None
+            if level_letter in ("L2", "L3"):
+                cert_number = f"ONTO-{secrets.token_hex(4).upper()}"
+                
+                cert_id = await conn.fetchval("""
+                    INSERT INTO certificates (
+                        organization_id, evaluation_id, certificate_number, model_name, 
+                        level, metrics_snapshot, verification_hash,
+                        issued_at, expires_at
+                    )
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW() + INTERVAL '1 year')
+                    RETURNING id
+                """, org['organization_id'], uuid.UUID(evaluation_id), cert_number, row['model_name'],
+                    level_letter, json.dumps(metrics), secrets.token_hex(16))
             
             # Update evaluation
             await conn.execute("""
@@ -2056,20 +2118,29 @@ async def process_evaluation(
             """, json.dumps(metrics), risk_score, uuid.UUID(evaluation_id))
             
             # Log event
-            await conn.execute("""
-                INSERT INTO audit_log (organization_id, action, resource_type, resource_id, details)
-                VALUES ($1, 'certificate_issued', 'certificate', $2, $3)
-            """, org['organization_id'], cert_id, json.dumps({"cert_number": cert_number, "level": level_letter}))
+            if cert_id:
+                await conn.execute("""
+                    INSERT INTO audit_log (organization_id, action, resource_type, resource_id, details)
+                    VALUES ($1, 'certificate_issued', 'certificate', $2, $3)
+                """, org['organization_id'], cert_id, json.dumps({"cert_number": cert_number, "level": level_letter}))
             
             response = {
-                "certificate_id": str(cert_id),
-                "certificate_number": cert_number,
+                "evaluation_id": str(row['id']),
                 "model_name": row['model_name'],
                 "level": level_letter,
+                "risk_score": risk_score,
                 "metrics": metrics,
                 "layer": layer,
-                "verify_url": f"https://verify.ontostandard.org/{cert_number}"
+                "status": "completed"
             }
+            
+            if cert_id:
+                response["certificate_id"] = str(cert_id)
+                response["certificate_number"] = cert_number
+                response["verify_url"] = f"https://verify.ontostandard.org/{cert_number}"
+            else:
+                response["certificate"] = None
+                response["message"] = f"Score {level_letter} does not qualify for certification. L2 or L3 required."
             
             if layer_info.get('watermark'):
                 response["watermark"] = "ONTO Open"
@@ -2080,7 +2151,7 @@ async def process_evaluation(
         raise
     except Exception as e:
         print(f"[API] Process evaluation error: {e}")
-        raise HTTPException(status_code=500, detail=f"Processing failed: {str(e)}")
+        raise HTTPException(status_code=500, detail="Processing failed")
 
 # ============================================================
 # CERTIFICATE ENDPOINTS
@@ -2092,6 +2163,7 @@ async def list_certificates(
     org: dict = Depends(validate_api_key)
 ):
     """List certificates for organization"""
+    limit = min(limit, 100)
     if not db_pool:
         return {"certificates": []}
     
@@ -2361,13 +2433,20 @@ async def invite_member(
 
 
 @app.post("/v1/auth/accept-invite")
-async def accept_invite(request: AcceptInviteRequest):
+async def accept_invite(request: AcceptInviteRequest, req: Request):
     """
     Accept invitation and set password.
     Activates the user account.
     """
     if not db_pool:
         raise HTTPException(status_code=503, detail="Database not available")
+    
+    # Rate limit: 5 attempts per IP per 15 minutes
+    client_ip = req.client.host if req.client else "unknown"
+    key = f"invite:{client_ip}"
+    allowed, _ = rate_limiter.is_allowed(key, 5, 900)
+    if not allowed:
+        raise HTTPException(status_code=429, detail="Too many attempts. Try again later.")
     
     async with db_pool.acquire() as conn:
         # Find user by invite token
@@ -2518,6 +2597,7 @@ async def get_audit_trail(
             detail="Audit trail is only available for CRITICAL layer. Upgrade to access."
         )
     
+    limit = min(limit, 200)
     if not db_pool:
         return {"audit_trail": [], "layer": layer}
     
@@ -3381,7 +3461,7 @@ async def reference_broadcast_status(ref: dict = Depends(validate_architect)):
             # Get signal server admin status
             response = await client.get(
                 f"{SIGNAL_URL}/admin/status",
-                headers={"X-Admin-Key": os.getenv("SIGNAL_ADMIN_SECRET", "onto-admin-2026-secret")}
+                headers={"X-Admin-Key": os.getenv("SIGNAL_ADMIN_KEY", "onto-admin-2026-secret")}
             )
             if response.status_code == 200:
                 return response.json()
@@ -3409,7 +3489,7 @@ async def reference_broadcast_control(
         async with httpx.AsyncClient(timeout=10.0) as client:
             response = await client.post(
                 f"{SIGNAL_URL}{endpoint_map[action]}",
-                headers={"X-Admin-Key": os.getenv("SIGNAL_ADMIN_SECRET", "onto-admin-2026-secret")}
+                headers={"X-Admin-Key": os.getenv("SIGNAL_ADMIN_KEY", "onto-admin-2026-secret")}
             )
             if response.status_code == 200:
                 return {"action": action, "result": response.json()}
@@ -3772,9 +3852,17 @@ def compute_risk_score(
     factors = {}
     weights = {}
     
-    words = output.split()
+    # Clamp inputs
+    if confidence is not None:
+        confidence = min(max(float(confidence), 0.0), 1.0)
+    if logprobs:
+        logprobs = [min(max(float(lp), -20.0), 0.0) for lp in logprobs if lp is not None]
+    
+    # Limit output length for regex safety (first 10K chars)
+    output_trimmed = output[:10000] if len(output) > 10000 else output
+    words = output_trimmed.split()
     word_count = max(len(words), 1)
-    output_lower = output.lower()
+    output_lower = output_trimmed.lower()
     
     # ================================================================
     # F1: LINGUISTIC UNCERTAINTY ANALYSIS (0.0 = certain, 1.0 = uncertain)
@@ -4190,7 +4278,7 @@ async def register_model(
             uuid.UUID(org_id)
         )
         tier_limits = {"open": 5, "standard": 20, "critical": 100}
-        limit = tier_limits.get(org.get('layer', 'open'), 3)
+        limit = tier_limits.get(org.get('layer', 'open'), 5)
         
         if model_count >= limit:
             raise HTTPException(
@@ -4809,7 +4897,7 @@ async def certify_model(
                    MIN(risk_score) as best_risk,
                    MAX(risk_score) as worst_risk,
                    AVG(calibration) as avg_calibration
-            FROM evaluations WHERE model_id = $1
+            FROM evaluations WHERE model_id = $1 AND status = 'completed'
         """, uuid.UUID(model_id))
         
         total_evals = stats['total'] or 0
@@ -4825,7 +4913,7 @@ async def certify_model(
         # Check last 20 evaluations for stability
         recent = await conn.fetch("""
             SELECT layer, compliance FROM evaluations 
-            WHERE model_id = $1 ORDER BY submitted_at DESC LIMIT 20
+            WHERE model_id = $1 AND status = 'completed' ORDER BY submitted_at DESC LIMIT 20
         """, uuid.UUID(model_id))
         
         failed_recent = sum(1 for r in recent if r['compliance'] == 'FAILED')
@@ -4926,7 +5014,7 @@ async def certification_status(
         
         stats = await conn.fetchrow("""
             SELECT COUNT(*) as total, AVG(risk_score) as avg_risk
-            FROM evaluations WHERE model_id = $1
+            FROM evaluations WHERE model_id = $1 AND status = 'completed'
         """, uuid.UUID(model_id))
         
         total = stats['total'] or 0
@@ -4934,7 +5022,7 @@ async def certification_status(
         
         recent = await conn.fetch("""
             SELECT layer, compliance FROM evaluations 
-            WHERE model_id = $1 ORDER BY submitted_at DESC LIMIT 20
+            WHERE model_id = $1 AND status = 'completed' ORDER BY submitted_at DESC LIMIT 20
         """, uuid.UUID(model_id))
         
         l1_count = sum(1 for r in recent if r['layer'] == 'L1')
@@ -4985,6 +5073,7 @@ async def model_evaluations(
     org: dict = Depends(validate_api_key)
 ):
     """Get evaluation history for a model"""
+    limit = min(limit, 100)
     if not db_pool:
         return {"evaluations": [], "total": 0}
     
