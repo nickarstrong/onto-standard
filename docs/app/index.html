@@ -908,7 +908,7 @@ a.info-val:hover { color: var(--text); }
 
 <div class="mobile-overlay" id="mobile-overlay" onclick="toggleMobile()"></div>
 
-<script>if(localStorage.getItem('onto_logged_in')==='true')document.write('<style>#auth-screen{display:none!important}</style>');</script>
+<script>if(localStorage.getItem('onto_logged_in')==='true')document.write('<style id="auth-preload-hide">#auth-screen{display:none!important}</style>');</script>
 
 <!-- AUTH SCREEN -->
 <div class="auth-container" id="auth-screen">
@@ -2119,9 +2119,15 @@ function extendSession(toastEl) {
 
 function handleSessionExpired() {
     currentUser = null;
+    authToken = null;
     localStorage.removeItem('onto_user');
+    localStorage.removeItem('onto_token');
+    localStorage.removeItem('onto_logged_in');
+    const ps = document.getElementById('auth-preload-hide');
+    if (ps) ps.remove();
     document.getElementById('auth-screen').style.display = 'flex';
     document.getElementById('dashboard').classList.remove('active');
+    showLogin();
     showToast(STRINGS.sessionExpired, 'error');
 }
 
@@ -2584,6 +2590,10 @@ function handleLogout() {
     
     document.getElementById('auth-screen').style.display = 'flex';
     document.getElementById('dashboard').classList.remove('active');
+    // Remove preload hide style
+    const preloadStyle = document.getElementById('auth-preload-hide');
+    if (preloadStyle) preloadStyle.remove();
+    showLogin();
 }
 
 // === DASHBOARD ===
