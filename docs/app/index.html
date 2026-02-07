@@ -1310,7 +1310,7 @@ print(result.risk_score, result.layer, result.compliance)</code></pre>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Email</span>
-                    <span class="info-val" id="settings-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="97e4e2e7e7f8e5e3d7f8f9e3f8e4e3f6f9f3f6e5f3b9f8e5f0">[email&#160;protected]</a></span>
+                    <span class="info-val" id="settings-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b9caccc9c9d6cbcdf9d6d7cdd6cacdd8d7ddd8cbdd97d6cbde">[email&#160;protected]</a></span>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Type</span>
@@ -1397,15 +1397,15 @@ print(result.risk_score, result.layer, result.compliance)</code></pre>
                 <div class="section-label">Support</div>
                 <div class="info-row">
                     <span class="info-key">General</span>
-                    <a class="info-val" href="/cdn-cgi/l/email-protection#e5969095958a9791a58a8b918a9691848b81849781cb8a9782"><span class="__cf_email__" data-cfemail="deadabaeaeb1acaa9eb1b0aab1adaabfb0babfacbaf0b1acb9">[email&#160;protected]</span></a>
+                    <a class="info-val" href="/cdn-cgi/l/email-protection#c9babcb9b9a6bbbd89a6a7bda6babda8a7ada8bbade7a6bbae"><span class="__cf_email__" data-cfemail="02717772726d7076426d6c766d7176636c666370662c6d7065">[email&#160;protected]</span></a>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Sales</span>
-                    <a class="info-val" href="/cdn-cgi/l/email-protection#e2919792928d9096a28d8c968d9196838c86839086cc8d9085"><span class="__cf_email__" data-cfemail="62111712120d1016220d0c160d1116030c060310064c0d1005">[email&#160;protected]</span></a>
+                    <a class="info-val" href="/cdn-cgi/l/email-protection#50232520203f2224103f3e243f2324313e343122347e3f2237"><span class="__cf_email__" data-cfemail="6d1e181d1d021f192d020319021e190c03090c1f0943021f0a">[email&#160;protected]</span></a>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Billing</span>
-                    <a class="info-val" href="/cdn-cgi/l/email-protection#2b585e5b5b44595f6b44455f44585f4a454f4a594f0544594c"><span class="__cf_email__" data-cfemail="c8bbbdb8b8a7babc88a7a6bca7bbbca9a6aca9baace6a7baaf">[email&#160;protected]</span></a>
+                    <a class="info-val" href="/cdn-cgi/l/email-protection#24575154544b5650644b4a504b5750454a404556400a4b5643"><span class="__cf_email__" data-cfemail="0e7d7b7e7e617c7a4e61607a617d7a6f606a6f7c6a20617c69">[email&#160;protected]</span></a>
                 </div>
             </div>
         </div>
@@ -1883,10 +1883,11 @@ print(result.risk_score, result.layer, result.compliance)</code></pre>
             <h2 style="font-size: 15px; font-weight: 500; margin-bottom: 6px;">Complete Payment</h2>
             <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 12px;">You will be redirected to our secure payment provider.</p>
             <button class="btn btn-primary" onclick="redirectToAirwallex()">Continue to Payment</button>
-            <p style="margin-top: 12px; font-size: 11px; color: var(--text-muted);">Questions? Contact <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="384b4d4848574a4c7857564c574b4c59565c594a5c16574a5f">[email&#160;protected]</a></p>
+            <p style="margin-top: 12px; font-size: 11px; color: var(--text-muted);">Questions? Contact <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="31424441415e4345715e5f455e4245505f555043551f5e4356">[email&#160;protected]</a></p>
         </div>
     </div>
 </div>
+
 
 <div class="modal-overlay" id="contact-modal">
     <div class="modal modal-inst" style="max-width: 440px;">
@@ -1931,7 +1932,7 @@ print(result.risk_score, result.layer, result.compliance)</code></pre>
         </div>
         <div class="modal-body">
             <div class="tier-user-info" id="tier-user-info">
-                <div class="tier-user-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f3808683839c8187b39c9d879c8087929d97928197dd9c8194">[email&#160;protected]</a></div>
+                <div class="tier-user-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7a090f0a0a15080e3a15140e15090e1b141e1b081e5415081d">[email&#160;protected]</a></div>
             </div>
             <div class="tier-options">
                 <label class="tier-option" data-tier="open">
@@ -3438,6 +3439,7 @@ function updateSignalHash() {
     ).join('');
 }
 
+
 // === USER SIGNAL (dashboard) ===
 let userSignalInterval = null;
 
@@ -4336,7 +4338,38 @@ async function refRestoreNode(nodeId) {
             showToast('Failed to restore', 'error');
         }
     } catch (e) {
-        showToasss');
+        showToast('Error: ' + e.message, 'error');
+    }
+}
+
+async function refFreezeNamespace(nsId) {
+    if (!confirm('Freeze this namespace? All API keys will be disabled.')) return;
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    try {
+        const res = await fetch(`${API_BASE}/v1/docs/namespace-registry/${nsId}/freeze`, {
+            method: 'POST',
+            headers: { 'x-api-key': apiKey }
+        });
+        if (res.ok) {
+            showToast('Namespace frozen', 'success');
+            loadReferenceData();
+        } else {
+            showToast('Failed to freeze', 'error');
+        }
+    } catch (e) {
+        showToast('Error: ' + e.message, 'error');
+    }
+}
+
+async function refUnfreezeNamespace(nsId) {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    try {
+        const res = await fetch(`${API_BASE}/v1/docs/namespace-registry/${nsId}/unfreeze`, {
+            method: 'POST',
+            headers: { 'x-api-key': apiKey }
+        });
+        if (res.ok) {
+            showToast('Namespace unfrozen', 'success');
             loadReferenceData();
         } else {
             showToast('Failed to unfreeze', 'error');
