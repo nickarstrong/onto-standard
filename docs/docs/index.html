@@ -217,6 +217,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <div class="ng"><h4>Standard</h4><a class="nl active" href="#ers" data-doc="ers">ONTO-ERS</a></div>
 <div class="ng"><h4>Specifications</h4><a class="nl" href="#layer-spec" data-doc="layer-spec">Layer Specification</a><a class="nl" href="#regulatory" data-doc="regulatory">Regulatory Matrix</a></div>
 <div class="ng"><h4>Governance</h4><a class="nl" href="#charter" data-doc="charter">Foundation Charter</a><a class="nl" href="#council" data-doc="council">Standards Council</a></div>
+<div class="ng"><h4>API Reference</h4><a class="nl" href="#api-auth" data-doc="api-auth">Authentication</a><a class="nl" href="#api-models" data-doc="api-models">Models</a><a class="nl" href="#api-eval" data-doc="api-eval">Evaluations</a><a class="nl" href="#api-certs" data-doc="api-certs">Certificates</a><a class="nl" href="#api-signal" data-doc="api-signal">Signal</a><a class="nl" href="#api-org" data-doc="api-org">Organization</a><a class="nl" href="#api-billing" data-doc="api-billing">Billing</a></div>
 <div class="ng"><h4>Resources</h4><a class="nl" href="#articles" data-doc="articles">Articles</a><a class="nl" href="#faq" data-doc="faq">FAQ</a></div>
 <div class="ng"><h4>Community</h4><a class="nl" href="#reviews" data-doc="reviews">Reviews</a><a class="nl" href="#feedback" data-doc="feedback">Feedback</a></div>
 <div class="ng"><h4>Legal</h4><a class="nl" href="#license" data-doc="license">License</a><a class="nl" href="#terms" data-doc="terms">Terms of Service</a><a class="nl" href="#privacy" data-doc="privacy">Privacy Policy</a><a class="nl" href="#refund" data-doc="refund">Refund Policy</a></div>
@@ -459,6 +460,337 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <tr><td>Proposal</td><td>—</td></tr><tr><td>Draft</td><td>3–6 months</td></tr><tr><td>Review</td><td>60 days</td></tr><tr><td>Ballot (2/3)</td><td>30 days</td></tr><tr><td>Publication</td><td>—</td></tr>
 </tbody></table>
 <h2 id="co-membership">3. Membership</h2><p>By invitation. Academic, industry, regulatory, civil society. 2-year renewable terms.</p>
+</div><div class="sd"></div>
+
+<!-- API: AUTHENTICATION -->
+<div class="ds da" id="doc-api-auth" data-nav="api-auth">
+<h1>API Reference: Authentication</h1>
+<div class="dm"><span class="db-g bg-g">v1</span><span class="db-g bg-b">Stable</span><span>Base URL: <code>https://api.ontostandard.org</code></span></div>
+<p>All authenticated endpoints require an API key in the <code>X-API-Key</code> header. Obtain keys after registration and email verification.</p>
+
+<h2 id="api-register">POST /v1/auth/register</h2>
+<p>Create a new account. Sends a 6-digit OTP to the provided email.</p>
+<pre><code>POST /v1/auth/register
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john@company.com",
+  "password": "min8characters"
+}</code></pre>
+<table><thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>name</code></td><td>string</td><td>✅</td><td>Full name</td></tr>
+<tr><td><code>email</code></td><td>string</td><td>✅</td><td>Valid email address</td></tr>
+<tr><td><code>password</code></td><td>string</td><td>✅</td><td>Min 8 characters</td></tr>
+</tbody></table>
+<p><strong>Response 200:</strong> <code>{"message": "Verification code sent", "email": "..."}</code></p>
+
+<h2 id="api-verify">POST /v1/auth/verify-email</h2>
+<p>Verify email with OTP code. Returns JWT token and API key on success.</p>
+<pre><code>{
+  "email": "john@company.com",
+  "code": "123456"
+}</code></pre>
+<p><strong>Response 200:</strong> <code>{"token": "jwt...", "api_key": "onto_...", "user_id": "uuid"}</code></p>
+
+<h2 id="api-login">POST /v1/auth/login</h2>
+<p>Login with email and password. Returns JWT token.</p>
+<pre><code>{
+  "email": "john@company.com",
+  "password": "yourpassword"
+}</code></pre>
+<p><strong>Response 200:</strong> <code>{"token": "jwt...", "user_id": "uuid", "layer": "open"}</code></p>
+
+<h2 id="api-resend">POST /v1/auth/resend-verification</h2>
+<p>Resend OTP verification code to email.</p>
+
+<h2 id="api-forgot">POST /v1/auth/forgot-password</h2>
+<p>Send password reset token to email.</p>
+
+<h2 id="api-reset">POST /v1/auth/reset-password</h2>
+<p>Reset password using token from email.</p>
+<pre><code>{"email": "...", "token": "...", "new_password": "..."}</code></pre>
+
+<h2 id="api-change-pw">POST /v1/auth/change-password</h2>
+<p>Change password for authenticated user. <span class="db-g bg-a">Auth required</span></p>
+<pre><code>{"current_password": "...", "new_password": "..."}</code></pre>
+
+<h2 id="api-keys-create">POST /v1/auth/api-keys</h2>
+<p>Create a new API key. <span class="db-g bg-a">Auth required</span></p>
+<pre><code>{"name": "production-key"}</code></pre>
+<p><strong>Response 200:</strong> <code>{"key": "onto_...", "prefix": "onto_xxxx", "id": "uuid"}</code></p>
+<div class="dd"><strong>Note:</strong> The full API key is only shown once at creation. Store it securely.</div>
+
+<h2 id="api-keys-list">GET /v1/auth/api-keys</h2>
+<p>List all API keys for the organization. <span class="db-g bg-a">Auth required</span></p>
+
+<h2 id="api-keys-revoke">DELETE /v1/auth/api-keys/{key_id}</h2>
+<p>Revoke an API key. <span class="db-g bg-a">Auth required</span></p>
+
+<h2 id="api-accept-invite">POST /v1/auth/accept-invite</h2>
+<p>Accept an organization invitation and set password.</p>
+<pre><code>{"token": "invite-token-from-email", "password": "newpassword"}</code></pre>
+</div><div class="sd"></div>
+
+<!-- API: MODELS -->
+<div class="ds da" id="doc-api-models" data-nav="api-models">
+<h1>API Reference: Models</h1>
+<div class="dm"><span class="db-g bg-g">v1</span><span class="db-g bg-b">Stable</span><span>All endpoints require <code>X-API-Key</code></span></div>
+
+<h2 id="api-model-register">POST /v1/models/register</h2>
+<p>Register a model for tracking and evaluation.</p>
+<pre><code>{
+  "name": "GPT-5.2",
+  "provider": "openai",
+  "version": "5.2",
+  "metadata": {"use_case": "customer-support"}
+}</code></pre>
+<table><thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>name</code></td><td>string</td><td>✅</td><td>Unique model name within org</td></tr>
+<tr><td><code>provider</code></td><td>string</td><td>—</td><td>Provider name (openai, anthropic, etc.)</td></tr>
+<tr><td><code>version</code></td><td>string</td><td>—</td><td>Model version</td></tr>
+<tr><td><code>metadata</code></td><td>object</td><td>—</td><td>Custom key-value pairs</td></tr>
+</tbody></table>
+
+<h2 id="api-model-list">GET /v1/models</h2>
+<p>List all models in the organization.</p>
+<p><strong>Response:</strong> Array of models with <code>id</code>, <code>name</code>, <code>provider</code>, <code>version</code>, <code>layer</code>, <code>is_active</code>, <code>eval_count</code>, <code>latest_risk</code>.</p>
+
+<h2 id="api-model-get">GET /v1/models/{model_id}</h2>
+<p>Get model details including recent evaluations and statistics.</p>
+
+<h2 id="api-model-delete">DELETE /v1/models/{model_id}</h2>
+<p>Deactivate a model. Does not delete evaluation history.</p>
+
+<h2 id="api-model-compare">GET /v1/models/compare</h2>
+<p>Compare all organization models side-by-side: risk scores, compliance levels, evaluation counts.</p>
+</div><div class="sd"></div>
+
+<!-- API: EVALUATIONS -->
+<div class="ds da" id="doc-api-eval" data-nav="api-eval">
+<h1>API Reference: Evaluations</h1>
+<div class="dm"><span class="db-g bg-g">v1</span><span class="db-g bg-b">Stable</span><span>All endpoints require <code>X-API-Key</code></span></div>
+
+<h2 id="api-eval-model">POST /v1/models/evaluate</h2>
+<p>Evaluate a single model output. Core endpoint for risk scoring.</p>
+<pre><code>{
+  "model_id": "uuid",
+  "output": "The capital of France is Paris.",
+  "confidence": 0.95,
+  "context": "What is the capital of France?",
+  "ground_truth": "Paris",
+  "domain": "general",
+  "logprobs": [-0.05, -0.12, -0.03],
+  "temperature": 0.7,
+  "top_p": 0.9
+}</code></pre>
+<table><thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>model_id</code></td><td>string</td><td>✅</td><td>Registered model UUID</td></tr>
+<tr><td><code>output</code></td><td>string</td><td>✅</td><td>Model's generated output</td></tr>
+<tr><td><code>confidence</code></td><td>float</td><td>—</td><td>Self-reported confidence (0–1)</td></tr>
+<tr><td><code>context</code></td><td>string</td><td>—</td><td>Input prompt / context</td></tr>
+<tr><td><code>ground_truth</code></td><td>string</td><td>—</td><td>Correct answer if available</td></tr>
+<tr><td><code>domain</code></td><td>string</td><td>—</td><td>medical, legal, finance, general</td></tr>
+<tr><td><code>logprobs</code></td><td>float[]</td><td>—</td><td>Token log-probabilities</td></tr>
+<tr><td><code>temperature</code></td><td>float</td><td>—</td><td>Sampling temperature used</td></tr>
+<tr><td><code>top_p</code></td><td>float</td><td>—</td><td>Nucleus sampling parameter</td></tr>
+<tr><td><code>metadata</code></td><td>object</td><td>—</td><td>Custom metadata</td></tr>
+</tbody></table>
+<p><strong>Response 200:</strong></p>
+<pre><code>{
+  "evaluation_id": "uuid",
+  "risk_score": 0.234,
+  "layer": "L2",
+  "compliance": "STANDARD",
+  "calibration": 87.5,
+  "factors": {
+    "confidence_penalty": 0.12,
+    "entropy_risk": 0.08,
+    "domain_weight": 1.2
+  }
+}</code></pre>
+
+<h2 id="api-eval-batch">POST /v1/models/evaluate/batch</h2>
+<p>Batch evaluate up to 100 outputs in a single request.</p>
+<pre><code>{
+  "model_id": "uuid",
+  "evaluations": [
+    {"output": "...", "confidence": 0.9, "context": "..."},
+    {"output": "...", "confidence": 0.7, "ground_truth": "..."}
+  ]
+}</code></pre>
+
+<h2 id="api-eval-legacy">POST /v1/evaluate</h2>
+<p>Legacy evaluation endpoint. Submit predictions with ground truth.</p>
+<pre><code>{
+  "model_name": "my-model",
+  "predictions": [
+    {"id": "q1", "prediction": "KNOWN", "confidence": 0.9},
+    {"id": "q2", "prediction": "UNKNOWN", "confidence": 0.3}
+  ]
+}</code></pre>
+
+<h2 id="api-eval-list">GET /v1/evaluations</h2>
+<p>List evaluations for the organization. Supports <code>?limit=</code> and <code>?offset=</code>.</p>
+
+<h2 id="api-eval-get">GET /v1/evaluations/{id}</h2>
+<p>Get single evaluation details.</p>
+
+<h2 id="api-eval-history">GET /v1/models/{model_id}/evaluations</h2>
+<p>Evaluation history for a specific model. Supports <code>?limit=</code> and <code>?offset=</code>.</p>
+
+<h2 id="api-eval-trend">GET /v1/models/{model_id}/trend</h2>
+<p>Risk score trend over time. Supports <code>?days=30</code> (default).</p>
+<p><strong>Response:</strong> Daily aggregates with <code>avg_risk</code>, <code>min_risk</code>, <code>max_risk</code>, <code>avg_calibration</code>, <code>eval_count</code>.</p>
+</div><div class="sd"></div>
+
+<!-- API: CERTIFICATES -->
+<div class="ds da" id="doc-api-certs" data-nav="api-certs">
+<h1>API Reference: Certificates</h1>
+<div class="dm"><span class="db-g bg-g">v1</span><span class="db-g bg-b">Stable</span></div>
+
+<h2 id="api-cert-request">POST /v1/models/{model_id}/certify</h2>
+<p>Request certification after sufficient evaluations. <span class="db-g bg-a">Auth required</span></p>
+<p><strong>Requirements:</strong> Minimum evaluations (50–500 depending on layer), avg risk &lt; 0.50, fewer than 5 L1 evaluations in recent 20.</p>
+<p><strong>Response 200:</strong></p>
+<pre><code>{
+  "certificate_id": "uuid",
+  "certificate_number": "ONTO-CERT-XXXX-XXXX",
+  "certified_layer": "L2",
+  "avg_risk": 0.312,
+  "expires_at": "2027-02-08T...",
+  "verify_url": "https://api.ontostandard.org/v1/certificates/ONTO-CERT-XXXX-XXXX"
+}</code></pre>
+
+<h2 id="api-cert-status">GET /v1/models/{model_id}/certification-status</h2>
+<p>Check if model is ready for certification. Returns blockers if not ready.</p>
+<pre><code>{
+  "ready": false,
+  "predicted_layer": "L2",
+  "total_evaluations": 35,
+  "required_evaluations": 50,
+  "blockers": ["Need 15 more evaluations (35/50)"],
+  "progress_percent": 70.0
+}</code></pre>
+
+<h2 id="api-cert-list">GET /v1/certificates</h2>
+<p>List all certificates for the organization. <span class="db-g bg-a">Auth required</span></p>
+
+<h2 id="api-cert-verify">GET /v1/certificates/{certificate_id}</h2>
+<p>Public endpoint — verify certificate authenticity. No auth required.</p>
+<pre><code>{
+  "certificate_number": "ONTO-CERT-XXXX-XXXX",
+  "organization": "Acme Corp",
+  "model_name": "GPT-5.2",
+  "layer": "L2",
+  "status": "valid",
+  "issued_at": "...",
+  "expires_at": "..."
+}</code></pre>
+</div><div class="sd"></div>
+
+<!-- API: SIGNAL -->
+<div class="ds da" id="doc-api-signal" data-nav="api-signal">
+<h1>API Reference: Signal</h1>
+<div class="dm"><span class="db-g bg-g">v1</span><span class="db-g bg-b">Stable</span></div>
+<p>The ONTO Signal is a 104-byte cryptographically signed packet broadcast every 30 seconds. Used for tamper-proof evaluation anchoring.</p>
+
+<h2 id="api-signal-status">GET /v1/signal/status</h2>
+<p>Check signal server status. No auth required.</p>
+<pre><code>{
+  "status": "operational",
+  "url": "https://signal.ontostandard.org",
+  "interval_seconds": 30
+}</code></pre>
+
+<h2 id="api-signal-current">GET /v1/signal/current</h2>
+<p>Get current signal. Delay depends on layer. <span class="db-g bg-a">Auth required</span></p>
+<table><thead><tr><th>Layer</th><th>Delay</th></tr></thead><tbody>
+<tr><td>OPEN</td><td>1 hour</td></tr>
+<tr><td>STANDARD</td><td>Real-time</td></tr>
+<tr><td>CRITICAL</td><td>Real-time + priority</td></tr>
+</tbody></table>
+<pre><code>{
+  "signal": "base64...",
+  "timestamp": "2026-02-08T...",
+  "delayed": true,
+  "delay_hours": 1
+}</code></pre>
+</div><div class="sd"></div>
+
+<!-- API: ORGANIZATION -->
+<div class="ds da" id="doc-api-org" data-nav="api-org">
+<h1>API Reference: Organization</h1>
+<div class="dm"><span class="db-g bg-g">v1</span><span class="db-g bg-b">Stable</span><span>All endpoints require <code>X-API-Key</code></span></div>
+
+<h2 id="api-org-get">GET /v1/organization</h2>
+<p>Get organization details, current layer, usage statistics.</p>
+
+<h2 id="api-org-update">PUT /v1/organization/profile</h2>
+<p>Update organization profile (name, company, etc.).</p>
+
+<h2 id="api-org-invite">POST /v1/organization/invite</h2>
+<p>Invite a team member. Admin only.</p>
+<pre><code>{"email": "colleague@company.com", "name": "Jane Smith"}</code></pre>
+
+<h2 id="api-org-members">GET /v1/organization/members</h2>
+<p>List all organization members.</p>
+
+<h2 id="api-org-remove">DELETE /v1/organization/members/{user_id}</h2>
+<p>Remove a member from the organization. Admin only.</p>
+
+<h2 id="api-org-audit">GET /v1/audit</h2>
+<p>Audit trail — all actions for compliance. <span class="db-g bg-a">CRITICAL layer only</span></p>
+
+<h2 id="api-rate-limit">GET /v1/rate-limit</h2>
+<p>Check current rate limit status and remaining requests.</p>
+
+<h2 id="api-usage">GET /v1/usage</h2>
+<p>Usage statistics: evaluations, API calls, storage.</p>
+</div><div class="sd"></div>
+
+<!-- API: BILLING -->
+<div class="ds da" id="doc-api-billing" data-nav="api-billing">
+<h1>API Reference: Billing</h1>
+<div class="dm"><span class="db-g bg-g">v1</span><span class="db-g bg-b">Stable</span><span>All endpoints require <code>X-API-Key</code></span></div>
+
+<h2 id="api-billing-checkout">POST /v1/billing/checkout</h2>
+<p>Create a Stripe checkout session for upgrading.</p>
+<pre><code>{"layer": "standard"}</code></pre>
+<p><strong>Response 200:</strong> <code>{"checkout_url": "https://checkout.stripe.com/..."}</code></p>
+
+<h2 id="api-billing-portal">POST /v1/billing/portal</h2>
+<p>Create a Stripe customer portal session for managing subscription.</p>
+<pre><code>{"return_url": "https://ontostandard.org/app/"}</code></pre>
+
+<h2 id="api-billing-status">GET /v1/billing/status</h2>
+<p>Get current subscription status, layer, and usage.</p>
+<pre><code>{
+  "layer": "standard",
+  "status": "active",
+  "evaluations_used": 1542,
+  "current_period_end": "2026-03-08T..."
+}</code></pre>
+
+<h2 id="api-errors">Error Responses</h2>
+<p>All errors follow a consistent format:</p>
+<pre><code>{"detail": "Error description"}</code></pre>
+<table><thead><tr><th>Code</th><th>Meaning</th></tr></thead><tbody>
+<tr><td>400</td><td>Bad request — invalid input</td></tr>
+<tr><td>401</td><td>Unauthorized — missing or invalid API key</td></tr>
+<tr><td>403</td><td>Forbidden — insufficient permissions or layer</td></tr>
+<tr><td>404</td><td>Resource not found</td></tr>
+<tr><td>429</td><td>Rate limit exceeded</td></tr>
+<tr><td>500</td><td>Internal server error</td></tr>
+</tbody></table>
+
+<h2 id="api-rate-limits">Rate Limits</h2>
+<table><thead><tr><th>Layer</th><th>Requests/min</th><th>Evaluations/hour</th><th>Evaluations/day</th></tr></thead><tbody>
+<tr><td>OPEN</td><td>30</td><td>1</td><td>24</td></tr>
+<tr><td>STANDARD</td><td>500</td><td>420</td><td>10,000</td></tr>
+<tr><td>CRITICAL</td><td>10,000</td><td>Unlimited</td><td>Unlimited</td></tr>
+</tbody></table>
+<p>Rate limit headers are included in responses: <code>X-RateLimit-Limit</code>, <code>X-RateLimit-Remaining</code>, <code>X-RateLimit-Reset</code>.</p>
 </div><div class="sd"></div>
 
 <!-- ARTICLES -->
