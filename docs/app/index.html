@@ -1978,6 +1978,39 @@ print(result.risk_score, result.layer, result.compliance)</code></pre>
     </div>
 </div>
 
+<!-- REGISTER MODEL MODAL -->
+<div class="modal-overlay" id="register-model-modal">
+    <div class="modal modal-inst" style="max-width: 440px;">
+        <div class="modal-header">
+            <h2>Register Model</h2>
+            <button class="modal-close" onclick="closeModal('register-model-modal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label">Model Name</label>
+                <input type="text" class="form-input" id="reg-model-name" placeholder="e.g. GPT-5.3, Claude-4.5">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Provider</label>
+                <input type="text" class="form-input" id="reg-model-provider" placeholder="e.g. OpenAI, Anthropic, Meta">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Evaluation Layer</label>
+                <select class="form-input" id="reg-model-layer">
+                    <option value="L1">L1 — Basic Calibration</option>
+                    <option value="L2" selected>L2 — Standard Evaluation</option>
+                    <option value="L3">L3 — Full Certification</option>
+                </select>
+            </div>
+            <p style="font-size: 11px; color: var(--text-muted); margin-top: 8px;">Model will be registered for epistemic risk evaluation. Initial risk score will be determined after first assessment cycle.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-minimal" onclick="closeModal('register-model-modal')">Cancel</button>
+            <button class="btn-minimal" onclick="submitModelRegistration()" style="background: var(--accent); color: white; border-color: var(--accent);">Register</button>
+        </div>
+    </div>
+</div>
+
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // === API CONFIG ===
 const API_BASE = 'https://api.ontostandard.org';
@@ -3699,7 +3732,43 @@ function closeModelDetail() {
 }
 
 function showAddModelModal() {
-    showToast('Model registration will be available via API', 'info');
+    document.getElementById('reg-model-name').value = '';
+    document.getElementById('reg-model-provider').value = '';
+    document.getElementById('reg-model-layer').value = 'L2';
+    document.getElementById('register-model-modal').classList.add('active');
+}
+
+function submitModelRegistration() {
+    const name = document.getElementById('reg-model-name').value.trim();
+    const provider = document.getElementById('reg-model-provider').value.trim();
+    const layer = document.getElementById('reg-model-layer').value;
+    
+    if (!name || !provider) {
+        showToast('Please fill in model name and provider', 'error');
+        return;
+    }
+    
+    const newModel = {
+        id: 'mdl_' + String(mockModels.length + 1).padStart(2, '0'),
+        name: name,
+        provider: provider,
+        cert: null,
+        risk_score: 0,
+        layer: layer,
+        calibration: 0,
+        requests: 0,
+        compliance: 'REVIEW',
+        last_eval: 'Pending',
+        evaluations: [],
+        trend: [0],
+        alert: 'warning'
+    };
+    
+    mockModels.push(newModel);
+    renderModelsGrid();
+    renderComparison('risk');
+    closeModal('register-model-modal');
+    showToast('Model "' + name + '" registered. Awaiting first evaluation.', 'success');
 }
 
 // Render on load
@@ -4495,6 +4564,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedLoggedIn = localStorage.getItem('onto_logged_in');
     
     if (savedLoggedIn === 'true' && savedApiKey) {
+        // Restore subscription from onto_user JSON if available
+        let savedSub = null;
+        if (savedUser) {
+            try { savedSub = JSON.parse(savedUser).subscription || null; } catch(e) {}
+        }
         currentUser = {
             id: localStorage.getItem('onto_user_id'),
             name: localStorage.getItem('onto_user_name'),
@@ -4503,9 +4577,10 @@ document.addEventListener('DOMContentLoaded', () => {
             organization_name: localStorage.getItem('onto_org_name'),
             layer: localStorage.getItem('onto_layer'),
             plan: layerToPlan(localStorage.getItem('onto_layer')),
-            role: localStorage.getItem('onto_role')
+            role: localStorage.getItem('onto_role'),
+            subscription: savedSub
         };
-        authToken = savedApiKey;
+        authToken = savedToken || savedApiKey;
         showDashboard();
     }
     else if (savedUser && savedToken) {
