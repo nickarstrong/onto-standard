@@ -1250,34 +1250,45 @@ async def get_current_user(org: dict = Depends(validate_api_key)):
     if not db_pool:
         return {"user": None, "organization": None}
     
-    async with db_pool.acquire() as conn:
-        row = await conn.fetchrow("""
-            SELECT u.id, u.name, u.email, u.role,
-                   o.id as org_id, o.name as org_name, o.tier, o.slug,
-                   o.portal_api_key, o.stripe_customer_id,
-                   o.subscription_ends_at
-            FROM users u
-            JOIN organizations o ON u.organization_id = o.id
-            WHERE o.id = $1 AND u.is_active = true
-            ORDER BY u.role ASC
-            LIMIT 1
-        """, org['organization_id'])
+    try:
+        org_id = org['organization_id']
+        # Cast to UUID if string (validate_api_key returns str)
+        if isinstance(org_id, str):
+            org_id = uuid.UUID(org_id)
         
-        if not row:
-            raise HTTPException(status_code=404, detail="User not found")
-        
-        return {
-            "user_id": str(row['id']),
-            "name": row['name'],
-            "email": row['email'],
-            "role": row['role'],
-            "organization_id": str(row['org_id']),
-            "organization_name": row['org_name'],
-            "layer": row['tier'],
-            "api_key": row['portal_api_key'],
-            "has_payment": bool(row['stripe_customer_id']),
-            "subscription_ends_at": row['subscription_ends_at'].isoformat() if row['subscription_ends_at'] else None
-        }
+        async with db_pool.acquire() as conn:
+            row = await conn.fetchrow("""
+                SELECT u.id, u.name, u.email, u.role,
+                       o.id as org_id, o.name as org_name, o.tier, o.slug,
+                       o.portal_api_key, o.stripe_customer_id,
+                       o.subscription_ends_at
+                FROM users u
+                JOIN organizations o ON u.organization_id = o.id
+                WHERE o.id = $1 AND u.is_active = true
+                ORDER BY u.role ASC
+                LIMIT 1
+            """, org_id)
+            
+            if not row:
+                raise HTTPException(status_code=404, detail="User not found")
+            
+            return {
+                "user_id": str(row['id']),
+                "name": row['name'],
+                "email": row['email'],
+                "role": row['role'],
+                "organization_id": str(row['org_id']),
+                "organization_name": row['org_name'],
+                "layer": row['tier'],
+                "api_key": row['portal_api_key'],
+                "has_payment": bool(row['stripe_customer_id']),
+                "subscription_ends_at": row['subscription_ends_at'].isoformat() if row['subscription_ends_at'] else None
+            }
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"[API] /v1/auth/me error: {e}")
+        raise HTTPException(status_code=500, detail="Session restore failed")
 
 
 class VerifyOTPRequest(BaseModel):
