@@ -2475,6 +2475,15 @@ async function handleVerifyOTP(btn) {
             organization_name: data.organization_name
         };
         localStorage.setItem('onto_user', JSON.stringify(currentUser));
+        
+        // Store individual keys for reload restore (matching login flow)
+        localStorage.setItem('onto_user_id', data.user_id);
+        localStorage.setItem('onto_user_name', data.name || '');
+        localStorage.setItem('onto_user_email', data.email || '');
+        localStorage.setItem('onto_org_id', data.organization_id);
+        localStorage.setItem('onto_org_name', data.organization_name || '');
+        localStorage.setItem('onto_layer', data.layer || 'open');
+        localStorage.setItem('onto_role', data.role || 'admin');
         localStorage.setItem('onto_logged_in', 'true');
         
         setLoading(btn, false);
@@ -2550,6 +2559,20 @@ async function checkEmailVerification() {
                     company: null  // Company set only after explicit registration
                 };
                 localStorage.setItem('onto_user', JSON.stringify(currentUser));
+                
+                // Store individual keys for reload restore
+                localStorage.setItem('onto_user_id', data.user_id || '');
+                localStorage.setItem('onto_user_name', data.name || '');
+                localStorage.setItem('onto_user_email', data.email || '');
+                localStorage.setItem('onto_org_id', data.organization_id || '');
+                localStorage.setItem('onto_org_name', data.organization_name || '');
+                localStorage.setItem('onto_layer', data.layer || 'open');
+                localStorage.setItem('onto_role', 'admin');
+                localStorage.setItem('onto_logged_in', 'true');
+                
+                if (data.api_key) {
+                    localStorage.setItem('onto_first_api_key', data.api_key);
+                }
                 
                 showToast('Email verified! Welcome to ONTO.', 'success');
                 showDashboard();
@@ -4597,6 +4620,43 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         authToken = savedToken || savedApiKey;
         showDashboard();
+        
+        // Background: verify session + refresh tier from backend (BUG-007 fix)
+        fetch(`${API_BASE}/v1/auth/me`, {
+            headers: { 'x-api-key': savedApiKey }
+        })
+        .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(data => {
+            // Update tier from backend (source of truth)
+            const backendLayer = data.layer || 'open';
+            const currentLayer = localStorage.getItem('onto_layer');
+            if (backendLayer !== currentLayer) {
+                localStorage.setItem('onto_layer', backendLayer);
+                currentUser.layer = backendLayer;
+                currentUser.plan = layerToPlan(backendLayer);
+                document.getElementById('user-plan').textContent = currentUser.plan === 'enterprise' ? 'CRITICAL' : currentUser.plan === 'business' ? 'PRO' : 'FREE';
+                updateDashboardMetrics();
+                updateBillingUI();
+                console.log('[ONTO] Tier refreshed from backend:', currentLayer, '→', backendLayer);
+            }
+            // Update name/email if changed
+            if (data.name) { localStorage.setItem('onto_user_name', data.name); currentUser.name = data.name; }
+            if (data.email) { localStorage.setItem('onto_user_email', data.email); currentUser.email = data.email; }
+            if (data.role) { localStorage.setItem('onto_role', data.role); currentUser.role = data.role; }
+            // Update api_key if rotated server-side
+            if (data.api_key && data.api_key !== savedApiKey) {
+                localStorage.setItem('onto_first_api_key', data.api_key);
+                document.getElementById('api-key-display').value = data.api_key;
+            }
+        })
+        .catch(err => {
+            console.warn('[ONTO] Session verify failed:', err.message);
+            // 401 = invalid key → force re-login
+            if (err.message === '401') {
+                showToast('Session expired. Please sign in again.', 'error');
+                logout();
+            }
+        });
     }
     else if (savedUser && savedToken) {
         try {
