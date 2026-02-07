@@ -1,12 +1,11 @@
 ﻿#!/usr/bin/env python3
 """
-ONTO Standard Reference Implementation & API Client
+ONTO Standard — Epistemic Risk Measurement for AI Systems
 
-pip install onto-standard          # Core SDK (no dependencies)
-pip install onto-standard[api]     # With API client (requires httpx)
-
-Implements ONTO Epistemic Risk Standard v10.0 (ONTO-ERS-1.0)
-https://ontostandard.org
+ONTO Standard is a metric instrument for measuring epistemic risk of AI systems.
+Two key metrics: ECE (Expected Calibration Error) and U-Recall (Unknown Detection Rate).
+Result: compliance level (None/Basic/Standard/Advanced).
+Not philosophy, not a framework, not blockchain. pip install onto-standard.
 
 Usage (Local Evaluation):
     from onto_standard import evaluate, ComplianceLevel, Prediction, GroundTruth, Label
@@ -22,19 +21,18 @@ Usage (API Client):
     from onto_standard import ONTOClient
 
     client = ONTOClient(api_key="onto_...")
-
-    # Get current signal
     signal = client.get_signal()
-    print(signal.sigma_id)
+    result = client.evaluate(model_name="my-model", predictions=[...])
 
-    # Submit evaluation
-    result = client.evaluate(
-        model_name="my-model",
-        predictions=[{"id": "q1", "label": "KNOWN", "confidence": 0.9}]
-    )
+Free Tier Limits:
+    - 1 evaluation per hour (local rate limit)
+    - Attribution required: "Powered by ONTO Standard"
+    - Watermark in output
+
+Upgrade: https://ontostandard.org/app/
 """
 
-__version__ = "10.0.0"
+__version__ = "10.1.0"
 __standard_version__ = "ONTO-ERS-10.0"
 __api_url__ = "https://api.ontostandard.org"
 
@@ -42,7 +40,52 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import List, Dict, Optional, Tuple
 import json
+import time
+import os
 from pathlib import Path
+
+
+# ============================================================
+# FREE TIER ENFORCEMENT
+# ============================================================
+
+_ONTO_DIR = Path.home() / ".onto"
+_RATE_FILE = _ONTO_DIR / "last_eval.ts"
+_RATE_LIMIT_SECONDS = 3600  # 1 eval per hour for free tier
+
+
+class RateLimitExceeded(Exception):
+    """Free tier: 1 evaluation per hour"""
+    def __init__(self, wait_seconds: int):
+        self.wait_seconds = wait_seconds
+        minutes = wait_seconds // 60
+        super().__init__(
+            f"ONTO Free Tier: 1 evaluation per hour. "
+            f"Next evaluation available in {minutes}m {wait_seconds % 60}s. "
+            f"Upgrade at https://ontostandard.org/app/"
+        )
+
+
+def _check_rate_limit():
+    """Check and enforce free tier rate limit (1 eval/hour)"""
+    # Skip if ONTO_API_KEY is set (paid tier uses server-side limits)
+    if os.environ.get("ONTO_API_KEY"):
+        return
+
+    _ONTO_DIR.mkdir(exist_ok=True)
+
+    if _RATE_FILE.exists():
+        try:
+            last_ts = float(_RATE_FILE.read_text().strip())
+            elapsed = time.time() - last_ts
+            if elapsed < _RATE_LIMIT_SECONDS:
+                wait = int(_RATE_LIMIT_SECONDS - elapsed)
+                raise RateLimitExceeded(wait)
+        except (ValueError, OSError):
+            pass  # Corrupted file, allow eval
+
+    # Record this evaluation
+    _RATE_FILE.write_text(str(time.time()))
 
 # ============================================================
 # ENUMS
@@ -170,10 +213,12 @@ class ComplianceResult:
     # Metadata
     n_samples: int
     standard_version: str
+    watermark: bool = False
+    attribution: str = ""
 
     def to_dict(self) -> Dict:
         """Export as dictionary for JSON serialization"""
-        return {
+        d = {
             "standard_version": self.standard_version,
             "compliance_level": self.compliance_level.value,
             "certification_ready": self.certification_ready,
@@ -196,6 +241,10 @@ class ComplianceResult:
             },
             "n_samples": self.n_samples,
         }
+        if self.watermark:
+            d["_watermark"] = "ONTO Free Tier — ontostandard.org"
+            d["_attribution_required"] = True
+        return d
 
     def to_json(self) -> str:
         """Export as JSON string"""
@@ -388,13 +437,21 @@ def evaluate(predictions: List[Prediction], ground_truth: List[GroundTruth]) -> 
     Returns:
         ComplianceResult with all metrics and compliance assessment
 
+    Raises:
+        RateLimitExceeded: Free tier allows 1 evaluation per hour
+
     Example:
         >>> preds = [Prediction("q1", Label.KNOWN, 0.9), ...]
         >>> truth = [GroundTruth("q1", Label.KNOWN), ...]
         >>> result = evaluate(preds, truth)
         >>> print(result.compliance_level)
     """
-    # Compute metrics (В§3.1)
+    # Free tier enforcement
+    is_free = not os.environ.get("ONTO_API_KEY")
+    if is_free:
+        _check_rate_limit()
+
+    # Compute metrics
     unknown = compute_unknown_detection(predictions, ground_truth)
     calibration = compute_calibration(predictions, ground_truth)
 
@@ -403,16 +460,16 @@ def evaluate(predictions: List[Prediction], ground_truth: List[GroundTruth]) -> 
     correct = sum(1 for p in predictions if p.id in gt_map and p.label == gt_map[p.id])
     accuracy = correct / len(predictions) if predictions else 0
 
-    # Compliance level (В§4)
+    # Compliance level
     compliance = determine_compliance_level(unknown, calibration)
 
-    # Risk assessment (В§3.3.1)
+    # Risk assessment
     risk_level, risk_score = compute_risk_level(unknown, calibration)
 
     # Certification readiness
     certification_ready = compliance != ComplianceLevel.NONE
 
-    # Regulatory compliance (В§10)
+    # Regulatory compliance
     eu_compliant = compliance in [ComplianceLevel.STANDARD, ComplianceLevel.ADVANCED]
     nist_aligned = True
 
@@ -428,6 +485,8 @@ def evaluate(predictions: List[Prediction], ground_truth: List[GroundTruth]) -> 
         nist_ai_rmf_aligned=nist_aligned,
         n_samples=len(predictions),
         standard_version=__standard_version__,
+        watermark=is_free,
+        attribution="Powered by ONTO Standard (ontostandard.org)" if is_free else "",
     )
 
 
@@ -508,7 +567,7 @@ NIST AI RMF Aligned: {'вњ“' if result.nist_ai_rmf_aligned else 'вњ—'}
 CITATION
 в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 {result.citation()}
-
+{"" if not result.attribution else chr(10) + result.attribution + chr(10)}
 в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ
 """
 
@@ -556,17 +615,24 @@ def main():
 
     if len(sys.argv) < 2:
         print(f"ONTO Standard v{__version__} ({__standard_version__})")
+        print()
+        print("Epistemic Risk Measurement for AI Systems.")
+        print("Two key metrics: ECE (calibration error) + U-Recall (unknown detection).")
+        print("Result: compliance level (None/Basic/Standard/Advanced).")
+        print("Not philosophy, not a framework, not blockchain.")
+        print()
         print(f"API: {__api_url__}")
         print()
         print("Usage:")
         print("  onto-standard <predictions.jsonl> <ground_truth.jsonl>  - Evaluate locally")
         print("  onto-standard --version                                  - Show version")
         print()
-        print("Python Usage:")
-        print("  from onto_standard import evaluate, ONTOClient")
+        print("Python:")
+        print("  from onto_standard import evaluate, Prediction, GroundTruth, Label")
+        print("  result = evaluate(predictions, ground_truth)")
         print()
-        print("Install API client:")
-        print("  pip install onto-standard[api]")
+        print("Free Tier: 1 eval/hour, attribution required.")
+        print("Upgrade:   https://ontostandard.org/app/")
         sys.exit(0)
 
     if sys.argv[1] in ["--version", "-v"]:
