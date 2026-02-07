@@ -1310,7 +1310,7 @@ print(result.risk_score, result.layer, result.compliance)</code></pre>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Email</span>
-                    <span class="info-val" id="settings-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b9caccc9c9d6cbcdf9d6d7cdd6cacdd8d7ddd8cbdd97d6cbde">[email&#160;protected]</a></span>
+                    <span class="info-val" id="settings-email">support@ontostandard.org</span>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Type</span>
@@ -1397,15 +1397,15 @@ print(result.risk_score, result.layer, result.compliance)</code></pre>
                 <div class="section-label">Support</div>
                 <div class="info-row">
                     <span class="info-key">General</span>
-                    <a class="info-val" href="/cdn-cgi/l/email-protection#c9babcb9b9a6bbbd89a6a7bda6babda8a7ada8bbade7a6bbae"><span class="__cf_email__" data-cfemail="02717772726d7076426d6c766d7176636c666370662c6d7065">[email&#160;protected]</span></a>
+                    <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Sales</span>
-                    <a class="info-val" href="/cdn-cgi/l/email-protection#50232520203f2224103f3e243f2324313e343122347e3f2237"><span class="__cf_email__" data-cfemail="6d1e181d1d021f192d020319021e190c03090c1f0943021f0a">[email&#160;protected]</span></a>
+                    <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Billing</span>
-                    <a class="info-val" href="/cdn-cgi/l/email-protection#24575154544b5650644b4a504b5750454a404556400a4b5643"><span class="__cf_email__" data-cfemail="0e7d7b7e7e617c7a4e61607a617d7a6f606a6f7c6a20617c69">[email&#160;protected]</span></a>
+                    <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
                 </div>
             </div>
         </div>
@@ -1883,7 +1883,7 @@ print(result.risk_score, result.layer, result.compliance)</code></pre>
             <h2 style="font-size: 15px; font-weight: 500; margin-bottom: 6px;">Complete Payment</h2>
             <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 12px;">You will be redirected to our secure payment provider.</p>
             <button class="btn btn-primary" onclick="redirectToAirwallex()">Continue to Payment</button>
-            <p style="margin-top: 12px; font-size: 11px; color: var(--text-muted);">Questions? Contact <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="31424441415e4345715e5f455e4245505f555043551f5e4356">[email&#160;protected]</a></p>
+            <p style="margin-top: 12px; font-size: 11px; color: var(--text-muted);">Questions? Contact <a href="mailto:support@ontostandard.org">support@ontostandard.org</a></p>
         </div>
     </div>
 </div>
@@ -1932,7 +1932,7 @@ print(result.risk_score, result.layer, result.compliance)</code></pre>
         </div>
         <div class="modal-body">
             <div class="tier-user-info" id="tier-user-info">
-                <div class="tier-user-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7a090f0a0a15080e3a15140e15090e1b141e1b081e5415081d">[email&#160;protected]</a></div>
+                <div class="tier-user-email">support@ontostandard.org</div>
             </div>
             <div class="tier-options">
                 <label class="tier-option" data-tier="open">
@@ -2011,7 +2011,7 @@ print(result.risk_score, result.layer, result.compliance)</code></pre>
     </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // === API CONFIG ===
 const API_BASE = 'https://api.ontostandard.org';
 let authToken = null;
@@ -2622,6 +2622,10 @@ function showDashboard() {
         resetSessionTimer();
         
         // Init dashboard components
+        const realApiKey = localStorage.getItem('onto_first_api_key');
+        if (realApiKey) {
+            document.getElementById('api-key-display').value = realApiKey;
+        }
         renderModelsGrid();
         renderComparison('risk');
         loadUserSignal();
@@ -3432,15 +3436,15 @@ function regenerateApiKey(btn) {
         method: 'POST',
         headers: { 'x-api-key': apiKey }
     })
-    .then(response => {
-        if (!response.ok) throw new Error('Failed to regenerate key');
-        return response.json();
+    .then(async response => {
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || `Server error ${response.status}`);
+        return data;
     })
     .then(data => {
-        // Update stored key
         localStorage.setItem('onto_first_api_key', data.api_key);
+        authToken = localStorage.getItem('onto_token') || data.api_key;
         
-        // Update display
         document.getElementById('api-key-display').value = data.api_key;
         document.getElementById('api-key-display').type = 'text';
         document.getElementById('toggle-key-btn').textContent = 'Hide';
@@ -3453,7 +3457,8 @@ function regenerateApiKey(btn) {
     .catch(error => {
         btn.textContent = 'Regenerate Key';
         btn.disabled = false;
-        showToast(error.message || 'Failed to regenerate key', 'error');
+        showToast('Regen failed: ' + (error.message || 'Unknown error'), 'error');
+        console.error('[ONTO] Regenerate failed:', error);
     });
 }
 
