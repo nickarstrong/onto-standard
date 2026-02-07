@@ -7,7 +7,6 @@
 <meta name="description" content="ONTO Client Portal — Manage your AI epistemic risk verification account, API keys, and billing.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='17' fill='white'/%3E%3Cpath d='M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z' fill='%230a0a0a'/%3E%3C/svg%3E">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
     color-scheme: dark;
@@ -359,7 +358,6 @@ a.info-val:hover { color: var(--text); }
 .payment-option .lock-icon { color: var(--text-muted); font-size: 12px; }
 
 /* === DOCUMENTS === */
-.doc-list { }
 .doc-item { display: flex; align-items: center; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border); }
 .doc-item:last-child { border-bottom: none; }
 .doc-icon { width: 40px; height: 40px; background: var(--bg-elevated); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
@@ -436,11 +434,6 @@ a.info-val:hover { color: var(--text); }
 .sidebar.mobile-open { display: flex; flex-direction: column; position: fixed; z-index: 99; left: 0; top: 56px; height: calc(100vh - 56px); height: calc(100dvh - 56px); width: 240px; }
 .mobile-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 98; }
 .mobile-overlay.active { display: block; }
-/* === TELEMETRY & DASHBOARD ===
-.page-header-left { flex: 1; }
-@keyframes pulse-signal { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
-.signal-pulse { animation: pulse-signal 0.8s infinite; }
-*/
 .signal-hash { display: flex; align-items: center; gap: 4px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
 .signal-hash .label { color: var(--text-muted); }
 .signal-hash .bytes { display: flex; gap: 2px; }
@@ -481,8 +474,8 @@ a.info-val:hover { color: var(--text); }
     cursor: pointer;
     font-family: inherit;
 }
-.plan-switch-select:hover { border-color: var(--primary); }
-.plan-switch-select:focus { outline: none; border-color: var(--primary); }
+.plan-switch-select:hover { border-color: var(--accent); }
+.plan-switch-select:focus { outline: none; border-color: var(--accent); }
 .metric-sep { width: 1px; height: 16px; background: var(--border); }
 .status-active { display: flex; align-items: center; gap: 6px; color: var(--text); }
 .status-active .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
@@ -757,7 +750,7 @@ a.info-val:hover { color: var(--text); }
 .signal-log-endpoint { color: var(--text-muted); font-family: monospace; }
 .signal-log-time { color: var(--text-muted); float: right; }
 
-body, .sidebar, .main-content, .page, .card, .nav-item, button, .admin-user-card { user-select: none; -webkit-user-select: none; }
+.sidebar, .nav-item, button, .admin-user-card { user-select: none; -webkit-user-select: none; }
 
 /* ============================================
    RESPONSIVE
@@ -960,7 +953,7 @@ body, .sidebar, .main-content, .page, .card, .nav-item, button, .admin-user-card
             
             <!-- TERMS SCROLL -->
             <div class="terms-container">
-                <h3>ONTO Gold Asymmetric AI License v5.1</h3>
+                <h3>ONTO Gold Asymmetric AI License v5.2</h3>
                 <table>
                     <tr><th>Use</th><th>Status</th></tr>
                     <tr><td>Read, study, cite, research, evaluate</td><td>✅ Free</td></tr>
@@ -1057,7 +1050,7 @@ body, .sidebar, .main-content, .page, .card, .nav-item, button, .admin-user-card
 <div class="dashboard" id="dashboard">
     <aside class="sidebar">
         <div class="sidebar-header">
-            <a href="#" onclick="showSection('dashboard'); return false;" class="sidebar-logo" style="text-decoration: none; color: inherit;">
+            <a href="#" onclick="showPage('dashboard', null); return false;" class="sidebar-logo" style="text-decoration: none; color: inherit;">
                 <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
                     <circle cx="18" cy="18" r="17" fill="white"/>
                     <path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/>
@@ -1315,7 +1308,7 @@ print(result.risk_score, result.layer, result.compliance)</code></pre>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Email</span>
-                    <span class="info-val" id="settings-email">support@ontostandard.org</span>
+                    <span class="info-val" id="settings-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dfacaaafafb0adab9fb0b1abb0acabbeb1bbbeadbbf1b0adb8">[email&#160;protected]</a></span>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Type</span>
@@ -1402,15 +1395,15 @@ print(result.risk_score, result.layer, result.compliance)</code></pre>
                 <div class="section-label">Support</div>
                 <div class="info-row">
                     <span class="info-key">General</span>
-                    <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
+                    <a class="info-val" href="/cdn-cgi/l/email-protection#43303633332c3137032c2d372c3037222d272231276d2c3124"><span class="__cf_email__" data-cfemail="03707673736c7177436c6d776c7077626d676271672d6c7164">[email&#160;protected]</span></a>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Sales</span>
-                    <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
+                    <a class="info-val" href="/cdn-cgi/l/email-protection#14676164647b6660547b7a607b6760757a707566703a7b6673"><span class="__cf_email__" data-cfemail="0d7e787d7d627f794d626379627e796c63696c7f6923627f6a">[email&#160;protected]</span></a>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Billing</span>
-                    <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
+                    <a class="info-val" href="/cdn-cgi/l/email-protection#7c0f090c0c130e083c131208130f081d12181d0e1852130e1b"><span class="__cf_email__" data-cfemail="14676164647b6660547b7a607b6760757a707566703a7b6673">[email&#160;protected]</span></a>
                 </div>
             </div>
         </div>
@@ -1888,91 +1881,7 @@ print(result.risk_score, result.layer, result.compliance)</code></pre>
             <h2 style="font-size: 15px; font-weight: 500; margin-bottom: 6px;">Complete Payment</h2>
             <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 12px;">You will be redirected to our secure payment provider.</p>
             <button class="btn btn-primary" onclick="redirectToAirwallex()">Continue to Payment</button>
-            <p style="margin-top: 12px; font-size: 11px; color: var(--text-muted);">Questions? Contact support@ontostandard.org</p>
-        </div>
-    </div>
-</div>
-
-<!-- SUBSCRIBE MODAL -->
-<div class="modal-overlay" id="subscribe-modal">
-    <div class="modal modal-inst" style="max-width: 440px;">
-        <div class="modal-header">
-            <h2><span id="subscribe-plan-name">Professional</span> Tier</h2>
-            <button class="modal-close" onclick="closeModal('subscribe-modal')">&times;</button>
-        </div>
-        <div class="modal-body">
-            <div class="order-section">
-                <div class="form-section-title">Includes</div>
-                <div class="order-features" id="order-features">
-                    <div class="order-feature">1 request/8.64s rate limit</div>
-                    <div class="order-feature">Real-time signal access</div>
-                    <div class="order-feature">99.5% SLA</div>
-                    <div class="order-feature">Business hours support</div>
-                </div>
-            </div>
-            <div class="order-section">
-                <div class="form-section-title">Billing</div>
-                <div class="billing-options">
-                    <label class="billing-option" id="billing-annual">
-                        <input type="radio" name="billing-cycle" value="annual" checked onchange="updateOrderSummary()">
-                        <span class="billing-option-content">
-                            <span class="billing-option-name">Annual</span>
-                            <span class="billing-option-detail">Billed once per year</span>
-                        </span>
-                        <span class="billing-option-price" id="price-annual-display">$15,000</span>
-                    </label>
-                    <label class="billing-option" id="billing-monthly">
-                        <input type="radio" name="billing-cycle" value="monthly" onchange="updateOrderSummary()">
-                        <span class="billing-option-content">
-                            <span class="billing-option-name">Monthly</span>
-                            <span class="billing-option-detail">Billed each month</span>
-                        </span>
-                        <span class="billing-option-price" id="price-monthly-display">$1,500/mo</span>
-                    </label>
-                </div>
-            </div>
-            <div class="order-section">
-                <div class="form-section-title">Payment Method</div>
-                <div class="payment-options">
-                    <label class="payment-opt" id="payment-invoice">
-                        <input type="radio" name="payment-method" value="invoice" checked>
-                        <span class="payment-opt-name">Invoice</span>
-                        <span class="payment-opt-note">Annual only</span>
-                    </label>
-                    <label class="payment-opt" id="payment-card">
-                        <input type="radio" name="payment-method" value="card">
-                        <span class="payment-opt-name">Card</span>
-                        <span class="payment-opt-note">Monthly only</span>
-                    </label>
-                </div>
-            </div>
-            <div class="order-summary">
-                <div class="order-summary-row">
-                    <span class="order-summary-label" id="summary-plan">Professional Tier - Annual</span>
-                    <span class="order-summary-value" id="summary-price">$15,000</span>
-                </div>
-                <div class="order-summary-row total">
-                    <span class="order-summary-label">Total due</span>
-                    <span class="order-summary-value" id="summary-total">$15,000</span>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn-minimal" onclick="closeModal('subscribe-modal')">Cancel</button>
-            <button class="btn-minimal" onclick="processPayment()" style="background: var(--accent); color: white; border-color: var(--accent);">Proceed to Payment</button>
-        </div>
-    </div>
-</div>
-
-<!-- PAYMENT PENDING MODAL -->
-<div class="modal-overlay" id="payment-modal">
-    <div class="modal modal-inst" style="max-width: 380px; text-align: center;">
-        <div class="modal-body" style="padding: 36px;">
-            <div style="font-size: 36px; margin-bottom: 12px;">&#x1F680;</div>
-            <h2 style="font-size: 15px; font-weight: 500; margin-bottom: 6px;">Complete Payment</h2>
-            <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 12px;">You will be redirected to our secure payment provider.</p>
-            <button class="btn btn-primary" onclick="redirectToAirwallex()">Continue to Payment</button>
-            <p style="margin-top: 12px; font-size: 11px; color: var(--text-muted);">Questions? Contact support@ontostandard.org</p>
+            <p style="margin-top: 12px; font-size: 11px; color: var(--text-muted);">Questions? Contact <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4c3f393c3c233e380c232238233f382d22282d3e2862233e2b">[email&#160;protected]</a></p>
         </div>
     </div>
 </div>
@@ -2020,7 +1929,7 @@ print(result.risk_score, result.layer, result.compliance)</code></pre>
         </div>
         <div class="modal-body">
             <div class="tier-user-info" id="tier-user-info">
-                <div class="tier-user-email">support@ontostandard.org</div>
+                <div class="tier-user-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="21525451514e5355614e4f554e5255404f454053450f4e5346">[email&#160;protected]</a></div>
             </div>
             <div class="tier-options">
                 <label class="tier-option" data-tier="open">
@@ -2066,9 +1975,10 @@ print(result.risk_score, result.layer, result.compliance)</code></pre>
     </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // === API CONFIG ===
 const API_BASE = 'https://api.ontostandard.org';
+function escapeHtml(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 let authToken = null;
 
 // === API HELPER ===
@@ -2916,8 +2826,8 @@ function downloadInvoice() {
         status: 'PAID',
         
         provider: {
-            name: 'ONTO Standard LLC',
-            jurisdiction: 'Delaware, USA',
+            name: 'ONTO Standard',
+            jurisdiction: 'See ontostandard.org/legal',
             email: 'billing@ontostandard.org',
             website: 'https://ontostandard.org',
             tax_id: null
@@ -3525,9 +3435,6 @@ function updateSignalHash() {
     ).join('');
 }
 
-// Start signal hash updates
-setInterval(updateSignalHash, 3000);
-
 // === USER SIGNAL (dashboard) ===
 let userSignalInterval = null;
 
@@ -4085,20 +3992,27 @@ function renderAccounts(accounts) {
         const hasCompany = u.profile?.company_name;
         const isActive = !u.suspended && u.is_active !== false;
         const date = u.created_at ? new Date(u.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '—';
+        const safeEmail = escapeHtml(u.email || '');
+        const safeName = escapeHtml(u.name || '—');
+        const safeOrgName = escapeHtml(u.org_name || '—');
+        const safeTier = escapeHtml(u.tier || '');
+        const safeCompany = hasCompany ? escapeHtml(u.profile.company_name) : '';
+        const safeIndustry = hasCompany ? escapeHtml(u.profile.industry || '—') : '';
+        const safeId = escapeHtml(u.id || '');
         
         return `
-            <div class="account-row" onclick="toggleAccountDetails('${u.id}')">
-                <div class="account-email">${u.email}${isSelf ? ' <span style="color: var(--accent); font-size: 9px;">(you)</span>' : ''}</div>
+            <div class="account-row" onclick="toggleAccountDetails('${safeId}')">
+                <div class="account-email">${safeEmail}${isSelf ? ' <span style="color: var(--accent); font-size: 9px;">(you)</span>' : ''}</div>
                 <div class="account-type">${hasCompany ? 'Company' : 'Individual'}</div>
-                <div class="account-plan"><span class="tier-badge tier-${u.tier}">${u.tier}</span></div>
+                <div class="account-plan"><span class="tier-badge tier-${safeTier}">${safeTier}</span></div>
                 <div class="account-status ${isActive ? 'active' : 'paused'}">${isActive ? 'Active' : 'Paused'}</div>
                 <div class="account-date">${date}</div>
             </div>
-            <div class="account-details" id="details-${u.id}">
+            <div class="account-details" id="details-${safeId}">
                 <div class="account-details-grid">
                     <div class="account-detail-item">
                         <div class="account-detail-label">Name</div>
-                        <div class="account-detail-value">${u.name || '—'}</div>
+                        <div class="account-detail-value">${safeName}</div>
                     </div>
                     <div class="account-detail-item">
                         <div class="account-detail-label">Email Verified</div>
@@ -4110,23 +4024,23 @@ function renderAccounts(accounts) {
                     </div>
                     <div class="account-detail-item">
                         <div class="account-detail-label">Organization</div>
-                        <div class="account-detail-value">${u.org_name || '—'}</div>
+                        <div class="account-detail-value">${safeOrgName}</div>
                     </div>
                     ${hasCompany ? `
                     <div class="account-detail-item">
                         <div class="account-detail-label">Company</div>
-                        <div class="account-detail-value">${u.profile.company_name}</div>
+                        <div class="account-detail-value">${safeCompany}</div>
                     </div>
                     <div class="account-detail-item">
                         <div class="account-detail-label">Industry</div>
-                        <div class="account-detail-value">${u.profile.industry || '—'}</div>
+                        <div class="account-detail-value">${safeIndustry}</div>
                     </div>
                     ` : ''}
                 </div>
                 <div class="account-actions">
-                    <button class="account-action-btn" onclick="event.stopPropagation(); editPlan('${u.id}', '${u.tier}', '${u.email}')" ${isSelf ? 'disabled title="Cannot modify own plan"' : ''}>Edit Plan</button>
-                    <button class="account-action-btn" onclick="event.stopPropagation(); toggleAccountStatus('${u.id}', ${isActive})" ${isSelf ? 'disabled title="Cannot pause own account"' : ''}>${isActive ? 'Pause' : 'Activate'}</button>
-                    <button class="account-action-btn danger" onclick="event.stopPropagation(); deleteAccount('${u.id}', '${u.email}')" ${isSelf ? 'disabled title="Cannot delete own account"' : ''}>Delete</button>
+                    <button class="account-action-btn" onclick="event.stopPropagation(); editPlan('${safeId}', '${safeTier}', '${safeEmail}')" ${isSelf ? 'disabled title="Cannot modify own plan"' : ''}>Edit Plan</button>
+                    <button class="account-action-btn" onclick="event.stopPropagation(); toggleAccountStatus('${safeId}', ${isActive})" ${isSelf ? 'disabled title="Cannot pause own account"' : ''}>${isActive ? 'Pause' : 'Activate'}</button>
+                    <button class="account-action-btn danger" onclick="event.stopPropagation(); deleteAccount('${safeId}', '${safeEmail}')" ${isSelf ? 'disabled title="Cannot delete own account"' : ''}>Delete</button>
                 </div>
             </div>
         `;
@@ -4156,7 +4070,7 @@ function editPlan(userId, currentTier, userEmail) {
     editingUserEmail = userEmail || 'User';
     
     // Set user info
-    document.getElementById('tier-user-info').innerHTML = `<div class="tier-user-email">${editingUserEmail}</div>`;
+    document.getElementById('tier-user-info').innerHTML = `<div class="tier-user-email">${escapeHtml(editingUserEmail)}</div>`;
     
     // Reset selection
     document.querySelectorAll('input[name="tier-select"]').forEach(r => r.checked = false);
@@ -4581,40 +4495,4 @@ document.addEventListener('DOMContentLoaded', () => {
             name: localStorage.getItem('onto_user_name'),
             email: localStorage.getItem('onto_user_email'),
             organization_id: localStorage.getItem('onto_org_id'),
-            organization_name: localStorage.getItem('onto_org_name'),
-            layer: localStorage.getItem('onto_layer'),
-            role: localStorage.getItem('onto_role')
-        };
-        authToken = savedApiKey;
-        showDashboard();
-    }
-    else if (savedUser && savedToken) {
-        try {
-            currentUser = JSON.parse(savedUser);
-            authToken = savedToken;
-            showDashboard();
-        } catch (e) {
-            localStorage.removeItem('onto_user');
-            localStorage.removeItem('onto_token');
-        }
-    }
-    
-    checkWelcomeBanner();
-    updateSignalHash();
-    updateUTCClock();
-    updateSparkline();
-    drawIndustryChart();
-    
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            document.querySelectorAll('.modal-overlay.active').forEach(modal => {
-                modal.classList.remove('active');
-            });
-            const sidebar = document.querySelector('.sidebar');
-            if (sidebar) sidebar.classList.remove('open');
-        }
-    });
-});
-</script>
-</body>
-</html>
+            organization_name: localStor
