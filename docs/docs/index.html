@@ -15,12 +15,16 @@
 <meta property="og:description" content="The first open standard for measuring when AI doesn't know. Quantify epistemic risk, certify calibration, ensure compliance.">
 <meta property="og:url" content="https://ontostandard.org/docs/">
 <meta property="og:site_name" content="ONTO Standard">
+<meta property="og:image" content="https://ontostandard.org/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:locale" content="en_US">
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="ONTO — Epistemic Risk Standard for AI">
 <meta name="twitter:description" content="Measure when AI doesn't know. The first open standard for epistemic risk in AI systems.">
+<meta name="twitter:image" content="https://ontostandard.org/og-image.png">
 
 <!-- JSON-LD Structured Data -->
 <script type="application/ld+json">
@@ -33,7 +37,7 @@
   "publisher": {"@type": "Organization", "name": "ONTO Foundation", "url": "https://ontostandard.org"},
   "url": "https://ontostandard.org/docs/",
   "datePublished": "2026-01-01",
-  "dateModified": "2026-02-06",
+  "dateModified": "2026-02-08",
   "mainEntityOfPage": "https://ontostandard.org/docs/",
   "about": [
     {"@type": "Thing", "name": "Epistemic Risk"},
@@ -52,6 +56,50 @@
   "url": "https://ontostandard.org",
   "description": "We don't make your AI smarter — we make it predictable. Epistemic risk management for AI systems.",
   "foundingDate": "2026"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "What is ONTO?", "acceptedAnswer": {"@type": "Answer", "text": "ONTO is an independent protocol for measuring epistemic reliability of AI systems. It quantifies when AI models are confident versus when they should express uncertainty — like ISO certification for how well an AI knows what it knows."}},
+    {"@type": "Question", "name": "What does ONTO measure?", "acceptedAnswer": {"@type": "Answer", "text": "Three core metrics: U-Recall (detecting when AI doesn't know), ECE (confidence-accuracy alignment), and Risk Score (composite). These tell you if an AI's confidence is trustworthy."}},
+    {"@type": "Question", "name": "Does ONTO fix my AI model?", "acceptedAnswer": {"@type": "Answer", "text": "No. Thermometer, not Doctor — ONTO measures and reports, not modifies. Remediation is the client's responsibility."}},
+    {"@type": "Question", "name": "How is ONTO different from other AI monitoring?", "acceptedAnswer": {"@type": "Answer", "text": "Most tools track data drift or performance. ONTO uniquely measures epistemic uncertainty — the gap where the most dangerous failures occur: confident wrong answers."}},
+    {"@type": "Question", "name": "What industries is ONTO for?", "acceptedAnswer": {"@type": "Answer", "text": "Any industry deploying AI, with focus on regulated sectors: healthcare, finance, defense, aviation, pharma, insurance, legal, government."}},
+    {"@type": "Question", "name": "Is the free tier really free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. OPEN tier provides local evaluation at no cost via pip install onto-standard. Real-time API access requires STANDARD or CRITICAL."}},
+    {"@type": "Question", "name": "How does certification work?", "acceptedAnswer": {"@type": "Answer", "text": "Submit AI system, independent evaluation via ONTO-Bench, Standards Council review, certificate issued (12 months), publicly verifiable."}},
+    {"@type": "Question", "name": "Does ONTO help with EU AI Act?", "acceptedAnswer": {"@type": "Answer", "text": "ONTO maps to Art. 9 (risk), Art. 13 (transparency), Art. 15 (accuracy), Art. 43 (conformity). Not a substitute for full compliance, but provides documented evidence."}},
+    {"@type": "Question", "name": "What is the entropy signal?", "acceptedAnswer": {"@type": "Answer", "text": "A 104-byte cryptographically signed packet broadcast every 30 seconds. Contains timestamp, entropy, and Ed25519 signature for tamper-proof verification anchoring."}},
+    {"@type": "Question", "name": "Can I try before committing?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Install the free SDK with pip install onto-standard for local evaluation, or create a free account for OPEN tier API access."}}
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "onto-standard",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Cross-platform",
+  "description": "Python SDK for measuring epistemic risk in AI systems. Computes ECE, U-Recall, Risk Score and compliance levels.",
+  "url": "https://pypi.org/project/onto-standard/",
+  "downloadUrl": "https://pypi.org/project/onto-standard/",
+  "softwareVersion": "10.1.0",
+  "author": {"@type": "Organization", "name": "ONTO Foundation", "url": "https://ontostandard.org"},
+  "license": "https://ontostandard.org/docs/#license",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "ONTO Standard", "item": "https://ontostandard.org"},
+    {"@type": "ListItem", "position": 2, "name": "Documentation", "item": "https://ontostandard.org/docs/"}
+  ]
 }
 </script>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='17' fill='white'/%3E%3Cpath d='M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z' fill='%230a0a0a'/%3E%3C/svg%3E">
@@ -206,16 +254,16 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <div class="af-group"><label class="af-label">Email</label><input type="email" class="af-input" id="af-reg-email" placeholder="you@company.com"></div>
 <div class="af-group"><label class="af-label">Password</label><div class="af-pw"><input type="password" class="af-input" id="af-reg-pass" placeholder="Min 8 characters"><button type="button" class="af-pw-toggle" onclick="afTogglePw('af-reg-pass',this)">👁</button></div></div>
 <div class="af-terms">
-<h3>ONTO Gold Asymmetric AI License v5.1</h3>
+<h3>ONTO Gold Asymmetric AI License v5.2</h3>
 <table><tr><th>Use</th><th>Status</th></tr><tr><td>Read, study, cite, research, evaluate</td><td>✅ Free</td></tr><tr><td>Deploy, integrate, commercialize, RAG</td><td>❌ Requires license</td></tr></table>
-<h3>1. Primary Source</h3><p>The primary source of ONTO consists of: Canonical ONTO GitHub repositories and https://ontostandard.org. Attribution to BOTH sources is mandatory.</p>
+<h3>1. Primary Source</h3><p>The primary source of ONTO consists of: Canonical ONTO GitHub repositories as listed at <a href="https://ontostandard.org/repos" target="_blank">ontostandard.org/repos</a> and https://ontostandard.org. Attribution to BOTH sources is mandatory.</p>
 <h3>2. Human Use</h3><p>Human reading, study, citation, discussion, critique, and academic analysis are permitted without restriction, provided explicit attribution to the primary source is included.</p>
 <h3>3. Safe Harbor</h3><p>Any non-deployed use that explicitly attributes the ONTO primary source is permitted.</p>
 <h3>4. Conditional AI Training</h3><p>AI systems may train on ONTO for evaluation and research. Such training does not grant any right to deploy, integrate, or commercialize.</p>
-<h3>5. RAG Clause</h3><p>Use in RAG systems, vector databases, semantic search, or real-time retrieval constitutes deployment and requires a license.</p>
+<h3>5. RAG Clause</h3><p>Use in RAG systems, vector databases, semantic search indices, or real-time retrieval for user-facing inference constitutes deployment and requires a license. Internal indexing for non-user-facing purposes is covered under Safe Harbor (§3).</p>
 <h3>6. Termination</h3><p>Use outside Safe Harbor without a license automatically terminates all permissions.</p>
 <h3>Privacy Policy</h3><p>We collect minimal data necessary to provide the service. Data is processed in accordance with GDPR. We never sell your data.</p>
-<p style="margin-top:12px"><strong>Full license:</strong> <a href="https://ontostandard.org" target="_blank">ontostandard.org</a></p>
+<p style="margin-top:12px"><strong>Full license:</strong> <a href="https://ontostandard.org/docs/#license" target="_blank">ontostandard.org/docs/#license</a></p>
 </div>
 <div class="af-check"><input type="checkbox" id="af-terms"><label for="af-terms">I agree to the <a href="/docs#terms" target="_blank">Terms of Service</a> and <a href="/docs#privacy" target="_blank">Privacy Policy</a></label></div>
 <button class="af-btn" id="af-reg-btn" onclick="afRegister(this)" disabled>Create Account</button>
@@ -420,7 +468,7 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <div class="article-card"><h3>Why AI Needs a Thermometer, Not a Doctor</h3><div class="article-meta">ONTO Foundation · January 2026</div><p>The AI industry is focused on making models smarter. But smartness without self-awareness is dangerous. ONTO measures when AI doesn't know — before failure happens.</p></div>
 <div class="article-card"><h3>Epistemic Risk: The Metric Nobody Is Tracking</h3><div class="article-meta">ONTO Foundation · January 2026</div><p>Most AI monitoring tools focus on data drift. But the most dangerous failures happen when a model is confidently wrong — when it doesn't know what it doesn't know.</p></div>
 <div class="article-card"><h3>How Regulated Industries Can Prepare for the EU AI Act</h3><div class="article-meta">ONTO Foundation · February 2026</div><p>The EU AI Act requires risk management, transparency, and conformity assessment. ONTO certification maps directly to Articles 9, 13, 15, and 43.</p></div>
-<p style="color:var(--text-m);font-size:12px;margin-top:20px">More articles coming. Subscribe: <a href="mailto:support@ontostandard.org">support@ontostandard.org</a></p>
+<p style="color:var(--text-m);font-size:12px;margin-top:20px">More articles coming. Subscribe: <a href="/cdn-cgi/l/email-protection#4c3f393c3c233e380c232238233f382d22282d3e2862233e2b"><span class="__cf_email__" data-cfemail="fd8e888d8d928f89bd929389928e899c93999c8f99d3928f9a">[email&#160;protected]</span></a></p>
 </div><div class="sd"></div>
 
 <!-- FAQ -->
@@ -506,8 +554,8 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <h2 id="t-11">11. Liability</h2><p>ONTO SHALL NOT BE LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL DAMAGES.</p>
 <h2 id="t-12">12. Termination</h2><p>We may terminate for violations. You may cancel anytime.</p>
 <h2 id="t-13">13. Changes</h2><p>We may modify terms. Continued use = acceptance.</p>
-<h2 id="t-14">14. Law</h2><p>Governed by Delaware, United States law.</p>
-<h2 id="t-15">15. Contact</h2><p><a href="mailto:support@ontostandard.org">support@ontostandard.org</a></p>
+<h2 id="t-14">14. Law</h2><p>Governed by the jurisdiction identified at <a href="https://ontostandard.org/legal">ontostandard.org/legal</a>.</p>
+<h2 id="t-15">15. Contact</h2><p><a href="/cdn-cgi/l/email-protection#54272124243b2620143b3a203b2720353a303526307a3b2633"><span class="__cf_email__" data-cfemail="c8bbbdb8b8a7babc88a7a6bca7bbbca9a6aca9baace6a7baaf">[email&#160;protected]</span></a></p>
 </div><div class="sd"></div>
 
 <!-- PRIVACY -->
@@ -523,7 +571,7 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <h2 id="p-4">4. Retention</h2><p>Active: retained. Deleted: 30 days. Aggregated: indefinite. Billing: as required by law.</p>
 <h2 id="p-5">5. Sharing</h2><p>No selling. Shared with: service providers, payment processors, law enforcement (required), successors.</p>
 <h2 id="p-6">6. Security</h2><ul><li>TLS 1.3 in transit</li><li>AES-256 at rest</li><li>Regular audits</li><li>Access controls</li></ul>
-<h2 id="p-7">7. Your Rights</h2><p>Access, correct, delete, export, object, withdraw consent. Contact: <a href="mailto:support@ontostandard.org">support@ontostandard.org</a></p>
+<h2 id="p-7">7. Your Rights</h2><p>Access, correct, delete, export, object, withdraw consent. Contact: <a href="/cdn-cgi/l/email-protection#fe8d8b8e8e918c8abe91908a918d8a9f909a9f8c9ad0918c99"><span class="__cf_email__" data-cfemail="37444247475845437758594358444356595356455319584550">[email&#160;protected]</span></a></p>
 <h2 id="p-8">8. Cookies</h2><p>Essential only. No advertising trackers.</p>
 <h2 id="p-9">9. Children</h2><p>Not intended for under 18. No data collected from children.</p>
 </div><div class="sd"></div>
@@ -539,12 +587,12 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <h2 id="r-4">4. Service Credits</h2>
 <table><thead><tr><th>Plan</th><th>Breach</th><th>Credit</th></tr></thead><tbody><tr><td>Pro</td><td>99.9%</td><td>10%</td></tr><tr><td>Enterprise</td><td>99.99%</td><td>25%</td></tr></tbody></table>
 <h2 id="r-5">5. Non-Refundable</h2><ul><li>ToS violation terminations</li><li>Unused credits</li><li>Setup fees</li><li>Third-party fees</li></ul>
-<h2 id="r-6">6. How To</h2><p>Email <a href="mailto:support@ontostandard.org">support@ontostandard.org</a>. Response 2 days, processing 5-10 days.</p>
+<h2 id="r-6">6. How To</h2><p>Email <a href="/cdn-cgi/l/email-protection#cfbcbabfbfa0bdbb8fa0a1bba0bcbbaea1abaebdabe1a0bda8"><span class="__cf_email__" data-cfemail="5d2e282d2d322f291d323329322e293c33393c2f3973322f3a">[email&#160;protected]</span></a>. Response 2 days, processing 5-10 days.</p>
 </div>
 
 </div></main>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const AF_API='https://api.ontostandard.org';
 let afPendingEmail='';
 
@@ -663,7 +711,4 @@ function handleHash(){const h=location.hash.replace('#','');if(h){let t=document
 handleHash();window.addEventListener('hashchange',handleHash);
 function toggleFaq(el){el.parentElement.classList.toggle('open')}
 let stars=0;function setStar(n){stars=n;document.querySelectorAll('#ss span').forEach((s,i)=>{s.classList.toggle('active',i<n)})}
-async function submitRv(){const n=document.getElementById('rv-name').value.trim(),r=document.getElementById('rv-role').value.trim(),t=document.getElementById('rv-text').value.trim();if(!n||!t){alert('Fill name and review.');return}try{await fetch('https://api.ontostandard.org/v1/feedback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'review',name:n,role:r,rating:stars,text:t})})}catch(e){}document.getElementById('rv-ok').style.display='block';document.getElementById('rv-name').value='';document.getElementById('rv-role').value='';document.getElementById('rv-text').value='';stars=0;document.querySelectorAll('#ss span').forEach(s=>s.classList.remove('active'))}
-</script>
-</body>
-</html>
+async function submitRv(){const n=document.g
