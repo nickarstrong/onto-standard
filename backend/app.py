@@ -4042,6 +4042,7 @@ def enrich_with_onto_core(result: dict, model_id: str = "anonymous") -> dict:
             model_id=model_id,
             linguistic_factors=result.get("factors", {}),
             linguistic_weights=result.get("weights_applied", {}),
+            domain=result.get("domain", "general"),
         )
         
         # Обогащаем результат (не перезаписываем существующие поля)
