@@ -4054,6 +4054,7 @@ def enrich_with_onto_core(result: dict, model_id: str = "anonymous") -> dict:
         result["onto_risk_score"] = certified.get("risk_score")
         result["onto_layer"] = certified.get("layer")
         result["engine"] = certified.get("engine", "python_fallback")
+        result["signal_strength"] = certified.get("signal_strength")
     except Exception as e:
         result["engine"] = "error"
         result["engine_error"] = str(e)
