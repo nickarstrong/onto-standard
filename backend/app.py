@@ -125,9 +125,9 @@ if STRIPE_SECRET_KEY:
 # See ONTO_PROTOCOL_MASTER.md Section 3
 LAYERS = {
     "open": {
-        "evaluations_per_hour": 1,           # Free: 1 eval per 60 min
-        "evaluations_per_day": 24,           # ~24/day max
-        "evaluations_per_month": 720,        # ~720/month
+        "evaluations_per_hour": 10,          # Free: 10/hour
+        "evaluations_per_day": 50,           # 50/day
+        "evaluations_per_month": 1500,       # ~1500/month
         "signal_delay_hours": 1,             # +1 час задержка сигнала
         "price": 0,
         "watermark": True,
@@ -783,6 +783,10 @@ app.add_middleware(
         "https://ontostandard.org",
         "https://www.ontostandard.org",
         "https://api.ontostandard.org",
+        "https://chatgpt.com",
+        "https://chat.openai.com",
+        "https://claude.ai",
+        "https://gemini.google.com",
         "http://localhost:3000",
         "http://localhost:8000",
         "http://127.0.0.1:3000",
@@ -4665,6 +4669,53 @@ async def delete_model(model_id: str, org: dict = Depends(validate_api_key)):
             raise HTTPException(status_code=404, detail="Model not found")
         
         return {"message": "Model deactivated", "id": model_id}
+
+
+class PublicEvaluateRequest(BaseModel):
+    output: str
+    confidence: Optional[float] = None
+    context: Optional[str] = None
+    ground_truth: Optional[str] = None
+    domain: Optional[str] = None
+    temperature: Optional[float] = None
+
+@app.post("/v1/check")
+async def public_evaluate(request: PublicEvaluateRequest, req: Request):
+    """
+    Public evaluation endpoint — no auth required.
+    Rate limited by IP: 50/day.
+    Used by Chrome extension and /check page.
+    """
+    client_ip = req.client.host if req.client else "unknown"
+    key = f"check:{client_ip}"
+    allowed, remaining = rate_limiter.is_allowed(key, 50, 86400)  # 50/day
+    
+    if not allowed:
+        raise HTTPException(
+            status_code=429,
+            detail="Daily limit reached (50/day). Register for a free account for higher limits.",
+            headers={"X-RateLimit-Remaining": "0", "X-RateLimit-Reset": str(rate_limiter.get_reset_time(key, 86400))}
+        )
+    
+    if not request.output or not request.output.strip():
+        raise HTTPException(status_code=400, detail="Output text is required")
+    
+    if len(request.output) > 50000:
+        raise HTTPException(status_code=400, detail="Output too long (max 50,000 chars)")
+    
+    result = compute_risk_score(
+        output=request.output,
+        confidence=request.confidence,
+        ground_truth=request.ground_truth,
+        domain=request.domain,
+        temperature=request.temperature,
+        context=request.context,
+    )
+    result["recommendations"] = generate_recommendations(result)
+    result["remaining_today"] = remaining - 1
+    result["source"] = "public"
+    
+    return result
 
 
 @app.post("/v1/models/evaluate")
