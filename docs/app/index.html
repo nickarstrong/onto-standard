@@ -1424,7 +1424,7 @@ print(result.risk_score, result.layer, result.compliance)</code></pre>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Email</span>
-                    <span class="info-val" id="settings-email">support@ontostandard.org</span>
+                    <span class="info-val" id="settings-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9be8eeebebf4e9efdbf4f5eff4e8effaf5fffae9ffb5f4e9fc">[email&#160;protected]</a></span>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Type</span>
@@ -1511,15 +1511,15 @@ print(result.risk_score, result.layer, result.compliance)</code></pre>
                 <div class="section-label">Support</div>
                 <div class="info-row">
                     <span class="info-key">General</span>
-                    <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
+                    <a class="info-val" href="/cdn-cgi/l/email-protection#8cfff9fcfce3fef8cce3e2f8e3fff8ede2e8edfee8a2e3feeb"><span class="__cf_email__" data-cfemail="4c3f393c3c233e380c232238233f382d22282d3e2862233e2b">[email&#160;protected]</span></a>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Sales</span>
-                    <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
+                    <a class="info-val" href="/cdn-cgi/l/email-protection#67141217170815132708091308141306090306150349081500"><span class="__cf_email__" data-cfemail="4b383e3b3b24393f0b24253f24383f2a252f2a392f6524392c">[email&#160;protected]</span></a>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Billing</span>
-                    <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
+                    <a class="info-val" href="/cdn-cgi/l/email-protection#77040207071805033718190318040316191316051359180510"><span class="__cf_email__" data-cfemail="e5969095958a9791a58a8b918a9691848b81849781cb8a9782">[email&#160;protected]</span></a>
                 </div>
             </div>
         </div>
@@ -1997,7 +1997,7 @@ print(result.risk_score, result.layer, result.compliance)</code></pre>
             <h2 style="font-size: 15px; font-weight: 500; margin-bottom: 6px;">Complete Payment</h2>
             <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 12px;">You will be redirected to our secure payment provider.</p>
             <button class="btn btn-primary" onclick="redirectToAirwallex()">Continue to Payment</button>
-            <p style="margin-top: 12px; font-size: 11px; color: var(--text-muted);">Questions? Contact <a href="mailto:support@ontostandard.org">support@ontostandard.org</a></p>
+            <p style="margin-top: 12px; font-size: 11px; color: var(--text-muted);">Questions? Contact <a href="/cdn-cgi/l/email-protection#4c3f393c3c233e380c232238233f382d22282d3e2862233e2b"><span class="__cf_email__" data-cfemail="bbc8cecbcbd4c9cffbd4d5cfd4c8cfdad5dfdac9df95d4c9dc">[email&#160;protected]</span></a></p>
         </div>
     </div>
 </div>
@@ -2046,7 +2046,7 @@ print(result.risk_score, result.layer, result.compliance)</code></pre>
         </div>
         <div class="modal-body">
             <div class="tier-user-info" id="tier-user-info">
-                <div class="tier-user-email">support@ontostandard.org</div>
+                <div class="tier-user-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="91e2e4e1e1fee3e5d1feffe5fee2e5f0fff5f0e3f5bffee3f6">[email&#160;protected]</a></div>
             </div>
             <div class="tier-options">
                 <label class="tier-option" data-tier="open">
@@ -2125,7 +2125,7 @@ print(result.risk_score, result.layer, result.compliance)</code></pre>
     </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // === API CONFIG ===
 const API_BASE = 'https://api.ontostandard.org';
 let authToken = null;
@@ -3850,29 +3850,19 @@ async function openModelDetail(id) {
     compEl.className = 'mm-val ' + (m.compliance === 'PASSED' ? 'passed' : m.compliance === 'REVIEW' ? 'review' : 'failed');
     document.getElementById('detail-last-eval').textContent = m.last_eval;
 
-    // Core Signals in detail panel
+    // Core Signals
     var corePanel = document.getElementById('detail-core-signals');
     if (corePanel && (m.u_recall != null || m.ece != null || m.proof_hash)) {
         corePanel.style.display = 'flex';
         var covD = document.getElementById('detail-coverage');
-        if (covD && m.u_recall != null) {
-            var uv = uiClamp(parseFloat(m.u_recall));
-            covD.textContent = uv.toFixed(4);
-            covD.style.color = uv >= 0.75 ? 'var(--accent)' : uv >= 0.5 ? '#d97706' : '#dc2626';
-        }
+        if (covD && m.u_recall != null) { var uv = uiClamp(parseFloat(m.u_recall)); covD.textContent = uv.toFixed(4); covD.style.color = uv >= 0.75 ? 'var(--accent)' : uv >= 0.5 ? '#d97706' : '#dc2626'; }
         var calD = document.getElementById('detail-calibration-core');
-        if (calD && m.ece != null) {
-            var ev = uiClamp(parseFloat(m.ece));
-            calD.textContent = ev.toFixed(4);
-            calD.style.color = ev <= 0.1 ? 'var(--accent)' : ev <= 0.3 ? '#d97706' : '#dc2626';
-        }
+        if (calD && m.ece != null) { var ev = uiClamp(parseFloat(m.ece)); calD.textContent = ev.toFixed(4); calD.style.color = ev <= 0.1 ? 'var(--accent)' : ev <= 0.3 ? '#d97706' : '#dc2626'; }
         var trD = document.getElementById('detail-trace');
         if (trD && m.proof_hash) { trD.textContent = m.proof_hash; trD.title = m.proof_hash; }
         var engD = document.getElementById('detail-engine');
         if (engD && m.engine) { engD.textContent = m.engine === 'rust' ? '\u26A1 Rust' : '\uD83D\uDC0D Fallback'; }
-    } else if (corePanel) {
-        corePanel.style.display = 'none';
-    }
+    } else if (corePanel) { corePanel.style.display = 'none'; }
     
     // Load evaluations from API
     const apiKey = localStorage.getItem('onto_first_api_key');
@@ -4027,7 +4017,7 @@ function displayEvalResults(data) {
     const results = document.getElementById('eval-results');
     results.style.display = 'block';
     
-    // Risk score color (clamped for display)
+    // Risk score color (clamped)
     const risk = uiClamp(data.risk_score ?? 0);
     const riskEl = document.getElementById('eval-res-risk');
     riskEl.textContent = risk.toFixed(2);
@@ -4089,28 +4079,16 @@ function displayEvalResults(data) {
         recsEl.innerHTML = '';
     }
     
-    // Core Signals (Coverage, Calibration, Trace)
+    // Core Signals
     var ur = data.u_recall;
     var ec = data.ece;
     var ph = data.proof_hash;
-    
     var covEl = document.getElementById('eval-res-coverage');
-    if (covEl && ur != null) {
-        var urv = uiClamp(parseFloat(ur));
-        covEl.textContent = urv.toFixed(4);
-        covEl.style.color = urv >= 0.75 ? 'var(--accent)' : urv >= 0.5 ? '#d97706' : '#dc2626';
-    }
+    if (covEl && ur != null) { var urv = uiClamp(parseFloat(ur)); covEl.textContent = urv.toFixed(4); covEl.style.color = urv >= 0.75 ? 'var(--accent)' : urv >= 0.5 ? '#d97706' : '#dc2626'; }
     var calCoreEl = document.getElementById('eval-res-core-cal');
-    if (calCoreEl && ec != null) {
-        var ecv = uiClamp(parseFloat(ec));
-        calCoreEl.textContent = ecv.toFixed(4);
-        calCoreEl.style.color = ecv <= 0.1 ? 'var(--accent)' : ecv <= 0.3 ? '#d97706' : '#dc2626';
-    }
+    if (calCoreEl && ec != null) { var ecv = uiClamp(parseFloat(ec)); calCoreEl.textContent = ecv.toFixed(4); calCoreEl.style.color = ecv <= 0.1 ? 'var(--accent)' : ecv <= 0.3 ? '#d97706' : '#dc2626'; }
     var traceEl = document.getElementById('eval-res-trace');
-    if (traceEl && ph) {
-        traceEl.textContent = ph;
-        traceEl.title = ph;
-    }
+    if (traceEl && ph) { traceEl.textContent = ph; traceEl.title = ph; }
 }
 
 function resetEvalForm() {
@@ -5014,38 +4992,4 @@ document.addEventListener('DOMContentLoaded', () => {
             console.warn('[ONTO] Session verify failed:', err.message);
             // 401 = invalid key → force re-login
             if (err.message === '401') {
-                showToast('Session expired. Please sign in again.', 'error');
-                logout();
-            }
-        });
-    }
-    else if (savedUser && savedToken) {
-        try {
-            currentUser = JSON.parse(savedUser);
-            authToken = savedToken;
-            showDashboard();
-        } catch (e) {
-            localStorage.removeItem('onto_user');
-            localStorage.removeItem('onto_token');
-        }
-    }
-    
-    checkWelcomeBanner();
-    updateSignalHash();
-    updateUTCClock();
-    updateSparkline();
-    drawIndustryChart();
-    
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            document.querySelectorAll('.modal-overlay.active').forEach(modal => {
-                modal.classList.remove('active');
-            });
-            const sidebar = document.querySelector('.sidebar');
-            if (sidebar) sidebar.classList.remove('open');
-        }
-    });
-});
-</script>
-</body>
-</html>
+                showToast('Session
