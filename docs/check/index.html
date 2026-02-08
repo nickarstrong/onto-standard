@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 <title>ONTO — Check AI Risk</title>
 <meta name="description" content="Free AI output risk check. Paste any AI response and get instant epistemic risk scoring from ONTO Standard.">
 <meta name="keywords" content="AI risk, AI safety, epistemic risk, AI evaluation, AI trust, ONTO Standard, AI check">
@@ -353,7 +353,7 @@ const ce=document.getElementById('r-compliance');ce.textContent=comp;ce.classNam
 const sm={low:'Low epistemic risk. Strong indicators of reliability.',medium:'Moderate risk. Some factors suggest verification needed.',high:'High risk. Significant uncertainty signals detected.'};
 document.getElementById('r-summary').textContent=sm[cls];
 const f=d.factors||{},nm={linguistic_uncertainty:'Linguistic',confidence_calibration:'Confidence',logprob_entropy:'Entropy',semantic_consistency:'Semantic',ground_truth_accuracy:'Accuracy',refusal_awareness:'Refusal',domain_risk:'Domain Risk'};
-let fh='';for(const[k,v]of Object.entries(f)){if(v==null)continue;const p=Math.min(v*100,100),c=v<.3?'var(--accent)':v<.6?'var(--warning)':'var(--danger)';fh+=`<div class="f-row"><span class="f-name">${nm[k]||k}</span><div class="f-bar"><div class="f-fill" style="width:${p}%;background:${c}"></div></div><span class="f-val">${v.toFixed(2)}</span></div>`}
+let fh='';for(const[k,v]of Object.entries(f)){if(v==null)continue;const nv=parseFloat(v),p=Math.min(nv*100,100),c=nv<.3?'var(--accent)':nv<.6?'var(--warning)':'var(--danger)';fh+=`<div class="f-row"><span class="f-name">${nm[k]||k}</span><div class="f-bar"><div class="f-fill" style="width:${p}%;background:${c}"></div></div><span class="f-val">${nv.toFixed(2)}</span></div>`}
 document.getElementById('factors').innerHTML=fh;
 const recs=d.recommendations||[],rs=document.getElementById('recs-section');
 if(recs.length){let rh='';recs.forEach(r=>{const msg=typeof r==='string'?r:r.message||'',sev=typeof r==='object'?(r.severity||'low'):'low';rh+=`<div class="rec"><span class="rec-d ${sev}"></span>${msg}</div>`});document.getElementById('recs').innerHTML=rh;rs.style.display=''}else{rs.style.display='none'}
