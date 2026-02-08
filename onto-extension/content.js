@@ -152,10 +152,13 @@ async function evaluateResponse(badgeEl, text) {
   }
 }
 
+function uiClamp(v){return Math.max(0.05,Math.min(0.95,v))}
+
 function showResult(parent, loadingEl, data) {
-  const risk = parseFloat(data.risk_score || 0);
+  const risk = uiClamp(parseFloat(data.risk_score || 0));
   const cls = risk < 0.35 ? 'low' : risk < 0.65 ? 'medium' : 'high';
-  const compLabel = data.compliance || 'N/A';
+  var compDisplay = {'PASSED':'Clear','REVIEW':'Review','FAILED':'Elevated','N/A':'N/A'};
+  var compLabel = compDisplay[data.compliance] || data.compliance || 'N/A';
 
   // Engine indicator
   var engineHtml = '';
@@ -168,7 +171,7 @@ function showResult(parent, loadingEl, data) {
   // Proof indicator
   var proofHtml = '';
   if (data.proof_hash) {
-    proofHtml = '<span class="onto-proof" title="Proof: ' + data.proof_hash + '">\uD83D\uDD0F</span>';
+    proofHtml = '<span class="onto-proof" title="Trace: ' + data.proof_hash + '">\uD83D\uDD0F</span>';
   }
 
   const result = document.createElement('span');
@@ -219,6 +222,7 @@ function createTooltip(data) {
     var raw = factors[k];
     var nv = (raw != null) ? parseFloat(raw) : NaN;
     var hasVal = !isNaN(nv);
+    if(hasVal) nv = uiClamp(nv);
     var pct = hasVal ? Math.min(nv * 100, 100) : 0;
     var color = hasVal ? (nv < 0.3 ? '#00ff88' : nv < 0.6 ? '#d97706' : '#dc2626') : 'transparent';
     var opacity = hasVal ? '' : ' style="opacity:0.3"';
@@ -231,22 +235,24 @@ function createTooltip(data) {
   // ONTO Core Metrics section
   if (data.u_recall != null || data.ece != null) {
     html += '<div class="onto-tip-sep"></div>';
-    html += '<div class="onto-tip-section">ONTO CORE</div>';
+    html += '<div class="onto-tip-section">CORE SIGNALS</div>';
 
     var ur = parseFloat(data.u_recall);
     if (!isNaN(ur)) {
+      ur = uiClamp(ur);
       var urC = ur >= 0.75 ? '#00ff88' : ur >= 0.5 ? '#d97706' : '#dc2626';
       html += '<div class="onto-factor-row">' +
-        '<span class="onto-factor-label">U-Recall</span>' +
+        '<span class="onto-factor-label">Coverage</span>' +
         '<div class="onto-factor-bar"><div class="onto-factor-fill" style="width:' + Math.min(ur * 100, 100) + '%;background:' + urC + '"></div></div>' +
         '<span class="onto-factor-val">' + ur.toFixed(2) + '</span></div>';
     }
 
     var ec = parseFloat(data.ece);
     if (!isNaN(ec)) {
+      ec = uiClamp(ec);
       var ecC = ec <= 0.1 ? '#00ff88' : ec <= 0.3 ? '#d97706' : '#dc2626';
       html += '<div class="onto-factor-row">' +
-        '<span class="onto-factor-label">ECE</span>' +
+        '<span class="onto-factor-label">Calibration</span>' +
         '<div class="onto-factor-bar"><div class="onto-factor-fill" style="width:' + Math.min(ec * 100, 100) + '%;background:' + ecC + '"></div></div>' +
         '<span class="onto-factor-val">' + ec.toFixed(2) + '</span></div>';
     }
@@ -259,7 +265,7 @@ function createTooltip(data) {
       html += '<div class="onto-tip-meta"><span class="onto-tip-k">Signal</span><span class="onto-tip-v">' + data.sigma_id + '</span></div>';
     }
     if (data.proof_hash) {
-      html += '<div class="onto-tip-meta"><span class="onto-tip-k">Proof</span><span class="onto-tip-v onto-tip-hash">' + data.proof_hash + '</span></div>';
+      html += '<div class="onto-tip-meta"><span class="onto-tip-k">Trace</span><span class="onto-tip-v onto-tip-hash">' + data.proof_hash + '</span></div>';
     }
     if (data.onto_status) {
       var statusLabel = data.onto_status.indexOf('SANDBOX') >= 0 ? 'SANDBOX MODE' :
