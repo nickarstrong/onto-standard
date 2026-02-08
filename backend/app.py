@@ -4272,7 +4272,7 @@ def compute_risk_score(
         sl_instability = 0.15
 
     # Specificity score (language-agnostic)
-    proper_nouns = len(re.findall(r'(?<=[.!?]\s)[A-Z][a-z]+|(?<=\s)[A-Z][a-z]{2,}(?=\s)', output))
+    proper_nouns = 0  # disabled: sentence-start caps create false positives
     number_count = len(re.findall(r'\b\d[\d,.]*\b', output))
     date_count = len(re.findall(r'\b\d{4}\b|\b\d{1,2}[/\-\.]\d{1,2}[/\-\.]\d{2,4}\b', output))
     unit_count = len(re.findall(r'\b\d+\s*(%|mg|kg|ml|km|USD|EUR|GB|MB|ms|Hz)\b', output, re.IGNORECASE))
