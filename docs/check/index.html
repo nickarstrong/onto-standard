@@ -112,10 +112,16 @@ code{font-family:'JetBrains Mono','SF Mono',Consolas,monospace;font-size:11px}
 .r-factors{padding:16px 20px;border-bottom:1px solid var(--border)}
 .r-ftitle{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-m);margin-bottom:12px;font-weight:500}
 .f-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.f-row.disabled{opacity:.35}
 .f-name{font-size:11px;color:var(--text-s);width:110px;flex-shrink:0}
 .f-bar{flex:1;height:5px;background:var(--bg-e);border-radius:3px;overflow:hidden}
 .f-fill{height:100%;border-radius:3px;transition:width .5s ease}
 .f-val{font-size:11px;width:32px;text-align:right;color:var(--text-s);font-family:'SF Mono',Consolas,monospace}
+.f-val.na{color:var(--text-m);font-size:10px}
+.f-sep{height:1px;background:var(--border);margin:10px 0}
+.f-section{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--cyan);margin-bottom:8px;font-weight:600}
+.f-fill.ece{background:var(--cyan)}
+.f-fill.urecall{background:var(--cyan)}
 
 .r-recs{padding:16px 20px}
 .rec{display:flex;align-items:flex-start;gap:6px;margin-bottom:6px;font-size:11px;color:var(--text-s);line-height:1.4}
@@ -424,17 +430,40 @@ sEl.innerHTML='<span class="cert-status '+sCls+'"><span class="cert-dot"></span>
 document.getElementById('c-proof').textContent=d.proof_hash||'\u2014';
 }else{certEl.style.display='none'}
 
-// Factors
+// Factors — show all 7, gray out unavailable
 var f=d.factors||{};
-var nm={linguistic_uncertainty:'Linguistic',confidence_calibration:'Confidence',logprob_entropy:'Entropy',semantic_consistency:'Semantic',ground_truth_accuracy:'Accuracy',refusal_awareness:'Refusal',domain_risk:'Domain Risk'};
+var allFactors=[
+['linguistic_uncertainty','Linguistic'],
+['confidence_calibration','Confidence'],
+['logprob_entropy','Entropy'],
+['semantic_consistency','Semantic'],
+['ground_truth_accuracy','Accuracy'],
+['refusal_awareness','Refusal'],
+['domain_risk','Domain Risk']
+];
 var fh='';
-for(var k in f){
-if(!f.hasOwnProperty(k)||f[k]==null||!nm[k])continue;
-var nv=parseFloat(f[k]);
-if(isNaN(nv))continue;
-var p=Math.min(nv*100,100);
-var c=nv<0.3?'var(--accent)':nv<0.6?'var(--warning)':'var(--danger)';
-fh+='<div class="f-row"><span class="f-name">'+nm[k]+'</span><div class="f-bar"><div class="f-fill" style="width:'+p+'%;background:'+c+'"></div></div><span class="f-val">'+nv.toFixed(2)+'</span></div>';
+for(var i=0;i<allFactors.length;i++){
+var k=allFactors[i][0],label=allFactors[i][1];
+var raw=f[k];
+var nv=(raw!=null)?parseFloat(raw):NaN;
+var hasVal=!isNaN(nv);
+var p=hasVal?Math.min(nv*100,100):0;
+var c=hasVal?(nv<0.3?'var(--accent)':nv<0.6?'var(--warning)':'var(--danger)'):'var(--bg-e)';
+fh+='<div class="f-row'+(hasVal?'':' disabled')+'"><span class="f-name">'+label+'</span><div class="f-bar"><div class="f-fill" style="width:'+p+'%;background:'+c+'"></div></div><span class="f-val'+(hasVal?'':' na')+'">'+(hasVal?nv.toFixed(2):'N/A')+'</span></div>';
+}
+// ECE + U-Recall bars
+if(d.u_recall!=null||d.ece!=null){
+fh+='<div class="f-sep"></div><div class="f-section">ONTO Core Metrics</div>';
+var ur=parseFloat(d.u_recall);
+if(!isNaN(ur)){
+var urC=ur>=0.75?'var(--accent)':ur>=0.5?'var(--warning)':'var(--danger)';
+fh+='<div class="f-row"><span class="f-name">U-Recall</span><div class="f-bar"><div class="f-fill" style="width:'+Math.min(ur*100,100)+'%;background:'+urC+'"></div></div><span class="f-val">'+ur.toFixed(2)+'</span></div>';
+}
+var ec=parseFloat(d.ece);
+if(!isNaN(ec)){
+var ecC=ec<=0.1?'var(--accent)':ec<=0.3?'var(--warning)':'var(--danger)';
+fh+='<div class="f-row"><span class="f-name">ECE</span><div class="f-bar"><div class="f-fill" style="width:'+Math.min(ec*100,100)+'%;background:'+ecC+'"></div></div><span class="f-val">'+ec.toFixed(2)+'</span></div>';
+}
 }
 document.getElementById('factors').innerHTML=fh;
 
