@@ -2610,6 +2610,7 @@ function handleLogout() {
     localStorage.removeItem('onto_org_name');
     localStorage.removeItem('onto_layer');
     localStorage.removeItem('onto_role');
+    localStorage.removeItem('onto_subscription');
     
     document.getElementById('auth-screen').style.display = 'flex';
     document.getElementById('dashboard').classList.remove('active');
@@ -2729,6 +2730,7 @@ function switchActivePlan(newPlan) {
     currentUser.plan = newPlan;
     currentUser.subscription.plan = newPlan;
     localStorage.setItem('onto_user', JSON.stringify(currentUser));
+    localStorage.setItem('onto_layer', {free:'open', business:'standard', enterprise:'critical'}[newPlan] || 'open');
     
     const planLabel = newPlan === 'enterprise' ? 'CRITICAL' : 'PRO';
     document.getElementById('user-plan').textContent = planLabel;
@@ -3239,41 +3241,6 @@ function updateOrderSummary() {
     else { invoiceInput.disabled=true; cardInput.disabled=false; cardInput.checked=true; }
 }
 
-function processPayment() {
-    closeModal('subscribe-modal');
-    document.getElementById('payment-modal').classList.add('active');
-}
-
-function redirectToAirwallex() {
-    const isAnnual = selectedCycle === 'annual';
-    const daysToAdd = isAnnual ? 365 : 30;
-    const amount = isAnnual ? PLANS[selectedPlan].annual : PLANS[selectedPlan].monthly;
-    const now = new Date();
-    const sub = currentUser.subscription || {};
-    let proDays = sub.pro_days || 0, criticalDays = sub.critical_days || 0;
-    if (selectedPlan === 'business') proDays += daysToAdd;
-    else if (selectedPlan === 'enterprise') criticalDays += daysToAdd;
-    const activePlan = criticalDays > 0 ? 'enterprise' : (proDays > 0 ? 'business' : 'free');
-    const totalDays = criticalDays + proDays;
-    const expiresAt = totalDays > 0 ? new Date(now.getTime() + totalDays * 86400000) : null;
-    currentUser.subscription = {
-        plan: activePlan, cycle: selectedCycle,
-        started: sub.started || now.toISOString(), last_payment: now.toISOString(),
-        expires_at: expiresAt ? expiresAt.toISOString() : null,
-        pro_days: proDays, critical_days: criticalDays,
-        amount: amount, total_paid: (sub.total_paid||0) + amount
-    };
-    currentUser.plan = activePlan;
-    localStorage.setItem('onto_user', JSON.stringify(currentUser));
-    closeModal('payment-modal');
-    updateBillingUI(); updateDashboardMetrics();
-    document.getElementById('user-plan').textContent = activePlan==='enterprise'?'CRITICAL':(activePlan==='business'?'PRO':'FREE');
-    let msg = 'Subscription activated!';
-    if (criticalDays>0 && proDays>0) msg = 'Activated! '+criticalDays+'d Critical then '+proDays+'d Pro';
-    else if (criticalDays>0) msg = 'Activated! '+criticalDays+' days Critical';
-    else if (proDays>0) msg = 'Activated! '+proDays+' days Pro';
-    showToast(msg, 'success');
-}
 // === SUBSCRIBE MODAL ===
 function openSubscribeModal(plan) {
     selectedPlan = plan;
@@ -3340,6 +3307,8 @@ function redirectToAirwallex() {
     };
     currentUser.plan = activePlan;
     localStorage.setItem('onto_user', JSON.stringify(currentUser));
+    localStorage.setItem('onto_layer', {free:'open', business:'standard', enterprise:'critical'}[activePlan] || 'open');
+    localStorage.setItem('onto_subscription', JSON.stringify(currentUser.subscription));
     closeModal('payment-modal');
     updateBillingUI(); updateDashboardMetrics();
     document.getElementById('user-plan').textContent = activePlan==='enterprise'?'CRITICAL':(activePlan==='business'?'PRO':'FREE');
@@ -4602,9 +4571,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedLoggedIn = localStorage.getItem('onto_logged_in');
     
     if (savedLoggedIn === 'true' && savedApiKey) {
-        // Restore subscription from onto_user JSON if available
+        // Restore subscription from onto_subscription or onto_user JSON
         let savedSub = null;
-        if (savedUser) {
+        const savedSubStr = localStorage.getItem('onto_subscription');
+        if (savedSubStr) {
+            try { savedSub = JSON.parse(savedSubStr); } catch(e) {}
+        }
+        if (!savedSub && savedUser) {
             try { savedSub = JSON.parse(savedUser).subscription || null; } catch(e) {}
         }
         currentUser = {
@@ -4627,17 +4600,28 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
         .then(data => {
-            // Update tier from backend (source of truth)
+            // Update tier from backend — but respect local subscription if active
             const backendLayer = data.layer || 'open';
             const currentLayer = localStorage.getItem('onto_layer');
+            const localSub = currentUser.subscription;
+            const hasActiveSub = localSub && localSub.expires_at && new Date(localSub.expires_at) > new Date();
+            
             if (backendLayer !== currentLayer) {
-                localStorage.setItem('onto_layer', backendLayer);
-                currentUser.layer = backendLayer;
-                currentUser.plan = layerToPlan(backendLayer);
-                document.getElementById('user-plan').textContent = currentUser.plan === 'enterprise' ? 'CRITICAL' : currentUser.plan === 'business' ? 'PRO' : 'FREE';
-                updateDashboardMetrics();
-                updateBillingUI();
-                console.log('[ONTO] Tier refreshed from backend:', currentLayer, '→', backendLayer);
+                // Backend upgrade always applies; backend downgrade only if no local subscription
+                const tierRank = {open: 0, standard: 1, critical: 2};
+                const isUpgrade = (tierRank[backendLayer] || 0) > (tierRank[currentLayer] || 0);
+                
+                if (isUpgrade || !hasActiveSub) {
+                    localStorage.setItem('onto_layer', backendLayer);
+                    currentUser.layer = backendLayer;
+                    currentUser.plan = layerToPlan(backendLayer);
+                    document.getElementById('user-plan').textContent = currentUser.plan === 'enterprise' ? 'CRITICAL' : currentUser.plan === 'business' ? 'PRO' : 'FREE';
+                    updateDashboardMetrics();
+                    updateBillingUI();
+                    console.log('[ONTO] Tier refreshed from backend:', currentLayer, '→', backendLayer);
+                } else {
+                    console.log('[ONTO] Keeping local tier (active subscription):', currentLayer);
+                }
             }
             // Update name/email if changed
             if (data.name) { localStorage.setItem('onto_user_name', data.name); currentUser.name = data.name; }
