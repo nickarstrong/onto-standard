@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "ONTO — AI Risk Check",
+  "version": "1.0.0",
+  "description": "Instant epistemic risk scoring for AI responses. See how much you can trust the answer.",
+  "permissions": ["storage", "activeTab"],
+  "host_permissions": [
+    "https://api.ontostandard.org/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*",
+        "https://claude.ai/*",
+        "https://gemini.google.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

@@ -1,0 +1,215 @@
+/* ONTO Risk Badge */
+.onto-badge-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(0,0,0,0.6);
+  color: #888;
+  font-size: 11px;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  cursor: pointer;
+  transition: all 0.15s;
+  backdrop-filter: blur(8px);
+  user-select: none;
+  line-height: 1;
+  margin: 4px 0;
+}
+.onto-badge-btn:hover {
+  border-color: rgba(0,255,136,0.3);
+  color: #aaa;
+}
+.onto-badge-btn .onto-sigma {
+  font-size: 13px;
+  font-weight: 700;
+  color: #555;
+}
+
+/* Result badge */
+.onto-result {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.75);
+  border: 1px solid rgba(255,255,255,0.08);
+  font-size: 11px;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  backdrop-filter: blur(8px);
+  margin: 4px 0;
+  line-height: 1.4;
+}
+.onto-result .onto-score {
+  font-weight: 700;
+  font-size: 13px;
+}
+.onto-result .onto-layer {
+  color: #888;
+  font-size: 10px;
+}
+.onto-result .onto-comp {
+  font-size: 10px;
+  font-weight: 600;
+}
+.onto-result.low { border-color: rgba(0,255,136,0.2); }
+.onto-result.low .onto-score { color: #00ff88; }
+.onto-result.low .onto-comp { color: #00ff88; }
+
+.onto-result.medium { border-color: rgba(217,119,6,0.2); }
+.onto-result.medium .onto-score { color: #d97706; }
+.onto-result.medium .onto-comp { color: #d97706; }
+
+.onto-result.high { border-color: rgba(220,38,38,0.2); }
+.onto-result.high .onto-score { color: #dc2626; }
+.onto-result.high .onto-comp { color: #dc2626; }
+
+.onto-result .onto-brand {
+  color: #444;
+  font-size: 9px;
+  letter-spacing: 0.5px;
+}
+
+/* Engine indicator */
+.onto-engine {
+  font-size: 10px;
+  line-height: 1;
+}
+.onto-engine-rust { color: #06b6d4; }
+.onto-engine-fallback { color: #666; }
+
+/* Proof indicator */
+.onto-proof {
+  font-size: 10px;
+  cursor: help;
+  color: #06b6d4;
+  line-height: 1;
+}
+
+/* Loading state */
+.onto-loading {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.05);
+  font-size: 11px;
+  font-family: 'SF Mono', monospace;
+  color: #666;
+  margin: 4px 0;
+}
+.onto-loading .onto-dot {
+  animation: ontoPulse 1s infinite;
+}
+@keyframes ontoPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* Tooltip */
+.onto-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  background: #111;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 11px;
+  font-family: 'SF Mono', monospace;
+  color: #ccc;
+  width: 280px;
+  z-index: 99999;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+.onto-tooltip .onto-factor-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+.onto-tooltip .onto-factor-label {
+  color: #888;
+  width: 80px;
+  flex-shrink: 0;
+  font-size: 10px;
+}
+.onto-tooltip .onto-factor-bar {
+  flex: 1;
+  height: 3px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.onto-tooltip .onto-factor-fill {
+  height: 100%;
+  border-radius: 2px;
+}
+.onto-tooltip .onto-factor-val {
+  width: 28px;
+  text-align: right;
+  font-size: 10px;
+  color: #aaa;
+}
+
+/* Tooltip sections */
+.onto-tip-sep {
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  margin: 6px 0;
+}
+.onto-tip-section {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #06b6d4;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.onto-tip-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2px;
+}
+.onto-tip-k {
+  font-size: 9px;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.onto-tip-v {
+  font-size: 10px;
+  color: #06b6d4;
+}
+.onto-tip-hash {
+  font-size: 8px;
+  color: #666;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.onto-tip-status {
+  font-size: 9px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 2px;
+}
+.onto-st-sandbox {
+  background: rgba(6,182,212,0.12);
+  color: #06b6d4;
+}
+.onto-st-pass {
+  background: rgba(0,255,136,0.12);
+  color: #00ff88;
+}
+.onto-st-fail {
+  background: rgba(220,38,38,0.12);
+  color: #dc2626;
+}

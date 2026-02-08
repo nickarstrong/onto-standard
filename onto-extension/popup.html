@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  width: 300px;
+  background: #0a0a0a;
+  color: #e0e0e0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 13px;
+  padding: 16px;
+}
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.logo {
+  font-size: 20px;
+  font-weight: 800;
+  font-family: 'SF Mono', monospace;
+  color: #00ff88;
+  letter-spacing: -1px;
+}
+.tagline {
+  font-size: 11px;
+  color: #666;
+}
+.section { margin-bottom: 14px; }
+.section-label {
+  font-size: 10px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+}
+.status-dot.green { background: #00ff88; }
+.status-dot.yellow { background: #d97706; }
+.status-dot.red { background: #dc2626; }
+.status-dot.cyan { background: #06b6d4; }
+.status-value {
+  font-family: 'SF Mono', monospace;
+  font-size: 12px;
+  color: #aaa;
+}
+.input-group { margin-bottom: 10px; }
+.input-group label {
+  display: block;
+  font-size: 10px;
+  color: #666;
+  margin-bottom: 4px;
+}
+.input-group input {
+  width: 100%;
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 4px;
+  padding: 6px 8px;
+  color: #e0e0e0;
+  font-size: 12px;
+  font-family: 'SF Mono', monospace;
+  outline: none;
+}
+.input-group input:focus { border-color: #00ff88; }
+.btn {
+  width: 100%;
+  padding: 7px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.15s;
+}
+.btn:hover { opacity: 0.85; }
+.btn-primary { background: #00ff88; color: #000; }
+.btn-secondary { background: transparent; border: 1px solid #222; color: #888; }
+.footer {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  text-align: center;
+}
+.footer a { color: #00ff88; text-decoration: none; font-size: 11px; }
+.footer a:hover { text-decoration: underline; }
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.stat-card {
+  background: #111;
+  border: 1px solid #1a1a1a;
+  border-radius: 6px;
+  padding: 10px;
+  text-align: center;
+}
+.stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  font-family: 'SF Mono', monospace;
+}
+.stat-label {
+  font-size: 9px;
+  color: #555;
+  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.engine-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 11px;
+}
+.engine-label { color: #555; text-transform: uppercase; letter-spacing: 0.3px; font-size: 9px; }
+.engine-val { font-family: 'SF Mono', monospace; font-size: 11px; }
+.engine-val.rust { color: #06b6d4; }
+.engine-val.fallback { color: #d97706; }
+.engine-val.none { color: #555; }
+.toast {
+  background: #00ff88;
+  color: #000;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 10px;
+  display: none;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="logo">&sigma; ONTO</span>
+  <span class="tagline">AI Risk Check</span>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="stats">
+  <div class="stat-card">
+    <div class="stat-value" id="stat-today" style="color:#00ff88">&mdash;</div>
+    <div class="stat-label">Checked today</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" id="stat-remaining">&mdash;</div>
+    <div class="stat-label">Remaining</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="status-row">
+    <span><span class="status-dot green" id="status-dot"></span><span id="status-text">Active</span></span>
+    <span class="status-value" id="tier-text">Free &middot; 50/day</span>
+  </div>
+  <div class="engine-row">
+    <span class="engine-label">Engine</span>
+    <span class="engine-val" id="engine-val">checking...</span>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">API Key (optional &mdash; for higher limits)</div>
+  <div class="input-group">
+    <input type="password" id="api-key-input" placeholder="onto_xxxxxxxxxx">
+  </div>
+  <button class="btn btn-primary" id="save-btn" onclick="saveKey()">Save</button>
+</div>
+
+<div class="section" style="margin-top:10px">
+  <button class="btn btn-secondary" onclick="chrome.tabs.create({url:'https://ontostandard.org/app/'})">Open Dashboard</button>
+</div>
+
+<div class="footer">
+  <a href="https://ontostandard.org" target="_blank">ontostandard.org</a>
+  <span style="color:#333;margin:0 6px">&middot;</span>
+  <a href="https://ontostandard.org/docs/" target="_blank">Docs</a>
+  <span style="color:#333;margin:0 6px">&middot;</span>
+  <a href="https://ontostandard.org/pricing/" target="_blank">Pricing</a>
+</div>
+
+<script>
+async function loadState() {
+  const data = await chrome.storage.sync.get(['onto_api_key', 'onto_checks_today', 'onto_checks_date']);
+
+  if (data.onto_api_key) {
+    document.getElementById('api-key-input').value = data.onto_api_key;
+    document.getElementById('tier-text').textContent = 'Registered';
+    document.getElementById('save-btn').textContent = 'Update';
+  }
+
+  const today = new Date().toDateString();
+  const count = (data.onto_checks_date === today) ? (data.onto_checks_today || 0) : 0;
+  const limit = 50;
+
+  document.getElementById('stat-today').textContent = count;
+  document.getElementById('stat-remaining').textContent = Math.max(0, limit - count);
+
+  // Check engine status
+  checkEngine();
+}
+
+async function checkEngine() {
+  const el = document.getElementById('engine-val');
+  try {
+    const r = await fetch('https://api.ontostandard.org/v1/engine/status');
+    const d = await r.json();
+    const eng = d.engine || 'none';
+    if (eng === 'rust') {
+      el.textContent = '\u26A1 Rust';
+      el.className = 'engine-val rust';
+      document.getElementById('status-dot').className = 'status-dot cyan';
+    } else if (eng === 'python_fallback') {
+      el.textContent = '\uD83D\uDC0D Fallback';
+      el.className = 'engine-val fallback';
+    } else {
+      el.textContent = 'offline';
+      el.className = 'engine-val none';
+      document.getElementById('status-dot').className = 'status-dot red';
+      document.getElementById('status-text').textContent = 'Offline';
+    }
+  } catch(e) {
+    el.textContent = 'offline';
+    el.className = 'engine-val none';
+    document.getElementById('status-dot').className = 'status-dot red';
+    document.getElementById('status-text').textContent = 'Offline';
+  }
+}
+
+async function saveKey() {
+  const key = document.getElementById('api-key-input').value.trim();
+
+  if (key && !key.startsWith('onto_')) {
+    showToast('Key should start with onto_', true);
+    return;
+  }
+
+  if (key) {
+    await chrome.storage.sync.set({ onto_api_key: key });
+    showToast('API key saved');
+    document.getElementById('save-btn').textContent = 'Update';
+    document.getElementById('tier-text').textContent = 'Registered';
+  } else {
+    await chrome.storage.sync.remove('onto_api_key');
+    showToast('API key removed');
+    document.getElementById('save-btn').textContent = 'Save';
+    document.getElementById('tier-text').textContent = 'Free \u00B7 50/day';
+  }
+}
+
+function showToast(msg, isError) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  t.style.background = isError ? '#dc2626' : '#00ff88';
+  t.style.color = isError ? '#fff' : '#000';
+  setTimeout(() => { t.style.display = 'none'; }, 2000);
+}
+
+loadState();
+</script>
+
+</body>
+</html>
