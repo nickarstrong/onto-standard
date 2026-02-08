@@ -1145,7 +1145,7 @@ a.info-val:hover { color: var(--text); }
                         </div>
                         <div class="model-risk-badge" id="detail-risk-badge">
                             <div class="risk-value" id="detail-risk-value">—</div>
-                            <div class="risk-label">RISK SCORE</div>
+                            <div class="risk-label">SCORE</div>
                         </div>
                     </div>
                     <div class="model-metrics">
@@ -1154,6 +1154,30 @@ a.info-val:hover { color: var(--text); }
                         <div class="model-metric"><span class="mm-val" id="detail-requests">0</span><span class="mm-lbl">REQUESTS</span></div>
                         <div class="model-metric"><span class="mm-val" id="detail-compliance">—</span><span class="mm-lbl">COMPLIANCE</span></div>
                         <div class="model-metric"><span class="mm-val" id="detail-last-eval">—</span><span class="mm-lbl">LAST EVAL</span></div>
+                    </div>
+                </div>
+                <!-- Core Signals -->
+                <div class="signal-compact" id="detail-core-signals" style="display:none">
+                    <div class="signal-compact-left">
+                        <span class="signal-compact-label">Core Signals</span>
+                    </div>
+                    <div style="display:flex;gap:20px;align-items:center">
+                        <div style="text-align:center">
+                            <div id="detail-coverage" style="font-size:14px;font-weight:600;font-family:'JetBrains Mono',monospace">—</div>
+                            <div style="font-size:9px;color:var(--text-muted);letter-spacing:0.5px">COVERAGE</div>
+                        </div>
+                        <div style="text-align:center">
+                            <div id="detail-calibration-core" style="font-size:14px;font-weight:600;font-family:'JetBrains Mono',monospace">—</div>
+                            <div style="font-size:9px;color:var(--text-muted);letter-spacing:0.5px">CALIBRATION</div>
+                        </div>
+                        <div style="text-align:center">
+                            <div id="detail-trace" style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--text-muted);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">—</div>
+                            <div style="font-size:9px;color:var(--text-muted);letter-spacing:0.5px">TRACE</div>
+                        </div>
+                        <div style="text-align:center">
+                            <div id="detail-engine" style="font-size:12px">—</div>
+                            <div style="font-size:9px;color:var(--text-muted);letter-spacing:0.5px">ENGINE</div>
+                        </div>
                     </div>
                 </div>
                 <div class="dash-grid-2col">
@@ -1245,6 +1269,20 @@ a.info-val:hover { color: var(--text); }
                             <div style="text-align:center;padding:10px 6px;background:var(--bg-card);border-radius:6px;border:1px solid var(--border)">
                                 <div id="eval-res-calibration" style="font-size:16px;font-weight:600">—</div>
                                 <div style="font-size:10px;color:var(--text-muted);margin-top:2px">CALIBRATION</div>
+                            </div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+                            <div style="text-align:center;padding:8px 6px;background:var(--bg-card);border-radius:6px;border:1px solid var(--border)">
+                                <div id="eval-res-coverage" style="font-size:14px;font-weight:600;font-family:'SF Mono',monospace">—</div>
+                                <div style="font-size:10px;color:var(--text-muted);margin-top:2px">COVERAGE</div>
+                            </div>
+                            <div style="text-align:center;padding:8px 6px;background:var(--bg-card);border-radius:6px;border:1px solid var(--border)">
+                                <div id="eval-res-core-cal" style="font-size:14px;font-weight:600;font-family:'SF Mono',monospace">—</div>
+                                <div style="font-size:10px;color:var(--text-muted);margin-top:2px">CORE CAL.</div>
+                            </div>
+                            <div style="text-align:center;padding:8px 6px;background:var(--bg-card);border-radius:6px;border:1px solid var(--border)">
+                                <div id="eval-res-trace" style="font-size:10px;font-family:'SF Mono',monospace;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">—</div>
+                                <div style="font-size:10px;color:var(--text-muted);margin-top:2px">TRACE</div>
                             </div>
                         </div>
                         <div id="eval-res-factors" style="margin-bottom:10px"></div>
@@ -3811,6 +3849,30 @@ async function openModelDetail(id) {
     compEl.textContent = m.compliance;
     compEl.className = 'mm-val ' + (m.compliance === 'PASSED' ? 'passed' : m.compliance === 'REVIEW' ? 'review' : 'failed');
     document.getElementById('detail-last-eval').textContent = m.last_eval;
+
+    // Core Signals in detail panel
+    var corePanel = document.getElementById('detail-core-signals');
+    if (corePanel && (m.u_recall != null || m.ece != null || m.proof_hash)) {
+        corePanel.style.display = 'flex';
+        var covD = document.getElementById('detail-coverage');
+        if (covD && m.u_recall != null) {
+            var uv = uiClamp(parseFloat(m.u_recall));
+            covD.textContent = uv.toFixed(4);
+            covD.style.color = uv >= 0.75 ? 'var(--accent)' : uv >= 0.5 ? '#d97706' : '#dc2626';
+        }
+        var calD = document.getElementById('detail-calibration-core');
+        if (calD && m.ece != null) {
+            var ev = uiClamp(parseFloat(m.ece));
+            calD.textContent = ev.toFixed(4);
+            calD.style.color = ev <= 0.1 ? 'var(--accent)' : ev <= 0.3 ? '#d97706' : '#dc2626';
+        }
+        var trD = document.getElementById('detail-trace');
+        if (trD && m.proof_hash) { trD.textContent = m.proof_hash; trD.title = m.proof_hash; }
+        var engD = document.getElementById('detail-engine');
+        if (engD && m.engine) { engD.textContent = m.engine === 'rust' ? '\u26A1 Rust' : '\uD83D\uDC0D Fallback'; }
+    } else if (corePanel) {
+        corePanel.style.display = 'none';
+    }
     
     // Load evaluations from API
     const apiKey = localStorage.getItem('onto_first_api_key');
@@ -3958,13 +4020,15 @@ async function submitEvaluation() {
     }
 }
 
+function uiClamp(v){return Math.max(0.05,Math.min(0.95,v))}
+
 function displayEvalResults(data) {
     document.getElementById('eval-form-area').style.display = 'none';
     const results = document.getElementById('eval-results');
     results.style.display = 'block';
     
-    // Risk score color
-    const risk = data.risk_score ?? 0;
+    // Risk score color (clamped for display)
+    const risk = uiClamp(data.risk_score ?? 0);
     const riskEl = document.getElementById('eval-res-risk');
     riskEl.textContent = risk.toFixed(2);
     riskEl.style.color = risk < 0.3 ? 'var(--accent)' : risk < 0.6 ? '#d97706' : '#dc2626';
@@ -3975,7 +4039,8 @@ function displayEvalResults(data) {
     // Compliance
     const compEl = document.getElementById('eval-res-compliance');
     const comp = data.compliance || 'PENDING';
-    compEl.textContent = comp;
+    var compDisplay = {'PASSED':'Clear','REVIEW':'Review','FAILED':'Elevated'};
+    compEl.textContent = compDisplay[comp] || comp;
     compEl.style.color = comp === 'PASSED' ? 'var(--accent)' : comp === 'FAILED' ? '#dc2626' : '#d97706';
     
     // Calibration
@@ -3985,19 +4050,19 @@ function displayEvalResults(data) {
     // Factors breakdown
     const factors = data.factors || {};
     const factorNames = {
-        linguistic_uncertainty: 'Linguistic Uncertainty',
-        confidence_calibration: 'Confidence Calibration',
-        logprob_entropy: 'Logprob Entropy',
-        semantic_consistency: 'Semantic Consistency',
-        ground_truth_accuracy: 'Ground Truth Accuracy',
-        refusal_awareness: 'Refusal Awareness',
-        domain_risk: 'Domain Risk'
+        linguistic_uncertainty: 'Linguistic',
+        confidence_calibration: 'Confidence',
+        logprob_entropy: 'Entropy',
+        semantic_consistency: 'Semantic',
+        ground_truth_accuracy: 'Accuracy',
+        refusal_awareness: 'Refusal',
+        domain_risk: 'Domain'
     };
     const factorsEl = document.getElementById('eval-res-factors');
     const factorKeys = Object.keys(factors);
     if (factorKeys.length) {
         factorsEl.innerHTML = factorKeys.map(k => {
-            const v = factors[k];
+            const v = (typeof uiClamp === 'function') ? uiClamp(factors[k]) : factors[k];
             const pct = Math.min(v * 100, 100);
             const cls = v < 0.3 ? 'low' : v < 0.6 ? 'medium' : 'high';
             const barColor = v < 0.3 ? 'var(--accent)' : v < 0.6 ? '#d97706' : '#dc2626';
@@ -4022,6 +4087,29 @@ function displayEvalResults(data) {
             '</div>';
     } else {
         recsEl.innerHTML = '';
+    }
+    
+    // Core Signals (Coverage, Calibration, Trace)
+    var ur = data.u_recall;
+    var ec = data.ece;
+    var ph = data.proof_hash;
+    
+    var covEl = document.getElementById('eval-res-coverage');
+    if (covEl && ur != null) {
+        var urv = uiClamp(parseFloat(ur));
+        covEl.textContent = urv.toFixed(4);
+        covEl.style.color = urv >= 0.75 ? 'var(--accent)' : urv >= 0.5 ? '#d97706' : '#dc2626';
+    }
+    var calCoreEl = document.getElementById('eval-res-core-cal');
+    if (calCoreEl && ec != null) {
+        var ecv = uiClamp(parseFloat(ec));
+        calCoreEl.textContent = ecv.toFixed(4);
+        calCoreEl.style.color = ecv <= 0.1 ? 'var(--accent)' : ecv <= 0.3 ? '#d97706' : '#dc2626';
+    }
+    var traceEl = document.getElementById('eval-res-trace');
+    if (traceEl && ph) {
+        traceEl.textContent = ph;
+        traceEl.title = ph;
     }
 }
 
