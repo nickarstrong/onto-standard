@@ -1968,6 +1968,14 @@ print(result.risk_score, result.layer, result.compliance)</code></pre>
     }
 })();
 
+// === AUTH GUARD ===
+(function() {
+    if (localStorage.getItem('onto_logged_in') !== 'true' || !localStorage.getItem('onto_first_api_key')) {
+        window.location.href = '/app/login/';
+        return;
+    }
+})();
+
 // === API CONFIG ===
 const API_BASE = 'https://api.ontostandard.org';
 let authToken = null;
