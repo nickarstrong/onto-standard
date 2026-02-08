@@ -506,12 +506,14 @@ a.info-val:hover { color: var(--text); }
 .mc-risk.low { color: var(--accent); }
 .mc-risk.medium { color: #d97706; }
 .mc-risk.high { color: #dc2626; }
+.mc-risk.pending { color: var(--text-muted); }
 .mc-row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
 .mc-layer { font-size: 11px; font-weight: 500; color: var(--text-secondary); background: var(--bg-elevated); padding: 2px 8px; border-radius: 3px; }
 .mc-compliance { font-size: 10px; font-weight: 600; }
 .mc-compliance.passed { color: var(--accent); }
 .mc-compliance.review { color: #d97706; }
 .mc-compliance.failed { color: #dc2626; }
+.mc-compliance.pending { color: var(--text-muted); }
 .mc-calibration { width: 100%; height: 3px; background: var(--border); border-radius: 2px; margin-top: 10px; overflow: hidden; }
 .mc-calibration-fill { height: 100%; border-radius: 2px; background: var(--accent); transition: width .3s; }
 .mc-cal-label { font-size: 9px; color: var(--text-muted); margin-top: 4px; }
@@ -1131,7 +1133,10 @@ a.info-val:hover { color: var(--text); }
 
             <!-- Model Detail (shown on click) -->
             <div class="model-detail-panel" id="model-detail" style="display:none">
-                <div class="detail-back" onclick="closeModelDetail()">← All Models</div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                    <div class="detail-back" onclick="closeModelDetail()" style="margin-bottom:0">← All Models</div>
+                    <button onclick="deleteModel()" id="detail-delete-btn" style="background:transparent;border:1px solid #dc2626;color:#dc2626;padding:4px 12px;border-radius:4px;font-size:11px;cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.background='#dc2626';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='#dc2626'">Delete Model</button>
+                </div>
                 <div class="model-status-card">
                     <div class="model-header">
                         <div class="model-info">
@@ -2679,6 +2684,15 @@ function updateDashboardMetrics() {
     if (nameEl) nameEl.textContent = planNames[plan] || 'Open';
     if (rateEl) rateEl.textContent = rateLimits[plan] || '1 request / hour';
     
+    // Show model/eval counts from loaded data
+    if (callsEl) {
+        const modelCount = models.length;
+        const evalCount = models.reduce((sum, m) => sum + (m.requests || 0), 0);
+        const tierLimits = { free: 5, business: 20, enterprise: 100 };
+        const limit = tierLimits[plan] || 5;
+        callsEl.textContent = modelCount + ' / ' + limit + ' models · ' + evalCount + ' evals';
+    }
+    
     // Hide upgrade for paid plans
     if (upgradeBtn) upgradeBtn.style.display = plan === 'free' ? 'block' : 'none';
     
@@ -3565,6 +3579,11 @@ async function loadModels() {
     const apiKey = localStorage.getItem('onto_first_api_key');
     if (!apiKey) return;
     
+    const grid = document.getElementById('models-grid');
+    if (grid && !models.length) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 0;color:var(--text-muted);font-size:12px">Loading models...</div>';
+    }
+    
     try {
         const resp = await fetch(`${API_BASE}/v1/models`, {
             headers: { 'x-api-key': apiKey }
@@ -3590,10 +3609,12 @@ async function loadModels() {
         
         renderModelsGrid();
         renderComparison('risk');
+        updateDashboardMetrics();
     } catch (err) {
         console.warn('[ONTO] loadModels failed:', err.message);
         renderModelsGrid();
         renderComparison('risk');
+        updateDashboardMetrics();
     }
 }
 
@@ -3617,19 +3638,25 @@ function renderModelsGrid() {
         return;
     }
     grid.innerHTML = models.map(m => {
-        const rc = m.risk_score < 0.3 ? 'low' : m.risk_score < 0.6 ? 'medium' : 'high';
-        const cc = m.compliance === 'PASSED' ? 'passed' : m.compliance === 'REVIEW' ? 'review' : 'failed';
+        const hasRisk = m.risk_score > 0;
+        const rc = !hasRisk ? 'pending' : m.risk_score < 0.3 ? 'low' : m.risk_score < 0.6 ? 'medium' : 'high';
+        const hasCal = m.calibration > 0;
+        const cc = m.compliance === 'PASSED' ? 'passed' : m.compliance === 'REVIEW' ? 'review' : m.compliance === 'FAILED' ? 'failed' : 'pending';
+        const compLabel = m.compliance || 'PENDING';
+        const riskDisplay = hasRisk ? m.risk_score.toFixed(2) : '—';
+        const calDisplay = hasCal ? m.calibration + '% calibrated' : 'Not evaluated';
+        const calWidth = hasCal ? m.calibration : 0;
         return `<div class="model-card" onclick="openModelDetail('${m.id}')">
             <div class="mc-alert ${m.alert}"></div>
             <div class="mc-name">${m.name}</div>
             <div class="mc-provider">${m.provider}</div>
-            <div class="mc-risk ${rc}">${m.risk_score.toFixed(2)}</div>
+            <div class="mc-risk ${rc}">${riskDisplay}</div>
             <div class="mc-row">
                 <span class="mc-layer">${m.layer}</span>
-                <span class="mc-compliance ${cc}">${m.compliance}</span>
+                <span class="mc-compliance ${cc}">${compLabel}</span>
             </div>
-            <div class="mc-calibration"><div class="mc-calibration-fill" style="width:${m.calibration}%"></div></div>
-            <div class="mc-cal-label">${m.calibration}% calibrated</div>
+            <div class="mc-calibration"><div class="mc-calibration-fill" style="width:${calWidth}%"></div></div>
+            <div class="mc-cal-label">${calDisplay}</div>
         </div>`;
     }).join('');
 }
@@ -3657,7 +3684,7 @@ function renderComparison(metric) {
         bestLabel = 'Best calibrated';
     } else {
         values = models.map(m => m.requests);
-        maxVal = Math.max(...values);
+        maxVal = Math.max(...values, 1);
         bestIdx = values.indexOf(Math.max(...values));
         bestLabel = 'Most evaluated';
     }
@@ -3682,9 +3709,12 @@ function switchCompare(metric, el) {
     renderComparison(metric);
 }
 
+let currentModelId = null;
+
 async function openModelDetail(id) {
     const m = models.find(x => x.id === id);
     if (!m) return;
+    currentModelId = id;
     
     document.getElementById('models-grid').style.display = 'none';
     document.getElementById('comparison-card').style.display = 'none';
@@ -3775,6 +3805,32 @@ function closeModelDetail() {
     document.getElementById('model-detail').style.display = 'none';
     document.getElementById('models-grid').style.display = '';
     document.getElementById('comparison-card').style.display = '';
+    currentModelId = null;
+}
+
+async function deleteModel() {
+    if (!currentModelId) return;
+    const m = models.find(x => x.id === currentModelId);
+    const name = m ? m.name : currentModelId;
+    
+    if (!confirm('Delete model "' + name + '"? This action cannot be undone.')) return;
+    
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    try {
+        const resp = await fetch(`${API_BASE}/v1/models/${currentModelId}`, {
+            method: 'DELETE',
+            headers: { 'x-api-key': apiKey }
+        });
+        if (!resp.ok) {
+            const data = await resp.json().catch(() => ({}));
+            throw new Error(data.detail || 'Delete failed');
+        }
+        closeModelDetail();
+        showToast('Model "' + name + '" deleted', 'success');
+        await loadModels();
+    } catch (err) {
+        showToast(err.message, 'error');
+    }
 }
 
 function showAddModelModal() {
