@@ -4,15 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ONTO — Check AI Risk</title>
-<meta name="description" content="Free AI output risk check. Paste any AI response and get instant epistemic risk scoring with ECE, U-Recall, and cryptographic proof from ONTO Standard.">
+<meta name="description" content="Free AI output risk check. Paste any AI response and get instant signal analysis with calibration, coverage, and verifiable trace from ONTO Standard.">
 <meta name="keywords" content="AI risk, AI safety, epistemic risk, AI evaluation, AI trust, ONTO Standard, AI check, ECE, U-Recall">
 <meta property="og:title" content="ONTO Check — Is Your AI Trustworthy?">
-<meta property="og:description" content="Paste any AI response. Get instant risk score with ECE, U-Recall, and verifiable proof. Free, no registration.">
+<meta property="og:description" content="Paste any AI response. Get instant risk score with calibration analysis and verifiable trace. Free, no registration.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://ontostandard.org/check/">
 <link rel="canonical" href="https://ontostandard.org/check/">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='17' fill='white'/%3E%3Cpath d='M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z' fill='%230a0a0a'/%3E%3C/svg%3E">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"ONTO Check","description":"Free AI output epistemic risk scoring tool with ECE, U-Recall, and cryptographic proof","url":"https://ontostandard.org/check/","applicationCategory":"UtilityApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"ONTO Standard","url":"https://ontostandard.org"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"ONTO Check","description":"Free AI output risk signal analysis tool","url":"https://ontostandard.org/check/","applicationCategory":"UtilityApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"ONTO Standard","url":"https://ontostandard.org"}}</script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0a0a0a;--bg-s:#121212;--bg-c:#1a1a1a;--bg-e:#242424;--border:#333;--text:#fafafa;--text-s:#a0a0a0;--text-m:#606060;--accent:#15803d;--accent-s:rgba(21,128,61,.15);--danger:#dc2626;--danger-s:rgba(220,38,38,.15);--warning:#d97706;--warning-s:rgba(217,119,6,.15);--cyan:#06b6d4;--cyan-s:rgba(6,182,212,.12)}
@@ -212,8 +212,8 @@ code{font-family:'JetBrains Mono','SF Mono',Consolas,monospace;font-size:11px}
 <div class="page-meta">
 <span class="badge bg-g">Free</span>
 <span class="badge bg-b">50/day</span>
-<span class="badge bg-c">ECE + U-Recall</span>
-<span>Paste any AI response &mdash; get certified epistemic risk score</span>
+<span class="badge bg-c">Calibrated</span>
+<span>Paste any AI response &mdash; get instant risk signal analysis</span>
 </div>
 
 <div class="check-card">
@@ -236,14 +236,14 @@ code{font-family:'JetBrains Mono','SF Mono',Consolas,monospace;font-size:11px}
 
 <div class="loading" id="loading">
 <span class="ld"></span><span class="ld"></span><span class="ld"></span>
-<div class="lt">Evaluating &mdash; ECE &middot; U-Recall &middot; 7 risk factors...</div>
+<div class="lt">Analyzing &mdash; calibration &middot; coverage &middot; 7 signals...</div>
 </div>
 
 <div class="result" id="result">
 <div class="r-header">
 <div class="r-circle" id="r-circle">
 <div class="r-score" id="r-score">&mdash;</div>
-<div class="r-label">risk</div>
+<div class="r-label">score</div>
 </div>
 <div class="r-meta">
 <div class="r-tags">
@@ -255,19 +255,19 @@ code{font-family:'JetBrains Mono','SF Mono',Consolas,monospace;font-size:11px}
 </div>
 </div>
 
-<!-- ONTO Certification Panel -->
+<!-- Signal Analysis Panel -->
 <div class="r-cert" id="r-cert">
 <div class="r-cert-title">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-ONTO Certification
+Signal Analysis
 </div>
 <div class="cert-grid">
 <div class="cert-item">
-<span class="cert-k">U-Recall</span>
+<span class="cert-k">Coverage</span>
 <span class="cert-v" id="c-urecall">&mdash;</span>
 </div>
 <div class="cert-item">
-<span class="cert-k">ECE</span>
+<span class="cert-k">Calibration</span>
 <span class="cert-v" id="c-ece">&mdash;</span>
 </div>
 <div class="cert-item">
@@ -279,14 +279,14 @@ ONTO Certification
 <span id="c-status"></span>
 </div>
 <div class="cert-item cert-proof">
-<span class="cert-k">Proof Hash</span>
+<span class="cert-k">Trace</span>
 <span class="cert-v" id="c-proof">&mdash;</span>
 </div>
 </div>
 </div>
 
 <div class="r-factors">
-<div class="r-ftitle">Factor Breakdown</div>
+<div class="r-ftitle">Risk Signals</div>
 <div id="factors"></div>
 </div>
 <div class="r-recs" id="recs-section">
@@ -309,25 +309,25 @@ ONTO Certification
 <div class="info-grid">
 <div class="info-card">
 <div class="info-icon">&#128300;</div>
-<div class="info-title">ECE + U-Recall</div>
-<div class="info-desc">Expected Calibration Error and Uncertainty Recall &mdash; real metrics, not keyword counting.</div>
+<div class="info-title">Calibration + Coverage</div>
+<div class="info-desc">Measures how well uncertainty is calibrated and how consistently signals are detected across the response.</div>
 </div>
 <div class="info-card">
 <div class="info-icon">&#128271;</div>
-<div class="info-title">Proof Hash</div>
-<div class="info-desc">Every evaluation generates a cryptographic proof tied to &sigma;(t) signal. Verifiable, tamper-proof.</div>
+<div class="info-title">Verifiable Trace</div>
+<div class="info-desc">Every evaluation generates a unique trace tied to a live signal. Reproducible and tamper-evident.</div>
 </div>
 <div class="info-card">
 <div class="info-icon">&#9889;</div>
-<div class="info-title">No AI in the Loop</div>
-<div class="info-desc">Deterministic scoring engine. No LLM calls. Instant results, reproducible, verifiable.</div>
+<div class="info-title">Deterministic</div>
+<div class="info-desc">No AI in the loop. Scoring engine is rule-based. Same input, same output, every time.</div>
 </div>
 </div>
 
 <div class="layers-row">
-<div class="layer l3"><div class="layer-n">L3 PASSED</div><div class="layer-r">Risk &lt; 0.35</div></div>
-<div class="layer l2"><div class="layer-n">L2 REVIEW</div><div class="layer-r">Risk 0.35 &mdash; 0.65</div></div>
-<div class="layer l1"><div class="layer-n">L1 FAILED</div><div class="layer-r">Risk &gt; 0.65</div></div>
+<div class="layer l3"><div class="layer-n">L3 Clear</div><div class="layer-r">Score &lt; 0.35</div></div>
+<div class="layer l2"><div class="layer-n">L2 Review</div><div class="layer-r">Score 0.35 &mdash; 0.65</div></div>
+<div class="layer l1"><div class="layer-n">L1 Elevated</div><div class="layer-r">Score &gt; 0.65</div></div>
 </div>
 
 <div class="cta">
@@ -382,16 +382,22 @@ return r.json();
 .then(function(){btn.disabled=false;btn.textContent='\u03C3 Check Risk';hide('loading')});
 }
 
+// п.3: UI clamp — never show absolute 0.0 or 1.0
+function uiClamp(v){return Math.max(0.05,Math.min(0.95,v))}
+
 function displayResult(d){
-var risk=parseFloat(d.risk_score||0);
+var risk=uiClamp(parseFloat(d.risk_score||0));
 var cls=risk<0.35?'low':risk<0.65?'medium':'high';
 var layer=d.layer||(risk<0.35?'L3':risk<0.65?'L2':'L1');
 var comp=d.compliance||(risk<0.35?'PASSED':risk<0.65?'REVIEW':'FAILED');
+// Stealth display labels
+var compDisplay={'PASSED':'Clear','REVIEW':'Review','FAILED':'Elevated'};
+var compText=compDisplay[comp]||comp;
 document.getElementById('r-circle').className='r-circle '+cls;
 document.getElementById('r-score').textContent=risk.toFixed(2);
 document.getElementById('r-layer').textContent=layer;
-var ce=document.getElementById('r-compliance');ce.textContent=comp;ce.className='r-tag c-'+comp;
-var sm={low:'Low epistemic risk. Strong calibration indicators.',medium:'Moderate risk. Some uncertainty signals detected.',high:'High risk. Significant calibration issues found.'};
+var ce=document.getElementById('r-compliance');ce.textContent=compText;ce.className='r-tag c-'+comp;
+var sm={low:'Low signal activity. Response appears well-calibrated.',medium:'Moderate signal activity. Some areas may benefit from review.',high:'Elevated signal activity. Multiple indicators suggest caution.'};
 document.getElementById('r-summary').textContent=sm[cls];
 
 // Engine tag
@@ -409,12 +415,12 @@ certEl.style.display='block';
 
 var ur=parseFloat(d.u_recall);
 var urEl=document.getElementById('c-urecall');
-if(!isNaN(ur)){urEl.textContent=ur.toFixed(4);urEl.className='cert-v '+(ur>=0.75?'good':ur>=0.5?'warn':'bad')}
+if(!isNaN(ur)){ur=uiClamp(ur);urEl.textContent=ur.toFixed(4);urEl.className='cert-v '+(ur>=0.75?'good':ur>=0.5?'warn':'bad')}
 else{urEl.textContent='\u2014';urEl.className='cert-v'}
 
 var ece=parseFloat(d.ece);
 var eceEl=document.getElementById('c-ece');
-if(!isNaN(ece)){eceEl.textContent=ece.toFixed(4);eceEl.className='cert-v '+(ece<=0.1?'good':ece<=0.3?'warn':'bad')}
+if(!isNaN(ece)){ece=uiClamp(ece);eceEl.textContent=ece.toFixed(4);eceEl.className='cert-v '+(ece<=0.1?'good':ece<=0.3?'warn':'bad')}
 else{eceEl.textContent='\u2014';eceEl.className='cert-v'}
 
 document.getElementById('c-sigma').textContent=d.sigma_id||'\u2014';
@@ -447,22 +453,25 @@ var k=allFactors[i][0],label=allFactors[i][1];
 var raw=f[k];
 var nv=(raw!=null)?parseFloat(raw):NaN;
 var hasVal=!isNaN(nv);
+if(hasVal)nv=uiClamp(nv);
 var p=hasVal?Math.min(nv*100,100):0;
 var c=hasVal?(nv<0.3?'var(--accent)':nv<0.6?'var(--warning)':'var(--danger)'):'var(--bg-e)';
 fh+='<div class="f-row'+(hasVal?'':' disabled')+'"><span class="f-name">'+label+'</span><div class="f-bar"><div class="f-fill" style="width:'+p+'%;background:'+c+'"></div></div><span class="f-val'+(hasVal?'':' na')+'">'+(hasVal?nv.toFixed(2):'N/A')+'</span></div>';
 }
-// ECE + U-Recall bars
+// Coverage + Calibration bars
 if(d.u_recall!=null||d.ece!=null){
-fh+='<div class="f-sep"></div><div class="f-section">ONTO Core Metrics</div>';
+fh+='<div class="f-sep"></div><div class="f-section">Core Signals</div>';
 var ur=parseFloat(d.u_recall);
 if(!isNaN(ur)){
+ur=uiClamp(ur);
 var urC=ur>=0.75?'var(--accent)':ur>=0.5?'var(--warning)':'var(--danger)';
-fh+='<div class="f-row"><span class="f-name">U-Recall</span><div class="f-bar"><div class="f-fill" style="width:'+Math.min(ur*100,100)+'%;background:'+urC+'"></div></div><span class="f-val">'+ur.toFixed(2)+'</span></div>';
+fh+='<div class="f-row"><span class="f-name">Coverage</span><div class="f-bar"><div class="f-fill" style="width:'+Math.min(ur*100,100)+'%;background:'+urC+'"></div></div><span class="f-val">'+ur.toFixed(2)+'</span></div>';
 }
 var ec=parseFloat(d.ece);
 if(!isNaN(ec)){
+ec=uiClamp(ec);
 var ecC=ec<=0.1?'var(--accent)':ec<=0.3?'var(--warning)':'var(--danger)';
-fh+='<div class="f-row"><span class="f-name">ECE</span><div class="f-bar"><div class="f-fill" style="width:'+Math.min(ec*100,100)+'%;background:'+ecC+'"></div></div><span class="f-val">'+ec.toFixed(2)+'</span></div>';
+fh+='<div class="f-row"><span class="f-name">Calibration</span><div class="f-bar"><div class="f-fill" style="width:'+Math.min(ec*100,100)+'%;background:'+ecC+'"></div></div><span class="f-val">'+ec.toFixed(2)+'</span></div>';
 }
 }
 document.getElementById('factors').innerHTML=fh;
@@ -495,7 +504,7 @@ function resetCheck(){ta.value='';cc.textContent='0 chars';hide('result');docume
 function copyResult(){
 if(!lastResult)return;
 var lines=['ONTO Check: Risk '+(lastResult.risk_score!=null?lastResult.risk_score.toFixed(2):'?')+' | '+lastResult.layer+' | '+lastResult.compliance];
-if(lastResult.u_recall!=null)lines.push('U-Recall: '+parseFloat(lastResult.u_recall).toFixed(4)+' | ECE: '+parseFloat(lastResult.ece).toFixed(4));
+if(lastResult.u_recall!=null)lines.push('Coverage: '+parseFloat(lastResult.u_recall).toFixed(4)+' | Calibration: '+parseFloat(lastResult.ece).toFixed(4));
 if(lastResult.proof_hash)lines.push('Proof: '+lastResult.proof_hash);
 if(lastResult.sigma_id)lines.push('Signal: '+lastResult.sigma_id);
 lines.push('https://ontostandard.org/check/');
@@ -512,7 +521,7 @@ var b=event.target;b.textContent='\u2713 Proof Copied';setTimeout(function(){b.t
 
 function shareResult(){
 if(!lastResult)return;
-var t='AI risk: '+(lastResult.risk_score!=null?lastResult.risk_score.toFixed(2):'?')+' | U-Recall: '+lastResult.u_recall+' | ECE: '+lastResult.ece+' \u2014 ONTO Standard';
+var t='AI risk: '+(lastResult.risk_score!=null?lastResult.risk_score.toFixed(2):'?')+' | Coverage: '+lastResult.u_recall+' | Calibration: '+lastResult.ece+' \u2014 ONTO Standard';
 var u='https://ontostandard.org/check/';
 if(navigator.share){navigator.share({title:'ONTO Check',text:t,url:u})}
 else{navigator.clipboard.writeText(t+'\n'+u);var b=event.target;b.textContent='\u2713 Copied';setTimeout(function(){b.textContent='\u2197 Share'},1500)}
