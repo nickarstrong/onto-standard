@@ -323,6 +323,33 @@ async def init_db():
                 )
             """)
             
+            # Add subscription_ends_at to organizations (if not exists)
+            sea_exists = await conn.fetchval("""
+                SELECT 1 FROM information_schema.columns 
+                WHERE table_name = 'organizations' AND column_name = 'subscription_ends_at'
+            """)
+            if not sea_exists:
+                await conn.execute("ALTER TABLE organizations ADD COLUMN subscription_ends_at TIMESTAMP WITH TIME ZONE DEFAULT NULL")
+                print("[API] Migration: added subscription_ends_at to organizations")
+            
+            # Ensure is_banned column exists
+            ib_exists = await conn.fetchval("""
+                SELECT 1 FROM information_schema.columns 
+                WHERE table_name = 'organizations' AND column_name = 'is_banned'
+            """)
+            if not ib_exists:
+                await conn.execute("ALTER TABLE organizations ADD COLUMN is_banned BOOLEAN DEFAULT false")
+                print("[API] Migration: added is_banned to organizations")
+            
+            # Ensure portal_api_key column exists
+            pak_exists = await conn.fetchval("""
+                SELECT 1 FROM information_schema.columns 
+                WHERE table_name = 'organizations' AND column_name = 'portal_api_key'
+            """)
+            if not pak_exists:
+                await conn.execute("ALTER TABLE organizations ADD COLUMN portal_api_key VARCHAR(255) DEFAULT NULL")
+                print("[API] Migration: added portal_api_key to organizations")
+            
             print("[API] Migrations complete")
     except Exception as e:
         print(f"[API] Database error: {e}")
