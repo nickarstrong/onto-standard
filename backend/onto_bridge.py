@@ -163,7 +163,7 @@ class LinguisticConverter:
         
         for factor_name, factor_value in factors.items():
             # Пропускаем внутренние/служебные факторы
-            if factor_name in ("domain_multiplier", "output_length"):
+            if factor_name in ("domain_multiplier", "output_length", "domain"):
                 continue
             if factor_value is None or (isinstance(factor_value, float) and math.isnan(factor_value)):
                 continue
