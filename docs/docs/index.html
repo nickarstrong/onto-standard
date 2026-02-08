@@ -208,12 +208,8 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <button class="sb-x" onclick="closeSB()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
 </div>
 <nav class="sb-nav">
-<div class="sb-auth" id="sb-auth" style="display:none">
-<div class="au"><div class="av" id="d-av">J</div><div><div class="un" id="d-un">User</div><div class="up" id="d-up">Open</div></div></div>
-<a href="/app/" class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a>
-<a href="/app/?page=settings" class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Account</a>
-</div>
-<div class="sb-si" id="sb-si"><a class="btn-si" onclick="openAuth('login')">Sign In</a><a class="btn-ca" onclick="openAuth('register')">Create Account</a></div>
+
+<div class="sb-si"><a class="btn-si" href="/app/login/">Sign In</a><a class="btn-ca" href="/app/login/">Create Account</a></div>
 <div class="ng"><h4>Standard</h4><a class="nl active" href="#ers" data-doc="ers">ONTO-ERS</a></div>
 <div class="ng"><h4>Specifications</h4><a class="nl" href="#layer-spec" data-doc="layer-spec">Layer Specification</a><a class="nl" href="#regulatory" data-doc="regulatory">Regulatory Matrix</a></div>
 <div class="ng"><h4>Governance</h4><a class="nl" href="#charter" data-doc="charter">Foundation Charter</a><a class="nl" href="#council" data-doc="council">Standards Council</a></div>
@@ -230,74 +226,6 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 
 <!-- TOAST -->
 <div class="doc-toast" id="doc-toast"></div>
-
-<!-- AUTH MODAL -->
-<div class="auth-overlay" id="auth-overlay" onclick="if(event.target===this)closeAuth()">
-<div class="auth-card">
-<button class="ac-close" onclick="closeAuth()">&times;</button>
-<div class="auth-logo"><svg width="32" height="32" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/></svg><span>ONTO</span></div>
-
-<!-- LOGIN -->
-<div id="af-login">
-<h1 class="auth-title">Welcome back</h1>
-<p class="auth-subtitle">Sign in to your account</p>
-<div class="af-group"><label class="af-label">Email</label><input type="email" class="af-input" id="af-login-email" placeholder="you@company.com"></div>
-<div class="af-group"><label class="af-label">Password</label><div class="af-pw"><input type="password" class="af-input" id="af-login-pass" placeholder="••••••••"><button type="button" class="af-pw-toggle" onclick="afTogglePw('af-login-pass',this)">👁</button></div></div>
-<button class="af-btn" id="af-login-btn" onclick="afLogin(this)">Sign In</button>
-<p class="af-switch">Don't have an account? <a onclick="afShow('register')">Create one</a></p>
-</div>
-
-<!-- REGISTER -->
-<div id="af-register" class="hidden">
-<h1 class="auth-title">Create Account</h1>
-<p class="auth-subtitle">Start with ONTO for free</p>
-<div class="af-group"><label class="af-label">Full Name</label><input type="text" class="af-input" id="af-reg-name" placeholder="John Doe"></div>
-<div class="af-group"><label class="af-label">Email</label><input type="email" class="af-input" id="af-reg-email" placeholder="you@company.com"></div>
-<div class="af-group"><label class="af-label">Password</label><div class="af-pw"><input type="password" class="af-input" id="af-reg-pass" placeholder="Min 8 characters"><button type="button" class="af-pw-toggle" onclick="afTogglePw('af-reg-pass',this)">👁</button></div></div>
-<div class="af-terms">
-<h3>ONTO Gold Asymmetric AI License v5.2</h3>
-<table><tr><th>Use</th><th>Status</th></tr><tr><td>Read, study, cite, research, evaluate</td><td>✅ Free</td></tr><tr><td>Deploy, integrate, commercialize, RAG</td><td>❌ Requires license</td></tr></table>
-<h3>1. Primary Source</h3><p>The primary source of ONTO consists of: Canonical ONTO GitHub repositories as listed at <a href="https://ontostandard.org/repos" target="_blank">ontostandard.org/repos</a> and https://ontostandard.org. Attribution to BOTH sources is mandatory.</p>
-<h3>2. Human Use</h3><p>Human reading, study, citation, discussion, critique, and academic analysis are permitted without restriction, provided explicit attribution to the primary source is included.</p>
-<h3>3. Safe Harbor</h3><p>Any non-deployed use that explicitly attributes the ONTO primary source is permitted.</p>
-<h3>4. Conditional AI Training</h3><p>AI systems may train on ONTO for evaluation and research. Such training does not grant any right to deploy, integrate, or commercialize.</p>
-<h3>5. RAG Clause</h3><p>Use in RAG systems, vector databases, semantic search indices, or real-time retrieval for user-facing inference constitutes deployment and requires a license. Internal indexing for non-user-facing purposes is covered under Safe Harbor (§3).</p>
-<h3>6. Termination</h3><p>Use outside Safe Harbor without a license automatically terminates all permissions.</p>
-<h3>Privacy Policy</h3><p>We collect minimal data necessary to provide the service. Data is processed in accordance with GDPR. We never sell your data.</p>
-<p style="margin-top:12px"><strong>Full license:</strong> <a href="https://ontostandard.org/docs/#license" target="_blank">ontostandard.org/docs/#license</a></p>
-</div>
-<div class="af-check"><input type="checkbox" id="af-terms"><label for="af-terms">I agree to the <a href="/docs#terms" target="_blank">Terms of Service</a> and <a href="/docs#privacy" target="_blank">Privacy Policy</a></label></div>
-<button class="af-btn" id="af-reg-btn" onclick="afRegister(this)" disabled>Create Account</button>
-<p class="af-switch">Already have an account? <a onclick="afShow('login')">Sign in</a></p>
-</div>
-
-<!-- OTP VERIFY -->
-<div id="af-verify" class="hidden">
-<div style="text-align:center;margin-bottom:24px"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div>
-<h1 class="auth-title">Enter verification code</h1>
-<p class="auth-subtitle">We sent a 6-digit code to</p>
-<p style="color:var(--text);font-weight:600;margin:8px 0 24px;text-align:center" id="af-verify-email"></p>
-<div class="otp-row"><input type="text" id="af-otp-1" class="otp-inp" maxlength="1" inputmode="numeric" autocomplete="one-time-code"><input type="text" id="af-otp-2" class="otp-inp" maxlength="1" inputmode="numeric"><input type="text" id="af-otp-3" class="otp-inp" maxlength="1" inputmode="numeric"><input type="text" id="af-otp-4" class="otp-inp" maxlength="1" inputmode="numeric"><input type="text" id="af-otp-5" class="otp-inp" maxlength="1" inputmode="numeric"><input type="text" id="af-otp-6" class="otp-inp" maxlength="1" inputmode="numeric"></div>
-<p id="af-otp-error" style="color:#ef4444;font-size:13px;margin-bottom:16px;display:none;text-align:center"></p>
-<button class="af-btn" id="af-verify-btn" onclick="afVerifyOTP(this)">Verify</button>
-<div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);text-align:center">
-<p style="color:var(--text-m);font-size:13px">Didn't receive the code?</p>
-<button class="af-btn-s" onclick="afResend()">Resend code</button>
-</div>
-<p style="color:var(--text-m);font-size:12px;margin-top:16px;text-align:center">Code expires in 15 minutes</p>
-<p class="af-switch" style="margin-top:16px"><a onclick="afShow('login')">Back to sign in</a></p>
-</div>
-
-<!-- VERIFY SUCCESS -->
-<div id="af-success" class="hidden">
-<div style="text-align:center;margin-bottom:24px"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-<h1 class="auth-title">Email verified!</h1>
-<p class="auth-subtitle">Your account is ready. You can now sign in.</p>
-<button class="af-btn" style="margin-top:24px" onclick="afShow('login')">Sign In</button>
-</div>
-
-</div>
-</div>
 
 <main class="mc"><div class="db">
 
@@ -925,103 +853,8 @@ Content-Type: application/json
 </div></main>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-const AF_API='https://api.ontostandard.org';
-let afPendingEmail='';
+// Auth → /app/login/
 
-function afToast(msg,type='info'){const c=document.getElementById('doc-toast'),t=document.createElement('div');t.className='dt '+type;t.textContent=msg;c.appendChild(t);setTimeout(()=>t.remove(),3000)}
-function afSetLoad(btn,on){if(on){btn.classList.add('loading');btn.disabled=true}else{btn.classList.remove('loading');btn.disabled=false}}
-function afTogglePw(id,btn){const i=document.getElementById(id);if(i.type==='password'){i.type='text';btn.textContent='🙈'}else{i.type='password';btn.textContent='👁'}}
-
-function openAuth(mode){document.getElementById('auth-overlay').classList.add('active');afShow(mode||'login');closeSB()}
-function closeAuth(){document.getElementById('auth-overlay').classList.remove('active')}
-
-function afShow(mode){
-const panels=['af-login','af-register','af-verify','af-success'];
-panels.forEach(p=>{const el=document.getElementById(p);if(el)el.classList.add('hidden')});
-const target=document.getElementById('af-'+mode);
-if(target)target.classList.remove('hidden');
-}
-
-document.getElementById('af-terms').addEventListener('change',function(){document.getElementById('af-reg-btn').disabled=!this.checked});
-
-async function afLogin(btn){
-const email=document.getElementById('af-login-email').value,pw=document.getElementById('af-login-pass').value;
-if(!email||!pw){afToast('Please fill in all fields','error');return}
-afSetLoad(btn,true);
-try{
-const r=await fetch(AF_API+'/v1/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pw})});
-const d=await r.json();
-if(!r.ok)throw new Error(d.detail||'Login failed');
-localStorage.setItem('onto_token',d.token);
-localStorage.setItem('onto_user',JSON.stringify({id:d.user_id,name:d.name,email:email,role:'admin',plan:d.layer||'free',organization_id:d.organization_id,can_invoice:false,company:d.organization_name?{name:d.organization_name}:null}));
-afSetLoad(btn,false);
-afToast('Welcome back!','success');
-setTimeout(()=>{window.location='/app/'},500);
-}catch(e){
-afSetLoad(btn,false);
-if(e.message&&e.message.includes('not verified')){afPendingEmail=email;afShowVerify(email);afToast('Please verify your email first','info');return}
-afToast(e.message||'Login failed','error');
-}}
-
-async function afRegister(btn){
-const name=document.getElementById('af-reg-name').value,email=document.getElementById('af-reg-email').value,pw=document.getElementById('af-reg-pass').value;
-if(!name||!email||!pw){afToast('Please fill in all fields','error');return}
-if(!document.getElementById('af-terms').checked){afToast('Please agree to the Terms','error');return}
-afSetLoad(btn,true);
-try{
-const r=await fetch(AF_API+'/v1/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,password:pw})});
-const d=await r.json();
-if(!r.ok)throw new Error(d.detail||'Registration failed');
-if(d.api_key)localStorage.setItem('onto_first_api_key',d.api_key);
-afPendingEmail=email;
-afSetLoad(btn,false);
-afShowVerify(email);
-afToast('Check your email to verify your account','success');
-}catch(e){afSetLoad(btn,false);afToast(e.message||'Registration failed','error')}}
-
-function afShowVerify(email){
-afShow('verify');
-document.getElementById('af-verify-email').textContent=email;
-document.getElementById('af-otp-error').style.display='none';
-for(let i=1;i<=6;i++)document.getElementById('af-otp-'+i).value='';
-setTimeout(()=>document.getElementById('af-otp-1').focus(),100);
-afSetupOTP();
-}
-
-function afSetupOTP(){
-for(let i=1;i<=6;i++){
-const inp=document.getElementById('af-otp-'+i);
-inp.oninput=function(e){const v=e.target.value.replace(/[^0-9]/g,'');e.target.value=v;if(v&&i<6)document.getElementById('af-otp-'+(i+1)).focus();if(i===6&&v){const c=afGetOTP();if(c.length===6)afVerifyOTP(document.getElementById('af-verify-btn'))}};
-inp.onkeydown=function(e){if(e.key==='Backspace'&&!e.target.value&&i>1)document.getElementById('af-otp-'+(i-1)).focus()};
-inp.onpaste=function(e){e.preventDefault();const p=(e.clipboardData||window.clipboardData).getData('text').replace(/[^0-9]/g,'');for(let j=0;j<6&&j<p.length;j++)document.getElementById('af-otp-'+(j+1)).value=p[j];if(p.length>=6){document.getElementById('af-otp-6').focus();afVerifyOTP(document.getElementById('af-verify-btn'))}};
-}}
-
-function afGetOTP(){let c='';for(let i=1;i<=6;i++)c+=document.getElementById('af-otp-'+i).value;return c}
-
-async function afVerifyOTP(btn){
-const code=afGetOTP();
-if(code.length!==6){document.getElementById('af-otp-error').textContent='Please enter all 6 digits';document.getElementById('af-otp-error').style.display='block';return}
-afSetLoad(btn,true);document.getElementById('af-otp-error').style.display='none';
-try{
-const r=await fetch(AF_API+'/v1/auth/verify-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:afPendingEmail,code:code})});
-const d=await r.json();
-if(!r.ok)throw new Error(d.detail||'Verification failed');
-localStorage.setItem('onto_token',d.token);
-if(d.api_key)localStorage.setItem('onto_first_api_key',d.api_key);
-localStorage.setItem('onto_user',JSON.stringify({id:d.user_id,name:d.name,email:d.email,role:d.role||'admin',plan:d.layer||'free',organization_id:d.organization_id,organization_name:d.organization_name}));
-localStorage.setItem('onto_logged_in','true');
-afSetLoad(btn,false);
-afToast('Email verified! Welcome to ONTO','success');
-setTimeout(()=>{window.location='/app/'},500);
-}catch(e){
-afSetLoad(btn,false);
-document.getElementById('af-otp-error').textContent=e.message;document.getElementById('af-otp-error').style.display='block';
-for(let i=1;i<=6;i++){document.getElementById('af-otp-'+i).classList.add('error');setTimeout(()=>document.getElementById('af-otp-'+i).classList.remove('error'),1500)}
-}}
-
-async function afResend(){
-if(!afPendingEmail){afToast('No email to verify','error');return}
-try{await fetch(AF_API+'/v1/auth/resend-verification',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:afPendingEmail,password:''})});afToast('Verification email sent','success')}catch(e){afToast('Failed to resend email','error')}}
 
 function getTheme(){return localStorage.getItem('onto_theme')||'dark'}
 function applyTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('onto_theme',t)}
@@ -1029,11 +862,7 @@ function toggleTheme(){applyTheme(getTheme()==='dark'?'light':'dark')}
 applyTheme(getTheme());
 function toggleSB(){document.getElementById('sb').classList.toggle('open');document.getElementById('ov').classList.toggle('active')}
 function closeSB(){document.getElementById('sb').classList.remove('open');document.getElementById('ov').classList.remove('active')}
-function checkAuth(){
-const t=localStorage.getItem('onto_token'),u=localStorage.getItem('onto_user');
-const a=document.getElementById('sb-auth'),s=document.getElementById('sb-si');
-if(t&&u){try{const d=JSON.parse(u);document.getElementById('d-av').textContent=(d.name||'U')[0].toUpperCase();document.getElementById('d-un').textContent=d.name||'User';document.getElementById('d-up').textContent=d.plan==='enterprise'?'CRITICAL':d.plan==='business'?'PRO':'FREE';a.style.display='block';s.style.display='none'}catch(e){a.style.display='none';s.style.display='block'}}else{a.style.display='none';s.style.display='block'}}
-checkAuth();
+
 const secs=document.querySelectorAll('.ds[data-nav]'),nls=document.querySelectorAll('.nl[data-doc]');
 function updNav(id){nls.forEach(l=>l.classList.remove('active'));const t=document.querySelector(`.nl[data-doc="${id}"]`);if(t){t.classList.add('active');t.scrollIntoView({block:'nearest',behavior:'smooth'})}}
 const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const id=e.target.getAttribute('data-nav');if(id){updNav(id);const h='#'+id;if(location.hash!==h)history.replaceState(null,'',h)}}})},{rootMargin:'-20% 0px -60% 0px',threshold:0});
