@@ -4231,22 +4231,22 @@ def compute_risk_score(
     # ================================================================
     # F4: SEMANTIC CONSISTENCY (0.0 = coherent, 1.0 = incoherent)
     # ================================================================
-    
+
     # Information density: unique words / total words
     unique_words = len(set(w.lower() for w in words if len(w) > 2))
     info_density = unique_words / max(word_count, 1)
-    
+
     # Structure signals
     has_structure = any(m in output for m in ['\n', '1.', '2.', '- ', '* ', '##', ':'])
     has_citation = bool(re.search(r'(according to|source:|reference:|https?://|\[\d+\])', output, re.IGNORECASE))
     has_numbers = bool(re.search(r'\b\d+\.?\d*%?\b', output))
-    
+
     # Contradiction detection (simplified)
     has_contradiction = bool(re.search(
         r'(but actually|however.*contrary|on the other hand.*but also|yes.*but no)',
         output, re.IGNORECASE
     ))
-    
+
     # Repetition detection
     sentences = re.split(r'[.!?]+', output)
     sentences = [s.strip().lower() for s in sentences if len(s.strip()) > 10]
@@ -4254,7 +4254,6 @@ def compute_risk_score(
         seen = set()
         repetitions = 0
         for s in sentences:
-            # Check first 5 words
             key = ' '.join(s.split()[:5])
             if key in seen:
                 repetitions += 1
@@ -4262,27 +4261,62 @@ def compute_risk_score(
         repetition_ratio = repetitions / len(sentences)
     else:
         repetition_ratio = 0.0
-    
-    # Low density + no structure + repetition = risky
-    structure_bonus = 0.15 if has_structure else 0.0
+
+    # Sentence length variance (language-agnostic)
+    sent_lengths = [len(s.split()) for s in sentences if len(s.split()) > 0]
+    if len(sent_lengths) > 2:
+        mean_sl = sum(sent_lengths) / len(sent_lengths)
+        sl_variance = sum((l - mean_sl) ** 2 for l in sent_lengths) / len(sent_lengths)
+        sl_instability = min(sl_variance / 100.0, 1.0)
+    else:
+        sl_instability = 0.15
+
+    # Specificity score (language-agnostic)
+    proper_nouns = len(re.findall(r'(?<=[.!?]\s)[A-Z][a-z]+|(?<=\s)[A-Z][a-z]{2,}(?=\s)', output))
+    number_count = len(re.findall(r'\b\d[\d,.]*\b', output))
+    date_count = len(re.findall(r'\b\d{4}\b|\b\d{1,2}[/\-\.]\d{1,2}[/\-\.]\d{2,4}\b', output))
+    unit_count = len(re.findall(r'\b\d+\s*(%|mg|kg|ml|km|USD|EUR|GB|MB|ms|Hz)\b', output, re.IGNORECASE))
+
+    specificity_signals = proper_nouns + number_count + date_count + unit_count
+    expected_specifics = word_count / 20.0
+    if expected_specifics > 0:
+        specificity_ratio = min(specificity_signals / expected_specifics, 1.5)
+    else:
+        specificity_ratio = 0.0
+    vagueness = max(1.0 - specificity_ratio, 0.0)
+
+    # Average word length (complexity proxy)
+    char_count = sum(len(w) for w in words)
+    avg_word_len = char_count / max(word_count, 1)
+    if avg_word_len < 3.5:
+        complexity_penalty = 0.15
+    elif avg_word_len > 7.0:
+        complexity_penalty = 0.10
+    else:
+        complexity_penalty = 0.0
+
+    # Combine all F4 signals
     citation_bonus = 0.1 if has_citation else 0.0
     number_bonus = 0.05 if has_numbers else 0.0
-    
+
     f4_incoherence = max(min(
-        (1.0 - info_density) * 0.3 +
-        (0.15 if not has_structure else 0.0) +
-        repetition_ratio * 0.3 +
-        (0.2 if has_contradiction else 0.0) -
-        citation_bonus - number_bonus,
+        (1.0 - info_density) * 0.20 +
+        (0.10 if not has_structure else 0.0) +
+        repetition_ratio * 0.20 +
+        (0.15 if has_contradiction else 0.0) +
+        sl_instability * 0.15 +
+        vagueness * 0.15 +
+        complexity_penalty +
+        - citation_bonus - number_bonus,
         1.0
     ), 0.0)
-    
+
     # Length factor: very short outputs are riskier
     if word_count < 10:
         f4_incoherence = min(f4_incoherence + 0.3, 1.0)
     elif word_count < 30:
         f4_incoherence = min(f4_incoherence + 0.1, 1.0)
-    
+
     factors['semantic_consistency'] = round(f4_incoherence, 4)
     weights['semantic_consistency'] = 0.15
     
