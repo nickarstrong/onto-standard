@@ -422,9 +422,9 @@ document.getElementById('c-sigma').textContent=d.sigma_id||'\u2014';
 var status=d.onto_status||'';
 var sEl=document.getElementById('c-status');
 var sCls='sandbox',sText=status;
-if(status.indexOf('COMPLIANT')>=0&&status.indexOf('NON')<0){sCls='compliant';sText='COMPLIANT'}
+if(status.indexOf('SANDBOX')>=0){sCls='sandbox';sText='SANDBOX MODE'}
+else if(status.indexOf('COMPLIANT')>=0&&status.indexOf('NON')<0){sCls='compliant';sText='COMPLIANT'}
 else if(status.indexOf('NON_COMPLIANT')>=0){sCls='non-compliant';sText='NON COMPLIANT'}
-else if(status.indexOf('SANDBOX')>=0){sCls='sandbox';sText=status.replace(/_/g,' ')}
 sEl.innerHTML='<span class="cert-status '+sCls+'"><span class="cert-dot"></span>'+sText+'</span>';
 
 document.getElementById('c-proof').textContent=d.proof_hash||'\u2014';
