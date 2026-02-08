@@ -165,7 +165,11 @@ class LinguisticConverter:
             # Пропускаем внутренние/служебные факторы
             if factor_name in ("domain_multiplier", "output_length", "domain"):
                 continue
-            if factor_value is None or (isinstance(factor_value, float) and math.isnan(factor_value)):
+            if factor_value is None:
+                continue
+            if not isinstance(factor_value, (int, float)):
+                continue
+            if isinstance(factor_value, float) and math.isnan(factor_value):
                 continue
             
             config = cls.FACTOR_MAP.get(factor_name)
