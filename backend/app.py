@@ -88,6 +88,7 @@ SIGNAL_URL = os.getenv("SIGNAL_URL", "https://signal.ontostandard.org")
 NOTARY_URL = os.getenv("NOTARY_URL", "https://notary.ontostandard.org")
 RESEND_API_KEY = os.getenv("RESEND_API_KEY")
 FRONTEND_URL = os.getenv("FRONTEND_URL", "https://ontostandard.org")
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "dexterrion.com@gmail.com")
 
 # Reference anchor (stealth architecture)
 REFERENCE_ANCHOR_SLUG = "rfc-4122-uuid-validation-notes"
@@ -582,7 +583,8 @@ async def validate_api_key(x_api_key: str = Header(...)) -> dict:
             SELECT ak.id, ak.organization_id, ak.is_active, 
                    o.name, o.tier, o.slug, o.stripe_customer_id, o.is_banned,
                    o.subscription_ends_at,
-                   u.id as user_id, u.is_active as user_active, u.role as user_role
+                   u.id as user_id, u.is_active as user_active, u.role as user_role,
+                   u.email as user_email, u.name as user_name
             FROM api_keys ak
             JOIN organizations o ON ak.organization_id = o.id
             LEFT JOIN users u ON u.organization_id = o.id
@@ -597,7 +599,8 @@ async def validate_api_key(x_api_key: str = Header(...)) -> dict:
                 SELECT NULL as id, o.id as organization_id, true as is_active,
                        o.name, o.tier, o.slug, o.stripe_customer_id, o.is_banned,
                        o.subscription_ends_at,
-                       u.id as user_id, u.is_active as user_active, u.role as user_role
+                       u.id as user_id, u.is_active as user_active, u.role as user_role,
+                       u.email as user_email, u.name as user_name
                 FROM organizations o
                 LEFT JOIN users u ON u.organization_id = o.id
                 WHERE o.portal_api_key = $1
@@ -655,6 +658,8 @@ async def validate_api_key(x_api_key: str = Header(...)) -> dict:
             "slug": row['slug'],
             "stripe_customer_id": row['stripe_customer_id'],
             "user_id": str(row['user_id']) if row['user_id'] else None,
+            "user_name": row.get('user_name'),
+            "email": row.get('user_email'),
             "role": row.get('user_role', 'admin')  # Default admin for single-user orgs
         }
 
@@ -1977,6 +1982,87 @@ async def stripe_webhook(request: Request):
                 """, subscription_id)
     
     return {"status": "received", "event": event_type}
+
+
+# ============================================================
+# PURCHASE REQUEST (Paddle placeholder)
+# ============================================================
+
+class PurchaseRequest(BaseModel):
+    plan: str           # "standard" or "critical"
+    cycle: str = "annual"  # "annual" or "monthly"
+    amount: float = 0
+
+@app.post("/v1/purchase/request")
+async def request_purchase(
+    request: PurchaseRequest,
+    org: dict = Depends(validate_api_key)
+):
+    """Submit purchase request — sends email notification to admin for manual tier activation.
+    Paddle integration placeholder: will be replaced with real payment flow."""
+    
+    if request.plan not in ['standard', 'critical']:
+        raise HTTPException(status_code=400, detail="Invalid plan. Use 'standard' or 'critical'")
+    
+    plan_names = {"standard": "Professional", "critical": "Critical"}
+    plan_name = plan_names.get(request.plan, request.plan)
+    
+    user_email = org.get('email', 'unknown')
+    user_name = org.get('user_name', 'unknown')
+    org_name = org.get('organization_name', 'unknown')
+    org_id = org.get('organization_id', 'unknown')
+    
+    # Log the purchase request
+    if db_pool:
+        async with db_pool.acquire() as conn:
+            await conn.execute("""
+                INSERT INTO audit_log (organization_id, user_id, action, resource_type, details)
+                VALUES ($1, $2, 'purchase_request', 'subscription', $3)
+            """, uuid.UUID(org_id) if org_id != 'unknown' else None,
+                uuid.UUID(org.get('user_id')) if org.get('user_id') else None,
+                json.dumps({
+                    "plan": request.plan,
+                    "cycle": request.cycle,
+                    "amount": request.amount,
+                    "user_email": user_email
+                }))
+    
+    # Send notification email to admin
+    if resend_client:
+        try:
+            resend_client.Emails.send({
+                "from": "ONTO <noreply@ontostandard.org>",
+                "to": ADMIN_EMAIL,
+                "subject": f"💰 Purchase Request: {plan_name} — {user_email}",
+                "html": f"""
+                <div style="font-family: -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+                    <h1 style="color: #111; font-size: 24px;">New Purchase Request</h1>
+                    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                        <tr><td style="padding: 8px 0; color: #666; width: 120px;">Plan</td><td style="padding: 8px 0; font-weight: 600;">{plan_name} ({request.cycle})</td></tr>
+                        <tr><td style="padding: 8px 0; color: #666;">Amount</td><td style="padding: 8px 0; font-weight: 600;">${request.amount:,.0f}</td></tr>
+                        <tr><td style="padding: 8px 0; color: #666;">User</td><td style="padding: 8px 0;">{user_name} ({user_email})</td></tr>
+                        <tr><td style="padding: 8px 0; color: #666;">Organization</td><td style="padding: 8px 0;">{org_name}</td></tr>
+                        <tr><td style="padding: 8px 0; color: #666;">Org ID</td><td style="padding: 8px 0; font-family: monospace; font-size: 12px;">{org_id}</td></tr>
+                    </table>
+                    <p style="color: #666;">Activate via Reference panel → Accounts → Set Tier</p>
+                    <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;">
+                    <p style="color: #999; font-size: 12px;">ONTO — Epistemic Risk Management</p>
+                </div>
+                """
+            })
+            print(f"[API] Purchase request email sent for {user_email} → {request.plan}")
+        except Exception as e:
+            print(f"[API] Failed to send purchase notification: {e}")
+    else:
+        print(f"[API] Purchase request (no email): {user_email} → {request.plan} ({request.cycle}) ${request.amount}")
+    
+    return {
+        "status": "pending",
+        "message": f"Purchase request submitted for {plan_name} plan",
+        "plan": request.plan,
+        "cycle": request.cycle
+    }
+
 
 # ============================================================
 # EVALUATION ENDPOINTS
