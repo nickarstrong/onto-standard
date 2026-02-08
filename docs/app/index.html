@@ -877,178 +877,12 @@ a.info-val:hover { color: var(--text); }
     </button>
 </div>
 
-<!-- AUTH MENU (burger on login/register screen) -->
-<div class="auth-menu" id="auth-menu">
-    <div class="auth-menu-header">
-        <svg width="24" height="24" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/></svg>
-        <span style="font-weight: 700; font-size: 18px;">ONTO</span>
-        <button class="auth-menu-close" onclick="closeAuthMenu()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-    </div>
-    <nav class="auth-menu-nav">
-        <a href="/" class="auth-menu-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
-            Home
-        </a>
-        <a href="/docs/" class="auth-menu-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-            Docs
-        </a>
-        <a href="/docs/#terms" class="auth-menu-sub">Terms of Service</a>
-        <a href="/docs/#privacy" class="auth-menu-sub">Privacy Policy</a>
-        <a href="/docs/#license" class="auth-menu-sub">License</a>
-        <a href="/docs/#specifications" class="auth-menu-sub">Specifications</a>
-        <div style="border-top: 1px solid var(--border); margin: 12px 0;"></div>
-        <div class="auth-menu-item" onclick="toggleTheme(); closeAuthMenu();" style="cursor: pointer;">
-            <svg id="theme-icon-mobile" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-            Theme
-        </div>
-    </nav>
-</div>
-<div class="auth-menu-overlay" id="auth-menu-overlay" onclick="closeAuthMenu()"></div>
+
 
 <div class="mobile-overlay" id="mobile-overlay" onclick="toggleMobile()"></div>
 
-<script>if(localStorage.getItem('onto_logged_in')==='true')document.write('<style id="auth-preload-hide">#auth-screen{display:none!important}</style>');</script>
 
-<!-- AUTH SCREEN -->
-<div class="auth-container" id="auth-screen">
-    <div class="auth-card"><!-- LOGIN FORM -->
-        <div id="login-form">
-            <h1 class="auth-title">Welcome back</h1>
-            <p class="auth-subtitle">Sign in to your account</p>
-            
-            <div class="form-group">
-                <label class="form-label">Email</label>
-                <input type="email" class="form-input" id="login-email" placeholder="you@company.com">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Password</label>
-                <div class="password-wrapper">
-                    <input type="password" class="form-input" id="login-password" placeholder="••••••••">
-                    <button type="button" class="password-toggle" onclick="togglePassword('login-password', this)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                </div>
-            </div>
-            <button class="btn btn-primary" id="login-btn" onclick="handleLogin(this)">Sign In</button>
-            <p class="auth-switch">Don't have an account? <a onclick="showRegister()">Create one</a></p>
-        </div>
-        
-        <!-- REGISTER FORM -->
-        <div id="register-form" class="hidden">
-            <h1 class="auth-title">Create Account</h1>
-            <p class="auth-subtitle">Start with ONTO for free</p>
-            
-            <div class="form-group">
-                <label class="form-label">Full Name</label>
-                <input type="text" class="form-input" id="reg-name" placeholder="John Doe">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Email</label>
-                <input type="email" class="form-input" id="reg-email" placeholder="you@company.com">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Password</label>
-                <div class="password-wrapper">
-                    <input type="password" class="form-input" id="reg-password" placeholder="Min 8 characters">
-                    <button type="button" class="password-toggle" onclick="togglePassword('reg-password', this)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                </div>
-            </div>
-            
-            <!-- TERMS SCROLL -->
-            <div class="terms-container">
-                <h3>ONTO Gold Asymmetric AI License v5.2</h3>
-                <table>
-                    <tr><th>Use</th><th>Status</th></tr>
-                    <tr><td>Read, study, cite, research, evaluate</td><td>✅ Free</td></tr>
-                    <tr><td>Deploy, integrate, commercialize, RAG</td><td>❌ Requires license</td></tr>
-                </table>
-                
-                <h3>1. Primary Source</h3>
-                <p>The primary source of ONTO consists of: Canonical ONTO GitHub repositories and https://ontostandard.org. Attribution to BOTH sources is mandatory.</p>
-                
-                <h3>2. Human Use</h3>
-                <p>Human reading, study, citation, discussion, critique, and academic analysis are permitted without restriction, provided explicit attribution to the primary source is included.</p>
-                
-                <h3>3. Safe Harbor</h3>
-                <p>Any non-deployed use that explicitly attributes the ONTO primary source is permitted. Safe Harbor applies provided that:</p>
-                <ul>
-                    <li>no trained model is deployed or exposed</li>
-                    <li>no model is placed on the market</li>
-                    <li>no economic benefit is derived</li>
-                </ul>
-                
-                <h3>4. Conditional AI Training</h3>
-                <p>AI systems may train on ONTO for evaluation and research. Such training does not grant any right to deploy, integrate, or commercialize.</p>
-                <p><strong>Training enables understanding only. Application creates value.</strong></p>
-                
-                <h3>5. RAG Clause</h3>
-                <p>Use in RAG systems, vector databases, semantic search, or real-time retrieval constitutes deployment and requires a license.</p>
-                
-                <h3>6. Termination</h3>
-                <p>Use outside Safe Harbor without a license automatically terminates all permissions.</p>
-                
-                <h3>Privacy Policy</h3>
-                <p>We collect minimal data necessary to provide the service: email, name, and usage metrics. Data is processed in accordance with GDPR. We never sell your data to third parties.</p>
-                
-                <p style="margin-top: 16px;"><strong>Full license:</strong> <a href="https://ontostandard.org" target="_blank">https://ontostandard.org</a></p>
-            </div>
-            
-            <div class="checkbox-group">
-                <input type="checkbox" id="terms-agree">
-                <label for="terms-agree">I agree to the <a href="/docs/#terms" target="_blank">Terms of Service</a> and <a href="/docs/#privacy" target="_blank">Privacy Policy</a></label>
-            </div>
-            
-            <button class="btn btn-primary" id="register-btn" onclick="handleRegister(this)" disabled>Create Account</button>
-            <p class="auth-switch">Already have an account? <a onclick="showLogin()">Sign in</a></p>
-        </div>
-        
-        <!-- OTP VERIFICATION -->
-        <div id="verify-pending" class="hidden">
-            <div style="text-align: center; margin-bottom: 24px;">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5">
-                    <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                </svg>
-            </div>
-            <h1 class="auth-title">Enter verification code</h1>
-            <p class="auth-subtitle">We sent a 6-digit code to</p>
-            <p style="color: var(--text); font-weight: 600; margin: 8px 0 24px;" id="verify-email-display"></p>
-            
-            <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 24px;">
-                <input type="text" id="otp-1" class="otp-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code">
-                <input type="text" id="otp-2" class="otp-input" maxlength="1" inputmode="numeric">
-                <input type="text" id="otp-3" class="otp-input" maxlength="1" inputmode="numeric">
-                <input type="text" id="otp-4" class="otp-input" maxlength="1" inputmode="numeric">
-                <input type="text" id="otp-5" class="otp-input" maxlength="1" inputmode="numeric">
-                <input type="text" id="otp-6" class="otp-input" maxlength="1" inputmode="numeric">
-            </div>
-            
-            <p id="otp-error" style="color: #dc2626; font-size: 13px; margin-bottom: 16px; display: none;"></p>
-            
-            <button class="btn btn-primary" id="verify-btn" onclick="handleVerifyOTP(this)">Verify</button>
-            
-            <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
-                <p style="color: var(--text-muted); font-size: 13px;">Didn't receive the code?</p>
-                <button class="btn btn-secondary" style="margin-top: 12px;" onclick="resendVerification()">Resend code</button>
-            </div>
-            <p style="color: var(--text-muted); font-size: 12px; margin-top: 16px;">Code expires in 15 minutes</p>
-            <p class="auth-switch" style="margin-top: 16px;"><a onclick="showLogin()">Back to sign in</a></p>
-        </div>
-        
-        <!-- EMAIL VERIFIED SUCCESS -->
-        <div id="verify-success" class="hidden">
-            <div style="text-align: center; margin-bottom: 24px;">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5">
-                    <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
-                    <polyline points="22 4 12 14.01 9 11.01"/>
-                </svg>
-            </div>
-            <h1 class="auth-title">Email verified!</h1>
-            <p class="auth-subtitle">Your account is ready. You can now sign in.</p>
-            <button class="btn btn-primary" style="margin-top: 24px;" onclick="showLogin()">Sign In</button>
-        </div>
-    </div>
-</div>
+
 
 <!-- DASHBOARD -->
 <div class="dashboard" id="dashboard">
@@ -2126,6 +1960,14 @@ print(result.risk_score, result.layer, result.compliance)</code></pre>
 </div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// === AUTH GUARD ===
+(function() {
+    if (localStorage.getItem('onto_logged_in') !== 'true' || !localStorage.getItem('onto_first_api_key')) {
+        window.location.href = '/app/login/';
+        return;
+    }
+})();
+
 // === API CONFIG ===
 const API_BASE = 'https://api.ontostandard.org';
 let authToken = null;
@@ -2237,12 +2079,7 @@ function handleSessionExpired() {
     localStorage.removeItem('onto_user');
     localStorage.removeItem('onto_token');
     localStorage.removeItem('onto_logged_in');
-    const ps = document.getElementById('auth-preload-hide');
-    if (ps) ps.remove();
-    document.getElementById('auth-screen').style.display = 'flex';
-    document.getElementById('dashboard').classList.remove('active');
-    showLogin();
-    showToast(STRINGS.sessionExpired, 'error');
+    window.location.href = '/app/login/';
 }
 
 // Activity listener to reset timer
@@ -2303,21 +2140,9 @@ function toggleMobile() {
     document.getElementById('mobile-overlay').classList.toggle('active');
 }
 
-function toggleAuthMenu() {
-    // На auth screen — открываем auth menu, в ЛК — sidebar
-    const authScreen = document.getElementById('auth-screen');
-    if (authScreen && authScreen.style.display !== 'none') {
-        document.getElementById('auth-menu').classList.toggle('open');
-        document.getElementById('auth-menu-overlay').classList.toggle('visible');
-    } else {
-        toggleMobile();
-    }
-}
+function toggleAuthMenu() { toggleMobile(); }
 
-function closeAuthMenu() {
-    document.getElementById('auth-menu').classList.remove('open');
-    document.getElementById('auth-menu-overlay').classList.remove('visible');
-}
+function closeAuthMenu() {}
 
 function setLoading(btn, loading) {
     if (loading) {
@@ -2329,379 +2154,6 @@ function setLoading(btn, loading) {
     }
 }
 
-// === AUTH ===
-function showLogin() {
-    document.getElementById('login-form').classList.remove('hidden');
-    document.getElementById('register-form').classList.add('hidden');
-    document.getElementById('verify-pending').classList.add('hidden');
-    document.getElementById('verify-success').classList.add('hidden');
-}
-
-function showRegister() {
-    document.getElementById('login-form').classList.add('hidden');
-    document.getElementById('register-form').classList.remove('hidden');
-    document.getElementById('verify-pending').classList.add('hidden');
-    document.getElementById('verify-success').classList.add('hidden');
-}
-
-function togglePassword(inputId, btn) {
-    const input = document.getElementById(inputId);
-    if (input.type === 'password') {
-        input.type = 'text';
-        btn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
-    } else {
-        input.type = 'password';
-        btn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
-    }
-}
-
-// Enable register button when terms agreed
-document.getElementById('terms-agree').addEventListener('change', function() {
-    document.getElementById('register-btn').disabled = !this.checked;
-});
-
-async function handleLogin(btn) {
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    
-    if (!email || !password) {
-        showToast('Please fill in all fields', 'error');
-        return;
-    }
-    
-    setLoading(btn, true);
-    
-    try {
-        const response = await fetch(`${API_BASE}/v1/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-        });
-        
-        const data = await response.json();
-        
-        if (!response.ok) {
-            throw new Error(data.detail || 'Login failed');
-        }
-        
-        // Store token and user data (backend format)
-        authToken = data.token;
-        localStorage.setItem('onto_token', authToken);
-        
-        // Store API key for Reference panel
-        if (data.api_key) {
-            localStorage.setItem('onto_first_api_key', data.api_key);
-        }
-        
-        currentUser = {
-            id: data.user_id,
-            name: data.name,
-            email: email,
-            role: data.role || 'admin',
-            plan: layerToPlan(data.layer || 'open'),
-            organization_id: data.organization_id,
-            organization_name: data.organization_name,
-            can_invoice: false,
-            company: null  // Company set only after explicit registration
-        };
-        localStorage.setItem('onto_user', JSON.stringify(currentUser));
-        
-        // Also store in new format for consistency
-        localStorage.setItem('onto_user_id', data.user_id);
-        localStorage.setItem('onto_user_name', data.name || '');
-        localStorage.setItem('onto_user_email', email);
-        localStorage.setItem('onto_org_id', data.organization_id);
-        localStorage.setItem('onto_org_name', data.organization_name || '');
-        localStorage.setItem('onto_layer', data.layer || 'open');
-        localStorage.setItem('onto_role', data.role || 'admin');
-        localStorage.setItem('onto_logged_in', 'true');
-        
-        setLoading(btn, false);
-        showToast('Welcome back!', 'success');
-        showDashboard();
-    } catch (error) {
-        setLoading(btn, false);
-        
-        // Check if email not verified
-        if (error.message && error.message.includes('not verified')) {
-            pendingVerificationEmail = email;
-            showVerifyPending(email);
-            showToast('Please verify your email first', 'info');
-            return;
-        }
-        
-        showToast(error.message || 'Login failed', 'error');
-    }
-}
-
-
-async function handleRegister(btn) {
-    const name = document.getElementById('reg-name').value;
-    const email = document.getElementById('reg-email').value;
-    const password = document.getElementById('reg-password').value;
-    const termsAgreed = document.getElementById('terms-agree').checked;
-    
-    if (!name || !email || !password) {
-        showToast('Please fill in all fields', 'error');
-        return;
-    }
-    
-    if (!termsAgreed) {
-        showToast('Please agree to the Terms of Service', 'error');
-        return;
-    }
-    
-    setLoading(btn, true);
-    
-    try {
-        const response = await fetch(`${API_BASE}/v1/auth/register`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, password })
-        });
-        
-        const data = await response.json();
-        
-        if (!response.ok) {
-            throw new Error(data.detail || 'Registration failed');
-        }
-        
-        // Store API key for later display
-        localStorage.setItem('onto_first_api_key', data.api_key);
-        pendingVerificationEmail = email;
-        
-        setLoading(btn, false);
-        
-        // Show verification pending screen
-        showVerifyPending(email);
-        showToast('Check your email to verify your account', 'success');
-    } catch (error) {
-        setLoading(btn, false);
-        showToast(error.message || 'Registration failed', 'error');
-    }
-}
-
-function showVerifyPending(email) {
-    document.getElementById('login-form').classList.add('hidden');
-    document.getElementById('register-form').classList.add('hidden');
-    document.getElementById('verify-success').classList.add('hidden');
-    document.getElementById('verify-pending').classList.remove('hidden');
-    document.getElementById('verify-email-display').textContent = email;
-    document.getElementById('otp-error').style.display = 'none';
-    
-    // Clear OTP inputs
-    for (let i = 1; i <= 6; i++) {
-        document.getElementById('otp-' + i).value = '';
-    }
-    
-    // Focus first input
-    setTimeout(() => document.getElementById('otp-1').focus(), 100);
-    
-    // Setup OTP input handlers
-    setupOTPInputs();
-}
-
-function setupOTPInputs() {
-    for (let i = 1; i <= 6; i++) {
-        const input = document.getElementById('otp-' + i);
-        
-        input.addEventListener('input', (e) => {
-            const val = e.target.value.replace(/[^0-9]/g, '');
-            e.target.value = val;
-            if (val && i < 6) {
-                document.getElementById('otp-' + (i + 1)).focus();
-            }
-            // Auto-submit when all 6 digits entered
-            if (i === 6 && val) {
-                const code = getOTPCode();
-                if (code.length === 6) handleVerifyOTP(document.getElementById('verify-btn'));
-            }
-        });
-        
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Backspace' && !e.target.value && i > 1) {
-                document.getElementById('otp-' + (i - 1)).focus();
-            }
-        });
-        
-        // Handle paste
-        input.addEventListener('paste', (e) => {
-            e.preventDefault();
-            const paste = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
-            for (let j = 0; j < 6 && j < paste.length; j++) {
-                document.getElementById('otp-' + (j + 1)).value = paste[j];
-            }
-            if (paste.length >= 6) {
-                document.getElementById('otp-6').focus();
-                handleVerifyOTP(document.getElementById('verify-btn'));
-            }
-        });
-    }
-}
-
-function getOTPCode() {
-    let code = '';
-    for (let i = 1; i <= 6; i++) {
-        code += document.getElementById('otp-' + i).value;
-    }
-    return code;
-}
-
-async function handleVerifyOTP(btn) {
-    const code = getOTPCode();
-    if (code.length !== 6) {
-        document.getElementById('otp-error').textContent = 'Please enter all 6 digits';
-        document.getElementById('otp-error').style.display = 'block';
-        return;
-    }
-    
-    setLoading(btn, true);
-    document.getElementById('otp-error').style.display = 'none';
-    
-    try {
-        const response = await fetch(`${API_BASE}/v1/auth/verify-email`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: pendingVerificationEmail, code: code })
-        });
-        
-        const data = await response.json();
-        
-        if (!response.ok) {
-            throw new Error(data.detail || 'Verification failed');
-        }
-        
-        // Auto-login with returned data
-        authToken = data.token;
-        localStorage.setItem('onto_token', authToken);
-        
-        if (data.api_key) {
-            localStorage.setItem('onto_first_api_key', data.api_key);
-        }
-        
-        currentUser = {
-            id: data.user_id,
-            name: data.name,
-            email: data.email,
-            role: data.role || 'admin',
-            plan: layerToPlan(data.layer || 'open'),
-            organization_id: data.organization_id,
-            organization_name: data.organization_name
-        };
-        localStorage.setItem('onto_user', JSON.stringify(currentUser));
-        
-        // Store individual keys for reload restore (matching login flow)
-        localStorage.setItem('onto_user_id', data.user_id);
-        localStorage.setItem('onto_user_name', data.name || '');
-        localStorage.setItem('onto_user_email', data.email || '');
-        localStorage.setItem('onto_org_id', data.organization_id);
-        localStorage.setItem('onto_org_name', data.organization_name || '');
-        localStorage.setItem('onto_layer', data.layer || 'open');
-        localStorage.setItem('onto_role', data.role || 'admin');
-        localStorage.setItem('onto_logged_in', 'true');
-        
-        setLoading(btn, false);
-        showToast('Email verified! Welcome to ONTO', 'success');
-        showDashboard();
-    } catch (error) {
-        setLoading(btn, false);
-        document.getElementById('otp-error').textContent = error.message;
-        document.getElementById('otp-error').style.display = 'block';
-        
-        // Shake OTP inputs
-        for (let i = 1; i <= 6; i++) {
-            document.getElementById('otp-' + i).classList.add('error');
-            setTimeout(() => document.getElementById('otp-' + i).classList.remove('error'), 1500);
-        }
-    }
-}
-
-function showVerifySuccess() {
-    document.getElementById('login-form').classList.add('hidden');
-    document.getElementById('register-form').classList.add('hidden');
-    document.getElementById('verify-pending').classList.add('hidden');
-    document.getElementById('verify-success').classList.remove('hidden');
-}
-
-async function resendVerification() {
-    if (!pendingVerificationEmail) {
-        showToast('No email to verify', 'error');
-        return;
-    }
-    
-    try {
-        const response = await fetch(`${API_BASE}/v1/auth/resend-verification`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: pendingVerificationEmail, password: '' })
-        });
-        
-        const data = await response.json();
-        showToast(data.message || 'Verification email sent', 'success');
-    } catch (error) {
-        showToast('Failed to resend email', 'error');
-    }
-}
-
-async function checkEmailVerification() {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get('verify');
-    
-    if (!token) return;
-    
-    try {
-        const response = await fetch(`${API_BASE}/v1/auth/verify-email?token=${token}`);
-        const data = await response.json();
-        
-        if (response.ok && data.success) {
-            // Clean URL first
-            window.history.replaceState({}, '', window.location.pathname);
-            
-            // Auto-login with returned data
-            if (data.token) {
-                authToken = data.token;
-                localStorage.setItem('onto_token', authToken);
-                
-                currentUser = {
-                    id: data.user_id,
-                    name: data.name,
-                    email: data.email,
-                    role: 'admin',
-                    plan: layerToPlan(data.layer || 'open'),
-                    organization_id: data.organization_id,
-                    can_invoice: false,
-                    company: null  // Company set only after explicit registration
-                };
-                localStorage.setItem('onto_user', JSON.stringify(currentUser));
-                
-                // Store individual keys for reload restore
-                localStorage.setItem('onto_user_id', data.user_id || '');
-                localStorage.setItem('onto_user_name', data.name || '');
-                localStorage.setItem('onto_user_email', data.email || '');
-                localStorage.setItem('onto_org_id', data.organization_id || '');
-                localStorage.setItem('onto_org_name', data.organization_name || '');
-                localStorage.setItem('onto_layer', data.layer || 'open');
-                localStorage.setItem('onto_role', 'admin');
-                localStorage.setItem('onto_logged_in', 'true');
-                
-                if (data.api_key) {
-                    localStorage.setItem('onto_first_api_key', data.api_key);
-                }
-                
-                showToast('Email verified! Welcome to ONTO.', 'success');
-                showDashboard();
-            } else {
-                showVerifySuccess();
-                showToast('Email verified! Please sign in.', 'success');
-            }
-        } else {
-            showToast(data.detail || 'Verification failed', 'error');
-        }
-    } catch (error) {
-        showToast('Verification failed', 'error');
-        window.history.replaceState({}, '', window.location.pathname);
-    }
-}
 
 function handleLogout() {
     if (!confirm(STRINGS.confirmLogout)) {
@@ -2726,17 +2178,12 @@ function handleLogout() {
     localStorage.removeItem('onto_role');
     localStorage.removeItem('onto_subscription');
     
-    document.getElementById('auth-screen').style.display = 'flex';
-    document.getElementById('dashboard').classList.remove('active');
-    // Remove preload hide style
-    const preloadStyle = document.getElementById('auth-preload-hide');
-    if (preloadStyle) preloadStyle.remove();
-    showLogin();
+    window.location.href = '/app/login/';
 }
 
 // === DASHBOARD ===
 function showDashboard() {
-    document.getElementById('auth-screen').style.display = 'none';
+    // auth moved to /app/login/
     document.getElementById('dashboard').classList.add('active');
     
     // Handle ?page= URL parameter
@@ -4931,7 +4378,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedApiKey = localStorage.getItem('onto_first_api_key');
     const savedLoggedIn = localStorage.getItem('onto_logged_in');
     
-    if (savedLoggedIn === 'true' && savedApiKey) {
+    // Guard already redirects if not logged in
+    if (savedLoggedIn !== 'true' || !savedApiKey) { return; }
+    {
         // Restore subscription from onto_subscription or onto_user JSON
         let savedSub = null;
         const savedSubStr = localStorage.getItem('onto_subscription');
