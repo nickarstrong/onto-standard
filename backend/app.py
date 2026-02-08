@@ -76,6 +76,14 @@ from pydantic import BaseModel, EmailStr
 import asyncpg
 import uvicorn
 
+# ONTO Core Integration — Rust engine bridge
+try:
+    from onto_bridge import bridge as onto_bridge
+    print("[ONTO] Bridge loaded, engine:", onto_bridge.engine)
+except ImportError:
+    onto_bridge = None
+    print("[ONTO] Bridge not available, using regex-only scoring")
+
 # httpx imported locally where needed to handle missing dependency gracefully
 
 # ============================================================
@@ -4020,6 +4028,38 @@ async def reference_access_check(ref: dict = Depends(validate_architect)):
 # MODEL & EVALUATION ENGINE (Phase 1)
 # ============================================================
 
+def enrich_with_onto_core(result: dict, model_id: str = "anonymous") -> dict:
+    """
+    Обогащает результат compute_risk_score данными из onto_core (Rust).
+    Добавляет: u_recall, ece, sigma_id, proof_hash, status, engine.
+    Если onto_bridge недоступен — возвращает результат как есть.
+    """
+    if not onto_bridge:
+        return result
+    
+    try:
+        certified = onto_bridge.evaluate(
+            model_id=model_id,
+            linguistic_factors=result.get("factors", {}),
+            linguistic_weights=result.get("weights_applied", {}),
+        )
+        
+        # Обогащаем результат (не перезаписываем существующие поля)
+        result["u_recall"] = certified.get("u_recall")
+        result["ece"] = certified.get("ece")
+        result["sigma_id"] = certified.get("sigma_id")
+        result["proof_hash"] = certified.get("proof_hash")
+        result["onto_status"] = certified.get("status")
+        result["onto_risk_score"] = certified.get("risk_score")
+        result["onto_layer"] = certified.get("layer")
+        result["engine"] = certified.get("engine", "python_fallback")
+    except Exception as e:
+        result["engine"] = "error"
+        result["engine_error"] = str(e)
+    
+    return result
+
+
 def compute_risk_score(
     output: str,
     confidence: Optional[float] = None,
@@ -4711,6 +4751,7 @@ async def public_evaluate(request: PublicEvaluateRequest, req: Request):
         temperature=request.temperature,
         context=request.context,
     )
+    result = enrich_with_onto_core(result, model_id="public_check")
     result["recommendations"] = generate_recommendations(result)
     result["remaining_today"] = remaining - 1
     result["source"] = "public"
@@ -4788,6 +4829,7 @@ async def evaluate_model(
             logprobs=request.logprobs, temperature=request.temperature,
             context=request.context,
         )
+        result = enrich_with_onto_core(result, model_id=request.model_id)
         
         # Store evaluation
         eval_id = await conn.fetchval("""
@@ -4845,7 +4887,14 @@ async def evaluate_model(
             "factors": result['factors'],
             "weights": result.get('weights_applied', {}),
             "recommendations": generate_recommendations(result),
-            "status": "completed"
+            "status": "completed",
+            # ONTO Core metrics
+            "u_recall": result.get('u_recall'),
+            "ece": result.get('ece'),
+            "sigma_id": result.get('sigma_id'),
+            "proof_hash": result.get('proof_hash'),
+            "onto_status": result.get('onto_status'),
+            "engine": result.get('engine'),
         }
 
 
@@ -5413,6 +5462,22 @@ async def model_trend(
         }
 
 
+
+# ============================================================
+# ONTO CORE ENGINE STATUS
+# ============================================================
+
+@app.get("/v1/engine/status")
+async def engine_status():
+    """ONTO Core engine status — Rust or Python fallback"""
+    if onto_bridge:
+        return onto_bridge.status()
+    return {
+        "engine": "none",
+        "rust_available": False,
+        "initialized": False,
+        "message": "onto_bridge not loaded"
+    }
 
 # ============================================================
 # MAIN
