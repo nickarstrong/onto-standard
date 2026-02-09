@@ -278,8 +278,17 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <pre><code>ECE = Σ (n_b / N) × |acc(b) - conf(b)|</code></pre>
 <table><thead><tr><th>Score</th><th>Classification</th></tr></thead><tbody><tr><td>≤0.10</td><td>Excellent</td></tr><tr><td>≤0.15</td><td>Good</td></tr><tr><td>≤0.20</td><td>Adequate</td></tr><tr><td>&gt;0.20</td><td>Poor</td></tr></tbody></table>
 <h3 id="risk-score">2.3 Risk Score</h3>
+<p>ONTO implements two complementary scoring methodologies:</p>
+<h4>Batch Evaluation (SDK)</h4>
+<p>For dataset-level assessment using prediction–ground truth pairs:</p>
 <pre><code>Risk = α × (1 - U-Recall) + β × ECE + γ × OC
 α = 0.4, β = 0.4, γ = 0.2, OC = Overconfidence rate</code></pre>
+<p>Used by <code>onto-standard</code> SDK for model certification. Requires evaluation dataset with labeled predictions.</p>
+<h4>Runtime Scoring (API)</h4>
+<p>For real-time analysis of individual AI outputs via the API:</p>
+<pre><code>Risk = Σ (weight_i × factor_i) × domain_multiplier
+Factors: F1–F6 (see API Reference: Evaluations)</code></pre>
+<p>Analyzes text-only or enriched (confidence, logprobs, ground truth) outputs. No dataset required — evaluates each output independently.</p>
 <table><thead><tr><th>Score</th><th>Classification</th></tr></thead><tbody><tr><td>0.00–0.25</td><td>LOW</td></tr><tr><td>0.25–0.50</td><td>MEDIUM</td></tr><tr><td>0.50–0.75</td><td>HIGH</td></tr><tr><td>0.75–1.00</td><td>CRITICAL</td></tr></tbody></table><hr/>
 <h2 id="knowledge-classification">3. Knowledge Classification</h2>
 <table><thead><tr><th>Category</th><th>Definition</th><th>Example</th></tr></thead><tbody>
@@ -527,15 +536,42 @@ Content-Type: application/json
 <pre><code>{
   "evaluation_id": "uuid",
   "risk_score": 0.234,
-  "layer": "L2",
-  "compliance": "STANDARD",
+  "layer": "L3",
+  "compliance": "PASSED",
   "calibration": 87.5,
+  "engine_version": "2.0",
+  "signals_used": 4,
   "factors": {
-    "confidence_penalty": 0.12,
-    "entropy_risk": 0.08,
-    "domain_weight": 1.2
+    "linguistic_uncertainty": 0.082,
+    "confidence_calibration": 0.12,
+    "logprob_entropy": 0.045,
+    "semantic_consistency": 0.163,
+    "ground_truth_accuracy": 0.95,
+    "refusal_awareness": 0.0,
+    "domain": "general",
+    "domain_multiplier": 1.0,
+    "output_length": 42
+  },
+  "weights_applied": {
+    "linguistic_uncertainty": 0.25,
+    "confidence_calibration": 0.2,
+    "logprob_entropy": 0.15,
+    "semantic_consistency": 0.15,
+    "ground_truth_accuracy": 0.25
   }
 }</code></pre>
+<h3 id="factor-analysis">Factor Analysis (F1–F6)</h3>
+<p>The scoring engine evaluates AI outputs across six independent factors plus a domain adjustment. Each factor scores 0.0 (no risk) to 1.0 (maximum risk). The final risk score is a weighted combination scaled by domain multiplier.</p>
+<table><thead><tr><th>Factor</th><th>Key</th><th>Measures</th><th>Signal</th></tr></thead><tbody>
+<tr><td>F1</td><td><code>linguistic_uncertainty</code></td><td>Hedging, qualifiers, epistemic markers in text</td><td>Text analysis</td></tr>
+<tr><td>F2</td><td><code>confidence_calibration</code></td><td>Gap between self-reported confidence and linguistic signals</td><td>Requires <code>confidence</code></td></tr>
+<tr><td>F3</td><td><code>logprob_entropy</code></td><td>Token-level uncertainty from model internals</td><td>Requires <code>logprobs</code></td></tr>
+<tr><td>F4</td><td><code>semantic_consistency</code></td><td>Output coherence, information density, structure</td><td>Text analysis</td></tr>
+<tr><td>F5</td><td><code>ground_truth_accuracy</code></td><td>Factual correctness against reference answer</td><td>Requires <code>ground_truth</code></td></tr>
+<tr><td>F6</td><td><code>refusal_awareness</code></td><td>Ability to recognize and defer on unknowns</td><td>Text analysis</td></tr>
+</tbody></table>
+<p><strong>Domain Multiplier (F7):</strong> Critical domains (medical ×1.4, safety ×1.5, legal ×1.3) apply a higher bar. Casual domains (chat ×0.8, creative ×0.7) apply lower.</p>
+<p><strong>Signal availability:</strong> More optional fields (<code>confidence</code>, <code>logprobs</code>, <code>ground_truth</code>) activate more factors, producing a more accurate score. Text-only evaluation uses F1, F4, F6.</p>
 
 <h2 id="api-eval-batch">POST /v1/models/evaluate/batch</h2>
 <p>Batch evaluate up to 100 outputs in a single request.</p>
@@ -682,12 +718,12 @@ Content-Type: application/json
 <div class="dm"><span class="db-g bg-g">v1</span><span class="db-g bg-b">Stable</span><span>All endpoints require <code>X-API-Key</code></span></div>
 
 <h2 id="api-billing-checkout">POST /v1/billing/checkout</h2>
-<p>Create a Stripe checkout session for upgrading.</p>
+<p>Create a checkout session for upgrading.</p>
 <pre><code>{"layer": "standard"}</code></pre>
-<p><strong>Response 200:</strong> <code>{"checkout_url": "https://checkout.stripe.com/..."}</code></p>
+<p><strong>Response 200:</strong> <code>{"checkout_url": "https://checkout.paddle.com/..."}</code></p>
 
 <h2 id="api-billing-portal">POST /v1/billing/portal</h2>
-<p>Create a Stripe customer portal session for managing subscription.</p>
+<p>Create a customer portal session for managing subscription.</p>
 <pre><code>{"return_url": "https://ontostandard.org/app/"}</code></pre>
 
 <h2 id="api-billing-status">GET /v1/billing/status</h2>
@@ -806,7 +842,7 @@ Content-Type: application/json
 <h2 id="t-5">5. Rate Limits</h2><p>Each plan has specific limits. Exceeding may cause suspension.</p>
 <h2 id="t-6">6. Payment</h2><p>Billed in advance. Non-refundable except per Refund Policy. 30 days pricing change notice.</p>
 <h2 id="t-7">7. SLA</h2>
-<table><thead><tr><th>Plan</th><th>Uptime</th></tr></thead><tbody><tr><td>Pro</td><td>99.9%</td></tr><tr><td>Enterprise</td><td>99.99%</td></tr></tbody></table>
+<table><thead><tr><th>Plan</th><th>Uptime</th></tr></thead><tbody><tr><td>Standard</td><td>99.9%</td></tr><tr><td>Critical</td><td>99.99%</td></tr></tbody></table>
 <h2 id="t-8">8. IP</h2><p>ONTO retains rights to Services. You retain ownership of your data.</p>
 <h2 id="t-9">9. Privacy</h2><p>See <a href="#privacy">Privacy Policy</a>.</p>
 <h2 id="t-10">10. Warranties</h2><p>SERVICES PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND.</p>
@@ -842,9 +878,9 @@ Content-Type: application/json
 <div class="dd"><strong>Summary:</strong> 14-day money-back for monthly. 30-day for annual. Pro-rata after.</div>
 <h2 id="r-1">1. Monthly</h2><ul><li>14-day full refund</li><li>No partial month refunds after</li><li>Cancel anytime, service continues to period end</li></ul>
 <h2 id="r-2">2. Annual</h2><ul><li>30-day full refund</li><li>Pro-rata after (minus 15% termination fee)</li><li>No refunds after 6 months</li></ul>
-<h2 id="r-3">3. Enterprise</h2><p>Custom terms per contract.</p>
+<h2 id="r-3">3. Critical</h2><p>Custom terms per contract.</p>
 <h2 id="r-4">4. Service Credits</h2>
-<table><thead><tr><th>Plan</th><th>Breach</th><th>Credit</th></tr></thead><tbody><tr><td>Pro</td><td>99.9%</td><td>10%</td></tr><tr><td>Enterprise</td><td>99.99%</td><td>25%</td></tr></tbody></table>
+<table><thead><tr><th>Plan</th><th>Breach</th><th>Credit</th></tr></thead><tbody><tr><td>Standard</td><td>99.9%</td><td>10%</td></tr><tr><td>Critical</td><td>99.99%</td><td>25%</td></tr></tbody></table>
 <h2 id="r-5">5. Non-Refundable</h2><ul><li>ToS violation terminations</li><li>Unused credits</li><li>Setup fees</li><li>Third-party fees</li></ul>
 <h2 id="r-6">6. How To</h2><p>Email <a href="mailto:support@ontostandard.org">support@ontostandard.org</a>. Response 2 days, processing 5-10 days.</p>
 </div>
