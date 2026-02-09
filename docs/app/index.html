@@ -2495,7 +2495,7 @@ async function handleLogin(btn) {
         
         currentUser = {
             id: data.user_id,
-            name: data.name || email.split('@')[0] || 'User',
+            name: data.name,
             email: email,
             role: data.role || 'admin',
             plan: layerToPlan(data.layer || 'open'),
@@ -2681,7 +2681,7 @@ async function handleVerifyOTP(btn) {
         
         currentUser = {
             id: data.user_id,
-            name: data.name || (data.email || '').split('@')[0] || 'User',
+            name: data.name,
             email: data.email,
             role: data.role || 'admin',
             plan: layerToPlan(data.layer || 'open'),
@@ -2755,7 +2755,7 @@ async function checkEmailVerification() {
                 
                 currentUser = {
                     id: data.user_id,
-                    name: data.name || (data.email || '').split('@')[0] || 'User',
+                    name: data.name,
                     email: data.email,
                     role: 'admin',
                     plan: layerToPlan(data.layer || 'open'),
@@ -2830,33 +2830,27 @@ function showDashboard() {
     }
     
     if (currentUser) {
-        try {
-            const userName = currentUser.name || currentUser.email || 'User';
-            document.getElementById('user-avatar').textContent = userName.charAt(0).toUpperCase();
-            document.getElementById('user-name').textContent = userName;
-            document.getElementById('user-plan').textContent = currentUser.plan === 'enterprise' ? 'CRITICAL' : currentUser.plan === 'business' ? 'PRO' : 'FREE';
-            document.getElementById('settings-name').textContent = userName;
-            document.getElementById('settings-email').textContent = currentUser.email || '';
-            
-            updateCompanyUI();
-            updateBillingUI();
-            updateDashboardMetrics();
-            checkWelcomeBanner();
-            resetSessionTimer();
-            
-            // Init dashboard components
-            const realApiKey = localStorage.getItem('onto_first_api_key');
-            if (realApiKey) {
-                document.getElementById('api-key-display').value = realApiKey;
-            }
-            renderDashModels();
-            populateEvalModels();
-            loadUserSignal();
-            checkReferenceAccess();
-        } catch (e) {
-            console.error('Dashboard init error:', e);
-            showToast('Dashboard loading error: ' + e.message, 'error');
+        document.getElementById('user-avatar').textContent = (currentUser.name || currentUser.email || 'U').charAt(0).toUpperCase();
+        document.getElementById('user-name').textContent = currentUser.name || currentUser.email || 'User';
+        document.getElementById('user-plan').textContent = currentUser.plan === 'enterprise' ? 'CRITICAL' : currentUser.plan === 'business' ? 'PRO' : 'FREE';
+        document.getElementById('settings-name').textContent = currentUser.name;
+        document.getElementById('settings-email').textContent = currentUser.email;
+        
+        updateCompanyUI();
+        updateBillingUI();
+        updateDashboardMetrics();
+        checkWelcomeBanner();
+        resetSessionTimer();
+        
+        // Init dashboard components
+        const realApiKey = localStorage.getItem('onto_first_api_key');
+        if (realApiKey) {
+            document.getElementById('api-key-display').value = realApiKey;
         }
+        renderDashModels();
+        populateEvalModels();
+        loadUserSignal();
+        checkReferenceAccess();
     }
 }
 
@@ -4723,8 +4717,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         currentUser = {
             id: localStorage.getItem('onto_user_id'),
-            name: localStorage.getItem('onto_user_name') || localStorage.getItem('onto_user_email') || 'User',
-            email: localStorage.getItem('onto_user_email') || '',
+            name: localStorage.getItem('onto_user_name'),
+            email: localStorage.getItem('onto_user_email'),
             organization_id: localStorage.getItem('onto_org_id'),
             organization_name: localStorage.getItem('onto_org_name'),
             layer: localStorage.getItem('onto_layer'),
@@ -5037,3 +5031,30 @@ function closeDashModelDetail() {
 async function deleteDashModel() {
     if (!_currentDetailModelId) return;
     const demoModels = typeof mockModels !== 'undefined' ? mockModels : [];
+    if (demoModels.some(m => m.id === _currentDetailModelId)) { showToast('Cannot delete demo models', 'error'); return; }
+    
+    if (!confirm('Remove this model? This cannot be undone.')) return;
+    
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (apiKey) {
+        try {
+            await fetch(`${API_BASE}/v1/models/${_currentDetailModelId}`, {
+                method: 'DELETE',
+                headers: { 'x-api-key': apiKey }
+            });
+        } catch (e) { /* continue with local removal */ }
+    }
+    
+    const realModels = window._cachedModels || [];
+    window._cachedModels = realModels.filter(m => m.id !== _currentDetailModelId);
+    closeDashModelDetail();
+    renderDashModels();
+    populateEvalModels();
+    showToast('Model removed', 'success');
+}
+
+// Initialize dashboard models on page load
+setTimeout(() => { renderDashModels(); populateEvalModels(); }, 100);
+</script>
+</body>
+</html>
