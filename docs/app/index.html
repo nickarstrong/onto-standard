@@ -278,6 +278,7 @@ a.info-val:hover { color: var(--text); }
 .dash-model-row { display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:4px;cursor:pointer;transition:background 0.1s;border-bottom:1px solid var(--border); }
 .dash-model-row:last-child { border-bottom:none; }
 .dash-model-row:hover { background:var(--bg-elevated); }
+.demo-pill { font-size:8px;padding:1px 5px;border-radius:2px;background:rgba(234,179,8,0.15);color:#eab308;font-weight:600;letter-spacing:0.3px;margin-left:4px;vertical-align:middle; }
 .dash-model-name { font-size:12px;font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
 .dash-model-provider { font-size:10px;color:var(--text-muted);width:60px;text-align:center; }
 .dash-model-risk { font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;width:44px;text-align:right; }
@@ -976,7 +977,7 @@ a.info-val:hover { color: var(--text); }
         <a href="/docs/#specifications" class="auth-menu-sub">Specifications</a>
         <div style="border-top: 1px solid var(--border); margin: 12px 0;"></div>
         <div class="auth-menu-item" onclick="toggleTheme(); closeAuthMenu();" style="cursor: pointer;">
-            <svg id="theme-icon-mobile" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+            <svg id="theme-icon-mobile" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
             Theme
         </div>
     </nav>
@@ -1170,7 +1171,7 @@ a.info-val:hover { color: var(--text); }
                 Docs ↗
             </a>
             <div class="nav-item" onclick="toggleTheme()" style="color: var(--text-muted); cursor: pointer;">
-                <svg id="sidebar-theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                <svg id="sidebar-theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
                 Theme
             </div>
             <div class="nav-item" onclick="handleLogout()" style="color: var(--text-muted);">
@@ -1292,10 +1293,7 @@ a.info-val:hover { color: var(--text); }
                 <!-- RIGHT: Models -->
                 <div class="dash-card-clean">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-                        <div style="display:flex;align-items:center;gap:8px">
-                            <span class="card-head">Models</span>
-                            <span id="dash-models-demo-badge" style="font-size:9px;padding:2px 6px;border-radius:2px;background:rgba(234,179,8,0.15);color:#eab308;font-weight:600;letter-spacing:0.3px">DEMO</span>
-                        </div>
+                        <span class="card-head">Models</span>
                         <button class="btn-minimal" onclick="showAddModelModal()" style="font-size:11px;padding:4px 10px">+ Register</button>
                     </div>
                     <div id="dash-models-list"></div>
@@ -2361,18 +2359,11 @@ function handleSessionExpired() {
 // === THEME ===
 function toggleTheme() {
     const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-    const sunIcon = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
-    const moonIcon = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
-    
-    const icons = [document.getElementById('theme-icon-mobile'), document.getElementById('sidebar-theme-icon')];
-    
     if (isLight) {
         document.documentElement.removeAttribute('data-theme');
-        icons.forEach(el => { if (el) el.innerHTML = sunIcon; });
         localStorage.setItem('onto-theme', 'dark');
     } else {
         document.documentElement.setAttribute('data-theme', 'light');
-        icons.forEach(el => { if (el) el.innerHTML = moonIcon; });
         localStorage.setItem('onto-theme', 'light');
     }
     drawIndustryChart();
@@ -2383,12 +2374,6 @@ function toggleTheme() {
     const saved = localStorage.getItem('onto-theme');
     if (saved === 'light') {
         document.documentElement.setAttribute('data-theme', 'light');
-        document.addEventListener('DOMContentLoaded', () => {
-            const moonIcon = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
-            [document.getElementById('theme-icon-mobile'), document.getElementById('sidebar-theme-icon')].forEach(el => {
-                if (el) el.innerHTML = moonIcon;
-            });
-        });
     }
 })();
 
@@ -4937,44 +4922,56 @@ function renderDashModels() {
     const container = document.getElementById('dash-models-list');
     if (!container) return;
     const realModels = window._cachedModels || [];
-    const isDemo = realModels.length === 0;
-    const models = isDemo ? (typeof mockModels !== 'undefined' ? mockModels : []) : realModels;
+    const demoModels = typeof mockModels !== 'undefined' ? mockModels : [];
     
-    // Show/hide DEMO badge
-    const demoBadge = document.getElementById('dash-models-demo-badge');
-    if (demoBadge) demoBadge.style.display = isDemo ? 'inline' : 'none';
+    // Show both: demo models (with DEMO badge) + real user models (no badge)
+    const allRows = [];
     
-    if (models.length === 0) {
-        container.innerHTML = '<div class="dash-models-empty">No models registered yet.<br><span style="font-size:11px;color:var(--text-muted)">Register your first model to start tracking.</span></div>';
-        return;
-    }
-    container.innerHTML = models.map(m => {
+    demoModels.forEach(m => {
         const rc = (m.risk_score||0) < 0.35 ? '#22c55e' : (m.risk_score||0) < 0.65 ? '#eab308' : '#ef4444';
         const cc = (m.compliance || 'REVIEW').toLowerCase();
-        return `<div class="dash-model-row" onclick="openDashModelDetail('${m.id}')">
+        allRows.push(`<div class="dash-model-row" onclick="openDashModelDetail('${m.id}')">
+            <span class="dash-model-name">${m.name} <span class="demo-pill">DEMO</span></span>
+            <span class="dash-model-provider">${m.provider || '—'}</span>
+            <span class="dash-model-risk" style="color:${rc}">${(m.risk_score||0).toFixed(2)}</span>
+            <span class="dash-model-comp ${cc}">${(m.compliance||'—').toUpperCase()}</span>
+        </div>`);
+    });
+    
+    realModels.forEach(m => {
+        const rc = (m.risk_score||0) < 0.35 ? '#22c55e' : (m.risk_score||0) < 0.65 ? '#eab308' : '#ef4444';
+        const cc = (m.compliance || 'REVIEW').toLowerCase();
+        allRows.push(`<div class="dash-model-row" onclick="openDashModelDetail('${m.id}')">
             <span class="dash-model-name">${m.name}</span>
             <span class="dash-model-provider">${m.provider || '—'}</span>
             <span class="dash-model-risk" style="color:${rc}">${(m.risk_score||0).toFixed(2)}</span>
             <span class="dash-model-comp ${cc}">${(m.compliance||'—').toUpperCase()}</span>
-        </div>`;
-    }).join('');
+        </div>`);
+    });
+    
+    if (allRows.length === 0) {
+        container.innerHTML = '<div class="dash-models-empty">No models registered yet.<br><span style="font-size:11px;color:var(--text-muted)">Register your first model to start tracking.</span></div>';
+        return;
+    }
+    container.innerHTML = allRows.join('');
 }
 
 function openDashModelDetail(modelId) {
     const realModels = window._cachedModels || [];
-    const isDemo = realModels.length === 0;
-    const models = isDemo ? (typeof mockModels !== 'undefined' ? mockModels : []) : realModels;
-    const m = models.find(x => x.id === modelId);
+    const demoModels = typeof mockModels !== 'undefined' ? mockModels : [];
+    const allModels = [...demoModels, ...realModels];
+    const m = allModels.find(x => x.id === modelId);
     if (!m) return;
 
+    const isDemoModel = demoModels.some(x => x.id === modelId);
     _currentDetailModelId = modelId;
     document.getElementById('dash-models-list').style.display = 'none';
     const detail = document.getElementById('dash-model-detail');
     detail.style.display = 'block';
 
-    // Hide delete for demo models
+    // Hide delete for demo models, show for real
     const deleteBtn = document.getElementById('dash-detail-delete');
-    if (deleteBtn) deleteBtn.style.display = isDemo ? 'none' : 'inline-block';
+    if (deleteBtn) deleteBtn.style.display = isDemoModel ? 'none' : 'inline-block';
 
     document.getElementById('dash-detail-name').textContent = m.name;
     document.getElementById('dash-detail-provider').textContent = (m.provider || '—') + ' · ' + (m.version || 'v1');
@@ -5013,13 +5010,12 @@ function closeDashModelDetail() {
 
 function deleteDashModel() {
     if (!_currentDetailModelId) return;
-    const realModels = window._cachedModels || [];
-    if (realModels.length === 0) { showToast('Cannot delete demo models', 'error'); return; }
+    const demoModels = typeof mockModels !== 'undefined' ? mockModels : [];
+    if (demoModels.some(m => m.id === _currentDetailModelId)) { showToast('Cannot delete demo models', 'error'); return; }
     
     if (!confirm('Remove this model? This cannot be undone.')) return;
     
-    // TODO: API call to delete model
-    // For now remove from cache
+    const realModels = window._cachedModels || [];
     window._cachedModels = realModels.filter(m => m.id !== _currentDetailModelId);
     closeDashModelDetail();
     renderDashModels();
