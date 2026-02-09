@@ -219,7 +219,6 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <div class="ng"><h4>Legal</h4><a class="nl" href="#license" data-doc="license">License</a><a class="nl" href="#terms" data-doc="terms">Terms of Service</a><a class="nl" href="#privacy" data-doc="privacy">Privacy Policy</a><a class="nl" href="#refund" data-doc="refund">Refund Policy</a></div>
 </nav>
 <div class="sb-f"><div class="sb-fa">
-<a href="/app/" class="sb-fb" style="text-decoration:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</a>
 <a href="/" class="sb-fb" style="text-decoration:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>Home</a>
 </div></div>
 </aside>
@@ -879,8 +878,8 @@ async function submitRv(){const n=document.getElementById('rv-name').value.trim(
 const logged=localStorage.getItem('onto_logged_in')==='true';
 const si=document.getElementById('sb-si');
 if(si&&logged){
-const name=localStorage.getItem('onto_user_name')||'User';
-si.innerHTML='<a class="btn-si" href="/app/" style="background:var(--bg-e);color:var(--text);border:1px solid var(--border)">'+name.charAt(0).toUpperCase()+' — Dashboard</a>';
+si.innerHTML='<a class="nl" href="/app/" style="display:flex;align-items:center;gap:6px;padding:8px 12px;color:var(--text-s);font-size:12px;text-decoration:none"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</a>';
+si.style.borderBottom='1px solid var(--border)';si.style.padding='4px 0';
 }
 })();
 </script>
