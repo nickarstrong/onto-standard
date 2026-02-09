@@ -750,6 +750,8 @@ a.info-val:hover { color: var(--text); }
     linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px);
     background-size: 20px 20px; pointer-events: none; }
 .signal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; position: relative; z-index: 1; }
+.signal-title-row { display: flex; align-items: center; gap: 10px; }
+.signal-live-indicator { display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(34, 197, 94, 0.15); border-radius: 12px; font-size: 10px; font-weight: 600; color: #22c55e; text-transform: uppercase; letter-spacing: 0.5px; }
 .signal-title { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; color: var(--text); }
 .signal-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #15803d, #22c55e); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; font-family: 'Times New Roman', serif; font-style: italic; box-shadow: 0 0 15px rgba(34, 197, 94, 0.5), 0 0 30px rgba(34, 197, 94, 0.2); }
 .signal-live { display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(34, 197, 94, 0.15); border-radius: 12px; font-size: 10px; font-weight: 600; color: #22c55e; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -1200,7 +1202,7 @@ a.info-val:hover { color: var(--text); }
                     <textarea id="dash-eval-output" placeholder="Paste AI-generated text here..." spellcheck="false" style="min-height:80px"></textarea>
                 </div>
                 <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
-                    <div style="flex:1;min-width:120px">
+                    <div style="width:140px;flex-shrink:0">
                         <label style="display:block;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Domain</label>
                         <select id="dash-eval-domain" class="eval-select">
                             <option value="general">General</option>
@@ -1213,7 +1215,7 @@ a.info-val:hover { color: var(--text); }
                             <option value="creative">Creative</option>
                         </select>
                     </div>
-                    <div style="flex:1;min-width:120px">
+                    <div style="width:160px;flex-shrink:0">
                         <label style="display:block;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Model <span style="font-weight:400">(opt)</span></label>
                         <select id="dash-eval-model" class="eval-select">
                             <option value="">—</option>
@@ -1248,8 +1250,8 @@ a.info-val:hover { color: var(--text); }
 
                 <!-- LEFT: Last Result -->
                 <div class="dash-card-clean" id="dash-result-panel">
-                    <div id="dash-result-empty" style="text-align:center;padding:32px 0;color:var(--text-muted);font-size:12px">
-                        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--border);margin-bottom:8px"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                    <div id="dash-result-empty" style="text-align:center;padding:20px 0;color:var(--text-muted);font-size:12px">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--border);margin-bottom:6px"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
                         <div>Submit an output above to see results</div>
                     </div>
                     <div id="dash-result-content" style="display:none">
@@ -3703,14 +3705,21 @@ let userSignalInterval = null;
 
 async function loadUserSignal() {
     const apiKey = localStorage.getItem('onto_first_api_key');
-    if (!apiKey) return;
     
     try {
-        const res = await fetch(`${API_BASE}/v1/signal/admin-status`, {
-            headers: { 'x-api-key': apiKey }
-        });
-        if (res.ok) {
-            const stats = await res.json();
+        let stats = null;
+        
+        if (apiKey) {
+            const res = await fetch(`${API_BASE}/v1/signal/admin-status`, {
+                headers: { 'x-api-key': apiKey }
+            });
+            if (res.ok) {
+                stats = await res.json();
+            }
+        }
+        
+        // Check if signal server responded with actual data (not error)
+        if (stats && !stats.error && stats.uptime_seconds !== undefined) {
             if (stats.current_signal) {
                 const el = document.getElementById('user-signal-id');
                 if (el) el.textContent = stats.current_signal.sigma_id || `σ_${stats.current_signal.timestamp}`;
@@ -3723,16 +3732,30 @@ async function loadUserSignal() {
             updateUserMetric('user-signal-errors', errorRate < 5 ? 'OK' : errorRate.toFixed(1) + '%');
             const remaining = stats.signal_interval - (stats.uptime_seconds % stats.signal_interval);
             startUserCountdown(remaining);
+        } else {
+            // Signal server unavailable — show fallback
+            showSignalFallback();
         }
     } catch (e) {
-        const el = document.getElementById('user-signal-id');
-        if (el) el.textContent = `σ_${Date.now()}`;
-        updateUserMetric('user-signal-uptime', '—');
-        updateUserMetric('user-signal-generated', '—');
-        updateUserMetric('user-signal-requests', '—');
-        updateUserMetric('user-signal-errors', '—');
-        startUserCountdown(300);
+        showSignalFallback();
     }
+}
+
+function showSignalFallback() {
+    const el = document.getElementById('user-signal-id');
+    if (el) el.textContent = `σ_${Math.floor(Date.now()/1000)}`;
+    const hashEl = document.getElementById('user-signal-hash');
+    if (hashEl) {
+        const hex = Array.from({length: 64}, () => '0123456789abcdef'[Math.floor(Math.random()*16)]).join('');
+        startUserHashAnimation(hex);
+    }
+    updateUserMetric('user-signal-uptime', '—');
+    updateUserMetric('user-signal-generated', '—');
+    updateUserMetric('user-signal-requests', '—');
+    updateUserMetric('user-signal-errors', '—');
+    const liveEl = document.getElementById('user-signal-live');
+    if (liveEl) liveEl.innerHTML = '<span class="signal-dot" style="background:#eab308;box-shadow:0 0 6px #eab308"></span><span>SYNC</span>';
+    startUserCountdown(30);
 }
 
 function updateUserMetric(id, value) {
