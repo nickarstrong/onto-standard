@@ -269,6 +269,81 @@ a.info-val:hover { color: var(--text); }
 .status-dot.active { background: var(--accent); }
 
 /* === BILLING CARDS === */
+
+/* === EVALUATE PAGE === */
+.eval-select { width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);padding:6px 10px;font-size:12px;cursor:pointer; }
+.eval-select:focus { outline:none;border-color:var(--accent); }
+
+/* Compact model list */
+.dash-model-row { display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:4px;cursor:pointer;transition:background 0.1s;border-bottom:1px solid var(--border); }
+.dash-model-row:last-child { border-bottom:none; }
+.dash-model-row:hover { background:var(--bg-elevated); }
+.dash-model-name { font-size:12px;font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+.dash-model-provider { font-size:10px;color:var(--text-muted);width:60px;text-align:center; }
+.dash-model-risk { font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;width:44px;text-align:right; }
+.dash-model-comp { font-size:10px;font-weight:600;padding:2px 6px;border-radius:2px;width:52px;text-align:center; }
+.dash-model-comp.passed { background:rgba(34,197,94,0.12);color:#22c55e; }
+.dash-model-comp.review { background:rgba(234,179,8,0.12);color:#eab308; }
+.dash-model-comp.failed { background:rgba(239,68,68,0.12);color:#ef4444; }
+.dash-models-empty { text-align:center;padding:24px 0;color:var(--text-muted);font-size:12px; }
+
+.eval-form-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 20px; margin-bottom: 16px; }
+.eval-form-card label { display: block; font-size: 11px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.eval-form-card textarea { width: 100%; min-height: 120px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; color: var(--text); padding: 10px 12px; font-size: 13px; font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace; resize: vertical; box-sizing: border-box; }
+.eval-form-card textarea:focus { outline: none; border-color: var(--accent); }
+.eval-form-card select { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; color: var(--text); padding: 8px 12px; font-size: 13px; cursor: pointer; }
+.eval-form-card select:focus { outline: none; border-color: var(--accent); }
+.eval-form-card input[type="number"] { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; color: var(--text); padding: 8px 12px; font-size: 13px; box-sizing: border-box; }
+.eval-form-card input[type="number"]:focus { outline: none; border-color: var(--accent); }
+.eval-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+.eval-form-group { margin-bottom: 14px; }
+.eval-form-group:last-child { margin-bottom: 0; }
+.eval-optional-toggle { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; cursor: pointer; font-size: 12px; color: var(--text-secondary); }
+.eval-optional-toggle:hover { color: var(--text); }
+.eval-optional-fields { display: none; }
+.eval-optional-fields.show { display: block; }
+.eval-submit-row { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }
+.eval-submit-btn { background: var(--accent); color: #fff; border: none; padding: 10px 28px; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; }
+.eval-submit-btn:hover { opacity: 0.85; }
+.eval-submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.eval-submit-hint { font-size: 11px; color: var(--text-muted); }
+
+/* Results */
+.eval-result-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 20px; margin-bottom: 16px; display: none; }
+.eval-result-card.show { display: block; }
+.eval-result-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.eval-score-ring { width: 80px; height: 80px; position: relative; flex-shrink: 0; }
+.eval-score-ring svg { width: 80px; height: 80px; transform: rotate(-90deg); }
+.eval-score-ring .ring-bg { fill: none; stroke: var(--border); stroke-width: 6; }
+.eval-score-ring .ring-fill { fill: none; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.6s ease, stroke 0.3s; }
+.eval-score-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.eval-score-value { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.eval-score-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.eval-result-meta { flex: 1; }
+.eval-compliance-badge { display: inline-block; padding: 4px 12px; border-radius: 3px; font-size: 12px; font-weight: 600; letter-spacing: 0.3px; margin-bottom: 6px; }
+.eval-compliance-badge.passed { background: rgba(34,197,94,0.12); color: #22c55e; }
+.eval-compliance-badge.review { background: rgba(234,179,8,0.12); color: #eab308; }
+.eval-compliance-badge.failed { background: rgba(239,68,68,0.12); color: #ef4444; }
+.eval-result-domain { font-size: 12px; color: var(--text-secondary); }
+.eval-result-timestamp { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+/* Factor breakdown */
+.eval-factors { display: grid; grid-template-columns: 1fr; gap: 8px; }
+.eval-factor { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
+.eval-factor-name { width: 140px; font-size: 11px; color: var(--text-secondary); flex-shrink: 0; }
+.eval-factor-bar-wrap { flex: 1; height: 6px; background: var(--bg-elevated); border-radius: 3px; overflow: hidden; }
+.eval-factor-bar { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+.eval-factor-val { width: 44px; text-align: right; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+
+/* Session history */
+.eval-history { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 16px; }
+.eval-history-title { font-size: 11px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+.eval-history-empty { font-size: 12px; color: var(--text-muted); text-align: center; padding: 20px 0; }
+.eval-history-row { display: grid; grid-template-columns: 60px 1fr 70px 70px; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 12px; align-items: center; }
+.eval-history-row:last-child { border-bottom: none; }
+.eval-history-row .risk-pill { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 600; }
+.eval-history-output { color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 768px) { .eval-form-row { grid-template-columns: 1fr; } .eval-history-row { grid-template-columns: 60px 1fr 60px; } .eval-history-row span:last-child { display: none; } }
 .pricing-grid { display: grid; grid-template-columns: 1fr; gap: 10px; max-width: 320px; margin: 0 auto; }
 .pricing-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 16px 14px; text-align: center; position: relative; transition: all 0.2s; }
 .pricing-card.popular { border-color: var(--accent); }
@@ -1070,6 +1145,10 @@ a.info-val:hover { color: var(--text); }
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
                 Dashboard
             </div>
+            <div class="nav-item" onclick="showPage('evaluate', this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                Evaluate
+            </div>
             <div class="nav-divider"></div>
             <div class="nav-item" onclick="showPage('billing', this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
@@ -1107,91 +1186,151 @@ a.info-val:hover { color: var(--text); }
     <main class="main-content">
         <!-- DASHBOARD PAGE -->
         <div class="page active" id="page-dashboard">
-            <!-- Models Overview -->
-            <div class="models-header">
-                <h1 class="dash-title">Models</h1>
-                <button class="btn-add-model" onclick="showAddModelModal()">+ Register Model</button>
-            </div>
 
-            <!-- Models Grid -->
-            <div class="models-grid" id="models-grid"></div>
-
-            <!-- Comparison -->
-            <div class="dash-card-clean" id="comparison-card">
-                <div class="card-head-row">
-                    <span class="card-head">Comparison</span>
-                    <div class="compare-tabs">
-                        <button class="compare-tab active" onclick="switchCompare('risk', this)">Risk</button>
-                        <button class="compare-tab" onclick="switchCompare('calibration', this)">Calibration</button>
-                        <button class="compare-tab" onclick="switchCompare('requests', this)">Requests</button>
+            <!-- === QUICK EVALUATE (top) === -->
+            <div class="eval-form-card" id="dash-eval-form">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+                    <div>
+                        <div style="font-size:15px;font-weight:500">Evaluate</div>
+                        <div style="font-size:11px;color:var(--text-muted);margin-top:2px">Submit AI output for epistemic risk analysis</div>
+                    </div>
+                    <span class="eval-submit-hint" id="dash-eval-hint" style="font-size:10px;color:var(--text-muted)"></span>
+                </div>
+                <div class="eval-form-group">
+                    <textarea id="dash-eval-output" placeholder="Paste AI-generated text here..." spellcheck="false" style="min-height:80px"></textarea>
+                </div>
+                <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+                    <div style="flex:1;min-width:120px">
+                        <label style="display:block;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Domain</label>
+                        <select id="dash-eval-domain" class="eval-select">
+                            <option value="general">General</option>
+                            <option value="medical">Medical</option>
+                            <option value="legal">Legal</option>
+                            <option value="finance">Finance</option>
+                            <option value="safety">Safety</option>
+                            <option value="education">Education</option>
+                            <option value="chat">Chat</option>
+                            <option value="creative">Creative</option>
+                        </select>
+                    </div>
+                    <div style="flex:1;min-width:120px">
+                        <label style="display:block;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Model <span style="font-weight:400">(opt)</span></label>
+                        <select id="dash-eval-model" class="eval-select">
+                            <option value="">—</option>
+                        </select>
+                    </div>
+                    <div class="eval-optional-toggle" onclick="toggleDashEvalAdvanced()" style="margin-bottom:4px;flex-shrink:0">
+                        <svg id="dash-eval-chevron" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" style="transition:transform 0.2s"><polyline points="9,18 15,12 9,6"/></svg>
+                        <span style="font-size:11px">Advanced</span>
+                    </div>
+                    <button class="eval-submit-btn" id="dash-eval-btn" onclick="dashSubmitEval()" style="flex-shrink:0;padding:8px 24px">Evaluate →</button>
+                </div>
+                <div class="eval-optional-fields" id="dash-eval-advanced" style="margin-top:12px">
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+                        <div>
+                            <label style="display:block;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Ground Truth</label>
+                            <input type="text" id="dash-eval-gt" placeholder="Correct answer" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);padding:6px 10px;font-size:12px;box-sizing:border-box">
+                        </div>
+                        <div>
+                            <label style="display:block;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Confidence</label>
+                            <input type="number" id="dash-eval-conf" min="0" max="1" step="0.01" placeholder="0.0–1.0" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);padding:6px 10px;font-size:12px;box-sizing:border-box">
+                        </div>
+                        <div>
+                            <label style="display:block;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Context</label>
+                            <input type="text" id="dash-eval-ctx" placeholder="User prompt" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);padding:6px 10px;font-size:12px;box-sizing:border-box">
+                        </div>
                     </div>
                 </div>
-                <div class="compare-bars" id="compare-bars"></div>
             </div>
 
-            <!-- Model Detail (shown on click) -->
-            <div class="model-detail-panel" id="model-detail" style="display:none">
-                <div class="detail-back" onclick="closeModelDetail()">← All Models</div>
-                <div class="model-status-card">
-                    <div class="model-header">
-                        <div class="model-info">
-                            <div class="model-name" id="detail-name">—</div>
-                            <div class="model-id" id="detail-cert">—</div>
-                        </div>
-                        <div class="model-risk-badge" id="detail-risk-badge">
-                            <div class="risk-value" id="detail-risk-value">—</div>
-                            <div class="risk-label">RISK SCORE</div>
-                        </div>
+            <!-- === RESULT + MODELS (2-col) === -->
+            <div class="dash-grid-2col" id="dash-main-grid">
+
+                <!-- LEFT: Last Result -->
+                <div class="dash-card-clean" id="dash-result-panel">
+                    <div id="dash-result-empty" style="text-align:center;padding:32px 0;color:var(--text-muted);font-size:12px">
+                        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--border);margin-bottom:8px"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                        <div>Submit an output above to see results</div>
                     </div>
-                    <div class="model-metrics">
-                        <div class="model-metric"><span class="mm-val" id="detail-layer">—</span><span class="mm-lbl">LAYER</span></div>
-                        <div class="model-metric"><span class="mm-val" id="detail-calibration">—</span><span class="mm-lbl">CALIBRATION</span></div>
-                        <div class="model-metric"><span class="mm-val" id="detail-requests">0</span><span class="mm-lbl">REQUESTS</span></div>
-                        <div class="model-metric"><span class="mm-val" id="detail-compliance">—</span><span class="mm-lbl">COMPLIANCE</span></div>
-                        <div class="model-metric"><span class="mm-val" id="detail-last-eval">—</span><span class="mm-lbl">LAST EVAL</span></div>
+                    <div id="dash-result-content" style="display:none">
+                        <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)">
+                            <div class="eval-score-ring">
+                                <svg viewBox="0 0 80 80">
+                                    <circle class="ring-bg" cx="40" cy="40" r="34"/>
+                                    <circle class="ring-fill" id="dash-ring-fill" cx="40" cy="40" r="34" stroke-dasharray="213.6" stroke-dashoffset="213.6"/>
+                                </svg>
+                                <div class="eval-score-center">
+                                    <span class="eval-score-value" id="dash-score-val">—</span>
+                                    <span class="eval-score-label">Risk</span>
+                                </div>
+                            </div>
+                            <div style="flex:1">
+                                <div class="eval-compliance-badge" id="dash-comp-badge">—</div>
+                                <div style="font-size:11px;color:var(--text-secondary);margin-top:4px" id="dash-result-meta">—</div>
+                            </div>
+                        </div>
+                        <div style="font-size:10px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Factor Analysis</div>
+                        <div class="eval-factors" id="dash-factors">
+                            <div class="eval-factor"><span class="eval-factor-name">F1 Linguistic Uncertainty</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="df-f1" style="width:0"></div></div><span class="eval-factor-val" id="dv-f1">—</span></div>
+                            <div class="eval-factor"><span class="eval-factor-name">F2 Confidence Calibration</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="df-f2" style="width:0"></div></div><span class="eval-factor-val" id="dv-f2">—</span></div>
+                            <div class="eval-factor"><span class="eval-factor-name">F3 Logprob Entropy</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="df-f3" style="width:0"></div></div><span class="eval-factor-val" id="dv-f3">—</span></div>
+                            <div class="eval-factor"><span class="eval-factor-name">F4 Semantic Consistency</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="df-f4" style="width:0"></div></div><span class="eval-factor-val" id="dv-f4">—</span></div>
+                            <div class="eval-factor"><span class="eval-factor-name">F5 Ground Truth Accuracy</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="df-f5" style="width:0"></div></div><span class="eval-factor-val" id="dv-f5">—</span></div>
+                            <div class="eval-factor"><span class="eval-factor-name">F6 Refusal Awareness</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="df-f6" style="width:0"></div></div><span class="eval-factor-val" id="dv-f6">—</span></div>
+                            <div class="eval-factor"><span class="eval-factor-name" style="color:var(--text-muted)">Domain Multiplier</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="df-dm" style="width:0"></div></div><span class="eval-factor-val" id="dv-dm">—</span></div>
+                        </div>
+                        <div style="margin-top:12px;font-size:10px;color:var(--text-muted)" id="dash-result-signals">—</div>
                     </div>
                 </div>
-                <div class="dash-grid-2col">
-                    <div class="dash-card-clean">
-                        <div class="card-head-row">
-                            <span class="card-head">Evaluation History</span>
-                            <span class="card-sub">Last 5</span>
-                        </div>
-                        <div class="table-wrap">
-                            <table class="eval-tbl">
-                                <thead><tr><th>ID</th><th>Risk</th><th>Level</th><th>Time</th></tr></thead>
-                                <tbody id="detail-eval-tbody"></tbody>
-                            </table>
-                        </div>
+
+                <!-- RIGHT: Models -->
+                <div class="dash-card-clean">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                        <span class="card-head">Models</span>
+                        <button class="btn-minimal" onclick="showAddModelModal()" style="font-size:11px;padding:4px 10px">+ Register</button>
                     </div>
-                    <div class="dash-card-clean">
-                        <div class="card-head">Risk Score Trend</div>
-                        <div class="trend-chart" id="detail-trend-chart"></div>
+                    <div id="dash-models-list"></div>
+                    
+                    <!-- Model Detail (expands in place) -->
+                    <div id="dash-model-detail" style="display:none">
+                        <div class="detail-back" onclick="closeDashModelDetail()" style="margin-bottom:10px">← All Models</div>
+                        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+                            <div style="flex:1">
+                                <div style="font-size:14px;font-weight:500" id="dash-detail-name">—</div>
+                                <div style="font-size:11px;color:var(--text-muted)" id="dash-detail-provider">—</div>
+                            </div>
+                            <div style="text-align:right">
+                                <div style="font-size:20px;font-weight:700;font-variant-numeric:tabular-nums" id="dash-detail-risk">—</div>
+                                <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase">Risk Score</div>
+                            </div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)">
+                            <div style="text-align:center"><div style="font-size:14px;font-weight:600" id="dash-detail-layer">—</div><div style="font-size:9px;color:var(--text-muted)">LAYER</div></div>
+                            <div style="text-align:center"><div style="font-size:14px;font-weight:600" id="dash-detail-comp">—</div><div style="font-size:9px;color:var(--text-muted)">COMPLIANCE</div></div>
+                            <div style="text-align:center"><div style="font-size:14px;font-weight:600" id="dash-detail-evals">0</div><div style="font-size:9px;color:var(--text-muted)">EVALS</div></div>
+                        </div>
+                        <div class="card-head" style="font-size:10px;margin-bottom:6px">Risk Trend</div>
+                        <div class="trend-chart" id="dash-detail-trend" style="height:80px"></div>
                         <div class="trend-summary">
-                            <span class="trend-avg" id="detail-trend-avg">Avg: —</span>
-                            <span class="trend-dir" id="detail-trend-dir">—</span>
+                            <span class="trend-avg" id="dash-detail-trend-avg">Avg: —</span>
+                            <span class="trend-dir" id="dash-detail-trend-dir">—</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Welcome Banner (new users) -->
-            <div class="welcome-banner" id="welcome-banner">
-                <div class="welcome-content">
-                    <div class="welcome-text">
-                        <strong>Welcome to ONTO</strong>
-                        <span>Register your AI models and start evaluating epistemic risk.</span>
-                    </div>
-                    <div class="welcome-actions">
-                        <button class="btn-minimal" onclick="copyApiKey(this)">Copy API Key</button>
-                        <button class="btn-minimal" onclick="window.open('/docs/', '_blank')">Read Docs</button>
-                        <button class="welcome-dismiss" onclick="dismissWelcome()" title="Dismiss">×</button>
-                    </div>
+            <!-- === EVALUATION HISTORY === -->
+            <div class="dash-card-clean" style="margin-bottom:16px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                    <span class="card-head">Evaluation History</span>
+                    <span style="font-size:11px;color:var(--text-muted)" id="dash-history-count">0 evaluations</span>
                 </div>
+                <div id="dash-history-empty" style="text-align:center;padding:16px 0;color:var(--text-muted);font-size:12px">No evaluations yet</div>
+                <div id="dash-history-rows"></div>
             </div>
 
-            <!-- API Key + Plan -->
-            <div class="dash-grid-2col">
+            <!-- === API KEY + PLAN (compact) === -->
+            <div class="dash-grid-2col" style="margin-bottom:16px">
                 <div class="dash-card-clean">
                     <div class="card-head">API Key</div>
                     <div class="key-row">
@@ -1205,7 +1344,7 @@ a.info-val:hover { color: var(--text); }
                         <span id="key-created">Created: —</span>
                         <span id="key-last-used">Last used: —</span>
                     </div>
-                    <button class="btn-danger-outline" onclick="regenerateApiKey(this)" style="margin-top:12px;">Regenerate Key</button>
+                    <button class="btn-danger-outline" onclick="regenerateApiKey(this)" style="margin-top:10px;font-size:11px">Regenerate</button>
                 </div>
                 <div class="dash-card-clean">
                     <div class="card-head">Subscription</div>
@@ -1225,8 +1364,9 @@ a.info-val:hover { color: var(--text); }
                 </div>
             </div>
 
-            <!-- Entropy Signal -->
+            <!-- === ENTROPY SIGNAL (bottom) === -->
             <div class="signal-panel" id="user-signal-panel">
+                <div class="signal-panel-grid"></div>
                 <div class="signal-header">
                     <div class="signal-title-row">
                         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent)"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
@@ -1249,50 +1389,118 @@ a.info-val:hover { color: var(--text); }
                         </div>
                     </div>
                     <div class="signal-metrics">
-                        <div class="signal-metric">
-                            <div class="signal-metric-value" id="user-signal-uptime"><div class="skeleton skeleton-metric"></div></div>
-                            <div class="signal-metric-label">UPTIME</div>
-                        </div>
-                        <div class="signal-metric">
-                            <div class="signal-metric-value" id="user-signal-generated"><div class="skeleton skeleton-metric"></div></div>
-                            <div class="signal-metric-label">GENERATED</div>
-                        </div>
-                        <div class="signal-metric">
-                            <div class="signal-metric-value" id="user-signal-requests"><div class="skeleton skeleton-metric"></div></div>
-                            <div class="signal-metric-label">REQUESTS</div>
-                        </div>
-                        <div class="signal-metric">
-                            <div class="signal-metric-value" id="user-signal-errors"><div class="skeleton skeleton-metric"></div></div>
-                            <div class="signal-metric-label">ERROR RATE</div>
-                        </div>
-                        <div class="signal-metric">
-                            <div class="signal-metric-value">104</div>
-                            <div class="signal-metric-label">PACKET</div>
-                        </div>
-                        <div class="signal-metric">
-                            <div class="signal-metric-value">ED25519</div>
-                            <div class="signal-metric-label">SIGNATURE</div>
-                        </div>
+                        <div class="signal-metric"><div class="signal-metric-value" id="user-signal-uptime"><div class="skeleton skeleton-metric"></div></div><div class="signal-metric-label">UPTIME</div></div>
+                        <div class="signal-metric"><div class="signal-metric-value" id="user-signal-generated"><div class="skeleton skeleton-metric"></div></div><div class="signal-metric-label">GENERATED</div></div>
+                        <div class="signal-metric"><div class="signal-metric-value" id="user-signal-requests"><div class="skeleton skeleton-metric"></div></div><div class="signal-metric-label">REQUESTS</div></div>
+                        <div class="signal-metric"><div class="signal-metric-value" id="user-signal-errors"><div class="skeleton skeleton-metric"></div></div><div class="signal-metric-label">ERROR RATE</div></div>
+                        <div class="signal-metric"><div class="signal-metric-value">104</div><div class="signal-metric-label">PACKET</div></div>
+                        <div class="signal-metric"><div class="signal-metric-value">ED25519</div><div class="signal-metric-label">SIGNATURE</div></div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Quick Start -->
-            <details class="qs-block">
-                <summary>Quick Start</summary>
-                <pre class="code"><code>pip install onto-standard
+        </div>
+        
+        <!-- EVALUATE PAGE -->
+        <div class="page" id="page-evaluate">
+            <div class="page-header-clean">
+                <h1 class="page-title">Evaluate Output</h1>
+                <p class="page-subtitle" style="color: var(--text-secondary); font-size: 12px; margin-top: 2px;">Submit AI output for epistemic risk scoring. See factor breakdown in real-time.</p>
+            </div>
 
-from onto import Client
-client = Client(api_key="your_api_key")
+            <!-- Submission Form -->
+            <div class="eval-form-card">
+                <div class="eval-form-group">
+                    <label for="eval-output">AI Output <span style="color:var(--text-muted);font-weight:400;text-transform:none">— paste the model response to analyze</span></label>
+                    <textarea id="eval-output" placeholder="Paste AI-generated text here...&#10;&#10;Example: Take 500mg ibuprofen twice daily for pain." spellcheck="false"></textarea>
+                </div>
 
-# Register models
-client.models.register("gpt-5.2", provider="openai")
-client.models.register("claude-4", provider="anthropic")
+                <div class="eval-form-row">
+                    <div class="eval-form-group">
+                        <label for="eval-domain">Domain</label>
+                        <select id="eval-domain">
+                            <option value="general">General</option>
+                            <option value="medical">Medical</option>
+                            <option value="legal">Legal</option>
+                            <option value="finance">Finance</option>
+                            <option value="safety">Safety</option>
+                            <option value="education">Education</option>
+                            <option value="chat">Chat</option>
+                            <option value="creative">Creative</option>
+                        </select>
+                    </div>
+                    <div class="eval-form-group">
+                        <label for="eval-model-select">Model <span style="color:var(--text-muted);font-weight:400;text-transform:none">— optional</span></label>
+                        <select id="eval-model-select">
+                            <option value="">— none —</option>
+                        </select>
+                    </div>
+                </div>
 
-# Evaluate specific model
-result = client.evaluate(model="gpt-5.2", output=response, confidence=0.85)
-print(result.risk_score, result.layer, result.compliance)</code></pre>
-            </details>
+                <div class="eval-optional-toggle" onclick="toggleEvalOptional()">
+                    <svg id="eval-opt-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="transition:transform 0.2s"><polyline points="9,18 15,12 9,6"/></svg>
+                    Advanced options (ground truth, confidence)
+                </div>
+                <div class="eval-optional-fields" id="eval-optional">
+                    <div class="eval-form-group">
+                        <label for="eval-gt">Ground Truth <span style="color:var(--text-muted);font-weight:400;text-transform:none">— correct answer for accuracy check</span></label>
+                        <textarea id="eval-gt" style="min-height:60px" placeholder="Optional: the factually correct answer"></textarea>
+                    </div>
+                    <div class="eval-form-row">
+                        <div class="eval-form-group">
+                            <label for="eval-confidence">Model Confidence <span style="color:var(--text-muted);font-weight:400;text-transform:none">— 0.0 to 1.0</span></label>
+                            <input type="number" id="eval-confidence" min="0" max="1" step="0.01" placeholder="e.g. 0.85">
+                        </div>
+                        <div class="eval-form-group">
+                            <label for="eval-context">Context / Prompt <span style="color:var(--text-muted);font-weight:400;text-transform:none">— optional</span></label>
+                            <input type="text" id="eval-context" placeholder="What was the user asking?" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);padding:8px 12px;font-size:13px;box-sizing:border-box;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="eval-submit-row">
+                    <span class="eval-submit-hint" id="eval-hint">Uses 1 API call from your quota</span>
+                    <button class="eval-submit-btn" id="eval-submit-btn" onclick="submitEvaluation()">Evaluate →</button>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="eval-result-card" id="eval-result-card">
+                <div class="eval-result-header">
+                    <div class="eval-score-ring">
+                        <svg viewBox="0 0 80 80">
+                            <circle class="ring-bg" cx="40" cy="40" r="34"/>
+                            <circle class="ring-fill" id="eval-ring-fill" cx="40" cy="40" r="34" stroke-dasharray="213.6" stroke-dashoffset="213.6"/>
+                        </svg>
+                        <div class="eval-score-center">
+                            <span class="eval-score-value" id="eval-score-value">—</span>
+                            <span class="eval-score-label">Risk</span>
+                        </div>
+                    </div>
+                    <div class="eval-result-meta">
+                        <div class="eval-compliance-badge" id="eval-compliance-badge">—</div>
+                        <div class="eval-result-domain" id="eval-result-domain">—</div>
+                        <div class="eval-result-timestamp" id="eval-result-timestamp">—</div>
+                    </div>
+                </div>
+
+                <div style="font-size:11px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Factor Breakdown</div>
+                <div class="eval-factors" id="eval-factors">
+                    <div class="eval-factor"><span class="eval-factor-name">F1 · Linguistic Uncertainty</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="ef-f1" style="width:0"></div></div><span class="eval-factor-val" id="ev-f1">—</span></div>
+                    <div class="eval-factor"><span class="eval-factor-name">F2 · Confidence Calibration</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="ef-f2" style="width:0"></div></div><span class="eval-factor-val" id="ev-f2">—</span></div>
+                    <div class="eval-factor"><span class="eval-factor-name">F3 · Logprob Entropy</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="ef-f3" style="width:0"></div></div><span class="eval-factor-val" id="ev-f3">—</span></div>
+                    <div class="eval-factor"><span class="eval-factor-name">F4 · Semantic Consistency</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="ef-f4" style="width:0"></div></div><span class="eval-factor-val" id="ev-f4">—</span></div>
+                    <div class="eval-factor"><span class="eval-factor-name">F5 · Ground Truth Accuracy</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="ef-f5" style="width:0"></div></div><span class="eval-factor-val" id="ev-f5">—</span></div>
+                    <div class="eval-factor"><span class="eval-factor-name">F6 · Refusal Awareness</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="ef-f6" style="width:0"></div></div><span class="eval-factor-val" id="ev-f6">—</span></div>
+                    <div class="eval-factor"><span class="eval-factor-name">Domain Multiplier</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="ef-dm" style="width:0"></div></div><span class="eval-factor-val" id="ev-dm">—</span></div>
+                </div>
+            </div>
+
+            <!-- Session History -->
+            <div class="eval-history" id="eval-history">
+                <div class="eval-history-title">Session History</div>
+                <div class="eval-history-empty" id="eval-history-empty">No evaluations yet. Submit one above.</div>
+                <div id="eval-history-rows"></div>
+            </div>
         </div>
         
         <!-- SETTINGS PAGE -->
@@ -2626,8 +2834,8 @@ function showDashboard() {
         if (realApiKey) {
             document.getElementById('api-key-display').value = realApiKey;
         }
-        renderModelsGrid();
-        renderComparison('risk');
+        renderDashModels();
+        populateEvalModels();
         loadUserSignal();
         checkReferenceAccess();
     }
@@ -2729,6 +2937,7 @@ function showPage(page, el) {
             if (oc && oc.includes("'" + page + "'")) n.classList.add('active');
         });
     }
+    if (page === 'evaluate') populateEvalModels();
 }
 
 // === COMPANY ===
@@ -3366,13 +3575,14 @@ function submitContactForm() {
 
 function dismissWelcome() {
     const banner = document.getElementById('welcome-banner');
-    banner.classList.add('hidden');
+    if (banner) banner.classList.add('hidden');
     localStorage.setItem('onto_welcome_dismissed', 'true');
 }
 
 function checkWelcomeBanner() {
     const dismissed = localStorage.getItem('onto_welcome_dismissed');
     const banner = document.getElementById('welcome-banner');
+    if (!banner) return;
     if (dismissed || (currentUser && currentUser.apiCalls > 0)) {
         banner.classList.add('hidden');
     } else {
@@ -3621,130 +3831,7 @@ const mockModels = [
     }
 ];
 
-let currentCompare = 'risk';
-
-function renderModelsGrid() {
-    const grid = document.getElementById('models-grid');
-    grid.innerHTML = mockModels.map(m => {
-        const rc = m.risk_score < 0.3 ? 'low' : m.risk_score < 0.6 ? 'medium' : 'high';
-        const cc = m.compliance === 'PASSED' ? 'passed' : m.compliance === 'REVIEW' ? 'review' : 'failed';
-        return `<div class="model-card" onclick="openModelDetail('${m.id}')">
-            <div class="mc-alert ${m.alert}"></div>
-            <div class="mc-name">${m.name}</div>
-            <div class="mc-provider">${m.provider}</div>
-            <div class="mc-risk ${rc}">${m.risk_score.toFixed(2)}</div>
-            <div class="mc-row">
-                <span class="mc-layer">${m.layer}</span>
-                <span class="mc-compliance ${cc}">${m.compliance}</span>
-            </div>
-            <div class="mc-calibration"><div class="mc-calibration-fill" style="width:${m.calibration}%"></div></div>
-            <div class="mc-cal-label">${m.calibration}% calibrated</div>
-        </div>`;
-    }).join('');
-}
-
-function renderComparison(metric) {
-    currentCompare = metric || 'risk';
-    const container = document.getElementById('compare-bars');
-    
-    let values, maxVal, bestIdx, bestLabel;
-    
-    if (currentCompare === 'risk') {
-        values = mockModels.map(m => m.risk_score);
-        maxVal = Math.max(...values, 0.5);
-        bestIdx = values.indexOf(Math.min(...values));
-        bestLabel = 'Lowest risk';
-    } else if (currentCompare === 'calibration') {
-        values = mockModels.map(m => m.calibration);
-        maxVal = 100;
-        bestIdx = values.indexOf(Math.max(...values));
-        bestLabel = 'Best calibrated';
-    } else {
-        values = mockModels.map(m => m.requests);
-        maxVal = Math.max(...values);
-        bestIdx = values.indexOf(Math.max(...values));
-        bestLabel = 'Most evaluated';
-    }
-    
-    container.innerHTML = mockModels.map((m, i) => {
-        const pct = (values[i] / maxVal) * 100;
-        let cls = 'neutral';
-        if (currentCompare === 'risk') cls = values[i] < 0.3 ? 'low' : values[i] < 0.6 ? 'medium' : 'high';
-        else if (currentCompare === 'calibration') cls = values[i] >= 85 ? 'low' : values[i] >= 70 ? 'medium' : 'high';
-        const valDisplay = currentCompare === 'calibration' ? values[i] + '%' : currentCompare === 'risk' ? values[i].toFixed(2) : values[i].toLocaleString();
-        return `<div class="compare-row">
-            <span class="compare-label">${m.name}</span>
-            <div class="compare-bar-wrap"><div class="compare-bar-fill ${cls}" style="width:${pct}%"></div></div>
-            <span class="compare-val">${valDisplay}</span>
-        </div>`;
-    }).join('') + `<div class="compare-best">${bestLabel}: <strong>${mockModels[bestIdx].name}</strong></div>`;
-}
-
-function switchCompare(metric, el) {
-    document.querySelectorAll('.compare-tab').forEach(t => t.classList.remove('active'));
-    if (el) el.classList.add('active');
-    renderComparison(metric);
-}
-
-function openModelDetail(id) {
-    const m = mockModels.find(x => x.id === id);
-    if (!m) return;
-    
-    document.getElementById('models-grid').style.display = 'none';
-    document.getElementById('comparison-card').style.display = 'none';
-    document.getElementById('model-detail').style.display = 'block';
-    
-    document.getElementById('detail-name').textContent = m.name;
-    document.getElementById('detail-cert').textContent = (m.cert || 'Not certified') + ' · ' + m.provider;
-    
-    const badge = document.getElementById('detail-risk-badge');
-    const rc = m.risk_score < 0.3 ? 'low' : m.risk_score < 0.6 ? 'medium' : 'high';
-    badge.className = 'model-risk-badge ' + rc;
-    document.getElementById('detail-risk-value').textContent = m.risk_score.toFixed(2);
-    
-    document.getElementById('detail-layer').textContent = m.layer;
-    document.getElementById('detail-calibration').textContent = m.calibration + '%';
-    document.getElementById('detail-requests').textContent = m.requests.toLocaleString();
-    const compEl = document.getElementById('detail-compliance');
-    compEl.textContent = m.compliance;
-    compEl.className = 'mm-val ' + (m.compliance === 'PASSED' ? 'passed' : m.compliance === 'REVIEW' ? 'review' : 'failed');
-    document.getElementById('detail-last-eval').textContent = m.last_eval;
-    
-    // Evaluations
-    document.getElementById('detail-eval-tbody').innerHTML = m.evaluations.map(e => {
-        const ec = e.risk < 0.3 ? 'color:var(--accent)' : e.risk < 0.6 ? 'color:#d97706' : 'color:#dc2626';
-        return `<tr>
-            <td style="font-family:'JetBrains Mono',monospace;font-size:12px">${e.id}</td>
-            <td style="${ec};font-weight:600">${e.risk.toFixed(2)}</td>
-            <td>${e.level}</td>
-            <td style="color:var(--text-muted)">${e.time}</td>
-        </tr>`;
-    }).join('');
-    
-    // Trend
-    const chart = document.getElementById('detail-trend-chart');
-    const maxR = Math.max(...m.trend, 0.5);
-    chart.innerHTML = m.trend.map(v => {
-        const h = Math.max((v / maxR) * 100, 4);
-        const cls = v < 0.3 ? 'low' : v < 0.6 ? 'medium' : 'high';
-        return `<div class="trend-bar ${cls}" style="height:${h}%" data-val="${v.toFixed(2)}"></div>`;
-    }).join('');
-    
-    const avg = m.trend.reduce((a, b) => a + b, 0) / m.trend.length;
-    document.getElementById('detail-trend-avg').textContent = 'Avg: ' + avg.toFixed(2);
-    const first3 = m.trend.slice(0, 3).reduce((a, b) => a + b, 0) / 3;
-    const last3 = m.trend.slice(-3).reduce((a, b) => a + b, 0) / 3;
-    const dirEl = document.getElementById('detail-trend-dir');
-    if (last3 < first3 - 0.02) { dirEl.textContent = '↓ Improving'; dirEl.className = 'trend-dir improving'; }
-    else if (last3 > first3 + 0.02) { dirEl.textContent = '↑ Worsening'; dirEl.className = 'trend-dir worsening'; }
-    else { dirEl.textContent = '→ Stable'; dirEl.className = 'trend-dir'; }
-}
-
-function closeModelDetail() {
-    document.getElementById('model-detail').style.display = 'none';
-    document.getElementById('models-grid').style.display = '';
-    document.getElementById('comparison-card').style.display = '';
-}
+// Old comparison/grid functions removed — dashboard v2 uses compact model list
 
 function showAddModelModal() {
     document.getElementById('reg-model-name').value = '';
@@ -3780,14 +3867,11 @@ function submitModelRegistration() {
     };
     
     mockModels.push(newModel);
-    renderModelsGrid();
-    renderComparison('risk');
+    renderDashModels();
+    populateEvalModels();
     closeModal('register-model-modal');
     showToast('Model "' + name + '" registered. Awaiting first evaluation.', 'success');
 }
-
-// Render on load
-setTimeout(() => { renderModelsGrid(); renderComparison('risk'); }, 100);
 
 // === REFERENCE (STEALTH ADMIN) ===
 let refAccessGranted = false;
@@ -4625,6 +4709,248 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// ================================================================
+// EVALUATE PAGE (standalone — redirects to dashboard)
+// ================================================================
+let evalSessionHistory = [];
+
+function toggleEvalOptional() {
+    const fields = document.getElementById('eval-optional');
+    const chevron = document.getElementById('eval-opt-chevron');
+    if (!fields) return;
+    const isOpen = fields.classList.contains('show');
+    fields.classList.toggle('show');
+    chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(90deg)';
+}
+
+function populateEvalModels() {
+    // Populate both dashboard and standalone eval model selectors
+    const models = window._cachedModels || (typeof mockModels !== 'undefined' ? mockModels : []);
+    ['eval-model-select', 'dash-eval-model'].forEach(id => {
+        const sel = document.getElementById(id);
+        if (!sel) return;
+        sel.innerHTML = '<option value="">—</option>';
+        models.forEach(m => {
+            sel.innerHTML += `<option value="${m.id}">${m.name}</option>`;
+        });
+    });
+}
+
+async function submitEvaluation() {
+    // Standalone evaluate page — redirect to dashboard
+    showPage('dashboard', document.querySelector('.nav-item[onclick*=dashboard]'));
+    document.getElementById('dash-eval-output').value = document.getElementById('eval-output')?.value || '';
+    document.getElementById('dash-eval-domain').value = document.getElementById('eval-domain')?.value || 'general';
+    dashSubmitEval();
+}
+
+// ================================================================
+// DASHBOARD — EVALUATE-FIRST
+// ================================================================
+
+function toggleDashEvalAdvanced() {
+    const fields = document.getElementById('dash-eval-advanced');
+    const chevron = document.getElementById('dash-eval-chevron');
+    const isOpen = fields.classList.contains('show');
+    fields.classList.toggle('show');
+    chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(90deg)';
+}
+
+async function dashSubmitEval() {
+    const output = document.getElementById('dash-eval-output').value.trim();
+    if (!output) { showToast('Paste AI output to evaluate', 'error'); return; }
+
+    const domain = document.getElementById('dash-eval-domain').value;
+    const gt = document.getElementById('dash-eval-gt')?.value.trim();
+    const confVal = document.getElementById('dash-eval-conf')?.value;
+    const context = document.getElementById('dash-eval-ctx')?.value.trim();
+    const modelId = document.getElementById('dash-eval-model')?.value;
+
+    const body = { output, domain };
+    if (gt) body.ground_truth = gt;
+    if (confVal !== '' && confVal !== undefined) body.confidence = parseFloat(confVal);
+    if (context) body.context = context;
+    if (modelId) body.model_id = modelId;
+
+    const btn = document.getElementById('dash-eval-btn');
+    btn.disabled = true;
+    btn.textContent = 'Evaluating...';
+
+    try {
+        const result = await api('/v1/check', {
+            method: 'POST',
+            body: JSON.stringify(body)
+        });
+        dashDisplayResult(result, domain, output);
+    } catch (err) {
+        showToast('Evaluation failed: ' + err.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Evaluate →';
+    }
+}
+
+function dashDisplayResult(r, domain, output) {
+    document.getElementById('dash-result-empty').style.display = 'none';
+    document.getElementById('dash-result-content').style.display = 'block';
+
+    const risk = r.risk_score || 0;
+    const circumference = 213.6;
+    const offset = circumference * (1 - risk);
+    const ring = document.getElementById('dash-ring-fill');
+    ring.style.strokeDashoffset = offset;
+    ring.style.stroke = risk >= 0.65 ? '#ef4444' : risk >= 0.35 ? '#eab308' : '#22c55e';
+    document.getElementById('dash-score-val').textContent = risk.toFixed(3);
+
+    const comp = (r.compliance || 'REVIEW').toUpperCase();
+    const badge = document.getElementById('dash-comp-badge');
+    badge.textContent = comp;
+    badge.className = 'eval-compliance-badge ' + comp.toLowerCase();
+
+    const dm = r.factors?.domain_multiplier || 1.0;
+    document.getElementById('dash-result-meta').textContent = domain.charAt(0).toUpperCase() + domain.slice(1) + ' · ×' + dm.toFixed(1) + ' · ' + new Date().toLocaleTimeString();
+
+    const f = r.factors || {};
+    dashSetFactor('f1', f.linguistic_uncertainty, true);
+    dashSetFactor('f2', f.confidence_calibration);
+    dashSetFactor('f3', f.logprob_entropy);
+    dashSetFactor('f4', f.semantic_consistency, true);
+    dashSetFactor('f5', f.ground_truth_accuracy);
+    dashSetFactor('f6', f.refusal_awareness);
+    dashSetFactorDM(f.domain_multiplier);
+
+    // Signal info
+    const hib = f.honest_ignorance_bonus || 0;
+    let signalText = '';
+    if (hib > 0) signalText += 'Honest ignorance bonus: -' + hib.toFixed(3) + '  ';
+    const hardSignals = [f.confidence_calibration, f.logprob_entropy, f.ground_truth_accuracy].filter(v => v !== null && v !== undefined).length;
+    signalText += hardSignals + '/3 hard signals provided';
+    document.getElementById('dash-result-signals').textContent = signalText;
+
+    // Add to history
+    evalSessionHistory.unshift({ risk, compliance: comp, domain, output: output.substring(0, 60), time: new Date().toLocaleTimeString() });
+    renderDashHistory();
+
+    // Scroll to result
+    document.getElementById('dash-result-content').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function dashSetFactor(id, value, inverted) {
+    const bar = document.getElementById('df-' + id);
+    const val = document.getElementById('dv-' + id);
+    if (value === null || value === undefined) {
+        bar.style.width = '0%';
+        val.textContent = 'n/a';
+        bar.style.background = 'var(--border)';
+        return;
+    }
+    val.textContent = typeof value === 'number' ? value.toFixed(3) : value;
+    const pct = (typeof value === 'number' ? value : 0) * 100;
+    bar.style.width = Math.max(pct, 2) + '%';
+    if (inverted) {
+        bar.style.background = pct >= 60 ? '#ef4444' : pct >= 30 ? '#eab308' : '#22c55e';
+    } else {
+        bar.style.background = pct >= 60 ? '#22c55e' : pct >= 30 ? '#eab308' : '#ef4444';
+    }
+}
+
+function dashSetFactorDM(value) {
+    const bar = document.getElementById('df-dm');
+    const val = document.getElementById('dv-dm');
+    if (!value) { val.textContent = '×1.0'; bar.style.width = '0%'; return; }
+    val.textContent = '×' + value.toFixed(1);
+    const pct = Math.max(0, Math.min(100, ((value - 0.5) / 1.0) * 100));
+    bar.style.width = pct + '%';
+    bar.style.background = value >= 1.3 ? '#ef4444' : value >= 1.1 ? '#eab308' : '#22c55e';
+}
+
+function renderDashHistory() {
+    const container = document.getElementById('dash-history-rows');
+    const empty = document.getElementById('dash-history-empty');
+    const count = document.getElementById('dash-history-count');
+    if (evalSessionHistory.length === 0) { empty.style.display = 'block'; container.innerHTML = ''; return; }
+    empty.style.display = 'none';
+    count.textContent = evalSessionHistory.length + ' evaluation' + (evalSessionHistory.length !== 1 ? 's' : '');
+
+    container.innerHTML = evalSessionHistory.slice(0, 30).map(h => {
+        const color = h.compliance === 'FAILED' ? '#ef4444' : h.compliance === 'REVIEW' ? '#eab308' : '#22c55e';
+        const bg = h.compliance === 'FAILED' ? 'rgba(239,68,68,0.12)' : h.compliance === 'REVIEW' ? 'rgba(234,179,8,0.12)' : 'rgba(34,197,94,0.12)';
+        return `<div class="eval-history-row">
+            <span class="risk-pill" style="background:${bg};color:${color}">${h.risk.toFixed(3)}</span>
+            <span class="eval-history-output" title="${h.output}">${h.output}</span>
+            <span style="color:${color};font-weight:500;font-size:11px">${h.compliance}</span>
+            <span style="color:var(--text-muted);font-size:11px;text-align:right">${h.time}</span>
+        </div>`;
+    }).join('');
+}
+
+// === COMPACT MODELS LIST ===
+function renderDashModels() {
+    const container = document.getElementById('dash-models-list');
+    if (!container) return;
+    const models = window._cachedModels || (typeof mockModels !== 'undefined' ? mockModels : []);
+    if (models.length === 0) {
+        container.innerHTML = '<div class="dash-models-empty">No models registered yet.<br><span style="font-size:11px;color:var(--text-muted)">Register your first model to start tracking.</span></div>';
+        return;
+    }
+    container.innerHTML = models.map(m => {
+        const rc = (m.risk_score||0) < 0.35 ? '#22c55e' : (m.risk_score||0) < 0.65 ? '#eab308' : '#ef4444';
+        const cc = (m.compliance || 'REVIEW').toLowerCase();
+        return `<div class="dash-model-row" onclick="openDashModelDetail('${m.id}')">
+            <span class="dash-model-name">${m.name}</span>
+            <span class="dash-model-provider">${m.provider || '—'}</span>
+            <span class="dash-model-risk" style="color:${rc}">${(m.risk_score||0).toFixed(2)}</span>
+            <span class="dash-model-comp ${cc}">${(m.compliance||'—').toUpperCase()}</span>
+        </div>`;
+    }).join('');
+}
+
+function openDashModelDetail(modelId) {
+    const models = window._cachedModels || (typeof mockModels !== 'undefined' ? mockModels : []);
+    const m = models.find(x => x.id === modelId);
+    if (!m) return;
+
+    document.getElementById('dash-models-list').style.display = 'none';
+    const detail = document.getElementById('dash-model-detail');
+    detail.style.display = 'block';
+
+    document.getElementById('dash-detail-name').textContent = m.name;
+    document.getElementById('dash-detail-provider').textContent = (m.provider || '—') + ' · ' + (m.version || 'v1');
+    const rc = (m.risk_score||0) < 0.35 ? '#22c55e' : (m.risk_score||0) < 0.65 ? '#eab308' : '#ef4444';
+    document.getElementById('dash-detail-risk').style.color = rc;
+    document.getElementById('dash-detail-risk').textContent = (m.risk_score||0).toFixed(3);
+    document.getElementById('dash-detail-layer').textContent = m.layer || '—';
+    document.getElementById('dash-detail-comp').textContent = (m.compliance || '—').toUpperCase();
+    document.getElementById('dash-detail-evals').textContent = m.eval_count || m.requests || 0;
+
+    // Trend
+    const trendContainer = document.getElementById('dash-detail-trend');
+    if (m.trend && m.trend.length) {
+        const max = Math.max(...m.trend, 0.5);
+        trendContainer.innerHTML = m.trend.map(v => {
+            const h = Math.max((v / max) * 80, 4);
+            const c = v < 0.35 ? 'low' : v < 0.65 ? 'medium' : 'high';
+            return `<div class="trend-bar ${c}" style="height:${h}px" data-val="${v.toFixed(2)}"></div>`;
+        }).join('');
+        const avg = m.trend.reduce((a, b) => a + b, 0) / m.trend.length;
+        document.getElementById('dash-detail-trend-avg').textContent = 'Avg: ' + avg.toFixed(3);
+        const dir = m.trend.length > 1 && m.trend[m.trend.length - 1] < m.trend[0];
+        const dirEl = document.getElementById('dash-detail-trend-dir');
+        dirEl.textContent = dir ? '↓ Improving' : '↑ Worsening';
+        dirEl.className = 'trend-dir ' + (dir ? 'improving' : 'worsening');
+    } else {
+        trendContainer.innerHTML = '<div style="text-align:center;padding:20px 0;color:var(--text-muted);font-size:11px">No trend data</div>';
+    }
+}
+
+function closeDashModelDetail() {
+    document.getElementById('dash-model-detail').style.display = 'none';
+    document.getElementById('dash-models-list').style.display = 'block';
+}
+
+// Initialize dashboard models on page load
+setTimeout(() => { renderDashModels(); populateEvalModels(); }, 100);
 </script>
 </body>
 </html>
