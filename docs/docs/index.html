@@ -199,7 +199,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <div class="mh">
 <button class="hb" onclick="toggleSB()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
 <a href="/" class="logo"><svg width="22" height="22" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/></svg><span>ONTO</span></a>
-<button class="hb" onclick="toggleTheme()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
+<div style="width:40px"></div>
 </div>
 <div class="ov" id="ov" onclick="closeSB()"></div>
 <aside class="sb" id="sb">
@@ -209,7 +209,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 </div>
 <nav class="sb-nav">
 
-<div class="sb-si"><a class="btn-si" href="/app/">Sign In</a><a class="btn-ca" href="/app/">Create Account</a></div>
+<div class="sb-si" id="sb-si"><a class="btn-si" href="/app/">Sign In</a><a class="btn-ca" href="/app/">Create Account</a></div>
 <div class="ng"><h4>Standard</h4><a class="nl active" href="#ers" data-doc="ers">ONTO-ERS</a></div>
 <div class="ng"><h4>Specifications</h4><a class="nl" href="#layer-spec" data-doc="layer-spec">Layer Specification</a><a class="nl" href="#regulatory" data-doc="regulatory">Regulatory Matrix</a></div>
 <div class="ng"><h4>Governance</h4><a class="nl" href="#charter" data-doc="charter">Foundation Charter</a><a class="nl" href="#council" data-doc="council">Standards Council</a></div>
@@ -219,7 +219,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <div class="ng"><h4>Legal</h4><a class="nl" href="#license" data-doc="license">License</a><a class="nl" href="#terms" data-doc="terms">Terms of Service</a><a class="nl" href="#privacy" data-doc="privacy">Privacy Policy</a><a class="nl" href="#refund" data-doc="refund">Refund Policy</a></div>
 </nav>
 <div class="sb-f"><div class="sb-fa">
-<button class="sb-fb" onclick="toggleTheme()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>Theme</button>
+<button class="sb-fb" onclick="toggleTheme()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Theme</button>
 <a href="/" class="sb-fb" style="text-decoration:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>Home</a>
 </div></div>
 </aside>
@@ -403,7 +403,7 @@ Content-Type: application/json
 
 {
   "name": "John Doe",
-  "email": "john@company.com",
+  "email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="315b5e595f71525e5c41505f481f525e5c">[email&#160;protected]</a>",
   "password": "min8characters"
 }</code></pre>
 <table><thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
@@ -416,7 +416,7 @@ Content-Type: application/json
 <h2 id="api-verify">POST /v1/auth/verify-email</h2>
 <p>Verify email with OTP code. Returns JWT token and API key on success.</p>
 <pre><code>{
-  "email": "john@company.com",
+  "email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ff95909791bf9c90928f9e9186d19c9092">[email&#160;protected]</a>",
   "code": "123456"
 }</code></pre>
 <p><strong>Response 200:</strong> <code>{"token": "jwt...", "api_key": "onto_...", "user_id": "uuid"}</code></p>
@@ -424,7 +424,7 @@ Content-Type: application/json
 <h2 id="api-login">POST /v1/auth/login</h2>
 <p>Login with email and password. Returns JWT token.</p>
 <pre><code>{
-  "email": "john@company.com",
+  "email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="365c595e587655595b4657584f1855595b">[email&#160;protected]</a>",
   "password": "yourpassword"
 }</code></pre>
 <p><strong>Response 200:</strong> <code>{"token": "jwt...", "user_id": "uuid", "layer": "open"}</code></p>
@@ -659,7 +659,7 @@ Content-Type: application/json
 
 <h2 id="api-org-invite">POST /v1/organization/invite</h2>
 <p>Invite a team member. Admin only.</p>
-<pre><code>{"email": "colleague@company.com", "name": "Jane Smith"}</code></pre>
+<pre><code>{"email": "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="63000c0f0f060204160623000c0e13020d1a4d000c0e">[email&#160;protected]</a>", "name": "Jane Smith"}</code></pre>
 
 <h2 id="api-org-members">GET /v1/organization/members</h2>
 <p>List all organization members.</p>
@@ -852,7 +852,7 @@ Content-Type: application/json
 
 </div></main>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // Auth → /app/login/
 
 
@@ -872,4 +872,14 @@ function handleHash(){const h=location.hash.replace('#','');if(h){let t=document
 handleHash();window.addEventListener('hashchange',handleHash);
 function toggleFaq(el){el.parentElement.classList.toggle('open')}
 let stars=0;function setStar(n){stars=n;document.querySelectorAll('#ss span').forEach((s,i)=>{s.classList.toggle('active',i<n)})}
-async function submitRv(){const n=document.g
+async function submitRv(){const n=document.getElementById('rv-name').value.trim(),r=document.getElementById('rv-role').value.trim(),t=document.getElementById('rv-text').value.trim();if(!n||!t){alert('Fill name and review.');return}try{await fetch('https://api.ontostandard.org/v1/feedback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'review',name:n,role:r,rating:stars,text:t})})}catch(e){}document.getElementById('rv-ok').style.display='block';document.getElementById('rv-name').value='';document.getElementById('rv-role').value='';document.getElementById('rv-text').value='';stars=0;document.querySelectorAll('#ss span').forEach(s=>s.classList.remove('active'))}
+
+// Auth check — hide Sign In if logged in from portal
+(function(){
+const logged=localStorage.getItem('onto_logged_in')==='true';
+const si=document.getElementById('sb-si');
+if(si&&logged)si.style.display='none';
+})();
+</script>
+</body>
+</html>
