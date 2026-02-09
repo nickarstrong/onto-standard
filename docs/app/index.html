@@ -955,11 +955,6 @@ a.info-val:hover { color: var(--text); }
     <button class="hamburger" onclick="toggleAuthMenu()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
-    <div class="logo">
-        <svg width="22" height="22" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/></svg>
-        <span>ONTO</span>
-    </div>
-    <div style="width: 40px;"></div>
 </div>
 
 <!-- AUTH MENU (burger on login/register screen) -->
@@ -1537,7 +1532,7 @@ a.info-val:hover { color: var(--text); }
                 </div>
                 <div class="info-row">
                     <span class="info-key">Email</span>
-                    <span class="info-val" id="settings-email">—</span>
+                    <span class="info-val" id="settings-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="76050306061904023619180219050217181217041258190411">[email&#160;protected]</a></span>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Type</span>
@@ -1624,15 +1619,15 @@ a.info-val:hover { color: var(--text); }
                 <div class="section-label">Support</div>
                 <div class="info-row">
                     <span class="info-key">General</span>
-                    <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
+                    <a class="info-val" href="/cdn-cgi/l/email-protection#a5d6d0d5d5cad7d1e5cacbd1cad6d1c4cbc1c4d7c18bcad7c2"><span class="__cf_email__" data-cfemail="a5d6d0d5d5cad7d1e5cacbd1cad6d1c4cbc1c4d7c18bcad7c2">[email&#160;protected]</span></a>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Sales</span>
-                    <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
+                    <a class="info-val" href="/cdn-cgi/l/email-protection#15666065657a6761557a7b617a6661747b717467713b7a6772"><span class="__cf_email__" data-cfemail="64171114140b1610240b0a100b1710050a000516004a0b1603">[email&#160;protected]</span></a>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Billing</span>
-                    <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
+                    <a class="info-val" href="/cdn-cgi/l/email-protection#b8cbcdc8c8d7caccf8d7d6ccd7cbccd9d6dcd9cadc96d7cadf"><span class="__cf_email__" data-cfemail="b2c1c7c2c2ddc0c6f2dddcc6ddc1c6d3dcd6d3c0d69cddc0d5">[email&#160;protected]</span></a>
                 </div>
             </div>
         </div>
@@ -2110,7 +2105,7 @@ a.info-val:hover { color: var(--text); }
             <h2 style="font-size: 15px; font-weight: 500; margin-bottom: 6px;">Complete Payment</h2>
             <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 12px;">You will be redirected to our secure payment provider.</p>
             <button class="btn btn-primary" onclick="redirectToAirwallex()">Continue to Payment</button>
-            <p style="margin-top: 12px; font-size: 11px; color: var(--text-muted);">Questions? Contact <a href="mailto:support@ontostandard.org">support@ontostandard.org</a></p>
+            <p style="margin-top: 12px; font-size: 11px; color: var(--text-muted);">Questions? Contact <a href="/cdn-cgi/l/email-protection#7d0e080d0d120f093d121309120e091c13191c0f1953120f1a"><span class="__cf_email__" data-cfemail="94e7e1e4e4fbe6e0d4fbfae0fbe7e0f5faf0f5e6f0bafbe6f3">[email&#160;protected]</span></a></p>
         </div>
     </div>
 </div>
@@ -2159,7 +2154,7 @@ a.info-val:hover { color: var(--text); }
         </div>
         <div class="modal-body">
             <div class="tier-user-info" id="tier-user-info">
-                <div class="tier-user-email">—</div>
+                <div class="tier-user-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="82f1f7f2f2edf0f6c2edecf6edf1f6e3ece6e3f0e6acedf0e5">[email&#160;protected]</a></div>
             </div>
             <div class="tier-options">
                 <label class="tier-option" data-tier="open">
@@ -2238,7 +2233,7 @@ a.info-val:hover { color: var(--text); }
     </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // === API CONFIG ===
 const API_BASE = 'https://api.ontostandard.org';
 let authToken = null;
@@ -2811,14 +2806,6 @@ function handleLogout() {
 }
 
 // === DASHBOARD ===
-function showAuthScreen() {
-    // Remove preload hide if present
-    const preloadStyle = document.getElementById('auth-preload-hide');
-    if (preloadStyle) preloadStyle.remove();
-    document.getElementById('auth-screen').style.display = 'flex';
-    document.getElementById('dashboard').classList.remove('active');
-}
-
 function showDashboard() {
     document.getElementById('auth-screen').style.display = 'none';
     document.getElementById('dashboard').classList.add('active');
@@ -4738,12 +4725,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) {
             localStorage.removeItem('onto_user');
             localStorage.removeItem('onto_token');
-            showAuthScreen();
         }
-    }
-    else {
-        // Fallback: session not restored — show auth
-        showAuthScreen();
     }
     
     checkWelcomeBanner();
