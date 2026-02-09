@@ -5028,12 +5028,22 @@ function closeDashModelDetail() {
     _currentDetailModelId = null;
 }
 
-function deleteDashModel() {
+async function deleteDashModel() {
     if (!_currentDetailModelId) return;
     const demoModels = typeof mockModels !== 'undefined' ? mockModels : [];
     if (demoModels.some(m => m.id === _currentDetailModelId)) { showToast('Cannot delete demo models', 'error'); return; }
     
     if (!confirm('Remove this model? This cannot be undone.')) return;
+    
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (apiKey) {
+        try {
+            await fetch(`${API_BASE}/v1/models/${_currentDetailModelId}`, {
+                method: 'DELETE',
+                headers: { 'x-api-key': apiKey }
+            });
+        } catch (e) { /* continue with local removal */ }
+    }
     
     const realModels = window._cachedModels || [];
     window._cachedModels = realModels.filter(m => m.id !== _currentDetailModelId);
