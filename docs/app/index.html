@@ -241,7 +241,6 @@ a.info-val:hover { color: var(--text); }
 .tier-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
 .tier-price { font-size: 22px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
 .tier-price span { font-size: 12px; font-weight: 400; color: var(--text-muted); }
-.tier-full-price { font-size: 11px; color: var(--text-muted); text-decoration: line-through; margin-bottom: -2px; }
 .tier-desc { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; }
 .tier-list { list-style: none; padding: 0; margin: 0 0 16px 0; }
 .tier-list li { font-size: 12px; color: var(--text-secondary); padding: 4px 0; border-bottom: 1px solid var(--border); }
@@ -396,7 +395,6 @@ a.info-val:hover { color: var(--text); }
 .cycle-option-price { font-weight: 700; }
 .cycle-option-desc { font-size: 13px; color: var(--text-secondary); margin-left: 24px; }
 .cycle-savings { background: var(--accent); color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
-.founding-note { font-size: 10px; color: var(--text-muted); text-align: center; padding: 8px 0 0; border-top: 1px solid var(--border); margin-top: 12px; }
 
 /* Order Modal - Institutional */
 .order-section { margin-bottom: 20px; }
@@ -1663,7 +1661,6 @@ a.info-val:hover { color: var(--text); }
                 <!-- PROFESSIONAL -->
                 <div class="tier-card" id="card-business">
                     <div class="tier-name">Professional</div>
-                    <div class="tier-full-price">$37,500/yr</div>
                     <div class="tier-price">$1,500<span>/month</span></div>
                     <div class="tier-desc">Commercial deployment</div>
                     <ul class="tier-list">
@@ -1678,7 +1675,6 @@ a.info-val:hover { color: var(--text); }
                 <!-- CRITICAL -->
                 <div class="tier-card" id="card-enterprise">
                     <div class="tier-name">Critical</div>
-                    <div class="tier-full-price">$250,000/yr</div>
                     <div class="tier-price">$100,000<span>/year</span></div>
                     <div class="tier-desc">Critical infrastructure</div>
                     <ul class="tier-list">
@@ -1693,7 +1689,7 @@ a.info-val:hover { color: var(--text); }
             </div>
             
             <p class="section-footnote" style="text-align: center; margin-top: 24px;">
-                Founding member rates · Invoice payment requires registered organization. <a href="#" onclick="showPage('settings')">Account settings</a>
+                Invoice payment requires registered organization. <a href="#" onclick="showPage('settings')">Account settings</a>
             </p>
         </div>
         <!-- REFERENCE PAGE (ADMIN) -->
@@ -2058,7 +2054,7 @@ a.info-val:hover { color: var(--text); }
                     <label class="billing-option" id="billing-annual">
                         <input type="radio" name="billing-cycle" value="annual" checked onchange="updateOrderSummary()">
                         <span class="billing-option-content">
-                            <span class="billing-option-name">Annual <span class="cycle-savings">Save $3,000</span></span>
+                            <span class="billing-option-name">Annual</span>
                             <span class="billing-option-detail">Billed once per year</span>
                         </span>
                         <span class="billing-option-price" id="price-annual-display">$15,000</span>
@@ -2098,7 +2094,6 @@ a.info-val:hover { color: var(--text); }
                     <span class="order-summary-value" id="summary-total">$15,000</span>
                 </div>
             </div>
-            <div class="founding-note" id="founding-note">Founding member pricing — 60% below standard rates</div>
         </div>
         <div class="modal-footer">
             <button class="btn-minimal" onclick="closeModal('subscribe-modal')">Cancel</button>
@@ -2302,8 +2297,8 @@ const STRINGS = {
     confirmRegenerate: 'Are you sure you want to regenerate your API key?\n\nThis will immediately invalidate your current key.'
 };
 const PLANS = {
-    business: { monthly: 1500, annual: 15000, monthlyEquiv: 1250, fullAnnual: 37500 },
-    enterprise: { monthly: null, annual: 100000, monthlyEquiv: 8333, fullAnnual: 250000 }
+    business: { monthly: 1500, annual: 15000, monthlyEquiv: 1250 },
+    enterprise: { monthly: null, annual: 100000, monthlyEquiv: 8333 }
 };
 let selectedPlan = 'business';
 let selectedCycle = 'annual';
@@ -3412,16 +3407,85 @@ function openSubscribeModal(plan) {
     document.getElementById('price-annual-display').textContent = '$' + prices.annual.toLocaleString();
     document.getElementById('price-monthly-display').textContent = '$' + (prices.monthly ? prices.monthly.toLocaleString() + '/mo' : 'N/A');
     const monthlyOption = document.getElementById('billing-monthly');
-    const savingsBadge = document.querySelector('#billing-annual .cycle-savings');
     if (plan === 'enterprise') {
         monthlyOption.style.display = 'none';
-        if (savingsBadge) savingsBadge.style.display = 'none';
         document.querySelector('input[name="billing-cycle"][value="annual"]').checked = true;
-    } else {
-        monthlyOption.style.display = 'flex';
-        if (savingsBadge) savingsBadge.style.display = 'inline';
-    }
-    document.getElementById('founding-note').textContent = 'Founding member pricing \u2014 standard rate: $' + prices.fullAnnual.toLocaleString() + '/yr';
+    } else { monthlyOption.style.display = 'flex'; }
+    document.getElementById('subscribe-modal').classList.add('active');
+    selectedCycle = 'annual';
+    updateOrderSummary();
+}
+
+function updateOrderSummary() {
+    const cycle = document.querySelector('input[name="billing-cycle"]:checked')?.value || 'annual';
+    selectedCycle = cycle;
+    const prices = PLANS[selectedPlan];
+    const planNames = { business: 'Professional', enterprise: 'Critical' };
+    const planName = planNames[selectedPlan] || selectedPlan;
+    const planFeatures = {
+        business: ['1 request/8.64s', 'Real-time signal access', '99.5% SLA', 'Business hours support'],
+        enterprise: ['Unlimited requests', 'Dedicated signal stream', '99.99% SLA', '24/7 priority support']
+    };
+    const featuresEl = document.getElementById('order-features');
+    featuresEl.innerHTML = (planFeatures[selectedPlan]||[]).map(f => '<div class="order-feature">'+f+'</div>').join('');
+    let price = cycle === 'annual' ? prices.annual : prices.monthly;
+    document.getElementById('summary-plan').textContent = planName + ' Tier \u2014 ' + (cycle==='annual'?'Annual':'Monthly');
+    document.getElementById('summary-price').textContent = '$' + price.toLocaleString();
+    document.getElementById('summary-total').textContent = '$' + price.toLocaleString();
+    const invoiceInput = document.querySelector('#payment-invoice input');
+    const cardInput = document.querySelector('#payment-card input');
+    if (cycle === 'annual') { invoiceInput.disabled=false; cardInput.disabled=true; invoiceInput.checked=true; }
+    else { invoiceInput.disabled=true; cardInput.disabled=false; cardInput.checked=true; }
+}
+
+function processPayment() {
+    closeModal('subscribe-modal');
+    document.getElementById('payment-modal').classList.add('active');
+}
+
+function redirectToAirwallex() {
+    const isAnnual = selectedCycle === 'annual';
+    const daysToAdd = isAnnual ? 365 : 30;
+    const amount = isAnnual ? PLANS[selectedPlan].annual : PLANS[selectedPlan].monthly;
+    const now = new Date();
+    const sub = currentUser.subscription || {};
+    let proDays = sub.pro_days || 0, criticalDays = sub.critical_days || 0;
+    if (selectedPlan === 'business') proDays += daysToAdd;
+    else if (selectedPlan === 'enterprise') criticalDays += daysToAdd;
+    const activePlan = criticalDays > 0 ? 'enterprise' : (proDays > 0 ? 'business' : 'free');
+    const totalDays = criticalDays + proDays;
+    const expiresAt = totalDays > 0 ? new Date(now.getTime() + totalDays * 86400000) : null;
+    currentUser.subscription = {
+        plan: activePlan, cycle: selectedCycle,
+        started: sub.started || now.toISOString(), last_payment: now.toISOString(),
+        expires_at: expiresAt ? expiresAt.toISOString() : null,
+        pro_days: proDays, critical_days: criticalDays,
+        amount: amount, total_paid: (sub.total_paid||0) + amount
+    };
+    currentUser.plan = activePlan;
+    localStorage.setItem('onto_user', JSON.stringify(currentUser));
+    closeModal('payment-modal');
+    updateBillingUI(); updateDashboardMetrics();
+    document.getElementById('user-plan').textContent = activePlan==='enterprise'?'CRITICAL':(activePlan==='business'?'PRO':'FREE');
+    let msg = 'Subscription activated!';
+    if (criticalDays>0 && proDays>0) msg = 'Activated! '+criticalDays+'d Critical then '+proDays+'d Pro';
+    else if (criticalDays>0) msg = 'Activated! '+criticalDays+' days Critical';
+    else if (proDays>0) msg = 'Activated! '+proDays+' days Pro';
+    showToast(msg, 'success');
+}
+// === SUBSCRIBE MODAL ===
+function openSubscribeModal(plan) {
+    selectedPlan = plan;
+    const planNames = { business: 'Professional', enterprise: 'Critical' };
+    document.getElementById('subscribe-plan-name').textContent = planNames[plan] || plan;
+    const prices = PLANS[plan];
+    document.getElementById('price-annual-display').textContent = '$' + prices.annual.toLocaleString();
+    document.getElementById('price-monthly-display').textContent = '$' + (prices.monthly ? prices.monthly.toLocaleString() + '/mo' : 'N/A');
+    const monthlyOption = document.getElementById('billing-monthly');
+    if (plan === 'enterprise') {
+        monthlyOption.style.display = 'none';
+        document.querySelector('input[name="billing-cycle"][value="annual"]').checked = true;
+    } else { monthlyOption.style.display = 'flex'; }
     document.getElementById('subscribe-modal').classList.add('active');
     selectedCycle = 'annual';
     updateOrderSummary();
@@ -4786,7 +4850,7 @@ function dashDisplayResult(r, domain, output) {
     const offset = circumference * (1 - risk);
     const ring = document.getElementById('dash-ring-fill');
     ring.style.strokeDashoffset = offset;
-    ring.style.stroke = risk >= 0.65 ? '#ef4444' : risk >= 0.35 ? '#eab308' : '#22c55e';
+    ring.style.stroke = risk >= 0.65 ? '#dc2626' : risk >= 0.35 ? '#d97706' : '#15803d';
     document.getElementById('dash-score-val').textContent = risk.toFixed(3);
 
     const comp = (r.compliance || 'REVIEW').toUpperCase();
@@ -4967,30 +5031,3 @@ function closeDashModelDetail() {
 async function deleteDashModel() {
     if (!_currentDetailModelId) return;
     const demoModels = typeof mockModels !== 'undefined' ? mockModels : [];
-    if (demoModels.some(m => m.id === _currentDetailModelId)) { showToast('Cannot delete demo models', 'error'); return; }
-    
-    if (!confirm('Remove this model? This cannot be undone.')) return;
-    
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    if (apiKey) {
-        try {
-            await fetch(`${API_BASE}/v1/models/${_currentDetailModelId}`, {
-                method: 'DELETE',
-                headers: { 'x-api-key': apiKey }
-            });
-        } catch (e) { /* continue with local removal */ }
-    }
-    
-    const realModels = window._cachedModels || [];
-    window._cachedModels = realModels.filter(m => m.id !== _currentDetailModelId);
-    closeDashModelDetail();
-    renderDashModels();
-    populateEvalModels();
-    showToast('Model removed', 'success');
-}
-
-// Initialize dashboard models on page load
-setTimeout(() => { renderDashModels(); populateEvalModels(); }, 100);
-</script>
-</body>
-</html>
