@@ -1292,14 +1292,20 @@ a.info-val:hover { color: var(--text); }
                 <!-- RIGHT: Models -->
                 <div class="dash-card-clean">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-                        <span class="card-head">Models</span>
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <span class="card-head">Models</span>
+                            <span id="dash-models-demo-badge" style="font-size:9px;padding:2px 6px;border-radius:2px;background:rgba(234,179,8,0.15);color:#eab308;font-weight:600;letter-spacing:0.3px">DEMO</span>
+                        </div>
                         <button class="btn-minimal" onclick="showAddModelModal()" style="font-size:11px;padding:4px 10px">+ Register</button>
                     </div>
                     <div id="dash-models-list"></div>
                     
                     <!-- Model Detail (expands in place) -->
                     <div id="dash-model-detail" style="display:none">
-                        <div class="detail-back" onclick="closeDashModelDetail()" style="margin-bottom:10px">← All Models</div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                            <div class="detail-back" onclick="closeDashModelDetail()">← All Models</div>
+                            <button class="btn-danger-outline" onclick="deleteDashModel()" style="font-size:10px;padding:3px 10px" id="dash-detail-delete">Remove</button>
+                        </div>
                         <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
                             <div style="flex:1">
                                 <div style="font-size:14px;font-weight:500" id="dash-detail-name">—</div>
@@ -3711,33 +3717,46 @@ async function loadUserSignal() {
     const apiKey = localStorage.getItem('onto_first_api_key');
     
     try {
+        // Try public status endpoint first (no auth needed)
         let stats = null;
+        const pubRes = await fetch(`${API_BASE}/v1/signal/status`);
+        if (pubRes.ok) {
+            const pubData = await pubRes.json();
+            if (pubData && !pubData.error) stats = pubData;
+        }
         
-        if (apiKey) {
+        // If public doesn't have full stats, try admin endpoint
+        if ((!stats || stats.uptime_seconds === undefined) && apiKey) {
             const res = await fetch(`${API_BASE}/v1/signal/admin-status`, {
                 headers: { 'x-api-key': apiKey }
             });
             if (res.ok) {
-                stats = await res.json();
+                const adminData = await res.json();
+                if (adminData && !adminData.error) stats = adminData;
             }
         }
         
-        // Check if signal server responded with actual data (not error)
-        if (stats && !stats.error && stats.uptime_seconds !== undefined) {
+        if (stats && !stats.error && (stats.uptime_seconds !== undefined || stats.status === 'running')) {
             if (stats.current_signal) {
                 const el = document.getElementById('user-signal-id');
                 if (el) el.textContent = stats.current_signal.sigma_id || `σ_${stats.current_signal.timestamp}`;
                 startUserHashAnimation(stats.current_signal.entropy_hex || '');
+            } else if (stats.latest_signal) {
+                const el = document.getElementById('user-signal-id');
+                if (el) el.textContent = stats.latest_signal.sigma_id || `σ_${stats.latest_signal.timestamp || Date.now()}`;
+                startUserHashAnimation(stats.latest_signal.entropy_hex || stats.latest_signal.hash || '');
             }
-            updateUserMetric('user-signal-uptime', formatUptime(stats.uptime_seconds));
-            updateUserMetric('user-signal-generated', stats.signals_generated || 0);
+            updateUserMetric('user-signal-uptime', formatUptime(stats.uptime_seconds || 0));
+            updateUserMetric('user-signal-generated', stats.signals_generated || stats.total_signals || 0);
             updateUserMetric('user-signal-requests', stats.total_requests || 0);
             const errorRate = stats.error_rate_percent || 0;
             updateUserMetric('user-signal-errors', errorRate < 5 ? 'OK' : errorRate.toFixed(1) + '%');
-            const remaining = stats.signal_interval - (stats.uptime_seconds % stats.signal_interval);
+            const remaining = (stats.signal_interval || 300) - ((stats.uptime_seconds || 0) % (stats.signal_interval || 300));
             startUserCountdown(remaining);
+            // Show LIVE
+            const liveEl = document.getElementById('user-signal-live');
+            if (liveEl) liveEl.innerHTML = '<span class="signal-dot"></span><span>LIVE</span>';
         } else {
-            // Signal server unavailable — show fallback
             showSignalFallback();
         }
     } catch (e) {
@@ -4752,12 +4771,12 @@ function toggleEvalOptional() {
 }
 
 function populateEvalModels() {
-    // Populate both dashboard and standalone eval model selectors
-    const models = window._cachedModels || (typeof mockModels !== 'undefined' ? mockModels : []);
+    // Only populate with real API models, not mock data
+    const models = window._cachedModels || [];
     ['eval-model-select', 'dash-eval-model'].forEach(id => {
         const sel = document.getElementById(id);
         if (!sel) return;
-        sel.innerHTML = '<option value="">—</option>';
+        sel.innerHTML = '<option value="">— optional —</option>';
         models.forEach(m => {
             sel.innerHTML += `<option value="${m.id}">${m.name}</option>`;
         });
@@ -4792,13 +4811,12 @@ async function dashSubmitEval() {
     const gt = document.getElementById('dash-eval-gt')?.value.trim();
     const confVal = document.getElementById('dash-eval-conf')?.value;
     const context = document.getElementById('dash-eval-ctx')?.value.trim();
-    const modelId = document.getElementById('dash-eval-model')?.value;
 
+    // /v1/check is public endpoint — only accepts: output, domain, ground_truth, confidence, context, temperature
     const body = { output, domain };
     if (gt) body.ground_truth = gt;
     if (confVal !== '' && confVal !== undefined) body.confidence = parseFloat(confVal);
     if (context) body.context = context;
-    if (modelId) body.model_id = modelId;
 
     const btn = document.getElementById('dash-eval-btn');
     btn.disabled = true;
@@ -4913,10 +4931,19 @@ function renderDashHistory() {
 }
 
 // === COMPACT MODELS LIST ===
+let _currentDetailModelId = null;
+
 function renderDashModels() {
     const container = document.getElementById('dash-models-list');
     if (!container) return;
-    const models = window._cachedModels || (typeof mockModels !== 'undefined' ? mockModels : []);
+    const realModels = window._cachedModels || [];
+    const isDemo = realModels.length === 0;
+    const models = isDemo ? (typeof mockModels !== 'undefined' ? mockModels : []) : realModels;
+    
+    // Show/hide DEMO badge
+    const demoBadge = document.getElementById('dash-models-demo-badge');
+    if (demoBadge) demoBadge.style.display = isDemo ? 'inline' : 'none';
+    
     if (models.length === 0) {
         container.innerHTML = '<div class="dash-models-empty">No models registered yet.<br><span style="font-size:11px;color:var(--text-muted)">Register your first model to start tracking.</span></div>';
         return;
@@ -4934,13 +4961,20 @@ function renderDashModels() {
 }
 
 function openDashModelDetail(modelId) {
-    const models = window._cachedModels || (typeof mockModels !== 'undefined' ? mockModels : []);
+    const realModels = window._cachedModels || [];
+    const isDemo = realModels.length === 0;
+    const models = isDemo ? (typeof mockModels !== 'undefined' ? mockModels : []) : realModels;
     const m = models.find(x => x.id === modelId);
     if (!m) return;
 
+    _currentDetailModelId = modelId;
     document.getElementById('dash-models-list').style.display = 'none';
     const detail = document.getElementById('dash-model-detail');
     detail.style.display = 'block';
+
+    // Hide delete for demo models
+    const deleteBtn = document.getElementById('dash-detail-delete');
+    if (deleteBtn) deleteBtn.style.display = isDemo ? 'none' : 'inline-block';
 
     document.getElementById('dash-detail-name').textContent = m.name;
     document.getElementById('dash-detail-provider').textContent = (m.provider || '—') + ' · ' + (m.version || 'v1');
@@ -4974,6 +5008,23 @@ function openDashModelDetail(modelId) {
 function closeDashModelDetail() {
     document.getElementById('dash-model-detail').style.display = 'none';
     document.getElementById('dash-models-list').style.display = 'block';
+    _currentDetailModelId = null;
+}
+
+function deleteDashModel() {
+    if (!_currentDetailModelId) return;
+    const realModels = window._cachedModels || [];
+    if (realModels.length === 0) { showToast('Cannot delete demo models', 'error'); return; }
+    
+    if (!confirm('Remove this model? This cannot be undone.')) return;
+    
+    // TODO: API call to delete model
+    // For now remove from cache
+    window._cachedModels = realModels.filter(m => m.id !== _currentDetailModelId);
+    closeDashModelDetail();
+    renderDashModels();
+    populateEvalModels();
+    showToast('Model removed', 'success');
 }
 
 // Initialize dashboard models on page load
