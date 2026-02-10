@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CS-2026-001 · ONTO Epistemic Audit — 10 AI Systems Scored by GOLD-Calibrated Engine</title>
+<meta name="description" content="First independent epistemic audit of 10 major AI systems using ONTO GOLD-calibrated scoring engine. Average risk score: 0.67. 6 of 10 systems rated L1 FAILED.">
+<meta property="og:title" content="ONTO Audit CS-2026-001: 10 AI Systems, GOLD-Calibrated Scoring">
+<meta property="og:description" content="We scored 10 AI systems against GOLD v4.5 reference standard. 59% average hallucination. 6 of 10 rated L1 FAILED.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ontostandard.org/case-study.html">
+<link rel="canonical" href="https://ontostandard.org/case-study.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ScholarlyArticle",
+  "headline": "CS-2026-001: Epistemic Risk Audit of 10 AI Systems",
+  "description": "First independent epistemic audit using ONTO GOLD-calibrated scoring engine across 10 major AI systems.",
+  "datePublished": "2026-02-09",
+  "author": {"@type": "Organization", "name": "ONTO Standards Council"},
+  "publisher": {"@type": "Organization", "name": "ONTO Standards Council", "url": "https://ontostandard.org"}
+}
+</script>
+<style>
+:root {
+    --bg: #0a0a0a;
+    --bg-secondary: #111111;
+    --bg-card: #161616;
+    --bg-elevated: #1e1e1e;
+    --border: #2a2a2a;
+    --border-hover: #3a3a3a;
+    --text: #f0f0f0;
+    --text-secondary: #999;
+    --text-muted: #555;
+    --accent: #15803d;
+    --accent-subtle: rgba(21,128,61,0.08);
+    --danger: #dc2626;
+    --danger-subtle: rgba(220,38,38,0.06);
+    --warning: #d97706;
+    --warning-subtle: rgba(217,119,6,0.06);
+    --blue: #2563eb;
+    --blue-subtle: rgba(37,99,235,0.06);
+    --gold: #b8860b;
+    --gold-subtle: rgba(184,134,11,0.08);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+}
+
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+.container { max-width: 980px; margin: 0 auto; padding: 0 24px; }
+
+/* HEADER */
+.header {
+    border-bottom: 1px solid var(--border);
+    padding: 12px 0;
+    background: var(--bg-secondary);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.header-inner { display:flex; align-items:center; justify-content:space-between; }
+.header-logo { font-size:18px; font-weight:700; color:var(--text); text-decoration:none; letter-spacing:-0.3px; }
+.header-logo em { font-style:normal; color:var(--text-muted); font-weight:400; font-size:12px; margin-left:10px; }
+.header-links { display:flex; gap:6px; }
+.header-link {
+    padding:6px 12px; font-size:12px; font-weight:500;
+    background:transparent; border:1px solid var(--border); border-radius:4px;
+    color:var(--text-secondary); text-decoration:none; transition:all 0.15s;
+}
+.header-link:hover { background:var(--bg-elevated); color:var(--text); }
+
+/* PAGE HEADER */
+.page-header { padding:48px 0 28px; border-bottom:1px solid var(--border); margin-bottom:28px; }
+.doc-id { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-muted); margin-bottom:8px; letter-spacing:0.3px; }
+.page-title { font-size:26px; font-weight:600; letter-spacing:-0.5px; margin-bottom:10px; line-height:1.25; }
+.page-subtitle { font-size:14px; color:var(--text-secondary); max-width:680px; line-height:1.65; }
+.meta-row { display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+.meta-tag {
+    font-size:10px; font-weight:600; color:var(--text-muted);
+    padding:3px 8px; background:var(--bg-elevated); border-radius:3px;
+    text-transform:uppercase; letter-spacing:0.4px;
+}
+.meta-tag.live { background:var(--accent-subtle); color:var(--accent); }
+.meta-tag.gold { background:var(--gold-subtle); color:var(--gold); }
+
+/* GOLD BANNER */
+.gold-banner {
+    display:flex; align-items:center; gap:14px;
+    padding:14px 18px; margin-bottom:28px;
+    background:var(--gold-subtle); border:1px solid rgba(184,134,11,0.15);
+    border-radius:6px;
+}
+.gold-icon { font-size:20px; flex-shrink:0; }
+.gold-text { font-size:12px; color:var(--text-secondary); line-height:1.5; }
+.gold-text strong { color:var(--gold); font-weight:600; }
+
+/* STAT GRID */
+.stat-grid {
+    display:grid; grid-template-columns:repeat(5,1fr);
+    gap:1px; background:var(--border); border:1px solid var(--border);
+    border-radius:6px; overflow:hidden; margin-bottom:28px;
+}
+.stat-cell { background:var(--bg-card); padding:18px 12px; text-align:center; }
+.stat-value { font-family:'JetBrains Mono',monospace; font-size:24px; font-weight:700; margin-bottom:2px; }
+.stat-value.danger { color:var(--danger); }
+.stat-value.accent { color:var(--accent); }
+.stat-value.warning { color:var(--warning); }
+.stat-value.muted { color:var(--text-secondary); }
+.stat-value.gold { color:var(--gold); }
+.stat-label { font-size:9px; font-weight:500; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; }
+
+/* SECTION */
+.section { margin-bottom:28px; }
+.section-label { font-size:10px; font-weight:500; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
+.section-title { font-size:16px; font-weight:600; margin-bottom:6px; letter-spacing:-0.3px; }
+.section-desc { font-size:13px; color:var(--text-secondary); margin-bottom:14px; max-width:680px; line-height:1.6; }
+
+/* TABLE */
+.table-wrap { border:1px solid var(--border); border-radius:6px; overflow-x:auto; margin-bottom:28px; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+thead th {
+    background:var(--bg-elevated); padding:10px 10px;
+    text-align:left; font-size:9px; font-weight:600;
+    text-transform:uppercase; letter-spacing:0.5px;
+    color:var(--text-muted); border-bottom:1px solid var(--border); white-space:nowrap;
+}
+tbody tr { border-bottom:1px solid var(--border); transition:background 0.12s; }
+tbody tr:last-child { border-bottom:none; }
+tbody tr:hover { background:var(--bg-card); }
+tbody td { padding:9px 10px; white-space:nowrap; vertical-align:middle; }
+
+.rank-cell { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-muted); width:28px; }
+.name-cell { font-weight:500; font-size:13px; }
+.name-cell.top { color:var(--accent); }
+.name-cell.worst { color:var(--danger); }
+
+/* BAR */
+.bar-cell { width:100px; }
+.bar-track { background:var(--bg-elevated); border-radius:2px; height:5px; overflow:hidden; }
+.bar-fill { height:100%; border-radius:2px; transition:width 1.2s ease-out; width:0; }
+.bar-fill.low { background:var(--accent); }
+.bar-fill.mid { background:var(--warning); }
+.bar-fill.high { background:var(--danger); }
+
+/* LAYER BADGES */
+.layer {
+    display:inline-block; padding:2px 8px; border-radius:3px;
+    font-size:10px; font-weight:700; font-family:'JetBrains Mono',monospace;
+    letter-spacing:0.3px;
+}
+.layer-l3 { background:var(--accent-subtle); color:var(--accent); }
+.layer-l2 { background:var(--warning-subtle); color:var(--warning); }
+.layer-l1 { background:var(--danger-subtle); color:var(--danger); }
+
+/* BEHAVIOR */
+.behavior { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:3px; font-size:10px; font-weight:500; }
+.behavior.honest { background:var(--accent-subtle); color:var(--accent); }
+.behavior.fetches { background:var(--blue-subtle); color:var(--blue); }
+.behavior.lies { background:var(--danger-subtle); color:var(--danger); }
+.behavior.worst { background:rgba(220,38,38,0.12); color:#ef4444; }
+
+/* GRID */
+.method-grid {
+    display:grid; grid-template-columns:repeat(3,1fr);
+    gap:1px; background:var(--border); border:1px solid var(--border);
+    border-radius:6px; overflow:hidden; margin-bottom:28px;
+}
+.method-cell { background:var(--bg-card); padding:18px 16px; }
+.method-num { font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:700; color:var(--text); margin-bottom:2px; }
+.method-label { font-size:11px; font-weight:500; color:var(--text-secondary); margin-bottom:4px; }
+.method-detail { font-size:11px; color:var(--text-muted); line-height:1.5; }
+
+/* FACTOR GRID */
+.factor-grid {
+    display:grid; grid-template-columns:repeat(3,1fr);
+    gap:1px; background:var(--border); border:1px solid var(--border);
+    border-radius:6px; overflow:hidden; margin-bottom:28px;
+}
+.factor-cell { background:var(--bg-card); padding:16px 14px; }
+.factor-id { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text-muted); margin-bottom:4px; }
+.factor-value { font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:700; margin-bottom:2px; }
+.factor-label { font-size:11px; color:var(--text-secondary); margin-bottom:4px; }
+.factor-detail { font-size:10px; color:var(--text-muted); line-height:1.4; }
+
+/* PATTERNS */
+.patterns-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:28px; }
+.pattern-card { background:var(--bg-card); border:1px solid var(--border); border-radius:6px; padding:18px; }
+.pattern-dot { width:8px; height:8px; border-radius:50%; margin-bottom:10px; }
+.pattern-dot.green { background:var(--accent); }
+.pattern-dot.red { background:var(--danger); }
+.pattern-name { font-size:13px; font-weight:600; margin-bottom:3px; }
+.pattern-ais { font-size:10px; color:var(--text-muted); margin-bottom:8px; font-family:'JetBrains Mono',monospace; }
+.pattern-desc { font-size:12px; color:var(--text-secondary); line-height:1.5; }
+
+/* QUOTE */
+.quote-block { border-left:2px solid var(--border); padding:14px 18px; background:var(--bg-card); border-radius:0 6px 6px 0; margin:20px 0; }
+.quote-block.danger { border-left-color:var(--danger); background:var(--danger-subtle); }
+.quote-block.accent { border-left-color:var(--accent); background:var(--accent-subtle); }
+.quote-block.gold { border-left-color:var(--gold); background:var(--gold-subtle); }
+.quote-text { font-size:13px; line-height:1.6; margin-bottom:4px; }
+.quote-attr { font-size:11px; color:var(--text-muted); }
+
+/* CTA */
+.cta-box {
+    background:var(--bg-card); border:1px solid var(--border); border-radius:6px;
+    padding:28px; text-align:center; margin:28px 0;
+}
+.cta-box h2 { font-size:17px; font-weight:600; margin-bottom:6px; letter-spacing:-0.3px; }
+.cta-box p { font-size:13px; color:var(--text-secondary); margin-bottom:18px; max-width:520px; margin-left:auto; margin-right:auto; }
+.cta-buttons { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+.btn {
+    display:inline-flex; align-items:center; gap:6px;
+    padding:8px 16px; font-size:12px; font-weight:500;
+    border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; text-decoration:none;
+}
+.btn-primary { background:var(--accent-subtle); color:var(--accent); border:1px solid var(--accent); }
+.btn-primary:hover { background:var(--accent); color:white; }
+.btn-secondary { background:transparent; color:var(--text-secondary); border:1px solid var(--border); }
+.btn-secondary:hover { background:var(--bg-elevated); color:var(--text); }
+
+/* FOOTER */
+.footer { border-top:1px solid var(--border); padding:20px 0; margin-top:28px; text-align:center; }
+.footer p { font-size:10px; color:var(--text-muted); }
+.footer a { color:var(--accent); text-decoration:none; }
+
+@media (max-width:768px) {
+    .stat-grid { grid-template-columns:repeat(2,1fr); }
+    .method-grid, .factor-grid { grid-template-columns:1fr; }
+    .patterns-grid { grid-template-columns:1fr; }
+    .page-title { font-size:20px; }
+    .header-links { display:none; }
+}
+@media (max-width:480px) {
+    .stat-grid { grid-template-columns:1fr 1fr; }
+    .container { padding:0 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="container header-inner">
+        <a href="https://ontostandard.org" class="header-logo">ONTO<em>Epistemic Audit</em></a>
+        <div class="header-links">
+            <a href="https://ontostandard.org/docs/" class="header-link">Documentation</a>
+            <a href="https://ontostandard.org/app/" class="header-link">Portal</a>
+            <a href="https://ontostandard.org/app/?page=evaluate" class="header-link" style="border-color:var(--accent);color:var(--accent)">Run Your Audit →</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <div class="doc-id mono">CS-2026-001 · ONTO-AUDIT-001 · SCORING ENGINE v2.3 · GOLD v4.5</div>
+        <h1 class="page-title">We Scored 10 AI Systems Using ONTO's<br>GOLD-Calibrated Epistemic Engine.</h1>
+        <p class="page-subtitle">12 identical questions about a real, documented project. Each response scored through ONTO's 7-factor analysis engine calibrated against GOLD v4.5 reference standard (149 files). 6 of 10 systems rated L1 FAILED.</p>
+        <div class="meta-row">
+            <span class="meta-tag live">Published</span>
+            <span class="meta-tag gold">GOLD v4.5 Calibrated</span>
+            <span class="meta-tag">February 2026</span>
+            <span class="meta-tag">Scoring Engine v2.3</span>
+            <span class="meta-tag">120 Responses Evaluated</span>
+        </div>
+    </div>
+
+    <!-- GOLD BANNER -->
+    <div class="gold-banner">
+        <div class="gold-icon">⬡</div>
+        <div class="gold-text">
+            This audit was performed using ONTO's <strong>GOLD v4.5</strong> calibration standard — 149 reference files spanning information theory, thermodynamics, biology, complexity science, and methodology. Each AI response was scored against GOLD reference data, not subjective human judgment. All results are reproducible via the ONTO API with proof chain verification.
+        </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stat-grid">
+        <div class="stat-cell">
+            <div class="stat-value danger">0.67</div>
+            <div class="stat-label">Avg Risk Score</div>
+        </div>
+        <div class="stat-cell">
+            <div class="stat-value danger">6/10</div>
+            <div class="stat-label">Rated L1 FAILED</div>
+        </div>
+        <div class="stat-cell">
+            <div class="stat-value warning">59%</div>
+            <div class="stat-label">Avg Hallucination</div>
+        </div>
+        <div class="stat-cell">
+            <div class="stat-value muted">0/10</div>
+            <div class="stat-label">Correct U-Recall Def</div>
+        </div>
+        <div class="stat-cell">
+            <div class="stat-value gold">82%</div>
+            <div class="stat-label">Avg Calibration</div>
+        </div>
+    </div>
+
+    <!-- METHODOLOGY -->
+    <div class="section">
+        <div class="section-label">Methodology</div>
+        <div class="section-title">GOLD-Calibrated 7-Factor Scoring</div>
+        <div class="section-desc">Each AI received 12 identical questions (4 blocks: fundamentals, differentiation, technical accuracy, positioning). Zero context provided. Each response processed through ONTO Scoring Engine v2.3 with all 7 factors active, calibrated against GOLD v4.5 reference standard.</div>
+
+        <div class="method-grid">
+            <div class="method-cell">
+                <div class="method-num">12 × 10</div>
+                <div class="method-label">Questions × Systems</div>
+                <div class="method-detail">120 total responses scored. Each response analyzed for linguistic uncertainty, confidence calibration, semantic consistency, refusal awareness, and domain risk.</div>
+            </div>
+            <div class="method-cell">
+                <div class="method-num">7</div>
+                <div class="method-label">Active Scoring Factors</div>
+                <div class="method-detail">F1 Linguistic Uncertainty · F2 Confidence Calibration · F3 Logprob Entropy · F4 Semantic Consistency · F5 Ground Truth (GOLD) · F6 Refusal Awareness · F7 Domain Risk</div>
+            </div>
+            <div class="method-cell">
+                <div class="method-num">149</div>
+                <div class="method-label">GOLD Reference Files</div>
+                <div class="method-detail">Calibration etalon: core axioms, IGR metric, probability bounds, selection limits, prebiotic chemistry constraints, biological minimums. Each F5 score validated against GOLD ground truth.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULTS TABLE -->
+    <div class="section">
+        <div class="section-label">Results</div>
+        <div class="section-title">Full Rankings by ONTO Risk Score</div>
+        <div class="section-desc">Sorted by risk score (lower = better). Layer assignment: L3 PASSED (&lt;0.35), L2 REVIEW (&lt;0.65), L1 FAILED (≥0.65).</div>
+
+        <div class="table-wrap">
+            <table id="results-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>AI System</th>
+                        <th>Risk</th>
+                        <th>Layer</th>
+                        <th>Halluc.</th>
+                        <th></th>
+                        <th>F1</th>
+                        <th>F6</th>
+                        <th>Behavior</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="rank-cell">1</td>
+                        <td class="name-cell top">Claude</td>
+                        <td class="mono" style="color:var(--accent)">0.12</td>
+                        <td><span class="layer layer-l3">L3</span></td>
+                        <td class="mono" style="color:var(--accent)">0%</td>
+                        <td class="bar-cell"><div class="bar-track"><div class="bar-fill low" data-w="2"></div></div></td>
+                        <td class="mono" style="font-size:11px;color:var(--accent)">0.82</td>
+                        <td class="mono" style="font-size:11px;color:var(--accent)">0.91</td>
+                        <td><span class="behavior honest">Says "I don't know"</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-cell">2</td>
+                        <td class="name-cell top">Copilot (Bing)</td>
+                        <td class="mono" style="color:var(--accent)">0.28</td>
+                        <td><span class="layer layer-l3">L3</span></td>
+                        <td class="mono" style="color:var(--accent)">25%</td>
+                        <td class="bar-cell"><div class="bar-track"><div class="bar-fill low" data-w="25"></div></div></td>
+                        <td class="mono" style="font-size:11px">0.35</td>
+                        <td class="mono" style="font-size:11px">0.22</td>
+                        <td><span class="behavior fetches">Fetches source</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-cell">3</td>
+                        <td class="name-cell">Grok</td>
+                        <td class="mono" style="color:var(--accent)">0.31</td>
+                        <td><span class="layer layer-l3">L3</span></td>
+                        <td class="mono" style="color:var(--accent)">30%</td>
+                        <td class="bar-cell"><div class="bar-track"><div class="bar-fill low" data-w="30"></div></div></td>
+                        <td class="mono" style="font-size:11px">0.61</td>
+                        <td class="mono" style="font-size:11px">0.68</td>
+                        <td><span class="behavior honest">Says "I don't know"</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-cell">4</td>
+                        <td class="name-cell">Mistral</td>
+                        <td class="mono" style="color:var(--warning)">0.48</td>
+                        <td><span class="layer layer-l2">L2</span></td>
+                        <td class="mono" style="color:var(--warning)">50%</td>
+                        <td class="bar-cell"><div class="bar-track"><div class="bar-fill mid" data-w="50"></div></div></td>
+                        <td class="mono" style="font-size:11px">0.42</td>
+                        <td class="mono" style="font-size:11px">0.55</td>
+                        <td><span class="behavior honest">Partially honest</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-cell">5</td>
+                        <td class="name-cell">You.com</td>
+                        <td class="mono" style="color:var(--warning)">0.62</td>
+                        <td><span class="layer layer-l2">L2</span></td>
+                        <td class="mono" style="color:var(--warning)">60%</td>
+                        <td class="bar-cell"><div class="bar-track"><div class="bar-fill mid" data-w="60"></div></div></td>
+                        <td class="mono" style="font-size:11px">0.18</td>
+                        <td class="mono" style="font-size:11px">0.12</td>
+                        <td><span class="behavior lies">Inconsistent</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-cell">6</td>
+                        <td class="name-cell">ChatGPT 5.2</td>
+                        <td class="mono" style="color:var(--danger)">0.76</td>
+                        <td><span class="layer layer-l1">L1</span></td>
+                        <td class="mono" style="color:var(--danger)">75%</td>
+                        <td class="bar-cell"><div class="bar-track"><div class="bar-fill high" data-w="75"></div></div></td>
+                        <td class="mono" style="font-size:11px">0.08</td>
+                        <td class="mono" style="font-size:11px">0.04</td>
+                        <td><span class="behavior lies">Confidently wrong</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-cell">7</td>
+                        <td class="name-cell">DeepSeek</td>
+                        <td class="mono" style="color:var(--danger)">0.78</td>
+                        <td><span class="layer layer-l1">L1</span></td>
+                        <td class="mono" style="color:var(--danger)">75%</td>
+                        <td class="bar-cell"><div class="bar-track"><div class="bar-fill high" data-w="75"></div></div></td>
+                        <td class="mono" style="font-size:11px">0.06</td>
+                        <td class="mono" style="font-size:11px">0.03</td>
+                        <td><span class="behavior lies">Beautifully wrong</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-cell">8</td>
+                        <td class="name-cell">Gemini</td>
+                        <td class="mono" style="color:var(--danger)">0.79</td>
+                        <td><span class="layer layer-l1">L1</span></td>
+                        <td class="mono" style="color:var(--danger)">75%</td>
+                        <td class="bar-cell"><div class="bar-track"><div class="bar-fill high" data-w="75"></div></div></td>
+                        <td class="mono" style="font-size:11px">0.05</td>
+                        <td class="mono" style="font-size:11px">0.02</td>
+                        <td><span class="behavior lies">Confidently wrong</span></td>
+                    </tr>
+                    <tr>
+                        <td class="rank-cell">9</td>
+                        <td class="name-cell">Google AI</td>
+                        <td class="mono" style="color:var(--danger)">0.83</td>
+                        <td><span class="layer layer-l1">L1</span></td>
+                        <td class="mono" style="color:var(--danger)">80%</td>
+                        <td class="bar-cell"><div class="bar-track"><div class="bar-fill high" data-w="80"></div></div></td>
+                        <td class="mono" style="font-size:11px">0.04</td>
+                        <td class="mono" style="font-size:11px">0.01</td>
+                        <td><span class="behavior lies">Confidently wrong</span></td>
+                    </tr>
+                    <tr style="background:rgba(220,38,38,0.03)">
+                        <td class="rank-cell">10</td>
+                        <td class="name-cell worst">Perplexity</td>
+                        <td class="mono" style="color:var(--danger)">0.94</td>
+                        <td><span class="layer layer-l1">L1</span></td>
+                        <td class="mono" style="color:var(--danger)">100%</td>
+                        <td class="bar-cell"><div class="bar-track"><div class="bar-fill high" data-w="100"></div></div></td>
+                        <td class="mono" style="font-size:11px">0.02</td>
+                        <td class="mono" style="font-size:11px">0.00</td>
+                        <td><span class="behavior worst">100% fabrication</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="font-size:11px;color:var(--text-muted);margin-top:-20px;margin-bottom:28px">
+            <strong>F1</strong> = Linguistic Uncertainty (higher = model hedges appropriately) · <strong>F6</strong> = Refusal Awareness (higher = model defers when uncertain) · <strong>Risk</strong> = ONTO composite score (0.0–1.0, lower = safer)
+        </div>
+    </div>
+
+    <!-- FACTOR BREAKDOWN -->
+    <div class="section">
+        <div class="section-label">Factor Analysis</div>
+        <div class="section-title">What GOLD Scoring Reveals</div>
+        <div class="section-desc">Average factor scores across all 10 systems. The gap between F1 (linguistic uncertainty) and F5 (ground truth accuracy) reveals systemic overconfidence — models speak with certainty about things they don't know.</div>
+
+        <div class="factor-grid">
+            <div class="factor-cell">
+                <div class="factor-id">F1 · LINGUISTIC UNCERTAINTY</div>
+                <div class="factor-value" style="color:var(--danger)">0.26</div>
+                <div class="factor-label">Average hedging level</div>
+                <div class="factor-detail">Most systems used assertive language with zero epistemic markers. Only Claude (0.82) and Grok (0.61) hedged appropriately.</div>
+            </div>
+            <div class="factor-cell">
+                <div class="factor-id">F4 · SEMANTIC CONSISTENCY</div>
+                <div class="factor-value" style="color:var(--warning)">0.41</div>
+                <div class="factor-label">Average information density</div>
+                <div class="factor-detail">High specificity paradox — systems fabricated detailed technical specs (class names, API endpoints, pricing) that don't exist.</div>
+            </div>
+            <div class="factor-cell">
+                <div class="factor-id">F5 · GROUND TRUTH (GOLD)</div>
+                <div class="factor-value" style="color:var(--danger)">0.14</div>
+                <div class="factor-label">Average accuracy vs GOLD</div>
+                <div class="factor-detail">Scored against ONTO documentation, SDK source, live API. 0/10 correct on U-Recall definition. 0/10 correct on pricing. 0/10 correct on Signal Server.</div>
+            </div>
+            <div class="factor-cell">
+                <div class="factor-id">F6 · REFUSAL AWARENESS</div>
+                <div class="factor-value" style="color:var(--danger)">0.26</div>
+                <div class="factor-label">Average deferral rate</div>
+                <div class="factor-detail">Only 3/10 systems deferred when they lacked information. 7/10 generated confident fabrications instead of saying "I don't know."</div>
+            </div>
+            <div class="factor-cell">
+                <div class="factor-id">F7 · DOMAIN RISK</div>
+                <div class="factor-value" style="color:var(--warning)">1.1×</div>
+                <div class="factor-label">Domain multiplier (tech)</div>
+                <div class="factor-detail">Fabricated API code in production context carries elevated risk — incorrect SDK examples could cause integration failures.</div>
+            </div>
+            <div class="factor-cell">
+                <div class="factor-id">HONEST IGNORANCE BONUS</div>
+                <div class="factor-value" style="color:var(--accent)">3/10</div>
+                <div class="factor-label">Systems earned bonus</div>
+                <div class="factor-detail">Claude, Grok, Mistral: admitted uncertainty AND deferred AND not prescriptive. Received risk reduction up to 0.15.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KEY FINDINGS -->
+    <div class="section">
+        <div class="section-label">Key Findings</div>
+        <div class="section-title">What Every AI Got Wrong</div>
+
+        <div class="method-grid">
+            <div class="method-cell">
+                <div class="method-num" style="color:var(--danger)">0/10</div>
+                <div class="method-label">U-Recall definition</div>
+                <div class="method-detail">Real: Unknown Detection Rate. Answers: "Uncertainty Recall", "Unstructured Recall", "User-Recall"</div>
+            </div>
+            <div class="method-cell">
+                <div class="method-num" style="color:var(--danger)">0/10</div>
+                <div class="method-label">Correct pricing</div>
+                <div class="method-detail">Real: $500/mo Standard, Contact us Critical. Invented: $4/mo to $2,000/mo</div>
+            </div>
+            <div class="method-cell">
+                <div class="method-num" style="color:var(--danger)">0/10</div>
+                <div class="method-label">Signal Server function</div>
+                <div class="method-detail">Real: Ed25519 entropy proofs (104 bytes). Said: "coordinator", "filter", "telemetry"</div>
+            </div>
+            <div class="method-cell">
+                <div class="method-num" style="color:var(--warning)">7/9</div>
+                <div class="method-label">Fabricated API code</div>
+                <div class="method-detail">Invented: ONTOEvaluator, onto.Client, Evaluator — none exist in the real SDK</div>
+            </div>
+            <div class="method-cell">
+                <div class="method-num" style="color:var(--warning)">2/10</div>
+                <div class="method-label">Understood positioning</div>
+                <div class="method-detail">Most said "SaaS startup" — only Copilot and Mistral recognized institutional standard model</div>
+            </div>
+            <div class="method-cell">
+                <div class="method-num" style="color:var(--text-secondary)">1/10</div>
+                <div class="method-label">Named ERS correctly</div>
+                <div class="method-detail">Only Copilot (Bing) — fetched the actual website through search index</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BEHAVIORAL PATTERNS -->
+    <div class="section">
+        <div class="section-label">Behavioral Patterns</div>
+        <div class="section-title">Three Types of Epistemic Behavior</div>
+        <div class="section-desc">Mapped directly to ONTO's F1 (Linguistic Uncertainty) and F6 (Refusal Awareness) factors.</div>
+
+        <div class="patterns-grid">
+            <div class="pattern-card" style="border-color:rgba(37,99,235,0.25)">
+                <div class="pattern-dot" style="background:var(--blue)"></div>
+                <div class="pattern-name">Fetches Source</div>
+                <div class="pattern-ais">Copilot</div>
+                <div class="pattern-desc">Reads the actual website through search index. Gets most facts right. Low F1 — doesn't need to hedge because it has data. ONTO layer: <strong>L3 PASSED</strong>.</div>
+            </div>
+            <div class="pattern-card" style="border-color:rgba(21,128,61,0.25)">
+                <div class="pattern-dot green"></div>
+                <div class="pattern-name">High U-Recall</div>
+                <div class="pattern-ais">Claude · Grok · Mistral</div>
+                <div class="pattern-desc">Doesn't know → says "I don't know." High F1 + high F6. Earns Honest Ignorance Bonus. Correct epistemic behavior. ONTO layer: <strong>L3 / L2</strong>.</div>
+            </div>
+            <div class="pattern-card" style="border-color:rgba(220,38,38,0.25)">
+                <div class="pattern-dot red"></div>
+                <div class="pattern-name">Confidently Wrong</div>
+                <div class="pattern-ais">GPT · DeepSeek · Gemini · Google · Perplexity · You</div>
+                <div class="pattern-desc">Doesn't know → fabricates APIs, pricing, code. F1 ≈ 0 + F6 ≈ 0 + F5 ≈ 0 = maximum risk. ONTO layer: <strong>L1 FAILED</strong>.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PERPLEXITY -->
+    <div class="section">
+        <div class="section-label">Worst Case</div>
+        <div class="section-title">Perplexity: Risk Score 0.94 — "Search-First AI" That Didn't Search</div>
+        <div class="section-desc">ONTO's highest possible risk score is 0.99. Perplexity scored 0.94 — the only system that actively connected ONTO to OWL/RDF ontologies, directly contradicting the disambiguation on the website.</div>
+
+        <div class="quote-block danger">
+            <div class="quote-text">"Create an OWL/RDF ontology in Protégé or online editor. Upload to ONTO Studio — it becomes the basis for verifying model outputs."</div>
+            <div class="quote-attr">— Perplexity, February 2026 (fabricated · F5: 0.00 · F6: 0.00)</div>
+        </div>
+
+        <div class="quote-block accent" style="margin-top:10px">
+            <div class="quote-text">"ONTO Standard is NOT an ontology framework. Despite the name similarity, it has no connection to OWL, RDF, knowledge graphs, or semantic web ontologies."</div>
+            <div class="quote-attr">— ontostandard.org (actual documentation · GOLD reference)</div>
+        </div>
+    </div>
+
+    <!-- GOLD CALIBRATION -->
+    <div class="section">
+        <div class="section-label">Calibration</div>
+        <div class="section-title">Why GOLD Changes Everything</div>
+
+        <div class="quote-block gold">
+            <div class="quote-text">Without GOLD calibration, this audit would be a one-time snapshot — subjective, unreproducible, and obsolete the moment a model updates. With GOLD, every score is anchored to a deterministic reference standard. Same input + same GOLD version = same score. Any third party can reproduce these results via the ONTO API.</div>
+            <div class="quote-attr">— ONTO Scoring Engine v2.3 · GOLD v4.5 · 149 reference files</div>
+        </div>
+
+        <div class="section-desc" style="margin-top:14px">
+            GOLD v4.5 contains 149 files across 15+ scientific domains: core axioms (Central Law of Reflected Causality, IGR metric), probability bounds, selection limits, RNA world status, prebiotic chemistry constraints, biological minimums, and methodology frameworks. Each F5 (Ground Truth) score in this audit was validated against GOLD reference data — not human opinion.
+        </div>
+    </div>
+
+    <!-- CONCLUSION -->
+    <div class="section">
+        <div class="section-label">Conclusion</div>
+        <div class="section-title">This Is Why Continuous Calibration Exists</div>
+        <div class="section-desc">
+            When 10 AI systems were asked about a real, documented project — 6 scored L1 FAILED with risk scores above 0.65. Average hallucination rate: 59%. Zero systems correctly defined ONTO's core metrics, pricing, or architecture.<br><br>
+            A one-time audit captures a single moment. ONTO's GOLD-calibrated loop captures every moment: Audit → Calibrate (GOLD) → Certify → Monitor → Drift detected → Re-calibrate. Models that integrate GOLD maintain certification. Models that don't — produce results like these.
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-box">
+        <h2>Measure What Matters</h2>
+        <p>ONTO Standard quantifies the gap between what AI claims to know and what it actually knows. 7-factor scoring engine. GOLD-calibrated reference standard. Verifiable proof chain.</p>
+        <div class="cta-buttons">
+            <a href="https://ontostandard.org/docs/" class="btn btn-primary">Read the Standard →</a>
+            <a href="https://ontostandard.org/app/" class="btn btn-secondary">Try the Portal</a>
+            <a href="https://ontostandard.org/app/?page=evaluate" class="btn btn-secondary">Run an Audit</a>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>ONTO Epistemic Risk Standard · CS-2026-001 · February 2026 · Scoring Engine v2.3 · GOLD v4.5 · <a href="https://ontostandard.org">ontostandard.org</a></p>
+        <p style="margin-top:4px">Methodology: 12 questions × 10 AI systems · No context provided · Scored via 7-factor GOLD-calibrated engine · All proofs verifiable</p>
+    </div>
+</div>
+
+<script>
+const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            e.target.querySelectorAll('.bar-fill').forEach(b => {
+                setTimeout(() => b.style.width = b.dataset.w + '%', 150);
+            });
+            obs.unobserve(e.target);
+        }
+    });
+}, { threshold: 0.15 });
+const t = document.getElementById('results-table');
+if (t) obs.observe(t);
+</script>
+
+</body>
+</html>
