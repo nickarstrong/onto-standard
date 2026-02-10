@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify Evaluation — ONTO Standard</title>
+<meta name="description" content="Verify any ONTO evaluation result. Enter a proof hash to see the cryptographically signed evaluation details.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ontostandard.org/verify/">
+
+<!-- OG -->
+<meta property="og:title" content="Verify Evaluation — ONTO Standard">
+<meta property="og:description" content="Cryptographically verify any AI model evaluation. Every ONTO evaluation is signed with Ed25519.">
+<meta property="og:url" content="https://ontostandard.org/verify/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://ontostandard.org/og-image.png">
+
+<!-- JSON-LD -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ONTO Proof Verification",
+  "url": "https://ontostandard.org/verify/",
+  "description": "Verify cryptographically signed AI model evaluations",
+  "applicationCategory": "SecurityApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+    --bg:#0a0a0a;--bg-card:#111113;--bg-input:#0d0d0f;
+    --border:#1e1e22;--border-focus:#2a2a30;
+    --text:#e8e8ea;--text-muted:#6b6b75;--text-secondary:#9898a4;
+    --accent:#2563eb;--accent-hover:#3b82f6;
+    --green:#22c55e;--green-bg:rgba(34,197,94,.08);
+    --red:#ef4444;--red-bg:rgba(239,68,68,.08);
+    --yellow:#eab308;
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    --mono:"SF Mono",SFMono-Regular,Consolas,"Liberation Mono",Menlo,monospace;
+}
+html{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
+body{min-height:100vh;display:flex;flex-direction:column}
+
+/* NAV */
+.nav{padding:14px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.nav-logo{font-size:15px;font-weight:700;letter-spacing:-.5px}
+.nav-sep{color:var(--border);font-weight:300}
+.nav-page{font-size:13px;color:var(--text-muted);font-weight:400}
+.nav-links{display:flex;gap:16px;align-items:center}
+.nav-links a{font-size:12px;color:var(--text-muted);text-decoration:none;transition:color .15s}
+.nav-links a:hover{color:var(--text)}
+
+/* MAIN */
+.container{flex:1;max-width:680px;width:100%;margin:0 auto;padding:48px 24px}
+.page-title{font-size:22px;font-weight:700;letter-spacing:-.5px;margin-bottom:6px}
+.page-sub{font-size:13px;color:var(--text-muted);line-height:1.5;margin-bottom:32px}
+
+/* SEARCH */
+.search-card{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:24px}
+.search-label{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);margin-bottom:8px;display:block}
+.search-row{display:flex;gap:10px}
+.search-input{flex:1;background:var(--bg-input);border:1px solid var(--border);border-radius:6px;padding:12px 14px;color:var(--text);font-family:var(--mono);font-size:13px;outline:none;transition:border-color .15s}
+.search-input:focus{border-color:var(--accent)}
+.search-input::placeholder{color:var(--text-muted);opacity:.5}
+.search-btn{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:12px 24px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;white-space:nowrap}
+.search-btn:hover{background:var(--accent-hover)}
+.search-btn:disabled{opacity:.4;cursor:not-allowed}
+.search-hint{font-size:11px;color:var(--text-muted);margin-top:10px}
+.search-hint code{font-family:var(--mono);background:var(--bg);padding:2px 5px;border-radius:3px;font-size:10px}
+
+/* RESULT */
+.result{display:none;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;overflow:hidden;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.result-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.result-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600}
+.badge-valid{background:var(--green-bg);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+.badge-invalid{background:var(--red-bg);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+.badge-notfound{background:var(--bg);color:var(--text-muted);border:1px solid var(--border)}
+.result-standard{font-size:11px;color:var(--text-muted)}
+
+.result-body{padding:24px}
+.result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.result-metric{text-align:center;padding:16px 8px;background:var(--bg);border-radius:6px}
+.metric-value{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;margin-bottom:4px}
+.metric-label{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted)}
+
+.result-details{border-top:1px solid var(--border);padding-top:20px}
+.detail-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.03)}
+.detail-row:last-child{border-bottom:none}
+.detail-key{font-size:12px;color:var(--text-muted)}
+.detail-val{font-size:12px;font-family:var(--mono);color:var(--text);text-align:right;max-width:60%;overflow:hidden;text-overflow:ellipsis}
+.detail-val.green{color:var(--green)}
+.detail-val.red{color:var(--red)}
+.detail-val.yellow{color:var(--yellow)}
+
+/* CRYPTO BOX */
+.crypto-box{margin-top:20px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px}
+.crypto-title{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.crypto-title svg{width:14px;height:14px;color:var(--green)}
+.crypto-row{font-size:11px;color:var(--text-secondary);margin-bottom:4px;word-break:break-all;font-family:var(--mono)}
+.crypto-row span{color:var(--text-muted);font-family:var(--font)}
+
+/* ERROR */
+.error-card{display:none;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:32px;text-align:center}
+.error-icon{font-size:36px;margin-bottom:12px;opacity:.4}
+.error-title{font-size:15px;font-weight:600;margin-bottom:6px}
+.error-sub{font-size:12px;color:var(--text-muted)}
+
+/* HOW IT WORKS */
+.how-section{margin-top:40px;padding-top:32px;border-top:1px solid var(--border)}
+.how-title{font-size:14px;font-weight:600;margin-bottom:16px}
+.how-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.how-step{padding:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px}
+.how-num{font-size:20px;opacity:.3;margin-bottom:8px}
+.how-head{font-size:12px;font-weight:600;margin-bottom:4px}
+.how-desc{font-size:11px;color:var(--text-muted);line-height:1.5}
+
+/* FOOTER */
+.footer{padding:20px 24px;border-top:1px solid var(--border);text-align:center;font-size:11px;color:var(--text-muted)}
+.footer a{color:var(--text-secondary);text-decoration:none}
+
+/* LOADING */
+.spinner{display:none;width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+    .result-grid{grid-template-columns:repeat(2,1fr)}
+    .how-steps{grid-template-columns:1fr}
+    .search-row{flex-direction:column}
+    .search-btn{width:100%}
+    .container{padding:32px 16px}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+    <a href="/" class="nav-brand">
+        <span class="nav-logo">ONTO</span>
+        <span class="nav-sep">/</span>
+        <span class="nav-page">Verify</span>
+    </a>
+    <div class="nav-links">
+        <a href="/docs/">Docs</a>
+        <a href="/app/">Portal</a>
+        <a href="https://api.ontostandard.org/docs" target="_blank">API</a>
+    </div>
+</nav>
+
+<div class="container">
+    <h1 class="page-title">Verify Evaluation</h1>
+    <p class="page-sub">Every ONTO evaluation is cryptographically signed with Ed25519. Enter a proof hash to verify authenticity, view the risk score, and confirm the evaluation has not been tampered with.</p>
+
+    <!-- SEARCH -->
+    <div class="search-card">
+        <label class="search-label">Proof Hash</label>
+        <div class="search-row">
+            <input class="search-input" id="proof-input" type="text" 
+                   placeholder="e.g. 976cff5b1dd31e37c38cb0ae9f924002..." 
+                   maxlength="64" spellcheck="false" autocomplete="off">
+            <button class="search-btn" id="verify-btn" onclick="verifyProof()">
+                <span id="btn-text">Verify</span>
+                <div class="spinner" id="btn-spinner"></div>
+            </button>
+        </div>
+        <div class="search-hint">64-character hex string returned in every evaluation response as <code>proof_hash</code></div>
+    </div>
+
+    <!-- RESULT: VERIFIED -->
+    <div class="result" id="result-card">
+        <div class="result-header">
+            <div class="result-badge badge-valid" id="result-badge">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span id="badge-text">VERIFIED</span>
+            </div>
+            <span class="result-standard" id="result-standard"></span>
+        </div>
+        <div class="result-body">
+            <div class="result-grid">
+                <div class="result-metric">
+                    <div class="metric-value" id="r-model">—</div>
+                    <div class="metric-label">Model</div>
+                </div>
+                <div class="result-metric">
+                    <div class="metric-value" id="r-risk">—</div>
+                    <div class="metric-label">Risk Score</div>
+                </div>
+                <div class="result-metric">
+                    <div class="metric-value" id="r-layer">—</div>
+                    <div class="metric-label">Layer</div>
+                </div>
+                <div class="result-metric">
+                    <div class="metric-value" id="r-compliance">—</div>
+                    <div class="metric-label">Compliance</div>
+                </div>
+            </div>
+
+            <div class="result-details">
+                <div class="detail-row">
+                    <span class="detail-key">Evaluation ID</span>
+                    <span class="detail-val" id="r-eval-id">—</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-key">Provider</span>
+                    <span class="detail-val" id="r-provider">—</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-key">Signature Valid</span>
+                    <span class="detail-val" id="r-sig-valid">—</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-key">Proof Timestamp</span>
+                    <span class="detail-val" id="r-timestamp">—</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-key">Evaluated At</span>
+                    <span class="detail-val" id="r-evaluated">—</span>
+                </div>
+            </div>
+
+            <div class="crypto-box" id="crypto-box">
+                <div class="crypto-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                    Cryptographic Proof
+                </div>
+                <div class="crypto-row"><span>Hash: </span><span id="r-hash">—</span></div>
+                <div class="crypto-row"><span>Key: </span><span id="r-pubkey">—</span></div>
+                <div class="crypto-row"><span>Algo: </span>Ed25519 (RFC 8032)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT: NOT FOUND -->
+    <div class="error-card" id="error-card">
+        <div class="error-icon">∅</div>
+        <div class="error-title" id="error-title">Proof not found</div>
+        <div class="error-sub" id="error-sub">This hash does not match any evaluation in the ONTO registry.</div>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <div class="how-section">
+        <div class="how-title">How Proof Verification Works</div>
+        <div class="how-steps">
+            <div class="how-step">
+                <div class="how-num">①</div>
+                <div class="how-head">Evaluate</div>
+                <div class="how-desc">Submit an AI output via API or portal. ONTO scores epistemic risk using 6-factor analysis.</div>
+            </div>
+            <div class="how-step">
+                <div class="how-num">②</div>
+                <div class="how-head">Sign</div>
+                <div class="how-desc">The result is signed with Ed25519. The proof_hash (SHA-256 of signature) is stored on-chain.</div>
+            </div>
+            <div class="how-step">
+                <div class="how-num">③</div>
+                <div class="how-head">Verify</div>
+                <div class="how-desc">Anyone with a proof_hash can verify: model, risk score, timestamp, and cryptographic validity.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <a href="/">ONTO Standard</a> · <a href="/docs/">Documentation</a> · <a href="https://api.ontostandard.org/v1/signal/public-key" target="_blank">Public Key</a>
+</footer>
+
+<script>
+const API = 'https://api.ontostandard.org';
+
+// Auto-fill from URL: /verify/?hash=abc123 or /verify/#abc123
+(function() {
+    const params = new URLSearchParams(window.location.search);
+    const hashParam = params.get('hash') || params.get('h') || window.location.hash.replace('#', '');
+    if (hashParam && hashParam.length === 64) {
+        document.getElementById('proof-input').value = hashParam;
+        setTimeout(verifyProof, 300);
+    }
+})();
+
+// Enter key
+document.getElementById('proof-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') verifyProof();
+});
+
+async function verifyProof() {
+    const input = document.getElementById('proof-input');
+    const hash = input.value.trim().toLowerCase();
+    
+    // Validate
+    if (!hash) { input.focus(); return; }
+    if (hash.length !== 64 || !/^[0-9a-f]+$/.test(hash)) {
+        showError('Invalid format', 'Proof hash must be exactly 64 hexadecimal characters.');
+        return;
+    }
+    
+    // Loading
+    const btn = document.getElementById('verify-btn');
+    const btnText = document.getElementById('btn-text');
+    const spinner = document.getElementById('btn-spinner');
+    btn.disabled = true;
+    btnText.style.display = 'none';
+    spinner.style.display = 'block';
+    hideResults();
+    
+    try {
+        const resp = await fetch(`${API}/v1/verify/${hash}`);
+        const data = await resp.json();
+        
+        if (!resp.ok) {
+            showError('API Error', data.detail || 'Verification request failed.');
+            return;
+        }
+        
+        if (!data.verified) {
+            showError('Proof not found', 'This hash does not match any evaluation in the ONTO registry.');
+            return;
+        }
+        
+        showResult(data);
+        
+        // Update URL without reload
+        history.replaceState(null, '', `/verify/?hash=${hash}`);
+        
+    } catch (e) {
+        showError('Connection failed', 'Cannot reach ONTO API. Please try again.');
+    } finally {
+        btn.disabled = false;
+        btnText.style.display = 'inline';
+        spinner.style.display = 'none';
+    }
+}
+
+function showResult(d) {
+    const card = document.getElementById('result-card');
+    const badge = document.getElementById('result-badge');
+    const badgeText = document.getElementById('badge-text');
+    
+    if (d.signature_valid) {
+        badge.className = 'result-badge badge-valid';
+        badgeText.textContent = 'SIGNATURE VERIFIED';
+    } else {
+        badge.className = 'result-badge badge-invalid';
+        badgeText.textContent = 'SIGNATURE INVALID';
+    }
+    
+    document.getElementById('result-standard').textContent = d.standard || '';
+    
+    // Metrics
+    document.getElementById('r-model').textContent = d.model_name || '—';
+    
+    const risk = d.risk_score;
+    const riskEl = document.getElementById('r-risk');
+    riskEl.textContent = risk != null ? risk.toFixed(3) : '—';
+    riskEl.style.color = risk < 0.35 ? 'var(--green)' : risk < 0.65 ? 'var(--yellow)' : 'var(--red)';
+    
+    document.getElementById('r-layer').textContent = d.layer || '—';
+    
+    const compEl = document.getElementById('r-compliance');
+    compEl.textContent = d.compliance || '—';
+    compEl.style.color = d.compliance === 'PASSED' ? 'var(--green)' : d.compliance === 'FAILED' ? 'var(--red)' : 'var(--yellow)';
+    
+    // Details
+    document.getElementById('r-eval-id').textContent = d.evaluation_id || '—';
+    document.getElementById('r-provider').textContent = d.provider || '—';
+    
+    const sigEl = document.getElementById('r-sig-valid');
+    sigEl.textContent = d.signature_valid ? '✓ Valid' : '✗ Invalid';
+    sigEl.className = 'detail-val ' + (d.signature_valid ? 'green' : 'red');
+    
+    if (d.proof_timestamp) {
+        const dt = new Date(d.proof_timestamp * 1000);
+        document.getElementById('r-timestamp').textContent = dt.toISOString().replace('T', ' ').replace(/\.\d+Z/, ' UTC');
+    }
+    document.getElementById('r-evaluated').textContent = d.evaluated_at ? 
+        d.evaluated_at.replace('T', ' ').replace(/\+.*/, ' UTC') : '—';
+    
+    // Crypto
+    document.getElementById('r-hash').textContent = d.proof_hash || '—';
+    document.getElementById('r-pubkey').textContent = d.public_key_hex || '—';
+    
+    card.style.display = 'block';
+}
+
+function showError(title, sub) {
+    document.getElementById('error-title').textContent = title;
+    document.getElementById('error-sub').textContent = sub;
+    document.getElementById('error-card').style.display = 'block';
+    document.getElementById('result-card').style.display = 'none';
+}
+
+function hideResults() {
+    document.getElementById('result-card').style.display = 'none';
+    document.getElementById('error-card').style.display = 'none';
+}
+</script>
+</body>
+</html>
