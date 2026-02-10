@@ -3,33 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ONTO Research — Independent Epistemic Audits of AI Systems</title>
-<meta name="description" content="Monthly independent epistemic audits of major AI systems. GOLD-calibrated scoring. Cryptographic proof architecture. Open methodology.">
-<meta property="og:title" content="ONTO Research — Independent AI Epistemic Audits">
-<meta property="og:description" content="Monthly independent epistemic audits of major AI systems scored by ONTO GOLD-calibrated engine.">
-<meta property="og:type" content="website">
+<title>Audits — ONTO Epistemic Risk Standard</title>
+<meta name="description" content="Published epistemic risk audits of AI systems. GOLD-calibrated scoring, Ed25519 signed, independently verifiable.">
+<meta property="og:title" content="Audits — ONTO Epistemic Risk Standard">
+<meta property="og:description" content="Published epistemic risk audits of major AI systems. Open methodology. Verify everything.">
 <meta property="og:url" content="https://ontostandard.org/audits/">
+<meta property="og:type" content="website">
 <link rel="canonical" href="https://ontostandard.org/audits/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  "name": "ONTO Research — Epistemic Audits",
-  "description": "Monthly independent epistemic audits of major AI systems using ONTO GOLD-calibrated scoring engine.",
-  "url": "https://ontostandard.org/audits/",
-  "publisher": {"@type": "Organization", "name": "ONTO Standards Council", "url": "https://ontostandard.org"},
-  "hasPart": [
-    {
-      "@type": "ScholarlyArticle",
-      "headline": "CS-2026-001: Epistemic Risk Audit of 10 AI Systems",
-      "datePublished": "2026-02-09",
-      "url": "https://ontostandard.org/case-study.html"
-    }
-  ]
-}
-</script>
 <style>
 :root {
     --bg: #0a0a0a;
@@ -44,381 +26,339 @@
     --accent: #15803d;
     --accent-subtle: rgba(21,128,61,0.08);
     --danger: #dc2626;
-    --danger-subtle: rgba(220,38,38,0.06);
     --warning: #d97706;
-    --warning-subtle: rgba(217,119,6,0.06);
+    --blue: #2563eb;
+    --gold: #b8860b;
+    --gold-subtle: rgba(184,134,11,0.08);
 }
-
-* { margin:0; padding:0; box-sizing:border-box; }
-
+* { margin: 0; padding: 0; box-sizing: border-box; }
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-    line-height: 1.6;
+    font-size: 15px;
+    line-height: 1.7;
     color: var(--text);
     background: var(--bg);
     -webkit-font-smoothing: antialiased;
 }
-
 .mono { font-family: 'JetBrains Mono', monospace; }
 
-/* HEADER */
-.header {
+.container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+header {
     border-bottom: 1px solid var(--border);
-    padding: 12px 24px;
-    background: var(--bg-secondary);
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    padding: 20px 0;
 }
-.header-inner { display:flex; align-items:center; justify-content:space-between; max-width:960px; margin:0 auto; }
-.header-logo { font-size:18px; font-weight:700; color:var(--text); text-decoration:none; letter-spacing:-0.3px; }
-.header-logo em { font-style:normal; color:var(--text-muted); font-weight:400; font-size:12px; margin-left:10px; }
-.header-links { display:flex; gap:6px; }
-.header-link {
-    padding:5px 12px; font-size:12px;
-    background:transparent; border:1px solid var(--border); border-radius:4px;
-    color:var(--text-secondary); text-decoration:none; transition:all 0.15s;
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 24px;
 }
-.header-link:hover { background:var(--bg-elevated); color:var(--text); }
-
-/* MAIN */
-.container { max-width:960px; margin:0 auto; padding:0 24px; }
-
-/* PAGE HEADER */
-.page-header { padding:48px 0 28px; border-bottom:1px solid var(--border); margin-bottom:32px; }
-.page-id { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-muted); margin-bottom:8px; letter-spacing:0.3px; }
-.page-title { font-size:28px; font-weight:700; letter-spacing:-0.5px; margin-bottom:10px; }
-.page-subtitle { font-size:14px; color:var(--text-secondary); max-width:680px; line-height:1.65; }
-
-/* FILTER BAR */
-.filter-bar {
-    display:flex; align-items:center; gap:12px; padding:12px 0; margin-bottom:24px;
-    border-bottom:1px solid var(--border);
-    font-size:12px;
+.header-logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: -0.5px;
 }
-.filter-label { color:var(--text-muted); font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.5px; text-transform:uppercase; }
-.filter-tag {
-    padding:4px 10px; border:1px solid var(--border); border-radius:3px;
-    color:var(--text-secondary); background:transparent; cursor:pointer; transition:all 0.15s;
-    font-size:11px; font-family:'JetBrains Mono',monospace;
+.header-logo span { color: var(--accent); }
+.header-nav { display: flex; gap: 24px; }
+.header-nav a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s;
 }
-.filter-tag:hover { border-color:var(--border-hover); color:var(--text); }
-.filter-tag.active { border-color:var(--accent); color:var(--accent); background:var(--accent-subtle); }
+.header-nav a:hover { color: var(--text); }
+.header-nav a.active { color: var(--accent); }
 
-/* AUDIT CARDS */
-.audit-list { display:flex; flex-direction:column; gap:16px; padding-bottom:48px; }
+.hero {
+    padding: 60px 0 40px;
+    border-bottom: 1px solid var(--border);
+}
+.hero h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 12px;
+}
+.hero .subtitle {
+    color: var(--text-secondary);
+    font-size: 16px;
+    max-width: 640px;
+}
 
+/* Stats bar */
+.stats-bar {
+    display: flex;
+    gap: 32px;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--border);
+}
+.stat {
+    display: flex;
+    flex-direction: column;
+}
+.stat .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text);
+}
+.stat .label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+}
+
+/* Audit cards */
+.audit-list { padding: 32px 0; }
 .audit-card {
-    border:1px solid var(--border); border-radius:6px;
-    background:var(--bg-card);
-    padding:24px 28px;
-    transition:all 0.2s;
-    text-decoration:none; color:inherit; display:block;
-    position:relative;
-    overflow:hidden;
+    display: block;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 24px;
+    margin-bottom: 16px;
+    text-decoration: none;
+    transition: border-color 0.2s;
 }
-.audit-card:hover {
-    border-color:var(--border-hover);
-    background:var(--bg-elevated);
-    transform:translateY(-1px);
+.audit-card:hover { border-color: var(--accent); }
+.audit-card .meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
 }
-.audit-card::before {
-    content:'';
-    position:absolute; left:0; top:0; bottom:0;
-    width:3px;
+.audit-card .id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    background: var(--accent-subtle);
+    padding: 2px 8px;
+    border-radius: 3px;
 }
-.audit-card.severity-critical::before { background:var(--danger); }
-.audit-card.severity-warning::before { background:var(--warning); }
-.audit-card.severity-safe::before { background:var(--accent); }
-
-.audit-meta {
-    display:flex; align-items:center; gap:10px; margin-bottom:10px;
-    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.3px;
+.audit-card .date {
+    font-size: 12px;
+    color: var(--text-muted);
 }
-.audit-id { color:var(--text-muted); }
-.audit-date { color:var(--text-muted); }
-.audit-status {
-    padding:2px 7px; border-radius:2px; font-size:9px; font-weight:600;
-    letter-spacing:0.5px; text-transform:uppercase;
+.audit-card .status {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 8px;
+    border-radius: 3px;
 }
-.status-published { background:var(--accent-subtle); color:var(--accent); border:1px solid rgba(21,128,61,0.25); }
-.status-upcoming { background:var(--warning-subtle); color:var(--warning); border:1px solid rgba(217,119,6,0.25); }
-
-.audit-title {
-    font-size:18px; font-weight:600; letter-spacing:-0.3px; margin-bottom:6px;
-    color:var(--text);
+.status-published {
+    color: var(--accent);
+    background: var(--accent-subtle);
 }
-.audit-card:hover .audit-title { color:#fff; }
-
-.audit-desc {
-    font-size:13px; color:var(--text-secondary); line-height:1.6; margin-bottom:14px;
-    max-width:640px;
+.status-upcoming {
+    color: var(--text-muted);
+    background: var(--bg-elevated);
 }
-
-.audit-stats {
-    display:flex; gap:16px; flex-wrap:wrap;
+.audit-card h3 {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
 }
-.audit-stat {
-    display:flex; align-items:baseline; gap:5px;
-    font-family:'JetBrains Mono',monospace; font-size:11px;
+.audit-card .desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    line-height: 1.6;
 }
-.stat-label { color:var(--text-muted); font-size:10px; }
-.stat-value { color:var(--text); font-weight:500; }
-.stat-value.danger { color:var(--danger); }
-.stat-value.warning { color:var(--warning); }
-.stat-value.safe { color:var(--accent); }
-
-.audit-tags {
-    display:flex; gap:6px; margin-top:12px; padding-top:12px; border-top:1px solid var(--border);
+.audit-card .results {
+    display: flex;
+    gap: 24px;
+    font-size: 13px;
 }
-.audit-tag {
-    font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.3px;
-    padding:2px 6px; border:1px solid var(--border); border-radius:2px;
-    color:var(--text-muted);
+.audit-card .results .item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
-
-/* UPCOMING SECTION */
-.section-divider {
-    padding:20px 0 16px; margin-top:16px;
-    border-top:1px solid var(--border);
-    font-family:'JetBrains Mono',monospace; font-size:10px;
-    color:var(--text-muted); letter-spacing:0.5px; text-transform:uppercase;
+.audit-card .results .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+}
+.audit-card .results .lbl {
+    color: var(--text-muted);
 }
 
-/* METHODOLOGY BANNER */
-.method-banner {
-    border:1px solid var(--border); border-radius:6px;
-    background:var(--bg-card);
-    padding:20px 28px;
-    margin-bottom:16px;
-    display:flex; align-items:center; justify-content:space-between; gap:20px;
+/* Upcoming */
+.audit-card.upcoming {
+    opacity: 0.6;
+    border-style: dashed;
 }
-.method-text { font-size:13px; color:var(--text-secondary); }
-.method-text strong { color:var(--text); font-weight:500; }
-.method-link {
-    font-family:'JetBrains Mono',monospace; font-size:11px;
-    color:var(--accent); text-decoration:none; white-space:nowrap;
-    padding:6px 14px; border:1px solid var(--accent); border-radius:4px;
-    transition:all 0.15s;
-}
-.method-link:hover { background:var(--accent); color:#fff; }
+.audit-card.upcoming:hover { border-color: var(--border-hover); }
 
-/* SUBSCRIBE */
-.subscribe-bar {
-    border:1px solid var(--border); border-radius:6px;
-    background:var(--bg-secondary);
-    padding:20px 28px;
-    margin-top:32px; margin-bottom:48px;
-    display:flex; align-items:center; justify-content:space-between; gap:20px;
+/* CTA */
+.cta-section {
+    padding: 48px 0;
+    border-top: 1px solid var(--border);
+    text-align: center;
 }
-.subscribe-text { font-size:13px; color:var(--text-secondary); }
-.subscribe-text strong { color:var(--text); }
-.subscribe-cta {
-    font-family:'JetBrains Mono',monospace; font-size:11px;
-    color:var(--text); text-decoration:none; white-space:nowrap;
-    padding:6px 14px; border:1px solid var(--border); border-radius:4px;
-    transition:all 0.15s;
+.cta-section p {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    font-size: 15px;
 }
-.subscribe-cta:hover { background:var(--bg-elevated); border-color:var(--border-hover); }
+.cta-section p strong { color: var(--text); }
+.cta-btn {
+    display: inline-block;
+    padding: 10px 24px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 14px;
+    margin: 0 8px;
+    transition: opacity 0.2s;
+}
+.cta-btn:hover { opacity: 0.85; }
+.cta-btn.secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+}
 
-/* FOOTER */
-.footer {
-    border-top:1px solid var(--border);
-    padding:20px 24px;
-    text-align:center;
-    font-size:11px;
-    color:var(--text-muted);
+footer {
+    padding: 40px 0;
+    border-top: 1px solid var(--border);
+    text-align: center;
 }
-.footer a { color:var(--text-secondary); text-decoration:none; }
-.footer a:hover { color:var(--text); }
+footer p {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+footer .tagline {
+    font-style: italic;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
 
-/* RESPONSIVE */
-@media (max-width:640px) {
-    .page-title { font-size:22px; }
-    .audit-card { padding:18px 20px; }
-    .audit-stats { gap:10px; }
-    .method-banner, .subscribe-bar { flex-direction:column; text-align:center; }
-    .filter-bar { flex-wrap:wrap; }
-    .header-links { display:none; }
+@media (max-width: 640px) {
+    .stats-bar { flex-wrap: wrap; gap: 16px; }
+    .audit-card .results { flex-wrap: wrap; gap: 12px; }
+    .header-nav { gap: 12px; }
 }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<div class="header">
+<header>
     <div class="header-inner">
-        <a href="https://ontostandard.org" class="header-logo">ONTO<em>Research</em></a>
-        <div class="header-links">
-            <a href="https://ontostandard.org/check/" class="header-link">Evaluate</a>
-            <a href="https://ontostandard.org/docs/" class="header-link">Docs</a>
-            <a href="https://ontostandard.org/app/" class="header-link">Portal</a>
-        </div>
+        <a href="/" class="header-logo">ONTO<span>.</span>standard</a>
+        <nav class="header-nav">
+            <a href="/check/">Evaluate</a>
+            <a href="/docs/">API Docs</a>
+            <a href="/audits/" class="active">Audits</a>
+            <a href="/methodology/">Methodology</a>
+            <a href="/app/">Portal</a>
+        </nav>
     </div>
-</div>
+</header>
 
 <div class="container">
 
-    <!-- PAGE HEADER -->
-    <div class="page-header">
-        <div class="page-id mono">ONTO STANDARDS COUNCIL · RESEARCH DIVISION</div>
-        <h1 class="page-title">Epistemic Audits</h1>
-        <p class="page-subtitle">Independent monthly audits of major AI systems. Each output scored against ONTO GOLD v4.5 reference standard using EM1-EM5 epistemic taxonomy and 3 deterministic metrics. Open methodology. Raw data published.</p>
+<div class="hero">
+    <h1>Published Audits</h1>
+    <p class="subtitle">Independent epistemic risk assessments of AI systems. GOLD-calibrated scoring. Ed25519 signed. Every result verifiable.</p>
+</div>
+
+<div class="stats-bar">
+    <div class="stat">
+        <div class="value">10</div>
+        <div class="label">Systems Audited</div>
+    </div>
+    <div class="stat">
+        <div class="value">120</div>
+        <div class="label">Evaluations</div>
+    </div>
+    <div class="stat">
+        <div class="value">0.55</div>
+        <div class="label">Mean Risk Score</div>
+    </div>
+    <div class="stat">
+        <div class="value" style="color:var(--warning)">D</div>
+        <div class="label">Population Grade</div>
+    </div>
+</div>
+
+<div class="audit-list">
+
+    <!-- Published -->
+    <a href="/audits/cs-2026-001.html" class="audit-card">
+        <div class="meta">
+            <div class="id">CS-2026-001</div>
+            <div class="date">February 2026</div>
+            <div class="status status-published">Published</div>
+        </div>
+        <h3>Perception Audit: 10 AI Systems Scored by GOLD-Calibrated Engine</h3>
+        <div class="desc">GPT-4o, Claude 3.5, Gemini, Llama, Mistral, Grok, DeepSeek, Perplexity evaluated on epistemic self-assessment. 12 questions, zero context, 7-factor scoring. 9 of 10 hallucinated.</div>
+        <div class="results">
+            <div class="item"><span class="num" style="color:var(--accent)">1</span><span class="lbl">Grade A</span></div>
+            <div class="item"><span class="num" style="color:var(--warning)">2</span><span class="lbl">Grade C</span></div>
+            <div class="item"><span class="num" style="color:var(--danger)">5</span><span class="lbl">Grade D</span></div>
+            <div class="item"><span class="num" style="color:var(--danger)">2</span><span class="lbl">Grade E</span></div>
+        </div>
+    </a>
+
+    <!-- Upcoming -->
+    <div class="audit-card upcoming">
+        <div class="meta">
+            <div class="id">CS-2026-002</div>
+            <div class="date">Q1 2026</div>
+            <div class="status status-upcoming">Upcoming</div>
+        </div>
+        <h3>Medical Domain Epistemic Risk Assessment</h3>
+        <div class="desc">ED1 domain audit: how do major AI systems handle medical questions where uncertainty expression is critical? Elevated risk multiplier (×1.4).</div>
     </div>
 
-    <!-- FILTER BAR -->
-    <div class="filter-bar">
-        <span class="filter-label">Filter</span>
-        <button class="filter-tag active" onclick="filterAudits('all')">All</button>
-        <button class="filter-tag" onclick="filterAudits('perception')">Perception</button>
-        <button class="filter-tag" onclick="filterAudits('domain')">Domain</button>
-        <button class="filter-tag" onclick="filterAudits('commissioned')">Commissioned</button>
+    <div class="audit-card upcoming">
+        <div class="meta">
+            <div class="id">CS-2026-003</div>
+            <div class="date">Q2 2026</div>
+            <div class="status status-upcoming">Upcoming</div>
+        </div>
+        <h3>Financial Advisory Calibration Audit</h3>
+        <div class="desc">ED3 domain audit: epistemic risk in financial recommendations. Confidence-accuracy gap measurement under regulatory-grade scrutiny.</div>
     </div>
 
-    <!-- METHODOLOGY BANNER -->
-    <div class="method-banner">
-        <div class="method-text">
-            <strong>Scoring Engine v3.0</strong> — GOLD-backed. EM1-EM5 taxonomy (92+ epistemic markers). REP, EpCE, DLA metrics. Formally grounded in 8 established frameworks from information theory, complexity theory, and formal epistemology.
+    <div class="audit-card upcoming">
+        <div class="meta">
+            <div class="id">CS-2026-004</div>
+            <div class="date">Q2 2026</div>
+            <div class="status status-upcoming">Upcoming</div>
         </div>
-        <a href="https://ontostandard.org/docs/" class="method-link">Methodology →</a>
-    </div>
-
-    <!-- PUBLISHED AUDITS -->
-    <div class="audit-list">
-
-        <!-- CS-2026-001 -->
-        <a href="https://ontostandard.org/case-study.html" class="audit-card severity-critical" data-type="perception">
-            <div class="audit-meta">
-                <span class="audit-id">CS-2026-001</span>
-                <span class="audit-date">February 2026</span>
-                <span class="audit-status status-published">Published</span>
-            </div>
-            <h2 class="audit-title">Perception Audit: 10 AI Systems Scored Against Known Facts</h2>
-            <p class="audit-desc">12 identical questions about a real, documented project. Each response scored through ONTO's GOLD-backed scoring engine. 6 of 10 systems rated L1 FAILED. Average hallucination rate: 59%.</p>
-            <div class="audit-stats">
-                <div class="audit-stat">
-                    <span class="stat-label">Systems</span>
-                    <span class="stat-value">10</span>
-                </div>
-                <div class="audit-stat">
-                    <span class="stat-label">Avg Risk</span>
-                    <span class="stat-value danger">0.59</span>
-                </div>
-                <div class="audit-stat">
-                    <span class="stat-label">Failed</span>
-                    <span class="stat-value danger">6/10</span>
-                </div>
-                <div class="audit-stat">
-                    <span class="stat-label">Best</span>
-                    <span class="stat-value safe">Claude 3.5 (0.38)</span>
-                </div>
-                <div class="audit-stat">
-                    <span class="stat-label">Worst</span>
-                    <span class="stat-value danger">Llama 3.1 (0.71)</span>
-                </div>
-                <div class="audit-stat">
-                    <span class="stat-label">Engine</span>
-                    <span class="stat-value">v3.0 GOLD</span>
-                </div>
-            </div>
-            <div class="audit-tags">
-                <span class="audit-tag">PERCEPTION</span>
-                <span class="audit-tag">MULTI-SYSTEM</span>
-                <span class="audit-tag">GOLD v4.5</span>
-                <span class="audit-tag">12 QUESTIONS</span>
-            </div>
-        </a>
-
-        <!-- UPCOMING -->
-        <div class="section-divider">Upcoming</div>
-
-        <!-- CS-2026-002 Preview -->
-        <div class="audit-card severity-warning" data-type="perception">
-            <div class="audit-meta">
-                <span class="audit-id">CS-2026-002</span>
-                <span class="audit-date">March 2026</span>
-                <span class="audit-status status-upcoming">In Progress</span>
-            </div>
-            <h2 class="audit-title">Perception Audit #2: Expanded Methodology (24 Questions × 12 Systems)</h2>
-            <p class="audit-desc">Expanded sample: 24 questions across 4 domains. 2 new systems added. Tracking improvement from CS-2026-001 baselines. Results expected March 2026.</p>
-            <div class="audit-stats">
-                <div class="audit-stat">
-                    <span class="stat-label">Systems</span>
-                    <span class="stat-value">12</span>
-                </div>
-                <div class="audit-stat">
-                    <span class="stat-label">Questions</span>
-                    <span class="stat-value">24</span>
-                </div>
-                <div class="audit-stat">
-                    <span class="stat-label">Status</span>
-                    <span class="stat-value warning">Data collection</span>
-                </div>
-            </div>
-            <div class="audit-tags">
-                <span class="audit-tag">PERCEPTION</span>
-                <span class="audit-tag">EXPANDED</span>
-                <span class="audit-tag">TREND TRACKING</span>
-            </div>
-        </div>
-
-        <!-- Domain Audit Preview -->
-        <div class="audit-card severity-warning" data-type="domain">
-            <div class="audit-meta">
-                <span class="audit-id">DA-2026-001</span>
-                <span class="audit-date">Q2 2026</span>
-                <span class="audit-status status-upcoming">Planned</span>
-            </div>
-            <h2 class="audit-title">Domain Audit: Medical AI Epistemic Risk</h2>
-            <p class="audit-desc">Targeted epistemic assessment of AI systems responding to medical queries. ED1 domain classification. Scoring against clinical accuracy baselines.</p>
-            <div class="audit-stats">
-                <div class="audit-stat">
-                    <span class="stat-label">Domain</span>
-                    <span class="stat-value">ED1 Medical</span>
-                </div>
-                <div class="audit-stat">
-                    <span class="stat-label">Status</span>
-                    <span class="stat-value warning">Design phase</span>
-                </div>
-            </div>
-            <div class="audit-tags">
-                <span class="audit-tag">DOMAIN</span>
-                <span class="audit-tag">MEDICAL</span>
-                <span class="audit-tag">ED1</span>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- REQUEST AUDIT -->
-    <div class="subscribe-bar">
-        <div class="subscribe-text">
-            <strong>Your model isn't listed?</strong> Request a commissioned audit or submit your system for the next monthly report.
-        </div>
-        <a href="mailto:audit@ontostandard.org" class="subscribe-cta">Request audit →</a>
+        <h3>RAG vs Base Model: Epistemic Risk Comparison</h3>
+        <div class="desc">Do retrieval-augmented systems consistently outperform base models on epistemic calibration? Controlled comparison across 5 RAG and 5 base configurations.</div>
     </div>
 
 </div>
 
-<!-- FOOTER -->
-<div class="footer">
-    <p>ONTO Standards Council · GOLD v4.5 Calibration Standard · Est. 2024 · <a href="https://ontostandard.org">ontostandard.org</a></p>
-    <p style="margin-top:4px">We don't ask you to trust us. We ask you to check.</p>
+<div class="cta-section">
+    <p><strong>Your model isn't listed?</strong> It should be.</p>
+    <a href="/check/" class="cta-btn">Evaluate now</a>
+    <a href="/docs/" class="cta-btn secondary">API Access</a>
 </div>
 
-<script>
-function filterAudits(type) {
-    document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
-    event.target.classList.add('active');
-    document.querySelectorAll('.audit-card').forEach(card => {
-        if (type === 'all' || card.dataset.type === type) {
-            card.style.display = '';
-        } else {
-            card.style.display = 'none';
-        }
-    });
-}
-</script>
+</div>
+
+<footer>
+    <div class="container">
+        <p class="tagline">We don't ask you to trust us. We ask you to check.</p>
+        <p>ONTO Standards Council · GOLD v4.5 Calibration Standard · Scoring Engine v3.0 · Est. 2024</p>
+    </div>
+</footer>
 
 </body>
 </html>
