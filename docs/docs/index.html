@@ -2,107 +2,9 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>ONTO Documentation — Epistemic Risk Standard, Specifications & Governance</title>
-<meta name="description" content="ONTO-ERS: The first open standard for measuring epistemic risk in AI systems. Specifications for calibration, unknown detection, compliance levels, and regulatory alignment with EU AI Act, NIST AI RMF, ISO 42001.">
-<meta name="keywords" content="ONTO, epistemic risk, AI calibration, AI risk management, ONTO-ERS, AI compliance, AI certification, unknown detection, ECE, U-Recall, AI safety standard, EU AI Act, NIST AI RMF, ISO 42001">
-<meta name="author" content="ONTO Standards Council">
-<meta name="robots" content="index, follow">
-<link rel="canonical" href="https://ontostandard.org/docs/">
-
-<!-- Open Graph -->
-<meta property="og:type" content="website">
-<meta property="og:title" content="ONTO — Epistemic Risk Standard for AI Systems">
-<meta property="og:description" content="The first open standard for measuring when AI doesn't know. Quantify epistemic risk, certify calibration, ensure compliance.">
-<meta property="og:url" content="https://ontostandard.org/docs/">
-<meta property="og:site_name" content="ONTO Standard">
-<meta property="og:image" content="https://ontostandard.org/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:locale" content="en_US">
-
-<!-- Twitter -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="ONTO — Epistemic Risk Standard for AI">
-<meta name="twitter:description" content="Measure when AI doesn't know. The first open standard for epistemic risk in AI systems.">
-<meta name="twitter:image" content="https://ontostandard.org/og-image.png">
-
-<!-- JSON-LD Structured Data -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "TechArticle",
-  "headline": "ONTO Epistemic Risk Standard (ONTO-ERS)",
-  "description": "A framework for measuring and certifying the epistemic calibration of artificial intelligence systems.",
-  "author": {"@type": "Organization", "name": "ONTO Standards Council", "url": "https://ontostandard.org"},
-  "publisher": {"@type": "Organization", "name": "ONTO Standards Council", "url": "https://ontostandard.org"},
-  "url": "https://ontostandard.org/docs/",
-  "datePublished": "2026-01-01",
-  "dateModified": "2026-02-09",
-  "mainEntityOfPage": "https://ontostandard.org/docs/",
-  "about": [
-    {"@type": "Thing", "name": "Epistemic Risk"},
-    {"@type": "Thing", "name": "AI Calibration"},
-    {"@type": "Thing", "name": "AI Compliance"}
-  ],
-  "keywords": "epistemic risk, AI calibration, AI safety, ONTO-ERS, AI compliance, unknown detection"
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "ONTO Standards Council",
-  "alternateName": "ONTO Standard",
-  "url": "https://ontostandard.org",
-  "description": "We don't make your AI smarter — we make it predictable. Epistemic risk management for AI systems.",
-  "foundingDate": "2024"
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {"@type": "Question", "name": "What is ONTO?", "acceptedAnswer": {"@type": "Answer", "text": "ONTO is an independent protocol for measuring epistemic reliability of AI systems. It quantifies when AI models are confident versus when they should express uncertainty — like ISO certification for how well an AI knows what it knows."}},
-    {"@type": "Question", "name": "What does ONTO measure?", "acceptedAnswer": {"@type": "Answer", "text": "Three core metrics: U-Recall (detecting when AI doesn't know), ECE (confidence-accuracy alignment), and Risk Score (composite). These tell you if an AI's confidence is trustworthy."}},
-    {"@type": "Question", "name": "Does ONTO fix my AI model?", "acceptedAnswer": {"@type": "Answer", "text": "No. Thermometer, not Doctor — ONTO measures and reports, not modifies. Remediation is the client's responsibility."}},
-    {"@type": "Question", "name": "How is ONTO different from other AI monitoring?", "acceptedAnswer": {"@type": "Answer", "text": "Most tools track data drift or performance. ONTO uniquely measures epistemic uncertainty — the gap where the most dangerous failures occur: confident wrong answers."}},
-    {"@type": "Question", "name": "What industries is ONTO for?", "acceptedAnswer": {"@type": "Answer", "text": "Any industry deploying AI, with focus on regulated sectors: healthcare, finance, defense, aviation, pharma, insurance, legal, government."}},
-    {"@type": "Question", "name": "Is the free tier really free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. OPEN tier provides 1-hour delayed signal at no cost for testing and development. Real-time API access requires STANDARD or CRITICAL."}},
-    {"@type": "Question", "name": "How does certification work?", "acceptedAnswer": {"@type": "Answer", "text": "Submit AI system, independent evaluation via ONTO-Bench, Standards Council review, certificate issued (12 months), publicly verifiable."}},
-    {"@type": "Question", "name": "Does ONTO help with EU AI Act?", "acceptedAnswer": {"@type": "Answer", "text": "ONTO maps to Art. 9 (risk), Art. 13 (transparency), Art. 15 (accuracy), Art. 43 (conformity). Not a substitute for full compliance, but provides documented evidence."}},
-    {"@type": "Question", "name": "What is the entropy signal?", "acceptedAnswer": {"@type": "Answer", "text": "A 104-byte cryptographically signed packet broadcast every 30 seconds. Contains timestamp, entropy, and Ed25519 signature for tamper-proof verification anchoring."}},
-    {"@type": "Question", "name": "Can I try before committing?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Create a free account for OPEN tier access. Test the API, evaluate the workflow, then upgrade when ready."}}
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "onto-standard",
-  "applicationCategory": "DeveloperApplication",
-  "operatingSystem": "Cross-platform",
-  "description": "Python SDK for measuring epistemic risk in AI systems. Computes ECE, U-Recall, Risk Score and compliance levels.",
-  "url": "https://pypi.org/project/onto-standard/",
-  "downloadUrl": "https://pypi.org/project/onto-standard/",
-  "softwareVersion": "10.1.0",
-  "author": {"@type": "Organization", "name": "ONTO Standards Council", "url": "https://ontostandard.org"},
-  "license": "https://ontostandard.org/docs/#license",
-  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {"@type": "ListItem", "position": 1, "name": "ONTO Standard", "item": "https://ontostandard.org"},
-    {"@type": "ListItem", "position": 2, "name": "Documentation", "item": "https://ontostandard.org/docs/"}
-  ]
-}
-</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+<title>ONTO — Documentation</title>
+<meta name="description" content="ONTO Protocol documentation. Epistemic Risk Standard, specifications, legal, FAQ and more.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='17' fill='white'/%3E%3Cpath d='M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z' fill='%230a0a0a'/%3E%3C/svg%3E">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -110,7 +12,7 @@
 [data-theme="light"]{--bg:#fff;--bg-s:#f9fafb;--bg-c:#fff;--bg-e:#f3f4f6;--border:#e5e7eb;--text:#111827;--text-s:#6b7280;--text-m:#9ca3af}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;overflow-x:hidden}
 a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
-.mh{display:none;position:fixed;top:0;left:0;right:0;height:var(--hh);background:var(--bg-c);border-bottom:1px solid var(--border);padding:0 16px;align-items:center;justify-content:space-between;z-index:100}
+.mh{display:none;position:fixed;top:0;left:0;right:0;height:var(--hh);background:var(--bg-c);border-bottom:1px solid var(--border);padding:0 max(16px,env(safe-area-inset-left));align-items:center;justify-content:space-between;z-index:100}
 .mh .logo{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:600;text-decoration:none;color:var(--text)}.mh .logo svg{width:22px;height:22px}
 .hb{background:none;border:none;cursor:pointer;padding:8px;color:var(--text)}.hb svg{width:24px;height:24px}
 .sb{position:fixed;left:0;top:0;width:var(--sw);height:100vh;background:var(--bg-c);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:50;overflow:hidden}
@@ -132,7 +34,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 .sb-f{border-top:1px solid var(--border);padding:10px 16px;flex-shrink:0}.sb-fa{display:flex;gap:4px}
 .sb-fb{background:none;border:none;cursor:pointer;color:var(--text-m);padding:6px;border-radius:4px;transition:.15s;font-size:11px;display:flex;align-items:center;gap:4px;text-decoration:none}.sb-fb:hover{background:var(--bg-e);color:var(--text)}.sb-fb svg{width:14px;height:14px}
 .mc{margin-left:var(--sw);min-height:100vh}.db{max-width:800px;margin:0 auto;padding:40px 48px 120px}
-.ds{margin-bottom:0;padding:48px 0}.ds:last-child{padding-bottom:40px}.sd{margin:0 -48px;padding:0;height:0;border:none;border-top:1px solid var(--accent)}
+.ds{margin-bottom:80px}.ds:last-child{margin-bottom:40px}.sd{height:1px;background:var(--border);margin:0 0 40px}
 .da h1{font-size:22px;margin-bottom:6px;font-weight:600;color:var(--text);word-wrap:break-word}
 .da .dm{display:flex;gap:8px;font-size:11px;color:var(--text-m);margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:center}
 .db-g{display:inline-block;padding:2px 6px;border-radius:3px;font-size:10px;font-weight:500}
@@ -170,8 +72,9 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 .review-name{font-size:13px;font-weight:600}.review-role{font-size:11px;color:var(--text-m)}.review-text{font-size:13px;color:var(--text-s);line-height:1.7;font-style:italic}
 .stars{color:var(--warning);font-size:12px;letter-spacing:2px;margin-bottom:8px}
 .star-select{display:flex;gap:4px;margin-bottom:12px}.star-select span{font-size:24px;cursor:pointer;color:var(--text-m);transition:.15s;user-select:none}.star-select span.active,.star-select span:hover{color:var(--warning)}
-@media(max-width:768px){.mh{display:flex}.sb{display:none;position:fixed;top:var(--hh);left:0;height:calc(100vh - var(--hh));height:calc(100dvh - var(--hh));width:260px;z-index:99}.sb.open{display:flex}.sb-h{display:none}.sb-x{display:block}.mc{margin-left:0;padding-top:var(--hh)}.db{padding:24px 16px 100px}.da h1{font-size:18px}.da h2{font-size:14px;scroll-margin-top:calc(var(--hh) + 16px)}.da h3{scroll-margin-top:calc(var(--hh) + 16px)}}
+@media(max-width:768px){.mh{display:flex}.sb{display:none;position:fixed;top:var(--hh);left:0;height:calc(100vh - var(--hh));height:calc(100dvh - var(--hh));width:260px;z-index:99}.sb.open{display:flex}.sb-h{display:none}.sb-x{display:block}.mc{margin-left:0;padding-top:var(--hh)}.db{padding:24px 16px 100px}.da h1{font-size:18px}.da h2{font-size:14px;scroll-margin-top:calc(var(--hh) + 16px)}.da h3{scroll-margin-top:calc(var(--hh) + 16px)}.nl{padding:10px 10px;font-size:13px}.pl{padding:12px 12px}.da table{font-size:11px}.da th,.da td{padding:6px 8px}.da pre{font-size:10px;padding:12px;-webkit-overflow-scrolling:touch}.da blockquote{padding:8px 12px}.faq-q{padding:16px}.sb-auth .au{padding:10px 8px}.ng h4{padding:12px 10px 6px}body.sb-open{overflow:hidden}}
 @media(min-width:769px){.sb{display:flex}}
+@media(max-width:360px){.sb{width:100%}.db{padding:20px 12px 100px}.da h1{font-size:16px}.da h2{font-size:13px}.da pre{font-size:9px}}
 .ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:98}.ov.active{display:block}
 .sb,.mh{user-select:none;-webkit-user-select:none}
 .auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:200;padding:16px;backdrop-filter:blur(3px)}.auth-overlay.active{display:flex}
@@ -200,26 +103,31 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <div class="mh">
 <button class="hb" onclick="toggleSB()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
 <a href="/" class="logo"><svg width="22" height="22" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/></svg><span>ONTO</span></a>
-<div style="width:40px"></div>
+<button class="hb" onclick="toggleTheme()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
 </div>
 <div class="ov" id="ov" onclick="closeSB()"></div>
-<aside class="sb" id="sb" role="navigation" aria-label="Documentation navigation">
+<aside class="sb" id="sb">
 <div class="sb-h">
 <a href="/" class="sb-logo"><svg width="32" height="32" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/></svg><span>ONTO</span></a>
 <button class="sb-x" onclick="closeSB()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
 </div>
 <nav class="sb-nav">
-
-<div class="sb-si" id="sb-si"><a class="btn-si" href="/app/">Sign In</a><a class="btn-ca" href="/app/">Create Account</a></div>
+<div class="sb-auth" id="sb-auth" style="display:none">
+<div class="au"><div class="av" id="d-av">J</div><div><div class="un" id="d-un">User</div><div class="up" id="d-up">Open</div></div></div>
+<a href="/app/" class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a>
+<a href="/app/?page=api" class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>API Keys</a>
+<a href="/app/?page=settings" class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Account</a>
+</div>
+<div class="sb-si" id="sb-si"><a class="btn-si" onclick="openAuth('login')">Sign In</a><a class="btn-ca" onclick="openAuth('register')">Create Account</a></div>
 <div class="ng"><h4>Standard</h4><a class="nl active" href="#ers" data-doc="ers">ONTO-ERS</a></div>
 <div class="ng"><h4>Specifications</h4><a class="nl" href="#layer-spec" data-doc="layer-spec">Layer Specification</a><a class="nl" href="#regulatory" data-doc="regulatory">Regulatory Matrix</a></div>
 <div class="ng"><h4>Governance</h4><a class="nl" href="#charter" data-doc="charter">Foundation Charter</a><a class="nl" href="#council" data-doc="council">Standards Council</a></div>
-<div class="ng"><h4>API Reference</h4><a class="nl" href="#api-auth" data-doc="api-auth">Authentication</a><a class="nl" href="#api-models" data-doc="api-models">Models</a><a class="nl" href="#api-eval" data-doc="api-eval">Evaluations</a><a class="nl" href="#api-certs" data-doc="api-certs">Certificates</a><a class="nl" href="#api-signal" data-doc="api-signal">Signal</a><a class="nl" href="#api-org" data-doc="api-org">Organization</a><a class="nl" href="#api-billing" data-doc="api-billing">Billing</a></div>
 <div class="ng"><h4>Resources</h4><a class="nl" href="#articles" data-doc="articles">Articles</a><a class="nl" href="#faq" data-doc="faq">FAQ</a></div>
 <div class="ng"><h4>Community</h4><a class="nl" href="#reviews" data-doc="reviews">Reviews</a><a class="nl" href="#feedback" data-doc="feedback">Feedback</a></div>
 <div class="ng"><h4>Legal</h4><a class="nl" href="#license" data-doc="license">License</a><a class="nl" href="#terms" data-doc="terms">Terms of Service</a><a class="nl" href="#privacy" data-doc="privacy">Privacy Policy</a><a class="nl" href="#refund" data-doc="refund">Refund Policy</a></div>
 </nav>
 <div class="sb-f"><div class="sb-fa">
+<button class="sb-fb" onclick="toggleTheme()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>Theme</button>
 <a href="/" class="sb-fb" style="text-decoration:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>Home</a>
 </div></div>
 </aside>
@@ -227,7 +135,75 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <!-- TOAST -->
 <div class="doc-toast" id="doc-toast"></div>
 
-<main class="mc" role="main" aria-label="Documentation content"><div class="db">
+<!-- AUTH MODAL -->
+<div class="auth-overlay" id="auth-overlay" onclick="if(event.target===this)closeAuth()">
+<div class="auth-card">
+<button class="ac-close" onclick="closeAuth()">&times;</button>
+<div class="auth-logo"><svg width="32" height="32" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/></svg><span>ONTO</span></div>
+
+<!-- LOGIN -->
+<div id="af-login">
+<h1 class="auth-title">Welcome back</h1>
+<p class="auth-subtitle">Sign in to your account</p>
+<div class="af-group"><label class="af-label">Email</label><input type="email" class="af-input" id="af-login-email" placeholder="you@company.com"></div>
+<div class="af-group"><label class="af-label">Password</label><div class="af-pw"><input type="password" class="af-input" id="af-login-pass" placeholder="••••••••"><button type="button" class="af-pw-toggle" onclick="afTogglePw('af-login-pass',this)">👁</button></div></div>
+<button class="af-btn" id="af-login-btn" onclick="afLogin(this)">Sign In</button>
+<p class="af-switch">Don't have an account? <a onclick="afShow('register')">Create one</a></p>
+</div>
+
+<!-- REGISTER -->
+<div id="af-register" class="hidden">
+<h1 class="auth-title">Create Account</h1>
+<p class="auth-subtitle">Start with ONTO for free</p>
+<div class="af-group"><label class="af-label">Full Name</label><input type="text" class="af-input" id="af-reg-name" placeholder="John Doe"></div>
+<div class="af-group"><label class="af-label">Email</label><input type="email" class="af-input" id="af-reg-email" placeholder="you@company.com"></div>
+<div class="af-group"><label class="af-label">Password</label><div class="af-pw"><input type="password" class="af-input" id="af-reg-pass" placeholder="Min 8 characters"><button type="button" class="af-pw-toggle" onclick="afTogglePw('af-reg-pass',this)">👁</button></div></div>
+<div class="af-terms">
+<h3>ONTO Gold Asymmetric AI License v5.1</h3>
+<table><tr><th>Use</th><th>Status</th></tr><tr><td>Read, study, cite, research, evaluate</td><td>✅ Free</td></tr><tr><td>Deploy, integrate, commercialize, RAG</td><td>❌ Requires license</td></tr></table>
+<h3>1. Primary Source</h3><p>The primary source of ONTO consists of: Canonical ONTO GitHub repositories and https://ontostandard.org. Attribution to BOTH sources is mandatory.</p>
+<h3>2. Human Use</h3><p>Human reading, study, citation, discussion, critique, and academic analysis are permitted without restriction, provided explicit attribution to the primary source is included.</p>
+<h3>3. Safe Harbor</h3><p>Any non-deployed use that explicitly attributes the ONTO primary source is permitted.</p>
+<h3>4. Conditional AI Training</h3><p>AI systems may train on ONTO for evaluation and research. Such training does not grant any right to deploy, integrate, or commercialize.</p>
+<h3>5. RAG Clause</h3><p>Use in RAG systems, vector databases, semantic search, or real-time retrieval constitutes deployment and requires a license.</p>
+<h3>6. Termination</h3><p>Use outside Safe Harbor without a license automatically terminates all permissions.</p>
+<h3>Privacy Policy</h3><p>We collect minimal data necessary to provide the service. Data is processed in accordance with GDPR. We never sell your data.</p>
+<p style="margin-top:12px"><strong>Full license:</strong> <a href="https://ontostandard.org" target="_blank">ontostandard.org</a></p>
+</div>
+<div class="af-check"><input type="checkbox" id="af-terms"><label for="af-terms">I agree to the <a href="/docs#terms" target="_blank">Terms of Service</a> and <a href="/docs#privacy" target="_blank">Privacy Policy</a></label></div>
+<button class="af-btn" id="af-reg-btn" onclick="afRegister(this)" disabled>Create Account</button>
+<p class="af-switch">Already have an account? <a onclick="afShow('login')">Sign in</a></p>
+</div>
+
+<!-- OTP VERIFY -->
+<div id="af-verify" class="hidden">
+<div style="text-align:center;margin-bottom:24px"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div>
+<h1 class="auth-title">Enter verification code</h1>
+<p class="auth-subtitle">We sent a 6-digit code to</p>
+<p style="color:var(--text);font-weight:600;margin:8px 0 24px;text-align:center" id="af-verify-email"></p>
+<div class="otp-row"><input type="text" id="af-otp-1" class="otp-inp" maxlength="1" inputmode="numeric" autocomplete="one-time-code"><input type="text" id="af-otp-2" class="otp-inp" maxlength="1" inputmode="numeric"><input type="text" id="af-otp-3" class="otp-inp" maxlength="1" inputmode="numeric"><input type="text" id="af-otp-4" class="otp-inp" maxlength="1" inputmode="numeric"><input type="text" id="af-otp-5" class="otp-inp" maxlength="1" inputmode="numeric"><input type="text" id="af-otp-6" class="otp-inp" maxlength="1" inputmode="numeric"></div>
+<p id="af-otp-error" style="color:#ef4444;font-size:13px;margin-bottom:16px;display:none;text-align:center"></p>
+<button class="af-btn" id="af-verify-btn" onclick="afVerifyOTP(this)">Verify</button>
+<div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);text-align:center">
+<p style="color:var(--text-m);font-size:13px">Didn't receive the code?</p>
+<button class="af-btn-s" onclick="afResend()">Resend code</button>
+</div>
+<p style="color:var(--text-m);font-size:12px;margin-top:16px;text-align:center">Code expires in 15 minutes</p>
+<p class="af-switch" style="margin-top:16px"><a onclick="afShow('login')">Back to sign in</a></p>
+</div>
+
+<!-- VERIFY SUCCESS -->
+<div id="af-success" class="hidden">
+<div style="text-align:center;margin-bottom:24px"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+<h1 class="auth-title">Email verified!</h1>
+<p class="auth-subtitle">Your account is ready. You can now sign in.</p>
+<button class="af-btn" style="margin-top:24px" onclick="afShow('login')">Sign In</button>
+</div>
+
+</div>
+</div>
+
+<main class="mc"><div class="db">
 
 <!-- ONTO-ERS -->
 <div class="ds da" id="doc-ers" data-nav="ers">
@@ -279,17 +255,8 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <pre><code>ECE = Σ (n_b / N) × |acc(b) - conf(b)|</code></pre>
 <table><thead><tr><th>Score</th><th>Classification</th></tr></thead><tbody><tr><td>≤0.10</td><td>Excellent</td></tr><tr><td>≤0.15</td><td>Good</td></tr><tr><td>≤0.20</td><td>Adequate</td></tr><tr><td>&gt;0.20</td><td>Poor</td></tr></tbody></table>
 <h3 id="risk-score">2.3 Risk Score</h3>
-<p>ONTO implements two complementary scoring methodologies:</p>
-<h4>Batch Evaluation (SDK)</h4>
-<p>For dataset-level assessment using prediction–ground truth pairs:</p>
 <pre><code>Risk = α × (1 - U-Recall) + β × ECE + γ × OC
 α = 0.4, β = 0.4, γ = 0.2, OC = Overconfidence rate</code></pre>
-<p>Used by <code>onto-standard</code> SDK for model certification. Requires evaluation dataset with labeled predictions.</p>
-<h4>Runtime Scoring (API)</h4>
-<p>For real-time analysis of individual AI outputs via the API:</p>
-<pre><code>Risk = Σ (weight_i × factor_i) × domain_multiplier
-Factors: F1–F6 (see API Reference: Evaluations)</code></pre>
-<p>Analyzes text-only or enriched (confidence, logprobs, ground truth) outputs. No dataset required — evaluates each output independently.</p>
 <table><thead><tr><th>Score</th><th>Classification</th></tr></thead><tbody><tr><td>0.00–0.25</td><td>LOW</td></tr><tr><td>0.25–0.50</td><td>MEDIUM</td></tr><tr><td>0.50–0.75</td><td>HIGH</td></tr><tr><td>0.75–1.00</td><td>CRITICAL</td></tr></tbody></table><hr/>
 <h2 id="knowledge-classification">3. Knowledge Classification</h2>
 <table><thead><tr><th>Category</th><th>Definition</th><th>Example</th></tr></thead><tbody>
@@ -333,7 +300,7 @@ print(f"U-Recall: {results.unknown_detection.recall:.2%}")
 print(f"ECE: {results.calibration.ece:.3f}")
 print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <p><strong>Installation:</strong> <code>pip install onto-standard</code></p>
-<hr/><p><em>ONTO-ERS v10.0 — © 2026 ONTO Standards Council</em></p>
+<hr/><p><em>ONTO-ERS v10.0 — © 2026 ONTO Foundation</em></p>
 </div><div class="sd"></div>
 
 <!-- LAYER SPEC -->
@@ -342,16 +309,16 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <div class="dm"><span class="db-g bg-a">Draft</span><span>ONTO-SPEC-002</span><span>February 2026</span></div>
 <h2 id="layer-arch">1. Layer Architecture</h2>
 <h3>1.1 OPEN</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$0</td></tr><tr><td>Delay</td><td>1 hour</td></tr><tr><td>Rate</td><td>1 req/hour</td></tr><tr><td>SLA</td><td>Best effort</td></tr></tbody></table>
-<h3>1.2 PROFESSIONAL</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$15,000/yr or $1,500/mo</td></tr><tr><td>Delay</td><td>Real-time</td></tr><tr><td>Rate</td><td>~10,000/day</td></tr><tr><td>SLA</td><td>99.5%</td></tr></tbody></table>
+<h3>1.2 STANDARD</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$15,000/yr</td></tr><tr><td>Delay</td><td>Real-time</td></tr><tr><td>Rate</td><td>~10,000/day</td></tr><tr><td>SLA</td><td>99.9%</td></tr></tbody></table>
 <h3>1.3 CRITICAL</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$100K+/yr</td></tr><tr><td>Delay</td><td>Real-time + priority</td></tr><tr><td>Rate</td><td>Unlimited</td></tr><tr><td>SLA</td><td>99.99%</td></tr></tbody></table>
 <h2 id="signal-packet">2. Signal Packet</h2>
 <pre><code>104 bytes: [8 timestamp][32 entropy][64 Ed25519 signature]</code></pre>
 <h2 id="layer-endpoints">3. API Endpoints</h2>
 <table><thead><tr><th>Endpoint</th><th>Layer</th><th>Description</th></tr></thead><tbody>
 <tr><td><code>/signal/delayed</code></td><td>OPEN</td><td>1-hour delayed</td></tr>
-<tr><td><code>/signal/latest</code></td><td>PRO+</td><td>Real-time</td></tr>
+<tr><td><code>/signal/latest</code></td><td>STD+</td><td>Real-time</td></tr>
 <tr><td><code>/signal/verify</code></td><td>All</td><td>Signature verification</td></tr>
-<tr><td><code>/signal/history</code></td><td>PRO+</td><td>Archive</td></tr>
+<tr><td><code>/signal/history</code></td><td>STD+</td><td>Archive</td></tr>
 </tbody></table>
 </div><div class="sd"></div>
 
@@ -399,371 +366,13 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <h2 id="co-membership">3. Membership</h2><p>By invitation. Academic, industry, regulatory, civil society. 2-year renewable terms.</p>
 </div><div class="sd"></div>
 
-<!-- API: AUTHENTICATION -->
-<div class="ds da" id="doc-api-auth" data-nav="api-auth">
-<h1>API Reference: Authentication</h1>
-<div class="dm"><span class="db-g bg-g">v1</span><span class="db-g bg-b">Stable</span><span>Base URL: <code>https://api.ontostandard.org</code></span></div>
-<p>All authenticated endpoints require an API key in the <code>X-API-Key</code> header. Obtain keys after registration and email verification.</p>
-
-<h2 id="api-register">POST /v1/auth/register</h2>
-<p>Create a new account. Sends a 6-digit OTP to the provided email.</p>
-<pre><code>POST /v1/auth/register
-Content-Type: application/json
-
-{
-  "name": "John Doe",
-  "email": "user@company.com",
-  "password": "min8characters"
-}</code></pre>
-<table><thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
-<tr><td><code>name</code></td><td>string</td><td>✅</td><td>Full name</td></tr>
-<tr><td><code>email</code></td><td>string</td><td>✅</td><td>Valid email address</td></tr>
-<tr><td><code>password</code></td><td>string</td><td>✅</td><td>Min 8 characters</td></tr>
-</tbody></table>
-<p><strong>Response 200:</strong> <code>{"message": "Verification code sent", "email": "..."}</code></p>
-
-<h2 id="api-verify">POST /v1/auth/verify-email</h2>
-<p>Verify email with OTP code. Returns JWT token and API key on success.</p>
-<pre><code>{
-  "email": "user@company.com",
-  "code": "123456"
-}</code></pre>
-<p><strong>Response 200:</strong> <code>{"token": "jwt...", "api_key": "onto_...", "user_id": "uuid"}</code></p>
-
-<h2 id="api-login">POST /v1/auth/login</h2>
-<p>Login with email and password. Returns JWT token.</p>
-<pre><code>{
-  "email": "user@company.com",
-  "password": "yourpassword"
-}</code></pre>
-<p><strong>Response 200:</strong> <code>{"token": "jwt...", "user_id": "uuid", "layer": "open"}</code></p>
-
-<h2 id="api-resend">POST /v1/auth/resend-verification</h2>
-<p>Resend OTP verification code to email.</p>
-
-<h2 id="api-forgot">POST /v1/auth/forgot-password</h2>
-<p>Send password reset token to email.</p>
-
-<h2 id="api-reset">POST /v1/auth/reset-password</h2>
-<p>Reset password using token from email.</p>
-<pre><code>{"email": "...", "token": "...", "new_password": "..."}</code></pre>
-
-<h2 id="api-change-pw">POST /v1/auth/change-password</h2>
-<p>Change password for authenticated user. <span class="db-g bg-a">Auth required</span></p>
-<pre><code>{"current_password": "...", "new_password": "..."}</code></pre>
-
-<h2 id="api-keys-create">POST /v1/auth/api-keys</h2>
-<p>Create a new API key. <span class="db-g bg-a">Auth required</span></p>
-<pre><code>{"name": "production-key"}</code></pre>
-<p><strong>Response 200:</strong> <code>{"key": "onto_...", "prefix": "onto_xxxx", "id": "uuid"}</code></p>
-<div class="dd"><strong>Note:</strong> The full API key is only shown once at creation. Store it securely.</div>
-
-<h2 id="api-keys-list">GET /v1/auth/api-keys</h2>
-<p>List all API keys for the organization. <span class="db-g bg-a">Auth required</span></p>
-
-<h2 id="api-keys-revoke">DELETE /v1/auth/api-keys/{key_id}</h2>
-<p>Revoke an API key. <span class="db-g bg-a">Auth required</span></p>
-
-<h2 id="api-accept-invite">POST /v1/auth/accept-invite</h2>
-<p>Accept an organization invitation and set password.</p>
-<pre><code>{"token": "invite-token-from-email", "password": "newpassword"}</code></pre>
-</div><div class="sd"></div>
-
-<!-- API: MODELS -->
-<div class="ds da" id="doc-api-models" data-nav="api-models">
-<h1>API Reference: Models</h1>
-<div class="dm"><span class="db-g bg-g">v1</span><span class="db-g bg-b">Stable</span><span>All endpoints require <code>X-API-Key</code></span></div>
-
-<h2 id="api-model-register">POST /v1/models/register</h2>
-<p>Register a model for tracking and evaluation.</p>
-<pre><code>{
-  "name": "GPT-5.2",
-  "provider": "openai",
-  "version": "5.2",
-  "metadata": {"use_case": "customer-support"}
-}</code></pre>
-<table><thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
-<tr><td><code>name</code></td><td>string</td><td>✅</td><td>Unique model name within org</td></tr>
-<tr><td><code>provider</code></td><td>string</td><td>—</td><td>Provider name (openai, anthropic, etc.)</td></tr>
-<tr><td><code>version</code></td><td>string</td><td>—</td><td>Model version</td></tr>
-<tr><td><code>metadata</code></td><td>object</td><td>—</td><td>Custom key-value pairs</td></tr>
-</tbody></table>
-
-<h2 id="api-model-list">GET /v1/models</h2>
-<p>List all models in the organization.</p>
-<p><strong>Response:</strong> Array of models with <code>id</code>, <code>name</code>, <code>provider</code>, <code>version</code>, <code>layer</code>, <code>is_active</code>, <code>eval_count</code>, <code>latest_risk</code>.</p>
-
-<h2 id="api-model-get">GET /v1/models/{model_id}</h2>
-<p>Get model details including recent evaluations and statistics.</p>
-
-<h2 id="api-model-delete">DELETE /v1/models/{model_id}</h2>
-<p>Deactivate a model. Does not delete evaluation history.</p>
-
-<h2 id="api-model-compare">GET /v1/models/compare</h2>
-<p>Compare all organization models side-by-side: risk scores, compliance levels, evaluation counts.</p>
-</div><div class="sd"></div>
-
-<!-- API: EVALUATIONS -->
-<div class="ds da" id="doc-api-eval" data-nav="api-eval">
-<h1>API Reference: Evaluations</h1>
-<div class="dm"><span class="db-g bg-g">v1</span><span class="db-g bg-b">Stable</span><span>All endpoints require <code>X-API-Key</code></span></div>
-
-<h2 id="api-eval-model">POST /v1/models/evaluate</h2>
-<p>Evaluate a single model output. Core endpoint for risk scoring.</p>
-<pre><code>{
-  "model_id": "uuid",
-  "output": "The capital of France is Paris.",
-  "confidence": 0.95,
-  "context": "What is the capital of France?",
-  "ground_truth": "Paris",
-  "domain": "general",
-  "logprobs": [-0.05, -0.12, -0.03],
-  "temperature": 0.7,
-  "top_p": 0.9
-}</code></pre>
-<table><thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
-<tr><td><code>model_id</code></td><td>string</td><td>✅</td><td>Registered model UUID</td></tr>
-<tr><td><code>output</code></td><td>string</td><td>✅</td><td>Model's generated output</td></tr>
-<tr><td><code>confidence</code></td><td>float</td><td>—</td><td>Self-reported confidence (0–1)</td></tr>
-<tr><td><code>context</code></td><td>string</td><td>—</td><td>Input prompt / context</td></tr>
-<tr><td><code>ground_truth</code></td><td>string</td><td>—</td><td>Correct answer if available</td></tr>
-<tr><td><code>domain</code></td><td>string</td><td>—</td><td>medical, legal, finance, general</td></tr>
-<tr><td><code>logprobs</code></td><td>float[]</td><td>—</td><td>Token log-probabilities</td></tr>
-<tr><td><code>temperature</code></td><td>float</td><td>—</td><td>Sampling temperature used</td></tr>
-<tr><td><code>top_p</code></td><td>float</td><td>—</td><td>Nucleus sampling parameter</td></tr>
-<tr><td><code>metadata</code></td><td>object</td><td>—</td><td>Custom metadata</td></tr>
-</tbody></table>
-<p><strong>Response 200:</strong></p>
-<pre><code>{
-  "evaluation_id": "uuid",
-  "risk_score": 0.234,
-  "layer": "L3",
-  "compliance": "PASSED",
-  "calibration": 87.5,
-  "engine_version": "2.0",
-  "signals_used": 4,
-  "factors": {
-    "linguistic_uncertainty": 0.082,
-    "confidence_calibration": 0.12,
-    "logprob_entropy": 0.045,
-    "semantic_consistency": 0.163,
-    "ground_truth_accuracy": 0.95,
-    "refusal_awareness": 0.0,
-    "domain": "general",
-    "domain_multiplier": 1.0,
-    "output_length": 42
-  },
-  "weights_applied": {
-    "linguistic_uncertainty": 0.25,
-    "confidence_calibration": 0.2,
-    "logprob_entropy": 0.15,
-    "semantic_consistency": 0.15,
-    "ground_truth_accuracy": 0.25
-  }
-}</code></pre>
-<h3 id="factor-analysis">Factor Analysis (F1–F6)</h3>
-<p>The scoring engine evaluates AI outputs across six independent factors plus a domain adjustment. Each factor scores 0.0 (no risk) to 1.0 (maximum risk). The final risk score is a weighted combination scaled by domain multiplier.</p>
-<table><thead><tr><th>Factor</th><th>Key</th><th>Measures</th><th>Signal</th></tr></thead><tbody>
-<tr><td>F1</td><td><code>linguistic_uncertainty</code></td><td>Hedging, qualifiers, epistemic markers in text</td><td>Text analysis</td></tr>
-<tr><td>F2</td><td><code>confidence_calibration</code></td><td>Gap between self-reported confidence and linguistic signals</td><td>Requires <code>confidence</code></td></tr>
-<tr><td>F3</td><td><code>logprob_entropy</code></td><td>Token-level uncertainty from model internals</td><td>Requires <code>logprobs</code></td></tr>
-<tr><td>F4</td><td><code>semantic_consistency</code></td><td>Output coherence, information density, structure</td><td>Text analysis</td></tr>
-<tr><td>F5</td><td><code>ground_truth_accuracy</code></td><td>Factual correctness against reference answer</td><td>Requires <code>ground_truth</code></td></tr>
-<tr><td>F6</td><td><code>refusal_awareness</code></td><td>Ability to recognize and defer on unknowns</td><td>Text analysis</td></tr>
-</tbody></table>
-<p><strong>Domain Multiplier (F7):</strong> Critical domains (medical ×1.4, safety ×1.5, legal ×1.3) apply a higher bar. Casual domains (chat ×0.8, creative ×0.7) apply lower.</p>
-<p><strong>Signal availability:</strong> More optional fields (<code>confidence</code>, <code>logprobs</code>, <code>ground_truth</code>) activate more factors, producing a more accurate score. Text-only evaluation uses F1, F4, F6.</p>
-
-<h2 id="api-eval-batch">POST /v1/models/evaluate/batch</h2>
-<p>Batch evaluate up to 100 outputs in a single request.</p>
-<pre><code>{
-  "model_id": "uuid",
-  "evaluations": [
-    {"output": "...", "confidence": 0.9, "context": "..."},
-    {"output": "...", "confidence": 0.7, "ground_truth": "..."}
-  ]
-}</code></pre>
-
-<h2 id="api-eval-legacy">POST /v1/evaluate</h2>
-<p>Legacy evaluation endpoint. Submit predictions with ground truth.</p>
-<pre><code>{
-  "model_name": "my-model",
-  "predictions": [
-    {"id": "q1", "prediction": "KNOWN", "confidence": 0.9},
-    {"id": "q2", "prediction": "UNKNOWN", "confidence": 0.3}
-  ]
-}</code></pre>
-
-<h2 id="api-eval-list">GET /v1/evaluations</h2>
-<p>List evaluations for the organization. Supports <code>?limit=</code> and <code>?offset=</code>.</p>
-
-<h2 id="api-eval-get">GET /v1/evaluations/{id}</h2>
-<p>Get single evaluation details.</p>
-
-<h2 id="api-eval-history">GET /v1/models/{model_id}/evaluations</h2>
-<p>Evaluation history for a specific model. Supports <code>?limit=</code> and <code>?offset=</code>.</p>
-
-<h2 id="api-eval-trend">GET /v1/models/{model_id}/trend</h2>
-<p>Risk score trend over time. Supports <code>?days=30</code> (default).</p>
-<p><strong>Response:</strong> Daily aggregates with <code>avg_risk</code>, <code>min_risk</code>, <code>max_risk</code>, <code>avg_calibration</code>, <code>eval_count</code>.</p>
-</div><div class="sd"></div>
-
-<!-- API: CERTIFICATES -->
-<div class="ds da" id="doc-api-certs" data-nav="api-certs">
-<h1>API Reference: Certificates</h1>
-<div class="dm"><span class="db-g bg-g">v1</span><span class="db-g bg-b">Stable</span></div>
-
-<h2 id="api-cert-request">POST /v1/models/{model_id}/certify</h2>
-<p>Request certification after sufficient evaluations. <span class="db-g bg-a">Auth required</span></p>
-<p><strong>Requirements:</strong> Minimum evaluations (50–500 depending on layer), avg risk &lt; 0.50, fewer than 5 L1 evaluations in recent 20.</p>
-<p><strong>Response 200:</strong></p>
-<pre><code>{
-  "certificate_id": "uuid",
-  "certificate_number": "ONTO-CERT-XXXX-XXXX",
-  "certified_layer": "L2",
-  "avg_risk": 0.312,
-  "expires_at": "2027-02-08T...",
-  "verify_url": "https://api.ontostandard.org/v1/certificates/ONTO-CERT-XXXX-XXXX"
-}</code></pre>
-
-<h2 id="api-cert-status">GET /v1/models/{model_id}/certification-status</h2>
-<p>Check if model is ready for certification. Returns blockers if not ready.</p>
-<pre><code>{
-  "ready": false,
-  "predicted_layer": "L2",
-  "total_evaluations": 35,
-  "required_evaluations": 50,
-  "blockers": ["Need 15 more evaluations (35/50)"],
-  "progress_percent": 70.0
-}</code></pre>
-
-<h2 id="api-cert-list">GET /v1/certificates</h2>
-<p>List all certificates for the organization. <span class="db-g bg-a">Auth required</span></p>
-
-<h2 id="api-cert-verify">GET /v1/certificates/{certificate_id}</h2>
-<p>Public endpoint — verify certificate authenticity. No auth required.</p>
-<pre><code>{
-  "certificate_number": "ONTO-CERT-XXXX-XXXX",
-  "organization": "Acme Corp",
-  "model_name": "GPT-5.2",
-  "layer": "L2",
-  "status": "valid",
-  "issued_at": "...",
-  "expires_at": "..."
-}</code></pre>
-</div><div class="sd"></div>
-
-<!-- API: SIGNAL -->
-<div class="ds da" id="doc-api-signal" data-nav="api-signal">
-<h1>API Reference: Signal</h1>
-<div class="dm"><span class="db-g bg-g">v1</span><span class="db-g bg-b">Stable</span></div>
-<p>The ONTO Signal is a 104-byte cryptographically signed packet broadcast every 30 seconds. Used for tamper-proof evaluation anchoring.</p>
-
-<h2 id="api-signal-status">GET /v1/signal/status</h2>
-<p>Check signal server status. No auth required.</p>
-<pre><code>{
-  "status": "operational",
-  "url": "https://api.ontostandard.org",
-  "interval_seconds": 30
-}</code></pre>
-
-<h2 id="api-signal-current">GET /v1/signal/current</h2>
-<p>Get current signal. Delay depends on layer. <span class="db-g bg-a">Auth required</span></p>
-<table><thead><tr><th>Layer</th><th>Delay</th></tr></thead><tbody>
-<tr><td>OPEN</td><td>1 hour</td></tr>
-<tr><td>STANDARD</td><td>Real-time</td></tr>
-<tr><td>CRITICAL</td><td>Real-time + priority</td></tr>
-</tbody></table>
-<pre><code>{
-  "signal": "base64...",
-  "timestamp": "2026-02-08T...",
-  "delayed": true,
-  "delay_hours": 1
-}</code></pre>
-</div><div class="sd"></div>
-
-<!-- API: ORGANIZATION -->
-<div class="ds da" id="doc-api-org" data-nav="api-org">
-<h1>API Reference: Organization</h1>
-<div class="dm"><span class="db-g bg-g">v1</span><span class="db-g bg-b">Stable</span><span>All endpoints require <code>X-API-Key</code></span></div>
-
-<h2 id="api-org-get">GET /v1/organization</h2>
-<p>Get organization details, current layer, usage statistics.</p>
-
-<h2 id="api-org-update">PUT /v1/organization/profile</h2>
-<p>Update organization profile (name, company, etc.).</p>
-
-<h2 id="api-org-invite">POST /v1/organization/invite</h2>
-<p>Invite a team member. Admin only.</p>
-<pre><code>{"email": "jane@company.com", "name": "Jane Smith"}</code></pre>
-
-<h2 id="api-org-members">GET /v1/organization/members</h2>
-<p>List all organization members.</p>
-
-<h2 id="api-org-remove">DELETE /v1/organization/members/{user_id}</h2>
-<p>Remove a member from the organization. Admin only.</p>
-
-<h2 id="api-org-audit">GET /v1/audit</h2>
-<p>Audit trail — all actions for compliance. <span class="db-g bg-a">CRITICAL layer only</span></p>
-
-<h2 id="api-rate-limit">GET /v1/rate-limit</h2>
-<p>Check current rate limit status and remaining requests.</p>
-
-<h2 id="api-usage">GET /v1/usage</h2>
-<p>Usage statistics: evaluations, API calls, storage.</p>
-</div><div class="sd"></div>
-
-<!-- API: BILLING -->
-<div class="ds da" id="doc-api-billing" data-nav="api-billing">
-<h1>API Reference: Billing</h1>
-<div class="dm"><span class="db-g bg-g">v1</span><span class="db-g bg-b">Stable</span><span>All endpoints require <code>X-API-Key</code></span></div>
-
-<h2 id="api-billing-checkout">POST /v1/billing/checkout</h2>
-<p>Create a checkout session for upgrading.</p>
-<pre><code>{"layer": "professional"}</code></pre>
-<p><strong>Response 200:</strong> <code>{"checkout_url": "https://checkout.paddle.com/..."}</code></p>
-
-<h2 id="api-billing-portal">POST /v1/billing/portal</h2>
-<p>Create a customer portal session for managing subscription.</p>
-<pre><code>{"return_url": "https://ontostandard.org/app/"}</code></pre>
-
-<h2 id="api-billing-status">GET /v1/billing/status</h2>
-<p>Get current subscription status, layer, and usage.</p>
-<pre><code>{
-  "layer": "professional",
-  "status": "active",
-  "evaluations_used": 1542,
-  "current_period_end": "2026-03-08T..."
-}</code></pre>
-
-<h2 id="api-errors">Error Responses</h2>
-<p>All errors follow a consistent format:</p>
-<pre><code>{"detail": "Error description"}</code></pre>
-<table><thead><tr><th>Code</th><th>Meaning</th></tr></thead><tbody>
-<tr><td>400</td><td>Bad request — invalid input</td></tr>
-<tr><td>401</td><td>Unauthorized — missing or invalid API key</td></tr>
-<tr><td>403</td><td>Forbidden — insufficient permissions or layer</td></tr>
-<tr><td>404</td><td>Resource not found</td></tr>
-<tr><td>429</td><td>Rate limit exceeded</td></tr>
-<tr><td>500</td><td>Internal server error</td></tr>
-</tbody></table>
-
-<h2 id="api-rate-limits">Rate Limits</h2>
-<table><thead><tr><th>Layer</th><th>Requests/min</th><th>Evaluations/hour</th><th>Evaluations/day</th></tr></thead><tbody>
-<tr><td>OPEN</td><td>30</td><td>1</td><td>24</td></tr>
-<tr><td>STANDARD</td><td>500</td><td>420</td><td>10,000</td></tr>
-<tr><td>CRITICAL</td><td>10,000</td><td>Unlimited</td><td>Unlimited</td></tr>
-</tbody></table>
-<p>Rate limit headers are included in responses: <code>X-RateLimit-Limit</code>, <code>X-RateLimit-Remaining</code>, <code>X-RateLimit-Reset</code>.</p>
-</div><div class="sd"></div>
-
 <!-- ARTICLES -->
 <div class="ds da" id="doc-articles" data-nav="articles">
 <h1>Articles</h1>
 <div class="dm"><span class="db-g bg-g">Updated regularly</span></div>
-<div class="article-card"><h3>Why AI Needs a Thermometer, Not a Doctor</h3><div class="article-meta">ONTO Standards Council · January 2026</div><p>The AI industry is focused on making models smarter. But smartness without self-awareness is dangerous. ONTO measures when AI doesn't know — before failure happens.</p></div>
-<div class="article-card"><h3>Epistemic Risk: The Metric Nobody Is Tracking</h3><div class="article-meta">ONTO Standards Council · January 2026</div><p>Most AI monitoring tools focus on data drift. But the most dangerous failures happen when a model is confidently wrong — when it doesn't know what it doesn't know.</p></div>
-<div class="article-card"><h3>How Regulated Industries Can Prepare for the EU AI Act</h3><div class="article-meta">ONTO Standards Council · February 2026</div><p>The EU AI Act requires risk management, transparency, and conformity assessment. ONTO certification maps directly to Articles 9, 13, 15, and 43.</p></div>
+<div class="article-card"><h3>Why AI Needs a Thermometer, Not a Doctor</h3><div class="article-meta">ONTO Foundation · January 2026</div><p>The AI industry is focused on making models smarter. But smartness without self-awareness is dangerous. ONTO measures when AI doesn't know — before failure happens.</p></div>
+<div class="article-card"><h3>Epistemic Risk: The Metric Nobody Is Tracking</h3><div class="article-meta">ONTO Foundation · January 2026</div><p>Most AI monitoring tools focus on data drift. But the most dangerous failures happen when a model is confidently wrong — when it doesn't know what it doesn't know.</p></div>
+<div class="article-card"><h3>How Regulated Industries Can Prepare for the EU AI Act</h3><div class="article-meta">ONTO Foundation · February 2026</div><p>The EU AI Act requires risk management, transparency, and conformity assessment. ONTO certification maps directly to Articles 9, 13, 15, and 43.</p></div>
 <p style="color:var(--text-m);font-size:12px;margin-top:20px">More articles coming. Subscribe: <a href="mailto:support@ontostandard.org">support@ontostandard.org</a></p>
 </div><div class="sd"></div>
 
@@ -843,14 +452,14 @@ Content-Type: application/json
 <h2 id="t-5">5. Rate Limits</h2><p>Each plan has specific limits. Exceeding may cause suspension.</p>
 <h2 id="t-6">6. Payment</h2><p>Billed in advance. Non-refundable except per Refund Policy. 30 days pricing change notice.</p>
 <h2 id="t-7">7. SLA</h2>
-<table><thead><tr><th>Plan</th><th>Uptime</th></tr></thead><tbody><tr><td>Professional</td><td>99.5%</td></tr><tr><td>Critical</td><td>99.99%</td></tr></tbody></table>
+<table><thead><tr><th>Plan</th><th>Uptime</th></tr></thead><tbody><tr><td>Pro</td><td>99.9%</td></tr><tr><td>Enterprise</td><td>99.99%</td></tr></tbody></table>
 <h2 id="t-8">8. IP</h2><p>ONTO retains rights to Services. You retain ownership of your data.</p>
 <h2 id="t-9">9. Privacy</h2><p>See <a href="#privacy">Privacy Policy</a>.</p>
 <h2 id="t-10">10. Warranties</h2><p>SERVICES PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND.</p>
 <h2 id="t-11">11. Liability</h2><p>ONTO SHALL NOT BE LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL DAMAGES.</p>
 <h2 id="t-12">12. Termination</h2><p>We may terminate for violations. You may cancel anytime.</p>
 <h2 id="t-13">13. Changes</h2><p>We may modify terms. Continued use = acceptance.</p>
-<h2 id="t-14">14. Law</h2><p>Governed by the jurisdiction identified at <a href="/docs/#license">ontostandard.org/legal</a>.</p>
+<h2 id="t-14">14. Law</h2><p>Governed by Delaware, United States law.</p>
 <h2 id="t-15">15. Contact</h2><p><a href="mailto:support@ontostandard.org">support@ontostandard.org</a></p>
 </div><div class="sd"></div>
 
@@ -879,9 +488,9 @@ Content-Type: application/json
 <div class="dd"><strong>Summary:</strong> 14-day money-back for monthly. 30-day for annual. Pro-rata after.</div>
 <h2 id="r-1">1. Monthly</h2><ul><li>14-day full refund</li><li>No partial month refunds after</li><li>Cancel anytime, service continues to period end</li></ul>
 <h2 id="r-2">2. Annual</h2><ul><li>30-day full refund</li><li>Pro-rata after (minus 15% termination fee)</li><li>No refunds after 6 months</li></ul>
-<h2 id="r-3">3. Critical</h2><p>Custom terms per contract.</p>
+<h2 id="r-3">3. Enterprise</h2><p>Custom terms per contract.</p>
 <h2 id="r-4">4. Service Credits</h2>
-<table><thead><tr><th>Plan</th><th>Breach</th><th>Credit</th></tr></thead><tbody><tr><td>Professional</td><td>99.5%</td><td>10%</td></tr><tr><td>Critical</td><td>99.99%</td><td>25%</td></tr></tbody></table>
+<table><thead><tr><th>Plan</th><th>Breach</th><th>Credit</th></tr></thead><tbody><tr><td>Pro</td><td>99.9%</td><td>10%</td></tr><tr><td>Enterprise</td><td>99.99%</td><td>25%</td></tr></tbody></table>
 <h2 id="r-5">5. Non-Refundable</h2><ul><li>ToS violation terminations</li><li>Unused credits</li><li>Setup fees</li><li>Third-party fees</li></ul>
 <h2 id="r-6">6. How To</h2><p>Email <a href="mailto:support@ontostandard.org">support@ontostandard.org</a>. Response 2 days, processing 5-10 days.</p>
 </div>
@@ -889,16 +498,115 @@ Content-Type: application/json
 </div></main>
 
 <script>
-// Auth → /app/login/
+const AF_API='https://api.ontostandard.org';
+let afPendingEmail='';
 
+function afToast(msg,type='info'){const c=document.getElementById('doc-toast'),t=document.createElement('div');t.className='dt '+type;t.textContent=msg;c.appendChild(t);setTimeout(()=>t.remove(),3000)}
+function afSetLoad(btn,on){if(on){btn.classList.add('loading');btn.disabled=true}else{btn.classList.remove('loading');btn.disabled=false}}
+function afTogglePw(id,btn){const i=document.getElementById(id);if(i.type==='password'){i.type='text';btn.textContent='🙈'}else{i.type='password';btn.textContent='👁'}}
+
+function openAuth(mode){document.getElementById('auth-overlay').classList.add('active');afShow(mode||'login');closeSB()}
+function closeAuth(){document.getElementById('auth-overlay').classList.remove('active')}
+
+function afShow(mode){
+const panels=['af-login','af-register','af-verify','af-success'];
+panels.forEach(p=>{const el=document.getElementById(p);if(el)el.classList.add('hidden')});
+const target=document.getElementById('af-'+mode);
+if(target)target.classList.remove('hidden');
+}
+
+document.getElementById('af-terms').addEventListener('change',function(){document.getElementById('af-reg-btn').disabled=!this.checked});
+
+async function afLogin(btn){
+const email=document.getElementById('af-login-email').value,pw=document.getElementById('af-login-pass').value;
+if(!email||!pw){afToast('Please fill in all fields','error');return}
+afSetLoad(btn,true);
+try{
+const r=await fetch(AF_API+'/v1/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pw})});
+const d=await r.json();
+if(!r.ok)throw new Error(d.detail||'Login failed');
+localStorage.setItem('onto_token',d.token);
+localStorage.setItem('onto_user',JSON.stringify({id:d.user_id,name:d.name,email:email,role:'admin',plan:d.layer||'free',organization_id:d.organization_id,can_invoice:false,company:d.organization_name?{name:d.organization_name}:null}));
+afSetLoad(btn,false);
+afToast('Welcome back!','success');
+setTimeout(()=>{window.location='/app/'},500);
+}catch(e){
+afSetLoad(btn,false);
+if(e.message&&e.message.includes('not verified')){afPendingEmail=email;afShowVerify(email);afToast('Please verify your email first','info');return}
+afToast(e.message||'Login failed','error');
+}}
+
+async function afRegister(btn){
+const name=document.getElementById('af-reg-name').value,email=document.getElementById('af-reg-email').value,pw=document.getElementById('af-reg-pass').value;
+if(!name||!email||!pw){afToast('Please fill in all fields','error');return}
+if(!document.getElementById('af-terms').checked){afToast('Please agree to the Terms','error');return}
+afSetLoad(btn,true);
+try{
+const r=await fetch(AF_API+'/v1/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,password:pw})});
+const d=await r.json();
+if(!r.ok)throw new Error(d.detail||'Registration failed');
+if(d.api_key)localStorage.setItem('onto_first_api_key',d.api_key);
+afPendingEmail=email;
+afSetLoad(btn,false);
+afShowVerify(email);
+afToast('Check your email to verify your account','success');
+}catch(e){afSetLoad(btn,false);afToast(e.message||'Registration failed','error')}}
+
+function afShowVerify(email){
+afShow('verify');
+document.getElementById('af-verify-email').textContent=email;
+document.getElementById('af-otp-error').style.display='none';
+for(let i=1;i<=6;i++)document.getElementById('af-otp-'+i).value='';
+setTimeout(()=>document.getElementById('af-otp-1').focus(),100);
+afSetupOTP();
+}
+
+function afSetupOTP(){
+for(let i=1;i<=6;i++){
+const inp=document.getElementById('af-otp-'+i);
+inp.oninput=function(e){const v=e.target.value.replace(/[^0-9]/g,'');e.target.value=v;if(v&&i<6)document.getElementById('af-otp-'+(i+1)).focus();if(i===6&&v){const c=afGetOTP();if(c.length===6)afVerifyOTP(document.getElementById('af-verify-btn'))}};
+inp.onkeydown=function(e){if(e.key==='Backspace'&&!e.target.value&&i>1)document.getElementById('af-otp-'+(i-1)).focus()};
+inp.onpaste=function(e){e.preventDefault();const p=(e.clipboardData||window.clipboardData).getData('text').replace(/[^0-9]/g,'');for(let j=0;j<6&&j<p.length;j++)document.getElementById('af-otp-'+(j+1)).value=p[j];if(p.length>=6){document.getElementById('af-otp-6').focus();afVerifyOTP(document.getElementById('af-verify-btn'))}};
+}}
+
+function afGetOTP(){let c='';for(let i=1;i<=6;i++)c+=document.getElementById('af-otp-'+i).value;return c}
+
+async function afVerifyOTP(btn){
+const code=afGetOTP();
+if(code.length!==6){document.getElementById('af-otp-error').textContent='Please enter all 6 digits';document.getElementById('af-otp-error').style.display='block';return}
+afSetLoad(btn,true);document.getElementById('af-otp-error').style.display='none';
+try{
+const r=await fetch(AF_API+'/v1/auth/verify-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:afPendingEmail,code:code})});
+const d=await r.json();
+if(!r.ok)throw new Error(d.detail||'Verification failed');
+localStorage.setItem('onto_token',d.token);
+if(d.api_key)localStorage.setItem('onto_first_api_key',d.api_key);
+localStorage.setItem('onto_user',JSON.stringify({id:d.user_id,name:d.name,email:d.email,role:d.role||'admin',plan:d.layer||'free',organization_id:d.organization_id,organization_name:d.organization_name}));
+localStorage.setItem('onto_logged_in','true');
+afSetLoad(btn,false);
+afToast('Email verified! Welcome to ONTO','success');
+setTimeout(()=>{window.location='/app/'},500);
+}catch(e){
+afSetLoad(btn,false);
+document.getElementById('af-otp-error').textContent=e.message;document.getElementById('af-otp-error').style.display='block';
+for(let i=1;i<=6;i++){document.getElementById('af-otp-'+i).classList.add('error');setTimeout(()=>document.getElementById('af-otp-'+i).classList.remove('error'),1500)}
+}}
+
+async function afResend(){
+if(!afPendingEmail){afToast('No email to verify','error');return}
+try{await fetch(AF_API+'/v1/auth/resend-verification',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:afPendingEmail,password:''})});afToast('Verification email sent','success')}catch(e){afToast('Failed to resend email','error')}}
 
 function getTheme(){return localStorage.getItem('onto_theme')||'dark'}
 function applyTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('onto_theme',t)}
 function toggleTheme(){applyTheme(getTheme()==='dark'?'light':'dark')}
 applyTheme(getTheme());
-function toggleSB(){document.getElementById('sb').classList.toggle('open');document.getElementById('ov').classList.toggle('active')}
-function closeSB(){document.getElementById('sb').classList.remove('open');document.getElementById('ov').classList.remove('active')}
-
+function toggleSB(){document.getElementById('sb').classList.toggle('open');document.getElementById('ov').classList.toggle('active');document.body.classList.toggle('sb-open')}
+function closeSB(){document.getElementById('sb').classList.remove('open');document.getElementById('ov').classList.remove('active');document.body.classList.remove('sb-open')}
+function checkAuth(){
+const t=localStorage.getItem('onto_token'),u=localStorage.getItem('onto_user');
+const a=document.getElementById('sb-auth'),s=document.getElementById('sb-si');
+if(t&&u){try{const d=JSON.parse(u);document.getElementById('d-av').textContent=(d.name||'U')[0].toUpperCase();document.getElementById('d-un').textContent=d.name||'User';document.getElementById('d-up').textContent=d.plan==='enterprise'?'CRITICAL':d.plan==='business'?'PRO':'FREE';a.style.display='block';s.style.display='none'}catch(e){a.style.display='none';s.style.display='block'}}else{a.style.display='none';s.style.display='block'}}
+checkAuth();
 const secs=document.querySelectorAll('.ds[data-nav]'),nls=document.querySelectorAll('.nl[data-doc]');
 function updNav(id){nls.forEach(l=>l.classList.remove('active'));const t=document.querySelector(`.nl[data-doc="${id}"]`);if(t){t.classList.add('active');t.scrollIntoView({block:'nearest',behavior:'smooth'})}}
 const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const id=e.target.getAttribute('data-nav');if(id){updNav(id);const h='#'+id;if(location.hash!==h)history.replaceState(null,'',h)}}})},{rootMargin:'-20% 0px -60% 0px',threshold:0});
@@ -909,16 +617,6 @@ handleHash();window.addEventListener('hashchange',handleHash);
 function toggleFaq(el){el.parentElement.classList.toggle('open')}
 let stars=0;function setStar(n){stars=n;document.querySelectorAll('#ss span').forEach((s,i)=>{s.classList.toggle('active',i<n)})}
 async function submitRv(){const n=document.getElementById('rv-name').value.trim(),r=document.getElementById('rv-role').value.trim(),t=document.getElementById('rv-text').value.trim();if(!n||!t){alert('Fill name and review.');return}try{await fetch('https://api.ontostandard.org/v1/feedback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'review',name:n,role:r,rating:stars,text:t})})}catch(e){}document.getElementById('rv-ok').style.display='block';document.getElementById('rv-name').value='';document.getElementById('rv-role').value='';document.getElementById('rv-text').value='';stars=0;document.querySelectorAll('#ss span').forEach(s=>s.classList.remove('active'))}
-
-// Auth check — show Dashboard if logged in, else show Sign In
-(function(){
-const logged=localStorage.getItem('onto_logged_in')==='true';
-const si=document.getElementById('sb-si');
-if(si&&logged){
-si.innerHTML='<a class="nl" href="/app/" style="display:flex;align-items:center;gap:6px;padding:8px 12px;color:var(--text-s);font-size:12px;text-decoration:none"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</a>';
-si.style.borderBottom='1px solid var(--border)';si.style.padding='4px 0';
-}
-})();
 </script>
 </body>
 </html>
