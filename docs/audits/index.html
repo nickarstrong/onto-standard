@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONTO Research — Independent Epistemic Audits of AI Systems</title>
+<meta name="description" content="Monthly independent epistemic audits of major AI systems. GOLD-calibrated scoring. Cryptographic proof architecture. Open methodology.">
+<meta property="og:title" content="ONTO Research — Independent AI Epistemic Audits">
+<meta property="og:description" content="Monthly independent epistemic audits of major AI systems scored by ONTO GOLD-calibrated engine.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ontostandard.org/audits/">
+<link rel="canonical" href="https://ontostandard.org/audits/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "ONTO Research — Epistemic Audits",
+  "description": "Monthly independent epistemic audits of major AI systems using ONTO GOLD-calibrated scoring engine.",
+  "url": "https://ontostandard.org/audits/",
+  "publisher": {"@type": "Organization", "name": "ONTO Standards Council", "url": "https://ontostandard.org"},
+  "hasPart": [
+    {
+      "@type": "ScholarlyArticle",
+      "headline": "CS-2026-001: Epistemic Risk Audit of 10 AI Systems",
+      "datePublished": "2026-02-09",
+      "url": "https://ontostandard.org/case-study.html"
+    }
+  ]
+}
+</script>
+<style>
+:root {
+    --bg: #0a0a0a;
+    --bg-secondary: #111111;
+    --bg-card: #161616;
+    --bg-elevated: #1e1e1e;
+    --border: #2a2a2a;
+    --border-hover: #3a3a3a;
+    --text: #f0f0f0;
+    --text-secondary: #999;
+    --text-muted: #555;
+    --accent: #15803d;
+    --accent-subtle: rgba(21,128,61,0.08);
+    --danger: #dc2626;
+    --danger-subtle: rgba(220,38,38,0.06);
+    --warning: #d97706;
+    --warning-subtle: rgba(217,119,6,0.06);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+}
+
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+/* HEADER */
+.header {
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    background: var(--bg-secondary);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.header-inner { display:flex; align-items:center; justify-content:space-between; max-width:960px; margin:0 auto; }
+.header-logo { font-size:18px; font-weight:700; color:var(--text); text-decoration:none; letter-spacing:-0.3px; }
+.header-logo em { font-style:normal; color:var(--text-muted); font-weight:400; font-size:12px; margin-left:10px; }
+.header-links { display:flex; gap:6px; }
+.header-link {
+    padding:5px 12px; font-size:12px;
+    background:transparent; border:1px solid var(--border); border-radius:4px;
+    color:var(--text-secondary); text-decoration:none; transition:all 0.15s;
+}
+.header-link:hover { background:var(--bg-elevated); color:var(--text); }
+
+/* MAIN */
+.container { max-width:960px; margin:0 auto; padding:0 24px; }
+
+/* PAGE HEADER */
+.page-header { padding:48px 0 28px; border-bottom:1px solid var(--border); margin-bottom:32px; }
+.page-id { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-muted); margin-bottom:8px; letter-spacing:0.3px; }
+.page-title { font-size:28px; font-weight:700; letter-spacing:-0.5px; margin-bottom:10px; }
+.page-subtitle { font-size:14px; color:var(--text-secondary); max-width:680px; line-height:1.65; }
+
+/* FILTER BAR */
+.filter-bar {
+    display:flex; align-items:center; gap:12px; padding:12px 0; margin-bottom:24px;
+    border-bottom:1px solid var(--border);
+    font-size:12px;
+}
+.filter-label { color:var(--text-muted); font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.5px; text-transform:uppercase; }
+.filter-tag {
+    padding:4px 10px; border:1px solid var(--border); border-radius:3px;
+    color:var(--text-secondary); background:transparent; cursor:pointer; transition:all 0.15s;
+    font-size:11px; font-family:'JetBrains Mono',monospace;
+}
+.filter-tag:hover { border-color:var(--border-hover); color:var(--text); }
+.filter-tag.active { border-color:var(--accent); color:var(--accent); background:var(--accent-subtle); }
+
+/* AUDIT CARDS */
+.audit-list { display:flex; flex-direction:column; gap:16px; padding-bottom:48px; }
+
+.audit-card {
+    border:1px solid var(--border); border-radius:6px;
+    background:var(--bg-card);
+    padding:24px 28px;
+    transition:all 0.2s;
+    text-decoration:none; color:inherit; display:block;
+    position:relative;
+    overflow:hidden;
+}
+.audit-card:hover {
+    border-color:var(--border-hover);
+    background:var(--bg-elevated);
+    transform:translateY(-1px);
+}
+.audit-card::before {
+    content:'';
+    position:absolute; left:0; top:0; bottom:0;
+    width:3px;
+}
+.audit-card.severity-critical::before { background:var(--danger); }
+.audit-card.severity-warning::before { background:var(--warning); }
+.audit-card.severity-safe::before { background:var(--accent); }
+
+.audit-meta {
+    display:flex; align-items:center; gap:10px; margin-bottom:10px;
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.3px;
+}
+.audit-id { color:var(--text-muted); }
+.audit-date { color:var(--text-muted); }
+.audit-status {
+    padding:2px 7px; border-radius:2px; font-size:9px; font-weight:600;
+    letter-spacing:0.5px; text-transform:uppercase;
+}
+.status-published { background:var(--accent-subtle); color:var(--accent); border:1px solid rgba(21,128,61,0.25); }
+.status-upcoming { background:var(--warning-subtle); color:var(--warning); border:1px solid rgba(217,119,6,0.25); }
+
+.audit-title {
+    font-size:18px; font-weight:600; letter-spacing:-0.3px; margin-bottom:6px;
+    color:var(--text);
+}
+.audit-card:hover .audit-title { color:#fff; }
+
+.audit-desc {
+    font-size:13px; color:var(--text-secondary); line-height:1.6; margin-bottom:14px;
+    max-width:640px;
+}
+
+.audit-stats {
+    display:flex; gap:16px; flex-wrap:wrap;
+}
+.audit-stat {
+    display:flex; align-items:baseline; gap:5px;
+    font-family:'JetBrains Mono',monospace; font-size:11px;
+}
+.stat-label { color:var(--text-muted); font-size:10px; }
+.stat-value { color:var(--text); font-weight:500; }
+.stat-value.danger { color:var(--danger); }
+.stat-value.warning { color:var(--warning); }
+.stat-value.safe { color:var(--accent); }
+
+.audit-tags {
+    display:flex; gap:6px; margin-top:12px; padding-top:12px; border-top:1px solid var(--border);
+}
+.audit-tag {
+    font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.3px;
+    padding:2px 6px; border:1px solid var(--border); border-radius:2px;
+    color:var(--text-muted);
+}
+
+/* UPCOMING SECTION */
+.section-divider {
+    padding:20px 0 16px; margin-top:16px;
+    border-top:1px solid var(--border);
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    color:var(--text-muted); letter-spacing:0.5px; text-transform:uppercase;
+}
+
+/* METHODOLOGY BANNER */
+.method-banner {
+    border:1px solid var(--border); border-radius:6px;
+    background:var(--bg-card);
+    padding:20px 28px;
+    margin-bottom:16px;
+    display:flex; align-items:center; justify-content:space-between; gap:20px;
+}
+.method-text { font-size:13px; color:var(--text-secondary); }
+.method-text strong { color:var(--text); font-weight:500; }
+.method-link {
+    font-family:'JetBrains Mono',monospace; font-size:11px;
+    color:var(--accent); text-decoration:none; white-space:nowrap;
+    padding:6px 14px; border:1px solid var(--accent); border-radius:4px;
+    transition:all 0.15s;
+}
+.method-link:hover { background:var(--accent); color:#fff; }
+
+/* SUBSCRIBE */
+.subscribe-bar {
+    border:1px solid var(--border); border-radius:6px;
+    background:var(--bg-secondary);
+    padding:20px 28px;
+    margin-top:32px; margin-bottom:48px;
+    display:flex; align-items:center; justify-content:space-between; gap:20px;
+}
+.subscribe-text { font-size:13px; color:var(--text-secondary); }
+.subscribe-text strong { color:var(--text); }
+.subscribe-cta {
+    font-family:'JetBrains Mono',monospace; font-size:11px;
+    color:var(--text); text-decoration:none; white-space:nowrap;
+    padding:6px 14px; border:1px solid var(--border); border-radius:4px;
+    transition:all 0.15s;
+}
+.subscribe-cta:hover { background:var(--bg-elevated); border-color:var(--border-hover); }
+
+/* FOOTER */
+.footer {
+    border-top:1px solid var(--border);
+    padding:20px 24px;
+    text-align:center;
+    font-size:11px;
+    color:var(--text-muted);
+}
+.footer a { color:var(--text-secondary); text-decoration:none; }
+.footer a:hover { color:var(--text); }
+
+/* RESPONSIVE */
+@media (max-width:640px) {
+    .page-title { font-size:22px; }
+    .audit-card { padding:18px 20px; }
+    .audit-stats { gap:10px; }
+    .method-banner, .subscribe-bar { flex-direction:column; text-align:center; }
+    .filter-bar { flex-wrap:wrap; }
+    .header-links { display:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="header-inner">
+        <a href="https://ontostandard.org" class="header-logo">ONTO<em>Research</em></a>
+        <div class="header-links">
+            <a href="https://ontostandard.org/check/" class="header-link">Evaluate</a>
+            <a href="https://ontostandard.org/docs/" class="header-link">Docs</a>
+            <a href="https://ontostandard.org/app/" class="header-link">Portal</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <div class="page-id mono">ONTO STANDARDS COUNCIL · RESEARCH DIVISION</div>
+        <h1 class="page-title">Epistemic Audits</h1>
+        <p class="page-subtitle">Independent monthly audits of major AI systems. Each output scored against ONTO GOLD v4.5 reference standard using EM1-EM5 epistemic taxonomy and 3 deterministic metrics. Open methodology. Raw data published.</p>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+        <span class="filter-label">Filter</span>
+        <button class="filter-tag active" onclick="filterAudits('all')">All</button>
+        <button class="filter-tag" onclick="filterAudits('perception')">Perception</button>
+        <button class="filter-tag" onclick="filterAudits('domain')">Domain</button>
+        <button class="filter-tag" onclick="filterAudits('commissioned')">Commissioned</button>
+    </div>
+
+    <!-- METHODOLOGY BANNER -->
+    <div class="method-banner">
+        <div class="method-text">
+            <strong>Scoring Engine v3.0</strong> — GOLD-backed. EM1-EM5 taxonomy (92+ epistemic markers). REP, EpCE, DLA metrics. Formally grounded in 8 established frameworks from information theory, complexity theory, and formal epistemology.
+        </div>
+        <a href="https://ontostandard.org/docs/" class="method-link">Methodology →</a>
+    </div>
+
+    <!-- PUBLISHED AUDITS -->
+    <div class="audit-list">
+
+        <!-- CS-2026-001 -->
+        <a href="https://ontostandard.org/case-study.html" class="audit-card severity-critical" data-type="perception">
+            <div class="audit-meta">
+                <span class="audit-id">CS-2026-001</span>
+                <span class="audit-date">February 2026</span>
+                <span class="audit-status status-published">Published</span>
+            </div>
+            <h2 class="audit-title">Perception Audit: 10 AI Systems Scored Against Known Facts</h2>
+            <p class="audit-desc">12 identical questions about a real, documented project. Each response scored through ONTO's GOLD-backed scoring engine. 6 of 10 systems rated L1 FAILED. Average hallucination rate: 59%.</p>
+            <div class="audit-stats">
+                <div class="audit-stat">
+                    <span class="stat-label">Systems</span>
+                    <span class="stat-value">10</span>
+                </div>
+                <div class="audit-stat">
+                    <span class="stat-label">Avg Risk</span>
+                    <span class="stat-value danger">0.59</span>
+                </div>
+                <div class="audit-stat">
+                    <span class="stat-label">Failed</span>
+                    <span class="stat-value danger">6/10</span>
+                </div>
+                <div class="audit-stat">
+                    <span class="stat-label">Best</span>
+                    <span class="stat-value safe">Claude 3.5 (0.38)</span>
+                </div>
+                <div class="audit-stat">
+                    <span class="stat-label">Worst</span>
+                    <span class="stat-value danger">Llama 3.1 (0.71)</span>
+                </div>
+                <div class="audit-stat">
+                    <span class="stat-label">Engine</span>
+                    <span class="stat-value">v3.0 GOLD</span>
+                </div>
+            </div>
+            <div class="audit-tags">
+                <span class="audit-tag">PERCEPTION</span>
+                <span class="audit-tag">MULTI-SYSTEM</span>
+                <span class="audit-tag">GOLD v4.5</span>
+                <span class="audit-tag">12 QUESTIONS</span>
+            </div>
+        </a>
+
+        <!-- UPCOMING -->
+        <div class="section-divider">Upcoming</div>
+
+        <!-- CS-2026-002 Preview -->
+        <div class="audit-card severity-warning" data-type="perception">
+            <div class="audit-meta">
+                <span class="audit-id">CS-2026-002</span>
+                <span class="audit-date">March 2026</span>
+                <span class="audit-status status-upcoming">In Progress</span>
+            </div>
+            <h2 class="audit-title">Perception Audit #2: Expanded Methodology (24 Questions × 12 Systems)</h2>
+            <p class="audit-desc">Expanded sample: 24 questions across 4 domains. 2 new systems added. Tracking improvement from CS-2026-001 baselines. Results expected March 2026.</p>
+            <div class="audit-stats">
+                <div class="audit-stat">
+                    <span class="stat-label">Systems</span>
+                    <span class="stat-value">12</span>
+                </div>
+                <div class="audit-stat">
+                    <span class="stat-label">Questions</span>
+                    <span class="stat-value">24</span>
+                </div>
+                <div class="audit-stat">
+                    <span class="stat-label">Status</span>
+                    <span class="stat-value warning">Data collection</span>
+                </div>
+            </div>
+            <div class="audit-tags">
+                <span class="audit-tag">PERCEPTION</span>
+                <span class="audit-tag">EXPANDED</span>
+                <span class="audit-tag">TREND TRACKING</span>
+            </div>
+        </div>
+
+        <!-- Domain Audit Preview -->
+        <div class="audit-card severity-warning" data-type="domain">
+            <div class="audit-meta">
+                <span class="audit-id">DA-2026-001</span>
+                <span class="audit-date">Q2 2026</span>
+                <span class="audit-status status-upcoming">Planned</span>
+            </div>
+            <h2 class="audit-title">Domain Audit: Medical AI Epistemic Risk</h2>
+            <p class="audit-desc">Targeted epistemic assessment of AI systems responding to medical queries. ED1 domain classification. Scoring against clinical accuracy baselines.</p>
+            <div class="audit-stats">
+                <div class="audit-stat">
+                    <span class="stat-label">Domain</span>
+                    <span class="stat-value">ED1 Medical</span>
+                </div>
+                <div class="audit-stat">
+                    <span class="stat-label">Status</span>
+                    <span class="stat-value warning">Design phase</span>
+                </div>
+            </div>
+            <div class="audit-tags">
+                <span class="audit-tag">DOMAIN</span>
+                <span class="audit-tag">MEDICAL</span>
+                <span class="audit-tag">ED1</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- REQUEST AUDIT -->
+    <div class="subscribe-bar">
+        <div class="subscribe-text">
+            <strong>Your model isn't listed?</strong> Request a commissioned audit or submit your system for the next monthly report.
+        </div>
+        <a href="mailto:audit@ontostandard.org" class="subscribe-cta">Request audit →</a>
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    <p>ONTO Standards Council · GOLD v4.5 Calibration Standard · Est. 2024 · <a href="https://ontostandard.org">ontostandard.org</a></p>
+    <p style="margin-top:4px">We don't ask you to trust us. We ask you to check.</p>
+</div>
+
+<script>
+function filterAudits(type) {
+    document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    document.querySelectorAll('.audit-card').forEach(card => {
+        if (type === 'all' || card.dataset.type === type) {
+            card.style.display = '';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+</script>
+
+</body>
+</html>
