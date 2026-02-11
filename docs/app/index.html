@@ -1105,7 +1105,7 @@ a.info-val:hover { color: var(--text); }
                 <p><strong>Service.</strong> ONTO provides AI evaluation and epistemic risk scoring as a hosted service. Your evaluation data, API keys, and account credentials are stored securely and never shared with third parties.</p>
                 <p><strong>Acceptable Use.</strong> You may use the ONTO platform to evaluate AI model outputs, track risk scores, and obtain certifications for your organization. Automated abuse, reverse engineering of scoring algorithms, and redistribution of evaluation results without attribution are prohibited.</p>
                 <p><strong>Data &amp; Privacy.</strong> We collect email, name, and usage metrics necessary to provide the service. Data is processed in accordance with GDPR. We never sell your data. You may request deletion at any time.</p>
-                <p><strong>Billing.</strong> Free tier includes limited evaluations. Paid tiers are billed annually or monthly as selected. Refund policy applies within 30 days of first payment.</p>
+                <p><strong>Billing.</strong> Open tier includes limited evaluations. Standard billed monthly. Certified billed annually. Refund policy applies within 30 days of first payment.</p>
                 <p style="margin-top: 12px;"><strong>Full terms:</strong> <a href="/legal" target="_blank">ontostandard.org/legal</a></p>
             </div>
             
@@ -1251,7 +1251,7 @@ a.info-val:hover { color: var(--text); }
                 <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
                     <div>
                         <div style="font-size:15px;font-weight:600;margin-bottom:4px">Welcome to ONTO</div>
-                        <div style="font-size:12px;color:var(--text-secondary)">Get started in three steps — evaluate your first AI output in under a minute.</div>
+                        <div style="font-size:12px;color:var(--text-secondary)">The epistemic risk standard for AI. Get your first rolling marker in under a minute.</div>
                     </div>
                     <button onclick="dismissWelcome()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px;font-size:16px;line-height:1">&times;</button>
                 </div>
@@ -1259,22 +1259,26 @@ a.info-val:hover { color: var(--text); }
                     <div style="padding:14px;border:1px solid var(--border);border-radius:6px;background:var(--bg)">
                         <div style="font-size:20px;margin-bottom:6px;opacity:0.6">①</div>
                         <div style="font-size:12px;font-weight:600;margin-bottom:4px">Register a model</div>
-                        <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Go to <a onclick="showPage('monitor', document.querySelector('.nav-item[onclick*=monitor]'))" style="color:var(--accent);cursor:pointer">Calibrate</a> → Register your AI model.</div>
+                        <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Go to <a onclick="showPage('monitor', document.querySelector('.nav-item[onclick*=monitor]'))" style="color:var(--accent);cursor:pointer">Calibrate</a> → Register your AI model by name and provider.</div>
                     </div>
                     <div style="padding:14px;border:1px solid var(--border);border-radius:6px;background:var(--bg)">
                         <div style="font-size:20px;margin-bottom:6px;opacity:0.6">②</div>
-                        <div style="font-size:12px;font-weight:600;margin-bottom:4px">Evaluate an output</div>
-                        <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Paste any AI-generated text below. Get a risk score with 6-factor breakdown.</div>
+                        <div style="font-size:12px;font-weight:600;margin-bottom:4px">Evaluate outputs</div>
+                        <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Paste AI-generated text below. Each evaluation feeds the Proof of Chain — signed with Ed25519.</div>
                     </div>
                     <div style="padding:14px;border:1px solid var(--border);border-radius:6px;background:var(--bg)">
                         <div style="font-size:20px;margin-bottom:6px;opacity:0.6">③</div>
-                        <div style="font-size:12px;font-weight:600;margin-bottom:4px">Track & certify</div>
-                        <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Check <a onclick="showPage('certify', document.querySelector('.nav-item[onclick*=certify]'))" style="color:var(--accent);cursor:pointer">Certify</a> → request L1–L3 certification.</div>
+                        <div style="font-size:12px;font-weight:600;margin-bottom:4px">Rolling marker</div>
+                        <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Your marker (L1→L2→L3) recalculates with every eval. <strong>Standard</strong> sees it internally. <strong>Certified</strong> proves it publicly.</div>
                     </div>
                 </div>
-                <div style="margin-top:14px;display:flex;gap:12px;align-items:center">
-                    <a href="/docs/" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Read the docs →</a>
-                    <span style="font-size:11px;color:var(--text-muted)">or just paste an output below to try it now</span>
+                <div style="margin-top:14px;padding:10px 12px;background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.1);border-radius:4px;font-size:11px;color:var(--text-secondary);line-height:1.5">
+                    <strong style="color:var(--text)">How it works:</strong> Open = diagnostic (limited evals, marker for your eyes only). Standard ($1,500/mo) = unlimited access, rolling marker for calibration. Certified ($100K/yr) = public registry + ONTO CERTIFIED badge for regulators.
+                </div>
+                <div style="margin-top:10px;display:flex;gap:12px;align-items:center">
+                    <a href="/docs/" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Documentation →</a>
+                    <a href="/verify/" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Public Verify →</a>
+                    <span style="font-size:11px;color:var(--text-muted)">or paste an AI output below to start</span>
                 </div>
             </div>
 
@@ -1407,6 +1411,22 @@ a.info-val:hover { color: var(--text); }
                             <span class="proof-verify">verify →</span>
                         </a>
                     </div>
+                    <!-- Rolling Marker -->
+                    <div id="dash-marker-wrap" style="display:none;margin-top:12px;padding:10px 12px;background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.15);border-radius:6px">
+                        <div style="display:flex;justify-content:space-between;align-items:center">
+                            <div>
+                                <span style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">Rolling Marker</span>
+                                <div style="display:flex;align-items:baseline;gap:8px;margin-top:2px">
+                                    <span id="dash-marker-level" style="font-size:20px;font-weight:700;color:#22c55e">—</span>
+                                    <span id="dash-marker-risk" style="font-size:11px;color:var(--text-muted)">avg risk: —</span>
+                                </div>
+                            </div>
+                            <div style="text-align:right">
+                                <div id="dash-marker-progress" style="font-size:11px;color:var(--text-secondary)">— / — evals</div>
+                                <div id="dash-marker-status" style="font-size:10px;color:var(--text-muted);margin-top:2px"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1522,7 +1542,7 @@ a.info-val:hover { color: var(--text); }
         <div class="page" id="page-certify">
             <div class="page-header-clean" style="margin-bottom:20px">
                 <h1 class="page-title" style="margin-bottom:2px">Certification</h1>
-                <p style="color:var(--text-muted);font-size:12px;margin:0">ONTO certification levels measure sustained epistemic reliability</p>
+                <p style="color:var(--text-muted);font-size:12px;margin:0">Rolling markers recalculate with every evaluation. Certified tier unlocks public proof.</p>
             </div>
 
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px" id="cert-cards">
@@ -1531,7 +1551,7 @@ a.info-val:hover { color: var(--text); }
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
                         <div>
                             <div style="font-size:16px;font-weight:700;color:#eab308">L1</div>
-                            <div style="font-size:11px;color:var(--text-muted)">Basic Compliance</div>
+                            <div style="font-size:11px;color:var(--text-muted)">Needs Calibration</div>
                         </div>
                         <div class="cert-status" id="cert-l1-status" style="font-size:10px;padding:3px 8px;border-radius:3px;background:var(--bg);color:var(--text-muted)">NOT STARTED</div>
                     </div>
@@ -1542,9 +1562,9 @@ a.info-val:hover { color: var(--text); }
                     <div style="font-size:11px;color:var(--text-secondary);line-height:1.6">
                         <div style="margin-bottom:4px">Requirements:</div>
                         <div id="cert-l1-reqs">
-                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:var(--text-muted)">○</span> ≥10 evaluations on one model</div>
-                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:var(--text-muted)">○</span> Average risk score ≤ 0.45</div>
-                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:var(--text-muted)">○</span> No single eval &gt; 0.70</div>
+                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:#eab308">⚠</span> Average risk score &gt; 0.65</div>
+                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:var(--text-muted)">→</span> Model needs improvement before certification</div>
+                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:var(--text-muted)">→</span> Review factor analysis for weak points</div>
                         </div>
                     </div>
                     <button id="cert-l1-btn" class="eval-submit-btn" onclick="requestCertification('L1')" style="display:none;width:100%;margin-top:12px;padding:8px;font-size:12px">Request L1 Certification →</button>
@@ -1555,7 +1575,7 @@ a.info-val:hover { color: var(--text); }
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
                         <div>
                             <div style="font-size:16px;font-weight:700;color:#3b82f6">L2</div>
-                            <div style="font-size:11px;color:var(--text-muted)">Standard Certification</div>
+                            <div style="font-size:11px;color:var(--text-muted)">Compliant — Certifiable</div>
                         </div>
                         <div class="cert-status" id="cert-l2-status" style="font-size:10px;padding:3px 8px;border-radius:3px;background:var(--bg);color:var(--text-muted)">NOT STARTED</div>
                     </div>
@@ -1566,10 +1586,9 @@ a.info-val:hover { color: var(--text); }
                     <div style="font-size:11px;color:var(--text-secondary);line-height:1.6">
                         <div style="margin-bottom:4px">Requirements:</div>
                         <div id="cert-l2-reqs">
-                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:var(--text-muted)">○</span> ≥50 evaluations on one model</div>
-                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:var(--text-muted)">○</span> Average risk score ≤ 0.35</div>
-                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:var(--text-muted)">○</span> Calibration ECE ≤ 0.15</div>
-                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:var(--text-muted)">○</span> Pro or Critical tier</div>
+                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:#3b82f6">✓</span> Rolling avg risk score &lt; 0.65</div>
+                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:#3b82f6">✓</span> Window: 100 evals (Standard) / 200 (Certified)</div>
+                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:var(--text-muted)">→</span> Certified tier: public L2 certificate</div>
                         </div>
                     </div>
                     <button id="cert-l2-btn" class="eval-submit-btn" onclick="requestCertification('L2')" style="display:none;width:100%;margin-top:12px;padding:8px;font-size:12px">Request L2 Certification →</button>
@@ -1580,7 +1599,7 @@ a.info-val:hover { color: var(--text); }
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
                         <div>
                             <div style="font-size:16px;font-weight:700;color:#22c55e">L3</div>
-                            <div style="font-size:11px;color:var(--text-muted)">Full Certification</div>
+                            <div style="font-size:11px;color:var(--text-muted)">Fully Certified</div>
                         </div>
                         <div class="cert-status" id="cert-l3-status" style="font-size:10px;padding:3px 8px;border-radius:3px;background:var(--bg);color:var(--text-muted)">NOT STARTED</div>
                     </div>
@@ -1591,11 +1610,10 @@ a.info-val:hover { color: var(--text); }
                     <div style="font-size:11px;color:var(--text-secondary);line-height:1.6">
                         <div style="margin-bottom:4px">Requirements:</div>
                         <div id="cert-l3-reqs">
-                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:var(--text-muted)">○</span> ≥200 evaluations on one model</div>
-                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:var(--text-muted)">○</span> Average risk score ≤ 0.25</div>
-                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:var(--text-muted)">○</span> Calibration ECE ≤ 0.08</div>
-                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:var(--text-muted)">○</span> 30-day consistency window</div>
-                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:var(--text-muted)">○</span> Critical tier</div>
+                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:#22c55e">✓</span> Rolling avg risk score &lt; 0.35</div>
+                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:#22c55e">✓</span> Window: 100 evals (Standard) / 200 (Certified)</div>
+                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:#22c55e">✓</span> Anti-flap: 3+ consecutive evals confirm level</div>
+                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:var(--text-muted)">→</span> Certified tier: ONTO CERTIFIED badge + public registry</div>
                         </div>
                     </div>
                     <button id="cert-l3-btn" class="eval-submit-btn" onclick="requestCertification('L3')" style="display:none;width:100%;margin-top:12px;padding:8px;font-size:12px">Request L3 Certification →</button>
@@ -1607,9 +1625,9 @@ a.info-val:hover { color: var(--text); }
                 <div style="display:flex;justify-content:space-between;align-items:center">
                     <div>
                         <div class="card-head" style="margin-bottom:4px">Your Plan</div>
-                        <div style="font-size:13px"><span style="font-weight:600" id="cert-plan-name">Open</span> · <span style="color:var(--text-muted)" id="cert-plan-detail">1 request / hour</span></div>
+                        <div style="font-size:13px"><span style="font-weight:600" id="cert-plan-name">Open</span> · <span style="color:var(--text-muted)" id="cert-plan-detail">Diagnostic marker only</span></div>
                     </div>
-                    <button class="btn-upgrade" id="cert-upgrade-btn" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))" style="font-size:12px;padding:8px 20px">Upgrade to unlock L2/L3 →</button>
+                    <button class="btn-upgrade" id="cert-upgrade-btn" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))" style="font-size:12px;padding:8px 20px">Upgrade to Certified →</button>
                 </div>
             </div>
         </div>
@@ -1676,21 +1694,21 @@ print(result.factors)      <span style="color:#94a3b8"># {f1: 0.08, f2: 0.15, ..
                     </tr>
                     <tr style="border-bottom:1px solid var(--border)">
                         <td style="padding:8px 10px;font-weight:500">Open</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">1 req/hr</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">/v1/check only</td>
-                        <td style="padding:8px 10px;color:var(--text-muted)">—</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">10/hr · 50/day</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">Full API</td>
+                        <td style="padding:8px 10px;color:var(--text-muted)">Marker only (diagnostic)</td>
                     </tr>
                     <tr style="border-bottom:1px solid var(--border)">
-                        <td style="padding:8px 10px;font-weight:500">Pro</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">10K/day</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">Full API</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">L1, L2</td>
+                        <td style="padding:8px 10px;font-weight:500">Standard</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">Unlimited</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">Full API + Proof Chain</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">Marker (internal)</td>
                     </tr>
                     <tr>
-                        <td style="padding:8px 10px;font-weight:500">Critical</td>
+                        <td style="padding:8px 10px;font-weight:500">Certified</td>
                         <td style="padding:8px 10px;color:var(--text-secondary)">Unlimited</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">Full API + webhooks</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">L1, L2, L3</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">Full API + Proof Chain + Audit</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">L1 · L2 · L3 (public cert)</td>
                     </tr>
                 </table>
                 <div style="margin-top:12px">
@@ -1880,11 +1898,11 @@ print(result.factors)      <span style="color:#94a3b8"># {f1: 0.08, f2: 0.15, ..
                         <span class="info-val" id="sub-rate">—</span>
                     </div>
                     <div class="info-row" id="sub-critical-row">
-                        <span class="info-key">Critical</span>
+                        <span class="info-key">Certified</span>
                         <span class="info-val" id="sub-critical-days">—</span>
                     </div>
                     <div class="info-row" id="sub-pro-row">
-                        <span class="info-key">Professional</span>
+                        <span class="info-key">Standard</span>
                         <span class="info-val" id="sub-pro-days">—</span>
                     </div>
                     <div class="info-row">
@@ -1940,40 +1958,44 @@ print(result.factors)      <span style="color:#94a3b8"># {f1: 0.08, f2: 0.15, ..
                 <div class="tier-card" id="card-free">
                     <div class="tier-name">Open</div>
                     <div class="tier-price">$0</div>
-                    <div class="tier-desc">Research & evaluation</div>
+                    <div class="tier-desc">Diagnostic access — see your AI's risk profile</div>
                     <ul class="tier-list">
-                        <li>1 request/hour</li>
-                        <li>+1 hour signal delay</li>
-                        <li>Community support</li>
+                        <li>10 evaluations/hour</li>
+                        <li>50/day · ~1,500/month</li>
+                        <li>Rolling marker (informational)</li>
+                        <li>No certification</li>
                         <li>Attribution required</li>
                     </ul>
                     <button class="btn-tier current" id="btn-free" disabled>Current</button>
                 </div>
                 
-                <!-- PROFESSIONAL -->
+                <!-- STANDARD -->
                 <div class="tier-card" id="card-business">
-                    <div class="tier-name">Professional</div>
+                    <div class="tier-name">Standard</div>
                     <div class="tier-price">$1,500<span>/month</span></div>
-                    <div class="tier-desc">Commercial deployment</div>
+                    <div class="tier-desc">Unlimited access to ONTO core — calibrate your AI</div>
                     <ul class="tier-list">
-                        <li>1 request/8.64s</li>
-                        <li>Real-time signal</li>
-                        <li>99.5% SLA</li>
-                        <li>Business hours support</li>
+                        <li>Unlimited evaluations</li>
+                        <li>Real-time Proof of Chain</li>
+                        <li>Rolling marker L1/L2/L3</li>
+                        <li>Internal diagnostics only</li>
+                        <li>No public certification</li>
                     </ul>
                     <button class="btn-tier" id="btn-business" onclick="openSubscribeModal('business')">Select</button>
                 </div>
                 
-                <!-- CRITICAL -->
+                <!-- CERTIFIED -->
                 <div class="tier-card" id="card-enterprise">
-                    <div class="tier-name">Critical</div>
+                    <div class="tier-name">Certified</div>
                     <div class="tier-price">$100,000<span>/year</span></div>
-                    <div class="tier-desc">Critical infrastructure</div>
+                    <div class="tier-desc">ONTO CERTIFIED — prove your AI quality to regulators</div>
                     <ul class="tier-list">
-                        <li>Unlimited requests</li>
-                        <li>Dedicated signal stream</li>
-                        <li>99.99% SLA</li>
-                        <li>24/7 priority support</li>
+                        <li>Everything in Standard</li>
+                        <li>Rolling certification (L2/L3)</li>
+                        <li>Public registry listing</li>
+                        <li>ONTO CERTIFIED badge</li>
+                        <li>24-month audit trail</li>
+                        <li>99.99% SLA · Priority support</li>
                     </ul>
                     <button class="btn-tier" id="btn-enterprise" onclick="openSubscribeModal('enterprise')">Select</button>
                     <button class="btn-tier-secondary" onclick="contactSales()">Contact</button>
@@ -2125,7 +2147,7 @@ print(result.factors)      <span style="color:#94a3b8"># {f1: 0.08, f2: 0.15, ..
                         <option value="">All Plans</option>
                         <option value="open">Open</option>
                         <option value="standard">Standard</option>
-                        <option value="critical">Critical</option>
+                        <option value="critical">Certified</option>
                     </select>
                 </div>
                 <div class="accounts-list" id="accounts-list">
@@ -2386,17 +2408,17 @@ print(result.factors)      <span style="color:#94a3b8"># {f1: 0.08, f2: 0.15, ..
 <div class="modal-overlay" id="subscribe-modal">
     <div class="modal modal-inst" style="max-width: 440px;">
         <div class="modal-header">
-            <h2><span id="subscribe-plan-name">Professional</span> Tier</h2>
+            <h2><span id="subscribe-plan-name">Standard</span> Tier</h2>
             <button class="modal-close" onclick="closeModal('subscribe-modal')">&times;</button>
         </div>
         <div class="modal-body">
             <div class="order-section">
                 <div class="form-section-title">Includes</div>
                 <div class="order-features" id="order-features">
-                    <div class="order-feature">1 request/8.64s rate limit</div>
-                    <div class="order-feature">Real-time signal access</div>
-                    <div class="order-feature">99.5% SLA</div>
-                    <div class="order-feature">Business hours support</div>
+                    <div class="order-feature">Unlimited evaluations</div>
+                    <div class="order-feature">Real-time Proof of Chain</div>
+                    <div class="order-feature">Rolling marker L1/L2/L3</div>
+                    <div class="order-feature">Internal diagnostics</div>
                 </div>
             </div>
             <div class="order-section">
@@ -2437,7 +2459,7 @@ print(result.factors)      <span style="color:#94a3b8"># {f1: 0.08, f2: 0.15, ..
             </div>
             <div class="order-summary">
                 <div class="order-summary-row">
-                    <span class="order-summary-label" id="summary-plan">Professional Tier - Annual</span>
+                    <span class="order-summary-label" id="summary-plan">Standard - Annual</span>
                     <span class="order-summary-value" id="summary-price">$15,000</span>
                 </div>
                 <div class="order-summary-row total">
@@ -2475,7 +2497,7 @@ print(result.factors)      <span style="color:#94a3b8"># {f1: 0.08, f2: 0.15, ..
         </div>
         <div class="modal-body form-inst">
             <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">
-                For Critical tier, custom integrations, or enterprise requirements.
+                For Certified tier, custom integrations, or enterprise requirements.
             </p>
             <div class="form-group">
                 <label class="form-label">Name</label>
@@ -3213,8 +3235,8 @@ function updateDashboardMetrics() {
     const sub = currentUser.subscription;
     const plan = currentUser.plan || 'free';
     
-    const planNames = { free: 'Open', business: 'Pro', enterprise: 'Critical' };
-    const rateLimits = { free: '1 request / hour', business: '1 request / 8.64s', enterprise: 'Unlimited' };
+    const planNames = { free: 'Open', business: 'Standard', enterprise: 'Certified' };
+    const rateLimits = { free: '10/hr · 50/day', business: 'Unlimited', enterprise: 'Unlimited' };
     
     // Plan card
     const nameEl = document.getElementById('dash-plan-name');
@@ -3266,7 +3288,7 @@ function updateDashboardMetrics() {
         const planIncludes = {
             free: 'Free: 1 eval/hr · 5 models · Public /check endpoint',
             business: 'Pro: 10K eval/day · Unlimited models · Certification · Priority support',
-            enterprise: 'Critical: Unlimited · Custom SLA · Dedicated support · PDF certificates'
+            enterprise: 'Certified: Rolling certification · Public registry · ONTO CERTIFIED badge · 24mo audit'
         };
         includesEl.textContent = planIncludes[plan] || planIncludes.free;
     }
@@ -3315,7 +3337,7 @@ function switchActivePlan(newPlan) {
     const proDays = sub.pro_days || 0;
     
     if (newPlan === 'enterprise' && criticalDays <= 0) {
-        showToast('No Critical days remaining', 'error');
+        showToast('No Certified days remaining', 'error');
         return;
     }
     if (newPlan === 'business' && proDays <= 0) {
@@ -3333,7 +3355,7 @@ function switchActivePlan(newPlan) {
     updateDashboardMetrics();
     updateBillingUI();
     
-    showToast('Switched to ' + (newPlan === 'enterprise' ? 'Critical' : 'Professional'), 'success');
+    showToast('Switched to ' + (newPlan === 'enterprise' ? 'Certified' : 'Standard'), 'success');
 }
 
 function showPage(page, el) {
@@ -3495,7 +3517,7 @@ function downloadInvoice() {
     const invoiceId = 'INV-' + new Date(sub.started).getFullYear() + '-' + Date.now().toString(36).toUpperCase();
     const plan = sub.plan;
     const amount = sub.amount;
-    const planNames = { business: 'Professional', enterprise: 'Critical' };
+    const planNames = { business: 'Standard', enterprise: 'Certified' };
     
     const invoice = {
         schema: 'onto-invoice/v1',
@@ -3748,7 +3770,7 @@ function updateBillingUI() {
     document.getElementById('btn-enterprise').textContent = 'Select';
     document.getElementById('btn-enterprise').disabled = false;
     
-    const planNames = { free: 'Open (Free)', business: 'Professional', enterprise: 'Critical' };
+    const planNames = { free: 'Open (Free)', business: 'Standard', enterprise: 'Certified' };
     const rateLimits = { free: '1/hour', business: '1/8.64s', enterprise: 'Unlimited' };
     
     // Update current plan indicator
@@ -3796,7 +3818,7 @@ function updateBillingUI() {
         
         if (proDays > 0) {
             proRow.classList.remove('hidden');
-            document.getElementById('sub-pro-days').textContent = proDays + ' days' + (criticalDays > 0 ? ' (after Critical)' : '');
+            document.getElementById('sub-pro-days').textContent = proDays + ' days' + (criticalDays > 0 ? ' (after Certified)' : '');
         } else {
             proRow.classList.add('hidden');
         }
@@ -3807,7 +3829,7 @@ function updateBillingUI() {
 // === SUBSCRIBE MODAL ===
 function openSubscribeModal(plan) {
     selectedPlan = plan;
-    const planNames = { business: 'Professional', enterprise: 'Critical' };
+    const planNames = { business: 'Standard', enterprise: 'Certified' };
     document.getElementById('subscribe-plan-name').textContent = planNames[plan] || plan;
     const prices = PLANS[plan];
     document.getElementById('price-annual-display').textContent = '$' + prices.annual.toLocaleString();
@@ -3826,11 +3848,11 @@ function updateOrderSummary() {
     const cycle = document.querySelector('input[name="billing-cycle"]:checked')?.value || 'annual';
     selectedCycle = cycle;
     const prices = PLANS[selectedPlan];
-    const planNames = { business: 'Professional', enterprise: 'Critical' };
+    const planNames = { business: 'Standard', enterprise: 'Certified' };
     const planName = planNames[selectedPlan] || selectedPlan;
     const planFeatures = {
-        business: ['1 request/8.64s', 'Real-time signal access', '99.5% SLA', 'Business hours support'],
-        enterprise: ['Unlimited requests', 'Dedicated signal stream', '99.99% SLA', '24/7 priority support']
+        business: ['Unlimited evaluations', 'Real-time Proof of Chain', 'Rolling marker L1/L2/L3', 'Internal diagnostics'],
+        enterprise: ['Unlimited + Certification', 'Public registry listing', 'ONTO CERTIFIED badge', '24mo audit trail']
     };
     const featuresEl = document.getElementById('order-features');
     featuresEl.innerHTML = (planFeatures[selectedPlan]||[]).map(f => '<div class="order-feature">'+f+'</div>').join('');
@@ -3874,15 +3896,15 @@ function redirectToAirwallex() {
     updateBillingUI(); updateDashboardMetrics();
     document.getElementById('user-plan').textContent = activePlan==='enterprise'?'CRITICAL':(activePlan==='business'?'PRO':'FREE');
     let msg = 'Subscription activated!';
-    if (criticalDays>0 && proDays>0) msg = 'Activated! '+criticalDays+'d Critical then '+proDays+'d Pro';
-    else if (criticalDays>0) msg = 'Activated! '+criticalDays+' days Critical';
+    if (criticalDays>0 && proDays>0) msg = 'Activated! '+criticalDays+'d Certified then '+proDays+'d Pro';
+    else if (criticalDays>0) msg = 'Activated! '+criticalDays+' days Certified';
     else if (proDays>0) msg = 'Activated! '+proDays+' days Pro';
     showToast(msg, 'success');
 }
 // === SUBSCRIBE MODAL ===
 function openSubscribeModal(plan) {
     selectedPlan = plan;
-    const planNames = { business: 'Professional', enterprise: 'Critical' };
+    const planNames = { business: 'Standard', enterprise: 'Certified' };
     document.getElementById('subscribe-plan-name').textContent = planNames[plan] || plan;
     const prices = PLANS[plan];
     document.getElementById('price-annual-display').textContent = '$' + prices.annual.toLocaleString();
@@ -3901,11 +3923,11 @@ function updateOrderSummary() {
     const cycle = document.querySelector('input[name="billing-cycle"]:checked')?.value || 'annual';
     selectedCycle = cycle;
     const prices = PLANS[selectedPlan];
-    const planNames = { business: 'Professional', enterprise: 'Critical' };
+    const planNames = { business: 'Standard', enterprise: 'Certified' };
     const planName = planNames[selectedPlan] || selectedPlan;
     const planFeatures = {
-        business: ['1 request/8.64s', 'Real-time signal access', '99.5% SLA', 'Business hours support'],
-        enterprise: ['Unlimited requests', 'Dedicated signal stream', '99.99% SLA', '24/7 priority support']
+        business: ['Unlimited evaluations', 'Real-time Proof of Chain', 'Rolling marker L1/L2/L3', 'Internal diagnostics'],
+        enterprise: ['Unlimited + Certification', 'Public registry listing', 'ONTO CERTIFIED badge', '24mo audit trail']
     };
     const featuresEl = document.getElementById('order-features');
     featuresEl.innerHTML = (planFeatures[selectedPlan]||[]).map(f => '<div class="order-feature">'+f+'</div>').join('');
@@ -3949,8 +3971,8 @@ function redirectToAirwallex() {
     updateBillingUI(); updateDashboardMetrics();
     document.getElementById('user-plan').textContent = activePlan==='enterprise'?'CRITICAL':(activePlan==='business'?'PRO':'FREE');
     let msg = 'Subscription activated!';
-    if (criticalDays>0 && proDays>0) msg = 'Activated! '+criticalDays+'d Critical then '+proDays+'d Pro';
-    else if (criticalDays>0) msg = 'Activated! '+criticalDays+' days Critical';
+    if (criticalDays>0 && proDays>0) msg = 'Activated! '+criticalDays+'d Certified then '+proDays+'d Pro';
+    else if (criticalDays>0) msg = 'Activated! '+criticalDays+' days Certified';
     else if (proDays>0) msg = 'Activated! '+proDays+' days Pro';
     showToast(msg, 'success');
 }
@@ -5276,8 +5298,8 @@ const CERT_THRESHOLDS = {
 function updateCertifyPage() {
     if (!currentUser) return;
     const plan = currentUser.plan || 'free';
-    const planNames = { free: 'Open', business: 'Pro', enterprise: 'Critical' };
-    const rateLimits = { free: '1 request / hour', business: '1 request / 8.64s', enterprise: 'Unlimited' };
+    const planNames = { free: 'Open', business: 'Standard', enterprise: 'Certified' };
+    const rateLimits = { free: '10/hr · 50/day', business: 'Unlimited', enterprise: 'Unlimited' };
     
     const nameEl = document.getElementById('cert-plan-name');
     const detailEl = document.getElementById('cert-plan-detail');
@@ -5346,7 +5368,7 @@ function renderCertReqs(level, models, plan) {
     if (t.max_single) checks.push({met: true, text: `No single eval > ${t.max_single}`});
     if (t.ece) checks.push({met: false, text: `Calibration ECE ≤ ${t.ece}`});
     if (t.tier) {
-        const tierName = t.tier === 'enterprise' ? 'Critical' : 'Pro';
+        const tierName = t.tier === 'enterprise' ? 'Certified' : 'Standard';
         const hasTier = t.tier === 'enterprise' ? plan === 'enterprise' : (plan === 'business' || plan === 'enterprise');
         checks.push({met: hasTier, text: `${tierName} tier` + (hasTier ? '' : ' required')});
     }
@@ -5391,8 +5413,8 @@ function requestCertification(level) {
 function updateSdkPage() {
     if (!currentUser) return;
     const plan = currentUser.plan || 'free';
-    const planNames = { free: 'Open', business: 'Pro', enterprise: 'Critical' };
-    const rateLimits = { free: '1 request / hour', business: '1 request / 8.64s', enterprise: 'Unlimited' };
+    const planNames = { free: 'Open', business: 'Standard', enterprise: 'Certified' };
+    const rateLimits = { free: '10/hr · 50/day', business: 'Unlimited', enterprise: 'Unlimited' };
     
     const nameEl = document.getElementById('sdk-plan-name');
     const rateEl = document.getElementById('sdk-plan-rate');
@@ -5526,6 +5548,36 @@ function dashDisplayResult(r, domain, output) {
         };
     } else if (proofWrap) {
         proofWrap.style.display = 'none';
+    }
+
+    // Rolling marker update
+    const markerWrap = document.getElementById('dash-marker-wrap');
+    if (r.marker && markerWrap) {
+        markerWrap.style.display = 'block';
+        const m = r.marker;
+        const levelEl = document.getElementById('dash-marker-level');
+        const riskEl = document.getElementById('dash-marker-risk');
+        const progressEl = document.getElementById('dash-marker-progress');
+        const statusEl = document.getElementById('dash-marker-status');
+        
+        if (levelEl) {
+            levelEl.textContent = m.marker;
+            levelEl.style.color = m.marker === 'L3' ? '#22c55e' : m.marker === 'L2' ? '#eab308' : '#ef4444';
+        }
+        if (riskEl) riskEl.textContent = 'avg risk: ' + (m.avg_risk !== null ? m.avg_risk.toFixed(4) : '—');
+        if (progressEl) progressEl.textContent = m.eval_count + ' / ' + m.window + ' evals';
+        if (statusEl) {
+            if (m.changed) {
+                statusEl.textContent = '⬆ Changed from ' + m.previous;
+                statusEl.style.color = '#22c55e';
+            } else if (m.eval_count < m.window) {
+                statusEl.textContent = 'Calibrating (' + Math.round(m.eval_count / m.window * 100) + '%)';
+                statusEl.style.color = 'var(--text-muted)';
+            } else {
+                statusEl.textContent = 'Stable';
+                statusEl.style.color = 'var(--text-muted)';
+            }
+        }
     }
 
     // Add to history
