@@ -681,6 +681,10 @@ a.info-val:hover { color: var(--text); }
 .signal-compact-next { font-size: 11px; color: var(--text-muted); }
 .signal-compact-next span { font-family: 'JetBrains Mono', monospace; color: var(--accent); }
 @media (max-width: 768px) { .signal-compact { flex-direction: column; gap: 8px; } .signal-compact-hash { max-width: 100%; } }
+/* Proof Badge */
+.proof-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 4px; padding: 4px 10px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #22c55e; cursor: pointer; transition: all 0.2s; margin-top: 8px; text-decoration: none; }
+.proof-badge:hover { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.4); }
+.proof-badge .proof-hash-text { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* Grid — clean */
 .dash-grid-clean { display: grid; grid-template-columns: 1fr; gap: 20px; margin-bottom: 20px; }
@@ -1393,6 +1397,13 @@ a.info-val:hover { color: var(--text); }
                         <div class="eval-factor"><span class="eval-factor-name" style="color:var(--text-muted)">Domain Multiplier</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="df-dm" style="width:0"></div></div><span class="eval-factor-val" id="dv-dm">—</span></div>
                     </div>
                     <div style="margin-top:12px;font-size:10px;color:var(--text-muted)" id="dash-result-signals">—</div>
+                    <div id="dash-proof-wrap" style="display:none">
+                        <a class="proof-badge" id="dash-proof-link" href="#" target="_blank" title="Verify this evaluation">
+                            <span>🔒</span>
+                            <span class="proof-hash-text" id="dash-proof-hash">—</span>
+                            <span style="color:rgba(34,197,94,0.6);font-size:9px;text-transform:uppercase;letter-spacing:0.5px">verify →</span>
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -1972,46 +1983,38 @@ print(result.factors)      <span style="color:#94a3b8"># {f1: 0.08, f2: 0.15, ..
         </div>
         <!-- REFERENCE PAGE (ADMIN) -->
         <div class="page" id="page-reference">
-            <!-- SIGNAL VISUALIZATION - MAIN ELEMENT -->
-            <div class="signal-panel">
+            <!-- PROOF CHAIN PANEL -->
+            <div class="signal-panel" id="proof-chain-panel">
                 <div class="signal-panel-grid"></div>
                 <div class="signal-header">
                     <div class="signal-title">
-                        <span class="signal-icon">σ</span>
-                        <span>Entropy Signal</span>
+                        <span class="signal-icon">🔒</span>
+                        <span>Proof Chain</span>
                     </div>
-                    <div class="signal-live" id="signal-live-indicator">
+                    <div class="signal-live" id="proof-live-indicator">
                         <span class="signal-dot"></span>
-                        <span>LIVE</span>
+                        <span>ACTIVE</span>
                     </div>
                 </div>
                 <div class="signal-body">
                     <div class="signal-main-row">
                         <div class="signal-id-block">
-                            <div class="signal-id" id="signal-id"><div class="signal-skeleton-id"></div></div>
-                            <div class="signal-hash" id="signal-hash"><div class="signal-skeleton-hash"></div></div>
-                        </div>
-                        <div class="signal-countdown-block">
-                            <div class="signal-countdown-label">NEXT</div>
-                            <div class="signal-countdown-value" id="signal-countdown">—</div>
+                            <div class="signal-id" id="proof-last-hash" style="font-size:11px;word-break:break-all">Loading...</div>
+                            <div style="font-size:10px;color:var(--text-muted);margin-top:4px" id="proof-last-time">—</div>
                         </div>
                     </div>
                     <div class="signal-metrics">
                         <div class="signal-metric">
-                            <div class="signal-metric-value" id="signal-uptime"><div class="skeleton skeleton-metric"></div></div>
-                            <div class="signal-metric-label">UPTIME</div>
+                            <div class="signal-metric-value" id="proof-total">—</div>
+                            <div class="signal-metric-label">TOTAL PROOFS</div>
                         </div>
                         <div class="signal-metric">
-                            <div class="signal-metric-value" id="signal-generated"><div class="skeleton skeleton-metric"></div></div>
-                            <div class="signal-metric-label">GENERATED</div>
+                            <div class="signal-metric-value" id="proof-24h">—</div>
+                            <div class="signal-metric-label">LAST 24H</div>
                         </div>
                         <div class="signal-metric">
-                            <div class="signal-metric-value" id="signal-requests"><div class="skeleton skeleton-metric"></div></div>
-                            <div class="signal-metric-label">REQUESTS</div>
-                        </div>
-                        <div class="signal-metric">
-                            <div class="signal-metric-value" id="signal-errors"><div class="skeleton skeleton-metric"></div></div>
-                            <div class="signal-metric-label">ERROR RATE</div>
+                            <div class="signal-metric-value" id="proof-verified">100%</div>
+                            <div class="signal-metric-label">VERIFIED</div>
                         </div>
                         <div class="signal-metric">
                             <div class="signal-metric-value">104</div>
@@ -2021,13 +2024,21 @@ print(result.factors)      <span style="color:#94a3b8"># {f1: 0.08, f2: 0.15, ..
                             <div class="signal-metric-value">ED25519</div>
                             <div class="signal-metric-label">SIGNATURE</div>
                         </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value" id="proof-pubkey">—</div>
+                            <div class="signal-metric-label">PUBLIC KEY</div>
+                        </div>
                     </div>
                 </div>
                 <div class="signal-controls">
-                    <button class="signal-btn" onclick="refreshSignal()">
+                    <button class="signal-btn" onclick="refreshProofStats()">
                         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
                         Refresh
                     </button>
+                    <a class="signal-btn" href="/verify/" target="_blank" style="text-decoration:none">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                        Public Verify
+                    </a>
                 </div>
             </div>
 
@@ -4307,63 +4318,33 @@ function initAdminPanel() {
 async function loadSignalData() {
     const apiKey = localStorage.getItem('onto_first_api_key');
     if (!apiKey) return;
-    
     try {
-        // Get admin status with full stats
-        const statusRes = await fetch(`${API_BASE}/v1/signal/admin-status`, {
-            headers: { 'x-api-key': apiKey }
-        });
-        
-        if (statusRes.ok) {
-            const stats = await statusRes.json();
-            
-            // Update signal ID and hash from current_signal
-            if (stats.current_signal) {
-                document.getElementById('signal-id').textContent = stats.current_signal.sigma_id || `σ_${stats.current_signal.timestamp}`;
-                startHashAnimation(stats.current_signal.entropy_hex || '');
-                
-                // Pulse effect on hash
-                const hashEl = document.getElementById('signal-hash');
-                if (hashEl) {
-                    hashEl.classList.add('pulse');
-                    setTimeout(() => hashEl.classList.remove('pulse'), 1000);
-                }
-            }
-            
-            // Update metrics with pulse effect
-            updateMetric('signal-uptime', formatUptime(stats.uptime_seconds));
-            updateMetric('signal-generated', stats.signals_generated || 0);
-            updateMetric('signal-requests', stats.total_requests || 0);
-            // Error rate: show only if > 5%, otherwise "OK"
-            const errorRate = stats.error_rate_percent || 0;
-            if (errorRate < 5) {
-                updateMetric('signal-errors', 'OK', 'good');
-            } else {
-                updateMetric('signal-errors', errorRate.toFixed(1) + '%', 'warn');
-            }
-            
-            // Update pause state
-            signalPaused = stats.paused || false;
-            const indicator = document.getElementById('signal-live-indicator');
-            if (indicator) {
-                if (signalPaused) {
-                    indicator.innerHTML = '<span class="signal-dot" style="background:#d97706;animation:none;"></span><span>PAUSED</span>';
-                    indicator.style.background = 'rgba(245, 158, 11, 0.15)';
-                    indicator.style.color = '#d97706';
-                } else {
-                    indicator.innerHTML = '<span class="signal-dot"></span><span>LIVE</span>';
-                    indicator.style.background = 'rgba(34, 197, 94, 0.15)';
-                    indicator.style.color = '#15803d';
-                }
-            }
-            
-            // Start countdown
-            signalData = { next_update_in: stats.signal_interval - (stats.uptime_seconds % stats.signal_interval) };
-            startSignalCountdown();
+        const pkRes = await fetch(`${API_BASE}/v1/signal/public-key`);
+        if (pkRes.ok) {
+            const pk = await pkRes.json();
+            const el = document.getElementById('proof-pubkey');
+            if (el) el.textContent = (pk.public_key_hex || '').substring(0, 8) + '...';
         }
+        const statsRes = await fetch(`${API_BASE}/v1/docs/admin/proof-stats`, { headers: { 'x-api-key': apiKey } });
+        if (statsRes.ok) {
+            const s = await statsRes.json();
+            const te = document.getElementById('proof-total');
+            const he = document.getElementById('proof-24h');
+            if (te) te.textContent = s.total_proofs || '0';
+            if (he) he.textContent = s.proofs_24h || '0';
+            if (s.last_proof_hash) {
+                const hEl = document.getElementById('proof-last-hash');
+                if (hEl) hEl.textContent = s.last_proof_hash.substring(0, 24) + '...';
+                const tEl = document.getElementById('proof-last-time');
+                if (tEl && s.last_proof_time) tEl.textContent = 'Last: ' + new Date(s.last_proof_time).toLocaleString();
+            }
+        }
+        const ind = document.getElementById('proof-live-indicator');
+        if (ind) { ind.innerHTML = '<span class="signal-dot"></span><span>ACTIVE</span>'; ind.style.background = 'rgba(34,197,94,0.15)'; ind.style.color = '#15803d'; }
     } catch (e) {
-        console.error('Signal load error:', e);
-        document.getElementById('signal-hash').textContent = 'Connection error';
+        console.log('Proof stats load:', e);
+        const h = document.getElementById('proof-last-hash');
+        if (h) h.textContent = 'Connection error';
     }
 }
 
@@ -4457,9 +4438,11 @@ function startSignalCountdown() {
 
 let signalPaused = false;
 
-function refreshSignal() {
-    loadSignalData();
-    showToast('Signal refreshed', 'success');
+function refreshSignal() { refreshProofStats(); }
+
+async function refreshProofStats() {
+    await loadSignalData();
+    showToast('Proof chain refreshed', 'success');
 }
 
 // === ACCOUNTS FUNCTIONS ===
@@ -5412,8 +5395,18 @@ function dashDisplayResult(r, domain, output) {
     signalText += hardSignals + '/3 hard signals provided';
     document.getElementById('dash-result-signals').textContent = signalText;
 
+    // Proof badge
+    const proofWrap = document.getElementById('dash-proof-wrap');
+    if (r.proof_hash) {
+        proofWrap.style.display = 'block';
+        document.getElementById('dash-proof-hash').textContent = r.proof_hash.substring(0, 16) + '...' + r.proof_hash.slice(-8);
+        document.getElementById('dash-proof-link').href = '/verify/?hash=' + r.proof_hash;
+    } else {
+        proofWrap.style.display = 'none';
+    }
+
     // Add to history
-    evalSessionHistory.unshift({ risk, compliance: comp, domain, output: output.substring(0, 60), time: new Date().toLocaleTimeString() });
+    evalSessionHistory.unshift({ risk, compliance: comp, domain, output: output.substring(0, 60), time: new Date().toLocaleTimeString(), proof_hash: r.proof_hash || null });
     renderDashHistory();
 
     // Scroll to result
@@ -5464,6 +5457,7 @@ function renderDashHistory() {
             <span class="risk-pill" style="background:${bg};color:${color}">${h.risk.toFixed(3)}</span>
             <span class="eval-history-output" title="${h.output}">${h.output}</span>
             <span style="color:${color};font-weight:500;font-size:11px">${h.compliance}</span>
+            ${h.proof_hash ? `<a href="/verify/?hash=${h.proof_hash}" target="_blank" style="font-size:10px;color:#22c55e;text-decoration:none" title="Verify proof">🔒</a>` : '<span style="width:16px"></span>'}
             <span style="color:var(--text-muted);font-size:11px;text-align:right">${h.time}</span>
         </div>`;
     }).join('');
