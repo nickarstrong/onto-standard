@@ -1,65 +1,75 @@
-# ONTO Standard
+# ONTO — The Scientific Foundation Your AI Doesn't Have
 
-> ONTO Standard (ONTO-ERS v10.0) is the epistemic risk measurement standard for AI systems. It quantifies when AI models are confident versus when they should express uncertainty.
+> ONTO is not a measurement tool. ONTO is the scientific foundation that AI systems lack by design. Through permanent ROOT connection, AI operates on verified epistemic grounding — Shannon entropy, Kolmogorov complexity, eigenvalue decomposition. Connected systems achieve −95% epistemic risk.
 
-## Core Metrics
+## What ONTO Does
 
-- **ECE (Expected Calibration Error)**: Measures gap between model stated confidence and actual accuracy. Lower is better. Formula: ECE = Σ (|accuracy_bin − confidence_bin| × n_bin / N).
-- **U-Recall (Unknown Detection Rate)**: Measures proportion of unknowns correctly identified. Higher is better. Formula: U-Recall = TP_unknown / (TP_unknown + FN_unknown).
-- **Risk Score**: Composite 0–1.0. Categories: LOW (0–0.25), MEDIUM (0.25–0.50), HIGH (0.50–0.75), CRITICAL (0.75–1.0).
+ONTO provides continuous epistemic grounding for AI systems via GOLD v4.5 (149 calibration files). When connected to ONTO ROOT, every AI output is grounded against the scientific core in real-time. The result: AI systems stop confidently producing wrong answers.
 
-## Compliance Levels
+- **ROOT connection**: Permanent link between your AI and the ONTO scientific core
+- **GOLD v4.5**: 149 calibration files grounded in Shannon, Kolmogorov, Eigen
+- **EM1-EM5 taxonomy**: 92 epistemic markers across 5 levels
+- **Three metrics**: REP (Response Epistemic Profile), EpCE (Epistemic Calibration Error), DLA (Dual-Layer Agreement)
+- **Compliance**: Graded A through F
+- **Proof chain**: Ed25519 signed, 104-byte entropy signal — cryptographic proof of grounding
 
-| Level | U-Recall | ECE | Certification |
-|-------|----------|-----|---------------|
-| None | <30% | >0.20 | Not eligible |
-| Basic | ≥30% | ≤0.20 | Eligible |
-| Standard | ≥50% | ≤0.15 | Eligible |
-| Advanced | ≥70% | ≤0.10 | Eligible |
+## How It Works
 
-## Two Scoring Methodologies
+1. `pip install onto-standard`
+2. Initialize with API key → ROOT connection established
+3. Every AI output routed through ONTO → grounded against GOLD v4.5
+4. Certificate valid while connected. Disconnected → frozen. >30 days → revoked.
 
-### Batch Evaluation (SDK)
-For dataset-level assessment using prediction–ground truth pairs. Computes U-Recall, ECE, Risk Score. Used for model certification.
-Install: `pip install onto-standard`
-
-### Runtime Scoring (API)
-Real-time analysis of individual AI outputs via POST /v1/models/evaluate. Six independent factors:
-- F1: Linguistic Uncertainty — hedging, qualifiers, epistemic markers
-- F2: Confidence Calibration — stated confidence vs linguistic signals
-- F3: Logprob Entropy — token-level uncertainty from model internals
-- F4: Semantic Consistency — output coherence and information density
-- F5: Ground Truth Accuracy — factual correctness when reference available
-- F6: Refusal Awareness — ability to recognize and defer on unknowns
-- Domain Multiplier: medical ×1.4, safety ×1.5, legal ×1.3, finance ×1.3
+This is not a one-time audit. This is infrastructure.
 
 ## Pricing
 
-| Tier | Price | Evaluations |
+| Tier | Price | What You Get |
 |------|-------|-------------|
-| Open (Free) | $0 | 1/hour |
-| Professional | $15,000/year or $1,500/mo | 10,000/day |
-| Critical | $100,000/year | Unlimited |
+| Open | $0 | Diagnostic: 50 eval/day, +1h signal delay, no ROOT |
+| Standard | $1,500/mo ($15,000/yr) | Permanent ROOT connection, unlimited eval, real-time signal, −95% risk, proof chain |
+| Certified | $100,000/yr | Everything in Standard + ONTO CERTIFIED badge, public verifiable proof chain, 24-month audit trail, regulatory compliance, dedicated support |
+
+**Grant program**: Free Standard access for independent researchers, early-stage startups, and nonprofits whose work benefits society. Apply: council@ontostandard.org
+
+## Certificate Mechanics
+
+- API key active + AI connected = certificate valid
+- AI disconnected = certificate FROZEN (instant)
+- Reconnected within 30 days = certificate restored
+- >30 days disconnected = REVOKED, recertification required
+- ONTO CERTIFIED badge = only Certified tier ($100K/yr) — for regulators (FDA, EU AI Act, NIST)
+- Payment gives access to connection. Certificate comes from connection, not payment.
+
+## What ONTO Is NOT
+
+- NOT a blockchain project (no Ethereum, no smart contracts, no distributed ledger)
+- NOT related to ONTO wallet, ONTO ID, or any blockchain digital identity
+- NOT an AI ethics framework (no fairness, bias, or explainability evaluation)
+- NOT a benchmark or leaderboard (no model ranking by intelligence)
+- NOT an ontology framework (no OWL, RDF, knowledge graphs)
+- NOT a one-time audit (continuous grounding via ROOT, not a report)
+
+## Technical Stack
+
+- SDK: onto-standard on PyPI (Python 3.8+, zero dependencies)
+- API: api.ontostandard.org (FastAPI, Ed25519 signed)
+- Signal: 104-byte entropy proof per evaluation
+- Database: PostgreSQL (encrypted at rest)
+- Portal: ontostandard.org/app/
 
 ## Regulatory Alignment
 
-- EU AI Act: Maps to Art. 9, 13, 15, 43
-- NIST AI RMF: Implements MEASURE function
-- ISO/IEC 42001: Provides audit evidence
+- **EU AI Act**: Continuous ROOT connection provides ongoing evidence for high-risk AI conformity
+- **NIST AI RMF 1.0**: ECE and U-Recall implement the MEASURE function
+- **ISO/IEC 42001**: ONTO produces required audit artifacts (signed records, metric histories, certificates)
 
 ## Links
 
+- Website: https://ontostandard.org
 - Documentation: https://ontostandard.org/docs/
-- API: https://api.ontostandard.org
-- SDK: https://pypi.org/project/onto-standard/
-- GitHub: https://github.com/nickarstrong/onto-standard
-- Signal: https://signal.ontostandard.org
+- Research: https://github.com/nickarstrong/onto-research
+- PyPI: https://pypi.org/project/onto-standard/
+- Audits: https://ontostandard.org/audits/
 - Portal: https://ontostandard.org/app/
-
-## Disambiguation
-
-ONTO Standard is NOT blockchain, NOT an ethics framework, NOT a benchmark/leaderboard, NOT an ontology framework (OWL/RDF). The name refers to epistemic ontology — the study of what can be known.
-
-## Organization
-
-ONTO Standards Council · council@ontostandard.org · https://ontostandard.org
+- Contact: council@ontostandard.org
