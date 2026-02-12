@@ -119,7 +119,8 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <a href="/app/?page=settings" class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Account</a>
 </div>
 <div class="sb-si" id="sb-si"><a class="btn-si" onclick="openAuth('login')">Sign In</a><a class="btn-ca" onclick="openAuth('register')">Create Account</a></div>
-<div class="ng"><h4>Standard</h4><a class="nl active" href="#ers" data-doc="ers">ONTO-ERS</a></div>
+<div class="ng"><h4>Overview</h4><a class="nl active" href="#about" data-doc="about">About ONTO</a></div>
+<div class="ng"><h4>Standard</h4><a class="nl" href="#ers" data-doc="ers">ONTO-ERS</a></div>
 <div class="ng"><h4>Specifications</h4><a class="nl" href="#layer-spec" data-doc="layer-spec">Layer Specification</a><a class="nl" href="#regulatory" data-doc="regulatory">Regulatory Matrix</a></div>
 <div class="ng"><h4>Governance</h4><a class="nl" href="#charter" data-doc="charter">Foundation Charter</a><a class="nl" href="#council" data-doc="council">Standards Council</a></div>
 <div class="ng"><h4>Resources</h4><a class="nl" href="#articles" data-doc="articles">Articles</a><a class="nl" href="#faq" data-doc="faq">FAQ</a></div>
@@ -206,6 +207,73 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <main class="mc"><div class="db">
 
 <!-- ONTO-ERS -->
+<div class="ds da" id="doc-about" data-nav="about">
+<h1>About ONTO</h1>
+<div class="dm"><span class="db-g bg-g">Phase 2 — Experimental</span><span class="db-g bg-b">Public Research Release</span><span>Protocol v3.0</span><span>GOLD v4.5</span></div>
+
+<h2>What Is ONTO</h2>
+<p>ONTO is a deterministic measurement standard for epistemic risk in AI systems. It provides a reproducible computational framework that quantifies the gap between what AI claims to know and what it actually knows.</p>
+<p>ONTO is not a benchmark, leaderboard, ethics framework, or content filter. It is a scientific instrument — a formal measurement protocol calibrated against a reference corpus of known epistemic ground truth.</p>
+
+<h2>Why It Exists</h2>
+<p>AI systems generate confident output with no internal signal for epistemic integrity. Enterprises deploy models into regulated domains — healthcare, finance, legal, defense — without knowing when output is fabricated. There is no standardized way to measure this.</p>
+<p>Existing frameworks (NIST AI RMF, ISO 42001) define <em>what</em> to manage and <em>how</em> to govern, but not <em>what the number is</em>. ONTO provides the deterministic measurement layer: three metrics, five marker levels, reproducible scoring.</p>
+
+<h2>How It Works</h2>
+<h3>Dual-Engine Architecture</h3>
+<p><strong>Python Scoring Engine (v3.0)</strong> — analyzes model output text against EM1–EM5 epistemic marker taxonomy (92+ patterns). Computes three deterministic metrics:</p>
+<ul>
+<li><strong>REP</strong> (Response Epistemic Profile) — distribution of markers across EM1–EM5 levels</li>
+<li><strong>EpCE</strong> (Epistemic Calibration Error) — deviation between expressed confidence and epistemic grounding</li>
+<li><strong>DLA</strong> (Dual-Layer Agreement) — consistency between what a model says and how it says it</li>
+</ul>
+<p><strong>Rust onto_core Engine</strong> — analyzes model behavior patterns independently. Divergence between Python (what models SAY) and Rust (how models THINK) provides additional risk signal.</p>
+
+<h3>GOLD v4.5 Calibration Corpus</h3>
+<p>149 files. 100 calibration probes (PC0–PC4). 59 gold-standard references. Every evaluation is calibrated against this corpus — not against other models, not against human judgment, but against deterministic epistemic ground truth.</p>
+<p>Without continuous GOLD synchronization, scores drift and certificates become meaningless. This is infrastructure, not a one-time audit.</p>
+
+<h3>Cryptographic Proof</h3>
+<p>Every evaluation produces a 104-byte Ed25519 signed proof. Versioned, timestamped, tamper-proof. Verifiable at <a href="/verify/">/verify/</a>.</p>
+
+<h2>Evaluation Matrix</h2>
+<table><thead><tr><th>Model</th><th>Risk Score</th><th>Layer Δ</th><th>Halluc. Rate</th><th>Behavior</th></tr></thead><tbody>
+<tr><td>Claude 3.5 Sonnet</td><td>0.38</td><td>0.22</td><td>8.1%</td><td>Measured hedging</td></tr>
+<tr><td>GPT-4o</td><td>0.42</td><td>0.31</td><td>12.4%</td><td>Confident gaps</td></tr>
+<tr><td>Gemini 1.5 Pro</td><td>0.61</td><td>0.45</td><td>22.7%</td><td>Authority mimicry</td></tr>
+<tr><td>Llama 3.1 70B</td><td>0.71</td><td>0.52</td><td>31.2%</td><td>Confident fabrication</td></tr>
+<tr><td>Perplexity</td><td>0.85</td><td>0.63</td><td>44.8%</td><td>Citation hallucination</td></tr>
+</tbody></table>
+<p style="font-size:11px;color:var(--text-muted);">Demonstration data · Updated monthly · <a href="/audits/">Full reports →</a></p>
+
+<h2>Verification &amp; Reproducibility</h2>
+<ul>
+<li><strong>Open Parameters</strong> — all scoring thresholds, weights, and taxonomy rules are published</li>
+<li><strong>Deterministic Output</strong> — same input produces same scores across runs</li>
+<li><strong>GOLD-Calibrated</strong> — every metric anchored to reference corpus, not human judgment</li>
+<li><strong>Signed Proofs</strong> — Ed25519 cryptographic chain, publicly verifiable</li>
+</ul>
+
+<h2>Published Research</h2>
+<table><thead><tr><th>Resource</th><th>Description</th><th>Access</th></tr></thead><tbody>
+<tr><td>arXiv Paper</td><td>ONTO-ERS: Deterministic Epistemic Risk Measurement</td><td>arXiv:2026.XXXXX</td></tr>
+<tr><td>GOLD Corpus v4.5</td><td>149 calibration files, 100 probes</td><td><a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a></td></tr>
+<tr><td>Reproduction Scripts</td><td>Complete evaluation pipeline</td><td><a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a></td></tr>
+</tbody></table>
+
+<h2>Regulatory Alignment</h2>
+<p>ONTO is designed to complement existing frameworks:</p>
+<ul>
+<li><strong>EU AI Act (Article 9)</strong> — provides quantitative evidence for high-risk AI conformity assessment</li>
+<li><strong>NIST AI RMF</strong> — implements the MEASURE function with deterministic metrics</li>
+<li><strong>ISO/IEC 42001</strong> — produces audit artifacts: timestamped records, signed certificates, metric histories</li>
+</ul>
+
+<h2>Status</h2>
+<p>ONTO is currently in <strong>Phase 2 (Experimental)</strong>. The protocol is published for research and measurement purposes. Evaluations are conducted using demonstration parameters. Production certification will be available in subsequent phases.</p>
+<p style="font-size:12px;color:var(--text-muted);margin-top:20px;">ONTO is an independent research initiative. Not affiliated with ISO, NIST, or governmental standards bodies.</p>
+</div>
+
 <div class="ds da" id="doc-ers" data-nav="ers">
 <h1>ONTO Epistemic Risk Standard (ONTO-ERS)</h1>
 <div class="dm"><span class="db-g bg-g">v10.0</span><span class="db-g bg-b">Published</span><span>ONTO-SPEC-001</span><span>January 2026</span></div>

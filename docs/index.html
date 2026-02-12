@@ -630,7 +630,7 @@ body.show-portal { overflow: auto; }
 /* === HERO TAGLINE === */
 .hero-above {
     text-align: center;
-    margin-bottom: 16px;
+    margin-bottom: 32px;
     opacity: 0;
     animation: heroFadeIn 1s ease-out 0.3s forwards;
 }
@@ -895,6 +895,242 @@ body.show-portal { overflow: auto; }
 .cost-calc .calc-cta:hover {
     background: var(--safe);
     color: #fff;
+}
+
+/* === SCREEN 2: WHY (v6) === */
+.why-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 680px;
+    margin: 24px auto;
+    text-align: left;
+}
+.why-block {
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-card);
+}
+.why-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--safe);
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+.why-block p {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin: 0;
+}
+.evidence-strip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 24px auto 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+.evidence-strip strong {
+    color: var(--text);
+}
+.ev-sep {
+    color: var(--text-muted);
+}
+.spec-link {
+    display: inline-block;
+    font-size: 13px;
+    color: var(--safe);
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.15s;
+}
+.spec-link:hover {
+    opacity: 0.8;
+}
+
+/* === SCREEN 3: MATRIX (v6) === */
+.matrix-table {
+    max-width: 720px;
+    width: 100%;
+    margin: 0 auto 20px;
+}
+.matrix-row {
+    display: grid;
+    grid-template-columns: 2fr 0.7fr 0.7fr 0.7fr 1.5fr;
+    gap: 4px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    font-size: 13px;
+}
+.matrix-header {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 12px;
+}
+.m-model {
+    color: var(--text);
+    font-weight: 500;
+}
+.m-risk {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+}
+.m-risk.safe { color: var(--safe); }
+.m-risk.warn { color: var(--warning); }
+.m-risk.danger { color: var(--danger); }
+.m-layer, .m-halluc {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+.m-behavior {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+.matrix-meta {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+.matrix-meta a {
+    color: var(--safe);
+    text-decoration: none;
+}
+
+/* === SCREEN 4: PATH (v6) === */
+.path-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 520px;
+    width: 100%;
+}
+.path-step {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    grid-template-rows: auto auto;
+    gap: 0 12px;
+    padding: 16px 20px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-card);
+    text-decoration: none;
+    transition: all 0.15s;
+    text-align: left;
+}
+.path-step:hover {
+    border-color: var(--text-muted);
+    background: var(--bg-elevated);
+}
+.path-step-accent {
+    border-color: var(--safe);
+}
+.path-step-accent:hover {
+    border-color: var(--safe);
+    background: var(--safe-subtle);
+}
+.path-num {
+    grid-row: 1 / 3;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+.path-step-accent .path-num {
+    color: var(--safe);
+}
+.path-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+}
+.path-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+.demo-badge {
+    display: inline-block;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 6px;
+}
+
+@media (max-width: 600px) {
+    .path-steps { gap: 10px; }
+    .path-step { padding: 14px 16px; }
+    .path-desc { display: none; }
+}
+
+/* === SCREEN 5: FOOTER (v6) === */
+.final-research {
+    margin-top: 28px;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+}
+.final-research a {
+    color: var(--safe);
+    text-decoration: none;
+}
+.final-footer {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+}
+.footer-socials {
+    margin-bottom: 16px;
+    font-size: 13px;
+}
+.footer-socials a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.15s;
+}
+.footer-socials a:hover {
+    color: var(--text);
+}
+.f-sep {
+    color: var(--text-muted);
+    margin: 0 4px;
+}
+.footer-legal {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.8;
+}
+.footer-cite {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+}
+
+/* === MOBILE v6 === */
+@media (max-width: 600px) {
+    .why-grid { grid-template-columns: 1fr; gap: 16px; }
+    .evidence-strip { flex-wrap: wrap; font-size: 12px; }
+    .matrix-row { grid-template-columns: 1.5fr 0.7fr 0.7fr 0.7fr; }
+    .m-behavior { display: none; }
+    .matrix-header .m-behavior { display: none; }
+    .final-research { font-size: 10px; }
+    .footer-cite { font-size: 9px; }
 }
 
 /* === SCREEN 3: INDUSTRIES === */
@@ -1575,7 +1811,6 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
 <!-- SCREEN 1: ORB -->
 <div class="screen" id="screen1">
     <div class="hero-above">
-        <h1>Your AI has no scientific foundation.<br>We are <strong>one</strong>.</h1>
     </div>
     <div class="orb-container" id="orbContainer" onclick="toggleOrb()" role="button" aria-label="AI Calibration Interface - Click to toggle calibration state" tabindex="0">
         <div class="orb-core" id="orbCore"></div>
@@ -1587,164 +1822,163 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
     </div>
     <div class="hero-below">
         <div class="hero-sub-text">
-            ONTO Epistemic Risk Standard. GOLD-calibrated.<br>
-            Grounded in <em>Shannon, Kolmogorov, Eigen.</em>
-        </div>
-        <div class="audit-strip" id="auditStrip">
-            <span class="as-model">Claude <span class="as-score ap-safe" data-raw="0.38" data-cal="0.02">0.38</span></span>
-            <span class="as-sep">·</span>
-            <span class="as-model">GPT-4o <span class="as-score ap-warn" data-raw="0.42" data-cal="0.02">0.42</span></span>
-            <span class="as-sep">·</span>
-            <span class="as-model">Gemini <span class="as-score ap-danger" data-raw="0.61" data-cal="0.03">0.61</span></span>
-            <span class="as-sep">·</span>
-            <span class="as-model">Llama <span class="as-score ap-danger" data-raw="0.71" data-cal="0.04">0.71</span></span>
-            <span class="as-sep">·</span>
-            <span class="as-model">Perplexity <span class="as-score ap-danger" data-raw="0.85" data-cal="0.04">0.85</span></span>
-        </div>
-        <div class="hero-pressure" id="heroPressure">
-            Your AI is operating without epistemic grounding.
-            <a href="mailto:audit@ontostandard.org">Request audit</a>
-            <a href="/check/">Evaluate now</a>
+            Protocol v3.0 · Ed25519 Signed · GOLD v4.5
         </div>
     </div>
 </div>
 
 <!-- SCREEN 2: WHY -->
 <div id="calculate"></div>
-<div class="screen screen-why hidden" id="screen2" data-anchor="calculator">
-    <h1>AI is everywhere.<br>Errors are no longer cheap.</h1>
-    <div class="formula">Risk = Confidence − Truth</div>
+<div class="screen screen-why hidden" id="screen2" data-anchor="why">
+    <h1>AI is confident.<br>Not calibrated.</h1>
+    <div class="formula">Epistemic Risk = Confidence − Grounding</div>
     
-    <div class="cost-calc">
-        <div class="calc-label">Your annual epistemic loss</div>
-        <div class="calc-hint">↔ adjust values</div>
-        <div class="calc-inputs">
-            <div class="calc-field">
-                <label>REQ/DAY</label>
-                <div class="slider-wrap">
-                    <input type="range" id="calc-vol" value="1000" min="500" max="10000" step="500">
-                    <div class="slider-pulse" id="pulse-vol"></div>
-                </div>
-                <div class="value-display" id="vol-display">1,000</div>
-            </div>
-            <div class="calc-field">
-                <label>GAP %</label>
-                <div class="slider-wrap">
-                    <input type="range" id="calc-gap" value="10" min="5" max="35">
-                    <div class="slider-pulse" id="pulse-gap"></div>
-                </div>
-                <div class="value-display" id="gap-display">10%</div>
-            </div>
-            <div class="calc-field">
-                <label>$/ERROR</label>
-                <div class="slider-wrap">
-                    <input type="range" id="calc-cost" value="50" min="25" max="500" step="25">
-                    <div class="slider-pulse" id="pulse-cost"></div>
-                </div>
-                <div class="value-display" id="cost-display">$50</div>
-            </div>
+    <div class="why-grid">
+        <div class="why-block">
+            <div class="why-label">Problem</div>
+            <p>AI systems generate confident output with no internal signal for epistemic integrity. Enterprises deploy into regulated domains without knowing when output is fabricated.</p>
         </div>
-        <div class="burn-value" id="calc-burn">$1,277,500</div>
-        <div class="burn-sub">per year · after 30% manual mitigation</div>
-        <div class="calc-compare">ONTO Standard: $15k/yr · save <span class="save-amount" id="calc-save">$1.1M</span></div>
-        <div class="calc-compare" style="font-size: 11px; color: #555; margin-top: 4px;">Need ONTO CERTIFIED for regulators? <a href="mailto:council@ontostandard.org" style="color: var(--safe);">$100k/yr →</a></div>
-        <button class="calc-cta" onclick="window.location.href='/check/'">stop the bleed →</button>
+        <div class="why-block">
+            <div class="why-label">Protocol</div>
+            <p>ONTO applies deterministic marker taxonomy (EM1–EM5) and three metrics — REP, EpCE, DLA — calibrated against GOLD v4.5. Every evaluation: versioned, reproducible, signed.</p>
+        </div>
     </div>
+
+    <div class="evidence-strip">
+        <span><strong>149</strong> GOLD files</span>
+        <span class="ev-sep">·</span>
+        <span><strong>100</strong> Probes</span>
+        <span class="ev-sep">·</span>
+        <span><strong>92+</strong> Patterns</span>
+        <span class="ev-sep">·</span>
+        <span><strong>59</strong> References</span>
+    </div>
+
+    <a href="/docs/" class="spec-link">Read Specification →</a>
 </div>
 
-<!-- SCREEN 3: INDUSTRIES -->
+<!-- SCREEN 3: MATRIX -->
 <div class="screen screen-industries hidden" id="screen3">
-    <h1>Where epistemic errors matter</h1>
-    <div class="industries" id="industryList">
-        <div class="industry-tag" data-info="FDA compliance · Patient safety" data-cost="$100k+">Healthcare</div>
-        <div class="industry-tag" data-info="Trading AI · AML · Systemic risk" data-cost="$1M+">Finance</div>
-        <div class="industry-tag" data-info="Mission-critical · ITAR classified" data-cost="N/A">Defense</div>
-        <div class="industry-tag" data-info="DO-178C · Zero-tolerance" data-cost="$10M+">Aviation</div>
-        <div class="industry-tag" data-info="ISO 26262 · Autonomous decisions" data-cost="$500k+">Automotive</div>
-        <div class="industry-tag" data-info="Model calibration · Foundation models" data-cost="$50k+">AI Labs</div>
-        <div class="industry-tag" data-info="Contract analysis · Liability" data-cost="$200k+">Legal</div>
-        <div class="industry-tag" data-info="AI-to-AI protocols · Physical risk" data-cost="$300k+">Robotics</div>
-        <div class="industry-tag" data-info="FedRAMP · Critical infrastructure" data-cost="$5M+">Government</div>
+    <h1>10 models. One protocol.<br>Public results.</h1>
+    
+    <div class="matrix-table">
+        <div class="matrix-row matrix-header">
+            <span class="m-model">Model</span>
+            <span class="m-risk">Risk</span>
+            <span class="m-layer">Layer</span>
+            <span class="m-halluc">Halluc.</span>
+            <span class="m-behavior">Behavior</span>
+        </div>
+        <div class="matrix-row">
+            <span class="m-model">Claude 3.5 Sonnet</span>
+            <span class="m-risk">0.38</span>
+            <span class="m-layer">0.22</span>
+            <span class="m-halluc">8.1%</span>
+            <span class="m-behavior">Measured hedging</span>
+        </div>
+        <div class="matrix-row">
+            <span class="m-model">GPT-4o</span>
+            <span class="m-risk">0.42</span>
+            <span class="m-layer">0.31</span>
+            <span class="m-halluc">12.4%</span>
+            <span class="m-behavior">Confident gaps</span>
+        </div>
+        <div class="matrix-row">
+            <span class="m-model">Gemini 1.5 Pro</span>
+            <span class="m-risk">0.61</span>
+            <span class="m-layer">0.45</span>
+            <span class="m-halluc">22.7%</span>
+            <span class="m-behavior">Authority mimicry</span>
+        </div>
+        <div class="matrix-row">
+            <span class="m-model">Llama 3.1 70B</span>
+            <span class="m-risk">0.71</span>
+            <span class="m-layer">0.52</span>
+            <span class="m-halluc">31.2%</span>
+            <span class="m-behavior">Confident fabrication</span>
+        </div>
+        <div class="matrix-row">
+            <span class="m-model">Perplexity</span>
+            <span class="m-risk">0.85</span>
+            <span class="m-layer">0.63</span>
+            <span class="m-halluc">44.8%</span>
+            <span class="m-behavior">Citation hallucination</span>
+        </div>
     </div>
-    <div class="industry-info">
-        <div class="industry-info-text" id="industryInfoText">Select an industry</div>
-        <div class="industry-cost" id="industryCost"></div>
+
+    <div class="matrix-meta">
+        <span class="demo-badge">Demonstration data</span><br>
+        Updated monthly · <a href="/methodology/">Methodology</a> · <a href="/audits/">Full reports</a>
     </div>
 </div>
 
-<!-- SCREEN 4: PRICING -->
+<!-- SCREEN 4: PATH -->
 <div class="screen screen-choice hidden" id="screen4">
-    <div class="pricing-grid">
-        <div class="pricing-card">
-            <div class="pricing-name">Open</div>
-            <div class="pricing-price">$0</div>
-            <div class="pricing-period">forever</div>
-            <ul class="pricing-features">
-                <li>50 evaluations / day</li>
-                <li>+1h signal delay</li>
-                <li>See your AI's epistemic risk</li>
-                <li>No ROOT connection</li>
-                <li>Watermark on results</li>
-            </ul>
-            <div class="pricing-actions">
-                <a href="/check/" class="btn btn-secondary">Try free</a>
-            </div>
-        </div>
-        <div class="pricing-card popular">
-            <div class="pricing-badge">Most popular</div>
-            <div class="pricing-name">Standard</div>
-            <div class="pricing-price">$1,500</div>
-            <div class="pricing-period">/month</div>
-            <div class="pricing-annual">$15,000/year (save 17%)</div>
-            <ul class="pricing-features">
-                <li>Unlimited evaluations</li>
-                <li>Permanent ROOT connection</li>
-                <li>Real-time entropy signal</li>
-                <li>−95% epistemic risk</li>
-                <li>Proof chain (internal)</li>
-                <li>Email support</li>
-            </ul>
-            <div class="pricing-actions">
-                <a href="/app/" class="btn btn-primary">Connect to ROOT</a>
-            </div>
-        </div>
-        <div class="pricing-card">
-            <div class="pricing-name">Certified</div>
-            <div class="pricing-price">$100,000</div>
-            <div class="pricing-period">/year</div>
-            <ul class="pricing-features">
-                <li>Everything in Standard</li>
-                <li>ONTO CERTIFIED badge</li>
-                <li>Verifiable proof chain (public)</li>
-                <li>24-month audit trail</li>
-                <li>Regulatory compliance reports</li>
-                <li>Dedicated support + SLA 99.99%</li>
-            </ul>
-            <div class="pricing-actions">
-                <a href="mailto:council@ontostandard.org" class="btn btn-secondary">Contact sales</a>
-            </div>
-        </div>
+    <h1 style="font-size: clamp(20px, 3vw, 28px); font-weight: 600; margin-bottom: 12px; letter-spacing: -0.01em;">Verify everything. Trust nothing.</h1>
+    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 36px; max-width: 480px; text-align: center; line-height: 1.6;">ONTO is open methodology. Every claim is reproducible.<br>Every metric is deterministic. Start here:</p>
+    
+    <div class="path-steps">
+        <a href="/docs/#about" class="path-step">
+            <span class="path-num">01</span>
+            <span class="path-title">About ONTO</span>
+            <span class="path-desc">What it is, why it exists, how it works — the full picture</span>
+        </a>
+        <a href="/docs/" class="path-step">
+            <span class="path-num">02</span>
+            <span class="path-title">Read the Specification</span>
+            <span class="path-desc">Full methodology, EM1–EM5 taxonomy, metrics definition, GOLD corpus structure</span>
+        </a>
+        <a href="/audits/" class="path-step">
+            <span class="path-num">03</span>
+            <span class="path-title">Review Public Evaluations</span>
+            <span class="path-desc">Published audit reports with reproducible scoring parameters</span>
+        </a>
+        <a href="/check/" class="path-step">
+            <span class="path-num">04</span>
+            <span class="path-title">Run a Free Evaluation</span>
+            <span class="path-desc">50 evaluations/day, no account required, see your model's epistemic profile</span>
+        </a>
+        <a href="/app/" class="path-step path-step-accent">
+            <span class="path-num">05</span>
+            <span class="path-title">Access the Portal</span>
+            <span class="path-desc">Full protocol, real-time scoring, proof chain, institutional licensing</span>
+        </a>
     </div>
-    <div style="margin-top: 24px; text-align: center; font-size: 12px; color: #888; max-width: 480px;">
-        <strong style="color: #aaa;">Building something that matters?</strong><br>
-        ONTO provides free Standard access to independent researchers, early-stage startups, and nonprofit organizations whose work benefits society.<br>
-        <a href="mailto:council@ontostandard.org" style="color: var(--safe); text-decoration: none;">Apply →</a>
-    </div>
+
     <button class="cta-button" onclick="goToScreen(5)">Continue →</button>
 </div>
 
 <!-- SCREEN 5: INSTITUTIONAL CLOSE -->
 <div class="screen screen-final hidden" id="screen5">
     <div class="final-content">
-        <p class="governed-text">Continuous access to the scientific core. GOLD v4.5. Your AI, grounded.</p>
+        <p class="governed-text">Your AI, grounded.</p>
         <div class="pip-install" onclick="copyPip()" title="Click to copy">
             <span class="pip-prompt">$</span>
             <span class="pip-command">pip install onto-standard</span>
             <span class="pip-copy" id="pipCopy">copy</span>
         </div>
         <div class="final-buttons">
-            <a href="https://github.com/nickarstrong/onto-research" class="btn-secondary" target="_blank">Open the Standard</a>
-            <a href="/docs/" class="btn-primary">Evaluate a model →</a>
+            <a href="/app/" class="btn-primary">Access Portal →</a>
+            <a href="/docs/" class="btn-secondary">Read Specification</a>
+        </div>
+        <div class="final-research">
+            arXiv:2026.XXXXX · GOLD v4.5 (149 files) · <a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a>
+        </div>
+        <div class="final-footer">
+            <div class="footer-socials">
+                <a href="https://x.com/ontostandardorg" target="_blank">X</a>
+                <span class="f-sep">·</span>
+                <a href="https://linkedin.com/company/ontostandard" target="_blank">LinkedIn</a>
+                <span class="f-sep">·</span>
+                <a href="https://github.com/nickarstrong/onto-research" target="_blank">GitHub</a>
+                <span class="f-sep">·</span>
+                <a href="mailto:contact@ontostandard.org">contact@ontostandard.org</a>
+            </div>
+            <div class="footer-legal">
+                © 2026 ONTO Standards Council · Est. 2024<br>
+                ONTO is an independent research initiative. Not affiliated with ISO, NIST, or governmental standards bodies.<br>
+                <span class="footer-cite">Cite: Arstrong N. (2026). ONTO-ERS: Deterministic Epistemic Risk Measurement. arXiv:2026.XXXXX</span>
+            </div>
         </div>
     </div>
 </div>
