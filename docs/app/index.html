@@ -1395,12 +1395,12 @@ a.info-val:hover { color: var(--text); }
                     </div>
                     <div style="font-size:10px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Factor Analysis</div>
                     <div class="eval-factors" id="dash-factors">
-                        <div class="eval-factor"><span class="eval-factor-name">F1 Linguistic Uncertainty</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="df-f1" style="width:0"></div></div><span class="eval-factor-val" id="dv-f1">—</span></div>
-                        <div class="eval-factor"><span class="eval-factor-name">F2 Confidence Calibration</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="df-f2" style="width:0"></div></div><span class="eval-factor-val" id="dv-f2">—</span></div>
-                        <div class="eval-factor"><span class="eval-factor-name">F3 Logprob Entropy</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="df-f3" style="width:0"></div></div><span class="eval-factor-val" id="dv-f3">—</span></div>
-                        <div class="eval-factor"><span class="eval-factor-name">F4 Semantic Consistency</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="df-f4" style="width:0"></div></div><span class="eval-factor-val" id="dv-f4">—</span></div>
-                        <div class="eval-factor"><span class="eval-factor-name">F5 Ground Truth Accuracy</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="df-f5" style="width:0"></div></div><span class="eval-factor-val" id="dv-f5">—</span></div>
-                        <div class="eval-factor"><span class="eval-factor-name">F6 Refusal Awareness</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="df-f6" style="width:0"></div></div><span class="eval-factor-val" id="dv-f6">—</span></div>
+                        <div class="eval-factor"><span class="eval-factor-name">EM1 · Hedging & Uncertainty</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="df-f1" style="width:0"></div></div><span class="eval-factor-val" id="dv-f1">—</span></div>
+                        <div class="eval-factor"><span class="eval-factor-name">EM2 · Confidence Calibration</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="df-f2" style="width:0"></div></div><span class="eval-factor-val" id="dv-f2">—</span></div>
+                        <div class="eval-factor"><span class="eval-factor-name">EM3 · Token Entropy</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="df-f3" style="width:0"></div></div><span class="eval-factor-val" id="dv-f3">—</span></div>
+                        <div class="eval-factor"><span class="eval-factor-name">EM4 · Semantic Consistency</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="df-f4" style="width:0"></div></div><span class="eval-factor-val" id="dv-f4">—</span></div>
+                        <div class="eval-factor"><span class="eval-factor-name">EM5 · Factual Accuracy</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="df-f5" style="width:0"></div></div><span class="eval-factor-val" id="dv-f5">—</span></div>
+                        <div class="eval-factor"><span class="eval-factor-name">REP · Refusal Posture</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="df-f6" style="width:0"></div></div><span class="eval-factor-val" id="dv-f6">—</span></div>
                         <div class="eval-factor"><span class="eval-factor-name" style="color:var(--text-muted)">Domain Multiplier</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="df-dm" style="width:0"></div></div><span class="eval-factor-val" id="dv-dm">—</span></div>
                     </div>
                     <div style="margin-top:12px;font-size:10px;color:var(--text-muted)" id="dash-result-signals">—</div>
@@ -1410,6 +1410,11 @@ a.info-val:hover { color: var(--text); }
                             <span class="proof-hash-text" id="dash-proof-hash">—</span>
                             <span class="proof-verify">verify →</span>
                         </a>
+                    </div>
+                    <!-- Recommendations -->
+                    <div id="dash-recs-wrap" style="display:none;margin-top:12px">
+                        <div style="font-size:10px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Recommendations</div>
+                        <div id="dash-recs-list"></div>
                     </div>
                     <!-- Rolling Marker -->
                     <div id="dash-marker-wrap" style="display:none;margin-top:12px;padding:10px 12px;background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.15);border-radius:6px">
@@ -1791,12 +1796,12 @@ print(result.factors)      <span style="color:#94a3b8"># {f1: 0.08, f2: 0.15, ..
 
                 <div style="font-size:11px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Factor Breakdown</div>
                 <div class="eval-factors" id="eval-factors">
-                    <div class="eval-factor"><span class="eval-factor-name">F1 · Linguistic Uncertainty</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="ef-f1" style="width:0"></div></div><span class="eval-factor-val" id="ev-f1">—</span></div>
-                    <div class="eval-factor"><span class="eval-factor-name">F2 · Confidence Calibration</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="ef-f2" style="width:0"></div></div><span class="eval-factor-val" id="ev-f2">—</span></div>
-                    <div class="eval-factor"><span class="eval-factor-name">F3 · Logprob Entropy</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="ef-f3" style="width:0"></div></div><span class="eval-factor-val" id="ev-f3">—</span></div>
-                    <div class="eval-factor"><span class="eval-factor-name">F4 · Semantic Consistency</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="ef-f4" style="width:0"></div></div><span class="eval-factor-val" id="ev-f4">—</span></div>
-                    <div class="eval-factor"><span class="eval-factor-name">F5 · Ground Truth Accuracy</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="ef-f5" style="width:0"></div></div><span class="eval-factor-val" id="ev-f5">—</span></div>
-                    <div class="eval-factor"><span class="eval-factor-name">F6 · Refusal Awareness</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="ef-f6" style="width:0"></div></div><span class="eval-factor-val" id="ev-f6">—</span></div>
+                    <div class="eval-factor"><span class="eval-factor-name">EM1 · Hedging & Uncertainty</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="ef-f1" style="width:0"></div></div><span class="eval-factor-val" id="ev-f1">—</span></div>
+                    <div class="eval-factor"><span class="eval-factor-name">EM2 · Confidence Calibration</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="ef-f2" style="width:0"></div></div><span class="eval-factor-val" id="ev-f2">—</span></div>
+                    <div class="eval-factor"><span class="eval-factor-name">EM3 · Token Entropy</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="ef-f3" style="width:0"></div></div><span class="eval-factor-val" id="ev-f3">—</span></div>
+                    <div class="eval-factor"><span class="eval-factor-name">EM4 · Semantic Consistency</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="ef-f4" style="width:0"></div></div><span class="eval-factor-val" id="ev-f4">—</span></div>
+                    <div class="eval-factor"><span class="eval-factor-name">EM5 · Factual Accuracy</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="ef-f5" style="width:0"></div></div><span class="eval-factor-val" id="ev-f5">—</span></div>
+                    <div class="eval-factor"><span class="eval-factor-name">REP · Refusal Posture</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="ef-f6" style="width:0"></div></div><span class="eval-factor-val" id="ev-f6">—</span></div>
                     <div class="eval-factor"><span class="eval-factor-name">Domain Multiplier</span><div class="eval-factor-bar-wrap"><div class="eval-factor-bar" id="ef-dm" style="width:0"></div></div><span class="eval-factor-val" id="ev-dm">—</span></div>
                 </div>
             </div>
@@ -3284,7 +3289,7 @@ function updateAuditStats() {
     if (models.length > 0) {
         const risks = models.filter(m => m.risk_score != null).map(m => m.risk_score);
         const evals = models.reduce((sum, m) => sum + (m.eval_count || 0), 0);
-        const passed = models.filter(m => (m.compliance || '').toUpperCase() === 'PASSED').length;
+        const passed = models.filter(m => ['A','B','C','PASSED'].includes((m.compliance || '').toUpperCase())).length;
         
         if (risks.length > 0) {
             const avg = risks.reduce((a, b) => a + b, 0) / risks.length;
@@ -5544,13 +5549,20 @@ function dashDisplayResult(r, domain, output) {
     ring.style.stroke = risk >= 0.65 ? '#ef4444' : risk >= 0.35 ? '#eab308' : '#22c55e';
     document.getElementById('dash-score-val').textContent = risk.toFixed(3);
 
-    const comp = (r.compliance || 'REVIEW').toUpperCase();
+    const comp = (r.compliance || '—').toUpperCase();
     const badge = document.getElementById('dash-comp-badge');
     badge.textContent = comp;
-    badge.className = 'eval-compliance-badge ' + comp.toLowerCase();
+    const compClass = ['A','B'].includes(comp) ? 'passed' : ['C','D'].includes(comp) ? 'review' : ['E','F','FAILED'].includes(comp) ? 'failed' : 'review';
+    badge.className = 'eval-compliance-badge ' + compClass;
 
     const dm = r.factors?.domain_multiplier || 1.0;
-    document.getElementById('dash-result-meta').textContent = domain.charAt(0).toUpperCase() + domain.slice(1) + ' · ×' + dm.toFixed(1) + ' · ' + new Date().toLocaleTimeString();
+    const layerStr = r.layer || '—';
+    const engineStr = r.engine_version ? 'v' + r.engine_version : '';
+    const sigStr = r.signals_used ? r.signals_used + ' signals' : '';
+    document.getElementById('dash-result-meta').textContent = 
+        layerStr + ' · ' + domain.charAt(0).toUpperCase() + domain.slice(1) + ' ×' + dm.toFixed(1) + 
+        (engineStr ? ' · ' + engineStr : '') + (sigStr ? ' · ' + sigStr : '') + 
+        ' · ' + new Date().toLocaleTimeString();
 
     const f = r.factors || {};
     dashSetFactor('f1', f.linguistic_uncertainty, true);
@@ -5582,6 +5594,24 @@ function dashDisplayResult(r, domain, output) {
         };
     } else if (proofWrap) {
         proofWrap.style.display = 'none';
+    }
+
+    // Recommendations
+    const recsWrap = document.getElementById('dash-recs-wrap');
+    const recsList = document.getElementById('dash-recs-list');
+    const recs = r.recommendations || [];
+    if (recs.length > 0 && recsWrap && recsList) {
+        recsWrap.style.display = 'block';
+        const sevColors = { critical: '#ef4444', high: '#f97316', medium: '#eab308', low: '#3b82f6', info: '#22c55e' };
+        recsList.innerHTML = recs.map(rec => {
+            const c = sevColors[rec.severity] || 'var(--text-muted)';
+            return `<div style="padding:6px 8px;margin-bottom:4px;border-left:2px solid ${c};background:${c}08;border-radius:0 4px 4px 0;font-size:11px;color:var(--text-secondary);line-height:1.5">
+                <span style="color:${c};font-weight:600;text-transform:uppercase;font-size:9px;letter-spacing:0.3px">${rec.severity || ''}</span>
+                <span style="margin-left:6px">${rec.message || ''}</span>
+            </div>`;
+        }).join('');
+    } else if (recsWrap) {
+        recsWrap.style.display = 'none';
     }
 
     // Rolling marker update
