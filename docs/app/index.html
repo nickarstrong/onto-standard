@@ -1193,8 +1193,8 @@ a.info-val:hover { color: var(--text); }
                 Calibrate
             </div>
             <div class="nav-item" onclick="showPage('certify', this)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15l-2 5l9-11h-6l2-5l-9 11h6z"/></svg>
-                Certify
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+                Audit Trail
             </div>
             <div class="nav-divider"></div>
             <div class="nav-item" onclick="showPage('sdk', this)">
@@ -1269,11 +1269,11 @@ a.info-val:hover { color: var(--text); }
                     <div style="padding:14px;border:1px solid var(--border);border-radius:6px;background:var(--bg)">
                         <div style="font-size:20px;margin-bottom:6px;opacity:0.6">③</div>
                         <div style="font-size:12px;font-weight:600;margin-bottom:4px">Rolling marker</div>
-                        <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Your marker (L1→L2→L3) recalculates with every eval. <strong>Standard</strong> sees it internally. <strong>Certified</strong> proves it publicly.</div>
+                        <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Your marker (L1→L2→L3) recalculates with every eval. <strong>Audit Trail</strong> records cryptographic snapshots of model state.</div>
                     </div>
                 </div>
                 <div style="margin-top:14px;padding:10px 12px;background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.1);border-radius:4px;font-size:11px;color:var(--text-secondary);line-height:1.5">
-                    <strong style="color:var(--text)">How it works:</strong> Open = diagnostic (limited evals, marker for your eyes only). Standard ($1,500/mo) = unlimited access, rolling marker for calibration. Certified ($100K/yr) = public registry + ONTO CERTIFIED badge for regulators.
+                    <strong style="color:var(--text)">How it works:</strong> Open = diagnostic (limited evals, 5 manual snapshots). Standard ($15K/yr) = unlimited evals, auto-snapshots, drift alerts. Critical ($100K+/yr) = multi-model, regulatory reports, dedicated support.
                 </div>
                 <div style="margin-top:10px;display:flex;gap:12px;align-items:center">
                     <a href="/docs/" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Documentation →</a>
@@ -1541,93 +1541,70 @@ a.info-val:hover { color: var(--text); }
         <!-- ========== CERTIFY PAGE ========== -->
         <div class="page" id="page-certify">
             <div class="page-header-clean" style="margin-bottom:20px">
-                <h1 class="page-title" style="margin-bottom:2px">Certification</h1>
-                <p style="color:var(--text-muted);font-size:12px;margin:0">Rolling markers recalculate with every evaluation. Certified tier unlocks public proof.</p>
+                <h1 class="page-title" style="margin-bottom:2px">Audit Trail</h1>
+                <p style="color:var(--text-muted);font-size:12px;margin:0">Cryptographic snapshots record your model's state at a point in time. Ed25519 signed.</p>
             </div>
 
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px" id="cert-cards">
-                <!-- L1 -->
-                <div class="dash-card-clean" style="border-left:3px solid #eab308">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-                        <div>
-                            <div style="font-size:16px;font-weight:700;color:#eab308">L1</div>
-                            <div style="font-size:11px;color:var(--text-muted)">Needs Calibration</div>
-                        </div>
-                        <div class="cert-status" id="cert-l1-status" style="font-size:10px;padding:3px 8px;border-radius:3px;background:var(--bg);color:var(--text-muted)">NOT STARTED</div>
+            <!-- Model selector + snapshot button -->
+            <div class="dash-card-clean" style="margin-bottom:16px">
+                <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+                    <div style="flex:1;min-width:200px">
+                        <label style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;display:block">Model</label>
+                        <select id="snap-model-select" class="form-input" style="width:100%;font-size:12px;padding:6px 8px" onchange="loadSnapshots()">
+                            <option value="">Select model...</option>
+                        </select>
                     </div>
-                    <div style="margin-bottom:12px">
-                        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-bottom:4px"><span>Progress</span><span id="cert-l1-pct">0%</span></div>
-                        <div style="height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div id="cert-l1-bar" style="height:100%;background:#eab308;border-radius:3px;width:0%;transition:width 0.5s"></div></div>
-                    </div>
-                    <div style="font-size:11px;color:var(--text-secondary);line-height:1.6">
-                        <div style="margin-bottom:4px">Requirements:</div>
-                        <div id="cert-l1-reqs">
-                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:#eab308">⚠</span> Average risk score &gt; 0.65</div>
-                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:var(--text-muted)">→</span> Model needs improvement before certification</div>
-                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:var(--text-muted)">→</span> Review factor analysis for weak points</div>
-                        </div>
-                    </div>
-                    <button id="cert-l1-btn" class="eval-submit-btn" onclick="requestCertification('L1')" style="display:none;width:100%;margin-top:12px;padding:8px;font-size:12px">Request L1 Certification →</button>
-                </div>
-
-                <!-- L2 -->
-                <div class="dash-card-clean" style="border-left:3px solid #3b82f6">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-                        <div>
-                            <div style="font-size:16px;font-weight:700;color:#3b82f6">L2</div>
-                            <div style="font-size:11px;color:var(--text-muted)">Compliant — Certifiable</div>
-                        </div>
-                        <div class="cert-status" id="cert-l2-status" style="font-size:10px;padding:3px 8px;border-radius:3px;background:var(--bg);color:var(--text-muted)">NOT STARTED</div>
-                    </div>
-                    <div style="margin-bottom:12px">
-                        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-bottom:4px"><span>Progress</span><span id="cert-l2-pct">0%</span></div>
-                        <div style="height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div id="cert-l2-bar" style="height:100%;background:#3b82f6;border-radius:3px;width:0%;transition:width 0.5s"></div></div>
-                    </div>
-                    <div style="font-size:11px;color:var(--text-secondary);line-height:1.6">
-                        <div style="margin-bottom:4px">Requirements:</div>
-                        <div id="cert-l2-reqs">
-                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:#3b82f6">✓</span> Rolling avg risk score &lt; 0.65</div>
-                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:#3b82f6">✓</span> Window: 100 evals (Standard) / 200 (Certified)</div>
-                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:var(--text-muted)">→</span> Certified tier: public L2 certificate</div>
-                        </div>
-                    </div>
-                    <button id="cert-l2-btn" class="eval-submit-btn" onclick="requestCertification('L2')" style="display:none;width:100%;margin-top:12px;padding:8px;font-size:12px">Request L2 Certification →</button>
-                </div>
-
-                <!-- L3 -->
-                <div class="dash-card-clean" style="border-left:3px solid #22c55e">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-                        <div>
-                            <div style="font-size:16px;font-weight:700;color:#22c55e">L3</div>
-                            <div style="font-size:11px;color:var(--text-muted)">Fully Certified</div>
-                        </div>
-                        <div class="cert-status" id="cert-l3-status" style="font-size:10px;padding:3px 8px;border-radius:3px;background:var(--bg);color:var(--text-muted)">NOT STARTED</div>
-                    </div>
-                    <div style="margin-bottom:12px">
-                        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-bottom:4px"><span>Progress</span><span id="cert-l3-pct">0%</span></div>
-                        <div style="height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div id="cert-l3-bar" style="height:100%;background:#22c55e;border-radius:3px;width:0%;transition:width 0.5s"></div></div>
-                    </div>
-                    <div style="font-size:11px;color:var(--text-secondary);line-height:1.6">
-                        <div style="margin-bottom:4px">Requirements:</div>
-                        <div id="cert-l3-reqs">
-                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:#22c55e">✓</span> Rolling avg risk score &lt; 0.35</div>
-                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:#22c55e">✓</span> Window: 100 evals (Standard) / 200 (Certified)</div>
-                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:#22c55e">✓</span> Anti-flap: 3+ consecutive evals confirm level</div>
-                            <div style="display:flex;gap:6px;align-items:baseline"><span style="color:var(--text-muted)">→</span> Certified tier: ONTO CERTIFIED badge + public registry</div>
-                        </div>
-                    </div>
-                    <button id="cert-l3-btn" class="eval-submit-btn" onclick="requestCertification('L3')" style="display:none;width:100%;margin-top:12px;padding:8px;font-size:12px">Request L3 Certification →</button>
+                    <button class="eval-submit-btn" id="snap-create-btn" onclick="createSnapshot()" style="padding:8px 20px;font-size:12px;margin-top:16px" disabled>
+                        Create Snapshot
+                    </button>
                 </div>
             </div>
 
-            <!-- Subscription context -->
-            <div class="dash-card-clean">
+            <!-- Stats row -->
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px" id="snap-stats">
+                <div class="dash-card-clean" style="text-align:center;padding:12px">
+                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">Snapshots</div>
+                    <div style="font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:4px" id="snap-stat-count">0</div>
+                </div>
+                <div class="dash-card-clean" style="text-align:center;padding:12px">
+                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">Latest Risk</div>
+                    <div style="font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:4px" id="snap-stat-risk">—</div>
+                </div>
+                <div class="dash-card-clean" style="text-align:center;padding:12px">
+                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">Latest Layer</div>
+                    <div style="font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:4px" id="snap-stat-layer">—</div>
+                </div>
+                <div class="dash-card-clean" style="text-align:center;padding:12px">
+                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">Freshness</div>
+                    <div style="font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:4px" id="snap-stat-age">—</div>
+                </div>
+            </div>
+
+            <!-- Snapshot timeline -->
+            <div class="dash-card-clean" style="padding:0">
+                <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+                    <span class="card-head">Snapshot Timeline</span>
+                    <span style="font-size:10px;color:var(--text-muted)" id="snap-timeline-info"></span>
+                </div>
+                <div id="snap-timeline-list" style="max-height:420px;overflow-y:auto">
+                    <div style="padding:40px;text-align:center;color:var(--text-muted);font-size:12px">
+                        Select a model to view snapshots
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tier info -->
+            <div class="dash-card-clean" style="margin-top:16px">
                 <div style="display:flex;justify-content:space-between;align-items:center">
                     <div>
-                        <div class="card-head" style="margin-bottom:4px">Your Plan</div>
-                        <div style="font-size:13px"><span style="font-weight:600" id="cert-plan-name">Open</span> · <span style="color:var(--text-muted)" id="cert-plan-detail">Diagnostic marker only</span></div>
+                        <div class="card-head" style="margin-bottom:4px">Snapshot Limits</div>
+                        <div style="font-size:12px;color:var(--text-secondary)">
+                            <span style="font-weight:500">Open:</span> 5 manual snapshots per model · 
+                            <span style="font-weight:500">Standard:</span> Unlimited + drift alerts · 
+                            <span style="font-weight:500">Critical:</span> + regulatory reports
+                        </div>
                     </div>
-                    <button class="btn-upgrade" id="cert-upgrade-btn" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))" style="font-size:12px;padding:8px 20px">Upgrade to Certified →</button>
+                    <button class="btn-upgrade" id="snap-upgrade-btn" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))" style="font-size:12px;padding:8px 20px">Upgrade →</button>
                 </div>
             </div>
         </div>
@@ -5289,125 +5266,182 @@ function toggleDevTools() {
 }
 
 // Certification thresholds — single source of truth
-const CERT_THRESHOLDS = {
-    l1: { min_evals: 100, max_risk: 0.45, max_single: 0.70, ece: null, tier: null, window_days: null },
-    l2: { min_evals: 500, max_risk: 0.35, max_single: null, ece: 0.15, tier: 'business', window_days: null },
-    l3: { min_evals: 2000, max_risk: 0.25, max_single: null, ece: 0.08, tier: 'enterprise', window_days: 30 }
-};
+// ============================================================
+// AUDIT TRAIL / SNAPSHOTS (Phase 2.5 — Certify→Snapshots pivot)
+// ============================================================
 
 function updateCertifyPage() {
-    if (!currentUser) return;
-    const plan = currentUser.plan || 'free';
-    const planNames = { free: 'Open', business: 'Standard', enterprise: 'Certified' };
-    const rateLimits = { free: '10/hr · 50/day', business: 'Unlimited', enterprise: 'Unlimited' };
-    
-    const nameEl = document.getElementById('cert-plan-name');
-    const detailEl = document.getElementById('cert-plan-detail');
-    const upgradeBtn = document.getElementById('cert-upgrade-btn');
-    if (nameEl) nameEl.textContent = planNames[plan] || 'Open';
-    if (detailEl) detailEl.textContent = rateLimits[plan] || '1 request / hour';
-    if (upgradeBtn) upgradeBtn.style.display = plan === 'free' ? 'inline-block' : 'none';
+    // Populate model selector from cached models
+    const select = document.getElementById('snap-model-select');
+    if (!select) return;
     
     const models = window._cachedModels || [];
-    
-    // Use BEST model for each level
-    let bestL1 = 0, bestL2 = 0, bestL3 = 0;
+    const currentVal = select.value;
+    select.innerHTML = '<option value="">Select model...</option>';
     
     models.forEach(m => {
-        const evals = m.evaluation_count || m.eval_count || 0;
-        const risk = m.risk_score || 1;
-        const t = CERT_THRESHOLDS;
-        
-        // L1
-        const l1ev = Math.min(100, (evals / t.l1.min_evals) * 100);
-        const l1risk = risk <= t.l1.max_risk ? 100 : Math.max(0, ((t.l1.max_single - risk) / (t.l1.max_single - t.l1.max_risk)) * 100);
-        const l1 = Math.round((l1ev + l1risk) / 2);
-        
-        // L2
-        const l2ev = Math.min(100, (evals / t.l2.min_evals) * 100);
-        const l2risk = risk <= t.l2.max_risk ? 100 : Math.max(0, ((t.l1.max_risk - risk) / (t.l1.max_risk - t.l2.max_risk)) * 100);
-        const l2tier = (plan === 'business' || plan === 'enterprise') ? 100 : 0;
-        const l2 = Math.round((l2ev + l2risk + l2tier) / 3);
-        
-        // L3
-        const l3ev = Math.min(100, (evals / t.l3.min_evals) * 100);
-        const l3risk = risk <= t.l3.max_risk ? 100 : Math.max(0, ((t.l2.max_risk - risk) / (t.l2.max_risk - t.l3.max_risk)) * 100);
-        const l3tier = plan === 'enterprise' ? 100 : 0;
-        const l3 = Math.round((l3ev + l3risk + l3tier) / 3);
-        
-        bestL1 = Math.max(bestL1, l1);
-        bestL2 = Math.max(bestL2, l2);
-        bestL3 = Math.max(bestL3, l3);
+        const opt = document.createElement('option');
+        opt.value = m.id;
+        opt.textContent = `${m.name} (${m.provider || '—'})`;
+        select.appendChild(opt);
     });
     
-    updateCertBar('l1', bestL1);
-    updateCertBar('l2', bestL2);
-    updateCertBar('l3', bestL3);
+    if (currentVal) select.value = currentVal;
     
-    // Render dynamic requirements with check marks
-    renderCertReqs('l1', models, plan);
-    renderCertReqs('l2', models, plan);
-    renderCertReqs('l3', models, plan);
+    const btn = document.getElementById('snap-create-btn');
+    if (btn) btn.disabled = !select.value;
+    
+    if (select.value) loadSnapshots();
 }
 
-function renderCertReqs(level, models, plan) {
-    const el = document.getElementById('cert-' + level + '-reqs');
-    if (!el) return;
-    const t = CERT_THRESHOLDS[level];
-    const best = models.reduce((b, m) => {
-        const ev = m.evaluation_count || m.eval_count || 0;
-        const rs = m.risk_score || 1;
-        return (ev > (b.ev||0)) ? {ev, rs, name: m.name} : b;
-    }, {ev:0, rs:1, name:''});
+async function loadSnapshots() {
+    const select = document.getElementById('snap-model-select');
+    const modelId = select?.value;
+    const btn = document.getElementById('snap-create-btn');
+    if (btn) btn.disabled = !modelId;
     
-    const checks = [];
-    const ok = '✓', no = '○';
-    
-    checks.push({met: best.ev >= t.min_evals, text: `≥${t.min_evals} evaluations on one model` + (best.ev > 0 ? ` (${best.ev}/${t.min_evals})` : '')});
-    checks.push({met: best.rs <= t.max_risk, text: `Average risk score ≤ ${t.max_risk}` + (best.rs < 1 ? ` (${best.rs.toFixed(2)})` : '')});
-    if (t.max_single) checks.push({met: true, text: `No single eval > ${t.max_single}`});
-    if (t.ece) checks.push({met: false, text: `Calibration ECE ≤ ${t.ece}`});
-    if (t.tier) {
-        const tierName = t.tier === 'enterprise' ? 'Certified' : 'Standard';
-        const hasTier = t.tier === 'enterprise' ? plan === 'enterprise' : (plan === 'business' || plan === 'enterprise');
-        checks.push({met: hasTier, text: `${tierName} tier` + (hasTier ? '' : ' required')});
+    if (!modelId) {
+        document.getElementById('snap-timeline-list').innerHTML = 
+            '<div style="padding:40px;text-align:center;color:var(--text-muted);font-size:12px">Select a model to view snapshots</div>';
+        document.getElementById('snap-stat-count').textContent = '0';
+        document.getElementById('snap-stat-risk').textContent = '—';
+        document.getElementById('snap-stat-layer').textContent = '—';
+        document.getElementById('snap-stat-age').textContent = '—';
+        document.getElementById('snap-timeline-info').textContent = '';
+        return;
     }
-    if (t.window_days) checks.push({met: false, text: `${t.window_days}-day consistency window`});
     
-    el.innerHTML = checks.map(c => 
-        `<div style="display:flex;gap:6px;align-items:baseline"><span style="color:${c.met ? '#22c55e' : 'var(--text-muted)'}">${c.met ? ok : no}</span> ${c.text}</div>`
-    ).join('');
-}
-
-function updateCertBar(level, pct) {
-    const bar = document.getElementById('cert-' + level + '-bar');
-    const pctEl = document.getElementById('cert-' + level + '-pct');
-    const status = document.getElementById('cert-' + level + '-status');
-    const btn = document.getElementById('cert-' + level + '-btn');
-    if (bar) bar.style.width = pct + '%';
-    if (pctEl) pctEl.textContent = pct + '%';
-    if (status) {
-        if (pct >= 100) {
-            status.textContent = 'ELIGIBLE';
-            status.style.background = 'rgba(34,197,94,.15)';
-            status.style.color = '#22c55e';
-        } else if (pct > 0) {
-            status.textContent = 'IN PROGRESS';
-            status.style.background = 'rgba(234,179,8,.15)';
-            status.style.color = '#eab308';
+    try {
+        const apiKey = localStorage.getItem('onto_first_api_key');
+        const res = await fetch(`${API_BASE}/v1/models/${modelId}/snapshots?limit=50`, {
+            headers: { 'x-api-key': apiKey }
+        });
+        
+        if (!res.ok) throw new Error('Failed to load snapshots');
+        const data = await res.json();
+        const snaps = data.snapshots || [];
+        
+        // Update stats
+        document.getElementById('snap-stat-count').textContent = data.total || 0;
+        document.getElementById('snap-timeline-info').textContent = `${data.total || 0} total`;
+        
+        if (snaps.length > 0) {
+            const latest = snaps[0];
+            document.getElementById('snap-stat-risk').textContent = latest.risk_score != null ? latest.risk_score.toFixed(3) : '—';
+            document.getElementById('snap-stat-risk').style.color = riskColor(latest.risk_score);
+            document.getElementById('snap-stat-layer').textContent = latest.layer || '—';
+            document.getElementById('snap-stat-layer').style.color = layerColor(latest.layer);
+            
+            const ageEl = document.getElementById('snap-stat-age');
+            ageEl.textContent = latest.age || '—';
+            ageEl.style.color = ageColor(latest.age);
         } else {
-            status.textContent = 'NOT STARTED';
-            status.style.background = 'var(--bg)';
-            status.style.color = 'var(--text-muted)';
+            document.getElementById('snap-stat-risk').textContent = '—';
+            document.getElementById('snap-stat-layer').textContent = '—';
+            document.getElementById('snap-stat-age').textContent = '—';
         }
+        
+        renderSnapshotTimeline(snaps);
+    } catch (e) {
+        console.error('Snapshots load error:', e);
+        document.getElementById('snap-timeline-list').innerHTML = 
+            '<div style="padding:40px;text-align:center;color:var(--text-muted);font-size:12px">Failed to load snapshots</div>';
     }
-    if (btn) btn.style.display = pct >= 100 ? 'block' : 'none';
 }
 
-function requestCertification(level) {
-    showToast('Certification request for ' + level + ' submitted. We will review and contact you.', 'success');
-    const btn = document.getElementById('cert-' + level.toLowerCase() + '-btn');
-    if (btn) { btn.textContent = 'Request Submitted ✓'; btn.disabled = true; btn.style.opacity = '0.6'; }
+function renderSnapshotTimeline(snaps) {
+    const list = document.getElementById('snap-timeline-list');
+    if (!snaps.length) {
+        list.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-muted);font-size:12px">No snapshots yet. Create your first snapshot to start the audit trail.</div>';
+        return;
+    }
+    
+    list.innerHTML = snaps.map((s, i) => {
+        const date = s.created_at ? new Date(s.created_at) : null;
+        const dateStr = date ? date.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) : '—';
+        const timeStr = date ? date.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'}) : '';
+        const ageBadge = ageBadgeHtml(s.age);
+        const proofShort = s.proof_hash ? s.proof_hash.substring(0, 12) + '…' : 'unsigned';
+        const verifyUrl = s.proof_hash ? `${API_BASE}/v1/verify/${s.proof_hash}` : '';
+        
+        return `<div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;${i===0?'background:var(--bg-elevated)':''}">
+            <div style="width:3px;height:32px;border-radius:2px;background:${layerColor(s.layer)};flex-shrink:0"></div>
+            <div style="flex:1;min-width:0">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">
+                    <span style="font-size:12px;font-weight:600;font-family:var(--mono)">${s.snapshot_number}</span>
+                    ${ageBadge}
+                </div>
+                <div style="font-size:11px;color:var(--text-muted)">${dateStr} ${timeStr} · ${s.eval_count || 0} evals</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0">
+                <div style="font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;color:${riskColor(s.risk_score)}">${s.risk_score != null ? s.risk_score.toFixed(3) : '—'}</div>
+                <div style="font-size:10px;color:${layerColor(s.layer)};font-weight:600">${s.layer || '—'} · ${s.compliance || '—'}</div>
+            </div>
+            <div style="flex-shrink:0;font-size:10px;color:var(--text-muted);font-family:var(--mono);max-width:100px;overflow:hidden;text-overflow:ellipsis" title="${s.proof_hash || ''}">
+                ${verifyUrl ? `<a href="${verifyUrl}" target="_blank" style="color:var(--accent);text-decoration:none">${proofShort}</a>` : proofShort}
+            </div>
+        </div>`;
+    }).join('');
+}
+
+async function createSnapshot() {
+    const select = document.getElementById('snap-model-select');
+    const modelId = select?.value;
+    if (!modelId) { showToast('Select a model first', 'error'); return; }
+    
+    const btn = document.getElementById('snap-create-btn');
+    btn.disabled = true;
+    btn.textContent = 'Creating…';
+    
+    try {
+        const apiKey = localStorage.getItem('onto_first_api_key');
+        const res = await fetch(`${API_BASE}/v1/models/${modelId}/snapshot`, {
+            method: 'POST',
+            headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' }
+        });
+        
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.detail || 'Snapshot creation failed');
+        }
+        
+        const data = await res.json();
+        showToast(`Snapshot ${data.snapshot_number} created. Proof: ${(data.proof_hash || '').substring(0, 12)}…`, 'success');
+        loadSnapshots();
+    } catch (e) {
+        showToast(e.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Create Snapshot';
+    }
+}
+
+function ageColor(age) {
+    if (age === 'fresh') return '#22c55e';
+    if (age === 'stale') return '#eab308';
+    if (age === 'expired') return '#ef4444';
+    return 'var(--text-muted)';
+}
+
+function ageBadgeHtml(age) {
+    const colors = { fresh: '#22c55e', stale: '#eab308', expired: '#ef4444' };
+    const c = colors[age] || 'var(--text-muted)';
+    return `<span style="font-size:9px;padding:2px 6px;border-radius:3px;background:${c}15;color:${c};font-weight:600;text-transform:uppercase;letter-spacing:0.3px">${age || '—'}</span>`;
+}
+
+function layerColor(layer) {
+    if (layer === 'L3') return '#22c55e';
+    if (layer === 'L2') return '#3b82f6';
+    if (layer === 'L1') return '#eab308';
+    return 'var(--text-muted)';
+}
+
+function riskColor(risk) {
+    if (risk == null) return 'var(--text-muted)';
+    if (risk < 0.25) return '#22c55e';
+    if (risk < 0.50) return '#3b82f6';
+    if (risk < 0.70) return '#eab308';
+    return '#ef4444';
 }
 
 function updateSdkPage() {
