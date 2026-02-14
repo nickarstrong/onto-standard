@@ -290,21 +290,13 @@ a.info-val:hover { color: var(--text); }
 .eval-select:focus { outline:none;border-color:var(--accent); }
 
 /* Compact model list */
-.dash-model-row { display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:4px;cursor:pointer;transition:background 0.1s;border-bottom:1px solid var(--border); }
-.dash-model-row:last-child { border-bottom:none; }
-.dash-model-row:hover { background:var(--bg-elevated); }
-.dash-model-row.active { background:var(--bg-elevated);border-left:2px solid var(--accent);padding-left:8px; }
-@media (max-width: 768px) { #calibrate-grid { grid-template-columns: 1fr !important; } }
+.dash-model-card { padding:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:border-color 0.15s; }
+.dash-model-card:hover { border-color:var(--text-muted); }
+.dash-model-card.active { border-color:var(--accent); }
+.dash-model-card.attention { border-left:3px solid #eab308; }
+@media (max-width: 768px) { #dash-model-cards { grid-template-columns: 1fr !important; } #dash-detail-expanded > div:last-child { grid-template-columns: 1fr !important; } }
 @media (max-width: 768px) { #dash-status-bar { flex-wrap:wrap;gap:8px; } #dash-status-bar > div[style*="width:1px"] { display:none; } }
 @media (max-width: 768px) { #audit-stats-bar { grid-template-columns: repeat(2, 1fr) !important; } }
-.demo-pill { font-size:8px;padding:1px 5px;border-radius:2px;background:rgba(234,179,8,0.15);color:#eab308;font-weight:600;letter-spacing:0.3px;margin-left:4px;vertical-align:middle; }
-.dash-model-name { font-size:12px;font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0; }
-.dash-model-provider { font-size:10px;color:var(--text-muted);width:54px;text-align:center;flex-shrink:0; }
-.dash-model-risk { font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;width:36px;text-align:right;flex-shrink:0; }
-.dash-model-comp { font-size:9px;font-weight:600;padding:2px 5px;border-radius:2px;width:auto;text-align:center;flex-shrink:0; }
-.dash-model-comp.passed { background:rgba(34,197,94,0.12);color:#22c55e; }
-.dash-model-comp.review { background:rgba(234,179,8,0.12);color:#eab308; }
-.dash-model-comp.failed { background:rgba(239,68,68,0.12);color:#ef4444; }
 .dash-models-empty { text-align:center;padding:24px 0;color:var(--text-muted);font-size:12px; }
 
 .eval-form-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 20px; margin-bottom: 16px; }
@@ -1440,7 +1432,7 @@ a.info-val:hover { color: var(--text); }
             <div class="page-header-clean" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
                 <div>
                     <h1 class="page-title" style="margin-bottom:2px">Dashboard</h1>
-                    <p style="color:var(--text-muted);font-size:12px;margin:0">Register AI models, run evaluations, track risk over time</p>
+                    <p style="color:var(--text-muted);font-size:12px;margin:0">Measure how GOLD improves your AI</p>
                 </div>
                 <button class="btn-minimal" onclick="showAddModelModal()" style="font-size:12px;padding:6px 16px;border:1px solid var(--border);border-radius:4px">+ Register Model</button>
             </div>
@@ -1468,96 +1460,97 @@ a.info-val:hover { color: var(--text); }
                 </div>
             </div>
 
-            <div style="display:grid;grid-template-columns:360px 1fr;gap:16px;margin-bottom:16px" id="calibrate-grid">
-                <!-- LEFT: Model List (always visible) -->
-                <div class="dash-card-clean" style="margin-bottom:0;align-self:start">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-                        <span class="card-head" style="font-size:11px">Models</span>
-                        <button class="btn-minimal" onclick="showAddModelModal()" style="font-size:10px;padding:3px 8px">+ Add</button>
+            <!-- Dashboard Content -->
+            <div id="dash-content" style="margin-bottom:16px">
+                <!-- Onboarding: shown when 0 models -->
+                <div id="dash-onboarding" style="display:none">
+                    <div class="dash-card-clean" style="padding:32px;text-align:center;max-width:560px;margin:0 auto">
+                        <div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:6px">Your AI answers confidently. But is it accurate?</div>
+                        <div style="font-size:12px;color:var(--text-muted);margin-bottom:24px;line-height:1.5">Add your AI model, run a baseline evaluation, apply GOLD DIGEST, then measure the improvement. Every result is cryptographically signed.</div>
+                        <div style="display:flex;flex-direction:column;gap:2px;text-align:left;max-width:400px;margin:0 auto 24px">
+                            <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:6px;background:var(--bg-secondary);border:1px solid var(--border)">
+                                <div style="min-width:22px;height:22px;border-radius:50%;background:var(--accent-subtle);border:1px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">1</div>
+                                <div style="flex:1"><div style="font-size:12px;font-weight:600;color:var(--text)">Add your AI model</div><div style="font-size:11px;color:var(--text-muted)">Name + provider</div></div>
+                                <button class="btn-minimal" onclick="showAddModelModal()" style="font-size:10px;padding:3px 10px;color:var(--accent);border-color:var(--accent)">Add</button>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:6px;opacity:0.5">
+                                <div style="min-width:22px;height:22px;border-radius:50%;background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-muted);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">2</div>
+                                <div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--text-muted)">Run baseline evaluation</div><div style="font-size:11px;color:var(--text-muted)">100 questions, automatic scoring</div></div>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:6px;opacity:0.5">
+                                <div style="min-width:22px;height:22px;border-radius:50%;background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-muted);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">3</div>
+                                <div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--text-muted)">Apply GOLD DIGEST</div><div style="font-size:11px;color:var(--text-muted)">Load into your model's system prompt</div></div>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:6px;opacity:0.5">
+                                <div style="min-width:22px;height:22px;border-radius:50%;background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-muted);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">4</div>
+                                <div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--text-muted)">Re-evaluate & get signed report</div><div style="font-size:11px;color:var(--text-muted)">Before/after proof, Ed25519 signed</div></div>
+                            </div>
+                        </div>
+                        <div style="font-size:10px;color:var(--text-muted)">Read the <a href="/docs/" target="_blank" style="color:var(--accent);text-decoration:none">documentation</a> or contact <a href="mailto:support@ontostandard.org" style="color:var(--accent);text-decoration:none">support</a></div>
                     </div>
-                    <div id="dash-models-list"></div>
                 </div>
-                
-                <!-- RIGHT: Model Detail -->
-                <div class="dash-card-clean" style="margin-bottom:0;align-self:start">
-                    <div id="dash-model-detail-empty" style="padding:24px">
-                        <!-- Quick Start: shown only when 0 models -->
-                        <div id="dash-quickstart" style="display:none">
-                            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:16px">Quick Start</div>
-                            <div style="display:flex;flex-direction:column;gap:10px">
-                                <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:6px;background:var(--bg-secondary);border:1px solid var(--border)">
-                                    <div style="min-width:22px;height:22px;border-radius:50%;background:var(--accent-subtle);border:1px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">1</div>
-                                    <div><div style="font-size:12px;font-weight:600;color:var(--text)">Get your API key</div><div style="font-size:11px;color:var(--text-muted);line-height:1.4">Go to <a onclick="showPage('sdk', document.querySelector('.nav-item[onclick*=sdk]'))" style="color:var(--accent);cursor:pointer;text-decoration:none">API & SDK</a> to copy your key.</div></div>
-                                </div>
-                                <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:6px;background:var(--bg-secondary);border:1px solid var(--border)">
-                                    <div style="min-width:22px;height:22px;border-radius:50%;background:var(--accent-subtle);border:1px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">2</div>
-                                    <div><div style="font-size:12px;font-weight:600;color:var(--text)">Register a model</div><div style="font-size:11px;color:var(--text-muted);line-height:1.4">Click <a onclick="showAddModelModal()" style="color:var(--accent);cursor:pointer;text-decoration:none">+ Register Model</a> to add your AI system.</div></div>
-                                </div>
-                                <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:6px;background:var(--bg-secondary);border:1px solid var(--border)">
-                                    <div style="min-width:22px;height:22px;border-radius:50%;background:var(--accent-subtle);border:1px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">3</div>
-                                    <div><div style="font-size:12px;font-weight:600;color:var(--text)">Run evaluation & track</div><div style="font-size:11px;color:var(--text-muted);line-height:1.4">Submit AI output via API. ONTO scores risk across 6 factors with cryptographic proof.</div></div>
-                                </div>
-                            </div>
-                            <div style="margin-top:14px;padding-top:10px;border-top:1px solid var(--border);font-size:10px;color:var(--text-muted)">
-                                Read the <a href="/docs/" target="_blank" style="color:var(--accent);text-decoration:none">documentation</a> or contact <a href="mailto:support@ontostandard.org" style="color:var(--accent);text-decoration:none">support</a>.
-                            </div>
+
+                <!-- Model Cards: shown when has models -->
+                <div id="dash-model-cards" style="display:none;display:grid;grid-template-columns:repeat(auto-fill, minmax(340px, 1fr));gap:12px"></div>
+
+                <!-- Expanded Detail: shown when card clicked -->
+                <div id="dash-detail-expanded" class="dash-card-clean" style="display:none;margin-top:12px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <button onclick="closeDashModelDetail()" style="background:none;border:1px solid var(--border);border-radius:4px;padding:3px 8px;cursor:pointer;color:var(--text-muted);font-size:10px;display:flex;align-items:center;gap:4px;transition:all 0.15s" onmouseover="this.style.borderColor='var(--text-secondary)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">
+                                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>
+                                Back
+                            </button>
+                            <span style="font-size:14px;font-weight:600" id="dash-detail-name">—</span>
+                            <span style="font-size:11px;color:var(--text-muted)" id="dash-detail-provider">—</span>
                         </div>
-                        <!-- Overview: shown when models exist -->
-                        <div id="dash-overview" style="display:none">
-                            <div style="font-size:11px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:16px">Risk Overview</div>
-                            <!-- Big number -->
-                            <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:20px">
-                                <div style="font-size:42px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1" id="overview-avg-risk">—</div>
-                                <div>
-                                    <div style="font-size:12px;color:var(--text-muted)">avg risk</div>
-                                    <div style="font-size:12px;font-weight:600;margin-top:2px" id="overview-risk-label">—</div>
-                                </div>
-                            </div>
-                            <!-- Compliance one-liner -->
-                            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px" id="overview-compliance-pills"></div>
-                            <!-- Worst model -->
-                            <div style="border-top:1px solid var(--border);padding-top:12px">
-                                <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">HIGHEST RISK</div>
-                                <div style="display:flex;align-items:center;gap:8px;cursor:pointer" id="overview-worst" onclick="if(this.dataset.id)openDashModelDetail(this.dataset.id)">
-                                    <span style="width:6px;height:6px;border-radius:50%;flex-shrink:0" id="overview-worst-dot"></span>
-                                    <span style="font-size:12px;font-weight:500;flex:1" id="overview-worst-name">—</span>
-                                    <span style="font-size:12px;font-weight:700;font-variant-numeric:tabular-nums" id="overview-worst-score">—</span>
-                                    <span style="font-size:9px;font-weight:600;padding:1px 4px;border-radius:2px" id="overview-worst-comp">—</span>
-                                </div>
-                            </div>
-                        </div>
+                        <button class="btn-danger-outline" onclick="deleteDashModel()" style="font-size:10px;padding:3px 10px" id="dash-detail-delete">Remove</button>
                     </div>
-                    <div id="dash-model-detail" style="display:none">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-                            <div style="display:flex;align-items:center;gap:10px">
-                                <button onclick="closeDashModelDetail()" style="background:none;border:1px solid var(--border);border-radius:4px;padding:3px 8px;cursor:pointer;color:var(--text-muted);font-size:10px;display:flex;align-items:center;gap:4px;transition:all 0.15s" onmouseover="this.style.borderColor='var(--text-secondary)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">
-                                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>
-                                    Back
-                                </button>
-                                <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">Model Detail</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                        <!-- Left: Before/After -->
+                        <div>
+                            <div style="display:flex;gap:12px;margin-bottom:16px">
+                                <div style="flex:1;padding:14px;background:var(--bg);border-radius:6px;border:1px solid var(--border)">
+                                    <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Baseline</div>
+                                    <div style="font-size:28px;font-weight:700;font-variant-numeric:tabular-nums" id="dash-detail-baseline">—</div>
+                                    <div style="font-size:10px;margin-top:2px" id="dash-detail-baseline-grade">—</div>
+                                </div>
+                                <div style="flex:1;padding:14px;background:var(--bg);border-radius:6px;border:1px solid var(--accent)33">
+                                    <div style="font-size:9px;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">With GOLD</div>
+                                    <div style="font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--accent)" id="dash-detail-treatment">—</div>
+                                    <div style="font-size:10px;color:var(--accent);margin-top:2px" id="dash-detail-treatment-grade">—</div>
+                                </div>
                             </div>
-                            <button class="btn-danger-outline" onclick="deleteDashModel()" style="font-size:10px;padding:3px 10px" id="dash-detail-delete">Remove</button>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
-                            <div style="flex:1">
-                                <div style="font-size:18px;font-weight:600" id="dash-detail-name">—</div>
-                                <div style="font-size:12px;color:var(--text-muted)" id="dash-detail-provider">—</div>
+                            <div style="padding:10px 14px;background:var(--bg);border-radius:6px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px" id="dash-detail-improvement-box">
+                                <span style="font-size:11px;color:var(--text-muted)">Improvement:</span>
+                                <span style="font-size:16px;font-weight:700;color:var(--accent)" id="dash-detail-improvement">—</span>
                             </div>
-                            <div style="text-align:right">
-                                <div style="font-size:32px;font-weight:700;font-variant-numeric:tabular-nums" id="dash-detail-risk">—</div>
-                                <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase">Risk Score</div>
+                            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Metrics</div>
+                            <div style="display:flex;flex-direction:column;gap:4px" id="dash-detail-metrics">
+                                <div style="display:flex;align-items:center;gap:8px;font-size:11px;padding:4px 0;border-bottom:1px solid var(--border)"><span style="flex:1;color:var(--text-muted)">Numbers instead of words</span><span style="font-variant-numeric:tabular-nums;width:36px;text-align:right" id="dm-qd-before">—</span><span style="color:var(--text-muted);width:16px;text-align:center">→</span><span style="font-variant-numeric:tabular-nums;width:36px;text-align:right;font-weight:600" id="dm-qd-after">—</span></div>
+                                <div style="display:flex;align-items:center;gap:8px;font-size:11px;padding:4px 0;border-bottom:1px solid var(--border)"><span style="flex:1;color:var(--text-muted)">Sources cited</span><span style="font-variant-numeric:tabular-nums;width:36px;text-align:right" id="dm-ss-before">—</span><span style="color:var(--text-muted);width:16px;text-align:center">→</span><span style="font-variant-numeric:tabular-nums;width:36px;text-align:right;font-weight:600" id="dm-ss-after">—</span></div>
+                                <div style="display:flex;align-items:center;gap:8px;font-size:11px;padding:4px 0;border-bottom:1px solid var(--border)"><span style="flex:1;color:var(--text-muted)">Admits uncertainty</span><span style="font-variant-numeric:tabular-nums;width:36px;text-align:right" id="dm-um-before">—</span><span style="color:var(--text-muted);width:16px;text-align:center">→</span><span style="font-variant-numeric:tabular-nums;width:36px;text-align:right;font-weight:600" id="dm-um-after">—</span></div>
+                                <div style="display:flex;align-items:center;gap:8px;font-size:11px;padding:4px 0;border-bottom:1px solid var(--border)"><span style="flex:1;color:var(--text-muted)">Counterarguments</span><span style="font-variant-numeric:tabular-nums;width:36px;text-align:right" id="dm-cp-before">—</span><span style="color:var(--text-muted);width:16px;text-align:center">→</span><span style="font-variant-numeric:tabular-nums;width:36px;text-align:right;font-weight:600" id="dm-cp-after">—</span></div>
+                                <div style="display:flex;align-items:center;gap:8px;font-size:11px;padding:4px 0"><span style="flex:1;color:var(--text-muted)">Calibrated confidence</span><span style="font-variant-numeric:tabular-nums;width:36px;text-align:right" id="dm-conf-before">—</span><span style="color:var(--text-muted);width:16px;text-align:center">→</span><span style="font-variant-numeric:tabular-nums;width:36px;text-align:right;font-weight:600" id="dm-conf-after">—</span></div>
                             </div>
                         </div>
-                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)">
-                            <div style="text-align:center;padding:14px;background:var(--bg);border-radius:6px"><div style="font-size:18px;font-weight:600" id="dash-detail-layer">—</div><div style="font-size:10px;color:var(--text-muted);margin-top:4px">LAYER</div></div>
-                            <div style="text-align:center;padding:14px;background:var(--bg);border-radius:6px"><div style="font-size:18px;font-weight:600" id="dash-detail-comp">—</div><div style="font-size:10px;color:var(--text-muted);margin-top:4px">COMPLIANCE</div></div>
-                            <div style="text-align:center;padding:14px;background:var(--bg);border-radius:6px"><div style="font-size:18px;font-weight:600" id="dash-detail-evals">0</div><div style="font-size:10px;color:var(--text-muted);margin-top:4px">EVALS</div></div>
-                        </div>
-                        <div class="card-head" style="font-size:10px;margin-bottom:8px">Risk Trend</div>
-                        <div class="trend-chart" id="dash-detail-trend" style="height:140px"></div>
-                        <div class="trend-summary">
-                            <span class="trend-avg" id="dash-detail-trend-avg">Avg: —</span>
-                            <span class="trend-dir" id="dash-detail-trend-dir">—</span>
+                        <!-- Right: Trend + Actions -->
+                        <div>
+                            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Evaluation Trend</div>
+                            <div class="trend-chart" id="dash-detail-trend" style="height:120px"></div>
+                            <div class="trend-summary" style="margin-bottom:16px">
+                                <span class="trend-avg" id="dash-detail-trend-avg">Avg: —</span>
+                                <span class="trend-dir" id="dash-detail-trend-dir">—</span>
+                            </div>
+                            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
+                                <div style="text-align:center;padding:10px;background:var(--bg);border-radius:6px"><div style="font-size:16px;font-weight:600" id="dash-detail-layer">—</div><div style="font-size:9px;color:var(--text-muted);margin-top:2px">LAYER</div></div>
+                                <div style="text-align:center;padding:10px;background:var(--bg);border-radius:6px"><div style="font-size:16px;font-weight:600" id="dash-detail-comp">—</div><div style="font-size:9px;color:var(--text-muted);margin-top:2px">GRADE</div></div>
+                                <div style="text-align:center;padding:10px;background:var(--bg);border-radius:6px"><div style="font-size:16px;font-weight:600" id="dash-detail-evals">0</div><div style="font-size:9px;color:var(--text-muted);margin-top:2px">EVALS</div></div>
+                            </div>
+                            <div style="display:flex;gap:8px">
+                                <button class="eval-submit-btn" onclick="showToast('Evaluation will run automatically via API','info')" style="flex:1;padding:8px;font-size:11px">Re-evaluate</button>
+                                <button class="btn-minimal" onclick="showToast('Report generation coming soon','info')" style="flex:1;padding:8px;font-size:11px;border:1px solid var(--border)">Download Report</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -5786,94 +5779,54 @@ async function fetchUserModels() {
 }
 
 function renderDashModels() {
-    const container = document.getElementById('dash-models-list');
-    if (!container) return;
+    const container = document.getElementById('dash-model-cards');
+    const onboarding = document.getElementById('dash-onboarding');
     const realModels = window._cachedModels || [];
     
-    const allRows = [];
-    
-    realModels.forEach(m => {
-        const risk = m.risk_score || 0;
-        const rc = risk < 0.35 ? '#22c55e' : risk < 0.65 ? '#eab308' : '#ef4444';
-        const dotColor = risk < 0.35 ? '#22c55e' : risk < 0.65 ? '#eab308' : '#ef4444';
-        const cc = (m.compliance || 'REVIEW').toLowerCase();
-        allRows.push(`<div class="dash-model-row" onclick="openDashModelDetail('${m.id}')">
-            <span style="width:6px;height:6px;border-radius:50%;background:${dotColor};flex-shrink:0"></span>
-            <span class="dash-model-name">${m.name}</span>
-            <span class="dash-model-provider">${m.provider || '—'}</span>
-            <span class="dash-model-risk" style="color:${rc}">${risk.toFixed(2)}</span>
-            <span class="dash-model-comp ${cc}">${(m.compliance||'—').toUpperCase()}</span>
-        </div>`);
-    });
-    
-    // Show Quick Start or Overview based on model count
-    const qsEl = document.getElementById('dash-quickstart');
-    const ovEl = document.getElementById('dash-overview');
-    if (qsEl && ovEl) {
-        if (realModels.length === 0) {
-            qsEl.style.display = 'block';
-            ovEl.style.display = 'none';
-        } else {
-            qsEl.style.display = 'none';
-            ovEl.style.display = 'block';
-            updateOverview(realModels);
-        }
-    }
-    
-    if (allRows.length === 0) {
-        container.innerHTML = `<div style="text-align:center;padding:32px 16px">
-            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--border);margin-bottom:8px"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-            <div style="font-size:13px;font-weight:500;margin-bottom:4px;color:var(--text)">No models yet</div>
-            <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Register your first AI model</div>
-            <button class="eval-submit-btn" onclick="showAddModelModal()" style="padding:8px 20px;font-size:12px">+ Register Model</button>
-        </div>`;
+    if (realModels.length === 0) {
+        if (onboarding) onboarding.style.display = 'block';
+        if (container) container.style.display = 'none';
+        updateDashStatusBar([]);
         return;
     }
-    container.innerHTML = allRows.join('');
+    
+    if (onboarding) onboarding.style.display = 'none';
+    if (container) container.style.display = 'grid';
+    
+    container.innerHTML = realModels.map(m => {
+        const risk = m.risk_score || 0;
+        const rc = risk < 0.35 ? '#22c55e' : risk < 0.65 ? '#eab308' : '#ef4444';
+        const grade = (m.compliance || '—').toUpperCase();
+        const gc = { A: '#22c55e', B: '#4ade80', PASSED: '#22c55e', C: '#eab308', D: '#f97316', REVIEW: '#eab308', E: '#ef4444', F: '#dc2626', FAILED: '#ef4444' };
+        const gradeColor = gc[grade] || '#eab308';
+        const attn = risk >= 0.5 ? ' attention' : '';
+        const evals = m.eval_count || 0;
+        let interp = '';
+        if (risk < 0.25) interp = 'Properly calibrated';
+        else if (risk < 0.35) interp = 'Acknowledges uncertainty';
+        else if (risk < 0.5) interp = 'Needs calibration review';
+        else interp = 'Rarely acknowledges uncertainty';
+        
+        return `<div class="dash-model-card${attn}" onclick="openDashModelDetail('${m.id}')">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+                <div>
+                    <div style="font-size:13px;font-weight:600;color:var(--text)">${m.name}</div>
+                    <div style="font-size:10px;color:var(--text-muted);margin-top:1px">${m.provider || '—'}</div>
+                </div>
+                <div style="text-align:right">
+                    <div style="font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;color:${rc};line-height:1">${risk.toFixed(2)}</div>
+                    <span style="font-size:9px;font-weight:600;padding:1px 5px;border-radius:2px;background:${gradeColor}1a;color:${gradeColor}">${grade}</span>
+                </div>
+            </div>
+            <div style="font-size:11px;color:${rc};margin-bottom:8px">${risk >= 0.5 ? '⚠ ' : ''}${interp}</div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+                <span style="font-size:10px;color:var(--text-muted)">${evals} evaluation${evals !== 1 ? 's' : ''}</span>
+                <span style="font-size:10px;color:var(--text-muted)">View details →</span>
+            </div>
+        </div>`;
+    }).join('');
     
     updateDashStatusBar(realModels);
-}
-
-function updateOverview(models) {
-    models = models || window._cachedModels || [];
-    if (!models.length) return;
-    
-    const avgRisk = models.reduce((s, m) => s + (m.risk_score || 0), 0) / models.length;
-    const avgEl = document.getElementById('overview-avg-risk');
-    const labelEl = document.getElementById('overview-risk-label');
-    if (avgEl) {
-        avgEl.textContent = avgRisk.toFixed(2);
-        avgEl.style.color = avgRisk < 0.35 ? '#22c55e' : avgRisk < 0.65 ? '#eab308' : '#ef4444';
-    }
-    if (labelEl) {
-        if (avgRisk < 0.35) { labelEl.textContent = 'Low risk'; labelEl.style.color = '#22c55e'; }
-        else if (avgRisk < 0.65) { labelEl.textContent = 'Moderate risk'; labelEl.style.color = '#eab308'; }
-        else { labelEl.textContent = 'High risk'; labelEl.style.color = '#ef4444'; }
-    }
-    
-    // Compliance pills
-    const pillsEl = document.getElementById('overview-compliance-pills');
-    if (pillsEl) {
-        const grades = {};
-        models.forEach(m => { const g = (m.compliance || 'REVIEW').toUpperCase(); grades[g] = (grades[g] || 0) + 1; });
-        const gc = { A: '#22c55e', B: '#4ade80', C: '#eab308', D: '#f97316', E: '#ef4444', F: '#dc2626', PASSED: '#22c55e', REVIEW: '#eab308', FAILED: '#ef4444' };
-        pillsEl.innerHTML = Object.keys(grades).sort().map(g =>
-            `<span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:${gc[g]||'#eab308'}1a;color:${gc[g]||'#eab308'};border:1px solid ${gc[g]||'#eab308'}33">${g} · ${grades[g]}</span>`
-        ).join('');
-    }
-    
-    // Worst model
-    const worst = models.reduce((w, m) => (!w || (m.risk_score || 0) > (w.risk_score || 0)) ? m : w, null);
-    if (worst) {
-        const wEl = document.getElementById('overview-worst');
-        if (wEl) wEl.dataset.id = worst.id;
-        const wc = (worst.risk_score || 0) < 0.35 ? '#22c55e' : (worst.risk_score || 0) < 0.65 ? '#eab308' : '#ef4444';
-        const dotEl = document.getElementById('overview-worst-dot'); if (dotEl) dotEl.style.background = wc;
-        const wnEl = document.getElementById('overview-worst-name'); if (wnEl) wnEl.textContent = worst.name;
-        const wsEl = document.getElementById('overview-worst-score'); if (wsEl) { wsEl.textContent = (worst.risk_score||0).toFixed(2); wsEl.style.color = wc; }
-        const wcEl = document.getElementById('overview-worst-comp');
-        if (wcEl) { const c = (worst.compliance||'REVIEW').toUpperCase(); wcEl.textContent = c; wcEl.style.color = wc; wcEl.style.background = wc + '1a'; }
-    }
 }
 
 function updateDashStatusBar(models) {
@@ -5890,13 +5843,8 @@ function updateDashStatusBar(models) {
     if (evalsEl) evalsEl.textContent = totalEvals;
     const apiKey = localStorage.getItem('onto_first_api_key');
     if (apiEl) {
-        if (apiKey) {
-            apiEl.textContent = 'connected';
-            apiEl.style.color = '#22c55e';
-        } else {
-            apiEl.textContent = 'not connected';
-            apiEl.style.color = 'var(--text-muted)';
-        }
+        if (apiKey) { apiEl.textContent = 'connected'; apiEl.style.color = '#22c55e'; }
+        else { apiEl.textContent = 'not connected'; apiEl.style.color = 'var(--text-muted)'; }
     }
 }
 
@@ -5904,32 +5852,41 @@ function openDashModelDetail(modelId) {
     const realModels = window._cachedModels || [];
     const m = realModels.find(x => x.id === modelId);
     if (!m) return;
-
     _currentDetailModelId = modelId;
-    // Master-detail: list stays visible, detail replaces empty state
-    const emptyEl = document.getElementById('dash-model-detail-empty');
-    if (emptyEl) emptyEl.style.display = 'none';
-    const detail = document.getElementById('dash-model-detail');
-    detail.style.display = 'block';
-
-    // Highlight active row
-    document.querySelectorAll('.dash-model-row').forEach(r => r.classList.remove('active'));
-    const rows = document.querySelectorAll('.dash-model-row');
-    rows.forEach(r => { if (r.getAttribute('onclick')?.includes(modelId)) r.classList.add('active'); });
-
-    const deleteBtn = document.getElementById('dash-detail-delete');
-    if (deleteBtn) deleteBtn.style.display = 'inline-block';
+    
+    const cards = document.getElementById('dash-model-cards');
+    const detail = document.getElementById('dash-detail-expanded');
+    if (cards) cards.style.display = 'none';
+    if (detail) detail.style.display = 'block';
 
     document.getElementById('dash-detail-name').textContent = m.name;
-    document.getElementById('dash-detail-provider').textContent = (m.provider || '—') + ' · ' + (m.version || 'v1');
-    const rc = (m.risk_score||0) < 0.35 ? '#22c55e' : (m.risk_score||0) < 0.65 ? '#eab308' : '#ef4444';
-    document.getElementById('dash-detail-risk').style.color = rc;
-    document.getElementById('dash-detail-risk').textContent = (m.risk_score||0).toFixed(3);
+    document.getElementById('dash-detail-provider').textContent = m.provider || '—';
+    
+    const risk = m.risk_score || 0;
+    const rc = risk < 0.35 ? '#22c55e' : risk < 0.65 ? '#eab308' : '#ef4444';
+    const baseEl = document.getElementById('dash-detail-baseline');
+    if (baseEl) { baseEl.textContent = risk.toFixed(2); baseEl.style.color = rc; }
+    const bgEl = document.getElementById('dash-detail-baseline-grade');
+    if (bgEl) { bgEl.textContent = 'Grade ' + (m.compliance || '—').toUpperCase(); bgEl.style.color = rc; }
+    
+    const treatEl = document.getElementById('dash-detail-treatment');
+    const tgEl = document.getElementById('dash-detail-treatment-grade');
+    const impEl = document.getElementById('dash-detail-improvement');
+    if (m.treatment_score) {
+        if (treatEl) treatEl.textContent = m.treatment_score.toFixed(2);
+        if (tgEl) { tgEl.textContent = 'Grade ' + (m.treatment_compliance || '—'); tgEl.style.color = 'var(--accent)'; }
+        const pct = Math.round(((m.treatment_score - risk) / Math.max(risk, 0.01)) * 100);
+        if (impEl) { impEl.textContent = '+' + pct + '%'; impEl.style.color = 'var(--accent)'; }
+    } else {
+        if (treatEl) treatEl.textContent = '—';
+        if (tgEl) { tgEl.textContent = 'Apply GOLD first'; tgEl.style.color = 'var(--text-muted)'; }
+        if (impEl) { impEl.textContent = 'Pending'; impEl.style.color = 'var(--text-muted)'; }
+    }
+    
     document.getElementById('dash-detail-layer').textContent = m.layer || '—';
     document.getElementById('dash-detail-comp').textContent = (m.compliance || '—').toUpperCase();
-    document.getElementById('dash-detail-evals').textContent = m.eval_count || m.requests || 0;
+    document.getElementById('dash-detail-evals').textContent = m.eval_count || 0;
 
-    // Trend
     const trendContainer = document.getElementById('dash-detail-trend');
     if (m.trend && m.trend.length) {
         const max = Math.max(...m.trend, 0.5);
@@ -5945,35 +5902,37 @@ function openDashModelDetail(modelId) {
         dirEl.textContent = dir ? '↓ Improving' : '↑ Worsening';
         dirEl.className = 'trend-dir ' + (dir ? 'improving' : 'worsening');
     } else {
-        trendContainer.innerHTML = '<div style="text-align:center;padding:20px 0;color:var(--text-muted);font-size:11px">No trend data</div>';
+        trendContainer.innerHTML = '<div style="text-align:center;padding:20px 0;color:var(--text-muted);font-size:11px">No trend data yet</div>';
     }
+    
+    ['qd','ss','um','cp','conf'].forEach(k => {
+        const bEl = document.getElementById('dm-'+k+'-before');
+        const aEl = document.getElementById('dm-'+k+'-after');
+        if (bEl) bEl.textContent = '—';
+        if (aEl) aEl.textContent = '—';
+    });
 }
 
 function closeDashModelDetail() {
-    document.getElementById('dash-model-detail').style.display = 'none';
-    const emptyEl = document.getElementById('dash-model-detail-empty');
-    if (emptyEl) emptyEl.style.display = 'block';
-    document.querySelectorAll('.dash-model-row').forEach(r => r.classList.remove('active'));
+    const cards = document.getElementById('dash-model-cards');
+    const detail = document.getElementById('dash-detail-expanded');
+    if (detail) detail.style.display = 'none';
+    if (cards) cards.style.display = 'grid';
     _currentDetailModelId = null;
 }
 
 async function deleteDashModel() {
     if (!_currentDetailModelId) return;
-    
     if (!confirm('Remove this model? This cannot be undone.')) return;
-    
     const apiKey = localStorage.getItem('onto_first_api_key');
     if (apiKey) {
         try {
             await fetch(`${API_BASE}/v1/models/${_currentDetailModelId}`, {
-                method: 'DELETE',
-                headers: { 'x-api-key': apiKey }
+                method: 'DELETE', headers: { 'x-api-key': apiKey }
             });
-        } catch (e) { /* continue with local removal */ }
+        } catch (e) { /* continue */ }
     }
-    
-    const realModels = window._cachedModels || [];
-    window._cachedModels = realModels.filter(m => m.id !== _currentDetailModelId);
+    window._cachedModels = (window._cachedModels || []).filter(m => m.id !== _currentDetailModelId);
     closeDashModelDetail();
     renderDashModels();
     populateEvalModels();
