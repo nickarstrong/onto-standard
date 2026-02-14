@@ -400,13 +400,13 @@ select.form-input { appearance: none; background-image: url("data:image/svg+xml,
             <h1 class="auth-title" style="text-align:center">Enter verification code</h1>
             <p class="auth-subtitle" style="text-align:center">We sent a 6-digit code to</p>
             <p style="text-align:center;font-size:13px;font-weight:500;margin-bottom:16px" id="verify-email-display"></p>
-            <div class="otp-inputs" id="otp-container">
-                <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]">
-                <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]">
-                <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]">
-                <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]">
-                <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]">
-                <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]">
+            <div style="display:flex;gap:8px;justify-content:center;margin:20px 0">
+                <input type="text" id="otp-1" class="otp-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code">
+                <input type="text" id="otp-2" class="otp-input" maxlength="1" inputmode="numeric">
+                <input type="text" id="otp-3" class="otp-input" maxlength="1" inputmode="numeric">
+                <input type="text" id="otp-4" class="otp-input" maxlength="1" inputmode="numeric">
+                <input type="text" id="otp-5" class="otp-input" maxlength="1" inputmode="numeric">
+                <input type="text" id="otp-6" class="otp-input" maxlength="1" inputmode="numeric">
             </div>
             <button class="btn btn-primary" style="width:100%" id="verify-btn" onclick="handleVerifyOTP(this)">Verify</button>
             <p style="text-align:center;margin-top:12px;font-size:12px;color:var(--text-muted)">
@@ -930,30 +930,28 @@ print(result.metrics)      <span class="cmt"># {qd: 2.84, ss: 0.42, ...}</span><
 <script>
 // === CONFIG ===
 const API_BASE = 'https://api.ontostandard.org';
+let authToken = null;
 let currentUser = null;
 let userModels = [];
-let userReports = [];
-let sessionTimer = null;
+let pendingVerificationEmail = '';
 
 // === API WRAPPER ===
 async function api(endpoint, options = {}) {
-    const token = localStorage.getItem('onto_token');
     const headers = { 'Content-Type': 'application/json', ...options.headers };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
+    if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
     
     try {
-        const resp = await fetch(`${API_BASE}${endpoint}`, { ...options, headers });
-        if (resp.status === 401) { handleSessionExpired(); return null; }
-        if (!resp.ok) {
-            const err = await resp.json().catch(() => ({ detail: 'Request failed' }));
-            throw new Error(err.detail || `Error ${resp.status}`);
-        }
-        return await resp.json();
-    } catch (e) {
-        if (e.message !== 'Failed to fetch') showToast(e.message, 'error');
-        throw e;
+        const response = await fetch(`${API_BASE}${endpoint}`, { ...options, headers });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || data.message || 'Request failed');
+        return data;
+    } catch (error) {
+        console.error('API Error:', error);
+        throw error;
     }
 }
+
+function layerToPlan(layer) { return { open: 'free', standard: 'business', critical: 'enterprise' }[layer] || 'free'; }
 
 // === TOAST ===
 function showToast(message, type = 'info') {
@@ -994,10 +992,16 @@ function closeAuthMenu() {
 // === PASSWORD TOGGLE ===
 function togglePassword(inputId, btn) {
     const input = document.getElementById(inputId);
-    input.type = input.type === 'password' ? 'text' : 'password';
+    if (input.type === 'password') {
+        input.type = 'text';
+        btn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+    } else {
+        input.type = 'password';
+        btn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    }
 }
 
-// === AUTH ===
+// === AUTH UI ===
 function showLogin() {
     document.getElementById('login-form').classList.remove('hidden');
     document.getElementById('register-form').classList.add('hidden');
@@ -1021,119 +1025,244 @@ function setLoading(btn, loading) {
     }
 }
 
+// === LOGIN ===
 async function handleLogin(btn) {
-    const email = document.getElementById('login-email').value.trim();
+    const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
-    if (!email || !password) return showToast('Please fill in all fields', 'error');
+    if (!email || !password) { showToast('Please fill in all fields', 'error'); return; }
     
     setLoading(btn, true);
     try {
-        const data = await api('/v1/auth/login', {
+        const response = await fetch(`${API_BASE}/v1/auth/login`, {
             method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
         });
-        if (data?.access_token) {
-            localStorage.setItem('onto_token', data.access_token);
-            currentUser = data.user || { email, name: email.split('@')[0] };
-            showDashboard();
-        } else if (data?.requires_verification) {
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || 'Login failed');
+        
+        authToken = data.token;
+        localStorage.setItem('onto_token', authToken);
+        if (data.api_key) localStorage.setItem('onto_first_api_key', data.api_key);
+        
+        currentUser = {
+            id: data.user_id,
+            name: data.name,
+            email: email,
+            role: data.role || 'admin',
+            plan: layerToPlan(data.layer || 'open'),
+            layer: data.layer || 'open',
+            organization_id: data.organization_id,
+            organization_name: data.organization_name,
+            company: null
+        };
+        localStorage.setItem('onto_user', JSON.stringify(currentUser));
+        localStorage.setItem('onto_user_id', data.user_id);
+        localStorage.setItem('onto_user_name', data.name || '');
+        localStorage.setItem('onto_user_email', email);
+        localStorage.setItem('onto_org_id', data.organization_id);
+        localStorage.setItem('onto_org_name', data.organization_name || '');
+        localStorage.setItem('onto_layer', data.layer || 'open');
+        localStorage.setItem('onto_role', data.role || 'admin');
+        localStorage.setItem('onto_logged_in', 'true');
+        
+        setLoading(btn, false);
+        showToast('Welcome back!', 'success');
+        showDashboard();
+    } catch (error) {
+        setLoading(btn, false);
+        if (error.message && error.message.includes('not verified')) {
+            pendingVerificationEmail = email;
             showVerifyPending(email);
+            showToast('Please verify your email first', 'info');
+            return;
         }
-    } catch (e) {
-        showToast(e.message || 'Login failed', 'error');
+        showToast(error.message || 'Login failed', 'error');
     }
-    setLoading(btn, false);
 }
 
+// === REGISTER ===
 async function handleRegister(btn) {
-    const name = document.getElementById('reg-name').value.trim();
-    const email = document.getElementById('reg-email').value.trim();
+    const name = document.getElementById('reg-name').value;
+    const email = document.getElementById('reg-email').value;
     const password = document.getElementById('reg-password').value;
-    if (!name || !email || !password) return showToast('Please fill in all fields', 'error');
-    if (password.length < 8) return showToast('Password must be at least 8 characters', 'error');
+    const termsAgreed = document.getElementById('terms-agree').checked;
+    if (!name || !email || !password) { showToast('Please fill in all fields', 'error'); return; }
+    if (!termsAgreed) { showToast('Please agree to the Terms of Service', 'error'); return; }
     
     setLoading(btn, true);
     try {
-        const data = await api('/v1/auth/register', {
+        const response = await fetch(`${API_BASE}/v1/auth/register`, {
             method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, email, password })
         });
-        if (data) showVerifyPending(email);
-    } catch (e) {
-        showToast(e.message || 'Registration failed', 'error');
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || 'Registration failed');
+        
+        if (data.api_key) localStorage.setItem('onto_first_api_key', data.api_key);
+        pendingVerificationEmail = email;
+        
+        setLoading(btn, false);
+        showVerifyPending(email);
+        showToast('Check your email to verify your account', 'success');
+    } catch (error) {
+        setLoading(btn, false);
+        showToast(error.message || 'Registration failed', 'error');
     }
-    setLoading(btn, false);
 }
 
+// === OTP VERIFICATION ===
 function showVerifyPending(email) {
     document.getElementById('login-form').classList.add('hidden');
     document.getElementById('register-form').classList.add('hidden');
+    document.getElementById('verify-success').classList.add('hidden');
     document.getElementById('verify-pending').classList.remove('hidden');
     document.getElementById('verify-email-display').textContent = email;
+    
+    for (let i = 1; i <= 6; i++) document.getElementById('otp-' + i).value = '';
+    setTimeout(() => document.getElementById('otp-1').focus(), 100);
     setupOTPInputs();
 }
 
 function setupOTPInputs() {
-    const inputs = document.querySelectorAll('.otp-input');
-    inputs.forEach((input, i) => {
-        input.value = '';
+    for (let i = 1; i <= 6; i++) {
+        const input = document.getElementById('otp-' + i);
         input.addEventListener('input', (e) => {
-            if (e.target.value && i < inputs.length - 1) inputs[i + 1].focus();
+            const val = e.target.value.replace(/[^0-9]/g, '');
+            e.target.value = val;
+            if (val && i < 6) document.getElementById('otp-' + (i + 1)).focus();
+            if (i === 6 && val) {
+                const code = getOTPCode();
+                if (code.length === 6) handleVerifyOTP(document.getElementById('verify-btn'));
+            }
         });
         input.addEventListener('keydown', (e) => {
-            if (e.key === 'Backspace' && !e.target.value && i > 0) inputs[i - 1].focus();
+            if (e.key === 'Backspace' && !e.target.value && i > 1) document.getElementById('otp-' + (i - 1)).focus();
         });
-    });
-    inputs[0].focus();
+        input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const paste = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
+            for (let j = 0; j < 6 && j < paste.length; j++) document.getElementById('otp-' + (j + 1)).value = paste[j];
+            if (paste.length >= 6) {
+                document.getElementById('otp-6').focus();
+                handleVerifyOTP(document.getElementById('verify-btn'));
+            }
+        });
+    }
 }
 
 function getOTPCode() {
-    return Array.from(document.querySelectorAll('.otp-input')).map(i => i.value).join('');
+    let code = '';
+    for (let i = 1; i <= 6; i++) code += document.getElementById('otp-' + i).value;
+    return code;
 }
 
 async function handleVerifyOTP(btn) {
     const code = getOTPCode();
-    if (code.length !== 6) return showToast('Enter 6-digit code', 'error');
+    if (code.length !== 6) { showToast('Please enter all 6 digits', 'error'); return; }
     
     setLoading(btn, true);
     try {
-        const email = document.getElementById('verify-email-display').textContent;
-        const data = await api('/v1/auth/verify', {
+        const response = await fetch(`${API_BASE}/v1/auth/verify-email`, {
             method: 'POST',
-            body: JSON.stringify({ email, code })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: pendingVerificationEmail, code: code })
         });
-        if (data?.access_token) {
-            localStorage.setItem('onto_token', data.access_token);
-            currentUser = data.user || { email, name: email.split('@')[0] };
-            document.getElementById('verify-pending').classList.add('hidden');
-            document.getElementById('verify-success').classList.remove('hidden');
-        }
-    } catch (e) {
-        showToast(e.message || 'Verification failed', 'error');
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || 'Verification failed');
+        
+        authToken = data.token;
+        localStorage.setItem('onto_token', authToken);
+        if (data.api_key) localStorage.setItem('onto_first_api_key', data.api_key);
+        
+        currentUser = {
+            id: data.user_id,
+            name: data.name,
+            email: data.email,
+            role: data.role || 'admin',
+            plan: layerToPlan(data.layer || 'open'),
+            layer: data.layer || 'open',
+            organization_id: data.organization_id,
+            organization_name: data.organization_name
+        };
+        localStorage.setItem('onto_user', JSON.stringify(currentUser));
+        localStorage.setItem('onto_logged_in', 'true');
+        
+        setLoading(btn, false);
+        showToast('Email verified! Welcome to ONTO', 'success');
+        showDashboard();
+    } catch (error) {
+        setLoading(btn, false);
+        showToast(error.message || 'Verification failed', 'error');
     }
-    setLoading(btn, false);
 }
 
 async function resendVerification() {
-    const email = document.getElementById('verify-email-display').textContent;
+    if (!pendingVerificationEmail) { showToast('No email to verify', 'error'); return; }
     try {
-        await api('/v1/auth/resend', { method: 'POST', body: JSON.stringify({ email }) });
-        showToast('Code resent', 'success');
-    } catch (e) {
-        showToast('Could not resend', 'error');
+        const response = await fetch(`${API_BASE}/v1/auth/resend-verification`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: pendingVerificationEmail, password: '' })
+        });
+        const data = await response.json();
+        showToast(data.message || 'Verification email sent', 'success');
+    } catch { showToast('Failed to resend email', 'error'); }
+}
+
+async function checkEmailVerification() {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('verify');
+    if (!token) return;
+    
+    try {
+        const response = await fetch(`${API_BASE}/v1/auth/verify-email?token=${token}`);
+        const data = await response.json();
+        if (response.ok && data.success) {
+            window.history.replaceState({}, '', window.location.pathname);
+            if (data.token) {
+                authToken = data.token;
+                localStorage.setItem('onto_token', authToken);
+                currentUser = {
+                    id: data.user_id, name: data.name, email: data.email,
+                    role: 'admin', plan: layerToPlan(data.layer || 'open'),
+                    organization_id: data.organization_id
+                };
+                localStorage.setItem('onto_user', JSON.stringify(currentUser));
+                localStorage.setItem('onto_logged_in', 'true');
+                showToast('Email verified! Welcome to ONTO.', 'success');
+                showDashboard();
+            } else {
+                document.getElementById('verify-pending').classList.add('hidden');
+                document.getElementById('verify-success').classList.remove('hidden');
+                showToast('Email verified! Please sign in.', 'success');
+            }
+        } else {
+            showToast(data.detail || 'Verification failed', 'error');
+        }
+    } catch {
+        showToast('Verification failed', 'error');
+        window.history.replaceState({}, '', window.location.pathname);
     }
 }
 
-function handleSessionExpired() {
-    localStorage.removeItem('onto_token');
-    currentUser = null;
-    showAuthScreen();
-    showToast('Session expired. Please sign in again.', 'info');
-}
-
+// === LOGOUT ===
 function handleLogout() {
-    localStorage.removeItem('onto_token');
+    if (!confirm('Are you sure you want to sign out?')) return;
     currentUser = null;
+    authToken = null;
+    localStorage.removeItem('onto_user');
+    localStorage.removeItem('onto_token');
+    localStorage.removeItem('onto_first_api_key');
+    localStorage.removeItem('onto_logged_in');
+    localStorage.removeItem('onto_user_id');
+    localStorage.removeItem('onto_user_name');
+    localStorage.removeItem('onto_user_email');
+    localStorage.removeItem('onto_org_id');
+    localStorage.removeItem('onto_org_name');
+    localStorage.removeItem('onto_layer');
+    localStorage.removeItem('onto_role');
     showAuthScreen();
 }
 
@@ -1147,9 +1276,17 @@ function showAuthScreen() {
 function showDashboard() {
     document.getElementById('auth-screen').style.display = 'none';
     document.getElementById('app-layout').style.display = 'flex';
+    
+    const params = new URLSearchParams(window.location.search);
+    const targetPage = params.get('page');
+    if (targetPage && document.getElementById('page-' + targetPage)) showPage(targetPage);
+    
     updateUserUI();
     loadModels();
     loadSignal();
+    
+    const realApiKey = localStorage.getItem('onto_first_api_key');
+    if (realApiKey) document.getElementById('api-key-display').value = realApiKey;
 }
 
 function showPage(page, el) {
@@ -1164,7 +1301,6 @@ function showPage(page, el) {
             if (oc && oc.includes("'" + page + "'")) n.classList.add('active');
         });
     }
-    // Close mobile sidebar
     document.getElementById('sidebar').classList.remove('open');
     document.getElementById('mobile-overlay').classList.remove('active');
 }
@@ -1173,18 +1309,21 @@ function showPage(page, el) {
 function updateUserUI() {
     if (!currentUser) return;
     const name = currentUser.name || currentUser.email?.split('@')[0] || 'User';
+    const plan = currentUser.plan || 'free';
+    const planLabel = { free: 'Open', business: 'Standard', enterprise: 'Critical' }[plan] || 'Open';
+    
     document.getElementById('user-name').textContent = name;
     document.getElementById('user-avatar').textContent = name.charAt(0).toUpperCase();
-    document.getElementById('user-plan').textContent = (currentUser.tier || 'open').charAt(0).toUpperCase() + (currentUser.tier || 'open').slice(1);
+    document.getElementById('user-plan').textContent = planLabel;
     document.getElementById('settings-name').textContent = name;
     document.getElementById('settings-email').textContent = currentUser.email || '—';
-    document.getElementById('settings-plan').textContent = currentUser.tier || 'Open';
+    document.getElementById('settings-plan').textContent = planLabel;
     document.getElementById('settings-since').textContent = currentUser.created_at ? new Date(currentUser.created_at).toLocaleDateString() : '—';
     
-    // Billing buttons
-    const tier = currentUser.tier || 'open';
+    // Billing tier buttons
     document.querySelectorAll('.btn-tier').forEach(b => { b.classList.remove('current'); b.disabled = false; });
-    const activeBtn = document.getElementById('btn-' + tier);
+    const tierMap = { free: 'open', business: 'standard', enterprise: 'critical' };
+    const activeBtn = document.getElementById('btn-' + (tierMap[plan] || 'open'));
     if (activeBtn) { activeBtn.classList.add('current'); activeBtn.disabled = true; activeBtn.textContent = 'Current'; }
 }
 
@@ -1247,7 +1386,6 @@ function renderModels() {
 
 function updateStats() {
     document.getElementById('stat-models').textContent = userModels.length;
-    
     const withScores = userModels.filter(m => m.composite != null);
     if (withScores.length > 0) {
         const avg = withScores.reduce((s, m) => s + m.composite, 0) / withScores.length;
@@ -1257,17 +1395,12 @@ function updateStats() {
         document.getElementById('stat-composite').textContent = '—';
         document.getElementById('stat-grade').textContent = '—';
     }
-    
-    const totalEvals = userModels.reduce((s, m) => s + (m.eval_count || 0), 0);
-    document.getElementById('stat-evals').textContent = totalEvals;
+    document.getElementById('stat-evals').textContent = userModels.reduce((s, m) => s + (m.eval_count || 0), 0);
 }
 
 function renderLatestReport() {
     const withEvals = userModels.filter(m => m.composite != null).sort((a, b) => new Date(b.last_eval) - new Date(a.last_eval));
-    if (withEvals.length === 0) {
-        document.getElementById('latest-report').style.display = 'none';
-        return;
-    }
+    if (withEvals.length === 0) { document.getElementById('latest-report').style.display = 'none'; return; }
     
     const m = withEvals[0];
     document.getElementById('latest-report').style.display = 'block';
@@ -1281,7 +1414,6 @@ function renderLatestReport() {
     gradeEl.textContent = grade;
     gradeEl.className = 'model-grade ' + getGradeClass(grade);
     
-    // Metrics
     const metrics = m.metrics || {};
     setMetric('qd', metrics.qd);
     setMetric('ss', metrics.ss);
@@ -1303,15 +1435,11 @@ function setMetric(key, value) {
 }
 
 function renderReports() {
-    // For now, derive reports from models
     const reports = userModels.filter(m => m.composite != null).sort((a, b) => new Date(b.last_eval) - new Date(a.last_eval));
     const section = document.getElementById('reports-section');
     const list = document.getElementById('reports-list');
     
-    if (reports.length === 0) {
-        section.style.display = 'none';
-        return;
-    }
+    if (reports.length === 0) { section.style.display = 'none'; return; }
     
     section.style.display = 'block';
     document.getElementById('reports-count').textContent = reports.length + ' report' + (reports.length !== 1 ? 's' : '');
@@ -1380,13 +1508,10 @@ function formatUptime(seconds) {
 }
 
 // === MODALS ===
-function closeModal(id) {
-    document.getElementById(id).classList.remove('active');
-}
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
 function openAddModelModal(type) {
     document.getElementById('modal-add-model').classList.add('active');
-    // Show/hide API key vs upload based on type
     const apiGroup = document.getElementById('model-api-key-group');
     const uploadGroup = document.getElementById('model-upload-group');
     if (type === 'upload' || type === 'local') {
@@ -1401,21 +1526,16 @@ function openAddModelModal(type) {
 async function submitModel() {
     const name = document.getElementById('model-name').value.trim();
     const provider = document.getElementById('model-provider').value;
-    if (!name) return showToast('Enter a model name', 'error');
+    if (!name) { showToast('Enter a model name', 'error'); return; }
     
     const btn = document.getElementById('submit-model-btn');
     setLoading(btn, true);
     try {
-        await api('/v1/models', {
-            method: 'POST',
-            body: JSON.stringify({ name, provider })
-        });
+        await api('/v1/models', { method: 'POST', body: JSON.stringify({ name, provider }) });
         closeModal('modal-add-model');
         showToast('Model registered', 'success');
         loadModels();
-    } catch (e) {
-        showToast(e.message || 'Failed to register model', 'error');
-    }
+    } catch (e) { showToast(e.message || 'Failed to register model', 'error'); }
     setLoading(btn, false);
 }
 
@@ -1425,12 +1545,10 @@ async function deleteModel(id) {
         await api(`/v1/models/${id}`, { method: 'DELETE' });
         showToast('Model removed', 'success');
         loadModels();
-    } catch (e) {
-        showToast(e.message || 'Failed', 'error');
-    }
+    } catch (e) { showToast(e.message || 'Failed', 'error'); }
 }
 
-function viewReport(modelId) { /* TODO: open report view */ showToast('Report view coming soon', 'info'); }
+function viewReport(modelId) { showToast('Report view coming soon', 'info'); }
 function reEvaluate(modelId) { showToast('Re-evaluation started', 'info'); }
 function downloadReport(modelId) { showToast('PDF download coming soon', 'info'); }
 function verifyReport() { window.open('/verify/', '_blank'); }
@@ -1441,8 +1559,7 @@ function openOrgModal() { document.getElementById('modal-org').classList.add('ac
 async function saveOrg() {
     const name = document.getElementById('org-input-name').value.trim();
     const industry = document.getElementById('org-input-industry').value;
-    if (!name) return showToast('Enter company name', 'error');
-    
+    if (!name) { showToast('Enter company name', 'error'); return; }
     try {
         await api('/v1/company', { method: 'POST', body: JSON.stringify({ name, industry, reg: document.getElementById('org-input-reg').value }) });
         closeModal('modal-org');
@@ -1451,14 +1568,11 @@ async function saveOrg() {
         document.getElementById('org-registered').classList.remove('hidden');
         document.getElementById('org-name').textContent = name;
         document.getElementById('org-industry').textContent = industry || '—';
-    } catch (e) {
-        showToast(e.message || 'Failed', 'error');
-    }
+    } catch (e) { showToast(e.message || 'Failed', 'error'); }
 }
 
 function deleteAccount() {
     if (!confirm('This will permanently delete your account and all data. Are you sure?')) return;
-    if (!confirm('This cannot be undone. Type your email to confirm.')) return;
     api('/v1/auth/delete', { method: 'DELETE' }).then(() => {
         handleLogout();
         showToast('Account deleted', 'info');
@@ -1473,8 +1587,7 @@ function toggleApiKeyVisibility() {
     else { input.type = 'password'; btn.textContent = 'Show'; }
 }
 function copyApiKey() {
-    const input = document.getElementById('api-key-display');
-    navigator.clipboard?.writeText(input.value);
+    navigator.clipboard?.writeText(document.getElementById('api-key-display').value);
     showToast('API key copied', 'success');
 }
 async function regenerateApiKey() {
@@ -1483,9 +1596,10 @@ async function regenerateApiKey() {
         const data = await api('/v1/auth/regenerate-key', { method: 'POST' });
         if (data?.api_key) {
             document.getElementById('api-key-display').value = data.api_key;
+            localStorage.setItem('onto_first_api_key', data.api_key);
             showToast('New API key generated', 'success');
         }
-    } catch (e) { showToast('Failed', 'error'); }
+    } catch { showToast('Failed', 'error'); }
 }
 
 // === BILLING ===
@@ -1527,22 +1641,51 @@ function gradeColor(grade) {
 }
 
 // === INIT ===
-(function init() {
-    const token = localStorage.getItem('onto_token');
-    if (token) {
-        // Try to load user profile
-        api('/v1/auth/me').then(data => {
-            if (data) {
-                currentUser = data;
-                showDashboard();
-            } else {
-                showAuthScreen();
-            }
-        }).catch(() => showAuthScreen());
+document.addEventListener('DOMContentLoaded', () => {
+    const savedUser = localStorage.getItem('onto_user');
+    const savedToken = localStorage.getItem('onto_token');
+    const savedApiKey = localStorage.getItem('onto_first_api_key');
+    const savedLoggedIn = localStorage.getItem('onto_logged_in');
+    
+    if (savedLoggedIn === 'true' && savedApiKey) {
+        let savedSub = null;
+        if (savedUser) { try { savedSub = JSON.parse(savedUser).subscription || null; } catch(e) {} }
+        currentUser = {
+            id: localStorage.getItem('onto_user_id'),
+            name: localStorage.getItem('onto_user_name'),
+            email: localStorage.getItem('onto_user_email'),
+            organization_id: localStorage.getItem('onto_org_id'),
+            organization_name: localStorage.getItem('onto_org_name'),
+            layer: localStorage.getItem('onto_layer'),
+            plan: layerToPlan(localStorage.getItem('onto_layer')),
+            role: localStorage.getItem('onto_role'),
+            subscription: savedSub
+        };
+        authToken = savedToken || savedApiKey;
+        showDashboard();
+    } else if (savedUser && savedToken) {
+        try {
+            currentUser = JSON.parse(savedUser);
+            authToken = savedToken;
+            showDashboard();
+        } catch (e) {
+            localStorage.removeItem('onto_user');
+            localStorage.removeItem('onto_token');
+            showAuthScreen();
+        }
     } else {
         showAuthScreen();
     }
-})();
+    
+    checkEmailVerification();
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+            document.getElementById('sidebar').classList.remove('open');
+        }
+    });
+});
 </script>
 </body>
 </html>
