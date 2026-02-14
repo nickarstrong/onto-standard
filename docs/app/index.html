@@ -295,12 +295,13 @@ a.info-val:hover { color: var(--text); }
 .dash-model-row:hover { background:var(--bg-elevated); }
 .dash-model-row.active { background:var(--bg-elevated);border-left:2px solid var(--accent);padding-left:8px; }
 @media (max-width: 768px) { #calibrate-grid { grid-template-columns: 1fr !important; } }
+@media (max-width: 768px) { #dash-status-bar { flex-wrap:wrap;gap:8px; } #dash-status-bar > div[style*="width:1px"] { display:none; } }
 @media (max-width: 768px) { #audit-stats-bar { grid-template-columns: repeat(2, 1fr) !important; } }
 .demo-pill { font-size:8px;padding:1px 5px;border-radius:2px;background:rgba(234,179,8,0.15);color:#eab308;font-weight:600;letter-spacing:0.3px;margin-left:4px;vertical-align:middle; }
-.dash-model-name { font-size:12px;font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
-.dash-model-provider { font-size:10px;color:var(--text-muted);width:60px;text-align:center; }
-.dash-model-risk { font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;width:44px;text-align:right; }
-.dash-model-comp { font-size:10px;font-weight:600;padding:2px 6px;border-radius:2px;width:52px;text-align:center; }
+.dash-model-name { font-size:12px;font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0; }
+.dash-model-provider { font-size:10px;color:var(--text-muted);width:54px;text-align:center;flex-shrink:0; }
+.dash-model-risk { font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;width:36px;text-align:right;flex-shrink:0; }
+.dash-model-comp { font-size:9px;font-weight:600;padding:2px 5px;border-radius:2px;width:auto;text-align:center;flex-shrink:0; }
 .dash-model-comp.passed { background:rgba(34,197,94,0.12);color:#22c55e; }
 .dash-model-comp.review { background:rgba(234,179,8,0.12);color:#eab308; }
 .dash-model-comp.failed { background:rgba(239,68,68,0.12);color:#ef4444; }
@@ -1448,7 +1449,30 @@ a.info-val:hover { color: var(--text); }
                 <button class="btn-minimal" onclick="showAddModelModal()" style="font-size:12px;padding:6px 16px;border:1px solid var(--border);border-radius:4px">+ Register Model</button>
             </div>
 
-            <div style="display:grid;grid-template-columns:280px 1fr;gap:16px;margin-bottom:16px" id="calibrate-grid">
+            <!-- Status Bar -->
+            <div id="dash-status-bar" style="display:flex;gap:16px;align-items:center;padding:10px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;margin-bottom:16px;font-size:11px">
+                <div style="display:flex;align-items:center;gap:6px">
+                    <span style="color:var(--text-muted)">Plan:</span>
+                    <span style="font-weight:600;color:var(--text)" id="dash-status-plan">—</span>
+                </div>
+                <div style="width:1px;height:16px;background:var(--border)"></div>
+                <div style="display:flex;align-items:center;gap:6px">
+                    <span style="color:var(--text-muted)">Models:</span>
+                    <span style="font-weight:600;color:var(--text)" id="dash-status-models">0</span>
+                </div>
+                <div style="width:1px;height:16px;background:var(--border)"></div>
+                <div style="display:flex;align-items:center;gap:6px">
+                    <span style="color:var(--text-muted)">Evaluations:</span>
+                    <span style="font-weight:600;color:var(--text)" id="dash-status-evals">0</span>
+                </div>
+                <div style="width:1px;height:16px;background:var(--border)"></div>
+                <div style="display:flex;align-items:center;gap:6px">
+                    <span style="color:var(--text-muted)">API:</span>
+                    <span id="dash-status-api" style="font-weight:600;color:var(--text-muted)">not connected</span>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:320px 1fr;gap:16px;margin-bottom:16px" id="calibrate-grid">
                 <!-- LEFT: Model List (always visible) -->
                 <div class="dash-card-clean" style="margin-bottom:0;align-self:start">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
@@ -1498,7 +1522,13 @@ a.info-val:hover { color: var(--text); }
                     </div>
                     <div id="dash-model-detail" style="display:none">
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-                            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">Model Detail</div>
+                            <div style="display:flex;align-items:center;gap:10px">
+                                <button onclick="closeDashModelDetail()" style="background:none;border:1px solid var(--border);border-radius:4px;padding:3px 8px;cursor:pointer;color:var(--text-muted);font-size:10px;display:flex;align-items:center;gap:4px;transition:all 0.15s" onmouseover="this.style.borderColor='var(--text-secondary)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">
+                                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>
+                                    Back
+                                </button>
+                                <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">Model Detail</div>
+                            </div>
                             <button class="btn-danger-outline" onclick="deleteDashModel()" style="font-size:10px;padding:3px 10px" id="dash-detail-delete">Remove</button>
                         </div>
                         <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
@@ -1532,8 +1562,8 @@ a.info-val:hover { color: var(--text); }
                 <div class="signal-header" style="cursor:pointer" onclick="toggleSignalPanel()">
                     <div class="signal-title-row">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent)"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-                        <span class="signal-title">Cryptographic Proof Chain</span>
-                        <span style="font-size:11px;color:var(--text-muted);margin-left:8px">Every evaluation is signed with Ed25519</span>
+                        <span class="signal-title">Verification Status</span>
+                        <span style="font-size:11px;color:var(--text-muted);margin-left:8px">Cryptographic proof chain · Ed25519 signed</span>
                     </div>
                     <div style="display:flex;align-items:center;gap:10px">
                         <div class="signal-live-indicator" id="user-signal-live">
@@ -5791,6 +5821,33 @@ function renderDashModels() {
         return;
     }
     container.innerHTML = allRows.join('');
+    
+    // Update status bar
+    updateDashStatusBar(realModels);
+}
+
+function updateDashStatusBar(models) {
+    models = models || window._cachedModels || [];
+    const plan = currentUser ? (currentUser.plan || 'free') : 'free';
+    const planNames = { free: 'Free', business: 'Standard', enterprise: 'Certified' };
+    const planEl = document.getElementById('dash-status-plan');
+    const modelsEl = document.getElementById('dash-status-models');
+    const evalsEl = document.getElementById('dash-status-evals');
+    const apiEl = document.getElementById('dash-status-api');
+    if (planEl) planEl.textContent = planNames[plan] || 'Free';
+    if (modelsEl) modelsEl.textContent = models.length;
+    const totalEvals = models.reduce((sum, m) => sum + (m.eval_count || 0), 0);
+    if (evalsEl) evalsEl.textContent = totalEvals;
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (apiEl) {
+        if (apiKey) {
+            apiEl.textContent = 'connected';
+            apiEl.style.color = '#22c55e';
+        } else {
+            apiEl.textContent = 'not connected';
+            apiEl.style.color = 'var(--text-muted)';
+        }
+    }
 }
 
 function openDashModelDetail(modelId) {
