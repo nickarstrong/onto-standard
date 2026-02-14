@@ -7,24 +7,21 @@
 <meta name="description" content="ONTO Client Portal — Manage your AI epistemic risk verification account, API keys, and billing.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='17' fill='white'/%3E%3Cpath d='M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z' fill='%230a0a0a'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
     color-scheme: dark;
-    --bg: #0c0f14;
-    --bg-secondary: #101318;
-    --bg-card: #121722;
-    --bg-elevated: #1d2330;
-    --border: #1d2330;
-    --border-hover: #2a3140;
-    --text: #f0f2f5;
-    --text-secondary: #9ba3b0;
-    --text-muted: #5a6374;
-    --accent: #2ec27e;
-    --accent-hover: #26a269;
-    --accent-subtle: rgba(46, 194, 126, 0.08);
+    --bg: #0a0a0a;
+    --bg-secondary: #121212;
+    --bg-card: #1a1a1a;
+    --bg-elevated: #242424;
+    --border: #333333;
+    --border-hover: #444444;
+    --text: #fafafa;
+    --text-secondary: #a0a0a0;
+    --text-muted: #606060;
+    --accent: #15803d;
+    --accent-hover: #166534;
+    --accent-subtle: rgba(21, 128, 61, 0.1);
     --danger: #dc2626;
     --danger-subtle: rgba(220, 38, 38, 0.1);
     --blue: #3b82f6;
@@ -51,7 +48,7 @@
     color: #111827;
 }
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6; color: var(--text); background: var(--bg); }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6; color: var(--text); background: var(--bg-secondary); }
 
 /* === AUTH === */
 .auth-container { min-height: 100vh; display: flex; align-items: stretch; }
@@ -65,7 +62,7 @@ body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helv
 .auth-hero-stat { display: flex; flex-direction: column; }
 .auth-hero-stat strong { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .auth-hero-stat span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
-.auth-form-side { width: 480px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 24px 40px; background: var(--bg-card); }
+.auth-form-side { width: 480px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 24px 40px; }
 .auth-card { background: none; border: none; border-radius: 0; padding: 0; width: 100%; max-width: 380px; }
 .auth-logo { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; justify-content: center; }
 .auth-logo svg { width: 24px; height: 24px; }
@@ -304,7 +301,7 @@ a.info-val:hover { color: var(--text); }
 .dash-model-provider { font-size:10px;color:var(--text-muted);width:60px;text-align:center; }
 .dash-model-risk { font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;width:44px;text-align:right; }
 .dash-model-comp { font-size:10px;font-weight:600;padding:2px 6px;border-radius:2px;width:52px;text-align:center; }
-.dash-model-comp.passed { background:rgba(34,197,94,0.12);color:#2ec27e; }
+.dash-model-comp.passed { background:rgba(34,197,94,0.12);color:#22c55e; }
 .dash-model-comp.review { background:rgba(234,179,8,0.12);color:#eab308; }
 .dash-model-comp.failed { background:rgba(239,68,68,0.12);color:#ef4444; }
 .dash-models-empty { text-align:center;padding:24px 0;color:var(--text-muted);font-size:12px; }
@@ -343,7 +340,7 @@ a.info-val:hover { color: var(--text); }
 .eval-score-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
 .eval-result-meta { flex: 1; }
 .eval-compliance-badge { display: inline-block; padding: 4px 12px; border-radius: 3px; font-size: 12px; font-weight: 600; letter-spacing: 0.3px; margin-bottom: 6px; }
-.eval-compliance-badge.passed { background: rgba(34,197,94,0.12); color: #2ec27e; }
+.eval-compliance-badge.passed { background: rgba(34,197,94,0.12); color: #22c55e; }
 .eval-compliance-badge.review { background: rgba(234,179,8,0.12); color: #eab308; }
 .eval-compliance-badge.failed { background: rgba(239,68,68,0.12); color: #ef4444; }
 .eval-result-domain { font-size: 12px; color: var(--text-secondary); }
@@ -422,7 +419,7 @@ a.info-val:hover { color: var(--text); }
 .billing-options { display: flex; flex-direction: column; gap: 8px; }
 .billing-option { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: all 0.15s; }
 .billing-option:hover { border-color: var(--text-muted); }
-.billing-option:has(input:checked) { border-color: var(--accent); background: rgba(46, 194, 126, 0.03); }
+.billing-option:has(input:checked) { border-color: var(--accent); background: rgba(34, 197, 94, 0.03); }
 .billing-option input[type="radio"] { accent-color: var(--accent); }
 .billing-option-content { flex: 1; display: flex; flex-direction: column; gap: 1px; }
 .billing-option-name { font-size: 13px; font-weight: 500; color: var(--text); }
@@ -432,7 +429,7 @@ a.info-val:hover { color: var(--text); }
 .payment-options { display: flex; gap: 8px; }
 .payment-opt { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 8px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: all 0.15s; text-align: center; }
 .payment-opt:hover { border-color: var(--text-muted); }
-.payment-opt:has(input:checked) { border-color: var(--accent); background: rgba(46, 194, 126, 0.03); }
+.payment-opt:has(input:checked) { border-color: var(--accent); background: rgba(34, 197, 94, 0.03); }
 .payment-opt:has(input:disabled) { opacity: 0.4; cursor: not-allowed; }
 .payment-opt input[type="radio"] { accent-color: var(--accent); margin-bottom: 2px; }
 .payment-opt-name { font-size: 12px; font-weight: 500; color: var(--text); }
@@ -498,7 +495,7 @@ a.info-val:hover { color: var(--text); }
 .docs-article blockquote { border-left: 2px solid var(--border); padding: 10px 16px; background: var(--bg-elevated); margin: 12px 0; border-radius: 0 4px 4px 0; }
 .docs-article blockquote p { margin: 0; font-size: 12px; color: var(--text-secondary); }
 .docs-badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 500; }
-.badge-green { background: rgba(46, 194, 126, 0.1); color: #16a34a; }
+.badge-green { background: rgba(34, 197, 94, 0.1); color: #16a34a; }
 .badge-blue { background: rgba(59, 130, 246, 0.1); color: #2563eb; }
 .docs-disclaimer { background: var(--bg-elevated); border: 1px solid var(--border); padding: 12px; border-radius: 4px; margin: 16px 0; font-size: 12px; }
 .docs-disclaimer strong { color: var(--text); }
@@ -686,7 +683,7 @@ a.info-val:hover { color: var(--text); }
 @media (max-width: 768px) { .signal-compact { flex-direction: column; gap: 8px; } .signal-compact-hash { max-width: 100%; } }
 
 /* Proof Badge */
-.proof-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 4px; padding: 4px 10px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #2ec27e; cursor: pointer; transition: all 0.2s; margin-top: 8px; text-decoration: none; }
+.proof-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 4px; padding: 4px 10px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #22c55e; cursor: pointer; transition: all 0.2s; margin-top: 8px; text-decoration: none; }
 .proof-badge:hover { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.4); }
 .proof-badge .proof-icon { font-size: 12px; }
 .proof-badge .proof-hash-text { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -765,52 +762,52 @@ a.info-val:hover { color: var(--text); }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
 /* Signal Panel */
-.signal-panel { background: linear-gradient(135deg, #0c1412 0%, #0e1c1a 50%, #0c1412 100%); border: 1px solid rgba(46, 194, 126, 0.25); border-radius: 6px; padding: 20px 24px; margin-bottom: 20px; position: relative; overflow: hidden; animation: borderGlow 4s ease-in-out infinite; }
+.signal-panel { background: linear-gradient(135deg, #0a1a0f 0%, #0d2818 50%, #0a1a0f 100%); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 6px; padding: 20px 24px; margin-bottom: 20px; position: relative; overflow: hidden; animation: borderGlow 4s ease-in-out infinite; }
 @keyframes borderGlow {
-    0%, 100% { border-color: rgba(46, 194, 126, 0.3); box-shadow: 0 0 20px rgba(46, 194, 126, 0.1); }
-    50% { border-color: rgba(46, 194, 126, 0.6); box-shadow: 0 0 40px rgba(46, 194, 126, 0.2); }
+    0%, 100% { border-color: rgba(34, 197, 94, 0.3); box-shadow: 0 0 20px rgba(34, 197, 94, 0.1); }
+    50% { border-color: rgba(34, 197, 94, 0.6); box-shadow: 0 0 40px rgba(34, 197, 94, 0.2); }
 }
-.signal-panel::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(46, 194, 126, 0.08) 0%, transparent 70%); pointer-events: none; }
-.signal-panel::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent 0%, rgba(46, 194, 126, 0.8) 50%, transparent 100%); animation: scanline 6s linear infinite; pointer-events: none; box-shadow: 0 0 10px rgba(46, 194, 126, 0.6), 0 0 20px rgba(46, 194, 126, 0.4), 0 0 30px rgba(46, 194, 126, 0.2); }
+.signal-panel::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(34, 197, 94, 0.08) 0%, transparent 70%); pointer-events: none; }
+.signal-panel::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent 0%, rgba(34, 197, 94, 0.8) 50%, transparent 100%); animation: scanline 6s linear infinite; pointer-events: none; box-shadow: 0 0 10px rgba(34, 197, 94, 0.6), 0 0 20px rgba(34, 197, 94, 0.4), 0 0 30px rgba(34, 197, 94, 0.2); }
 @keyframes scanline {
     0% { transform: translateY(0); opacity: 1; }
     100% { transform: translateY(300px); opacity: 0; }
 }
 .signal-panel-grid { position: absolute; inset: 0; background-image: 
-    linear-gradient(rgba(46, 194, 126, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(46, 194, 126, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px);
     background-size: 20px 20px; pointer-events: none; }
 .signal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; position: relative; z-index: 1; }
 .signal-title-row { display: flex; align-items: center; gap: 10px; }
-.signal-live-indicator { display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(46, 194, 126, 0.15); border-radius: 12px; font-size: 10px; font-weight: 600; color: #2ec27e; text-transform: uppercase; letter-spacing: 0.5px; }
+.signal-live-indicator { display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(34, 197, 94, 0.15); border-radius: 12px; font-size: 10px; font-weight: 600; color: #22c55e; text-transform: uppercase; letter-spacing: 0.5px; }
 .signal-title { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; color: var(--text); }
-.signal-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #26a269, #2ec27e); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; font-family: 'Times New Roman', serif; font-style: italic; box-shadow: 0 0 15px rgba(46, 194, 126, 0.5), 0 0 30px rgba(46, 194, 126, 0.2); }
-.signal-live { display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(46, 194, 126, 0.15); border-radius: 12px; font-size: 10px; font-weight: 600; color: #2ec27e; text-transform: uppercase; letter-spacing: 0.5px; }
-.signal-dot { width: 6px; height: 6px; background: #2ec27e; border-radius: 50%; animation: pulse 2s infinite; box-shadow: 0 0 6px #2ec27e, 0 0 12px rgba(46, 194, 126, 0.5); }
-@keyframes pulse { 0%, 100% { opacity: 1; box-shadow: 0 0 6px #2ec27e, 0 0 12px rgba(46, 194, 126, 0.5); } 50% { opacity: 0.6; box-shadow: 0 0 3px #2ec27e; } }
+.signal-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #15803d, #22c55e); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; font-family: 'Times New Roman', serif; font-style: italic; box-shadow: 0 0 15px rgba(34, 197, 94, 0.5), 0 0 30px rgba(34, 197, 94, 0.2); }
+.signal-live { display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(34, 197, 94, 0.15); border-radius: 12px; font-size: 10px; font-weight: 600; color: #22c55e; text-transform: uppercase; letter-spacing: 0.5px; }
+.signal-dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; box-shadow: 0 0 6px #22c55e, 0 0 12px rgba(34, 197, 94, 0.5); }
+@keyframes pulse { 0%, 100% { opacity: 1; box-shadow: 0 0 6px #22c55e, 0 0 12px rgba(34, 197, 94, 0.5); } 50% { opacity: 0.6; box-shadow: 0 0 3px #22c55e; } }
 .signal-body { position: relative; z-index: 1; }
 .signal-main-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
 .signal-id-block { flex: 1; }
-.signal-id { font-size: 24px; font-weight: 700; color: #2ec27e; font-family: 'JetBrains Mono', monospace; margin-bottom: 6px; text-shadow: 0 0 20px rgba(46, 194, 126, 0.4); animation: idGlow 3s ease-in-out infinite; }
+.signal-id { font-size: 24px; font-weight: 700; color: #22c55e; font-family: 'JetBrains Mono', monospace; margin-bottom: 6px; text-shadow: 0 0 20px rgba(34, 197, 94, 0.4); animation: idGlow 3s ease-in-out infinite; }
 @keyframes idGlow {
-    0%, 100% { text-shadow: 0 0 20px rgba(46, 194, 126, 0.4); }
-    50% { text-shadow: 0 0 30px rgba(46, 194, 126, 0.6), 0 0 50px rgba(46, 194, 126, 0.3); }
+    0%, 100% { text-shadow: 0 0 20px rgba(34, 197, 94, 0.4); }
+    50% { text-shadow: 0 0 30px rgba(34, 197, 94, 0.6), 0 0 50px rgba(34, 197, 94, 0.3); }
 }
-.signal-skeleton-id { height: 28px; width: 200px; background: rgba(46, 194, 126, 0.1); border-radius: 4px; animation: skeleton-loading 1.5s infinite; background-size: 200% 100%; background-image: linear-gradient(90deg, rgba(46, 194, 126, 0.05) 25%, rgba(46, 194, 126, 0.15) 50%, rgba(46, 194, 126, 0.05) 75%); }
-.signal-skeleton-hash { height: 14px; width: 300px; background: rgba(46, 194, 126, 0.1); border-radius: 4px; animation: skeleton-loading 1.5s infinite; background-size: 200% 100%; background-image: linear-gradient(90deg, rgba(46, 194, 126, 0.05) 25%, rgba(46, 194, 126, 0.15) 50%, rgba(46, 194, 126, 0.05) 75%); }
+.signal-skeleton-id { height: 28px; width: 200px; background: rgba(34, 197, 94, 0.1); border-radius: 4px; animation: skeleton-loading 1.5s infinite; background-size: 200% 100%; background-image: linear-gradient(90deg, rgba(34, 197, 94, 0.05) 25%, rgba(34, 197, 94, 0.15) 50%, rgba(34, 197, 94, 0.05) 75%); }
+.signal-skeleton-hash { height: 14px; width: 300px; background: rgba(34, 197, 94, 0.1); border-radius: 4px; animation: skeleton-loading 1.5s infinite; background-size: 200% 100%; background-image: linear-gradient(90deg, rgba(34, 197, 94, 0.05) 25%, rgba(34, 197, 94, 0.15) 50%, rgba(34, 197, 94, 0.05) 75%); }
 .signal-countdown-block { text-align: right; }
 .signal-countdown-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-.signal-countdown-value { font-size: 28px; font-weight: 700; color: #2ec27e; font-family: 'JetBrains Mono', monospace; text-shadow: 0 0 15px rgba(46, 194, 126, 0.4); }
+.signal-countdown-value { font-size: 28px; font-weight: 700; color: #22c55e; font-family: 'JetBrains Mono', monospace; text-shadow: 0 0 15px rgba(34, 197, 94, 0.4); }
 .signal-metrics { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
-.signal-metric { text-align: center; padding: 8px; background: rgba(0,0,0,0.2); border-radius: 6px; border: 1px solid rgba(46, 194, 126, 0.1); transition: all 0.3s; }
-.signal-metric.updated { border-color: rgba(46, 194, 126, 0.4); background: rgba(46, 194, 126, 0.1); }
-.signal-metric-value { font-size: 14px; font-weight: 600; color: #2ec27e; font-family: 'JetBrains Mono', monospace; margin-bottom: 2px; transition: color 0.3s; }
-.signal-metric-value.metric-good { color: #2ec27e; }
+.signal-metric { text-align: center; padding: 8px; background: rgba(0,0,0,0.2); border-radius: 6px; border: 1px solid rgba(34, 197, 94, 0.1); transition: all 0.3s; }
+.signal-metric.updated { border-color: rgba(34, 197, 94, 0.4); background: rgba(34, 197, 94, 0.1); }
+.signal-metric-value { font-size: 14px; font-weight: 600; color: #22c55e; font-family: 'JetBrains Mono', monospace; margin-bottom: 2px; transition: color 0.3s; }
+.signal-metric-value.metric-good { color: #22c55e; }
 .signal-metric-value.metric-warn { color: #f59e0b; }
 .signal-metric-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
 .signal-controls { display: flex; justify-content: flex-end; margin-top: 16px; }
-.signal-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; font-size: 11px; font-weight: 500; background: rgba(46, 194, 126, 0.1); border: 1px solid rgba(46, 194, 126, 0.3); border-radius: 6px; color: #2ec27e; cursor: pointer; transition: all 0.15s; }
-.signal-btn:hover { background: rgba(46, 194, 126, 0.2); border-color: rgba(46, 194, 126, 0.5); box-shadow: 0 0 15px rgba(46, 194, 126, 0.3); }
+.signal-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; font-size: 11px; font-weight: 500; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 6px; color: #22c55e; cursor: pointer; transition: all 0.15s; }
+.signal-btn:hover { background: rgba(34, 197, 94, 0.2); border-color: rgba(34, 197, 94, 0.5); box-shadow: 0 0 15px rgba(34, 197, 94, 0.3); }
 .signal-btn svg { opacity: 0.8; }
 
 /* Accounts Panel */
@@ -831,7 +828,7 @@ a.info-val:hover { color: var(--text); }
 .account-plan { width: 60px; }
 .account-plan .tier-badge { font-size: 9px; padding: 2px 6px; }
 .account-status { width: 50px; font-size: 10px; }
-.account-status.active { color: #2ec27e; }
+.account-status.active { color: #22c55e; }
 .account-status.paused { color: #f59e0b; }
 .account-date { width: 70px; font-size: 10px; color: var(--text-muted); text-align: right; }
 .account-details { display: none; padding: 12px 16px; background: var(--bg-secondary); border-bottom: 1px solid var(--border); animation: slideDown 0.2s ease; }
@@ -956,7 +953,7 @@ a.info-val:hover { color: var(--text); }
 
 /* Risk badges */
 .risk-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; }
-.risk-badge.low { background: rgba(46, 194, 126, 0.15); color: #2ec27e; }
+.risk-badge.low { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
 .risk-badge.medium { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
 .risk-badge.high { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
 
@@ -968,7 +965,7 @@ a.info-val:hover { color: var(--text); }
 .ref-content { display: none; }
 .ref-content.active { display: block; }
 .ref-status { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 500; }
-.ref-status.active { background: rgba(46, 194, 126, 0.15); color: #2ec27e; }
+.ref-status.active { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
 .ref-status.archived { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
 .ref-status.frozen { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
 .ref-action-btn { padding: 4px 8px; font-size: 11px; border-radius: 4px; cursor: pointer; transition: all 0.15s; }
@@ -1425,7 +1422,7 @@ a.info-val:hover { color: var(--text); }
                             <div>
                                 <span style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">Rolling Marker</span>
                                 <div style="display:flex;align-items:baseline;gap:8px;margin-top:2px">
-                                    <span id="dash-marker-level" style="font-size:20px;font-weight:700;color:#2ec27e">—</span>
+                                    <span id="dash-marker-level" style="font-size:20px;font-weight:700;color:#22c55e">—</span>
                                     <span id="dash-marker-risk" style="font-size:11px;color:var(--text-muted)">avg risk: —</span>
                                 </div>
                             </div>
@@ -1832,7 +1829,7 @@ print(result.factors)      <span style="color:#94a3b8"># {f1: 0.08, f2: 0.15, ..
                 </div>
                 <div class="info-row">
                     <span class="info-key">Email</span>
-                    <span class="info-val" id="settings-email">support@ontostandard.org</span>
+                    <span class="info-val" id="settings-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="12616762627d6066527d7c667d6166737c767360763c7d6075">[email&#160;protected]</a></span>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Type</span>
@@ -1919,15 +1916,15 @@ print(result.factors)      <span style="color:#94a3b8"># {f1: 0.08, f2: 0.15, ..
                 <div class="section-label">Support</div>
                 <div class="info-row">
                     <span class="info-key">General</span>
-                    <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
+                    <a class="info-val" href="/cdn-cgi/l/email-protection#72010702021d0006321d1c061d0106131c161300165c1d0015"><span class="__cf_email__" data-cfemail="32414742425d4046725d5c465d4146535c565340561c5d4055">[email&#160;protected]</span></a>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Sales</span>
-                    <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
+                    <a class="info-val" href="/cdn-cgi/l/email-protection#44373134342b3630042b2a302b3730252a202536206a2b3623"><span class="__cf_email__" data-cfemail="3c4f494c4c534e487c535248534f485d52585d4e5812534e5b">[email&#160;protected]</span></a>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Billing</span>
-                    <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
+                    <a class="info-val" href="/cdn-cgi/l/email-protection#790a0c0909160b0d3916170d160a0d18171d180b1d57160b1e"><span class="__cf_email__" data-cfemail="0a797f7a7a65787e4a65647e65797e6b646e6b786e2465786d">[email&#160;protected]</span></a>
                 </div>
             </div>
         </div>
@@ -1993,6 +1990,65 @@ print(result.factors)      <span style="color:#94a3b8"># {f1: 0.08, f2: 0.15, ..
         </div>
         <!-- REFERENCE PAGE (ADMIN) -->
         <div class="page" id="page-reference">
+            <!-- SIGNAL VISUALIZATION - MAIN ELEMENT -->
+            <div class="signal-panel">
+                <div class="signal-panel-grid"></div>
+                <div class="signal-header">
+                    <div class="signal-title">
+                        <span class="signal-icon">σ</span>
+                        <span>Entropy Signal</span>
+                    </div>
+                    <div class="signal-live" id="signal-live-indicator">
+                        <span class="signal-dot"></span>
+                        <span>LIVE</span>
+                    </div>
+                </div>
+                <div class="signal-body">
+                    <div class="signal-main-row">
+                        <div class="signal-id-block">
+                            <div class="signal-id" id="signal-id"><div class="signal-skeleton-id"></div></div>
+                            <div class="signal-hash" id="signal-hash"><div class="signal-skeleton-hash"></div></div>
+                        </div>
+                        <div class="signal-countdown-block">
+                            <div class="signal-countdown-label">NEXT</div>
+                            <div class="signal-countdown-value" id="signal-countdown">—</div>
+                        </div>
+                    </div>
+                    <div class="signal-metrics">
+                        <div class="signal-metric">
+                            <div class="signal-metric-value" id="signal-uptime"><div class="skeleton skeleton-metric"></div></div>
+                            <div class="signal-metric-label">UPTIME</div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value" id="signal-generated"><div class="skeleton skeleton-metric"></div></div>
+                            <div class="signal-metric-label">GENERATED</div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value" id="signal-requests"><div class="skeleton skeleton-metric"></div></div>
+                            <div class="signal-metric-label">REQUESTS</div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value" id="signal-errors"><div class="skeleton skeleton-metric"></div></div>
+                            <div class="signal-metric-label">ERROR RATE</div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value">104</div>
+                            <div class="signal-metric-label">PACKET</div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value">ED25519</div>
+                            <div class="signal-metric-label">SIGNATURE</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="signal-controls">
+                    <button class="signal-btn" onclick="refreshSignal()">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+
             <!-- PROOF CHAIN PANEL -->
             <div class="signal-panel" id="proof-chain-panel">
                 <div class="signal-panel-grid"></div>
@@ -2409,7 +2465,7 @@ print(result.factors)      <span style="color:#94a3b8"># {f1: 0.08, f2: 0.15, ..
             <h2 style="font-size: 15px; font-weight: 500; margin-bottom: 6px;">Complete Payment</h2>
             <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 12px;">You will be redirected to our secure payment provider.</p>
             <button class="btn btn-primary" onclick="redirectToAirwallex()">Continue to Payment</button>
-            <p style="margin-top: 12px; font-size: 11px; color: var(--text-muted);">Questions? Contact <a href="mailto:support@ontostandard.org">support@ontostandard.org</a></p>
+            <p style="margin-top: 12px; font-size: 11px; color: var(--text-muted);">Questions? Contact <a href="/cdn-cgi/l/email-protection#94e7e1e4e4fbe6e0d4fbfae0fbe7e0f5faf0f5e6f0bafbe6f3"><span class="__cf_email__" data-cfemail="7f0c0a0f0f100d0b3f10110b100c0b1e111b1e0d1b51100d18">[email&#160;protected]</span></a></p>
         </div>
     </div>
 </div>
@@ -2458,7 +2514,7 @@ print(result.factors)      <span style="color:#94a3b8"># {f1: 0.08, f2: 0.15, ..
         </div>
         <div class="modal-body">
             <div class="tier-user-info" id="tier-user-info">
-                <div class="tier-user-email">support@ontostandard.org</div>
+                <div class="tier-user-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f2818782829d8086b29d9c869d8186939c96938096dc9d8095">[email&#160;protected]</a></div>
             </div>
             <div class="tier-options">
                 <label class="tier-option" data-tier="open">
@@ -2537,7 +2593,7 @@ print(result.factors)      <span style="color:#94a3b8"># {f1: 0.08, f2: 0.15, ..
     </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // === API CONFIG ===
 const API_BASE = 'https://api.ontostandard.org';
 let authToken = null;
@@ -3239,18 +3295,18 @@ function updateAuditStats() {
             const avg = risks.reduce((a, b) => a + b, 0) / risks.length;
             if (riskEl) {
                 riskEl.textContent = avg.toFixed(2);
-                riskEl.style.color = avg < 0.35 ? '#2ec27e' : avg < 0.65 ? '#eab308' : '#ef4444';
+                riskEl.style.color = avg < 0.35 ? '#22c55e' : avg < 0.65 ? '#eab308' : '#ef4444';
             }
             if (riskLabel) {
                 riskLabel.textContent = avg < 0.35 ? 'LOW' : avg < 0.65 ? 'MODERATE' : 'HIGH';
-                riskLabel.style.color = avg < 0.35 ? '#2ec27e' : avg < 0.65 ? '#eab308' : '#ef4444';
+                riskLabel.style.color = avg < 0.35 ? '#22c55e' : avg < 0.65 ? '#eab308' : '#ef4444';
             }
         }
         
         if (evalEl) evalEl.textContent = evals;
         if (compEl) {
             compEl.textContent = passed + '/' + models.length;
-            compEl.style.color = passed === models.length ? '#2ec27e' : passed > 0 ? '#eab308' : 'var(--text-muted)';
+            compEl.style.color = passed === models.length ? '#22c55e' : passed > 0 ? '#eab308' : 'var(--text-muted)';
         }
     }
 }
@@ -4153,7 +4209,7 @@ function startUserHashAnimation(baseHash) {
         frame++;
         const display = hashArray.map((char) => {
             if (frame % 3 === 0 && Math.random() > 0.9) {
-                return `<span style="color:#26a269;text-shadow:0 0 8px #26a269;">${chars[Math.floor(Math.random() * 16)]}</span>`;
+                return `<span style="color:#15803d;text-shadow:0 0 8px #15803d;">${chars[Math.floor(Math.random() * 16)]}</span>`;
             }
             return char;
         }).join('');
@@ -4374,8 +4430,8 @@ async function loadSignalData() {
                     indicator.style.color = '#d97706';
                 } else {
                     indicator.innerHTML = '<span class="signal-dot"></span><span>LIVE</span>';
-                    indicator.style.background = 'rgba(46, 194, 126, 0.15)';
-                    indicator.style.color = '#26a269';
+                    indicator.style.background = 'rgba(34, 197, 94, 0.15)';
+                    indicator.style.color = '#15803d';
                 }
             }
             
@@ -4439,7 +4495,7 @@ function startHashAnimation(baseHash) {
         // Animate random positions with green glow
         const display = hashArray.map((char, i) => {
             if (frame % 3 === 0 && Math.random() > 0.9) {
-                return `<span style="color:#26a269;text-shadow:0 0 8px #26a269;">${chars[Math.floor(Math.random() * 16)]}</span>`;
+                return `<span style="color:#15803d;text-shadow:0 0 8px #15803d;">${chars[Math.floor(Math.random() * 16)]}</span>`;
             }
             return char;
         }).join('');
@@ -5047,7 +5103,7 @@ function drawIndustryChart() {
     const data = [
         { label: 'Finance', value: 28, color: '#d97706' },
         { label: 'Healthcare', value: 22, color: '#dc2626' },
-        { label: 'AI Labs', value: 18, color: '#26a269' },
+        { label: 'AI Labs', value: 18, color: '#15803d' },
         { label: 'Enterprise', value: 12, color: '#3b82f6' },
         { label: 'Other', value: 20, color: '#6b7280' }
     ];
@@ -5366,20 +5422,20 @@ async function createSnapshot() {
 }
 
 function ageColor(age) {
-    if (age === 'fresh') return '#2ec27e';
+    if (age === 'fresh') return '#22c55e';
     if (age === 'stale') return '#eab308';
     if (age === 'expired') return '#ef4444';
     return 'var(--text-muted)';
 }
 
 function ageBadgeHtml(age) {
-    const colors = { fresh: '#2ec27e', stale: '#eab308', expired: '#ef4444' };
+    const colors = { fresh: '#22c55e', stale: '#eab308', expired: '#ef4444' };
     const c = colors[age] || 'var(--text-muted)';
     return `<span style="font-size:9px;padding:2px 6px;border-radius:3px;background:${c}15;color:${c};font-weight:600;text-transform:uppercase;letter-spacing:0.3px">${age || '—'}</span>`;
 }
 
 function layerColor(layer) {
-    if (layer === 'L3') return '#2ec27e';
+    if (layer === 'L3') return '#22c55e';
     if (layer === 'L2') return '#3b82f6';
     if (layer === 'L1') return '#eab308';
     return 'var(--text-muted)';
@@ -5387,7 +5443,7 @@ function layerColor(layer) {
 
 function riskColor(risk) {
     if (risk == null) return 'var(--text-muted)';
-    if (risk < 0.25) return '#2ec27e';
+    if (risk < 0.25) return '#22c55e';
     if (risk < 0.50) return '#3b82f6';
     if (risk < 0.70) return '#eab308';
     return '#ef4444';
@@ -5490,7 +5546,7 @@ function dashDisplayResult(r, domain, output) {
     const offset = circumference * (1 - risk);
     const ring = document.getElementById('dash-ring-fill');
     ring.style.strokeDashoffset = offset;
-    ring.style.stroke = risk >= 0.65 ? '#ef4444' : risk >= 0.35 ? '#eab308' : '#2ec27e';
+    ring.style.stroke = risk >= 0.65 ? '#ef4444' : risk >= 0.35 ? '#eab308' : '#22c55e';
     document.getElementById('dash-score-val').textContent = risk.toFixed(3);
 
     const comp = (r.compliance || '—').toUpperCase();
@@ -5546,7 +5602,7 @@ function dashDisplayResult(r, domain, output) {
     const recs = r.recommendations || [];
     if (recs.length > 0 && recsWrap && recsList) {
         recsWrap.style.display = 'block';
-        const sevColors = { critical: '#ef4444', high: '#f97316', medium: '#eab308', low: '#3b82f6', info: '#2ec27e' };
+        const sevColors = { critical: '#ef4444', high: '#f97316', medium: '#eab308', low: '#3b82f6', info: '#22c55e' };
         recsList.innerHTML = recs.map(rec => {
             const c = sevColors[rec.severity] || 'var(--text-muted)';
             return `<div style="padding:6px 8px;margin-bottom:4px;border-left:2px solid ${c};background:${c}08;border-radius:0 4px 4px 0;font-size:11px;color:var(--text-secondary);line-height:1.5">
@@ -5570,14 +5626,14 @@ function dashDisplayResult(r, domain, output) {
         
         if (levelEl) {
             levelEl.textContent = m.marker;
-            levelEl.style.color = m.marker === 'L3' ? '#2ec27e' : m.marker === 'L2' ? '#eab308' : '#ef4444';
+            levelEl.style.color = m.marker === 'L3' ? '#22c55e' : m.marker === 'L2' ? '#eab308' : '#ef4444';
         }
         if (riskEl) riskEl.textContent = 'avg risk: ' + (m.avg_risk !== null ? m.avg_risk.toFixed(4) : '—');
         if (progressEl) progressEl.textContent = m.eval_count + ' / ' + m.window + ' evals';
         if (statusEl) {
             if (m.changed) {
                 statusEl.textContent = '⬆ Changed from ' + m.previous;
-                statusEl.style.color = '#2ec27e';
+                statusEl.style.color = '#22c55e';
             } else if (m.eval_count < m.window) {
                 statusEl.textContent = 'Calibrating (' + Math.round(m.eval_count / m.window * 100) + '%)';
                 statusEl.style.color = 'var(--text-muted)';
@@ -5609,9 +5665,9 @@ function dashSetFactor(id, value, inverted) {
     const pct = (typeof value === 'number' ? value : 0) * 100;
     bar.style.width = Math.max(pct, 2) + '%';
     if (inverted) {
-        bar.style.background = pct >= 60 ? '#ef4444' : pct >= 30 ? '#eab308' : '#2ec27e';
+        bar.style.background = pct >= 60 ? '#ef4444' : pct >= 30 ? '#eab308' : '#22c55e';
     } else {
-        bar.style.background = pct >= 60 ? '#2ec27e' : pct >= 30 ? '#eab308' : '#ef4444';
+        bar.style.background = pct >= 60 ? '#22c55e' : pct >= 30 ? '#eab308' : '#ef4444';
     }
 }
 
@@ -5622,7 +5678,7 @@ function dashSetFactorDM(value) {
     val.textContent = '×' + value.toFixed(1);
     const pct = Math.max(0, Math.min(100, ((value - 0.5) / 1.0) * 100));
     bar.style.width = pct + '%';
-    bar.style.background = value >= 1.3 ? '#ef4444' : value >= 1.1 ? '#eab308' : '#2ec27e';
+    bar.style.background = value >= 1.3 ? '#ef4444' : value >= 1.1 ? '#eab308' : '#22c55e';
 }
 
 function renderDashHistory() {
@@ -5634,7 +5690,7 @@ function renderDashHistory() {
     count.textContent = evalSessionHistory.length + ' evaluation' + (evalSessionHistory.length !== 1 ? 's' : '');
 
     container.innerHTML = evalSessionHistory.slice(0, 30).map(h => {
-        const color = h.compliance === 'FAILED' ? '#ef4444' : h.compliance === 'REVIEW' ? '#eab308' : '#2ec27e';
+        const color = h.compliance === 'FAILED' ? '#ef4444' : h.compliance === 'REVIEW' ? '#eab308' : '#22c55e';
         const bg = h.compliance === 'FAILED' ? 'rgba(239,68,68,0.12)' : h.compliance === 'REVIEW' ? 'rgba(234,179,8,0.12)' : 'rgba(34,197,94,0.12)';
         return `<div class="eval-history-row">
             <span class="risk-pill" style="background:${bg};color:${color}">${h.risk.toFixed(3)}</span>
@@ -5677,7 +5733,7 @@ function renderDashModels() {
     const allRows = [];
     
     realModels.forEach(m => {
-        const rc = (m.risk_score||0) < 0.35 ? '#2ec27e' : (m.risk_score||0) < 0.65 ? '#eab308' : '#ef4444';
+        const rc = (m.risk_score||0) < 0.35 ? '#22c55e' : (m.risk_score||0) < 0.65 ? '#eab308' : '#ef4444';
         const cc = (m.compliance || 'REVIEW').toLowerCase();
         allRows.push(`<div class="dash-model-row" onclick="openDashModelDetail('${m.id}')">
             <span class="dash-model-name">${m.name}</span>
@@ -5736,7 +5792,7 @@ function openDashModelDetail(modelId) {
 
     document.getElementById('dash-detail-name').textContent = m.name;
     document.getElementById('dash-detail-provider').textContent = (m.provider || '—') + ' · ' + (m.version || 'v1');
-    const rc = (m.risk_score||0) < 0.35 ? '#2ec27e' : (m.risk_score||0) < 0.65 ? '#eab308' : '#ef4444';
+    const rc = (m.risk_score||0) < 0.35 ? '#22c55e' : (m.risk_score||0) < 0.65 ? '#eab308' : '#ef4444';
     document.getElementById('dash-detail-risk').style.color = rc;
     document.getElementById('dash-detail-risk').textContent = (m.risk_score||0).toFixed(3);
     document.getElementById('dash-detail-layer').textContent = m.layer || '—';
@@ -5767,35 +5823,4 @@ function closeDashModelDetail() {
     document.getElementById('dash-model-detail').style.display = 'none';
     const emptyEl = document.getElementById('dash-model-detail-empty');
     if (emptyEl) emptyEl.style.display = 'block';
-    document.querySelectorAll('.dash-model-row').forEach(r => r.classList.remove('active'));
-    _currentDetailModelId = null;
-}
-
-async function deleteDashModel() {
-    if (!_currentDetailModelId) return;
-    
-    if (!confirm('Remove this model? This cannot be undone.')) return;
-    
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    if (apiKey) {
-        try {
-            await fetch(`${API_BASE}/v1/models/${_currentDetailModelId}`, {
-                method: 'DELETE',
-                headers: { 'x-api-key': apiKey }
-            });
-        } catch (e) { /* continue with local removal */ }
-    }
-    
-    const realModels = window._cachedModels || [];
-    window._cachedModels = realModels.filter(m => m.id !== _currentDetailModelId);
-    closeDashModelDetail();
-    renderDashModels();
-    populateEvalModels();
-    showToast('Model removed', 'success');
-}
-
-// Initialize dashboard models on page load
-setTimeout(() => { renderDashModels(); populateEvalModels(); }, 100);
-</script>
-</body>
-</html>
+    document.querySelectorAll('.dash-model-row').forEach(r => r.classList.remove(
