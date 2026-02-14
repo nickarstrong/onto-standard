@@ -1442,8 +1442,8 @@ a.info-val:hover { color: var(--text); }
         <div class="page active" id="page-monitor">
             <div class="page-header-clean" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
                 <div>
-                    <h1 class="page-title" style="margin-bottom:2px">Calibrate</h1>
-                    <p style="color:var(--text-muted);font-size:12px;margin:0">Track epistemic risk across your AI models over time</p>
+                    <h1 class="page-title" style="margin-bottom:2px">Dashboard</h1>
+                    <p style="color:var(--text-muted);font-size:12px;margin:0">Register AI models, run evaluations, track risk over time</p>
                 </div>
                 <button class="btn-minimal" onclick="showAddModelModal()" style="font-size:12px;padding:6px 16px;border:1px solid var(--border);border-radius:4px">+ Register Model</button>
             </div>
@@ -1460,10 +1460,41 @@ a.info-val:hover { color: var(--text); }
                 
                 <!-- RIGHT: Model Detail -->
                 <div class="dash-card-clean" style="margin-bottom:0;align-self:start">
-                    <div id="dash-model-detail-empty" style="text-align:center;padding:40px 24px;color:var(--text-muted)">
-                        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--border);margin-bottom:10px"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                        <div style="font-size:13px;font-weight:500;color:var(--text-secondary);margin-bottom:4px">Select a model</div>
-                        <div style="font-size:11px">Click on a model to see risk details, compliance, and trend</div>
+                    <div id="dash-model-detail-empty" style="padding:24px">
+                        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:16px">Quick Start</div>
+                        <div style="display:flex;flex-direction:column;gap:12px">
+                            <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:6px;background:var(--bg-secondary);border:1px solid var(--border)">
+                                <div style="min-width:24px;height:24px;border-radius:50%;background:var(--accent-subtle);border:1px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">1</div>
+                                <div>
+                                    <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px">Get your API key</div>
+                                    <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Go to <a onclick="showPage('sdk', document.querySelector('.nav-item[onclick*=sdk]'))" style="color:var(--accent);cursor:pointer;text-decoration:none">API & SDK</a> to copy your key and connect via CLI or REST.</div>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:6px;background:var(--bg-secondary);border:1px solid var(--border)">
+                                <div style="min-width:24px;height:24px;border-radius:50%;background:var(--accent-subtle);border:1px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">2</div>
+                                <div>
+                                    <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px">Register a model</div>
+                                    <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Click <a onclick="showAddModelModal()" style="color:var(--accent);cursor:pointer;text-decoration:none">+ Register Model</a> to add the AI system you want to evaluate.</div>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:6px;background:var(--bg-secondary);border:1px solid var(--border)">
+                                <div style="min-width:24px;height:24px;border-radius:50%;background:var(--accent-subtle);border:1px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">3</div>
+                                <div>
+                                    <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px">Run an evaluation</div>
+                                    <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Submit any AI output via API or paste it directly. ONTO scores epistemic risk across 6 factors.</div>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:6px;background:var(--bg-secondary);border:1px solid var(--border)">
+                                <div style="min-width:24px;height:24px;border-radius:50%;background:var(--accent-subtle);border:1px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">4</div>
+                                <div>
+                                    <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px">Track & verify</div>
+                                    <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Click any model on the left to see risk details, compliance grade, and trend. Every evaluation is cryptographically signed.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);font-size:10px;color:var(--text-muted)">
+                            Need help? Read the <a href="/docs/" target="_blank" style="color:var(--accent);text-decoration:none">documentation</a> or contact <a href="mailto:support@ontostandard.org" style="color:var(--accent);text-decoration:none">support</a>.
+                        </div>
                     </div>
                     <div id="dash-model-detail" style="display:none">
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
