@@ -11,6 +11,7 @@
 <style>
 /* === VARIABLES — ONTO Design System v3.0 === */
 :root {
+    color-scheme: dark;
     --bg: #0a0a0a;
     --bg-secondary: #121212;
     --bg-card: #1a1a1a;
@@ -30,6 +31,7 @@
     --sans: 'Inter', -apple-system, sans-serif;
 }
 [data-theme="light"] {
+    color-scheme: light;
     --bg: #ffffff;
     --bg-secondary: #f9fafb;
     --bg-card: #ffffff;
@@ -79,6 +81,9 @@ input, select, textarea { font-family: inherit; }
 .form-input:focus { outline: none; border-color: var(--safe); }
 .form-input::placeholder { color: var(--text-muted); }
 select.form-input { appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+select.form-input option { background: var(--bg-card); color: var(--text); }
+input[type="file"].form-input { background: var(--bg); color: var(--text-secondary); }
+input[type="file"].form-input::file-selector-button { background: var(--bg-elevated); color: var(--text); border: 1px solid var(--border); border-radius: 4px; padding: 4px 12px; margin-right: 8px; cursor: pointer; font-size: 12px; }
 .password-wrapper { position: relative; }
 .password-toggle { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); color: var(--text-muted); padding: 4px; }
 
@@ -123,7 +128,7 @@ select.form-input { appearance: none; background-image: url("data:image/svg+xml,
 .user-info { flex: 1; min-width: 0; }
 .user-name { font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .user-tier { font-size: 10px; color: var(--text-muted); }
-.main-content { margin-left: 220px; flex: 1; padding: 24px; max-width: 960px; }
+.main-content { margin-left: 220px; flex: 1; padding: 24px; }
 .page { display: none; }
 .page.active { display: block; }
 
@@ -287,6 +292,7 @@ select.form-input { appearance: none; background-image: url("data:image/svg+xml,
 </style>
 </head>
 <body>
+<script>if(localStorage.getItem('onto_logged_in')==='true')document.write('<style id="auth-preload-hide">#auth-screen{display:none!important}</style>');</script>
 
 <!-- TOAST -->
 <div class="toast-container" id="toast-container"></div>
@@ -383,6 +389,7 @@ select.form-input { appearance: none; background-image: url("data:image/svg+xml,
                 <p><strong>Terms of Service.</strong> By creating an account you agree to the ONTO Terms of Service, Privacy Policy, and Acceptable Use Policy.</p>
                 <p><strong>Acceptable Use.</strong> You may use the ONTO platform to evaluate AI model outputs, track epistemic calibration, and obtain measurement reports. Automated abuse, reverse engineering of scoring algorithms, and redistribution of evaluation results without attribution are prohibited.</p>
                 <p><strong>Data.</strong> Model outputs submitted for evaluation are processed and may be stored for quality assurance. API keys you provide are used only for evaluation and never stored after the evaluation session.</p>
+                <p style="margin-top:8px"><strong>Full terms:</strong> <a href="/legal" target="_blank">ontostandard.org/legal</a></p>
             </div>
             <div class="checkbox-group">
                 <input type="checkbox" id="terms-agree" onchange="document.getElementById('register-btn').disabled = !this.checked">
@@ -454,6 +461,10 @@ select.form-input { appearance: none; background-image: url("data:image/svg+xml,
             <div class="nav-item" onclick="showPage('settings', this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
                 Account
+            </div>
+            <div class="nav-item" id="nav-reference" onclick="showPage('reference', this)" style="display:none">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10M6 20V4M18 20v-6"/></svg>
+                Reference
             </div>
             <div class="nav-divider"></div>
             <a class="nav-item" href="/docs/" target="_blank" style="color: var(--text-muted);">
@@ -527,9 +538,10 @@ select.form-input { appearance: none; background-image: url("data:image/svg+xml,
 
             <!-- Empty state (no models) -->
             <div id="models-empty">
+                <div style="font-size:15px;font-weight:500;margin-bottom:14px;color:var(--text)">Welcome, <span id="welcome-name">—</span>.</div>
                 <div class="connect-card">
-                    <div style="font-size:15px;font-weight:600;margin-bottom:4px">Connect your first AI model</div>
-                    <div style="font-size:12px;color:var(--text-secondary)">Choose how to evaluate. First evaluation is free.</div>
+                    <div style="font-size:14px;font-weight:600;margin-bottom:2px">Step 1: Connect your AI model</div>
+                    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:16px">Choose how to evaluate. First evaluation is free.</div>
                     <div class="connect-options">
                         <div class="connect-option" onclick="openAddModelModal('api')">
                             <div class="connect-option-icon">🔑</div>
@@ -547,6 +559,7 @@ select.form-input { appearance: none; background-image: url("data:image/svg+xml,
                             <div class="connect-option-desc">Download evaluation kit. Run on your machine. Upload results.</div>
                         </div>
                     </div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-top:12px">💡 You'll receive a signed report with composite score (A–F) and metric breakdown within minutes.</div>
                 </div>
                 <div class="card" style="display:flex;justify-content:space-between;align-items:center">
                     <div>
@@ -744,51 +757,54 @@ print(result.metrics)      <span class="cmt"># {qd: 2.84, ss: 0.42, ...}</span><
 
         <!-- ==================== BILLING ==================== -->
         <div class="page" id="page-billing">
-            <h1 style="font-size:18px;font-weight:600;margin-bottom:20px">Plans</h1>
+            <h1 style="font-size:18px;font-weight:600;margin-bottom:4px">Institutional Licensing</h1>
+            <p style="font-size:12px;color:var(--text-muted);margin-bottom:20px">Active grant program available for research institutions.</p>
             <div class="tiers-grid">
                 <div class="tier-card" id="tier-open">
                     <div class="tier-name">Open</div>
                     <div class="tier-price">$0</div>
-                    <div class="tier-desc">See your AI's epistemic calibration</div>
+                    <div class="tier-desc">Diagnostic access — see your AI's epistemic risk profile</div>
                     <ul class="tier-list">
-                        <li>1 model</li>
+                        <li>1 model registration</li>
                         <li>1 evaluation (free)</li>
-                        <li>Basic report</li>
+                        <li>Basic report (unsigned)</li>
                         <li>Manual upload only</li>
+                        <li>Attribution required</li>
                     </ul>
                     <button class="btn-tier current" id="btn-open" disabled>Current</button>
                 </div>
                 <div class="tier-card" id="tier-standard">
                     <div class="tier-name">Standard</div>
-                    <div class="tier-price">$15K<span>/year</span></div>
-                    <div class="tier-desc">Continuous monitoring and signed reports</div>
+                    <div class="tier-price">$15,000<span>/year</span></div>
+                    <div class="tier-desc">Continuous monitoring — calibrate your AI fleet</div>
                     <ul class="tier-list">
                         <li>Up to 10 models</li>
                         <li>Monthly auto-evaluations</li>
-                        <li>Full signed reports (PDF)</li>
-                        <li>API + upload access</li>
-                        <li>Drift alerts</li>
-                        <li>Email support</li>
+                        <li>Full Ed25519-signed reports</li>
+                        <li>API + upload + local access</li>
+                        <li>Drift alerts & notifications</li>
+                        <li>Email support (24h SLA)</li>
                     </ul>
-                    <button class="btn-tier" id="btn-standard" onclick="contactSales('standard')">Contact Sales</button>
+                    <button class="btn-tier" id="btn-standard" onclick="contactSales('Standard')">Contact Sales</button>
                 </div>
                 <div class="tier-card" id="tier-critical">
                     <div class="tier-name">Critical</div>
-                    <div class="tier-price">$100K+<span>/year</span></div>
+                    <div class="tier-price">$100,000+<span>/year</span></div>
                     <div class="tier-desc">Enterprise-grade for regulated industries</div>
                     <ul class="tier-list">
                         <li>Everything in Standard</li>
                         <li>Unlimited models</li>
-                        <li>Weekly evaluations</li>
+                        <li>Weekly evaluation cadence</li>
                         <li>Regulatory report format</li>
-                        <li>Dedicated support</li>
+                        <li>Dedicated account manager</li>
                         <li>Custom scoring domains</li>
+                        <li>99.99% SLA · Priority support</li>
                     </ul>
-                    <button class="btn-tier" id="btn-critical" onclick="contactSales('critical')">Contact Sales</button>
+                    <button class="btn-tier" id="btn-critical" onclick="contactSales('Critical')">Contact Sales</button>
                 </div>
             </div>
             <p style="text-align:center;margin-top:20px;font-size:11px;color:var(--text-muted)">
-                Questions? <a href="mailto:support@ontostandard.org">support@ontostandard.org</a>
+                Invoice payment requires registered organization. <a href="#" onclick="showPage('settings')">Account settings</a> · <a href="mailto:support@ontostandard.org">support@ontostandard.org</a>
             </p>
         </div>
 
@@ -843,6 +859,55 @@ print(result.metrics)      <span class="cmt"># {qd: 2.84, ss: 0.42, ...}</span><
                 <div class="settings-section" style="margin-bottom:0">
                     <h3>Danger Zone</h3>
                     <button class="btn-danger" onclick="deleteAccount()">Delete Account</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== REFERENCE (ADMIN) ==================== -->
+        <div class="page" id="page-reference">
+            <h1 style="font-size:18px;font-weight:600;margin-bottom:20px">Reference Panel</h1>
+            <div class="card">
+                <div class="settings-section">
+                    <h3>System Status</h3>
+                    <div class="info-row">
+                        <span class="info-key">Scoring Engine</span>
+                        <span class="info-val" style="color:var(--safe)">v3.0 · Online</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-key">Signal Protocol</span>
+                        <span class="info-val" id="ref-signal-status" style="color:var(--safe)">Active</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-key">Ed25519 Signing</span>
+                        <span class="info-val" style="color:var(--safe)">Enabled</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-key">GOLD DIGEST</span>
+                        <span class="info-val">v4.5 · 149 files · 100 probes</span>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h3>Registered Users</h3>
+                    <div class="info-row">
+                        <span class="info-key">Total</span>
+                        <span class="info-val" id="ref-total-users">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-key">Models Registered</span>
+                        <span class="info-val" id="ref-total-models">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-key">Evaluations Run</span>
+                        <span class="info-val" id="ref-total-evals">—</span>
+                    </div>
+                </div>
+                <div class="settings-section" style="margin-bottom:0">
+                    <h3>Admin Actions</h3>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap">
+                        <button class="btn btn-outline" onclick="loadReferenceStats()" style="font-size:11px;padding:6px 14px">Refresh Stats</button>
+                        <button class="btn btn-outline" onclick="window.open('/docs/','_blank')" style="font-size:11px;padding:6px 14px">Docs</button>
+                        <button class="btn btn-outline" onclick="window.open('https://github.com/onto-standard','_blank')" style="font-size:11px;padding:6px 14px">GitHub</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1268,6 +1333,8 @@ function handleLogout() {
 
 // === NAVIGATION ===
 function showAuthScreen() {
+    const preloadStyle = document.getElementById('auth-preload-hide');
+    if (preloadStyle) preloadStyle.remove();
     document.getElementById('auth-screen').style.display = 'flex';
     document.getElementById('app-layout').style.display = 'none';
     showLogin();
@@ -1315,6 +1382,8 @@ function updateUserUI() {
     document.getElementById('user-name').textContent = name;
     document.getElementById('user-avatar').textContent = name.charAt(0).toUpperCase();
     document.getElementById('user-plan').textContent = planLabel;
+    const welcomeEl = document.getElementById('welcome-name');
+    if (welcomeEl) welcomeEl.textContent = name;
     document.getElementById('settings-name').textContent = name;
     document.getElementById('settings-email').textContent = currentUser.email || '—';
     document.getElementById('settings-plan').textContent = planLabel;
@@ -1325,6 +1394,32 @@ function updateUserUI() {
     const tierMap = { free: 'open', business: 'standard', enterprise: 'critical' };
     const activeBtn = document.getElementById('btn-' + (tierMap[plan] || 'open'));
     if (activeBtn) { activeBtn.classList.add('current'); activeBtn.disabled = true; activeBtn.textContent = 'Current'; }
+    
+    // Admin reference access
+    checkReferenceAccess();
+}
+
+async function checkReferenceAccess() {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) return;
+    try {
+        const res = await fetch(`${API_BASE}/v1/docs/reference-check`, { headers: { 'x-api-key': apiKey } });
+        if (res.ok) {
+            const data = await res.json();
+            if (data.status === 'ok') document.getElementById('nav-reference').style.display = 'flex';
+        }
+    } catch {}
+}
+
+async function loadReferenceStats() {
+    try {
+        const data = await api('/v1/admin/stats');
+        if (data) {
+            document.getElementById('ref-total-users').textContent = data.total_users || '—';
+            document.getElementById('ref-total-models').textContent = data.total_models || '—';
+            document.getElementById('ref-total-evals').textContent = data.total_evals || '—';
+        }
+    } catch { showToast('Failed to load stats', 'error'); }
 }
 
 // === MODELS ===
@@ -1345,7 +1440,7 @@ function renderModels() {
         empty.style.display = 'block';
         list.style.display = 'none';
         addBtn.style.display = 'none';
-        document.getElementById('signal-panel').style.display = 'none';
+        document.getElementById('signal-panel').style.display = 'block';
         document.getElementById('latest-report').style.display = 'none';
         document.getElementById('reports-section').style.display = 'none';
         updateStats();
