@@ -1468,7 +1468,7 @@ a.info-val:hover { color: var(--text); }
                 </div>
             </div>
 
-            <div style="display:grid;grid-template-columns:320px 1fr;gap:16px;margin-bottom:16px" id="calibrate-grid">
+            <div style="display:grid;grid-template-columns:360px 1fr;gap:16px;margin-bottom:16px" id="calibrate-grid">
                 <!-- LEFT: Model List (always visible) -->
                 <div class="dash-card-clean" style="margin-bottom:0;align-self:start">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
@@ -1504,29 +1504,25 @@ a.info-val:hover { color: var(--text); }
                         </div>
                         <!-- Overview: shown when models exist -->
                         <div id="dash-overview" style="display:none">
-                            <div style="font-size:11px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:14px">Risk Overview</div>
-                            <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px">
-                                <div style="font-size:36px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1" id="overview-avg-risk">—</div>
+                            <div style="font-size:11px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:16px">Risk Overview</div>
+                            <!-- Big number -->
+                            <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:20px">
+                                <div style="font-size:42px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1" id="overview-avg-risk">—</div>
                                 <div>
-                                    <div style="font-size:11px;color:var(--text-muted)">avg risk score</div>
-                                    <div style="font-size:11px;margin-top:2px" id="overview-risk-label">—</div>
+                                    <div style="font-size:12px;color:var(--text-muted)">avg risk</div>
+                                    <div style="font-size:12px;font-weight:600;margin-top:2px" id="overview-risk-label">—</div>
                                 </div>
                             </div>
-                            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
-                                <div style="text-align:center;padding:10px;background:var(--bg-secondary);border-radius:6px;border:1px solid var(--border)"><div style="font-size:20px;font-weight:700" id="overview-passed">0</div><div style="font-size:9px;color:var(--text-muted);margin-top:2px">PASSED</div></div>
-                                <div style="text-align:center;padding:10px;background:var(--bg-secondary);border-radius:6px;border:1px solid var(--border)"><div style="font-size:20px;font-weight:700;color:#eab308" id="overview-review">0</div><div style="font-size:9px;color:var(--text-muted);margin-top:2px">REVIEW</div></div>
-                                <div style="text-align:center;padding:10px;background:var(--bg-secondary);border-radius:6px;border:1px solid var(--border)"><div style="font-size:20px;font-weight:700;color:#ef4444" id="overview-failed">0</div><div style="font-size:9px;color:var(--text-muted);margin-top:2px">FAILED</div></div>
-                            </div>
-                            <div style="border-top:1px solid var(--border);padding-top:12px;margin-bottom:12px">
-                                <div style="font-size:11px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Compliance Distribution</div>
-                                <div id="overview-compliance-bars" style="display:flex;flex-direction:column;gap:6px"></div>
-                            </div>
+                            <!-- Compliance one-liner -->
+                            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px" id="overview-compliance-pills"></div>
+                            <!-- Worst model -->
                             <div style="border-top:1px solid var(--border);padding-top:12px">
-                                <div style="font-size:11px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Highest Risk</div>
-                                <div id="overview-worst" style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--bg-secondary);border-radius:6px;border:1px solid var(--border)">
+                                <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">HIGHEST RISK</div>
+                                <div style="display:flex;align-items:center;gap:8px;cursor:pointer" id="overview-worst" onclick="if(this.dataset.id)openDashModelDetail(this.dataset.id)">
+                                    <span style="width:6px;height:6px;border-radius:50%;flex-shrink:0" id="overview-worst-dot"></span>
                                     <span style="font-size:12px;font-weight:500;flex:1" id="overview-worst-name">—</span>
-                                    <span style="font-size:13px;font-weight:700;font-variant-numeric:tabular-nums" id="overview-worst-score">—</span>
-                                    <span style="font-size:9px;font-weight:600;padding:2px 5px;border-radius:2px" id="overview-worst-comp">—</span>
+                                    <span style="font-size:12px;font-weight:700;font-variant-numeric:tabular-nums" id="overview-worst-score">—</span>
+                                    <span style="font-size:9px;font-weight:600;padding:1px 4px;border-radius:2px" id="overview-worst-comp">—</span>
                                 </div>
                             </div>
                         </div>
@@ -5842,7 +5838,6 @@ function updateOverview(models) {
     models = models || window._cachedModels || [];
     if (!models.length) return;
     
-    // Avg risk
     const avgRisk = models.reduce((s, m) => s + (m.risk_score || 0), 0) / models.length;
     const avgEl = document.getElementById('overview-avg-risk');
     const labelEl = document.getElementById('overview-risk-label');
@@ -5856,54 +5851,28 @@ function updateOverview(models) {
         else { labelEl.textContent = 'High risk'; labelEl.style.color = '#ef4444'; }
     }
     
-    // Passed / Review / Failed counts
-    let passed = 0, review = 0, failed = 0;
-    models.forEach(m => {
-        const c = (m.compliance || '').toUpperCase();
-        if (c === 'A' || c === 'PASSED') passed++;
-        else if (c === 'F' || c === 'E' || c === 'FAILED') failed++;
-        else review++;
-    });
-    const pEl = document.getElementById('overview-passed'); if (pEl) { pEl.textContent = passed; pEl.style.color = '#22c55e'; }
-    const rvEl = document.getElementById('overview-review'); if (rvEl) rvEl.textContent = review;
-    const fEl = document.getElementById('overview-failed'); if (fEl) fEl.textContent = failed;
-    
-    // Compliance distribution bars
-    const barsEl = document.getElementById('overview-compliance-bars');
-    if (barsEl) {
+    // Compliance pills
+    const pillsEl = document.getElementById('overview-compliance-pills');
+    if (pillsEl) {
         const grades = {};
         models.forEach(m => { const g = (m.compliance || 'REVIEW').toUpperCase(); grades[g] = (grades[g] || 0) + 1; });
-        const gradeColors = { A: '#22c55e', B: '#4ade80', C: '#eab308', D: '#f97316', E: '#ef4444', F: '#dc2626', PASSED: '#22c55e', REVIEW: '#eab308', FAILED: '#ef4444' };
-        let html = '';
-        Object.keys(grades).sort().forEach(g => {
-            const pct = Math.round((grades[g] / models.length) * 100);
-            const color = gradeColors[g] || '#eab308';
-            html += `<div style="display:flex;align-items:center;gap:8px">
-                <span style="font-size:10px;font-weight:600;width:16px;color:${color}">${g}</span>
-                <div style="flex:1;height:6px;background:var(--bg-elevated);border-radius:3px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${color};border-radius:3px"></div></div>
-                <span style="font-size:10px;color:var(--text-muted);width:20px;text-align:right">${grades[g]}</span>
-            </div>`;
-        });
-        barsEl.innerHTML = html;
+        const gc = { A: '#22c55e', B: '#4ade80', C: '#eab308', D: '#f97316', E: '#ef4444', F: '#dc2626', PASSED: '#22c55e', REVIEW: '#eab308', FAILED: '#ef4444' };
+        pillsEl.innerHTML = Object.keys(grades).sort().map(g =>
+            `<span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:${gc[g]||'#eab308'}1a;color:${gc[g]||'#eab308'};border:1px solid ${gc[g]||'#eab308'}33">${g} · ${grades[g]}</span>`
+        ).join('');
     }
     
     // Worst model
     const worst = models.reduce((w, m) => (!w || (m.risk_score || 0) > (w.risk_score || 0)) ? m : w, null);
     if (worst) {
+        const wEl = document.getElementById('overview-worst');
+        if (wEl) wEl.dataset.id = worst.id;
+        const wc = (worst.risk_score || 0) < 0.35 ? '#22c55e' : (worst.risk_score || 0) < 0.65 ? '#eab308' : '#ef4444';
+        const dotEl = document.getElementById('overview-worst-dot'); if (dotEl) dotEl.style.background = wc;
         const wnEl = document.getElementById('overview-worst-name'); if (wnEl) wnEl.textContent = worst.name;
-        const wsEl = document.getElementById('overview-worst-score');
-        if (wsEl) {
-            wsEl.textContent = (worst.risk_score || 0).toFixed(2);
-            wsEl.style.color = (worst.risk_score || 0) < 0.35 ? '#22c55e' : (worst.risk_score || 0) < 0.65 ? '#eab308' : '#ef4444';
-        }
+        const wsEl = document.getElementById('overview-worst-score'); if (wsEl) { wsEl.textContent = (worst.risk_score||0).toFixed(2); wsEl.style.color = wc; }
         const wcEl = document.getElementById('overview-worst-comp');
-        if (wcEl) {
-            const c = (worst.compliance || 'REVIEW').toUpperCase();
-            wcEl.textContent = c;
-            const color = c === 'A' || c === 'PASSED' ? '#22c55e' : c === 'F' || c === 'FAILED' ? '#ef4444' : '#eab308';
-            wcEl.style.color = color;
-            wcEl.style.background = color + '1a';
-        }
+        if (wcEl) { const c = (worst.compliance||'REVIEW').toUpperCase(); wcEl.textContent = c; wcEl.style.color = wc; wcEl.style.background = wc + '1a'; }
     }
 }
 
