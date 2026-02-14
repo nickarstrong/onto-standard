@@ -1211,10 +1211,6 @@ a.info-val:hover { color: var(--text); }
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                 Docs ↗
             </a>
-            <a class="nav-item" href="/verify/" target="_blank" style="text-decoration: none; color: var(--text-muted);">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11.5 14.5 16 9"/></svg>
-                Verify ↗
-            </a>
             <div class="nav-item" onclick="toggleTheme()" style="color: var(--text-muted);">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>
                 Theme
@@ -1485,39 +1481,54 @@ a.info-val:hover { color: var(--text); }
                 <!-- RIGHT: Model Detail -->
                 <div class="dash-card-clean" style="margin-bottom:0;align-self:start">
                     <div id="dash-model-detail-empty" style="padding:24px">
-                        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:16px">Quick Start</div>
-                        <div style="display:flex;flex-direction:column;gap:12px">
-                            <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:6px;background:var(--bg-secondary);border:1px solid var(--border)">
-                                <div style="min-width:24px;height:24px;border-radius:50%;background:var(--accent-subtle);border:1px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">1</div>
-                                <div>
-                                    <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px">Get your API key</div>
-                                    <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Go to <a onclick="showPage('sdk', document.querySelector('.nav-item[onclick*=sdk]'))" style="color:var(--accent);cursor:pointer;text-decoration:none">API & SDK</a> to copy your key and connect via CLI or REST.</div>
+                        <!-- Quick Start: shown only when 0 models -->
+                        <div id="dash-quickstart" style="display:none">
+                            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:16px">Quick Start</div>
+                            <div style="display:flex;flex-direction:column;gap:10px">
+                                <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:6px;background:var(--bg-secondary);border:1px solid var(--border)">
+                                    <div style="min-width:22px;height:22px;border-radius:50%;background:var(--accent-subtle);border:1px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">1</div>
+                                    <div><div style="font-size:12px;font-weight:600;color:var(--text)">Get your API key</div><div style="font-size:11px;color:var(--text-muted);line-height:1.4">Go to <a onclick="showPage('sdk', document.querySelector('.nav-item[onclick*=sdk]'))" style="color:var(--accent);cursor:pointer;text-decoration:none">API & SDK</a> to copy your key.</div></div>
+                                </div>
+                                <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:6px;background:var(--bg-secondary);border:1px solid var(--border)">
+                                    <div style="min-width:22px;height:22px;border-radius:50%;background:var(--accent-subtle);border:1px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">2</div>
+                                    <div><div style="font-size:12px;font-weight:600;color:var(--text)">Register a model</div><div style="font-size:11px;color:var(--text-muted);line-height:1.4">Click <a onclick="showAddModelModal()" style="color:var(--accent);cursor:pointer;text-decoration:none">+ Register Model</a> to add your AI system.</div></div>
+                                </div>
+                                <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:6px;background:var(--bg-secondary);border:1px solid var(--border)">
+                                    <div style="min-width:22px;height:22px;border-radius:50%;background:var(--accent-subtle);border:1px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">3</div>
+                                    <div><div style="font-size:12px;font-weight:600;color:var(--text)">Run evaluation & track</div><div style="font-size:11px;color:var(--text-muted);line-height:1.4">Submit AI output via API. ONTO scores risk across 6 factors with cryptographic proof.</div></div>
                                 </div>
                             </div>
-                            <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:6px;background:var(--bg-secondary);border:1px solid var(--border)">
-                                <div style="min-width:24px;height:24px;border-radius:50%;background:var(--accent-subtle);border:1px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">2</div>
-                                <div>
-                                    <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px">Register a model</div>
-                                    <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Click <a onclick="showAddModelModal()" style="color:var(--accent);cursor:pointer;text-decoration:none">+ Register Model</a> to add the AI system you want to evaluate.</div>
-                                </div>
-                            </div>
-                            <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:6px;background:var(--bg-secondary);border:1px solid var(--border)">
-                                <div style="min-width:24px;height:24px;border-radius:50%;background:var(--accent-subtle);border:1px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">3</div>
-                                <div>
-                                    <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px">Run an evaluation</div>
-                                    <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Submit any AI output via API or paste it directly. ONTO scores epistemic risk across 6 factors.</div>
-                                </div>
-                            </div>
-                            <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:6px;background:var(--bg-secondary);border:1px solid var(--border)">
-                                <div style="min-width:24px;height:24px;border-radius:50%;background:var(--accent-subtle);border:1px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">4</div>
-                                <div>
-                                    <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px">Track & verify</div>
-                                    <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Click any model on the left to see risk details, compliance grade, and trend. Every evaluation is cryptographically signed.</div>
-                                </div>
+                            <div style="margin-top:14px;padding-top:10px;border-top:1px solid var(--border);font-size:10px;color:var(--text-muted)">
+                                Read the <a href="/docs/" target="_blank" style="color:var(--accent);text-decoration:none">documentation</a> or contact <a href="mailto:support@ontostandard.org" style="color:var(--accent);text-decoration:none">support</a>.
                             </div>
                         </div>
-                        <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);font-size:10px;color:var(--text-muted)">
-                            Need help? Read the <a href="/docs/" target="_blank" style="color:var(--accent);text-decoration:none">documentation</a> or contact <a href="mailto:support@ontostandard.org" style="color:var(--accent);text-decoration:none">support</a>.
+                        <!-- Overview: shown when models exist -->
+                        <div id="dash-overview" style="display:none">
+                            <div style="font-size:11px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:14px">Risk Overview</div>
+                            <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px">
+                                <div style="font-size:36px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1" id="overview-avg-risk">—</div>
+                                <div>
+                                    <div style="font-size:11px;color:var(--text-muted)">avg risk score</div>
+                                    <div style="font-size:11px;margin-top:2px" id="overview-risk-label">—</div>
+                                </div>
+                            </div>
+                            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
+                                <div style="text-align:center;padding:10px;background:var(--bg-secondary);border-radius:6px;border:1px solid var(--border)"><div style="font-size:20px;font-weight:700" id="overview-passed">0</div><div style="font-size:9px;color:var(--text-muted);margin-top:2px">PASSED</div></div>
+                                <div style="text-align:center;padding:10px;background:var(--bg-secondary);border-radius:6px;border:1px solid var(--border)"><div style="font-size:20px;font-weight:700;color:#eab308" id="overview-review">0</div><div style="font-size:9px;color:var(--text-muted);margin-top:2px">REVIEW</div></div>
+                                <div style="text-align:center;padding:10px;background:var(--bg-secondary);border-radius:6px;border:1px solid var(--border)"><div style="font-size:20px;font-weight:700;color:#ef4444" id="overview-failed">0</div><div style="font-size:9px;color:var(--text-muted);margin-top:2px">FAILED</div></div>
+                            </div>
+                            <div style="border-top:1px solid var(--border);padding-top:12px;margin-bottom:12px">
+                                <div style="font-size:11px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Compliance Distribution</div>
+                                <div id="overview-compliance-bars" style="display:flex;flex-direction:column;gap:6px"></div>
+                            </div>
+                            <div style="border-top:1px solid var(--border);padding-top:12px">
+                                <div style="font-size:11px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Highest Risk</div>
+                                <div id="overview-worst" style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--bg-secondary);border-radius:6px;border:1px solid var(--border)">
+                                    <span style="font-size:12px;font-weight:500;flex:1" id="overview-worst-name">—</span>
+                                    <span style="font-size:13px;font-weight:700;font-variant-numeric:tabular-nums" id="overview-worst-score">—</span>
+                                    <span style="font-size:9px;font-weight:600;padding:2px 5px;border-radius:2px" id="overview-worst-comp">—</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div id="dash-model-detail" style="display:none">
@@ -5786,44 +5797,114 @@ function renderDashModels() {
     const allRows = [];
     
     realModels.forEach(m => {
-        const rc = (m.risk_score||0) < 0.35 ? '#22c55e' : (m.risk_score||0) < 0.65 ? '#eab308' : '#ef4444';
+        const risk = m.risk_score || 0;
+        const rc = risk < 0.35 ? '#22c55e' : risk < 0.65 ? '#eab308' : '#ef4444';
+        const dotColor = risk < 0.35 ? '#22c55e' : risk < 0.65 ? '#eab308' : '#ef4444';
         const cc = (m.compliance || 'REVIEW').toLowerCase();
         allRows.push(`<div class="dash-model-row" onclick="openDashModelDetail('${m.id}')">
+            <span style="width:6px;height:6px;border-radius:50%;background:${dotColor};flex-shrink:0"></span>
             <span class="dash-model-name">${m.name}</span>
             <span class="dash-model-provider">${m.provider || '—'}</span>
-            <span class="dash-model-risk" style="color:${rc}">${(m.risk_score||0).toFixed(2)}</span>
+            <span class="dash-model-risk" style="color:${rc}">${risk.toFixed(2)}</span>
             <span class="dash-model-comp ${cc}">${(m.compliance||'—').toUpperCase()}</span>
         </div>`);
     });
     
+    // Show Quick Start or Overview based on model count
+    const qsEl = document.getElementById('dash-quickstart');
+    const ovEl = document.getElementById('dash-overview');
+    if (qsEl && ovEl) {
+        if (realModels.length === 0) {
+            qsEl.style.display = 'block';
+            ovEl.style.display = 'none';
+        } else {
+            qsEl.style.display = 'none';
+            ovEl.style.display = 'block';
+            updateOverview(realModels);
+        }
+    }
+    
     if (allRows.length === 0) {
-        container.innerHTML = `<div style="text-align:center;padding:48px 24px">
-            <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--border);margin-bottom:12px"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-            <div style="font-size:14px;font-weight:600;margin-bottom:6px;color:var(--text)">No models registered yet</div>
-            <div style="font-size:12px;color:var(--text-muted);max-width:360px;margin:0 auto 16px;line-height:1.5">Register an AI model to start tracking its epistemic risk over time. Each evaluation builds a calibration profile.</div>
-            <button class="eval-submit-btn" onclick="showAddModelModal()" style="padding:10px 28px;font-size:13px">+ Register First Model</button>
-            <div style="margin-top:24px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:400px;margin-left:auto;margin-right:auto">
-                <div style="padding:12px;background:var(--bg);border-radius:6px;border:1px dashed var(--border)">
-                    <div style="font-size:18px;font-weight:700;color:var(--border)">0.00</div>
-                    <div style="font-size:9px;color:var(--text-muted);margin-top:2px">RISK SCORE</div>
-                </div>
-                <div style="padding:12px;background:var(--bg);border-radius:6px;border:1px dashed var(--border)">
-                    <div style="font-size:18px;font-weight:700;color:var(--border)">—</div>
-                    <div style="font-size:9px;color:var(--text-muted);margin-top:2px">COMPLIANCE</div>
-                </div>
-                <div style="padding:12px;background:var(--bg);border-radius:6px;border:1px dashed var(--border)">
-                    <div style="font-size:18px;font-weight:700;color:var(--border)">0</div>
-                    <div style="font-size:9px;color:var(--text-muted);margin-top:2px">EVALS</div>
-                </div>
-            </div>
-            <div style="font-size:10px;color:var(--text-muted);margin-top:12px">↑ This is what you'll see after evaluating a model</div>
+        container.innerHTML = `<div style="text-align:center;padding:32px 16px">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--border);margin-bottom:8px"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            <div style="font-size:13px;font-weight:500;margin-bottom:4px;color:var(--text)">No models yet</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Register your first AI model</div>
+            <button class="eval-submit-btn" onclick="showAddModelModal()" style="padding:8px 20px;font-size:12px">+ Register Model</button>
         </div>`;
         return;
     }
     container.innerHTML = allRows.join('');
     
-    // Update status bar
     updateDashStatusBar(realModels);
+}
+
+function updateOverview(models) {
+    models = models || window._cachedModels || [];
+    if (!models.length) return;
+    
+    // Avg risk
+    const avgRisk = models.reduce((s, m) => s + (m.risk_score || 0), 0) / models.length;
+    const avgEl = document.getElementById('overview-avg-risk');
+    const labelEl = document.getElementById('overview-risk-label');
+    if (avgEl) {
+        avgEl.textContent = avgRisk.toFixed(2);
+        avgEl.style.color = avgRisk < 0.35 ? '#22c55e' : avgRisk < 0.65 ? '#eab308' : '#ef4444';
+    }
+    if (labelEl) {
+        if (avgRisk < 0.35) { labelEl.textContent = 'Low risk'; labelEl.style.color = '#22c55e'; }
+        else if (avgRisk < 0.65) { labelEl.textContent = 'Moderate risk'; labelEl.style.color = '#eab308'; }
+        else { labelEl.textContent = 'High risk'; labelEl.style.color = '#ef4444'; }
+    }
+    
+    // Passed / Review / Failed counts
+    let passed = 0, review = 0, failed = 0;
+    models.forEach(m => {
+        const c = (m.compliance || '').toUpperCase();
+        if (c === 'A' || c === 'PASSED') passed++;
+        else if (c === 'F' || c === 'E' || c === 'FAILED') failed++;
+        else review++;
+    });
+    const pEl = document.getElementById('overview-passed'); if (pEl) { pEl.textContent = passed; pEl.style.color = '#22c55e'; }
+    const rvEl = document.getElementById('overview-review'); if (rvEl) rvEl.textContent = review;
+    const fEl = document.getElementById('overview-failed'); if (fEl) fEl.textContent = failed;
+    
+    // Compliance distribution bars
+    const barsEl = document.getElementById('overview-compliance-bars');
+    if (barsEl) {
+        const grades = {};
+        models.forEach(m => { const g = (m.compliance || 'REVIEW').toUpperCase(); grades[g] = (grades[g] || 0) + 1; });
+        const gradeColors = { A: '#22c55e', B: '#4ade80', C: '#eab308', D: '#f97316', E: '#ef4444', F: '#dc2626', PASSED: '#22c55e', REVIEW: '#eab308', FAILED: '#ef4444' };
+        let html = '';
+        Object.keys(grades).sort().forEach(g => {
+            const pct = Math.round((grades[g] / models.length) * 100);
+            const color = gradeColors[g] || '#eab308';
+            html += `<div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:10px;font-weight:600;width:16px;color:${color}">${g}</span>
+                <div style="flex:1;height:6px;background:var(--bg-elevated);border-radius:3px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${color};border-radius:3px"></div></div>
+                <span style="font-size:10px;color:var(--text-muted);width:20px;text-align:right">${grades[g]}</span>
+            </div>`;
+        });
+        barsEl.innerHTML = html;
+    }
+    
+    // Worst model
+    const worst = models.reduce((w, m) => (!w || (m.risk_score || 0) > (w.risk_score || 0)) ? m : w, null);
+    if (worst) {
+        const wnEl = document.getElementById('overview-worst-name'); if (wnEl) wnEl.textContent = worst.name;
+        const wsEl = document.getElementById('overview-worst-score');
+        if (wsEl) {
+            wsEl.textContent = (worst.risk_score || 0).toFixed(2);
+            wsEl.style.color = (worst.risk_score || 0) < 0.35 ? '#22c55e' : (worst.risk_score || 0) < 0.65 ? '#eab308' : '#ef4444';
+        }
+        const wcEl = document.getElementById('overview-worst-comp');
+        if (wcEl) {
+            const c = (worst.compliance || 'REVIEW').toUpperCase();
+            wcEl.textContent = c;
+            const color = c === 'A' || c === 'PASSED' ? '#22c55e' : c === 'F' || c === 'FAILED' ? '#ef4444' : '#eab308';
+            wcEl.style.color = color;
+            wcEl.style.background = color + '1a';
+        }
+    }
 }
 
 function updateDashStatusBar(models) {
