@@ -1027,7 +1027,7 @@ a.info-val:hover { color: var(--text); }
 
 <div class="mobile-overlay" id="mobile-overlay" onclick="toggleMobile()"></div>
 
-<script>if(localStorage.getItem('onto_logged_in')==='true')document.write('<style id="auth-preload-hide">#auth-screen{display:none!important}</style>');</script>
+<script>if(localStorage.getItem('onto_logged_in')==='true')document.write('<style id="auth-preload-hide">#auth-screen{display:none!important}</style>');else document.write('<style>.mobile-header{display:none!important}</style>');</script>
 
 <!-- AUTH SCREEN -->
 <div class="auth-container" id="auth-screen">
@@ -1039,20 +1039,20 @@ a.info-val:hover { color: var(--text); }
             </svg>
             <span>ONTO</span>
         </div>
-        <h1>Measure epistemic risk<br>in AI outputs.</h1>
-        <p>Independent evaluation standard for AI accuracy and reliability. Score any model output, track risk over time, and prove compliance with cryptographic verification.</p>
+        <h1>Know how reliable<br>your AI really is.</h1>
+        <p>Independent measurement standard for AI systems. Get a verified risk profile for any model — before it costs you trust, compliance, or revenue.</p>
         <div class="auth-hero-stats">
             <div class="auth-hero-stat">
-                <strong>6</strong>
-                <span>Risk Factors</span>
+                <strong>10+</strong>
+                <span>Models Evaluated</span>
             </div>
             <div class="auth-hero-stat">
-                <strong>Ed25519</strong>
-                <span>Signed Proofs</span>
+                <strong>A–F</strong>
+                <span>Risk Grading</span>
             </div>
             <div class="auth-hero-stat">
-                <strong>L1–L3</strong>
-                <span>Certification</span>
+                <strong>Signed</strong>
+                <span>Verified Reports</span>
             </div>
         </div>
     </div>
@@ -3171,11 +3171,13 @@ function showAuthScreen() {
     if (preloadStyle) preloadStyle.remove();
     document.getElementById('auth-screen').style.display = 'flex';
     document.getElementById('dashboard').classList.remove('active');
+    document.querySelector('.mobile-header').style.display = 'none';
 }
 
 function showDashboard() {
     document.getElementById('auth-screen').style.display = 'none';
     document.getElementById('dashboard').classList.add('active');
+    document.querySelector('.mobile-header').style.display = '';
     
     // Handle ?page= URL parameter
     const params = new URLSearchParams(window.location.search);
