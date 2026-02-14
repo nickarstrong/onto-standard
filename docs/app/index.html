@@ -187,21 +187,38 @@ input[type="file"].form-input::file-selector-button { background: var(--bg-eleva
 .metric-bar { height: 100%; background: var(--safe); border-radius: 2px; transition: width 0.6s ease; }
 
 /* === SIGNAL PANEL === */
-.signal-panel { background: linear-gradient(135deg, #0a1a0f 0%, #0d2818 50%, #0a1a0f 100%); border: 1px solid rgba(21, 128, 61, 0.3); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 16px; position: relative; overflow: hidden; }
-.signal-panel::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent 0%, rgba(21, 128, 61, 0.8) 50%, transparent 100%); animation: scanline 6s linear infinite; pointer-events: none; }
-@keyframes scanline { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
-.signal-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-.signal-title { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; }
-.signal-live { display: flex; align-items: center; gap: 6px; padding: 3px 8px; background: rgba(21, 128, 61, 0.15); border-radius: 12px; font-size: 10px; font-weight: 600; color: #15803d; text-transform: uppercase; letter-spacing: 0.5px; }
-.signal-dot { width: 6px; height: 6px; background: #15803d; border-radius: 50%; animation: pulse 2s infinite; box-shadow: 0 0 6px #15803d; }
-@keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
-.signal-body { margin-top: 14px; }
-.signal-id { font-size: 20px; font-weight: 700; color: #15803d; font-family: var(--mono); margin-bottom: 4px; text-shadow: 0 0 20px rgba(21, 128, 61, 0.3); }
-.signal-hash-text { font-size: 11px; font-family: var(--mono); color: var(--text-muted); word-break: break-all; }
-.signal-metrics-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 12px; }
-.signal-metric { text-align: center; padding: 8px; background: rgba(0,0,0,0.2); border-radius: var(--radius); border: 1px solid rgba(21, 128, 61, 0.1); }
-.signal-metric-val { font-size: 13px; font-weight: 600; color: #15803d; font-family: var(--mono); }
-.signal-metric-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+.signal-panel { background: linear-gradient(135deg, #0a1a0f 0%, #0d2818 50%, #0a1a0f 100%); border: 1px solid rgba(21, 128, 61, 0.3); border-radius: 6px; padding: 20px 24px; margin-bottom: 20px; position: relative; overflow: hidden; animation: borderGlow 4s ease-in-out infinite; }
+@keyframes borderGlow { 0%, 100% { border-color: rgba(21, 128, 61, 0.3); box-shadow: 0 0 20px rgba(21, 128, 61, 0.1); } 50% { border-color: rgba(21, 128, 61, 0.6); box-shadow: 0 0 40px rgba(21, 128, 61, 0.2); } }
+.signal-panel::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(21, 128, 61, 0.08) 0%, transparent 70%); pointer-events: none; }
+.signal-panel::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent 0%, rgba(21, 128, 61, 0.8) 50%, transparent 100%); animation: scanline 6s linear infinite; pointer-events: none; box-shadow: 0 0 10px rgba(21, 128, 61, 0.6), 0 0 20px rgba(21, 128, 61, 0.4), 0 0 30px rgba(21, 128, 61, 0.2); }
+@keyframes scanline { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(300px); opacity: 0; } }
+.signal-panel-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(21, 128, 61, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(21, 128, 61, 0.03) 1px, transparent 1px); background-size: 20px 20px; pointer-events: none; }
+.signal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; position: relative; z-index: 1; cursor: pointer; }
+.signal-title-row { display: flex; align-items: center; gap: 10px; }
+.signal-title { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; color: var(--text); }
+.signal-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #15803d, #22c55e); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; font-family: 'Times New Roman', serif; font-style: italic; box-shadow: 0 0 15px rgba(21, 128, 61, 0.5), 0 0 30px rgba(21, 128, 61, 0.2); }
+.signal-live { display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(21, 128, 61, 0.15); border-radius: 12px; font-size: 10px; font-weight: 600; color: #15803d; text-transform: uppercase; letter-spacing: 0.5px; }
+.signal-dot { width: 6px; height: 6px; background: #15803d; border-radius: 50%; animation: pulse 2s infinite; box-shadow: 0 0 6px #15803d, 0 0 12px rgba(21, 128, 61, 0.5); }
+@keyframes pulse { 0%, 100% { opacity: 1; box-shadow: 0 0 6px #15803d, 0 0 12px rgba(21, 128, 61, 0.5); } 50% { opacity: 0.6; box-shadow: 0 0 3px #15803d; } }
+.signal-body { position: relative; z-index: 1; }
+.signal-main-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+.signal-id-block { flex: 1; }
+.signal-id { font-size: 24px; font-weight: 700; color: #15803d; font-family: var(--mono); margin-bottom: 6px; text-shadow: 0 0 20px rgba(21, 128, 61, 0.4); animation: idGlow 3s ease-in-out infinite; }
+@keyframes idGlow { 0%, 100% { text-shadow: 0 0 20px rgba(21, 128, 61, 0.4); } 50% { text-shadow: 0 0 30px rgba(21, 128, 61, 0.6), 0 0 50px rgba(21, 128, 61, 0.3); } }
+.signal-hash { font-size: 11px; font-family: var(--mono); color: var(--text-muted); word-break: break-all; }
+.signal-countdown-block { text-align: right; }
+.signal-countdown-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+.signal-countdown-value { font-size: 28px; font-weight: 700; color: #15803d; font-family: var(--mono); text-shadow: 0 0 15px rgba(21, 128, 61, 0.4); }
+.signal-metrics { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+.signal-metric { text-align: center; padding: 8px; background: rgba(0,0,0,0.2); border-radius: 6px; border: 1px solid rgba(21, 128, 61, 0.1); transition: all 0.3s; }
+.signal-metric-value { font-size: 14px; font-weight: 600; color: #15803d; font-family: var(--mono); margin-bottom: 2px; }
+.signal-metric-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.signal-controls { display: flex; justify-content: flex-end; margin-top: 16px; }
+.signal-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; font-size: 11px; font-weight: 500; background: rgba(21, 128, 61, 0.1); border: 1px solid rgba(21, 128, 61, 0.3); border-radius: 6px; color: #15803d; cursor: pointer; transition: all 0.15s; }
+.signal-btn:hover { background: rgba(21, 128, 61, 0.2); border-color: rgba(21, 128, 61, 0.5); box-shadow: 0 0 15px rgba(21, 128, 61, 0.3); }
+.signal-skeleton-id { height: 28px; width: 200px; background: rgba(21, 128, 61, 0.1); border-radius: 4px; animation: skeleton-loading 1.5s infinite; background-size: 200% 100%; background-image: linear-gradient(90deg, rgba(21, 128, 61, 0.05) 25%, rgba(21, 128, 61, 0.15) 50%, rgba(21, 128, 61, 0.05) 75%); }
+.signal-skeleton-hash { height: 14px; width: 300px; background: rgba(21, 128, 61, 0.1); border-radius: 4px; animation: skeleton-loading 1.5s infinite; background-size: 200% 100%; background-image: linear-gradient(90deg, rgba(21, 128, 61, 0.05) 25%, rgba(21, 128, 61, 0.15) 50%, rgba(21, 128, 61, 0.05) 75%); }
+@keyframes skeleton-loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
 /* === REPORTS === */
 .report-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
@@ -249,25 +266,64 @@ input[type="file"].form-input::file-selector-button { background: var(--bg-eleva
 .key-meta { font-size: 11px; color: var(--text-muted); display: flex; gap: 16px; }
 
 /* === TIER CARDS === */
-.tiers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.tier-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
-.tier-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-.tier-price { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
-.tier-price span { font-size: 13px; font-weight: 400; color: var(--text-muted); }
-.tier-desc { font-size: 12px; color: var(--text-secondary); margin-bottom: 16px; }
-.tier-list { list-style: none; margin-bottom: 20px; }
-.tier-list li { font-size: 12px; color: var(--text-secondary); padding: 4px 0; padding-left: 16px; position: relative; }
-.tier-list li::before { content: '·'; position: absolute; left: 4px; color: var(--safe); font-weight: 700; }
-.btn-tier { width: 100%; padding: 10px; border-radius: var(--radius); font-size: 12px; font-weight: 500; }
-.btn-tier:not(.current) { background: var(--safe-subtle); border: 1px solid var(--safe); color: var(--safe); }
-.btn-tier:not(.current):hover { background: var(--safe); color: #fff; }
+.tiers-grid { display: grid; grid-template-columns: 1fr; gap: 12px; max-width: 320px; margin: 0 auto; }
+.tier-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 20px; }
+.tier-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+.tier-price { font-size: 22px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.tier-price span { font-size: 12px; font-weight: 400; color: var(--text-muted); }
+.tier-desc { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; }
+.tier-list { list-style: none; padding: 0; margin: 0 0 16px 0; }
+.tier-list li { font-size: 12px; color: var(--text-secondary); padding: 4px 0; border-bottom: 1px solid var(--border); }
+.tier-list li:last-child { border-bottom: none; }
+.btn-tier { width: 100%; padding: 8px; font-size: 12px; font-weight: 500; background: transparent; border: 1px solid var(--border); border-radius: 4px; color: var(--text); cursor: pointer; transition: all 0.15s; margin-bottom: 6px; }
+.btn-tier:hover { background: var(--bg-elevated); }
 .btn-tier.current { background: var(--bg-elevated); color: var(--text-muted); cursor: default; }
-@media (max-width: 768px) { .tiers-grid { grid-template-columns: 1fr; } .connect-options { grid-template-columns: 1fr; } }
+.btn-tier-secondary { width: 100%; padding: 6px; font-size: 11px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; }
+.btn-tier-secondary:hover { color: var(--text); }
+@media (min-width: 769px) { .tiers-grid { grid-template-columns: repeat(3, 1fr); max-width: none; gap: 16px; } .tier-card { padding: 20px; border-radius: 6px; } }
+@media (max-width: 768px) { .connect-options { grid-template-columns: 1fr; } }
 
-/* === SETTINGS === */
-.settings-section { margin-bottom: 24px; }
-.settings-section h3 { font-size: 11px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
-.info-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+/* === SETTINGS (ACCOUNT) === */
+.page-header-clean { margin-bottom: 24px; }
+.page-header-clean .page-title { font-size: 18px; font-weight: 500; letter-spacing: -0.3px; }
+.section-block { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); overflow-x: auto; }
+.section-block:last-child { border-bottom: none; margin-bottom: 0; }
+.section-label { font-size: 10px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+.section-text { font-size: 12px; color: var(--text-secondary); margin-bottom: 10px; word-wrap: break-word; }
+.btn-minimal { padding: 8px 14px; font-size: 12px; font-weight: 500; background: transparent; border: 1px solid var(--border); border-radius: 6px; color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
+.btn-minimal:hover { background: var(--bg-elevated); color: var(--text); }
+.info-row { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); gap: 12px; font-size: 13px; }
+.info-row:last-child { border-bottom: none; }
+.info-key { color: var(--text-muted); min-width: 100px; }
+.info-val { color: var(--text); flex: 1; }
+a.info-val { color: var(--text-secondary); text-decoration: none; }
+a.info-val:hover { color: var(--text); }
+.info-val.status-active { display: flex; align-items: center; gap: 6px; }
+.info-val .dot { width: 6px; height: 6px; background: var(--safe); border-radius: 50%; }
+.info-action { font-size: 12px; color: var(--text-muted); cursor: pointer; }
+.info-action:hover { color: var(--text); }
+.doc-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.doc-row:last-child { border-bottom: none; }
+.doc-name { font-size: 13px; color: var(--text); font-weight: 500; }
+.doc-link { font-size: 12px; color: var(--text-muted); cursor: pointer; }
+.doc-link:hover { color: var(--text); }
+.doc-status { font-size: 13px; color: var(--text-muted); }
+.section-footnote { font-size: 11px; color: var(--text-muted); margin-top: 10px; word-break: break-word; }
+.section-footnote a { color: var(--text-secondary); text-decoration: none; }
+.section-footnote a:hover { text-decoration: underline; }
+/* Accounts panel (Reference) */
+.accounts-panel { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.accounts-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+.accounts-title { font-size: 13px; font-weight: 600; color: var(--text); }
+.accounts-search { width: 180px; padding: 6px 10px; font-size: 11px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; color: var(--text); }
+.accounts-search:focus { outline: none; border-color: var(--safe); }
+.accounts-list { max-height: 300px; overflow-y: auto; }
+.accounts-loading { padding: 20px; text-align: center; color: var(--text-muted); font-size: 12px; }
+.account-row { display: flex; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; }
+.account-row:hover { background: var(--bg-secondary); }
+.account-row:last-child { border-bottom: none; }
+.account-email { flex: 1; font-size: 12px; color: var(--text); font-weight: 500; }
+.account-plan { width: 60px; font-size: 10px; }
 .info-row:last-child { border-bottom: none; }
 .info-key { color: var(--text-muted); }
 .info-val { color: var(--text-secondary); font-weight: 500; }
@@ -575,36 +631,39 @@ input[type="file"].form-input::file-selector-button { background: var(--bg-eleva
 
             <!-- SIGNAL PANEL (Proof Chain) -->
             <div class="signal-panel" id="signal-panel" style="display:none">
+                <div class="signal-panel-grid"></div>
                 <div class="signal-header" onclick="toggleSignalPanel()">
-                    <div class="signal-title">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#15803d" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-                        <span>Cryptographic Proof Chain</span>
-                        <span style="font-size:11px;color:var(--text-muted);margin-left:8px">Ed25519 · 104 bytes</span>
+                    <div class="signal-title-row">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#15803d" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                        <span class="signal-title">Cryptographic Proof Chain</span>
+                        <span style="font-size:11px;color:var(--text-muted);margin-left:8px">Every evaluation is signed with Ed25519</span>
                     </div>
                     <div style="display:flex;align-items:center;gap:10px">
                         <div class="signal-live" id="signal-live-badge">
                             <span class="signal-dot"></span>
                             <span>LIVE</span>
                         </div>
-                        <svg id="signal-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2" style="transition:transform 0.2s"><polyline points="6,9 12,15 18,9"/></svg>
+                        <svg id="signal-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--text-muted)" stroke-width="2" style="transition:transform 0.2s"><polyline points="6,9 12,15 18,9"/></svg>
                     </div>
                 </div>
                 <div class="signal-body" id="signal-body" style="display:none">
-                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
-                        <div>
-                            <div class="signal-id" id="signal-id">—</div>
-                            <div class="signal-hash-text" id="signal-hash">—</div>
+                    <div class="signal-main-row">
+                        <div class="signal-id-block">
+                            <div class="signal-id" id="signal-id"><div class="signal-skeleton-id"></div></div>
+                            <div class="signal-hash" id="signal-hash"><div class="signal-skeleton-hash"></div></div>
                         </div>
-                        <div style="text-align:right">
-                            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px">NEXT</div>
-                            <div style="font-size:22px;font-weight:700;color:#15803d;font-family:var(--mono)" id="signal-countdown">—</div>
+                        <div class="signal-countdown-block">
+                            <div class="signal-countdown-label">NEXT</div>
+                            <div class="signal-countdown-value" id="signal-countdown">—</div>
                         </div>
                     </div>
-                    <div class="signal-metrics-row">
-                        <div class="signal-metric"><div class="signal-metric-val" id="sig-uptime">—</div><div class="signal-metric-label">Uptime</div></div>
-                        <div class="signal-metric"><div class="signal-metric-val" id="sig-generated">—</div><div class="signal-metric-label">Generated</div></div>
-                        <div class="signal-metric"><div class="signal-metric-val">104</div><div class="signal-metric-label">Packet</div></div>
-                        <div class="signal-metric"><div class="signal-metric-val">ED25519</div><div class="signal-metric-label">Signature</div></div>
+                    <div class="signal-metrics">
+                        <div class="signal-metric"><div class="signal-metric-value" id="sig-uptime">—</div><div class="signal-metric-label">UPTIME</div></div>
+                        <div class="signal-metric"><div class="signal-metric-value" id="sig-generated">—</div><div class="signal-metric-label">GENERATED</div></div>
+                        <div class="signal-metric"><div class="signal-metric-value" id="sig-requests">—</div><div class="signal-metric-label">REQUESTS</div></div>
+                        <div class="signal-metric"><div class="signal-metric-value" id="sig-errors">—</div><div class="signal-metric-label">ERROR RATE</div></div>
+                        <div class="signal-metric"><div class="signal-metric-value">104</div><div class="signal-metric-label">PACKET</div></div>
+                        <div class="signal-metric"><div class="signal-metric-value">ED25519</div><div class="signal-metric-label">SIGNATURE</div></div>
                     </div>
                 </div>
             </div>
@@ -755,159 +814,298 @@ print(result.metrics)      <span class="cmt"># {qd: 2.84, ss: 0.42, ...}</span><
             </div>
         </div>
 
-        <!-- ==================== BILLING ==================== -->
-        <div class="page" id="page-billing">
-            <h1 style="font-size:18px;font-weight:600;margin-bottom:4px">Institutional Licensing</h1>
-            <p style="font-size:12px;color:var(--text-muted);margin-bottom:20px">Active grant program available for research institutions.</p>
-            <div class="tiers-grid">
-                <div class="tier-card" id="tier-open">
-                    <div class="tier-name">Open</div>
-                    <div class="tier-price">$0</div>
-                    <div class="tier-desc">Diagnostic access — see your AI's epistemic risk profile</div>
-                    <ul class="tier-list">
-                        <li>1 model registration</li>
-                        <li>1 evaluation (free)</li>
-                        <li>Basic report (unsigned)</li>
-                        <li>Manual upload only</li>
-                        <li>Attribution required</li>
-                    </ul>
-                    <button class="btn-tier current" id="btn-open" disabled>Current</button>
-                </div>
-                <div class="tier-card" id="tier-standard">
-                    <div class="tier-name">Standard</div>
-                    <div class="tier-price">$15,000<span>/year</span></div>
-                    <div class="tier-desc">Continuous monitoring — calibrate your AI fleet</div>
-                    <ul class="tier-list">
-                        <li>Up to 10 models</li>
-                        <li>Monthly auto-evaluations</li>
-                        <li>Full Ed25519-signed reports</li>
-                        <li>API + upload + local access</li>
-                        <li>Drift alerts & notifications</li>
-                        <li>Email support (24h SLA)</li>
-                    </ul>
-                    <button class="btn-tier" id="btn-standard" onclick="contactSales('Standard')">Contact Sales</button>
-                </div>
-                <div class="tier-card" id="tier-critical">
-                    <div class="tier-name">Critical</div>
-                    <div class="tier-price">$100,000+<span>/year</span></div>
-                    <div class="tier-desc">Enterprise-grade for regulated industries</div>
-                    <ul class="tier-list">
-                        <li>Everything in Standard</li>
-                        <li>Unlimited models</li>
-                        <li>Weekly evaluation cadence</li>
-                        <li>Regulatory report format</li>
-                        <li>Dedicated account manager</li>
-                        <li>Custom scoring domains</li>
-                        <li>99.99% SLA · Priority support</li>
-                    </ul>
-                    <button class="btn-tier" id="btn-critical" onclick="contactSales('Critical')">Contact Sales</button>
-                </div>
-            </div>
-            <p style="text-align:center;margin-top:20px;font-size:11px;color:var(--text-muted)">
-                Invoice payment requires registered organization. <a href="#" onclick="showPage('settings')">Account settings</a> · <a href="mailto:support@ontostandard.org">support@ontostandard.org</a>
-            </p>
-        </div>
-
         <!-- ==================== ACCOUNT ==================== -->
         <div class="page" id="page-settings">
-            <h1 style="font-size:18px;font-weight:600;margin-bottom:20px">Account</h1>
-            <div class="card">
-                <div class="settings-section">
-                    <h3>Profile</h3>
-                    <div class="info-row">
-                        <span class="info-key">Name</span>
-                        <span class="info-val" id="settings-name">—</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-key">Email</span>
-                        <span class="info-val" id="settings-email">—</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-key">Plan</span>
-                        <span class="info-val" id="settings-plan">Open</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-key">Member since</span>
-                        <span class="info-val" id="settings-since">—</span>
-                    </div>
+            <div class="page-header-clean">
+                <h1 class="page-title">Account</h1>
+            </div>
+            
+            <div class="section-block">
+                <div class="section-label">Identity</div>
+                <div class="info-row">
+                    <span class="info-key">Name</span>
+                    <span class="info-val" id="settings-name">—</span>
+                    <span class="info-action" onclick="editProfile()">Edit</span>
                 </div>
-                <div class="settings-section">
-                    <h3>Organization</h3>
-                    <div id="org-none">
-                        <p class="section-text" style="margin-bottom:10px">No organization registered.</p>
-                        <button class="btn btn-outline" onclick="openOrgModal()" style="font-size:11px">Register Organization</button>
-                    </div>
-                    <div id="org-registered" class="hidden">
-                        <div class="info-row">
-                            <span class="info-key">Company</span>
-                            <span class="info-val" id="org-name">—</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-key">Industry</span>
-                            <span class="info-val" id="org-industry">—</span>
-                        </div>
-                        <button class="btn btn-outline" onclick="openOrgModal()" style="font-size:11px;margin-top:8px">Edit</button>
-                    </div>
+                <div class="info-row">
+                    <span class="info-key">Email</span>
+                    <span class="info-val" id="settings-email">—</span>
                 </div>
-                <div class="settings-section">
-                    <h3>Support</h3>
-                    <div class="info-row">
-                        <span class="info-key">General</span>
-                        <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
-                    </div>
-                </div>
-                <div class="settings-section" style="margin-bottom:0">
-                    <h3>Danger Zone</h3>
-                    <button class="btn-danger" onclick="deleteAccount()">Delete Account</button>
+                <div class="info-row">
+                    <span class="info-key">Type</span>
+                    <span class="info-val" id="settings-account-type">Individual</span>
                 </div>
             </div>
+            
+            <div class="section-block">
+                <div class="section-label">Organization</div>
+                <div id="company-not-registered">
+                    <p class="section-text">No organization registered. Required for institutional access tier.</p>
+                    <button class="btn-minimal" onclick="openCompanyModal()">Register Organization</button>
+                </div>
+                <div id="company-registered" class="hidden">
+                    <div class="info-row">
+                        <span class="info-key">Name</span>
+                        <span class="info-val" id="company-name">—</span>
+                        <span class="info-action" onclick="openCompanyModal()">Edit</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-key">Industry</span>
+                        <span class="info-val" id="company-industry">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-key">Registration</span>
+                        <span class="info-val" id="company-reg">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-key">Status</span>
+                        <span class="info-val status-active"><span class="dot"></span>Verified</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section-block" id="subscription-block">
+                <div class="section-label">Subscription</div>
+                <div id="subscription-none">
+                    <p class="section-text">No active subscription. Using Free tier (1 request/hour).</p>
+                    <button class="btn-minimal" onclick="showPage('billing')">View Plans</button>
+                </div>
+                <div id="subscription-active" class="hidden">
+                    <div class="info-row">
+                        <span class="info-key">Active Plan</span>
+                        <span class="info-val" id="sub-plan">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-key">Rate Limit</span>
+                        <span class="info-val" id="sub-rate">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-key">All Expires</span>
+                        <span class="info-val" id="sub-expires">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-key">Total Paid</span>
+                        <span class="info-val" id="sub-total">—</span>
+                    </div>
+                    <button class="btn-minimal" onclick="showPage('billing')" style="margin-top: 12px;">Extend Subscription</button>
+                </div>
+            </div>
+            
+            <div class="section-block">
+                <div class="section-label">Documents</div>
+                <div class="doc-row">
+                    <span class="doc-name">Specifications & Policies</span>
+                    <span class="doc-link" onclick="window.open('/docs/', '_blank')">View</span>
+                </div>
+                <div class="doc-row" id="invoice-row">
+                    <span class="doc-name">Invoice</span>
+                    <span class="doc-status" id="invoice-status">No active subscription</span>
+                    <span class="doc-link hidden" id="invoice-download" onclick="downloadInvoice()">Download</span>
+                </div>
+            </div>
+            
+            <div class="section-block">
+                <div class="section-label">Support</div>
+                <div class="info-row">
+                    <span class="info-key">General</span>
+                    <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
+                </div>
+                <div class="info-row">
+                    <span class="info-key">Sales</span>
+                    <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
+                </div>
+                <div class="info-row">
+                    <span class="info-key">Billing</span>
+                    <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ==================== BILLING ==================== -->
+        <div class="page" id="page-billing">
+            <div class="page-header-clean">
+                <h1 class="page-title">Access Tiers</h1>
+            </div>
+            
+            <div class="tiers-grid">
+                <div class="tier-card" id="card-free">
+                    <div class="tier-name">Open</div>
+                    <div class="tier-price">$0</div>
+                    <div class="tier-desc">Diagnostic access — see your AI's risk profile</div>
+                    <ul class="tier-list">
+                        <li>10 evaluations/hour</li>
+                        <li>50/day · ~1,500/month</li>
+                        <li>Rolling marker (informational)</li>
+                        <li>No certification</li>
+                        <li>Attribution required</li>
+                    </ul>
+                    <button class="btn-tier current" id="btn-free" disabled>Current</button>
+                </div>
+                
+                <div class="tier-card" id="card-business">
+                    <div class="tier-name">Standard</div>
+                    <div class="tier-price">$1,500<span>/month</span></div>
+                    <div class="tier-desc">Unlimited access to ONTO core — calibrate your AI</div>
+                    <ul class="tier-list">
+                        <li>Unlimited evaluations</li>
+                        <li>Real-time Proof of Chain</li>
+                        <li>Rolling marker L1/L2/L3</li>
+                        <li>Internal diagnostics only</li>
+                        <li>No public certification</li>
+                    </ul>
+                    <button class="btn-tier" id="btn-business" onclick="openSubscribeModal('business')">Select</button>
+                </div>
+                
+                <div class="tier-card" id="card-enterprise">
+                    <div class="tier-name">Certified</div>
+                    <div class="tier-price">$100,000<span>/year</span></div>
+                    <div class="tier-desc">ONTO CERTIFIED — prove your AI quality to regulators</div>
+                    <ul class="tier-list">
+                        <li>Everything in Standard</li>
+                        <li>Rolling certification (L2/L3)</li>
+                        <li>Public registry listing</li>
+                        <li>ONTO CERTIFIED badge</li>
+                        <li>24-month audit trail</li>
+                        <li>99.99% SLA · Priority support</li>
+                    </ul>
+                    <button class="btn-tier" id="btn-enterprise" onclick="openSubscribeModal('enterprise')">Select</button>
+                    <button class="btn-tier-secondary" onclick="contactSales()">Contact</button>
+                </div>
+            </div>
+            
+            <p class="section-footnote" style="text-align: center; margin-top: 24px;">
+                Invoice payment requires registered organization. <a href="#" onclick="showPage('settings')">Account settings</a>
+            </p>
         </div>
 
         <!-- ==================== REFERENCE (ADMIN) ==================== -->
         <div class="page" id="page-reference">
-            <h1 style="font-size:18px;font-weight:600;margin-bottom:20px">Reference Panel</h1>
-            <div class="card">
-                <div class="settings-section">
-                    <h3>System Status</h3>
-                    <div class="info-row">
-                        <span class="info-key">Scoring Engine</span>
-                        <span class="info-val" style="color:var(--safe)">v3.0 · Online</span>
+            <!-- SIGNAL VISUALIZATION -->
+            <div class="signal-panel">
+                <div class="signal-panel-grid"></div>
+                <div class="signal-header" style="cursor:default">
+                    <div class="signal-title">
+                        <span class="signal-icon">σ</span>
+                        <span>Entropy Signal</span>
                     </div>
-                    <div class="info-row">
-                        <span class="info-key">Signal Protocol</span>
-                        <span class="info-val" id="ref-signal-status" style="color:var(--safe)">Active</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-key">Ed25519 Signing</span>
-                        <span class="info-val" style="color:var(--safe)">Enabled</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-key">GOLD DIGEST</span>
-                        <span class="info-val">v4.5 · 149 files · 100 probes</span>
+                    <div class="signal-live" id="signal-live-indicator">
+                        <span class="signal-dot"></span>
+                        <span>LIVE</span>
                     </div>
                 </div>
-                <div class="settings-section">
-                    <h3>Registered Users</h3>
-                    <div class="info-row">
-                        <span class="info-key">Total</span>
-                        <span class="info-val" id="ref-total-users">—</span>
+                <div class="signal-body">
+                    <div class="signal-main-row">
+                        <div class="signal-id-block">
+                            <div class="signal-id" id="ref-signal-id"><div class="signal-skeleton-id"></div></div>
+                            <div class="signal-hash" id="ref-signal-hash"><div class="signal-skeleton-hash"></div></div>
+                        </div>
+                        <div class="signal-countdown-block">
+                            <div class="signal-countdown-label">NEXT</div>
+                            <div class="signal-countdown-value" id="ref-signal-countdown">—</div>
+                        </div>
                     </div>
-                    <div class="info-row">
-                        <span class="info-key">Models Registered</span>
-                        <span class="info-val" id="ref-total-models">—</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-key">Evaluations Run</span>
-                        <span class="info-val" id="ref-total-evals">—</span>
+                    <div class="signal-metrics">
+                        <div class="signal-metric">
+                            <div class="signal-metric-value" id="ref-signal-uptime"><div class="signal-skeleton-id" style="height:16px;width:40px"></div></div>
+                            <div class="signal-metric-label">UPTIME</div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value" id="ref-signal-generated"><div class="signal-skeleton-id" style="height:16px;width:40px"></div></div>
+                            <div class="signal-metric-label">GENERATED</div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value" id="ref-signal-requests"><div class="signal-skeleton-id" style="height:16px;width:40px"></div></div>
+                            <div class="signal-metric-label">REQUESTS</div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value" id="ref-signal-errors"><div class="signal-skeleton-id" style="height:16px;width:40px"></div></div>
+                            <div class="signal-metric-label">ERROR RATE</div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value">104</div>
+                            <div class="signal-metric-label">PACKET</div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value">ED25519</div>
+                            <div class="signal-metric-label">SIGNATURE</div>
+                        </div>
                     </div>
                 </div>
-                <div class="settings-section" style="margin-bottom:0">
-                    <h3>Admin Actions</h3>
-                    <div style="display:flex;gap:8px;flex-wrap:wrap">
-                        <button class="btn btn-outline" onclick="loadReferenceStats()" style="font-size:11px;padding:6px 14px">Refresh Stats</button>
-                        <button class="btn btn-outline" onclick="window.open('/docs/','_blank')" style="font-size:11px;padding:6px 14px">Docs</button>
-                        <button class="btn btn-outline" onclick="window.open('https://github.com/onto-standard','_blank')" style="font-size:11px;padding:6px 14px">GitHub</button>
+                <div class="signal-controls">
+                    <button class="signal-btn" onclick="refreshSignal()">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- PROOF CHAIN PANEL -->
+            <div class="signal-panel" id="proof-chain-panel">
+                <div class="signal-panel-grid"></div>
+                <div class="signal-header" style="cursor:default">
+                    <div class="signal-title">
+                        <span class="signal-icon">🔒</span>
+                        <span>Cryptographic Proof Chain</span>
                     </div>
+                    <div class="signal-live" id="proof-live-indicator">
+                        <span class="signal-dot"></span>
+                        <span>ACTIVE</span>
+                    </div>
+                </div>
+                <div class="signal-body">
+                    <div class="signal-main-row">
+                        <div class="signal-id-block">
+                            <div class="signal-id" id="proof-last-hash" style="font-size:11px;word-break:break-all">Loading...</div>
+                            <div style="font-size:10px;color:var(--text-muted);margin-top:4px" id="proof-last-time">—</div>
+                        </div>
+                    </div>
+                    <div class="signal-metrics">
+                        <div class="signal-metric">
+                            <div class="signal-metric-value" id="proof-total">—</div>
+                            <div class="signal-metric-label">TOTAL PROOFS</div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value" id="proof-24h">—</div>
+                            <div class="signal-metric-label">LAST 24H</div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value" id="proof-verified">100%</div>
+                            <div class="signal-metric-label">VERIFIED</div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value">104</div>
+                            <div class="signal-metric-label">PACKET</div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value">ED25519</div>
+                            <div class="signal-metric-label">SIGNATURE</div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-value" id="proof-pubkey">—</div>
+                            <div class="signal-metric-label">PUBLIC KEY</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="signal-controls">
+                    <button class="signal-btn" onclick="refreshProofStats()">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                        Refresh
+                    </button>
+                    <a class="signal-btn" href="/verify/" target="_blank" style="text-decoration:none">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                        Public Verify
+                    </a>
+                </div>
+            </div>
+
+            <!-- ACCOUNTS LIST -->
+            <div class="accounts-panel">
+                <div class="accounts-header">
+                    <span class="accounts-title">Accounts</span>
+                    <input type="text" class="accounts-search" id="accounts-search" placeholder="Search email..." oninput="debounceAccountSearch()">
+                </div>
+                <div class="accounts-list" id="accounts-list">
+                    <div class="accounts-loading">Loading...</div>
                 </div>
             </div>
         </div>
@@ -1370,6 +1568,8 @@ function showPage(page, el) {
     }
     document.getElementById('sidebar').classList.remove('open');
     document.getElementById('mobile-overlay').classList.remove('active');
+    // Trigger data loading for specific pages
+    if (page === 'reference') { loadSignal(); refreshProofStats(); loadAccountsData(); }
 }
 
 // === USER UI ===
@@ -1384,15 +1584,29 @@ function updateUserUI() {
     document.getElementById('user-plan').textContent = planLabel;
     const welcomeEl = document.getElementById('welcome-name');
     if (welcomeEl) welcomeEl.textContent = name;
+    
+    // Account page
     document.getElementById('settings-name').textContent = name;
     document.getElementById('settings-email').textContent = currentUser.email || '—';
-    document.getElementById('settings-plan').textContent = planLabel;
-    document.getElementById('settings-since').textContent = currentUser.created_at ? new Date(currentUser.created_at).toLocaleDateString() : '—';
+    const acctType = document.getElementById('settings-account-type');
+    if (acctType) acctType.textContent = currentUser.organization_name ? 'Company' : 'Individual';
     
-    // Billing tier buttons
-    document.querySelectorAll('.btn-tier').forEach(b => { b.classList.remove('current'); b.disabled = false; });
-    const tierMap = { free: 'open', business: 'standard', enterprise: 'critical' };
-    const activeBtn = document.getElementById('btn-' + (tierMap[plan] || 'open'));
+    // Organization section
+    const orgName = currentUser.organization_name;
+    const companyNotReg = document.getElementById('company-not-registered');
+    const companyReg = document.getElementById('company-registered');
+    if (orgName && companyNotReg && companyReg) {
+        companyNotReg.classList.add('hidden');
+        companyReg.classList.remove('hidden');
+        document.getElementById('company-name').textContent = orgName;
+        if (document.getElementById('company-industry')) document.getElementById('company-industry').textContent = currentUser.industry || '—';
+        if (document.getElementById('company-reg')) document.getElementById('company-reg').textContent = currentUser.registration || '—';
+    }
+    
+    // Billing tier buttons (old IDs: btn-free, btn-business, btn-enterprise)
+    document.querySelectorAll('.btn-tier').forEach(b => { b.classList.remove('current'); b.disabled = false; b.textContent = b.id === 'btn-enterprise' ? 'Select' : 'Select'; });
+    const tierMap = { free: 'free', business: 'business', enterprise: 'enterprise' };
+    const activeBtn = document.getElementById('btn-' + (tierMap[plan] || 'free'));
     if (activeBtn) { activeBtn.classList.add('current'); activeBtn.disabled = true; activeBtn.textContent = 'Current'; }
     
     // Admin reference access
@@ -1561,14 +1775,28 @@ async function loadSignal() {
     try {
         const data = await api('/v1/signal/status');
         if (data) {
-            document.getElementById('signal-id').textContent = data.signal_id || 'SIG-...';
-            document.getElementById('signal-hash').textContent = data.latest_hash || '—';
-            if (data.uptime) document.getElementById('sig-uptime').textContent = formatUptime(data.uptime);
-            if (data.generated) document.getElementById('sig-generated').textContent = data.generated;
+            const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+            // Dashboard signal
+            setEl('signal-id', data.signal_id || 'SIG-...');
+            setEl('signal-hash', data.latest_hash || '—');
+            if (data.uptime) setEl('sig-uptime', formatUptime(data.uptime));
+            if (data.generated) setEl('sig-generated', data.generated);
+            setEl('sig-requests', data.requests || '—');
+            setEl('sig-errors', data.error_rate || '0%');
+            // Reference page signal
+            setEl('ref-signal-id', data.signal_id || 'SIG-...');
+            setEl('ref-signal-hash', data.latest_hash || '—');
+            if (data.uptime) setEl('ref-signal-uptime', formatUptime(data.uptime));
+            if (data.generated) setEl('ref-signal-generated', data.generated);
+            setEl('ref-signal-requests', data.requests || '—');
+            setEl('ref-signal-errors', data.error_rate || '0%');
+            setEl('ref-signal-countdown', (data.next_in || 60) + 's');
             startSignalCountdown(data.next_in || 60);
         }
     } catch {
-        document.getElementById('signal-id').textContent = 'SIG-OFFLINE';
+        const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+        setEl('signal-id', 'SIG-OFFLINE');
+        setEl('ref-signal-id', 'SIG-OFFLINE');
     }
 }
 
@@ -1650,7 +1878,26 @@ function verifyReport() { window.open('/verify/', '_blank'); }
 function shareReport() { navigator.clipboard?.writeText(window.location.href); showToast('Link copied', 'success'); }
 
 // === SETTINGS ===
-function openOrgModal() { document.getElementById('modal-org').classList.add('active'); }
+function openCompanyModal() { document.getElementById('modal-org').classList.add('active'); }
+function openOrgModal() { openCompanyModal(); }
+function editProfile() {
+    const newName = prompt('Enter new name:', currentUser?.name || '');
+    if (newName && newName.trim()) {
+        api('/v1/auth/update-profile', { method: 'POST', body: JSON.stringify({ name: newName.trim() }) })
+            .then(() => {
+                currentUser.name = newName.trim();
+                localStorage.setItem('onto_user_name', newName.trim());
+                updateUserUI();
+                showToast('Name updated', 'success');
+            }).catch(() => showToast('Failed to update', 'error'));
+    }
+}
+function openSubscribeModal(plan) {
+    const email = 'support@ontostandard.org';
+    const planName = plan === 'business' ? 'Standard' : 'Certified';
+    window.location.href = `mailto:${email}?subject=ONTO ${planName} Subscription&body=I would like to subscribe to the ${planName} tier.%0A%0AOrganization: ${currentUser?.organization_name || '—'}%0AEmail: ${currentUser?.email || '—'}`;
+}
+function downloadInvoice() { showToast('Invoice download coming soon', 'info'); }
 async function saveOrg() {
     const name = document.getElementById('org-input-name').value.trim();
     const industry = document.getElementById('org-input-industry').value;
@@ -1699,7 +1946,54 @@ async function regenerateApiKey() {
 
 // === BILLING ===
 function contactSales(plan) {
-    window.location.href = `mailto:support@ontostandard.org?subject=ONTO ${plan} plan inquiry`;
+    window.location.href = `mailto:support@ontostandard.org?subject=ONTO ${plan || 'Certified'} plan inquiry`;
+}
+
+// === SIGNAL & REFERENCE ===
+let signalInterval = null;
+let accountSearchTimeout = null;
+
+function refreshSignal() { loadSignal(); showToast('Signal refreshed', 'info'); }
+
+async function refreshProofStats() {
+    try {
+        const data = await api('/v1/signal/proof-stats');
+        if (data) {
+            const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+            setEl('proof-total', data.total || '—');
+            setEl('proof-24h', data.last_24h || '—');
+            setEl('proof-verified', data.verified || '100%');
+            setEl('proof-last-hash', data.last_hash || '—');
+            setEl('proof-last-time', data.last_time || '—');
+            setEl('proof-pubkey', data.public_key ? data.public_key.substring(0, 12) + '...' : '—');
+        }
+        showToast('Proof stats refreshed', 'info');
+    } catch { showToast('Failed to load proof stats', 'error'); }
+}
+
+function debounceAccountSearch() {
+    clearTimeout(accountSearchTimeout);
+    accountSearchTimeout = setTimeout(() => loadAccountsData(), 300);
+}
+
+async function loadAccountsData() {
+    const search = document.getElementById('accounts-search')?.value || '';
+    const list = document.getElementById('accounts-list');
+    if (!list) return;
+    list.innerHTML = '<div class="accounts-loading">Loading...</div>';
+    try {
+        const data = await api(`/v1/admin/accounts?search=${encodeURIComponent(search)}`);
+        if (!data || !data.accounts || data.accounts.length === 0) {
+            list.innerHTML = '<div class="accounts-loading">No accounts found</div>';
+            return;
+        }
+        list.innerHTML = data.accounts.map(a => `
+            <div class="account-row">
+                <span class="account-email">${esc(a.email)}</span>
+                <span class="account-plan"><span style="font-size:9px;padding:2px 6px;border-radius:3px;background:var(--bg-elevated);color:var(--text-muted)">${a.layer || 'open'}</span></span>
+            </div>
+        `).join('');
+    } catch { list.innerHTML = '<div class="accounts-loading">Failed to load</div>'; }
 }
 
 // === UTILS ===
