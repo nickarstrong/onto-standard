@@ -1170,7 +1170,7 @@ a.info-val:hover { color: var(--text); }
 <div class="dashboard" id="dashboard">
     <aside class="sidebar">
         <div class="sidebar-header">
-            <a href="#" onclick="showPage('audit', null); return false;" class="sidebar-logo" style="text-decoration: none; color: inherit;">
+            <a href="#" onclick="showPage('monitor', null); return false;" class="sidebar-logo" style="text-decoration: none; color: inherit;">
                 <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
                     <circle cx="18" cy="18" r="17" fill="white"/>
                     <path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/>
@@ -1184,17 +1184,9 @@ a.info-val:hover { color: var(--text); }
             </div>
         </div>
         <nav class="sidebar-nav">
-            <div class="nav-item active" onclick="showPage('audit', this)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                Audit
-            </div>
-            <div class="nav-item" onclick="showPage('monitor', this)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                Calibrate
-            </div>
-            <div class="nav-item" onclick="showPage('certify', this)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
-                Audit Trail
+            <div class="nav-item active" onclick="showPage('monitor', this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                Dashboard
             </div>
             <div class="nav-divider"></div>
             <div class="nav-item" onclick="showPage('sdk', this)">
@@ -1244,7 +1236,7 @@ a.info-val:hover { color: var(--text); }
     
     <main class="main-content">
         <!-- ========== AUDIT PAGE ========== -->
-        <div class="page active" id="page-audit">
+        <div class="page" id="page-audit">
 
             <!-- === WELCOME BANNER === -->
             <div class="welcome-banner" id="welcome-banner">
@@ -1447,7 +1439,7 @@ a.info-val:hover { color: var(--text); }
         </div>
 
         <!-- ========== MONITOR PAGE ========== -->
-        <div class="page" id="page-monitor">
+        <div class="page active" id="page-monitor">
             <div class="page-header-clean" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
                 <div>
                     <h1 class="page-title" style="margin-bottom:2px">Calibrate</h1>
@@ -3342,7 +3334,7 @@ function switchActivePlan(newPlan) {
 
 function showPage(page, el) {
     // Backward compat
-    if (page === 'dashboard') page = 'audit';
+    if (page === 'dashboard' || page === 'audit') page = 'monitor';
     
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
