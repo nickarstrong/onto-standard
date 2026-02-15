@@ -203,9 +203,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Ar
 .page-header-clean { margin-bottom: 24px; }
 .page-header-clean .page-title { font-size: 18px; font-weight: 500; letter-spacing: -0.3px; }
 
-.section-block { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); overflow-x: auto; }
-.section-block:last-child { border-bottom: none; margin-bottom: 0; }
-.section-label { font-size: 10px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+.section-block { margin-bottom: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 16px 20px; overflow-x: auto; }
+.section-block:last-child { margin-bottom: 0; }
+.section-label { font-size: 9px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
 .section-text { font-size: 12px; color: var(--text-secondary); margin-bottom: 10px; word-wrap: break-word; }
 .section-footnote { font-size: 11px; color: var(--text-muted); margin-top: 10px; word-break: break-word; }
 .section-footnote a { color: var(--text-secondary); text-decoration: none; word-break: break-all; }
@@ -216,10 +216,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Ar
 .key-buttons { display: flex; gap: 8px; }
 .key-meta { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: var(--text-muted); }
 
-.btn-minimal { padding: 8px 14px; font-size: 12px; font-weight: 500; background: transparent; border: 1px solid var(--border); border-radius: 6px; color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
-.btn-minimal:hover { background: var(--bg-elevated); color: var(--text); }
+.btn-minimal { padding: 7px 14px; font-size: 11px; font-weight: 500; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 4px; color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
+.btn-minimal:hover { border-color: var(--accent); color: var(--accent); }
 .btn-minimal:disabled { opacity: 0.4; cursor: not-allowed; }
-.btn-minimal:disabled:hover { background: transparent; color: var(--text-secondary); }
+.btn-minimal:disabled:hover { background: var(--bg-elevated); color: var(--text-secondary); border-color: var(--border); }
 
 .btn-danger-outline { padding: 8px 14px; font-size: 12px; font-weight: 500; background: transparent; border: 1px solid var(--danger); border-radius: 6px; color: var(--danger); cursor: pointer; transition: all 0.15s; }
 .btn-danger-outline:hover { background: rgba(239, 68, 68, 0.08); }
@@ -228,22 +228,22 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Ar
 pre { max-width: 100%; overflow-x: auto; }
 
 /* Info Rows */
-.info-row { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); gap: 12px; }
-.info-row:last-child { border-bottom: none; }
-.info-key { font-size: 13px; color: var(--text-muted); min-width: 100px; }
-.info-val { font-size: 13px; color: var(--text); flex: 1; }
+.info-row { display: flex; align-items: center; padding: 10px 12px; margin: 0 -12px; border-radius: 4px; gap: 12px; transition: background 0.1s; }
+.info-row:hover { background: var(--bg-elevated); }
+.info-key { font-size: 12px; color: var(--text-muted); min-width: 100px; }
+.info-val { font-size: 13px; color: var(--text); flex: 1; font-weight: 500; }
 a.info-val { color: var(--text-secondary); text-decoration: none; }
 a.info-val:hover { color: var(--text); }
 .info-val.status-active { display: flex; align-items: center; gap: 6px; }
 .info-val .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
-.info-action { font-size: 12px; color: var(--text-muted); cursor: pointer; }
-.info-action:hover { color: var(--text); }
+.info-action { font-size: 11px; color: var(--accent); cursor: pointer; font-weight: 500; opacity: 0.7; }
+.info-action:hover { opacity: 1; }
 
 /* Doc Rows */
-.doc-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
-.doc-row:last-child { border-bottom: none; }
-.doc-name { font-size: 13px; color: var(--text); }
-.doc-link { font-size: 12px; color: var(--text-muted); cursor: pointer; }
+.doc-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; margin: 0 -12px; border-radius: 4px; transition: background 0.1s; }
+.doc-row:hover { background: var(--bg-elevated); }
+.doc-name { font-size: 13px; color: var(--text); font-weight: 500; }
+.doc-link { font-size: 11px; color: var(--accent); cursor: pointer; font-weight: 500; }
 .doc-link:hover { color: var(--text); }
 
 /* === TIERS === */
@@ -446,7 +446,7 @@ a.info-val:hover { color: var(--text); }
 .doc-icon { width: 40px; height: 40px; background: var(--bg-elevated); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
 .doc-info { flex: 1; }
 .doc-name { font-weight: 500; margin-bottom: 2px; }
-.doc-status { font-size: 13px; color: var(--text-muted); }
+.doc-status { font-size: 11px; color: var(--text-muted); }
 .doc-actions { display: flex; gap: 8px; }
 .doc-btn { padding: 6px 12px; font-size: 13px; border-radius: 6px; cursor: pointer; border: 1px solid var(--border); background: var(--bg); color: var(--text-secondary); transition: all 0.15s; }
 .doc-btn:hover { background: var(--bg-elevated); }
