@@ -2,6 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://api.ontostandard.org; frame-ancestors 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 <title>ONTO — Documentation</title>
 <meta name="description" content="ONTO Protocol documentation. Epistemic Risk Standard, specifications, legal, FAQ and more.">
@@ -1054,6 +1055,7 @@ afToast(e.message||'Login failed','error');
 async function afRegister(btn){
 const name=document.getElementById('af-reg-name').value,email=document.getElementById('af-reg-email').value,pw=document.getElementById('af-reg-pass').value;
 if(!name||!email||!pw){afToast('Please fill in all fields','error');return}
+if(pw.length<8){afToast('Password must be at least 8 characters','error');return}
 if(!document.getElementById('af-terms').checked){afToast('Please agree to the Terms','error');return}
 afSetLoad(btn,true);
 try{
@@ -1109,7 +1111,7 @@ for(let i=1;i<=6;i++){document.getElementById('af-otp-'+i).classList.add('error'
 
 async function afResend(){
 if(!afPendingEmail){afToast('No email to verify','error');return}
-try{await fetch(AF_API+'/v1/auth/resend-verification',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:afPendingEmail,password:''})});afToast('Verification email sent','success')}catch(e){afToast('Failed to resend email','error')}}
+try{await fetch(AF_API+'/v1/auth/resend-verification',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:afPendingEmail})});afToast('Verification email sent','success')}catch(e){afToast('Failed to resend email','error')}}
 
 function getTheme(){return localStorage.getItem('onto_theme')||'dark'}
 function applyTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('onto_theme',t)}
