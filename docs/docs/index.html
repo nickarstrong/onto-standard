@@ -606,7 +606,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
             <tr><th>Framework</th><th>ONTO Mapping</th></tr>
         </thead>
         <tbody>
-            <tr><td>EU AI Act (Annex III)</td><td>Continuous ROOT connection provides ongoing quantitative evidence for high-risk AI conformity assessment</td></tr>
+            <tr><td>EU AI Act (Annex III)</td><td>Continuous ONTO grounding provides ongoing quantitative evidence for high-risk AI conformity assessment</td></tr>
             <tr><td>NIST AI RMF 1.0</td><td>ECE and U-Recall implement the MEASURE function (Map → Measure → Manage → Govern)</td></tr>
             <tr><td>ISO/IEC 42001</td><td>ONTO produces signed evaluation records, metric histories, and compliance determinations required for AI management system audits</td></tr>
         </tbody>
@@ -721,9 +721,9 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <h1>ONTO Layer Specification</h1>
 <div class="dm"><span class="db-g bg-a">Draft</span><span>ONTO-SPEC-002</span><span>February 2026</span></div>
 <h2 id="layer-arch">1. Layer Architecture</h2>
-<h3>1.1 OPEN</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$0</td></tr><tr><td>Delay</td><td>1 hour</td></tr><tr><td>Rate</td><td>50 / day</td></tr><tr><td>SLA</td><td>Best effort</td></tr><tr><td>Models</td><td>1</td></tr></tbody></table>
-<h3>1.2 STANDARD</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$15,000/yr</td></tr><tr><td>Delay</td><td>Real-time</td></tr><tr><td>Rate</td><td>Unlimited</td></tr><tr><td>SLA</td><td>99.9%</td></tr><tr><td>Models</td><td>5</td></tr></tbody></table>
-<h3>1.3 CRITICAL</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$100K+/yr</td></tr><tr><td>Delay</td><td>Real-time + priority</td></tr><tr><td>Rate</td><td>Unlimited</td></tr><tr><td>SLA</td><td>99.99%</td></tr><tr><td>Models</td><td>Unlimited</td></tr></tbody></table>
+<h3>1.1 OPEN</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$0</td></tr><tr><td>Evaluations</td><td>50 / day</td></tr><tr><td>Response</td><td>Standard</td></tr><tr><td>Models</td><td>1</td></tr><tr><td>Scoring</td><td>REP, EpCE, DLA</td></tr><tr><td>Proofs</td><td>Basic reports</td></tr><tr><td>SLA</td><td>Best effort</td></tr></tbody></table>
+<h3>1.2 STANDARD</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$15,000/yr</td></tr><tr><td>Evaluations</td><td>Unlimited</td></tr><tr><td>Response</td><td>Real-time</td></tr><tr><td>Models</td><td>Up to 5</td></tr><tr><td>Scoring</td><td>REP, EpCE, DLA + GOLD v4.5 grounding</td></tr><tr><td>Proofs</td><td>Ed25519 signed proof chain · Compliance-ready reports</td></tr><tr><td>SLA</td><td>99.9%</td></tr></tbody></table>
+<h3>1.3 CERTIFIED</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$100K+/yr</td></tr><tr><td>Evaluations</td><td>Unlimited</td></tr><tr><td>Response</td><td>Real-time + priority</td></tr><tr><td>Models</td><td>Unlimited</td></tr><tr><td>Scoring</td><td>Full ONTO-ERS evaluation suite</td></tr><tr><td>Proofs</td><td>Public verifiable proof chain · 24-month audit trail</td></tr><tr><td>Certification</td><td>ONTO CERTIFIED badge · Public registry</td></tr><tr><td>Support</td><td>Dedicated · SLA 99.99%</td></tr></tbody></table>
 <h2 id="signal-packet">2. Signal Packet</h2>
 <pre><code>104 bytes: [8 timestamp][32 entropy][64 Ed25519 signature]</code></pre>
 <h2 id="layer-endpoints">3. API Endpoints</h2>
@@ -741,24 +741,27 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <div class="dm"><span class="db-g bg-a">Draft</span><span>ONTO-REG-001</span></div>
 <h2 id="reg-eu">1. EU AI Act</h2>
 <table><thead><tr><th>Article</th><th>Requirement</th><th>ONTO Capability</th></tr></thead><tbody>
-<tr><td>Art. 9</td><td>Risk management</td><td>Risk Score, monitoring</td></tr>
-<tr><td>Art. 13</td><td>Transparency</td><td>Certification, registry</td></tr>
-<tr><td>Art. 15</td><td>Accuracy</td><td>ECE, U-Recall</td></tr>
-<tr><td>Art. 43</td><td>Conformity</td><td>Independent evaluation</td></tr>
+<tr><td>Art. 9</td><td>Risk management system</td><td>Continuous epistemic risk scoring with signed proof chain</td></tr>
+<tr><td>Art. 13</td><td>Transparency obligations</td><td>Public certification registry, verifiable evaluation history</td></tr>
+<tr><td>Art. 15</td><td>Accuracy, robustness, cybersecurity</td><td>ECE calibration metrics, U-Recall uncertainty detection, GOLD v4.5 grounding</td></tr>
+<tr><td>Art. 43</td><td>Conformity assessment</td><td>Independent evaluation with Ed25519 signed, timestamped evidence</td></tr>
 </tbody></table>
 <h2 id="reg-nist">2. NIST AI RMF</h2>
 <table><thead><tr><th>Function</th><th>ONTO Implementation</th></tr></thead><tbody>
-<tr><td>GOVERN</td><td>Risk vocabulary</td></tr><tr><td>MAP</td><td>Domain benchmarks</td></tr><tr><td>MEASURE</td><td>Quantitative metrics</td></tr><tr><td>MANAGE</td><td>Compliance levels</td></tr>
+<tr><td>GOVERN</td><td>Standardized epistemic risk vocabulary and compliance levels (Basic / Standard / Advanced)</td></tr>
+<tr><td>MAP</td><td>Domain-specific evaluation benchmarks (ONTO-Bench, 268+ samples)</td></tr>
+<tr><td>MEASURE</td><td>Deterministic metrics: ECE, U-Recall, Risk Score, DLA — reproducible across runs</td></tr>
+<tr><td>MANAGE</td><td>Compliance thresholds, continuous monitoring, signed audit trail</td></tr>
 </tbody></table>
-<h2 id="reg-industry">3. Industry</h2>
-<p><strong>Finance:</strong> SR 11-7, MiFID II. <strong>Healthcare:</strong> FDA SaMD, HIPAA. <strong>Defense:</strong> DoD AI Ethics, FedRAMP.</p>
+<h2 id="reg-industry">3. Industry Alignment</h2>
+<p><strong>Finance:</strong> SR 11-7 (model risk management), MiFID II (algorithmic trading oversight). <strong>Healthcare:</strong> FDA SaMD (Software as Medical Device), HIPAA (data handling). <strong>Defense:</strong> DoD AI Ethics Principles, FedRAMP (cloud security baseline).</p>
 </div><div class="sd"></div>
 
 <!-- CHARTER -->
 <div class="ds da" id="doc-charter" data-nav="charter">
 <h1>Foundation Charter</h1>
 <div class="dm"><span class="db-g bg-b">Published</span><span>ONTO-GOV-001</span></div>
-<h2 id="ch-mission">1. Mission</h2><p>Establish and maintain open standards for measuring epistemic reliability of AI systems. Trust earned through measurement, not marketing.</p>
+<h2 id="ch-mission">1. Mission</h2><p>Establish and maintain open standards for measuring and grounding epistemic reliability of AI systems. Trust earned through measurement, not marketing.</p>
 <h2 id="ch-principles">2. Principles</h2>
 <p><strong>Independence</strong> — strict separation from AI providers. <strong>Transparency</strong> — public specs, reproducible methodology. <strong>Scientific Rigor</strong> — grounded in statistics, peer reviewed.</p>
 <h2 id="ch-structure">3. Structure</h2>
@@ -793,15 +796,15 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <div class="ds da" id="doc-faq" data-nav="faq">
 <h1>Frequently Asked Questions</h1>
 <div class="dm"><span class="db-g bg-g">Updated regularly</span></div>
-<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is ONTO?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">ONTO is an independent protocol for measuring epistemic reliability of AI systems. We quantify when AI models are confident versus when they should express uncertainty — like ISO certification for how well an AI knows what it knows.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is ONTO?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">ONTO is an independent protocol for measuring and grounding epistemic reliability of AI systems. It quantifies when AI models are confident versus when they should express uncertainty, and provides active epistemic grounding through the GOLD v4.5 reference corpus — strengthening AI outputs without modifying model weights.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What does ONTO measure?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Three core metrics: U-Recall (detecting when AI doesn't know), ECE (confidence-accuracy alignment), and Risk Score (composite). These tell you if an AI's confidence is trustworthy.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Does ONTO fix my AI model?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">ONTO does not modify model weights, retrain, or fine-tune. It provides epistemic grounding — every output is evaluated against GOLD v4.5, producing measurable improvement in epistemic discipline. The model itself remains unchanged; ONTO operates as external infrastructure.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How is ONTO different from other AI monitoring?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Most tools track data drift or performance. ONTO measures epistemic uncertainty — the gap between what AI claims to know and what it actually knows.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How is ONTO different from other AI monitoring?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Most tools track data drift or performance. ONTO measures epistemic uncertainty — the gap between what AI claims to know and what it actually knows — and provides active grounding through GOLD v4.5 to reduce that gap.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What industries is ONTO for?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Any industry deploying AI, with focus on regulated sectors: healthcare, finance, defense, aviation, pharma, insurance, legal, government.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is the free tier really free?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Yes. Open tier provides 50 evaluations per day with epistemic scoring (REP, EpCE, DLA) at no cost. Upgrade to Standard for unlimited evaluations and real-time scoring.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does certification work?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Submit AI system → independent evaluation via ONTO-Bench → Standards Council review → certificate issued (12 months) → publicly verifiable.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Does ONTO help with EU AI Act?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">ONTO maps to Art. 9 (risk), Art. 13 (transparency), Art. 15 (accuracy), Art. 43 (conformity). Not a substitute for full compliance, but provides documented evidence.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is the entropy signal?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Every evaluation produces a cryptographically signed proof — timestamped, versioned, and tamper-proof using Ed25519 signatures. This is your audit trail: verifiable evidence that an evaluation was conducted at a specific time with specific results.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is the signed proof?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Every evaluation produces a cryptographically signed proof — timestamped, versioned, and tamper-proof using Ed25519 signatures. This is your audit trail: verifiable evidence that an evaluation was conducted at a specific time with specific results.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I try before committing?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Yes. Create a free account for OPEN tier access. Test the API, evaluate the workflow, then upgrade when ready.</div></div>
 </div><div class="sd"></div>
 
@@ -820,7 +823,7 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <p class="form-note">Reviews appear after approval.</p>
 <div class="form-success" id="rv-ok">Thank you! Submitted for moderation.</div>
 </div>
-<div class="review-card"><div class="review-header"><div class="review-avatar">E</div><div><div class="review-name">Early Adopter</div><div class="review-role">AI Infrastructure Team</div></div></div><div class="stars">★★★★★</div><div class="review-text">"Finally a tool that measures what matters — not just speed, but whether it knows when to say 'I don't know'. Game changer for compliance."</div></div>
+<p style="color:var(--text-m);font-size:12px;margin-top:12px">No reviews yet. Be the first to share your experience.</p>
 </div><div class="sd"></div>
 
 <!-- FEEDBACK -->
@@ -846,9 +849,9 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <h2 id="lic-scope">1. Scope</h2>
 <p>This license governs the use of ONTO specifications, methodology, and evaluation outputs.</p>
 <h2 id="lic-open">2.1 Open Grants (No Fee)</h2>
-<ul><li>Use specifications for internal evaluation</li><li>Implement metrics in research</li><li>Reference in publications</li><li>Build computation tools</li><li>Access OPEN layer signal</li></ul>
+<ul><li>Use specifications for internal evaluation</li><li>Implement metrics in research</li><li>Reference in publications</li><li>Build computation tools</li><li>Access OPEN tier evaluations</li></ul>
 <h2 id="lic-commercial">2.2 Commercial Grants</h2>
-<ul><li>Issue ONTO certification marks</li><li>Operate as accredited evaluator</li><li>Access STANDARD/CRITICAL signals</li><li>Use certification in marketing</li></ul>
+<ul><li>Issue ONTO certification marks</li><li>Operate as accredited evaluator</li><li>Access STANDARD/CERTIFIED tier evaluations and proofs</li><li>Use certification in marketing</li></ul>
 <h2 id="lic-restrict">3. Restrictions</h2>
 <ul><li>No certification without evaluation</li><li>No modified metrics as ONTO-compliant</li><li>No unaccredited certification services</li><li>No ONTO mark for quality endorsement</li></ul>
 <h2 id="lic-discl">4. Disclaimer</h2>
@@ -860,14 +863,14 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <h1>Terms of Service</h1>
 <div class="dm"><span class="db-g bg-b">Published</span><span>February 4, 2026</span></div>
 <h2 id="t-1">1. Acceptance</h2><p>By using ONTO Standard services, you agree to these terms.</p>
-<h2 id="t-2">2. Services</h2><p>Signal verification API, cryptographic attestation, dashboards, SDKs.</p>
+<h2 id="t-2">2. Services</h2><p>Epistemic evaluation API, cryptographic proof chain, dashboards, SDKs.</p>
 <h2 id="t-3">3. Account</h2><p>You must provide accurate information and protect your API keys.</p>
 <h2 id="t-4">4. Acceptable Use</h2>
 <ul><li>No unlawful use</li><li>No unauthorized access attempts</li><li>No service disruption</li><li>No API key sharing</li><li>No rate limit circumvention</li></ul>
 <h2 id="t-5">5. Rate Limits</h2><p>Each plan has specific limits. Exceeding may cause suspension.</p>
 <h2 id="t-6">6. Payment</h2><p>Billed in advance. Non-refundable except per Refund Policy. 30 days pricing change notice.</p>
 <h2 id="t-7">7. SLA</h2>
-<table><thead><tr><th>Plan</th><th>Uptime</th></tr></thead><tbody><tr><td>Standard</td><td>99.9%</td></tr><tr><td>Critical</td><td>99.99%</td></tr></tbody></table>
+<table><thead><tr><th>Plan</th><th>Uptime</th></tr></thead><tbody><tr><td>Standard</td><td>99.9%</td></tr><tr><td>Certified</td><td>99.99%</td></tr></tbody></table>
 <h2 id="t-8">8. IP</h2><p>ONTO retains rights to Services. You retain ownership of your data.</p>
 <h2 id="t-9">9. Privacy</h2><p>See <a href="#privacy">Privacy Policy</a>.</p>
 <h2 id="t-10">10. Warranties</h2><p>SERVICES PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND.</p>
@@ -903,9 +906,9 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <div class="dd"><strong>Summary:</strong> 14-day money-back for monthly. 30-day for annual. Pro-rata after.</div>
 <h2 id="r-1">1. Monthly</h2><ul><li>14-day full refund</li><li>No partial month refunds after</li><li>Cancel anytime, service continues to period end</li></ul>
 <h2 id="r-2">2. Annual</h2><ul><li>30-day full refund</li><li>Pro-rata after (minus 15% termination fee)</li><li>No refunds after 6 months</li></ul>
-<h2 id="r-3">3. Critical</h2><p>Custom terms per contract.</p>
+<h2 id="r-3">3. Certified</h2><p>Custom terms per contract.</p>
 <h2 id="r-4">4. Service Credits</h2>
-<table><thead><tr><th>Plan</th><th>Breach</th><th>Credit</th></tr></thead><tbody><tr><td>Standard</td><td>99.9%</td><td>10%</td></tr><tr><td>Critical</td><td>99.99%</td><td>25%</td></tr></tbody></table>
+<table><thead><tr><th>Plan</th><th>Breach</th><th>Credit</th></tr></thead><tbody><tr><td>Standard</td><td>99.9%</td><td>10%</td></tr><tr><td>Certified</td><td>99.99%</td><td>25%</td></tr></tbody></table>
 <h2 id="r-5">5. Non-Refundable</h2><ul><li>ToS violation terminations</li><li>Unused credits</li><li>Setup fees</li><li>Third-party fees</li></ul>
 <h2 id="r-6">6. How To</h2><p>Email <a href="/cdn-cgi/l/email-protection#46353336362934320629283229353227282227342268293421"><span class="__cf_email__" data-cfemail="55262025253a2721153a3b213a2621343b313427317b3a2732">[email&#160;protected]</span></a>. Response 2 days, processing 5-10 days.</p>
 </div>
