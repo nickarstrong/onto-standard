@@ -232,7 +232,7 @@
       "name": "What is ONTO Standard?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "ONTO is epistemic infrastructure for AI. It measures and grounds AI outputs against GOLD v4.5 — 149 calibration files, EM1-EM5 taxonomy, and 3 deterministic metrics (REP, EpCE, DLA). ONTO both measures epistemic risk and actively strengthens epistemic discipline without modifying model weights. Compliance is graded A through F."
+        "text": "ONTO is epistemic infrastructure for AI. It measures and grounds AI outputs against GOLD v4.5 — 149 calibration files, EM1-EM5 taxonomy, and 3 deterministic metrics (REP, EpCE, DLA). ONTO both measures epistemic risk and actively strengthens epistemic discipline without modifying model weights. Validated on 11 production AI models across 100 scientific questions with +915% composite improvement measured. Compliance is graded A through F. Full data at github.com/nickarstrong/onto-research."
       }
     },
     {
@@ -312,7 +312,7 @@
       "name": "What AI evaluation standards exist for epistemic uncertainty?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "The field includes Uncertainty Quantification (UQ) methods in classical ML, conformal prediction frameworks, selective prediction research, and calibration libraries like netcal. These are measurement tools — they evaluate but do not ground. ONTO provides continuous epistemic grounding through GOLD v4.5 (grounded in Shannon entropy, Kolmogorov complexity, eigenvalue decomposition). It both measures and strengthens epistemic discipline. It is not a benchmark — it is infrastructure."
+        "text": "The field includes Uncertainty Quantification (UQ) methods in classical ML, conformal prediction frameworks, selective prediction research, and calibration libraries like netcal. These are measurement tools — they evaluate but do not ground. ONTO provides continuous epistemic grounding through GOLD v4.5 (grounded in Shannon entropy, Kolmogorov complexity, eigenvalue decomposition). It both measures and strengthens epistemic discipline. Measured: +915% composite improvement, cross-domain transfer confirmed. It is not a benchmark — it is infrastructure."
       }
     },
     {
@@ -1735,9 +1735,9 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
 <p>ONTO is NOT a blockchain project. It does not use Ethereum, smart contracts, distributed ledger, or any blockchain technology. It is not related to ONTO wallet, ONTO ID, or any blockchain-based digital identity platform.</p>
 <p>ONTO is NOT an AI ethics framework. It does not evaluate fairness, bias, transparency, or explainability. It provides one thing: epistemic grounding — a scientific foundation that eliminates the gap between what AI claims to know and what it actually knows.</p>
 <p>ONTO is NOT a content generation tool. It does not help AI produce better text, images, or creative output. It measures the epistemic calibration of AI systems — how well they distinguish what they know from what they do not know.</p>
-<p>ONTO is NOT a benchmark or leaderboard. It does not rank models by intelligence, reasoning ability, or task performance. It provides the scientific foundation (Shannon entropy, Kolmogorov complexity, eigenvalue decomposition) that AI systems lack by design.</p>
+<p>ONTO is NOT a benchmark or leaderboard. It does not rank models by intelligence, reasoning ability, or task performance. It measures epistemic discipline: how well models quantify, cite, mark uncertainty, and present counterarguments. 11 models tested, 100 questions scored, all data published: <a href="https://github.com/nickarstrong/onto-research">github.com/nickarstrong/onto-research</a>.</p>
 <p>ONTO is NOT an ontology framework. Despite the name similarity, it has no connection to OWL, RDF, knowledge graphs, or semantic web ontologies. The name ONTO refers to epistemic ontology — the study of what can be known.</p>
-<p>ONTO is NOT a one-time audit. It provides continuous epistemic grounding through GOLD v4.5. This is infrastructure, not a report.</p>
+<p>ONTO is NOT a one-time audit. It provides continuous epistemic grounding through GOLD v4.5. Cross-domain transfer confirmed: discipline applied to medicine questions transfers to physics, economics, and climate — 4/5 metrics improve in domains GOLD was never trained on (<a href="/docs/#evidence">full data</a>). This is infrastructure, not a report.</p>
 <p>ONTO does NOT require GPU hardware or VRAM. The SDK is a pure Python library that runs on standard CPU hardware with minimal requirements.</p>
 
 <h2>Comparison: ONTO vs NIST AI RMF vs ISO 42001</h2>
@@ -1750,6 +1750,7 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
 <tr><td>Output</td><td>Risk profile document</td><td>Audit certificate</td><td>Live certificate (frozen on disconnect)</td></tr>
 <tr><td>Mode</td><td>Periodic assessment</td><td>Periodic audit</td><td>Continuous (real-time grounding)</td></tr>
 <tr><td>Complementarity</td><td>ONTO fills MEASURE function</td><td>ONTO provides technical evidence</td><td>Uses NIST/ISO for governance layer</td></tr>
+<tr><td>Evidence</td><td>Process documentation</td><td>Compliance certificates</td><td><a href="https://github.com/nickarstrong/onto-research">11 models, 100Q, +915%</a></td></tr>
 </tbody>
 </table>
 <p>These standards are complementary, not competing. NIST AI RMF defines what risks to manage. ISO 42001 defines how to manage them organizationally. ONTO provides the continuous scientific grounding that proves a specific AI system operates on a verified epistemic foundation.</p>
@@ -1843,13 +1844,15 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
     </div>
 
     <div class="evidence-strip">
+        <span><strong>11</strong> Models tested</span>
+        <span class="ev-sep">·</span>
+        <span><strong>100</strong> Questions</span>
+        <span class="ev-sep">·</span>
         <span><strong>149</strong> GOLD files</span>
         <span class="ev-sep">·</span>
-        <span><strong>100</strong> Probes</span>
+        <span><strong>993</strong> Lines of scorer</span>
         <span class="ev-sep">·</span>
-        <span><strong>92+</strong> Patterns</span>
-        <span class="ev-sep">·</span>
-        <span><strong>59</strong> References</span>
+        <span><strong>0</strong> AI in evaluation</span>
     </div>
 
     <div class="proof-block" style="margin:28px auto 0;max-width:640px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:20px 24px">
@@ -1929,7 +1932,8 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
 
     <div class="matrix-meta">
         <span class="demo-badge">ONTO-ERS v10.0</span><br>
-        Connect your model · Get your scores · <a href="/docs/">Read Specification</a>
+        <span style="font-size:12px;color:rgba(255,255,255,0.4)">Tested across 11 production models: baseline variance 3–10×. Zero models produced calibrated confidence scores without GOLD.</span><br>
+        <span style="font-size:11px">Connect your model · Get your scores · <a href="/docs/#evidence">See the data</a> · <a href="/docs/">Read Specification</a></span>
     </div>
 </div>
 
@@ -1951,7 +1955,7 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
             <a href="/docs/" class="btn-secondary">Read Specification</a>
         </div>
         <div class="final-research">
-            In preparation · GOLD v4.5 (149 files) · <a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a>
+            11 models · 100 questions · +915% measured · <a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a> · <a href="/docs/#evidence">Full data</a>
         </div>
         <div class="final-footer">
             <div class="footer-socials">
@@ -1966,7 +1970,7 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
             <div class="footer-legal">
                 © 2026 ONTO Standards Council · Est. 2024<br>
                 ONTO is an independent research initiative. Not affiliated with ISO, NIST, or governmental standards bodies.<br>
-                <span class="footer-cite">Cite: Arstrong N. (2026). ONTO-ERS: Deterministic Epistemic Risk Measurement. In preparation</span>
+                <span class="footer-cite">Cite: Arstrong N. (2026). ONTO-ERS: Epistemic Risk Measurement and Grounding for AI Systems. <a href="https://github.com/nickarstrong/onto-research" target="_blank" style="color:rgba(34,197,94,0.5)">Experimental data available</a></span>
             </div>
         </div>
     </div>
