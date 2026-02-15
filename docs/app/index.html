@@ -952,7 +952,7 @@ a.info-val:hover { color: var(--text); }
                     <div style="padding:14px;border:1px solid var(--border);border-radius:6px;background:var(--bg)">
                         <div style="font-size:20px;margin-bottom:6px;opacity:0.6">②</div>
                         <div style="font-size:12px;font-weight:600;margin-bottom:4px">Evaluate outputs</div>
-                        <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Paste AI-generated text below. Each evaluation is scored against GOLD v4.5 and signed with Ed25519.</div>
+                        <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Paste AI-generated text below. Each evaluation is scored against GOLD-backed patterns and signed with Ed25519.</div>
                     </div>
                     <div style="padding:14px;border:1px solid var(--border);border-radius:6px;background:var(--bg)">
                         <div style="font-size:20px;margin-bottom:6px;opacity:0.6">③</div>
@@ -961,7 +961,7 @@ a.info-val:hover { color: var(--text); }
                     </div>
                 </div>
                 <div style="margin-top:14px;padding:10px 12px;background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.1);border-radius:4px;font-size:11px;color:var(--text-secondary);line-height:1.5">
-                    <strong style="color:var(--text)">How it works:</strong> Open = try it (50 evals/day, 1 model). Standard ($15K/yr) = production use, unlimited evals, up to 5 models, signed proofs. Certified ($100K+/yr) = public compliance, unlimited models, dedicated support.
+                    <strong style="color:var(--text)">How it works:</strong> Open = try it (50 evals/day, 5 models). Standard ($15K/yr) = production use, 10K evals/day, up to 20 models, signed proofs. Certified ($100K+/yr) = full compliance, up to 100 models, certification, dedicated support.
                 </div>
                 <div style="margin-top:10px;display:flex;gap:12px;align-items:center">
                     <a href="/docs/" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Documentation →</a>
@@ -1566,15 +1566,15 @@ print(report.improvement)  <span style="color:var(--text-muted)"># error_reducti
                     </tr>
                     <tr style="border-bottom:1px solid var(--border)">
                         <td style="padding:8px 10px;font-weight:500">Standard</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">Unlimited</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">420/hr · 10K/day</td>
                         <td style="padding:8px 10px;color:var(--text-secondary)">Full API + Proof Chain</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">Marker (internal)</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">Signed evaluations</td>
                     </tr>
                     <tr>
                         <td style="padding:8px 10px;font-weight:500">Certified</td>
                         <td style="padding:8px 10px;color:var(--text-secondary)">Unlimited</td>
                         <td style="padding:8px 10px;color:var(--text-secondary)">Full API + Proof Chain + Audit</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">L1 · L2 · L3 (public cert)</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">Certification + public verify</td>
                     </tr>
                 </table>
                 <div style="margin-top:12px">
@@ -1587,8 +1587,8 @@ print(report.improvement)  <span style="color:var(--text-muted)"># error_reducti
                 <div style="display:flex;justify-content:space-between;align-items:center">
                     <div>
                         <div class="card-head" style="margin-bottom:4px">Current Plan</div>
-                        <div style="font-size:13px"><span style="font-weight:600" id="sdk-plan-name">Open</span> · <span style="color:var(--text-muted)" id="sdk-plan-rate">1 request / hour</span></div>
-                        <div style="font-size:11px;color:var(--text-muted);margin-top:4px" id="sdk-plan-calls">0 / 10 calls used</div>
+                        <div style="font-size:13px"><span style="font-weight:600" id="sdk-plan-name">Open</span> · <span style="color:var(--text-muted)" id="sdk-plan-rate">10 evals / hour</span></div>
+                        <div style="font-size:11px;color:var(--text-muted);margin-top:4px" id="sdk-plan-calls">0 / 50 calls used today</div>
                     </div>
                     <button class="btn-upgrade" id="sdk-upgrade-btn" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))" style="font-size:12px;padding:8px 20px">Upgrade →</button>
                 </div>
@@ -1751,7 +1751,7 @@ print(report.improvement)  <span style="color:var(--text-muted)"># error_reducti
             <div class="section-block" id="subscription-block">
                 <div class="section-label">Subscription</div>
                 <div id="subscription-none">
-                    <p class="section-text">No active subscription. Using Free tier (1 request/hour).</p>
+                    <p class="section-text">No active subscription. Using Open tier (50 evaluations/day).</p>
                     <button class="btn-minimal" onclick="showPage('billing')">View Plans</button>
                 </div>
                 <div id="subscription-active" class="hidden">
@@ -1824,12 +1824,12 @@ print(report.improvement)  <span style="color:var(--text-muted)"># error_reducti
                 <div class="tier-card" id="card-free">
                     <div class="tier-name">Open</div>
                     <div class="tier-price">Free</div>
-                    <div class="tier-desc">Try ONTO on your model — see epistemic scores before you commit</div>
+                    <div class="tier-desc">Try ONTO on your model — see epistemic risk scores before you commit</div>
                     <ul class="tier-list">
                         <li>50 evaluations/day</li>
-                        <li>1 model</li>
+                        <li>Up to 5 models</li>
                         <li>Epistemic scoring (REP, EpCE, DLA)</li>
-                        <li>Basic reports</li>
+                        <li>JSON evaluation reports</li>
                     </ul>
                     <button class="btn-tier current" id="btn-free" disabled>Current</button>
                 </div>
@@ -1839,14 +1839,14 @@ print(report.improvement)  <span style="color:var(--text-muted)"># error_reducti
                     <div class="tier-name">Standard</div>
                     <div class="tier-price">$15,000<span>/year</span></div>
                     <div style="font-size:11px;color:var(--accent);margin-bottom:8px">or $1,500/month</div>
-                    <div class="tier-desc">Production epistemic grounding — GOLD v4.5 on every output</div>
+                    <div class="tier-desc">Production epistemic measurement — GOLD-backed scoring on every output</div>
                     <ul class="tier-list">
-                        <li>Unlimited evaluations</li>
-                        <li>Up to 5 models</li>
+                        <li>10,000 evaluations/day</li>
+                        <li>Up to 20 models</li>
                         <li>Real-time scoring</li>
-                        <li>GOLD v4.5 grounding</li>
                         <li>Ed25519 signed proof chain</li>
-                        <li>Compliance-ready reports</li>
+                        <li>Batch evaluation (up to 100)</li>
+                        <li>Model trends & comparison</li>
                     </ul>
                     <button class="btn-tier" id="btn-business" onclick="openSubscribeModal('business')">Select</button>
                 </div>
@@ -1858,10 +1858,10 @@ print(report.improvement)  <span style="color:var(--text-muted)"># error_reducti
                     <div class="tier-desc">ONTO CERTIFIED — publicly verifiable epistemic compliance</div>
                     <ul class="tier-list">
                         <li>Everything in Standard</li>
-                        <li>Unlimited models</li>
-                        <li>ONTO CERTIFIED badge</li>
-                        <li>Public verifiable proof chain</li>
-                        <li>Public registry listing</li>
+                        <li>Unlimited evaluations</li>
+                        <li>Up to 100 models</li>
+                        <li>Certification after evaluation</li>
+                        <li>Public proof verification</li>
                         <li>24-month audit trail</li>
                         <li>Dedicated support</li>
                     </ul>
@@ -1877,7 +1877,7 @@ print(report.improvement)  <span style="color:var(--text-muted)"># error_reducti
                     <div style="font-size:13px;font-weight:600;color:var(--text)">Grant Program</div>
                 </div>
                 <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;margin-bottom:12px">
-                    Free Standard access for independent researchers, early-stage startups, and nonprofit organizations whose work benefits society. Grant recipients receive the same infrastructure as paid Standard customers: unlimited evaluations, GOLD v4.5 grounding, signed proof chain. No restrictions, no watermarks.
+                    Free Standard access for independent researchers, early-stage startups, and nonprofit organizations whose work benefits society. Grant recipients receive the same infrastructure as paid Standard customers: 10,000 evaluations/day, signed proof chain, batch evaluation. No restrictions, no watermarks.
                 </div>
                 <div style="display:flex;align-items:center;gap:12px">
                     <a href="mailto:council@ontostandard.org" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Apply → council@ontostandard.org</a>
@@ -2172,10 +2172,10 @@ print(report.improvement)  <span style="color:var(--text-muted)"># error_reducti
             <div class="order-section">
                 <div class="form-section-title">Includes</div>
                 <div class="order-features" id="order-features">
-                    <div class="order-feature">Unlimited evaluations</div>
-                    <div class="order-feature">GOLD v4.5 grounding</div>
+                    <div class="order-feature">10,000 evaluations/day</div>
+                    <div class="order-feature">GOLD-backed scoring</div>
                     <div class="order-feature">Ed25519 signed proof chain</div>
-                    <div class="order-feature">Compliance-ready reports</div>
+                    <div class="order-feature">Batch evaluation</div>
                 </div>
             </div>
             <div class="order-section">
@@ -3016,7 +3016,7 @@ function updateDashboardMetrics() {
     const plan = currentUser.plan || 'free';
     
     const planNames = { free: 'Open', business: 'Standard', enterprise: 'Certified' };
-    const rateLimits = { free: '10/hr · 50/day', business: 'Unlimited', enterprise: 'Unlimited' };
+    const rateLimits = { free: '10/hr · 50/day', business: '420/hr · 10K/day', enterprise: 'Unlimited' };
     
     // Plan card
     const nameEl = document.getElementById('dash-plan-name');
@@ -3028,7 +3028,7 @@ function updateDashboardMetrics() {
     const switchSelect = document.getElementById('plan-switch');
     
     if (nameEl) nameEl.textContent = planNames[plan] || 'Open';
-    if (rateEl) rateEl.textContent = rateLimits[plan] || '1 request / hour';
+    if (rateEl) rateEl.textContent = rateLimits[plan] || '10 evals / hour';
     
     // Hide upgrade for paid plans
     if (upgradeBtn) upgradeBtn.style.display = plan === 'free' ? 'block' : 'none';
@@ -3067,8 +3067,8 @@ function updateDashboardMetrics() {
     if (includesEl) {
         const planIncludes = {
             free: 'Free: 1 eval/hr · 5 models · Public /check endpoint',
-            business: 'Pro: 10K eval/day · Unlimited models · Certification · Priority support',
-            enterprise: 'Certified: Rolling certification · Public registry · ONTO CERTIFIED badge · 24mo audit'
+            business: 'Standard: 10K eval/day · 20 models · Signed proofs · Batch evaluation',
+            enterprise: 'Certified: Unlimited evals · 100 models · Certification · 24mo audit · Dedicated support'
         };
         includesEl.textContent = planIncludes[plan] || planIncludes.free;
     }
@@ -3551,7 +3551,7 @@ function updateBillingUI() {
     document.getElementById('btn-enterprise').disabled = false;
     
     const planNames = { free: 'Open (Free)', business: 'Standard', enterprise: 'Certified' };
-    const rateLimits = { free: '1/hour', business: '1/8.64s', enterprise: 'Unlimited' };
+    const rateLimits = { free: '10/hr', business: '420/hr', enterprise: 'Unlimited' };
     
     // Update current plan indicator
     if (currentUser.plan === 'free' || !currentUser.subscription) {
@@ -3630,8 +3630,8 @@ function updateOrderSummary() {
     const planNames = { business: 'Standard', enterprise: 'Certified' };
     const planName = planNames[selectedPlan] || selectedPlan;
     const planFeatures = {
-        business: ['Unlimited evaluations', 'Up to 5 models', 'Real-time scoring', 'GOLD v4.5 grounding', 'Ed25519 signed proof chain', 'Compliance-ready reports'],
-        enterprise: ['Everything in Standard', 'Unlimited models', 'ONTO CERTIFIED badge', 'Public verifiable proof chain', '24-month audit trail', 'Dedicated support']
+        business: ['10,000 evaluations/day', 'Up to 20 models', 'Real-time scoring', 'Ed25519 signed proof chain', 'Batch evaluation (up to 100)', 'Model trends & comparison'],
+        enterprise: ['Everything in Standard', 'Unlimited evaluations', 'Up to 100 models', 'Certification after evaluation', 'Public proof verification', '24-month audit trail', 'Dedicated support']
     };
     const featuresEl = document.getElementById('order-features');
     featuresEl.innerHTML = (planFeatures[selectedPlan]||[]).map(f => '<div class="order-feature">'+f+'</div>').join('');
@@ -5264,14 +5264,14 @@ function updateSdkPage() {
     if (!currentUser) return;
     const plan = currentUser.plan || 'free';
     const planNames = { free: 'Open', business: 'Standard', enterprise: 'Certified' };
-    const rateLimits = { free: '10/hr · 50/day', business: 'Unlimited', enterprise: 'Unlimited' };
+    const rateLimits = { free: '10/hr · 50/day', business: '420/hr · 10K/day', enterprise: 'Unlimited' };
     
     const nameEl = document.getElementById('sdk-plan-name');
     const rateEl = document.getElementById('sdk-plan-rate');
     const callsEl = document.getElementById('sdk-plan-calls');
     const upgradeBtn = document.getElementById('sdk-upgrade-btn');
     if (nameEl) nameEl.textContent = planNames[plan] || 'Open';
-    if (rateEl) rateEl.textContent = rateLimits[plan] || '1 request / hour';
+    if (rateEl) rateEl.textContent = rateLimits[plan] || '10 evals / hour';
     if (upgradeBtn) upgradeBtn.style.display = plan === 'free' ? 'inline-block' : 'none';
     
     const realApiKey = localStorage.getItem('onto_first_api_key');
