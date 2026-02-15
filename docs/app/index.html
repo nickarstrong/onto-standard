@@ -938,7 +938,7 @@ a.info-val:hover { color: var(--text); }
                 <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
                     <div>
                         <div style="font-size:15px;font-weight:600;margin-bottom:4px">Welcome to ONTO</div>
-                        <div style="font-size:12px;color:var(--text-secondary)">The epistemic risk standard for AI. Get your first rolling marker in under a minute.</div>
+                        <div style="font-size:12px;color:var(--text-secondary)">Epistemic grounding for AI. Score your first model output in under a minute.</div>
                     </div>
                     <button onclick="dismissWelcome()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px;font-size:16px;line-height:1">&times;</button>
                 </div>
@@ -951,16 +951,16 @@ a.info-val:hover { color: var(--text); }
                     <div style="padding:14px;border:1px solid var(--border);border-radius:6px;background:var(--bg)">
                         <div style="font-size:20px;margin-bottom:6px;opacity:0.6">②</div>
                         <div style="font-size:12px;font-weight:600;margin-bottom:4px">Evaluate outputs</div>
-                        <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Paste AI-generated text below. Each evaluation feeds the Proof of Chain — signed with Ed25519.</div>
+                        <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Paste AI-generated text below. Each evaluation is scored against GOLD v4.5 and signed with Ed25519.</div>
                     </div>
                     <div style="padding:14px;border:1px solid var(--border);border-radius:6px;background:var(--bg)">
                         <div style="font-size:20px;margin-bottom:6px;opacity:0.6">③</div>
-                        <div style="font-size:12px;font-weight:600;margin-bottom:4px">Rolling marker</div>
-                        <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Your marker (L1→L2→L3) recalculates with every eval. <strong>Audit Trail</strong> records cryptographic snapshots of model state.</div>
+                        <div style="font-size:12px;font-weight:600;margin-bottom:4px">Track improvement</div>
+                        <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Monitor your model's epistemic scores over time. <strong>Audit Trail</strong> records cryptographic snapshots of every evaluation.</div>
                     </div>
                 </div>
                 <div style="margin-top:14px;padding:10px 12px;background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.1);border-radius:4px;font-size:11px;color:var(--text-secondary);line-height:1.5">
-                    <strong style="color:var(--text)">How it works:</strong> Open = diagnostic (limited evals, 5 manual snapshots). Standard ($15K/yr) = unlimited evals, auto-snapshots, drift alerts. Critical ($100K+/yr) = multi-model, regulatory reports, dedicated support.
+                    <strong style="color:var(--text)">How it works:</strong> Open = try it (50 evals/day, 1 model). Standard ($15K/yr) = production use, unlimited evals, up to 5 models, signed proofs. Certified ($100K+/yr) = public compliance, unlimited models, dedicated support.
                 </div>
                 <div style="margin-top:10px;display:flex;gap:12px;align-items:center">
                     <a href="/docs/" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Documentation →</a>
@@ -1811,14 +1811,12 @@ print(report.improvement)  <span style="color:var(--text-muted)"># error_reducti
                 <div class="tier-card" id="card-free">
                     <div class="tier-name">Open</div>
                     <div class="tier-price">Free</div>
-                    <div class="tier-desc">Diagnostic evaluation — see your AI's epistemic risk profile</div>
+                    <div class="tier-desc">Try ONTO on your model — see epistemic scores before you commit</div>
                     <ul class="tier-list">
                         <li>50 evaluations/day</li>
-                        <li>+1 hour signal delay</li>
-                        <li>1 model connection</li>
-                        <li>Informational markers only</li>
-                        <li>No ROOT connection</li>
-                        <li>No certification</li>
+                        <li>1 model</li>
+                        <li>Epistemic scoring (REP, EpCE, DLA)</li>
+                        <li>Basic reports</li>
                     </ul>
                     <button class="btn-tier current" id="btn-free" disabled>Current</button>
                 </div>
@@ -1828,14 +1826,14 @@ print(report.improvement)  <span style="color:var(--text-muted)"># error_reducti
                     <div class="tier-name">Standard</div>
                     <div class="tier-price">$15,000<span>/year</span></div>
                     <div style="font-size:11px;color:var(--accent);margin-bottom:8px">or $1,500/month</div>
-                    <div class="tier-desc">Permanent ROOT connection — continuous epistemic discipline</div>
+                    <div class="tier-desc">Production epistemic grounding — GOLD v4.5 on every output</div>
                     <ul class="tier-list">
                         <li>Unlimited evaluations</li>
-                        <li>Real-time entropy signal</li>
-                        <li>Up to 5 model connections</li>
-                        <li>−95% epistemic risk</li>
-                        <li>Internal proof chain</li>
-                        <li>Rolling marker L1/L2/L3</li>
+                        <li>Up to 5 models</li>
+                        <li>Real-time scoring</li>
+                        <li>GOLD v4.5 grounding</li>
+                        <li>Ed25519 signed proof chain</li>
+                        <li>Compliance-ready reports</li>
                     </ul>
                     <button class="btn-tier" id="btn-business" onclick="openSubscribeModal('business')">Select</button>
                 </div>
@@ -1847,7 +1845,7 @@ print(report.improvement)  <span style="color:var(--text-muted)"># error_reducti
                     <div class="tier-desc">ONTO CERTIFIED — publicly verifiable epistemic compliance</div>
                     <ul class="tier-list">
                         <li>Everything in Standard</li>
-                        <li>Unlimited model connections</li>
+                        <li>Unlimited models</li>
                         <li>ONTO CERTIFIED badge</li>
                         <li>Public verifiable proof chain</li>
                         <li>Public registry listing</li>
@@ -1866,7 +1864,7 @@ print(report.improvement)  <span style="color:var(--text-muted)"># error_reducti
                     <div style="font-size:13px;font-weight:600;color:var(--text)">Grant Program</div>
                 </div>
                 <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;margin-bottom:12px">
-                    Free Standard access for independent researchers, early-stage startups, and nonprofit organizations whose work benefits society. Grant recipients receive the same infrastructure as paid Standard customers: permanent ROOT connection, unlimited evaluations, real-time entropy signal. No restrictions, no watermarks.
+                    Free Standard access for independent researchers, early-stage startups, and nonprofit organizations whose work benefits society. Grant recipients receive the same infrastructure as paid Standard customers: unlimited evaluations, GOLD v4.5 grounding, signed proof chain. No restrictions, no watermarks.
                 </div>
                 <div style="display:flex;align-items:center;gap:12px">
                     <a href="mailto:council@ontostandard.org" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Apply → council@ontostandard.org</a>
@@ -2162,9 +2160,9 @@ print(report.improvement)  <span style="color:var(--text-muted)"># error_reducti
                 <div class="form-section-title">Includes</div>
                 <div class="order-features" id="order-features">
                     <div class="order-feature">Unlimited evaluations</div>
-                    <div class="order-feature">Real-time Proof of Chain</div>
-                    <div class="order-feature">Rolling marker L1/L2/L3</div>
-                    <div class="order-feature">Internal diagnostics</div>
+                    <div class="order-feature">GOLD v4.5 grounding</div>
+                    <div class="order-feature">Ed25519 signed proof chain</div>
+                    <div class="order-feature">Compliance-ready reports</div>
                 </div>
             </div>
             <div class="order-section">
@@ -3614,7 +3612,7 @@ function updateOrderSummary() {
     const planNames = { business: 'Standard', enterprise: 'Certified' };
     const planName = planNames[selectedPlan] || selectedPlan;
     const planFeatures = {
-        business: ['Permanent ROOT connection', 'Unlimited evaluations', 'Real-time entropy signal', 'Up to 5 models', '−95% epistemic risk'],
+        business: ['Unlimited evaluations', 'Up to 5 models', 'Real-time scoring', 'GOLD v4.5 grounding', 'Ed25519 signed proof chain', 'Compliance-ready reports'],
         enterprise: ['Everything in Standard', 'Unlimited models', 'ONTO CERTIFIED badge', 'Public verifiable proof chain', '24-month audit trail', 'SLA 99.99%']
     };
     const featuresEl = document.getElementById('order-features');
