@@ -224,7 +224,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Ar
 .btn-danger-outline { padding: 8px 14px; font-size: 12px; font-weight: 500; background: transparent; border: 1px solid var(--danger); border-radius: 6px; color: var(--danger); cursor: pointer; transition: all 0.15s; }
 .btn-danger-outline:hover { background: rgba(239, 68, 68, 0.08); }
 
-.code-block { background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 1.5; overflow-x: auto; margin: 0; max-width: 100%; box-sizing: border-box; }
+.code-block { background: #0c0f14; color: #e2e8f0; padding: 12px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 1.5; overflow-x: auto; margin: 0; max-width: 100%; box-sizing: border-box; }
 pre { max-width: 100%; overflow-x: auto; }
 
 /* Info Rows */
@@ -479,7 +479,7 @@ a.info-val:hover { color: var(--text); }
 .docs-article th { background: var(--bg-elevated); padding: 8px 10px; text-align: left; font-weight: 500; border: 1px solid var(--border); font-size: 11px; }
 .docs-article td { padding: 8px 10px; border: 1px solid var(--border); }
 .docs-article code { background: var(--bg-elevated); padding: 2px 5px; border-radius: 3px; font-size: 11px; font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace; }
-.docs-article pre { background: #1e293b; color: #e2e8f0; padding: 14px; border-radius: 6px; overflow-x: auto; margin: 12px 0; font-size: 11px; line-height: 1.5; max-width: 100%; box-sizing: border-box; }
+.docs-article pre { background: #0c0f14; color: #e2e8f0; padding: 14px; border-radius: 6px; overflow-x: auto; margin: 12px 0; font-size: 11px; line-height: 1.5; max-width: 100%; box-sizing: border-box; }
 .docs-article pre code { background: none; padding: 0; color: inherit; }
 .docs-article blockquote { border-left: 2px solid var(--border); padding: 10px 16px; background: var(--bg-elevated); margin: 12px 0; border-radius: 0 4px 4px 0; }
 .docs-article blockquote p { margin: 0; font-size: 12px; color: var(--text-secondary); }
@@ -729,7 +729,7 @@ a.info-val:hover { color: var(--text); }
 .welcome-actions { display: flex; align-items: center; gap: 8px; }
 .welcome-dismiss { background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; padding: 4px 8px; line-height: 1; }
 .welcome-dismiss:hover { color: var(--text); }
-.code { background: #1e293b; color: #e2e8f0; padding: 14px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6; overflow-x: auto; margin: 0; max-width: 100%; box-sizing: border-box; }
+.code { background: #0c0f14; color: #e2e8f0; padding: 14px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6; overflow-x: auto; margin: 0; max-width: 100%; box-sizing: border-box; }
 
 /* ============================================
    SKELETON
@@ -1569,18 +1569,60 @@ a.info-val:hover { color: var(--text); }
             <!-- CONNECT -->
             <div style="margin-bottom:20px">
                 <div style="font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Integration</div>
-                <div style="padding:20px;background:var(--accent-subtle);border:1px solid rgba(21,128,61,0.25);border-radius:6px;cursor:pointer;transition:all 0.2s" onclick="showAddModelModal()" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(21,128,61,0.25)'">
-                    <div style="display:flex;align-items:center;justify-content:space-between">
-                        <div style="display:flex;align-items:center;gap:20px">
-                            <div style="width:48px;height:48px;border-radius:50%;border:2.5px solid var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(21,128,61,0.08)">
-                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="var(--accent)" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                            </div>
-                            <div>
-                                <div style="font-size:15px;font-weight:600;color:var(--text)">Connect model to ONTO</div>
-                                <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;line-height:1.5">Provide API key → proxy routes requests through GOLD → Ed25519 certificate issued → verifiable at ontostandard.org/verify</div>
-                            </div>
+                <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;overflow:hidden">
+                    <div style="padding:16px 20px;border-bottom:1px solid var(--border)">
+                        <div style="font-size:14px;font-weight:600;margin-bottom:4px">One line change</div>
+                        <div style="font-size:11px;color:var(--text-secondary);line-height:1.5">Replace your provider's base URL with the ONTO proxy endpoint. GOLD is injected server-side on every request. No SDK required. No model retraining. Certificate issued automatically upon first request.</div>
+                    </div>
+
+                    <!-- Code -->
+                    <div style="padding:16px 20px;background:#0c0f14;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7;overflow-x:auto">
+                        <div style="color:var(--text-muted);margin-bottom:8px"># Before (direct to provider):</div>
+                        <div><span style="color:#e2e8f0">client</span> <span style="color:var(--text-muted)">=</span> <span style="color:#22c55e">OpenAI</span>(<span style="color:rgba(34,197,94,0.7)">api_key</span>=<span style="color:#4ade80">"sk-..."</span>)</div>
+                        <div style="height:12px"></div>
+                        <div style="color:var(--text-muted);margin-bottom:8px"># After (through ONTO proxy — GOLD injected server-side):</div>
+                        <div><span style="color:#e2e8f0">client</span> <span style="color:var(--text-muted)">=</span> <span style="color:#22c55e">OpenAI</span>(</div>
+                        <div style="padding-left:24px"><span style="color:rgba(34,197,94,0.7)">api_key</span>=<span style="color:#4ade80">"onto_sk_..."</span>,</div>
+                        <div style="padding-left:24px"><span style="color:rgba(34,197,94,0.7)">base_url</span>=<span style="color:#4ade80">"https://api.ontostandard.org/v1/proxy"</span></div>
+                        <div>)</div>
+                        <div style="height:12px"></div>
+                        <div style="color:var(--text-muted)"># Everything else stays the same</div>
+                        <div><span style="color:#e2e8f0">response</span> <span style="color:var(--text-muted)">=</span> <span style="color:#e2e8f0">client</span>.<span style="color:#e2e8f0">chat</span>.<span style="color:#e2e8f0">completions</span>.<span style="color:#22c55e">create</span>(</div>
+                        <div style="padding-left:24px"><span style="color:rgba(34,197,94,0.7)">model</span>=<span style="color:#4ade80">"gpt-4o"</span>,</div>
+                        <div style="padding-left:24px"><span style="color:rgba(34,197,94,0.7)">messages</span>=[{<span style="color:#4ade80">"role"</span>: <span style="color:#4ade80">"user"</span>, <span style="color:#4ade80">"content"</span>: <span style="color:#4ade80">"your question"</span>}]</div>
+                        <div>)</div>
+                    </div>
+
+                    <!-- What happens -->
+                    <div style="padding:12px 20px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1px">
+                        <div style="text-align:center;padding:4px">
+                            <div style="font-size:12px;color:var(--accent)">✓</div>
+                            <div style="font-size:8px;color:var(--text-muted);margin-top:1px">GOLD injected</div>
                         </div>
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
+                        <div style="text-align:center;padding:4px">
+                            <div style="font-size:12px;color:var(--accent)">✓</div>
+                            <div style="font-size:8px;color:var(--text-muted);margin-top:1px">Certificate issued</div>
+                        </div>
+                        <div style="text-align:center;padding:4px">
+                            <div style="font-size:12px;color:var(--accent)">✓</div>
+                            <div style="font-size:8px;color:var(--text-muted);margin-top:1px">Hash generated</div>
+                        </div>
+                        <div style="text-align:center;padding:4px">
+                            <div style="font-size:12px;color:var(--accent)">✓</div>
+                            <div style="font-size:8px;color:var(--text-muted);margin-top:1px">Publicly verifiable</div>
+                        </div>
+                    </div>
+
+                    <!-- API key -->
+                    <div style="padding:12px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <span style="font-size:10px;color:var(--text-muted)">Your API key:</span>
+                            <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-secondary);background:#0c0f14;padding:3px 8px;border-radius:3px;border:1px solid var(--border)">onto_sk_••••••••••••</code>
+                        </div>
+                        <div style="display:flex;gap:6px">
+                            <button onclick="copyApiKey()" style="background:none;border:1px solid var(--border);border-radius:3px;padding:3px 10px;font-size:9px;color:var(--text-muted);cursor:pointer;font-family:'Inter',sans-serif" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">Copy key</button>
+                            <a href="#" onclick="showPage('api');return false" style="font-size:9px;color:var(--text-muted);text-decoration:none;padding:3px 10px;border:1px solid var(--border);border-radius:3px" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-muted)'">Full docs →</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1804,33 +1846,33 @@ a.info-val:hover { color: var(--text); }
             <div class="dash-card-clean" style="margin-bottom:16px">
                 <div class="card-head" style="margin-bottom:12px">Quick Start</div>
                 <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Use ONTO Proxy (one line change)</div>
-                <pre style="background:#1e293b;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:16px;overflow-x:auto;line-height:1.6"><code><span style="color:#94a3b8"># Before (direct to OpenAI):</span>
-client = OpenAI(api_key=<span style="color:#fde68a">"sk-..."</span>)
+                <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:16px;overflow-x:auto;line-height:1.6"><code><span style="color:var(--text-muted)"># Before (direct to OpenAI):</span>
+client = OpenAI(api_key=<span style="color:#4ade80">"sk-..."</span>)
 
-<span style="color:#94a3b8"># After (through ONTO proxy — GOLD injected server-side):</span>
+<span style="color:var(--text-muted)"># After (through ONTO proxy — GOLD injected server-side):</span>
 client = OpenAI(
-    api_key=<span style="color:#fde68a">"onto_sk_..."</span>,
-    base_url=<span style="color:#fde68a">"https://api.ontostandard.org/v1/proxy"</span>
+    api_key=<span style="color:#4ade80">"onto_sk_..."</span>,
+    base_url=<span style="color:#4ade80">"https://api.ontostandard.org/v1/proxy"</span>
 )
 
-<span style="color:#94a3b8"># Everything else stays the same</span>
+<span style="color:var(--text-muted)"># Everything else stays the same</span>
 response = client.chat.completions.create(
-    model=<span style="color:#fde68a">"gpt-4o"</span>,
-    messages=[{<span style="color:#fde68a">"role"</span>: <span style="color:#fde68a">"user"</span>, <span style="color:#fde68a">"content"</span>: <span style="color:#fde68a">"Your question"</span>}]
+    model=<span style="color:#4ade80">"gpt-4o"</span>,
+    messages=[{<span style="color:#4ade80">"role"</span>: <span style="color:#4ade80">"user"</span>, <span style="color:#4ade80">"content"</span>: <span style="color:#4ade80">"Your question"</span>}]
 )</code></pre>
                 <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Run Evaluation</div>
-                <pre style="background:#1e293b;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:16px;overflow-x:auto;line-height:1.6"><code><span style="color:#7dd3fc">import</span> onto
+                <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:16px;overflow-x:auto;line-height:1.6"><code><span style="color:#22c55e">import</span> onto
 
-client = onto.Client(api_key=<span style="color:#fde68a">"onto_sk_..."</span>)
+client = onto.Client(api_key=<span style="color:#4ade80">"onto_sk_..."</span>)
 
-<span style="color:#94a3b8"># Runs 100 Q baseline + 100 Q with GOLD → before/after report</span>
-report = client.evaluate(model_id=<span style="color:#fde68a">"your-model-id"</span>)
+<span style="color:var(--text-muted)"># Runs 100 Q baseline + 100 Q with GOLD → before/after report</span>
+report = client.evaluate(model_id=<span style="color:#4ade80">"your-model-id"</span>)
 
-print(report.baseline)     <span style="color:#94a3b8"># 0.53 (Grade D)</span>
-print(report.treatment)    <span style="color:#94a3b8"># 5.38 (Grade A-)</span>
-print(report.improvement)  <span style="color:#94a3b8"># error_reduction: 75%</span></code></pre>
+print(report.baseline)     <span style="color:var(--text-muted)"># 0.53 (Grade D)</span>
+print(report.treatment)    <span style="color:var(--text-muted)"># 5.38 (Grade A-)</span>
+print(report.improvement)  <span style="color:var(--text-muted)"># error_reduction: 75%</span></code></pre>
                 <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">cURL</div>
-                <pre style="background:#1e293b;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;overflow-x:auto;line-height:1.6"><code>curl -X POST https://api.ontostandard.org/v1/models/evaluate \
+                <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;overflow-x:auto;line-height:1.6"><code>curl -X POST https://api.ontostandard.org/v1/models/evaluate \
   -H "x-api-key: onto_sk_..." \
   -H "Content-Type: application/json" \
   -d '{"output": "AI response text", "domain": "general"}'</code></pre>
