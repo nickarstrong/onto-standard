@@ -1587,110 +1587,85 @@ a.info-val:hover { color: var(--text); }
                 </div>
             </div>
 
-            <!-- ONTO VERIFIED CERTIFICATE -->
-            <div style="margin-bottom:20px">
-                <div style="font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">ONTO Verified</div>
-
-                <!-- Certificate -->
-                <div id="erm-cert-section" style="background:var(--bg-card);border:1px solid rgba(21,128,61,0.3);border-radius:8px;overflow:hidden">
-                    <!-- Accent stripe -->
-                    <div style="height:3px;background:linear-gradient(90deg,var(--accent),rgba(21,128,61,0.3))"></div>
-
-                    <div style="padding:24px">
-                        <!-- Header -->
-                        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
-                            <div>
-                                <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-                                    <svg viewBox="0 0 32 32" width="20" height="20"><rect x="2" y="2" width="28" height="28" rx="4" fill="none" stroke="var(--accent)" stroke-width="2.5"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="var(--accent)"/></svg>
-                                    <span style="font-size:14px;font-weight:700;letter-spacing:2px;color:var(--accent)">ONTO VERIFIED</span>
-                                </div>
-                                <div style="font-size:10px;color:var(--text-muted)">This model operates under ONTO GOLD epistemic discipline layer</div>
-                            </div>
-                            <div id="erm-cert-status" style="display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:4px;background:var(--accent-subtle);border:1px solid rgba(21,128,61,0.3)">
-                                <span style="width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite"></span>
-                                <span style="font-size:10px;font-weight:700;color:var(--accent);letter-spacing:1px">ACTIVE</span>
-                            </div>
-                        </div>
-
-                        <!-- Certificate body -->
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
-                            <div>
-                                <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Organization</div>
-                                <div id="erm-cert-org" style="font-size:16px;font-weight:600">Acme Corp</div>
-                                <div id="erm-cert-model" style="font-size:11px;color:var(--text-secondary);margin-top:2px">GPT-4o · OpenAI</div>
-                            </div>
-                            <div>
-                                <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Connected since</div>
-                                <div id="erm-cert-date" style="font-size:16px;font-weight:600;font-variant-numeric:tabular-nums">Feb 15, 2026</div>
-                                <div style="font-size:11px;color:var(--text-secondary);margin-top:2px">Proxy: active · GOLD: injected</div>
-                            </div>
-                        </div>
-
-                        <!-- Hash -->
-                        <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:14px 16px;margin-bottom:16px">
-                            <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Certificate Hash · Ed25519</div>
-                            <div id="erm-cert-hash" style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent);font-weight:500;word-break:break-all;line-height:1.6;letter-spacing:0.5px">a1b2c3d4e5f6...signing...7890abcd</div>
-                            <div style="display:flex;gap:16px;margin-top:8px;font-size:10px;color:var(--text-muted)">
-                                <span>Algorithm: Ed25519</span>
-                                <span>Packet: 104 bytes</span>
-                                <span>Chain: SHA-256</span>
-                                <span id="erm-cert-verify-url">ontostandard.org/c/ACM-2026-001</span>
-                            </div>
-                        </div>
-
-                        <!-- Verification input -->
-                        <div style="margin-bottom:16px">
-                            <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Verify certificate</div>
-                            <div style="display:flex;gap:8px">
-                                <input type="text" id="erm-verify-input" class="form-input" placeholder="Paste certificate hash to verify..." style="flex:1;padding:9px 12px;font-family:'JetBrains Mono',monospace;font-size:12px" oninput="ermVerifyHash(this.value)">
-                                <div id="erm-verify-result" style="width:40px;display:flex;align-items:center;justify-content:center;border-radius:4px;font-size:16px;transition:all 0.3s"></div>
-                            </div>
-                            <div id="erm-verify-msg" style="font-size:10px;margin-top:4px;min-height:16px"></div>
-                        </div>
-
-                        <!-- Status grid -->
-                        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-radius:6px;overflow:hidden">
-                            <div style="background:var(--bg-card);padding:10px 12px;text-align:center">
-                                <div style="font-size:14px;color:var(--accent)">✓</div>
-                                <div style="font-size:9px;color:var(--text-muted);margin-top:2px">PROXY</div>
-                            </div>
-                            <div style="background:var(--bg-card);padding:10px 12px;text-align:center">
-                                <div style="font-size:14px;color:var(--accent)">✓</div>
-                                <div style="font-size:9px;color:var(--text-muted);margin-top:2px">GOLD</div>
-                            </div>
-                            <div style="background:var(--bg-card);padding:10px 12px;text-align:center">
-                                <div style="font-size:14px;color:var(--accent)">✓</div>
-                                <div style="font-size:9px;color:var(--text-muted);margin-top:2px">SIGNATURE</div>
-                            </div>
-                            <div style="background:var(--bg-card);padding:10px 12px;text-align:center">
-                                <div style="font-size:14px;color:var(--accent)">✓</div>
-                                <div style="font-size:9px;color:var(--text-muted);margin-top:2px">CHAIN</div>
-                            </div>
-                        </div>
-
-                        <div style="font-size:9px;color:var(--text-muted);margin-top:10px;line-height:1.5">Like SSL: not "model is good" but "model is under epistemic discipline". Proxy disconnected → certificate suspended instantly → hash invalidated → notification sent.</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SIGNAL: NOTARY -->
+            <!-- SIGNAL: CERTIFICATE + VERIFICATION (unified) -->
             <div class="signal-panel" id="user-signal-panel">
                 <div class="signal-panel-grid"></div>
+
+                <!-- Header (always visible) -->
                 <div class="signal-header" style="cursor:pointer" onclick="toggleSignalPanel()">
                     <div class="signal-title-row">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent)"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-                        <span class="signal-title">Verification Status</span>
-                        <span style="font-size:11px;color:var(--text-muted);margin-left:8px">Cryptographic proof chain · Ed25519 signed</span>
+                        <span class="signal-title">ONTO VERIFIED</span>
+                        <span id="erm-sig-org" style="font-size:11px;color:rgba(255,255,255,0.5);margin-left:8px">Acme Corp · GPT-4o</span>
                     </div>
                     <div style="display:flex;align-items:center;gap:10px">
                         <div class="signal-live-indicator" id="user-signal-live">
                             <span class="signal-dot"></span>
-                            <span>LIVE</span>
+                            <span id="erm-sig-status-text">ACTIVE</span>
                         </div>
                         <svg id="signal-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--text-muted)" stroke-width="2" style="transition:transform 0.2s"><polyline points="6,9 12,15 18,9"/></svg>
                     </div>
                 </div>
+
+                <!-- Body (collapsible) -->
                 <div class="signal-body" id="signal-body-collapsible" style="display:none">
+
+                    <!-- Certificate -->
+                    <div style="display:grid;grid-template-columns:1fr auto;gap:20px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid rgba(34,197,94,0.15)">
+                        <div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                                <div>
+                                    <div style="font-size:8px;color:rgba(34,197,94,0.5);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">Organization</div>
+                                    <div style="font-size:14px;font-weight:600;color:#e2e8f0">Acme Corp</div>
+                                    <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:1px">GPT-4o · OpenAI</div>
+                                </div>
+                                <div>
+                                    <div style="font-size:8px;color:rgba(34,197,94,0.5);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">Connected since</div>
+                                    <div style="font-size:14px;font-weight:600;color:#e2e8f0;font-variant-numeric:tabular-nums">Feb 15, 2026</div>
+                                    <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:1px">Proxy: active · GOLD: injected</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- QR -->
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+                            <div id="erm-qr" style="width:80px;height:80px;background:white;border-radius:4px;display:flex;align-items:center;justify-content:center;position:relative">
+                                <canvas id="erm-qr-canvas" width="80" height="80"></canvas>
+                            </div>
+                            <div style="font-size:7px;color:rgba(34,197,94,0.5);text-transform:uppercase;letter-spacing:0.5px">Scan to verify</div>
+                        </div>
+                    </div>
+
+                    <!-- Hash -->
+                    <div style="background:rgba(0,0,0,0.3);border:1px solid rgba(34,197,94,0.15);border-radius:4px;padding:10px 12px;margin-bottom:12px">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                            <span style="font-size:8px;color:rgba(34,197,94,0.5);text-transform:uppercase;letter-spacing:0.5px">Certificate Hash · Ed25519</span>
+                            <div style="display:flex;gap:4px">
+                                <button onclick="ermCopyHash()" style="background:none;border:1px solid rgba(34,197,94,0.2);border-radius:3px;padding:2px 8px;font-size:9px;color:rgba(34,197,94,0.7);cursor:pointer;transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='rgba(34,197,94,0.2)';this.style.color='rgba(34,197,94,0.7)'">Copy</button>
+                                <button onclick="ermDownloadCert()" style="background:none;border:1px solid rgba(34,197,94,0.2);border-radius:3px;padding:2px 8px;font-size:9px;color:rgba(34,197,94,0.7);cursor:pointer;transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='rgba(34,197,94,0.2)';this.style.color='rgba(34,197,94,0.7)'">Download</button>
+                            </div>
+                        </div>
+                        <div id="erm-cert-hash" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);word-break:break-all;line-height:1.5;letter-spacing:0.3px">loading...</div>
+                        <div style="display:flex;gap:10px;margin-top:4px;font-size:8px;color:rgba(255,255,255,0.25)">
+                            <span>Ed25519</span><span>104 bytes</span><span>SHA-256</span><span id="erm-cert-url">ontostandard.org/c/ACM-2026-001</span>
+                        </div>
+                    </div>
+
+                    <!-- Verify -->
+                    <div style="margin-bottom:12px">
+                        <div style="display:flex;gap:6px">
+                            <input type="text" id="erm-verify-input" placeholder="Paste hash to verify..." style="flex:1;padding:7px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(0,0,0,0.3);border:1px solid rgba(34,197,94,0.15);border-radius:4px;color:#e2e8f0;outline:none" oninput="ermVerifyHash(this.value)">
+                            <div id="erm-verify-result" style="width:36px;display:flex;align-items:center;justify-content:center;border-radius:4px;font-size:16px"></div>
+                        </div>
+                        <div id="erm-verify-msg" style="font-size:9px;margin-top:3px;min-height:14px"></div>
+                    </div>
+
+                    <!-- Warning -->
+                    <div style="background:rgba(234,179,8,0.08);border:1px solid rgba(234,179,8,0.2);border-radius:4px;padding:8px 10px;margin-bottom:14px;display:flex;align-items:center;gap:8px">
+                        <span style="font-size:14px">⚠</span>
+                        <span style="font-size:10px;color:#eab308;line-height:1.4">Always verify certificate validity before relying on ONTO VERIFIED status. Proxy disconnected → certificate suspended instantly → hash invalidated.</span>
+                    </div>
+
+                    <!-- Signal metrics -->
                     <div class="signal-main-row">
                         <div class="signal-id-block">
                             <div class="signal-id" id="user-signal-id"><div class="signal-skeleton-id"></div></div>
@@ -1709,11 +1684,19 @@ a.info-val:hover { color: var(--text); }
                         <div class="signal-metric"><div class="signal-metric-value">104</div><div class="signal-metric-label">PACKET</div></div>
                         <div class="signal-metric"><div class="signal-metric-value">ED25519</div><div class="signal-metric-label">SIGNATURE</div></div>
                     </div>
+
+                    <!-- Status checks -->
+                    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(34,197,94,0.1);border-radius:4px;overflow:hidden;margin-top:12px">
+                        <div id="erm-check-proxy" style="background:rgba(0,0,0,0.3);padding:8px;text-align:center"><div style="font-size:13px;color:var(--accent)">✓</div><div style="font-size:8px;color:rgba(255,255,255,0.35);margin-top:1px">PROXY</div></div>
+                        <div id="erm-check-gold" style="background:rgba(0,0,0,0.3);padding:8px;text-align:center"><div style="font-size:13px;color:var(--accent)">✓</div><div style="font-size:8px;color:rgba(255,255,255,0.35);margin-top:1px">GOLD</div></div>
+                        <div id="erm-check-sig" style="background:rgba(0,0,0,0.3);padding:8px;text-align:center"><div style="font-size:13px;color:var(--accent)">✓</div><div style="font-size:8px;color:rgba(255,255,255,0.35);margin-top:1px">SIGNATURE</div></div>
+                        <div id="erm-check-chain" style="background:rgba(0,0,0,0.3);padding:8px;text-align:center"><div style="font-size:13px;color:var(--accent)">✓</div><div style="font-size:8px;color:rgba(255,255,255,0.35);margin-top:1px">CHAIN</div></div>
+                    </div>
                 </div>
             </div>
 
             <!-- Footer -->
-            <div style="padding:10px 0;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);margin-top:8px">
+            <div style="padding:10px 0;display:flex;justify-content:space-between;align-items:center;margin-top:8px">
                 <span style="font-size:9px;color:var(--text-muted)">ONTO-SPEC v1.0 · ontostandard.org/verify</span>
                 <span style="font-size:9px;color:var(--text-muted)">ONTO does not guarantee accuracy. Not responsible for decisions made by AI systems or their operators.</span>
             </div>
@@ -5365,57 +5348,137 @@ function ermVerifyHash(input) {
     }
     if (!ermProxyActive) {
         result.innerHTML = '✕';
-        result.style.background = 'var(--danger-subtle)';
-        result.style.color = 'var(--danger)';
-        msg.innerHTML = '<span style="color:var(--danger)">Certificate suspended — proxy disconnected</span>';
+        result.style.background = 'rgba(220,38,38,0.15)';
+        result.style.color = '#ef4444';
+        msg.innerHTML = '<span style="color:#ef4444">Certificate suspended — proxy disconnected</span>';
         return;
     }
     if (input.trim() === ermCertHash) {
         result.innerHTML = '✓';
-        result.style.background = 'var(--accent-subtle)';
-        result.style.color = 'var(--accent)';
-        msg.innerHTML = '<span style="color:var(--accent)">Valid — ONTO GOLD layer active since Feb 15, 2026</span>';
+        result.style.background = 'rgba(34,197,94,0.15)';
+        result.style.color = '#22c55e';
+        msg.innerHTML = '<span style="color:#22c55e">Valid — ONTO GOLD layer active since Feb 15, 2026</span>';
     } else {
         result.innerHTML = '✕';
-        result.style.background = 'var(--danger-subtle)';
-        result.style.color = 'var(--danger)';
-        msg.innerHTML = '<span style="color:var(--danger)">Invalid hash — certificate not found</span>';
+        result.style.background = 'rgba(220,38,38,0.15)';
+        result.style.color = '#ef4444';
+        msg.innerHTML = '<span style="color:#ef4444">Invalid hash — certificate not found</span>';
     }
+}
+
+function ermCopyHash() {
+    navigator.clipboard.writeText(ermCertHash).then(() => {
+        showToast('Hash copied to clipboard', 'success');
+    }).catch(() => {
+        const el = document.getElementById('erm-cert-hash');
+        if (el) { const r = document.createRange(); r.selectNodeContents(el); const s = window.getSelection(); s.removeAllRanges(); s.addRange(r); document.execCommand('copy'); s.removeAllRanges(); }
+        showToast('Hash copied', 'success');
+    });
+}
+
+function ermDownloadCert() {
+    const cert = {
+        type: 'ONTO_VERIFIED_CERTIFICATE',
+        version: '1.0',
+        organization: 'Acme Corp',
+        model: 'GPT-4o',
+        provider: 'OpenAI',
+        connected_since: '2026-02-15T00:00:00Z',
+        proxy_status: ermProxyActive ? 'active' : 'suspended',
+        gold_layer: 'injected',
+        hash: ermCertHash,
+        algorithm: 'Ed25519',
+        packet_size: 104,
+        chain: 'SHA-256',
+        verify_url: 'https://ontostandard.org/c/ACM-2026-001',
+        disclaimer: 'Always verify certificate validity. ONTO does not guarantee accuracy. Not responsible for decisions made by AI systems or their operators.'
+    };
+    const blob = new Blob([JSON.stringify(cert, null, 2)], {type: 'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'onto-certificate-ACM-2026-001.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showToast('Certificate downloaded', 'success');
 }
 
 function ermSuspendCert() {
     ermProxyActive = false;
-    const status = document.getElementById('erm-cert-status');
+    const live = document.getElementById('user-signal-live');
     const hash = document.getElementById('erm-cert-hash');
-    if (status) {
-        status.style.background = 'var(--danger-subtle)';
-        status.style.borderColor = 'var(--danger)';
-        status.innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:var(--danger)"></span><span style="font-size:10px;font-weight:700;color:var(--danger);letter-spacing:1px">SUSPENDED</span>';
-    }
-    if (hash) hash.style.color = 'var(--danger)';
-    const section = document.getElementById('erm-cert-section');
-    if (section) section.style.borderColor = 'rgba(220,38,38,0.3)';
-    showToast('Certificate suspended — proxy disconnected', 'error');
+    const statusText = document.getElementById('erm-sig-status-text');
+    if (live) { live.querySelector('.signal-dot').style.background = '#ef4444'; live.querySelector('.signal-dot').style.boxShadow = '0 0 6px #ef4444'; }
+    if (statusText) { statusText.textContent = 'SUSPENDED'; statusText.style.color = '#ef4444'; }
+    if (hash) { hash.style.color = '#ef4444'; hash.style.textDecoration = 'line-through'; }
+    ['proxy','gold','sig','chain'].forEach(k => {
+        const el = document.getElementById('erm-check-' + k);
+        if (el) el.querySelector('div').innerHTML = '✕';
+        if (el) el.querySelector('div').style.color = '#ef4444';
+    });
+    const panel = document.getElementById('user-signal-panel');
+    if (panel) { panel.style.borderColor = 'rgba(220,38,38,0.3)'; panel.style.background = 'linear-gradient(135deg, #1a0a0a 0%, #180d0d 50%, #1a0a0a 100%)'; }
+    showToast('⚠ Certificate SUSPENDED — proxy disconnected. Clients notified.', 'error');
 }
 
 function ermRestoreCert() {
     ermProxyActive = true;
-    const status = document.getElementById('erm-cert-status');
+    const live = document.getElementById('user-signal-live');
     const hash = document.getElementById('erm-cert-hash');
-    if (status) {
-        status.style.background = 'var(--accent-subtle)';
-        status.style.borderColor = 'rgba(21,128,61,0.3)';
-        status.innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite"></span><span style="font-size:10px;font-weight:700;color:var(--accent);letter-spacing:1px">ACTIVE</span>';
-    }
-    if (hash) hash.style.color = 'var(--accent)';
-    const section = document.getElementById('erm-cert-section');
-    if (section) section.style.borderColor = 'rgba(21,128,61,0.3)';
+    const statusText = document.getElementById('erm-sig-status-text');
+    if (live) { live.querySelector('.signal-dot').style.background = '#22c55e'; live.querySelector('.signal-dot').style.boxShadow = '0 0 6px #22c55e, 0 0 12px rgba(34, 197, 94, 0.5)'; }
+    if (statusText) { statusText.textContent = 'ACTIVE'; statusText.style.color = ''; }
+    if (hash) { hash.style.color = 'var(--accent)'; hash.style.textDecoration = 'none'; }
+    ['proxy','gold','sig','chain'].forEach(k => {
+        const el = document.getElementById('erm-check-' + k);
+        if (el) el.querySelector('div').innerHTML = '✓';
+        if (el) el.querySelector('div').style.color = 'var(--accent)';
+    });
+    const panel = document.getElementById('user-signal-panel');
+    if (panel) { panel.style.borderColor = ''; panel.style.background = ''; }
     showToast('Certificate restored — proxy reconnected', 'success');
+}
+
+function ermDrawQR(canvas) {
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const s = canvas.width;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, s, s);
+    ctx.fillStyle = '#000000';
+    // Simplified QR pattern (visual placeholder — real QR from backend)
+    const grid = 21;
+    const cell = s / grid;
+    // Finder patterns (3 corners)
+    const drawFinder = (x, y) => {
+        ctx.fillRect(x*cell, y*cell, 7*cell, 7*cell);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect((x+1)*cell, (y+1)*cell, 5*cell, 5*cell);
+        ctx.fillStyle = '#000000';
+        ctx.fillRect((x+2)*cell, (y+2)*cell, 3*cell, 3*cell);
+    };
+    drawFinder(0, 0);
+    drawFinder(14, 0);
+    drawFinder(0, 14);
+    // Data modules (hash-derived pattern)
+    for (let i = 0; i < ermCertHash.length && i < 40; i++) {
+        const v = parseInt(ermCertHash[i], 16);
+        if (v > 7) {
+            const row = 8 + Math.floor(i / 8);
+            const col = 8 + (i % 8);
+            if (row < grid && col < grid) ctx.fillRect(col*cell, row*cell, cell, cell);
+        }
+    }
+    // Timing
+    for (let i = 8; i < 13; i += 2) {
+        ctx.fillRect(i*cell, 6*cell, cell, cell);
+        ctx.fillRect(6*cell, i*cell, cell, cell);
+    }
 }
 
 function initErmCert() {
     const hash = document.getElementById('erm-cert-hash');
     if (hash) hash.textContent = ermCertHash;
+    ermDrawQR(document.getElementById('erm-qr-canvas'));
 }
 
 // === EPISTEMIC RISK MONITOR ===
