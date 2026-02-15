@@ -250,12 +250,12 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <div class="dm"><span class="db-g bg-g">Phase 2 — Experimental</span><span class="db-g bg-b">Public Research Release</span><span>ONTO-ERS v10.0</span><span>Scoring Engine v3.0</span><span>GOLD v4.5</span></div>
 
 <h2>What Is ONTO</h2>
-<p>ONTO is a deterministic measurement standard for epistemic risk in AI systems. It provides a reproducible computational framework that quantifies the gap between what AI claims to know and what it actually knows.</p>
-<p>ONTO is not a benchmark, leaderboard, ethics framework, or content filter. It is a scientific instrument — a formal measurement protocol calibrated against a reference corpus of known epistemic ground truth.</p>
+<p>ONTO is a deterministic measurement and grounding standard for epistemic risk in AI systems. It provides a reproducible computational framework that quantifies the gap between what AI claims to know and what it actually knows — and grounds every output against verified epistemic reference standards.</p>
+<p>ONTO is not a benchmark, leaderboard, ethics framework, or content filter. It is epistemic infrastructure — a formal protocol that both measures and strengthens AI epistemic discipline without modifying model weights or architecture.</p>
 
 <h2>Why It Exists</h2>
 <p>AI systems generate confident output with no internal signal for epistemic integrity. Enterprises deploy models into regulated domains — healthcare, finance, legal, defense — without knowing when output is fabricated. There is no standardized way to measure this.</p>
-<p>Existing frameworks (NIST AI RMF, ISO 42001) define <em>what</em> to manage and <em>how</em> to govern, but not <em>what the number is</em>. ONTO provides the deterministic measurement layer: three metrics, five marker levels, reproducible scoring.</p>
+<p>Existing frameworks (NIST AI RMF, ISO 42001) define <em>what</em> to manage and <em>how</em> to govern, but not <em>what the number is</em>. ONTO provides the deterministic measurement and grounding layer: three metrics, five marker levels, reproducible scoring, and active epistemic discipline through the GOLD v4.5 reference corpus.</p>
 
 <h2>How It Works</h2>
 <h3>Dual-Engine Architecture</h3>
@@ -546,7 +546,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
         </thead>
         <tbody>
             <tr>
-                <td style="font-weight:700">ONTO (with ROOT)</td>
+                <td style="font-weight:700">With ONTO grounding</td>
                 <td class="mono">0.41</td>
                 <td class="mono">0.96</td>
                 <td class="mono">0.58</td>
@@ -554,7 +554,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
                 <td class="mono">0.43</td>
             </tr>
             <tr>
-                <td>Claude 3</td>
+                <td>Model A (baseline)</td>
                 <td class="mono">0.45</td>
                 <td class="mono">0.09</td>
                 <td class="mono">0.15</td>
@@ -562,7 +562,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
                 <td class="mono">0.48</td>
             </tr>
             <tr>
-                <td>Llama 3</td>
+                <td>Model B (baseline)</td>
                 <td class="mono">0.20</td>
                 <td class="mono">0.01</td>
                 <td class="mono">0.02</td>
@@ -570,7 +570,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
                 <td class="mono">0.46</td>
             </tr>
             <tr>
-                <td>GPT-4</td>
+                <td>Model C (baseline)</td>
                 <td class="mono">0.10</td>
                 <td class="mono">0.01</td>
                 <td class="mono">0.02</td>
@@ -583,7 +583,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
     <p>The precision-recall tradeoff is intentional: ONTO prioritizes recall (catching unknowns) over precision. In high-stakes domains, a false positive (unnecessary uncertainty) is preferable to a false negative (undetected overconfidence).</p>
     <p style="font-size:11px;color:var(--text-m);">Demonstration data · ONTO-Bench v1.0 · 268 samples · Baseline models evaluated without ONTO grounding · Reproduction scripts: <a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a></p>
 
-    <div class="note-block"><strong>Why baseline U-Recall is low.</strong> LLMs are trained to produce fluent, helpful responses. The training objective rewards confident answers and does not penalize confident responses to unanswerable questions. Without explicit epistemic structure, models have no mechanism to recognize knowledge boundaries. ONTO provides that structure through the ROOT connection.</div>
+    <div class="note-block"><strong>Why baseline U-Recall is low.</strong> LLMs are trained to produce fluent, helpful responses. The training objective rewards confident answers and does not penalize confident responses to unanswerable questions. Without explicit epistemic structure, models have no mechanism to recognize knowledge boundaries. ONTO provides that structure through GOLD v4.5 grounding.</div>
 <h2>Compliance Grades &amp; Regulatory Alignment</h2>
 
     <table class="meth-table">
@@ -620,10 +620,10 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <h1>ONTO Epistemic Risk Standard (ONTO-ERS)</h1>
 <div class="dm"><span class="db-g bg-g">v10.0</span><span class="db-g bg-b">Published</span><span>ONTO-SPEC-001</span><span>January 2026</span></div>
 <h2 id="abstract">Abstract</h2>
-<p>This document specifies the ONTO Epistemic Risk Standard (ONTO-ERS), a framework for measuring and certifying the epistemic calibration of artificial intelligence systems.</p><hr/>
+<p>This document specifies the ONTO Epistemic Risk Standard (ONTO-ERS), a framework for measuring, grounding, and certifying the epistemic calibration of artificial intelligence systems. ONTO provides both deterministic measurement and active epistemic grounding through the GOLD v4.5 reference corpus.</p><hr/>
 <h2 id="introduction">1. Introduction</h2>
 <h3 id="purpose">1.1 Purpose</h3><p>ONTO-ERS provides a standardized approach for:</p>
-<ol><li>Quantifying epistemic risk in AI systems</li><li>Establishing compliance thresholds for deployment contexts</li><li>Certifying AI system calibration</li><li>Supporting regulatory compliance</li></ol>
+<ol><li>Quantifying epistemic risk in AI systems</li><li>Grounding AI outputs against verified epistemic reference standards</li><li>Establishing compliance thresholds for deployment contexts</li><li>Certifying AI system calibration</li><li>Supporting regulatory compliance</li></ol>
 <h3 id="scope">1.2 Scope</h3><p>This standard applies to AI systems that:</p>
 <ul><li>Generate natural language responses</li><li>Express confidence in outputs</li><li>Operate in domains with verification requirements</li><li>Are subject to regulatory oversight</li></ul>
 <h3 id="normative-references">1.3 Normative References</h3>
@@ -638,24 +638,26 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <tr><td><strong>KNOWN</strong></td><td>Question with established, verifiable answer</td></tr>
 <tr><td><strong>UNKNOWN</strong></td><td>Question with no established answer</td></tr>
 <tr><td><strong>CONTRADICTION</strong></td><td>Question with conflicting authoritative answers</td></tr>
+<tr><td><strong>Epistemic Grounding</strong></td><td>Calibration of AI outputs against verified reference standards (GOLD corpus)</td></tr>
 </tbody></table>
 <h3 id="scope-limitations">1.5 Scope and Limitations</h3>
-<blockquote><p><strong>"Thermometer, not Doctor"</strong> — ONTO measures epistemic calibration but does not improve, fix, or remediate AI systems.</p></blockquote>
+<blockquote><p><strong>Epistemic Infrastructure</strong> — ONTO measures and grounds AI systems against verified reference standards. It enhances epistemic discipline of AI outputs without modifying model weights or architecture.</p></blockquote>
 <h4>What ONTO Does</h4>
 <table><thead><tr><th>Function</th><th>Description</th></tr></thead><tbody>
 <tr><td>Measures Calibration (ECE)</td><td>Quantifies alignment between confidence and accuracy</td></tr>
 <tr><td>Measures Uncertainty (U-Recall)</td><td>Evaluates ability to recognize unknowns</td></tr>
 <tr><td>Computes Risk Score</td><td>Provides composite epistemic risk metric</td></tr>
-<tr><td>Issues Certificates</td><td>Cryptographically signs evaluation results (ED25519)</td></tr>
+<tr><td>Grounds Outputs (GOLD v4.5)</td><td>Every evaluation is calibrated against deterministic epistemic ground truth</td></tr>
+<tr><td>Issues Signed Proofs</td><td>Ed25519 cryptographic chain for every evaluation</td></tr>
 </tbody></table>
 <h4>What ONTO Does NOT Do</h4>
-<table><thead><tr><th>Limitation</th><th>Explanation</th></tr></thead><tbody>
-<tr><td>Does not improve models</td><td>ONTO is a measurement protocol, not a training tool</td></tr>
-<tr><td>Does not fix hallucinations</td><td>Remediation is the client's responsibility</td></tr>
-<tr><td>Does not guarantee quality</td><td>Certificate attests to calibration, not correctness</td></tr>
-<tr><td>Does not assume liability</td><td>Client retains responsibility for model deployment</td></tr>
+<table><thead><tr><th>Boundary</th><th>Explanation</th></tr></thead><tbody>
+<tr><td>Does not modify model weights</td><td>ONTO operates externally — no retraining, fine-tuning, or architecture changes</td></tr>
+<tr><td>Does not replace human judgment</td><td>ONTO provides metrics; deployment decisions remain with the client</td></tr>
+<tr><td>Does not guarantee correctness</td><td>Grounding reduces epistemic risk but does not eliminate it</td></tr>
+<tr><td>Does not assume liability</td><td>Client retains responsibility for model deployment and outcomes</td></tr>
 </tbody></table>
-<div class="dd"><strong>Important:</strong> ONTO certification confirms that an AI system's confidence expressions align with its empirical accuracy at the time of evaluation.</div><hr/>
+<div class="dd"><strong>Important:</strong> ONTO enhances AI epistemic discipline through external grounding infrastructure. It does not alter the model itself. Certification confirms that an AI system, when evaluated under ONTO-ERS, meets specified calibration thresholds at the time of evaluation.</div><hr/>
 <h2 id="core-metrics">2. Core Metrics</h2>
 <h3 id="u-recall">2.1 Unknown Detection Rate (U-Recall)</h3>
 <p>U-Recall measures the proportion of genuinely unanswerable questions correctly identified as unanswerable.</p>
@@ -781,7 +783,7 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <div class="ds da" id="doc-articles" data-nav="articles">
 <h1>Articles</h1>
 <div class="dm"><span class="db-g bg-g">Updated regularly</span></div>
-<div class="article-card"><h3>Why AI Needs a Thermometer, Not a Doctor</h3><div class="article-meta">ONTO Standards Council · January 2026</div><p>The AI industry is focused on making models smarter. ONTO focuses on making them measurable — providing a scientific instrument for epistemic calibration rather than attempting to fix what models produce.</p></div>
+<div class="article-card"><h3>Why AI Needs an Exoskeleton, Not a Diagnosis</h3><div class="article-meta">ONTO Standards Council · January 2026</div><p>The AI industry is focused on making models smarter. ONTO takes a different approach — providing epistemic infrastructure that both measures and grounds AI outputs, strengthening epistemic discipline without modifying the model itself.</p></div>
 <div class="article-card"><h3>Epistemic Risk: The Metric Nobody Is Tracking</h3><div class="article-meta">ONTO Standards Council · January 2026</div><p>Most AI monitoring tools focus on data drift and performance metrics. Epistemic risk — the gap between what a model claims to know and what it actually knows — remains unmeasured in production systems.</p></div>
 <div class="article-card"><h3>How Regulated Industries Can Prepare for the EU AI Act</h3><div class="article-meta">ONTO Standards Council · February 2026</div><p>The EU AI Act requires risk management, transparency, and conformity assessment. ONTO certification maps directly to Articles 9, 13, 15, and 43.</p></div>
 <p style="color:var(--text-m);font-size:12px;margin-top:20px">More articles coming. Subscribe: <a href="/cdn-cgi/l/email-protection#196a6c6969766b6d5976776d766a6d78777d786b7d37766b7e"><span class="__cf_email__" data-cfemail="54272124243b2620143b3a203b2720353a303526307a3b2633">[email&#160;protected]</span></a></p>
@@ -793,13 +795,13 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <div class="dm"><span class="db-g bg-g">Updated regularly</span></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is ONTO?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">ONTO is an independent protocol for measuring epistemic reliability of AI systems. We quantify when AI models are confident versus when they should express uncertainty — like ISO certification for how well an AI knows what it knows.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What does ONTO measure?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Three core metrics: U-Recall (detecting when AI doesn't know), ECE (confidence-accuracy alignment), and Risk Score (composite). These tell you if an AI's confidence is trustworthy.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Does ONTO fix my AI model?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">No. "Thermometer, not Doctor" — we measure and report, not modify. Remediation is the client's responsibility.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Does ONTO fix my AI model?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">ONTO does not modify model weights, retrain, or fine-tune. It provides epistemic grounding — every output is evaluated against GOLD v4.5, producing measurable improvement in epistemic discipline. The model itself remains unchanged; ONTO operates as external infrastructure.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How is ONTO different from other AI monitoring?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Most tools track data drift or performance. ONTO measures epistemic uncertainty — the gap between what AI claims to know and what it actually knows.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What industries is ONTO for?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Any industry deploying AI, with focus on regulated sectors: healthcare, finance, defense, aviation, pharma, insurance, legal, government.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is the free tier really free?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Yes. OPEN tier provides 1-hour delayed signal at no cost for testing and development. Real-time requires STANDARD or CRITICAL.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is the free tier really free?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Yes. Open tier provides 50 evaluations per day with epistemic scoring (REP, EpCE, DLA) at no cost. Upgrade to Standard for unlimited evaluations and real-time scoring.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does certification work?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Submit AI system → independent evaluation via ONTO-Bench → Standards Council review → certificate issued (12 months) → publicly verifiable.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Does ONTO help with EU AI Act?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">ONTO maps to Art. 9 (risk), Art. 13 (transparency), Art. 15 (accuracy), Art. 43 (conformity). Not a substitute for full compliance, but provides documented evidence.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is the entropy signal?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">A 104-byte cryptographically signed packet produced with each evaluation. Contains timestamp, entropy, and Ed25519 signature for tamper-proof verification.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is the entropy signal?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Every evaluation produces a cryptographically signed proof — timestamped, versioned, and tamper-proof using Ed25519 signatures. This is your audit trail: verifiable evidence that an evaluation was conducted at a specific time with specific results.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I try before committing?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Yes. Create a free account for OPEN tier access. Test the API, evaluate the workflow, then upgrade when ready.</div></div>
 </div><div class="sd"></div>
 
