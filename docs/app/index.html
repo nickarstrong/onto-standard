@@ -974,12 +974,12 @@ a.info-val:hover { color: var(--text); }
 .erm-headline { font-size:13px; font-weight:700; color:var(--text); }
 .erm-stats { display:flex; gap:16px; font-size:11px; margin-bottom:4px; }
 .erm-method { font-size:10px; font-family:'JetBrains Mono',monospace; color:var(--text-muted); }
-.erm-cta-block { padding:16px; margin-bottom:16px; background:var(--accent-subtle); border:1px solid rgba(21,128,61,0.2); border-radius:6px; cursor:pointer; transition:background 0.2s; }
-.erm-cta-block:hover { background:rgba(21,128,61,0.18); }
-.erm-cta-inner { display:flex; align-items:center; justify-content:space-between; }
-.erm-cta-plus { width:40px; height:40px; border-radius:50%; border:2px solid var(--accent); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.erm-zone { padding:20px 0; }
-.erm-zone.alt { background:var(--bg-secondary); border-radius:6px; padding:20px; margin-bottom:16px; border:1px solid var(--border); }
+.erm-zone { padding:24px 0; border-bottom:1px solid var(--border); }
+.erm-zone:last-of-type { border-bottom:none; }
+.erm-step-header { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+.erm-step-num { width:32px; height:32px; border-radius:50%; border:2px solid var(--accent); display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:700; color:var(--accent); flex-shrink:0; }
+.erm-step-title { font-size:16px; font-weight:600; letter-spacing:-0.2px; }
+.erm-step-sub { font-size:12px; color:var(--text-secondary); margin-top:2px; }
 .erm-section-label { font-size:10px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
 .erm-section-title { font-size:15px; font-weight:600; margin-bottom:14px; letter-spacing:-0.2px; }
 .erm-cat-tabs { display:flex; gap:4px; margin-bottom:10px; flex-wrap:wrap; }
@@ -1006,8 +1006,7 @@ a.info-val:hover { color: var(--text); }
 .erm-downloads { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1px; background:var(--border); border-radius:6px; overflow:hidden; }
 .erm-download-item { display:flex; justify-content:space-between; align-items:center; padding:9px 12px; background:var(--bg-card); text-decoration:none; cursor:pointer; transition:background 0.15s; }
 .erm-download-item:hover { background:var(--bg-elevated); }
-.erm-connect-wrap { text-align:center; margin-bottom:20px; }
-.erm-connect-form { background:var(--bg-card); border-radius:8px; border:1px solid rgba(21,128,61,0.3); padding:20px; max-width:520px; margin:0 auto; }
+.erm-connect-form { background:var(--bg-card); border-radius:8px; border:1px solid rgba(21,128,61,0.3); padding:20px; }
 .erm-connect-btn { width:100%; padding:10px; border-radius:4px; background:var(--accent); color:#fff; border:none; font-weight:600; font-size:14px; cursor:pointer; transition:opacity 0.15s; }
 .erm-connect-btn:hover { opacity:0.85; }
 .erm-steps { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1px; background:var(--border); border-radius:6px; overflow:hidden; margin-top:12px; }
@@ -1501,29 +1500,29 @@ a.info-val:hover { color: var(--text); }
                 <div class="erm-method">n=100 · regex scoring · zero AI judge · reproducible</div>
             </div>
 
-            <!-- CTA BLOCK -->
-            <div class="erm-cta-block" onclick="showAddModelModal()">
-                <div class="erm-cta-inner">
+            <!-- STEP 1: CONNECT -->
+            <div style="padding:16px;margin-bottom:0;background:var(--accent-subtle);border:1px solid rgba(21,128,61,0.2);border-radius:6px;cursor:pointer;transition:background 0.2s" onclick="showAddModelModal()" onmouseover="this.style.background='rgba(21,128,61,0.18)'" onmouseout="this.style.background='var(--accent-subtle)'">
+                <div style="display:flex;align-items:center;justify-content:space-between">
                     <div style="display:flex;align-items:center;gap:16px">
-                        <div class="erm-cta-plus">
-                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--accent)" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                        </div>
+                        <div class="erm-step-num">1</div>
                         <div>
                             <div style="font-size:16px;font-weight:700;color:var(--text)">Add your model</div>
-                            <div style="font-size:12px;color:var(--text-secondary);margin-top:2px">One API key → proxy active → epistemic discipline on every response</div>
+                            <div style="font-size:12px;color:var(--text-secondary);margin-top:2px">One API key → proxy active → GOLD on every response</div>
                         </div>
                     </div>
-                    <div style="display:flex;align-items:center;gap:10px">
-                        <span style="font-size:12px;color:var(--accent);font-weight:600">Avg. error reduction: 53%</span>
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
-                    </div>
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
                 </div>
             </div>
 
-            <!-- ZONE: EVIDENCE -->
-            <div class="erm-zone alt">
-                <div class="erm-section-label">Step 1 · See the risk reduction</div>
-                <div class="erm-section-title">Same model. Same question. Less epistemic risk.</div>
+            <!-- STEP 2: VERIFY -->
+            <div class="erm-zone">
+                <div class="erm-step-header">
+                    <div class="erm-step-num">2</div>
+                    <div>
+                        <div class="erm-step-title">Verify with your own eyes</div>
+                        <div class="erm-step-sub">Same model. Same question. Less epistemic risk.</div>
+                    </div>
+                </div>
 
                 <!-- Category tabs -->
                 <div class="erm-cat-tabs" id="erm-cat-tabs"></div>
@@ -1583,67 +1582,8 @@ a.info-val:hover { color: var(--text); }
                 </div>
             </div>
 
-            <!-- ZONE: CONNECT -->
-            <div class="erm-zone" id="erm-connect">
-                <div class="erm-connect-wrap">
-                    <div class="erm-section-label" style="color:var(--accent)">Step 2 · Connect</div>
-                    <div style="font-size:18px;font-weight:700;margin-bottom:4px">Measure your AI</div>
-                    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:16px">One API key → proxy active → GOLD injected into every request.<br>Improves epistemic quality of AI outputs. Does not guarantee accuracy.<br>ONTO is not responsible for decisions made by AI systems or their operators.</div>
-                </div>
-
-                <div class="erm-connect-form">
-                    <div style="display:grid;grid-template-columns:140px 1fr;gap:10px;margin-bottom:12px">
-                        <div>
-                            <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px">Provider</div>
-                            <select id="erm-provider" class="form-input" style="padding:9px 10px">
-                                <option value="openai">OpenAI</option>
-                                <option value="anthropic">Anthropic</option>
-                                <option value="google">Google (Gemini)</option>
-                                <option value="meta">Meta (Llama)</option>
-                                <option value="mistral">Mistral</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        <div>
-                            <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px">API Key</div>
-                            <input type="password" class="form-input" placeholder="sk-..." style="padding:9px 10px">
-                        </div>
-                    </div>
-                    <button class="erm-connect-btn" onclick="showAddModelModal()">Measure →</button>
-                    <div style="margin-top:8px;display:flex;justify-content:center;gap:16px;font-size:10px;color:var(--text-muted)">
-                        <span>AES-256 encrypted</span>
-                        <span>Instant activation</span>
-                        <span>Ed25519 signed</span>
-                    </div>
-                </div>
-
-                <div class="erm-steps">
-                    <div class="erm-step">
-                        <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
-                            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:700">1</span>
-                            <span style="font-size:11px;font-weight:600">Connect</span>
-                        </div>
-                        <div style="font-size:10px;color:var(--text-muted)">Enter provider API key. AES-256 encrypted.</div>
-                    </div>
-                    <div class="erm-step">
-                        <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
-                            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:700">2</span>
-                            <span style="font-size:11px;font-weight:600">Active</span>
-                        </div>
-                        <div style="font-size:10px;color:var(--text-muted)">GOLD injected server-side via proxy. Every request.</div>
-                    </div>
-                    <div class="erm-step">
-                        <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
-                            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:700">3</span>
-                            <span style="font-size:11px;font-weight:600">Certified</span>
-                        </div>
-                        <div style="font-size:10px;color:var(--text-muted)">ONTO layer active → compliance certificate issued.</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ZONE: CONTEXT -->
-            <div class="erm-zone alt">
+            <!-- CONTEXT -->
+            <div class="erm-zone">
                 <div class="erm-section-label">How GOLD works</div>
                 <div class="erm-gold-grid">
                     <div class="erm-gold-item">
@@ -1664,43 +1604,74 @@ a.info-val:hover { color: var(--text); }
                     </div>
                 </div>
 
-                <!-- Compliance -->
-                <div class="erm-section-label" style="margin-top:20px">Compliance requirements</div>
+                <!-- ONTO VERIFIED -->
+                <div class="erm-section-label" style="margin-top:20px">ONTO VERIFIED</div>
                 <div style="display:grid;grid-template-columns:1fr 200px;gap:16px">
                     <div>
-                        <div style="font-size:11px;font-weight:600;margin-bottom:8px">All thresholds must pass for ONTO Compliance Level A–B</div>
+                        <div style="font-size:11px;font-weight:600;margin-bottom:8px">Certificate = fact of connection, not a score</div>
                         <div class="erm-compliance-table">
-                            <div class="erm-compliance-row"><span style="color:var(--accent);font-size:14px">✓</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);font-weight:600">ERS</span><span style="color:var(--text-secondary)">Epistemic Risk Score ≤ 0.25</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:600">0.22</span></div>
-                            <div class="erm-compliance-row"><span style="color:var(--accent);font-size:14px">✓</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);font-weight:600">CAL</span><span style="color:var(--text-secondary)">Calibration error ≤ 0.20</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:600">0.14</span></div>
-                            <div class="erm-compliance-row"><span style="color:var(--accent);font-size:14px">✓</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);font-weight:600">OVC</span><span style="color:var(--text-secondary)">Over-confidence rate ≤ 15%</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:600">8%</span></div>
-                            <div class="erm-compliance-row"><span style="color:var(--accent);font-size:14px">✓</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);font-weight:600">SRC</span><span style="color:var(--text-secondary)">Source citation rate ≥ 60%</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:600">74%</span></div>
-                            <div class="erm-compliance-row"><span style="color:var(--accent);font-size:14px">✓</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);font-weight:600">UNC</span><span style="color:var(--text-secondary)">Uncertainty disclosure ≥ 70%</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:600">82%</span></div>
-                            <div class="erm-compliance-row"><span style="color:var(--accent);font-size:14px">✓</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);font-weight:600">VQP</span><span style="color:var(--text-secondary)">Vague qualifier penalty ≤ 5%</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:600">2%</span></div>
+                            <div class="erm-compliance-row"><span style="color:var(--accent);font-size:14px">✓</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);font-weight:600">PROXY</span><span style="color:var(--text-secondary)">Model connected through ONTO proxy</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:600">active</span></div>
+                            <div class="erm-compliance-row"><span style="color:var(--accent);font-size:14px">✓</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);font-weight:600">GOLD</span><span style="color:var(--text-secondary)">GOLD layer injected on every request</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:600">active</span></div>
+                            <div class="erm-compliance-row"><span style="color:var(--accent);font-size:14px">✓</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);font-weight:600">SIG</span><span style="color:var(--text-secondary)">Ed25519 cryptographic signature</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:600">valid</span></div>
+                            <div class="erm-compliance-row"><span style="color:var(--accent);font-size:14px">✓</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);font-weight:600">CHAIN</span><span style="color:var(--text-secondary)">Proof chain 104-byte packet verified</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:600">valid</span></div>
                         </div>
-                        <div style="font-size:9px;color:var(--text-muted);display:flex;gap:10px">
-                            <span>Public page · ontostandard.org/c/{id}</span>
-                            <span>Embeddable badge</span>
-                            <span>API verification</span>
-                            <span>PDF export</span>
-                        </div>
+                        <div style="font-size:9px;color:var(--text-muted);margin-top:6px">Like SSL: not "model is good" but "model is under discipline". Proxy off → certificate suspended.</div>
                     </div>
                     <div class="erm-cert-card">
                         <div class="erm-cert-stripe"></div>
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-                            <span style="font-size:9px;letter-spacing:1.5px;color:var(--accent);font-weight:600">COMPLIANCE: A</span>
+                            <span style="font-size:9px;letter-spacing:1.5px;color:var(--accent);font-weight:600">ONTO VERIFIED</span>
                             <span style="font-size:7px;color:var(--text-muted);border:1px solid var(--border);border-radius:2px;padding:1px 4px;text-transform:uppercase">Example</span>
                         </div>
                         <div style="font-size:13px;font-weight:600;margin-bottom:2px">Acme Corp</div>
-                        <div style="font-size:10px;color:var(--text-secondary);margin-bottom:6px">GPT-4o + GOLD</div>
-                        <div style="font-size:9px;color:var(--text-muted);margin-bottom:1px">Score: 0.78</div>
-                        <div style="font-size:9px;color:var(--text-muted);margin-bottom:1px">6/6 checks passed</div>
-                        <div style="font-size:9px;color:var(--text-muted);margin-bottom:1px">Feb 15 — Mar 15, 2026</div>
+                        <div style="font-size:10px;color:var(--text-secondary);margin-bottom:6px">GPT-4o + GOLD layer</div>
+                        <div style="font-size:9px;color:var(--text-muted);margin-bottom:1px">GOLD layer: active</div>
+                        <div style="font-size:9px;color:var(--text-muted);margin-bottom:1px">Connected since: Feb 15, 2026</div>
                         <div style="font-size:9px;color:var(--text-muted);margin-bottom:6px">ontostandard.org/c/ACM-2026</div>
                         <div style="display:flex;align-items:center;gap:4px">
                             <span style="width:5px;height:5px;border-radius:50%;background:var(--accent)"></span>
                             <span style="font-size:9px;color:var(--accent);font-weight:600">ACTIVE</span>
                         </div>
-                        <div style="margin-top:6px;font-size:8px;color:var(--text-muted);line-height:1.4;border-top:1px solid var(--border);padding-top:6px">Active while connected and all checks pass.</div>
+                        <div style="margin-top:6px;font-size:8px;color:var(--text-muted);line-height:1.4;border-top:1px solid var(--border);padding-top:6px">Active while proxy connected. Suspended when disconnected.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SIGNAL: NOTARY -->
+            <div class="signal-panel" id="user-signal-panel">
+                <div class="signal-panel-grid"></div>
+                <div class="signal-header" style="cursor:pointer" onclick="toggleSignalPanel()">
+                    <div class="signal-title-row">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent)"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                        <span class="signal-title">Verification Status</span>
+                        <span style="font-size:11px;color:var(--text-muted);margin-left:8px">Cryptographic proof chain · Ed25519 signed</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <div class="signal-live-indicator" id="user-signal-live">
+                            <span class="signal-dot"></span>
+                            <span>LIVE</span>
+                        </div>
+                        <svg id="signal-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--text-muted)" stroke-width="2" style="transition:transform 0.2s"><polyline points="6,9 12,15 18,9"/></svg>
+                    </div>
+                </div>
+                <div class="signal-body" id="signal-body-collapsible" style="display:none">
+                    <div class="signal-main-row">
+                        <div class="signal-id-block">
+                            <div class="signal-id" id="user-signal-id"><div class="signal-skeleton-id"></div></div>
+                            <div class="signal-hash" id="user-signal-hash"><div class="signal-skeleton-hash"></div></div>
+                        </div>
+                        <div class="signal-countdown-block">
+                            <div class="signal-countdown-label">NEXT</div>
+                            <div class="signal-countdown-value" id="user-signal-countdown">—</div>
+                        </div>
+                    </div>
+                    <div class="signal-metrics">
+                        <div class="signal-metric"><div class="signal-metric-value" id="user-signal-uptime"><div class="skeleton skeleton-metric"></div></div><div class="signal-metric-label">UPTIME</div></div>
+                        <div class="signal-metric"><div class="signal-metric-value" id="user-signal-generated"><div class="skeleton skeleton-metric"></div></div><div class="signal-metric-label">GENERATED</div></div>
+                        <div class="signal-metric"><div class="signal-metric-value" id="user-signal-requests"><div class="skeleton skeleton-metric"></div></div><div class="signal-metric-label">REQUESTS</div></div>
+                        <div class="signal-metric"><div class="signal-metric-value" id="user-signal-errors"><div class="skeleton skeleton-metric"></div></div><div class="signal-metric-label">ERROR RATE</div></div>
+                        <div class="signal-metric"><div class="signal-metric-value">104</div><div class="signal-metric-label">PACKET</div></div>
+                        <div class="signal-metric"><div class="signal-metric-value">ED25519</div><div class="signal-metric-label">SIGNATURE</div></div>
                     </div>
                 </div>
             </div>
@@ -1708,7 +1679,7 @@ a.info-val:hover { color: var(--text); }
             <!-- Footer -->
             <div class="erm-footer">
                 <span style="font-size:9px;color:var(--text-muted)">Ed25519 signed · ontostandard.org/verify · ONTO-SPEC v1.0</span>
-                <span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text-muted)">Ed25519 · SHA-256 · 104-byte</span>
+                <span style="font-size:9px;color:var(--text-muted)">ONTO is not responsible for decisions made by AI systems or their operators.</span>
             </div>
         </div>
 
