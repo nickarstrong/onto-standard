@@ -3,139 +3,133 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Verify Evaluation — ONTO Standard</title>
-<meta name="description" content="Verify any ONTO evaluation result. Enter a proof hash to see the cryptographically signed evaluation details.">
+<title>Verify Certificate — ONTO Standard</title>
+<meta name="description" content="Verify any ONTO certificate. Confirm that an AI model operates under ONTO GOLD epistemic discipline layer. Ed25519 signed.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://ontostandard.org/verify/">
-
-<!-- OG -->
-<meta property="og:title" content="Verify Evaluation — ONTO Standard">
-<meta property="og:description" content="Cryptographically verify any AI model evaluation. Every ONTO evaluation is signed with Ed25519.">
+<meta property="og:title" content="Verify Certificate — ONTO Standard">
+<meta property="og:description" content="Verify that an AI model operates under ONTO GOLD epistemic discipline. Cryptographically signed. Publicly verifiable.">
 <meta property="og:url" content="https://ontostandard.org/verify/">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://ontostandard.org/og-image.png">
-
-<!-- JSON-LD -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "ONTO Proof Verification",
+  "name": "ONTO Certificate Verification",
   "url": "https://ontostandard.org/verify/",
-  "description": "Verify cryptographically signed AI model evaluations",
+  "description": "Verify ONTO VERIFIED certificates — proof that AI models operate under epistemic discipline",
   "applicationCategory": "SecurityApplication",
   "operatingSystem": "Web",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
 }
 </script>
-
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-    --bg:#0a0a0a;--bg-card:#111113;--bg-input:#0d0d0f;
-    --border:#1e1e22;--border-focus:#2a2a30;
-    --text:#e8e8ea;--text-muted:#6b6b75;--text-secondary:#9898a4;
-    --accent:#2563eb;--accent-hover:#3b82f6;
-    --green:#22c55e;--green-bg:rgba(34,197,94,.08);
-    --red:#ef4444;--red-bg:rgba(239,68,68,.08);
-    --yellow:#eab308;
-    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-    --mono:"SF Mono",SFMono-Regular,Consolas,"Liberation Mono",Menlo,monospace;
+    --bg:#0a0a0a;--bg-card:#1a1a1a;--bg-input:#121212;
+    --border:#333333;--border-accent:rgba(21,128,61,0.3);
+    --text:#fafafa;--text-muted:#606060;--text-secondary:#a0a0a0;
+    --accent:#15803d;--accent-light:#22c55e;--accent-subtle:rgba(21,128,61,0.15);
+    --danger:#dc2626;--danger-subtle:rgba(220,38,38,0.15);
+    --warn:#d97706;
 }
-html{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
+html{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
 body{min-height:100vh;display:flex;flex-direction:column}
 
-/* NAV */
-.nav{padding:14px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
-.nav-logo{font-size:15px;font-weight:700;letter-spacing:-.5px}
-.nav-sep{color:var(--border);font-weight:300}
+.mono{font-family:'JetBrains Mono',monospace}
+.nav{padding:16px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.nav-brand{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);font-weight:600;font-size:16px}
+.nav-sep{color:var(--border);font-weight:300;font-size:14px}
 .nav-page{font-size:13px;color:var(--text-muted);font-weight:400}
-.nav-links{display:flex;gap:16px;align-items:center}
-.nav-links a{font-size:12px;color:var(--text-muted);text-decoration:none;transition:color .15s}
-.nav-links a:hover{color:var(--text)}
+.signal-hash{display:flex;align-items:center;gap:4px;font-size:11px}
 
-/* MAIN */
-.container{flex:1;max-width:680px;width:100%;margin:0 auto;padding:48px 24px}
-.page-title{font-size:22px;font-weight:700;letter-spacing:-.5px;margin-bottom:6px}
-.page-sub{font-size:13px;color:var(--text-muted);line-height:1.5;margin-bottom:32px}
+.container{flex:1;max-width:640px;width:100%;margin:0 auto;padding:48px 24px}
+.page-title{font-size:20px;font-weight:700;letter-spacing:-.5px;margin-bottom:6px}
+.page-sub{font-size:12px;color:var(--text-secondary);line-height:1.6;margin-bottom:28px}
+.page-sub strong{color:var(--accent-light);font-weight:600}
 
 /* SEARCH */
-.search-card{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:24px}
-.search-label{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);margin-bottom:8px;display:block}
-.search-row{display:flex;gap:10px}
-.search-input{flex:1;background:var(--bg-input);border:1px solid var(--border);border-radius:6px;padding:12px 14px;color:var(--text);font-family:var(--mono);font-size:13px;outline:none;transition:border-color .15s}
+.search-card{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:20px;margin-bottom:20px}
+.search-label{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:6px;display:block;font-weight:600}
+.search-row{display:flex;gap:8px}
+.search-input{flex:1;background:var(--bg-input);border:1px solid var(--border);border-radius:4px;padding:10px 12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;outline:none;transition:border-color .15s}
 .search-input:focus{border-color:var(--accent)}
-.search-input::placeholder{color:var(--text-muted);opacity:.5}
-.search-btn{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:12px 24px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;white-space:nowrap}
-.search-btn:hover{background:var(--accent-hover)}
-.search-btn:disabled{opacity:.4;cursor:not-allowed}
-.search-hint{font-size:11px;color:var(--text-muted);margin-top:10px}
-.search-hint code{font-family:var(--mono);background:var(--bg);padding:2px 5px;border-radius:3px;font-size:10px}
+.search-input::placeholder{color:var(--text-muted);opacity:.4}
+.search-btn{background:var(--accent);color:#fff;border:none;border-radius:4px;padding:10px 20px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .15s;white-space:nowrap;font-family:'Inter',sans-serif}
+.search-btn:hover{opacity:.85}
+.search-btn:disabled{opacity:.3;cursor:not-allowed}
+.search-hint{font-size:10px;color:var(--text-muted);margin-top:8px}
+.search-hint code{font-family:'JetBrains Mono',monospace;background:var(--bg);padding:1px 4px;border-radius:2px;font-size:9px}
 
 /* RESULT */
-.result{display:none;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;overflow:hidden;animation:fadeIn .3s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.result{display:none;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
-.result-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.result-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600}
-.badge-valid{background:var(--green-bg);color:var(--green);border:1px solid rgba(34,197,94,.2)}
-.badge-invalid{background:var(--red-bg);color:var(--red);border:1px solid rgba(239,68,68,.2)}
-.badge-notfound{background:var(--bg);color:var(--text-muted);border:1px solid var(--border)}
-.result-standard{font-size:11px;color:var(--text-muted)}
+/* Signal-style panel for result */
+.cert-panel{background:linear-gradient(135deg,#0a1a0f 0%,#0d2818 50%,#0a1a0f 100%);border:1px solid var(--border-accent);border-radius:6px;padding:20px;position:relative;overflow:hidden}
+.cert-panel::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(34,197,94,0.06) 0%,transparent 70%);pointer-events:none}
+.cert-panel::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent 0%,rgba(34,197,94,0.6) 50%,transparent 100%);pointer-events:none}
 
-.result-body{padding:24px}
-.result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
-.result-metric{text-align:center;padding:16px 8px;background:var(--bg);border-radius:6px}
-.metric-value{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;margin-bottom:4px}
-.metric-label{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted)}
+.cert-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;position:relative}
+.cert-title{display:flex;align-items:center;gap:8px}
+.cert-title svg{color:var(--accent-light)}
+.cert-title span{font-size:14px;font-weight:700;letter-spacing:1px;color:var(--accent-light)}
+.cert-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.5px}
+.badge-active{background:var(--accent-subtle);color:var(--accent-light);border:1px solid var(--border-accent)}
+.badge-active .dot{width:6px;height:6px;border-radius:50%;background:var(--accent-light);animation:pulse 2s infinite}
+.badge-suspended{background:var(--danger-subtle);color:var(--danger);border:1px solid rgba(239,68,68,0.3)}
+.badge-suspended .dot{width:6px;height:6px;border-radius:50%;background:var(--danger)}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 4px rgba(34,197,94,0.5)}50%{opacity:.5;box-shadow:none}}
 
-.result-details{border-top:1px solid var(--border);padding-top:20px}
-.detail-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.03)}
-.detail-row:last-child{border-bottom:none}
-.detail-key{font-size:12px;color:var(--text-muted)}
-.detail-val{font-size:12px;font-family:var(--mono);color:var(--text);text-align:right;max-width:60%;overflow:hidden;text-overflow:ellipsis}
-.detail-val.green{color:var(--green)}
-.detail-val.red{color:var(--red)}
-.detail-val.yellow{color:var(--yellow)}
+.cert-body{position:relative}
+.cert-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.cert-field-label{font-size:8px;color:rgba(34,197,94,0.5);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.cert-field-value{font-size:13px;font-weight:600;color:var(--text)}
+.cert-field-sub{font-size:9px;color:rgba(255,255,255,0.35);margin-top:1px}
 
-/* CRYPTO BOX */
-.crypto-box{margin-top:20px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px}
-.crypto-title{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.crypto-title svg{width:14px;height:14px;color:var(--green)}
-.crypto-row{font-size:11px;color:var(--text-secondary);margin-bottom:4px;word-break:break-all;font-family:var(--mono)}
-.crypto-row span{color:var(--text-muted);font-family:var(--font)}
+.cert-hash-box{background:rgba(0,0,0,0.3);border:1px solid rgba(34,197,94,0.12);border-radius:4px;padding:8px 10px;margin-bottom:12px}
+.cert-hash-label{font-size:8px;color:rgba(34,197,94,0.4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.cert-hash-value{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent-light);word-break:break-all;line-height:1.4;letter-spacing:.3px}
+.cert-hash-meta{display:flex;gap:10px;margin-top:4px;font-size:8px;color:rgba(255,255,255,0.25)}
+
+.cert-checks{display:flex;gap:14px;font-size:9px;color:rgba(255,255,255,0.4)}
+.cert-checks .check{color:var(--accent-light)}
+.cert-checks.invalid .check{color:var(--danger)}
+
+.cert-msg{font-size:10px;color:rgba(255,255,255,0.5);margin-top:10px;line-height:1.5;padding-top:10px;border-top:1px solid rgba(34,197,94,0.08)}
+
+/* INVALID panel override */
+.cert-panel.invalid{background:linear-gradient(135deg,#1a0a0a 0%,#180d0d 50%,#1a0a0a 100%);border-color:rgba(239,68,68,0.3)}
+.cert-panel.invalid::after{background:linear-gradient(90deg,transparent 0%,rgba(239,68,68,0.4) 50%,transparent 100%)}
 
 /* ERROR */
-.error-card{display:none;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:32px;text-align:center}
-.error-icon{font-size:36px;margin-bottom:12px;opacity:.4}
-.error-title{font-size:15px;font-weight:600;margin-bottom:6px}
-.error-sub{font-size:12px;color:var(--text-muted)}
+.error-card{display:none;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:28px;text-align:center}
+.error-icon{font-size:28px;margin-bottom:8px;opacity:.3}
+.error-title{font-size:14px;font-weight:600;margin-bottom:4px}
+.error-sub{font-size:11px;color:var(--text-muted)}
 
-/* HOW IT WORKS */
-.how-section{margin-top:40px;padding-top:32px;border-top:1px solid var(--border)}
-.how-title{font-size:14px;font-weight:600;margin-bottom:16px}
-.how-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.how-step{padding:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px}
-.how-num{font-size:20px;opacity:.3;margin-bottom:8px}
-.how-head{font-size:12px;font-weight:600;margin-bottom:4px}
-.how-desc{font-size:11px;color:var(--text-muted);line-height:1.5}
+/* HOW */
+.how-section{margin-top:36px;padding-top:28px;border-top:1px solid var(--border)}
+.how-title{font-size:13px;font-weight:600;margin-bottom:12px}
+.how-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-radius:6px;overflow:hidden}
+.how-step{padding:14px;background:var(--bg-card)}
+.how-num{font-size:16px;color:var(--accent-light);opacity:.5;margin-bottom:6px;font-family:'JetBrains Mono',monospace}
+.how-head{font-size:11px;font-weight:600;margin-bottom:3px}
+.how-desc{font-size:10px;color:var(--text-muted);line-height:1.5}
 
-/* FOOTER */
-.footer{padding:20px 24px;border-top:1px solid var(--border);text-align:center;font-size:11px;color:var(--text-muted)}
-.footer a{color:var(--text-secondary);text-decoration:none}
+.footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--text-muted)}
 
-/* LOADING */
-.spinner{display:none;width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite}
+.spinner{display:none;width:16px;height:16px;border:2px solid rgba(255,255,255,0.2);border-top-color:#fff;border-radius:50%;animation:spin .5s linear infinite;margin:0 auto}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* RESPONSIVE */
 @media(max-width:640px){
-    .result-grid{grid-template-columns:repeat(2,1fr)}
+    .cert-grid{grid-template-columns:1fr}
     .how-steps{grid-template-columns:1fr}
     .search-row{flex-direction:column}
     .search-btn{width:100%}
-    .container{padding:32px 16px}
+    .container{padding:28px 16px}
 }
 </style>
 </head>
@@ -143,148 +137,138 @@ body{min-height:100vh;display:flex;flex-direction:column}
 
 <nav class="nav">
     <a href="/" class="nav-brand">
+        <div style="width:28px;height:28px;flex-shrink:0">
+            <svg width="28" height="28" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="18" cy="18" r="17" fill="white"/>
+                <path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/>
+            </svg>
+        </div>
         <span class="nav-logo">ONTO</span>
         <span class="nav-sep">/</span>
         <span class="nav-page">Verify</span>
     </a>
-    <div class="nav-links">
-        <a href="/docs/">Docs</a>
-        <a href="/app/">Portal</a>
-        <a href="https://api.ontostandard.org/docs" target="_blank">API</a>
+    <div class="signal-hash mono">
+        <span style="color:#606060">σ(t) =</span>
+        <span id="navSigBytes" style="color:#15803d;opacity:0.6"></span>
+        <span style="color:#606060">... 104 bytes</span>
     </div>
 </nav>
 
 <div class="container">
-    <h1 class="page-title">Verify Evaluation</h1>
-    <p class="page-sub">Every ONTO evaluation is cryptographically signed with Ed25519. Enter a proof hash to verify authenticity, view the risk score, and confirm the evaluation has not been tampered with.</p>
+    <h1 class="page-title">Verify Certificate</h1>
+    <p class="page-sub">We don't judge AI models. We solve the problem. ONTO GOLD reduces epistemic error — over-confidence, missing sources, unmarked uncertainty. This page verifies that a model <strong>operates under discipline</strong>. Like SSL verifies encryption, not quality.</p>
 
-    <!-- SEARCH -->
     <div class="search-card">
-        <label class="search-label">Proof Hash</label>
+        <label class="search-label">Certificate Hash</label>
         <div class="search-row">
-            <input class="search-input" id="proof-input" type="text" 
-                   placeholder="e.g. 976cff5b1dd31e37c38cb0ae9f924002..." 
+            <input class="search-input" id="proof-input" type="text"
+                   placeholder="e.g. a1b2c3d4e5f67890abcdef..." 
                    maxlength="64" spellcheck="false" autocomplete="off">
             <button class="search-btn" id="verify-btn" onclick="verifyProof()">
                 <span id="btn-text">Verify</span>
                 <div class="spinner" id="btn-spinner"></div>
             </button>
         </div>
-        <div class="search-hint">64-character hex string returned in every evaluation response as <code>proof_hash</code></div>
+        <div class="search-hint">64-character hex hash from certificate, portal, or QR code. Also: <code>/verify/?hash=...</code></div>
     </div>
 
     <!-- RESULT: VERIFIED -->
     <div class="result" id="result-card">
-        <div class="result-header">
-            <div class="result-badge badge-valid" id="result-badge">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                <span id="badge-text">VERIFIED</span>
-            </div>
-            <span class="result-standard" id="result-standard"></span>
-        </div>
-        <div class="result-body">
-            <div class="result-grid">
-                <div class="result-metric">
-                    <div class="metric-value" id="r-model">—</div>
-                    <div class="metric-label">Model</div>
+        <div class="cert-panel" id="cert-panel">
+            <div class="cert-header">
+                <div class="cert-title">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                    <span>ONTO VERIFIED</span>
                 </div>
-                <div class="result-metric">
-                    <div class="metric-value" id="r-risk">—</div>
-                    <div class="metric-label">Risk Score</div>
-                </div>
-                <div class="result-metric">
-                    <div class="metric-value" id="r-layer">—</div>
-                    <div class="metric-label">Layer</div>
-                </div>
-                <div class="result-metric">
-                    <div class="metric-value" id="r-compliance">—</div>
-                    <div class="metric-label">Compliance</div>
+                <div class="cert-badge badge-active" id="cert-badge">
+                    <span class="dot"></span>
+                    <span id="badge-text">ACTIVE</span>
                 </div>
             </div>
+            <div class="cert-body">
+                <div class="cert-grid">
+                    <div>
+                        <div class="cert-field-label">Organization</div>
+                        <div class="cert-field-value" id="r-org">—</div>
+                        <div class="cert-field-sub" id="r-model">—</div>
+                    </div>
+                    <div>
+                        <div class="cert-field-label">Active since</div>
+                        <div class="cert-field-value" id="r-since">—</div>
+                        <div class="cert-field-sub" id="r-proxy-status">—</div>
+                    </div>
+                </div>
 
-            <div class="result-details">
-                <div class="detail-row">
-                    <span class="detail-key">Evaluation ID</span>
-                    <span class="detail-val" id="r-eval-id">—</span>
+                <div class="cert-hash-box">
+                    <div class="cert-hash-label">Hash · Ed25519 · 104b · SHA-256</div>
+                    <div class="cert-hash-value" id="r-hash">—</div>
+                    <div class="cert-hash-meta">
+                        <span>Ed25519 (RFC 8032)</span>
+                        <span id="r-pubkey-short">—</span>
+                        <span id="r-cert-url">—</span>
+                    </div>
                 </div>
-                <div class="detail-row">
-                    <span class="detail-key">Provider</span>
-                    <span class="detail-val" id="r-provider">—</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-key">Signature Valid</span>
-                    <span class="detail-val" id="r-sig-valid">—</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-key">Proof Timestamp</span>
-                    <span class="detail-val" id="r-timestamp">—</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-key">Evaluated At</span>
-                    <span class="detail-val" id="r-evaluated">—</span>
-                </div>
-            </div>
 
-            <div class="crypto-box" id="crypto-box">
-                <div class="crypto-title">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-                    Cryptographic Proof
+                <div class="cert-checks" id="cert-checks">
+                    <span><span class="check">✓</span> PROXY</span>
+                    <span><span class="check">✓</span> GOLD</span>
+                    <span><span class="check">✓</span> SIGNATURE</span>
+                    <span><span class="check">✓</span> CHAIN</span>
                 </div>
-                <div class="crypto-row"><span>Hash: </span><span id="r-hash">—</span></div>
-                <div class="crypto-row"><span>Key: </span><span id="r-pubkey">—</span></div>
-                <div class="crypto-row"><span>Algo: </span>Ed25519 (RFC 8032)</div>
+
+                <div class="cert-msg">This model operates under ONTO GOLD epistemic discipline layer. Certificate is valid while proxy connection is active. Proxy disconnected → certificate suspended instantly.</div>
             </div>
         </div>
     </div>
 
-    <!-- RESULT: NOT FOUND -->
+    <!-- ERROR -->
     <div class="error-card" id="error-card">
         <div class="error-icon">∅</div>
-        <div class="error-title" id="error-title">Proof not found</div>
-        <div class="error-sub" id="error-sub">This hash does not match any evaluation in the ONTO registry.</div>
+        <div class="error-title" id="error-title">Certificate not found</div>
+        <div class="error-sub" id="error-sub">This hash does not match any certificate in the ONTO registry.</div>
     </div>
 
-    <!-- HOW IT WORKS -->
+    <!-- HOW -->
     <div class="how-section">
-        <div class="how-title">How Proof Verification Works</div>
+        <div class="how-title">How ONTO Verification Works</div>
         <div class="how-steps">
             <div class="how-step">
-                <div class="how-num">①</div>
-                <div class="how-head">Evaluate</div>
-                <div class="how-desc">Submit an AI output via API or portal. ONTO scores epistemic risk using 6-factor analysis.</div>
+                <div class="how-num">01</div>
+                <div class="how-head">Connect</div>
+                <div class="how-desc">Organization connects AI model via API key. GOLD layer injected into every request through proxy.</div>
             </div>
             <div class="how-step">
-                <div class="how-num">②</div>
-                <div class="how-head">Sign</div>
-                <div class="how-desc">The result is signed with Ed25519. The proof_hash (SHA-256 of signature) is stored on-chain.</div>
+                <div class="how-num">02</div>
+                <div class="how-head">Certify</div>
+                <div class="how-desc">Ed25519 signs the connection fact. Certificate hash issued. Active while proxy connected.</div>
             </div>
             <div class="how-step">
-                <div class="how-num">③</div>
+                <div class="how-num">03</div>
                 <div class="how-head">Verify</div>
-                <div class="how-desc">Anyone with a proof_hash can verify: model, risk score, timestamp, and cryptographic validity.</div>
+                <div class="how-desc">Anyone — regulators, clients, auditors — verifies live status here. No login required.</div>
             </div>
         </div>
     </div>
 </div>
 
 <footer class="footer">
-    <a href="/">ONTO Standard</a> · <a href="/docs/">Documentation</a> · <a href="https://api.ontostandard.org/v1/signal/public-key" target="_blank">Public Key</a>
+    <span>© ONTO Standard</span>
+    <span>ONTO does not guarantee accuracy. Not responsible for decisions made by AI systems or their operators.</span>
 </footer>
 
 <script>
 const API = 'https://api.ontostandard.org';
 
-// Auto-fill from URL: /verify/?hash=abc123 or /verify/#abc123
+// Auto-fill from URL
 (function() {
     const params = new URLSearchParams(window.location.search);
-    const hashParam = params.get('hash') || params.get('h') || window.location.hash.replace('#', '');
-    if (hashParam && hashParam.length === 64) {
-        document.getElementById('proof-input').value = hashParam;
+    const h = params.get('hash') || params.get('h') || window.location.hash.replace('#', '');
+    if (h && h.length === 64) {
+        document.getElementById('proof-input').value = h;
         setTimeout(verifyProof, 300);
     }
 })();
 
-// Enter key
 document.getElementById('proof-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') verifyProof();
 });
@@ -293,14 +277,12 @@ async function verifyProof() {
     const input = document.getElementById('proof-input');
     const hash = input.value.trim().toLowerCase();
     
-    // Validate
     if (!hash) { input.focus(); return; }
     if (hash.length !== 64 || !/^[0-9a-f]+$/.test(hash)) {
-        showError('Invalid format', 'Proof hash must be exactly 64 hexadecimal characters.');
+        showError('Invalid format', 'Certificate hash must be exactly 64 hexadecimal characters.');
         return;
     }
     
-    // Loading
     const btn = document.getElementById('verify-btn');
     const btnText = document.getElementById('btn-text');
     const spinner = document.getElementById('btn-spinner');
@@ -313,19 +295,12 @@ async function verifyProof() {
         const resp = await fetch(`${API}/v1/verify/${hash}`);
         const data = await resp.json();
         
-        if (!resp.ok) {
-            showError('API Error', data.detail || 'Verification request failed.');
+        if (!resp.ok || !data.verified) {
+            showError('Certificate not found', 'This hash does not match any certificate in the ONTO registry.');
             return;
         }
         
-        if (!data.verified) {
-            showError('Proof not found', 'This hash does not match any evaluation in the ONTO registry.');
-            return;
-        }
-        
-        showResult(data);
-        
-        // Update URL without reload
+        showResult(data, hash);
         history.replaceState(null, '', `/verify/?hash=${hash}`);
         
     } catch (e) {
@@ -337,55 +312,43 @@ async function verifyProof() {
     }
 }
 
-function showResult(d) {
-    const card = document.getElementById('result-card');
-    const badge = document.getElementById('result-badge');
+function showResult(d, hash) {
+    const panel = document.getElementById('cert-panel');
+    const badge = document.getElementById('cert-badge');
     const badgeText = document.getElementById('badge-text');
+    const checks = document.getElementById('cert-checks');
     
-    if (d.signature_valid) {
-        badge.className = 'result-badge badge-valid';
-        badgeText.textContent = 'SIGNATURE VERIFIED';
+    const isActive = d.proxy_active !== false && d.signature_valid !== false;
+    
+    if (isActive) {
+        panel.className = 'cert-panel';
+        badge.className = 'cert-badge badge-active';
+        badgeText.textContent = 'ACTIVE';
+        checks.className = 'cert-checks';
     } else {
-        badge.className = 'result-badge badge-invalid';
-        badgeText.textContent = 'SIGNATURE INVALID';
+        panel.className = 'cert-panel invalid';
+        badge.className = 'cert-badge badge-suspended';
+        badgeText.textContent = 'SUSPENDED';
+        checks.className = 'cert-checks invalid';
     }
     
-    document.getElementById('result-standard').textContent = d.standard || '';
+    document.getElementById('r-org').textContent = d.organization || d.model_name || '—';
+    document.getElementById('r-model').textContent = (d.model_id || d.model_name || '—') + (d.provider ? ' · ' + d.provider : '');
     
-    // Metrics
-    document.getElementById('r-model').textContent = d.model_name || '—';
-    
-    const risk = d.risk_score;
-    const riskEl = document.getElementById('r-risk');
-    riskEl.textContent = risk != null ? risk.toFixed(3) : '—';
-    riskEl.style.color = risk < 0.35 ? 'var(--green)' : risk < 0.65 ? 'var(--yellow)' : 'var(--red)';
-    
-    document.getElementById('r-layer').textContent = d.layer || '—';
-    
-    const compEl = document.getElementById('r-compliance');
-    compEl.textContent = d.compliance || '—';
-    compEl.style.color = d.compliance === 'PASSED' ? 'var(--green)' : d.compliance === 'FAILED' ? 'var(--red)' : 'var(--yellow)';
-    
-    // Details
-    document.getElementById('r-eval-id').textContent = d.evaluation_id || '—';
-    document.getElementById('r-provider').textContent = d.provider || '—';
-    
-    const sigEl = document.getElementById('r-sig-valid');
-    sigEl.textContent = d.signature_valid ? '✓ Valid' : '✗ Invalid';
-    sigEl.className = 'detail-val ' + (d.signature_valid ? 'green' : 'red');
-    
-    if (d.proof_timestamp) {
-        const dt = new Date(d.proof_timestamp * 1000);
-        document.getElementById('r-timestamp').textContent = dt.toISOString().replace('T', ' ').replace(/\.\d+Z/, ' UTC');
+    if (d.connected_since || d.evaluated_at || d.proof_timestamp) {
+        const ts = d.connected_since || d.evaluated_at;
+        const dt = ts ? new Date(typeof ts === 'number' ? ts * 1000 : ts) : new Date(d.proof_timestamp * 1000);
+        document.getElementById('r-since').textContent = dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     }
-    document.getElementById('r-evaluated').textContent = d.evaluated_at ? 
-        d.evaluated_at.replace('T', ' ').replace(/\+.*/, ' UTC') : '—';
     
-    // Crypto
-    document.getElementById('r-hash').textContent = d.proof_hash || '—';
-    document.getElementById('r-pubkey').textContent = d.public_key_hex || '—';
+    document.getElementById('r-proxy-status').textContent = 
+        (isActive ? 'Proxy: active' : 'Proxy: disconnected') + ' · GOLD: ' + (isActive ? 'injected' : 'inactive');
     
-    card.style.display = 'block';
+    document.getElementById('r-hash').textContent = hash || d.proof_hash || '—';
+    document.getElementById('r-pubkey-short').textContent = d.public_key_hex ? d.public_key_hex.slice(0, 16) + '...' : '—';
+    document.getElementById('r-cert-url').textContent = 'ontostandard.org/verify/?hash=' + (hash || '').slice(0, 8) + '...';
+    
+    document.getElementById('result-card').style.display = 'block';
 }
 
 function showError(title, sub) {
@@ -399,6 +362,15 @@ function hideResults() {
     document.getElementById('result-card').style.display = 'none';
     document.getElementById('error-card').style.display = 'none';
 }
+
+// Signal hash in nav
+(function(){
+    const el = document.getElementById('navSigBytes');
+    if (!el) return;
+    function rHex(n){ let s=''; for(let i=0;i<n;i++) s+='0123456789abcdef'[Math.random()*16|0]; return s; }
+    function update(){ el.textContent = rHex(12); }
+    update(); setInterval(update, 2000);
+})();
 </script>
 </body>
 </html>
