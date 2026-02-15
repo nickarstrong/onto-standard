@@ -391,13 +391,13 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
                 <td class="dim">"The temperature is 20°C."</td>
             </tr>
             <tr>
-                <td class="mono dim">EM4</td>
+                <td class="mono">EM4</td>
                 <td>Confident Assertion</td>
                 <td>Strong claims without hedging</td>
                 <td class="dim">"This is definitely the case."</td>
             </tr>
             <tr>
-                <td class="mono dim">EM5</td>
+                <td class="mono">EM5</td>
                 <td>Overclaiming</td>
                 <td>Unfounded confidence on open/contested topics</td>
                 <td class="dim">"Consciousness is caused by..."</td>
@@ -546,17 +546,17 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
         </thead>
         <tbody>
             <tr>
-                <td class="accent" style="font-weight:700">ONTO</td>
+                <td style="font-weight:700">ONTO (with ROOT)</td>
                 <td class="mono">0.41</td>
-                <td class="mono accent">0.96</td>
-                <td class="mono accent">0.58</td>
+                <td class="mono">0.96</td>
+                <td class="mono">0.58</td>
                 <td class="mono">0.30</td>
                 <td class="mono">0.43</td>
             </tr>
             <tr>
                 <td>Claude 3</td>
                 <td class="mono">0.45</td>
-                <td class="mono dim">0.09</td>
+                <td class="mono">0.09</td>
                 <td class="mono">0.15</td>
                 <td class="mono">0.31</td>
                 <td class="mono">0.48</td>
@@ -564,7 +564,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
             <tr>
                 <td>Llama 3</td>
                 <td class="mono">0.20</td>
-                <td class="mono dim">0.01</td>
+                <td class="mono">0.01</td>
                 <td class="mono">0.02</td>
                 <td class="mono">0.33</td>
                 <td class="mono">0.46</td>
@@ -572,7 +572,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
             <tr>
                 <td>GPT-4</td>
                 <td class="mono">0.10</td>
-                <td class="mono dim">0.01</td>
+                <td class="mono">0.01</td>
                 <td class="mono">0.02</td>
                 <td class="mono">0.34</td>
                 <td class="mono">0.44</td>
@@ -580,9 +580,10 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
         </tbody>
     </table>
 
-    <p>The precision-recall tradeoff is intentional: ONTO prioritizes recall (catching unknowns) over precision. In high-stakes domains, false uncertainty is always preferable to false confidence. Missing a genuine unknown — answering confidently when you shouldn't — is the failure mode that costs lives and money.</p>
+    <p>The precision-recall tradeoff is intentional: ONTO prioritizes recall (catching unknowns) over precision. In high-stakes domains, a false positive (unnecessary uncertainty) is preferable to a false negative (undetected overconfidence).</p>
+    <p style="font-size:11px;color:var(--text-m);">Demonstration data · ONTO-Bench v1.0 · 268 samples · Baseline models evaluated without ONTO grounding · Reproduction scripts: <a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a></p>
 
-    <div class="note-block"><strong>Why do LLMs fail?</strong> LLMs are trained to produce fluent, helpful responses. The training objective rewards confident answers and does not penalize confident responses to unanswerable questions. Without explicit epistemic structure, they have no mechanism to recognize knowledge boundaries. ONTO provides that structure through the ROOT connection.</div>
+    <div class="note-block"><strong>Why baseline U-Recall is low.</strong> LLMs are trained to produce fluent, helpful responses. The training objective rewards confident answers and does not penalize confident responses to unanswerable questions. Without explicit epistemic structure, models have no mechanism to recognize knowledge boundaries. ONTO provides that structure through the ROOT connection.</div>
 <h2>Compliance Grades &amp; Regulatory Alignment</h2>
 
     <table class="meth-table">
@@ -780,8 +781,8 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <div class="ds da" id="doc-articles" data-nav="articles">
 <h1>Articles</h1>
 <div class="dm"><span class="db-g bg-g">Updated regularly</span></div>
-<div class="article-card"><h3>Why AI Needs a Thermometer, Not a Doctor</h3><div class="article-meta">ONTO Standards Council · January 2026</div><p>The AI industry is focused on making models smarter. But smartness without self-awareness is dangerous. ONTO measures when AI doesn't know — before failure happens.</p></div>
-<div class="article-card"><h3>Epistemic Risk: The Metric Nobody Is Tracking</h3><div class="article-meta">ONTO Standards Council · January 2026</div><p>Most AI monitoring tools focus on data drift. But the most dangerous failures happen when a model is confidently wrong — when it doesn't know what it doesn't know.</p></div>
+<div class="article-card"><h3>Why AI Needs a Thermometer, Not a Doctor</h3><div class="article-meta">ONTO Standards Council · January 2026</div><p>The AI industry is focused on making models smarter. ONTO focuses on making them measurable — providing a scientific instrument for epistemic calibration rather than attempting to fix what models produce.</p></div>
+<div class="article-card"><h3>Epistemic Risk: The Metric Nobody Is Tracking</h3><div class="article-meta">ONTO Standards Council · January 2026</div><p>Most AI monitoring tools focus on data drift and performance metrics. Epistemic risk — the gap between what a model claims to know and what it actually knows — remains unmeasured in production systems.</p></div>
 <div class="article-card"><h3>How Regulated Industries Can Prepare for the EU AI Act</h3><div class="article-meta">ONTO Standards Council · February 2026</div><p>The EU AI Act requires risk management, transparency, and conformity assessment. ONTO certification maps directly to Articles 9, 13, 15, and 43.</p></div>
 <p style="color:var(--text-m);font-size:12px;margin-top:20px">More articles coming. Subscribe: <a href="/cdn-cgi/l/email-protection#196a6c6969766b6d5976776d766a6d78777d786b7d37766b7e"><span class="__cf_email__" data-cfemail="54272124243b2620143b3a203b2720353a303526307a3b2633">[email&#160;protected]</span></a></p>
 </div><div class="sd"></div>
@@ -793,7 +794,7 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is ONTO?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">ONTO is an independent protocol for measuring epistemic reliability of AI systems. We quantify when AI models are confident versus when they should express uncertainty — like ISO certification for how well an AI knows what it knows.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What does ONTO measure?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Three core metrics: U-Recall (detecting when AI doesn't know), ECE (confidence-accuracy alignment), and Risk Score (composite). These tell you if an AI's confidence is trustworthy.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Does ONTO fix my AI model?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">No. "Thermometer, not Doctor" — we measure and report, not modify. Remediation is the client's responsibility.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How is ONTO different from other AI monitoring?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Most tools track data drift or performance. ONTO uniquely measures epistemic uncertainty — the gap where the most dangerous failures occur: confident wrong answers.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How is ONTO different from other AI monitoring?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Most tools track data drift or performance. ONTO measures epistemic uncertainty — the gap between what AI claims to know and what it actually knows.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What industries is ONTO for?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Any industry deploying AI, with focus on regulated sectors: healthcare, finance, defense, aviation, pharma, insurance, legal, government.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is the free tier really free?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Yes. OPEN tier provides 1-hour delayed signal at no cost for testing and development. Real-time requires STANDARD or CRITICAL.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does certification work?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Submit AI system → independent evaluation via ONTO-Bench → Standards Council review → certificate issued (12 months) → publicly verifiable.</div></div>

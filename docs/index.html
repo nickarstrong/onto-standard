@@ -77,7 +77,6 @@
   "@type": "BreadcrumbList",
   "itemListElement": [
     {"@type": "ListItem", "position": 1, "name": "ONTO Standard", "item": "https://ontostandard.org"},
-    {"@type": "ListItem", "position": 2, "name": "Audits", "item": "https://ontostandard.org/audits/"},
     {"@type": "ListItem", "position": 3, "name": "Documentation", "item": "https://ontostandard.org/docs/"},
     {"@type": "ListItem", "position": 4, "name": "Portal", "item": "https://ontostandard.org/app/"}
   ]
@@ -289,7 +288,7 @@
       "name": "Is ONTO a real production system?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes. ONTO is a live scientific infrastructure for AI epistemic grounding. The scoring engine (v3.0, GOLD v4.5) is deployed in production. The API is live at api.ontostandard.org with Ed25519 signed evaluations. Published monthly audits at ontostandard.org/audits/. SDK on PyPI: onto-standard. It is not a theoretical concept, not a blockchain project, and not an ethics framework — it is the scientific foundation your AI doesn't have."
+        "text": "Yes. ONTO is a live scientific infrastructure for AI epistemic grounding. The scoring engine (v3.0, GOLD v4.5) is deployed in production. The API is live at api.ontostandard.org with Ed25519 signed evaluations. SDK on PyPI: onto-standard. It is not a theoretical concept, not a blockchain project, and not an ethics framework — it is the scientific foundation your AI doesn't have."
       }
     },
     {
@@ -313,7 +312,7 @@
       "name": "What AI evaluation standards exist for epistemic uncertainty?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "The field includes Uncertainty Quantification (UQ) methods in classical ML, conformal prediction frameworks, selective prediction research, and calibration libraries like netcal. These are measurement tools — they evaluate but do not ground. ONTO is the first system to provide continuous epistemic grounding: a permanent ROOT connection to a scientific core (GOLD v4.5, grounded in Shannon, Kolmogorov, Eigen) that reduces epistemic risk by 95% while connected. It is not a benchmark — it is infrastructure."
+        "text": "The field includes Uncertainty Quantification (UQ) methods in classical ML, conformal prediction frameworks, selective prediction research, and calibration libraries like netcal. These are measurement tools — they evaluate but do not ground. ONTO provides continuous epistemic grounding: a permanent ROOT connection to a scientific core (GOLD v4.5, grounded in Shannon, Kolmogorov, Eigen) that reduces epistemic risk by 95% while connected. It is not a benchmark — it is infrastructure."
       }
     },
     {
@@ -1665,7 +1664,7 @@ body.show-portal { overflow: auto; }
 </table>
 
 <h2>Economic Impact</h2>
-<p>Epistemic loss formula: Annual Loss = (Requests/day × 365) × (Calibration Gap %) × (Cost per Error) × (1 − Manual Mitigation Rate). Without ONTO ROOT, AI systems operate with uncalibrated epistemic risk — every confident wrong answer costs money.</p>
+<p>Epistemic loss formula: Annual Loss = (Requests/day × 365) × (Calibration Gap %) × (Cost per Error) × (1 − Manual Mitigation Rate). Without ONTO ROOT, AI systems operate with uncalibrated epistemic risk — calibration gaps translate directly to operational cost.</p>
 <p>Example: 1,000 requests/day, 10% calibration gap, $50/error, 30% manual mitigation → $1,277,500/year in avoidable loss. ONTO Standard ($15,000/year) yields 85:1 ROI. ONTO Certified ($100,000/year) yields 12.8:1 ROI with regulatory compliance proof.</p>
 <p>Example: 5,000 requests/day, 15% gap, $200/error → $38,325,000/year. ONTO Certified yields 383:1 ROI.</p>
 <p>Example: 500 requests/day, 5% gap, $25/error → $159,687/year. ONTO Standard ($15,000/year) yields 9.6:1 ROI.</p>
@@ -1735,7 +1734,7 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
 <h2>Disambiguation: What ONTO Is NOT</h2>
 <p>ONTO is NOT a blockchain project. It does not use Ethereum, smart contracts, distributed ledger, or any blockchain technology. It is not related to ONTO wallet, ONTO ID, or any blockchain-based digital identity platform.</p>
 <p>ONTO is NOT an AI ethics framework. It does not evaluate fairness, bias, transparency, or explainability. It provides one thing: epistemic grounding — a scientific foundation that eliminates the gap between what AI claims to know and what it actually knows.</p>
-<p>ONTO is NOT a content generation tool. It does not help AI produce better text, images, or creative output. It grounds AI systems in mathematical reality so they stop confidently producing wrong answers.</p>
+<p>ONTO is NOT a content generation tool. It does not help AI produce better text, images, or creative output. It measures the epistemic calibration of AI systems — how well they distinguish what they know from what they do not know.</p>
 <p>ONTO is NOT a benchmark or leaderboard. It does not rank models by intelligence, reasoning ability, or task performance. It provides the scientific foundation (Shannon entropy, Kolmogorov complexity, eigenvalue decomposition) that AI systems lack by design.</p>
 <p>ONTO is NOT an ontology framework. Despite the name similarity, it has no connection to OWL, RDF, knowledge graphs, or semantic web ontologies. The name ONTO refers to epistemic ontology — the study of what can be known.</p>
 <p>ONTO is NOT a one-time audit. It provides continuous epistemic grounding via permanent ROOT connection. Disconnection = certificate frozen. This is infrastructure, not a report.</p>
@@ -1799,11 +1798,10 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
     <div class="nav-dot" data-screen="2"></div>
     <div class="nav-dot" data-screen="3"></div>
     <div class="nav-dot" data-screen="4"></div>
-    <div class="nav-dot" data-screen="5"></div>
 </div>
 
 <!-- SCROLL INDICATOR -->
-<div class="scroll-indicator" id="scrollIndicator" onclick="if(currentScreen < 5) goToScreen(currentScreen + 1)">
+<div class="scroll-indicator" id="scrollIndicator" onclick="if(currentScreen < 4) goToScreen(currentScreen + 1)">
     <span>scroll</span>
     <div class="scroll-arrow"></div>
 </div>
@@ -1900,44 +1898,12 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
     </div>
 </div>
 
-<!-- SCREEN 4: PATH -->
-<div class="screen screen-choice hidden" id="screen4">
-    <h1 style="font-size: clamp(20px, 3vw, 28px); font-weight: 600; margin-bottom: 12px; letter-spacing: -0.01em;">Verify everything. Trust nothing.</h1>
-    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 36px; max-width: 480px; text-align: center; line-height: 1.6;">ONTO is open methodology. Every claim is reproducible.<br>Every metric is deterministic. Start here:</p>
-    
-    <div class="path-steps">
-        <a href="/docs/#about" class="path-step">
-            <span class="path-num">01</span>
-            <span class="path-title">About ONTO</span>
-            <span class="path-desc">What it is, why it exists, how it works — the full picture</span>
-        </a>
-        <a href="/docs/" class="path-step">
-            <span class="path-num">02</span>
-            <span class="path-title">Read the Specification</span>
-            <span class="path-desc">Full methodology, EM1–EM5 taxonomy, metrics definition, GOLD corpus structure</span>
-        </a>
-        <a href="/audits/" class="path-step">
-            <span class="path-num">03</span>
-            <span class="path-title">Review Public Evaluations</span>
-            <span class="path-desc">Published audit reports with reproducible scoring parameters</span>
-        </a>
-        <a href="/check/" class="path-step">
-            <span class="path-num">04</span>
-            <span class="path-title">Run a Free Evaluation</span>
-            <span class="path-desc">50 evaluations/day, no account required, see your model's epistemic profile</span>
-        </a>
-        <a href="/app/" class="path-step path-step-accent">
-            <span class="path-num">05</span>
-            <span class="path-title">Access the Portal</span>
-            <span class="path-desc">Full protocol, real-time scoring, proof chain, institutional licensing</span>
-        </a>
-    </div>
 
-    <button class="cta-button" onclick="goToScreen(5)">Continue →</button>
+    <button class="cta-button" onclick="goToScreen(4)">Continue →</button>
 </div>
 
-<!-- SCREEN 5: INSTITUTIONAL CLOSE -->
-<div class="screen screen-final hidden" id="screen5">
+<!-- SCREEN 4: INSTITUTIONAL CLOSE -->
+<div class="screen screen-final hidden" id="screen4">
     <div class="final-content">
         <p class="governed-text">Your AI, grounded.</p>
         <div class="pip-install" onclick="copyPip()" title="Click to copy">
@@ -1950,7 +1916,7 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
             <a href="/docs/" class="btn-secondary">Read Specification</a>
         </div>
         <div class="final-research">
-            arXiv:2026.XXXXX · GOLD v4.5 (149 files) · <a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a>
+            In preparation · GOLD v4.5 (149 files) · <a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a>
         </div>
         <div class="final-footer">
             <div class="footer-socials">
@@ -1965,7 +1931,7 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
             <div class="footer-legal">
                 © 2026 ONTO Standards Council · Est. 2024<br>
                 ONTO is an independent research initiative. Not affiliated with ISO, NIST, or governmental standards bodies.<br>
-                <span class="footer-cite">Cite: Arstrong N. (2026). ONTO-ERS: Deterministic Epistemic Risk Measurement. arXiv:2026.XXXXX</span>
+                <span class="footer-cite">Cite: Arstrong N. (2026). ONTO-ERS: Deterministic Epistemic Risk Measurement. In preparation</span>
             </div>
         </div>
     </div>
@@ -1975,7 +1941,7 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
 <script>
 // === VIEW SWITCHING ===
 function showPortal() {
-    window.location.href = '/check/';
+    window.location.href = '/app/';
 }
 
 function showLanding() {
@@ -2092,7 +2058,7 @@ function toggleOrb() {
         hint.textContent = 'Epistemic calibration enabled';
         animateScores(true);
         const p = document.getElementById('heroPressure');
-        if (p) p.innerHTML = 'ONTO ROOT active. −95% epistemic risk. <a href="/audits/">Read the audit</a>';
+        if (p) p.innerHTML = 'ONTO ROOT active. −95% epistemic risk. <a href="/docs/">Read the specification</a>';
     } else {
         container.classList.remove('calibrated');
         core.classList.remove('calibrated');
@@ -2102,7 +2068,7 @@ function toggleOrb() {
         hint.textContent = 'touch me';
         animateScores(false);
         const p = document.getElementById('heroPressure');
-        if (p) p.innerHTML = 'Your AI is operating without epistemic grounding. <a href="mailto:audit@ontostandard.org">Request audit</a> <a href="/check/">Evaluate now</a>';
+        if (p) p.innerHTML = 'Your AI is operating without epistemic grounding. <a href="mailto:audit@ontostandard.org">Request audit</a> <a href="/app/">Start evaluation</a>';
     }
 }
 
@@ -2172,7 +2138,7 @@ function goToScreen(num) {
     // Hide scroll indicator on last screen
     const scrollIndicator = document.getElementById('scrollIndicator');
     if (scrollIndicator) {
-        scrollIndicator.classList.toggle('hidden', num === 5);
+        scrollIndicator.classList.toggle('hidden', num === 4);
     }
 }
 
@@ -2217,7 +2183,7 @@ document.addEventListener('keydown', (e) => {
     if (document.body.classList.contains('show-portal')) return;
     
     if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
-        if (currentScreen < 5) goToScreen(currentScreen + 1);
+        if (currentScreen < 4) goToScreen(currentScreen + 1);
     } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
         if (currentScreen > 1) goToScreen(currentScreen - 1);
     } else if (e.key === ' ' || e.key === 'Enter') {
@@ -2234,7 +2200,7 @@ document.addEventListener('wheel', (e) => {
     if (isNavigating) return;
     
     const d = e.deltaY;
-    if (d > 2 && currentScreen < 5) {
+    if (d > 2 && currentScreen < 4) {
         isNavigating = true;
         goToScreen(currentScreen + 1);
         setTimeout(() => isNavigating = false, 500);
@@ -2283,7 +2249,7 @@ document.addEventListener('touchend', (e) => {
     if (Math.abs(diff) > 50) {
         if (diff > 0) {
             // Swipe up = next
-            if (currentScreen < 5) { isNavigating = true; goToScreen(currentScreen + 1); setTimeout(() => isNavigating = false, 1200); }
+            if (currentScreen < 4) { isNavigating = true; goToScreen(currentScreen + 1); setTimeout(() => isNavigating = false, 1200); }
         } else {
             // Swipe down = prev
             if (currentScreen > 1) { isNavigating = true; goToScreen(currentScreen - 1); setTimeout(() => isNavigating = false, 1200); }
