@@ -1810,14 +1810,15 @@ print(report.improvement)  <span style="color:var(--text-muted)"># error_reducti
                 <!-- OPEN -->
                 <div class="tier-card" id="card-free">
                     <div class="tier-name">Open</div>
-                    <div class="tier-price">$0</div>
-                    <div class="tier-desc">Diagnostic access — see your AI's risk profile</div>
+                    <div class="tier-price">Free</div>
+                    <div class="tier-desc">Diagnostic evaluation — see your AI's epistemic risk profile</div>
                     <ul class="tier-list">
-                        <li>10 evaluations/hour</li>
-                        <li>50/day · ~1,500/month</li>
-                        <li>Rolling marker (informational)</li>
+                        <li>50 evaluations/day</li>
+                        <li>+1 hour signal delay</li>
+                        <li>1 model connection</li>
+                        <li>Informational markers only</li>
+                        <li>No ROOT connection</li>
                         <li>No certification</li>
-                        <li>Attribution required</li>
                     </ul>
                     <button class="btn-tier current" id="btn-free" disabled>Current</button>
                 </div>
@@ -1825,14 +1826,16 @@ print(report.improvement)  <span style="color:var(--text-muted)"># error_reducti
                 <!-- STANDARD -->
                 <div class="tier-card" id="card-business">
                     <div class="tier-name">Standard</div>
-                    <div class="tier-price">$1,500<span>/month</span></div>
-                    <div class="tier-desc">Unlimited access to ONTO core — calibrate your AI</div>
+                    <div class="tier-price">$15,000<span>/year</span></div>
+                    <div style="font-size:11px;color:var(--accent);margin-bottom:8px">or $1,500/month</div>
+                    <div class="tier-desc">Permanent ROOT connection — continuous epistemic discipline</div>
                     <ul class="tier-list">
                         <li>Unlimited evaluations</li>
-                        <li>Real-time Proof of Chain</li>
+                        <li>Real-time entropy signal</li>
+                        <li>Up to 5 model connections</li>
+                        <li>−95% epistemic risk</li>
+                        <li>Internal proof chain</li>
                         <li>Rolling marker L1/L2/L3</li>
-                        <li>Internal diagnostics only</li>
-                        <li>No public certification</li>
                     </ul>
                     <button class="btn-tier" id="btn-business" onclick="openSubscribeModal('business')">Select</button>
                 </div>
@@ -1841,22 +1844,37 @@ print(report.improvement)  <span style="color:var(--text-muted)"># error_reducti
                 <div class="tier-card" id="card-enterprise">
                     <div class="tier-name">Certified</div>
                     <div class="tier-price">$100,000<span>/year</span></div>
-                    <div class="tier-desc">ONTO CERTIFIED — prove your AI quality to regulators</div>
+                    <div class="tier-desc">ONTO CERTIFIED — publicly verifiable epistemic compliance</div>
                     <ul class="tier-list">
                         <li>Everything in Standard</li>
-                        <li>Rolling certification (L2/L3)</li>
-                        <li>Public registry listing</li>
+                        <li>Unlimited model connections</li>
                         <li>ONTO CERTIFIED badge</li>
+                        <li>Public verifiable proof chain</li>
+                        <li>Public registry listing</li>
                         <li>24-month audit trail</li>
-                        <li>99.99% SLA · Priority support</li>
+                        <li>Dedicated support · SLA 99.99%</li>
                     </ul>
                     <button class="btn-tier" id="btn-enterprise" onclick="openSubscribeModal('enterprise')">Select</button>
                     <button class="btn-tier-secondary" onclick="contactSales()">Contact</button>
                 </div>
             </div>
+
+            <!-- GRANT PROGRAM -->
+            <div style="margin-top:24px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:20px">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                    <div style="font-size:13px;font-weight:600;color:var(--text)">Grant Program</div>
+                </div>
+                <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;margin-bottom:12px">
+                    Free Standard access for independent researchers, early-stage startups, and nonprofit organizations whose work benefits society. Grant recipients receive the same infrastructure as paid Standard customers: permanent ROOT connection, unlimited evaluations, real-time entropy signal. No restrictions, no watermarks.
+                </div>
+                <div style="display:flex;align-items:center;gap:12px">
+                    <a href="mailto:council@ontostandard.org" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Apply → council@ontostandard.org</a>
+                </div>
+            </div>
             
-            <p class="section-footnote" style="text-align: center; margin-top: 24px;">
-                Invoice payment requires registered organization. <a href="#" onclick="showPage('settings')">Account settings</a>
+            <p class="section-footnote" style="text-align: center; margin-top: 16px; font-size: 10px; color: var(--text-muted);">
+                Invoice payment requires registered organization. <a href="#" onclick="showPage('settings')" style="color:var(--accent)">Account settings</a>
             </p>
         </div>
         <!-- REFERENCE PAGE (ADMIN) -->
@@ -2611,6 +2629,12 @@ async function handleLogin(btn) {
             can_invoice: false,
             company: null  // Company set only after explicit registration
         };
+        // Restore company data from previous session if backend doesn't return it
+        const savedUser = JSON.parse(localStorage.getItem('onto_user') || '{}');
+        if (savedUser.company && savedUser.id === currentUser.id) {
+            currentUser.company = savedUser.company;
+            currentUser.can_invoice = savedUser.can_invoice || false;
+        }
         localStorage.setItem('onto_user', JSON.stringify(currentUser));
         
         // Also store in new format for consistency
@@ -2869,6 +2893,12 @@ async function checkEmailVerification() {
                     can_invoice: false,
                     company: null  // Company set only after explicit registration
                 };
+                // Restore company data from previous session
+                const savedUserVerify = JSON.parse(localStorage.getItem('onto_user') || '{}');
+                if (savedUserVerify.company && savedUserVerify.id === currentUser.id) {
+                    currentUser.company = savedUserVerify.company;
+                    currentUser.can_invoice = savedUserVerify.can_invoice || false;
+                }
                 localStorage.setItem('onto_user', JSON.stringify(currentUser));
                 
                 showToast('Email verified! Welcome to ONTO.', 'success');
@@ -3584,8 +3614,8 @@ function updateOrderSummary() {
     const planNames = { business: 'Standard', enterprise: 'Certified' };
     const planName = planNames[selectedPlan] || selectedPlan;
     const planFeatures = {
-        business: ['Unlimited evaluations', 'Real-time Proof of Chain', 'Rolling marker L1/L2/L3', 'Internal diagnostics'],
-        enterprise: ['Unlimited + Certification', 'Public registry listing', 'ONTO CERTIFIED badge', '24mo audit trail']
+        business: ['Permanent ROOT connection', 'Unlimited evaluations', 'Real-time entropy signal', 'Up to 5 models', '−95% epistemic risk'],
+        enterprise: ['Everything in Standard', 'Unlimited models', 'ONTO CERTIFIED badge', 'Public verifiable proof chain', '24-month audit trail', 'SLA 99.99%']
     };
     const featuresEl = document.getElementById('order-features');
     featuresEl.innerHTML = (planFeatures[selectedPlan]||[]).map(f => '<div class="order-feature">'+f+'</div>').join('');
