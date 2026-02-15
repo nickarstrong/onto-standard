@@ -24,7 +24,7 @@
     --accent-subtle: rgba(21, 128, 61, 0.1);
     --danger: #dc2626;
     --danger-subtle: rgba(220, 38, 38, 0.1);
-    --blue: #3b82f6;
+    --blue: #64748b;
     --blue-subtle: rgba(59, 130, 246, 0.1);
 }
 
@@ -485,7 +485,7 @@ a.info-val:hover { color: var(--text); }
 .docs-article blockquote p { margin: 0; font-size: 12px; color: var(--text-secondary); }
 .docs-badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 500; }
 .badge-green { background: rgba(34, 197, 94, 0.1); color: #16a34a; }
-.badge-blue { background: rgba(59, 130, 246, 0.1); color: #2563eb; }
+.badge-blue { background: rgba(100, 116, 139, 0.1); color: #64748b; }
 .docs-disclaimer { background: var(--bg-elevated); border: 1px solid var(--border); padding: 12px; border-radius: 4px; margin: 16px 0; font-size: 12px; }
 .docs-disclaimer strong { color: var(--text); }
 
@@ -946,24 +946,6 @@ a.info-val:hover { color: var(--text); }
 .risk-badge.medium { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
 .risk-badge.high { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
 
-/* === REFERENCE PAGE === */
-.ref-tabs { display: flex; gap: 4px; margin-bottom: 20px; flex-wrap: wrap; }
-.ref-tab { padding: 8px 16px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 6px; color: var(--text-secondary); cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.15s; }
-.ref-tab:hover { background: var(--bg-card); color: var(--text); }
-.ref-tab.active { background: var(--accent-subtle); border-color: var(--accent); color: var(--accent); }
-.ref-content { display: none; }
-.ref-content.active { display: block; }
-.ref-status { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 500; }
-.ref-status.active { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
-.ref-status.archived { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-.ref-status.frozen { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
-.ref-action-btn { padding: 4px 8px; font-size: 11px; border-radius: 4px; cursor: pointer; transition: all 0.15s; }
-.ref-action-btn.archive { background: var(--danger-subtle); color: var(--danger); border: 1px solid var(--danger); }
-.ref-action-btn.restore { background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--accent); }
-.ref-action-btn.export { background: var(--blue-subtle); color: var(--blue); border: 1px solid var(--blue); }
-.ref-action-btn:hover { opacity: 0.8; }
-.table-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
-
 /* === EPISTEMIC RISK MONITOR === */
 .erm-proof-strip { padding:14px 0; border-bottom:1px solid var(--border); margin-bottom:16px; }
 .erm-positioning { font-size:11px; color:var(--text-secondary); line-height:1.5; margin-bottom:10px; }
@@ -1242,10 +1224,6 @@ a.info-val:hover { color: var(--text); }
             <div class="nav-item" onclick="showPage('settings', this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
                 Account
-            </div>
-            <div class="nav-item" id="nav-reference" onclick="showReferencePage(this)" style="display:none;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-                Reference
             </div>
             <div class="nav-divider"></div>
             <a class="nav-item" href="/docs/" target="_blank" style="text-decoration: none; color: var(--text-muted);">
@@ -2201,164 +2179,6 @@ print(report.improvement)  <span style="color:var(--text-muted)"># error_reducti
             <p class="section-footnote" style="text-align: center; margin-top: 24px;">
                 Invoice payment requires registered organization. <a href="#" onclick="showPage('settings')">Account settings</a>
             </p>
-        </div>
-        <!-- REFERENCE PAGE (ADMIN) -->
-        <div class="page" id="page-reference">
-            <!-- SIGNAL VISUALIZATION - MAIN ELEMENT -->
-            <div class="signal-panel">
-                <div class="signal-panel-grid"></div>
-                <div class="signal-header">
-                    <div class="signal-title">
-                        <span class="signal-icon">σ</span>
-                        <span>Entropy Signal</span>
-                    </div>
-                    <div class="signal-live" id="signal-live-indicator">
-                        <span class="signal-dot"></span>
-                        <span>LIVE</span>
-                    </div>
-                </div>
-                <div class="signal-body">
-                    <div class="signal-main-row">
-                        <div class="signal-id-block">
-                            <div class="signal-id" id="signal-id"><div class="signal-skeleton-id"></div></div>
-                            <div class="signal-hash" id="signal-hash"><div class="signal-skeleton-hash"></div></div>
-                        </div>
-                        <div class="signal-countdown-block">
-                            <div class="signal-countdown-label">NEXT</div>
-                            <div class="signal-countdown-value" id="signal-countdown">—</div>
-                        </div>
-                    </div>
-                    <div class="signal-metrics">
-                        <div class="signal-metric">
-                            <div class="signal-metric-value" id="signal-uptime"><div class="skeleton skeleton-metric"></div></div>
-                            <div class="signal-metric-label">UPTIME</div>
-                        </div>
-                        <div class="signal-metric">
-                            <div class="signal-metric-value" id="signal-generated"><div class="skeleton skeleton-metric"></div></div>
-                            <div class="signal-metric-label">GENERATED</div>
-                        </div>
-                        <div class="signal-metric">
-                            <div class="signal-metric-value" id="signal-requests"><div class="skeleton skeleton-metric"></div></div>
-                            <div class="signal-metric-label">REQUESTS</div>
-                        </div>
-                        <div class="signal-metric">
-                            <div class="signal-metric-value" id="signal-errors"><div class="skeleton skeleton-metric"></div></div>
-                            <div class="signal-metric-label">ERROR RATE</div>
-                        </div>
-                        <div class="signal-metric">
-                            <div class="signal-metric-value">104</div>
-                            <div class="signal-metric-label">PACKET</div>
-                        </div>
-                        <div class="signal-metric">
-                            <div class="signal-metric-value">ED25519</div>
-                            <div class="signal-metric-label">SIGNATURE</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="signal-controls">
-                    <button class="signal-btn" onclick="refreshSignal()">
-                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-                        Refresh
-                    </button>
-                </div>
-            </div>
-
-            <!-- PROOF CHAIN PANEL -->
-            <div class="signal-panel" id="proof-chain-panel">
-                <div class="signal-panel-grid"></div>
-                <div class="signal-header">
-                    <div class="signal-title">
-                        <span class="signal-icon">🔒</span>
-                        <span>Cryptographic Proof Chain</span>
-                    </div>
-                    <div class="signal-live" id="proof-live-indicator">
-                        <span class="signal-dot"></span>
-                        <span>ACTIVE</span>
-                    </div>
-                </div>
-                <div class="signal-body">
-                    <div class="signal-main-row">
-                        <div class="signal-id-block">
-                            <div class="signal-id" id="proof-last-hash" style="font-size:11px;word-break:break-all">Loading...</div>
-                            <div style="font-size:10px;color:var(--text-muted);margin-top:4px" id="proof-last-time">—</div>
-                        </div>
-                    </div>
-                    <div class="signal-metrics">
-                        <div class="signal-metric">
-                            <div class="signal-metric-value" id="proof-total">—</div>
-                            <div class="signal-metric-label">TOTAL PROOFS</div>
-                        </div>
-                        <div class="signal-metric">
-                            <div class="signal-metric-value" id="proof-24h">—</div>
-                            <div class="signal-metric-label">LAST 24H</div>
-                        </div>
-                        <div class="signal-metric">
-                            <div class="signal-metric-value" id="proof-verified">100%</div>
-                            <div class="signal-metric-label">VERIFIED</div>
-                        </div>
-                        <div class="signal-metric">
-                            <div class="signal-metric-value">104</div>
-                            <div class="signal-metric-label">PACKET</div>
-                        </div>
-                        <div class="signal-metric">
-                            <div class="signal-metric-value">ED25519</div>
-                            <div class="signal-metric-label">SIGNATURE</div>
-                        </div>
-                        <div class="signal-metric">
-                            <div class="signal-metric-value" id="proof-pubkey">—</div>
-                            <div class="signal-metric-label">PUBLIC KEY</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="signal-controls">
-                    <button class="signal-btn" onclick="refreshProofStats()">
-                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-                        Refresh
-                    </button>
-                    <a class="signal-btn" href="/verify/" target="_blank" style="text-decoration:none">
-                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-                        Public Verify
-                    </a>
-                </div>
-            </div>
-
-            <!-- ACCOUNTS LIST - COMPACT -->
-            <div class="accounts-panel">
-                <div class="accounts-header">
-                    <span class="accounts-title">Accounts</span>
-                    <input type="text" class="accounts-search" id="accounts-search" placeholder="Search email..." oninput="debounceAccountSearch()">
-                </div>
-                <div class="accounts-filters">
-                    <select class="accounts-filter" id="filter-type" onchange="filterAccounts()">
-                        <option value="">All Types</option>
-                        <option value="individual">Individual</option>
-                        <option value="company">Company</option>
-                    </select>
-                    <select class="accounts-filter" id="filter-status" onchange="filterAccounts()">
-                        <option value="">All Status</option>
-                        <option value="active">Active</option>
-                        <option value="paused">Paused</option>
-                    </select>
-                    <select class="accounts-filter" id="filter-plan" onchange="filterAccounts()">
-                        <option value="">All Plans</option>
-                        <option value="open">Open</option>
-                        <option value="standard">Standard</option>
-                        <option value="critical">Certified</option>
-                    </select>
-                </div>
-                <div class="accounts-list" id="accounts-list">
-                    <div class="accounts-loading">Loading...</div>
-                </div>
-            </div>
-
-            <!-- SIGNAL 104b LOG -->
-            <div class="signal-log-panel" id="signal-log-panel" style="display: none;">
-                <div class="signal-log-header">
-                    <span>Signal 104b — Security Events</span>
-                    <button class="signal-log-close" onclick="closeSignalLog()">×</button>
-                </div>
-                <div class="signal-log-list" id="signal-log-list"></div>
-            </div>
         </div>
     </main>
 </div>
@@ -3428,7 +3248,7 @@ function showDashboard() {
         fetchUserModels();
         loadUserSignal();
         refreshProofStats();
-        checkReferenceAccess();
+
     }
 }
 
@@ -4574,38 +4394,6 @@ let refAccessGranted = false;
 let refNodesData = [];
 let refNamespacesData = [];
 
-async function checkReferenceAccess() {
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    if (!apiKey) return false;
-    
-    try {
-        const res = await fetch(`${API_BASE}/v1/docs/reference-check`, {
-            headers: { 'x-api-key': apiKey }
-        });
-        if (res.ok) {
-            const data = await res.json();
-            if (data.status === 'ok') {
-                refAccessGranted = true;
-                document.getElementById('nav-reference').style.display = 'flex';
-                return true;
-            }
-        }
-    } catch (e) {}
-    return false;
-}
-
-async function showReferencePage(el) {
-    if (!refAccessGranted) {
-        const hasAccess = await checkReferenceAccess();
-        if (!hasAccess) {
-            showToast('Access denied', 'error');
-            return;
-        }
-    }
-    showPage('reference', el);
-    initAdminPanel();
-}
-
 // === SIGNAL & ACCOUNTS PANEL ===
 let accountsData = [];
 let currentUserId = null; // For self-protection
@@ -5313,7 +5101,7 @@ async function refBroadcastAction(action) {
 }
 
 // Check reference access on load
-setTimeout(checkReferenceAccess, 1000);
+
 
 // === TELEMETRY ===
 function updateUTCClock() {
@@ -5344,7 +5132,7 @@ function drawIndustryChart() {
         { label: 'Finance', value: 28, color: '#d97706' },
         { label: 'Healthcare', value: 22, color: '#dc2626' },
         { label: 'AI Labs', value: 18, color: '#15803d' },
-        { label: 'Enterprise', value: 12, color: '#3b82f6' },
+        { label: 'Enterprise', value: 12, color: '#64748b' },
         { label: 'Other', value: 20, color: '#6b7280' }
     ];
     
@@ -5982,7 +5770,7 @@ function ageBadgeHtml(age) {
 
 function layerColor(layer) {
     if (layer === 'L3') return '#22c55e';
-    if (layer === 'L2') return '#3b82f6';
+    if (layer === 'L2') return '#64748b';
     if (layer === 'L1') return '#eab308';
     return 'var(--text-muted)';
 }
@@ -5990,7 +5778,7 @@ function layerColor(layer) {
 function riskColor(risk) {
     if (risk == null) return 'var(--text-muted)';
     if (risk < 0.25) return '#22c55e';
-    if (risk < 0.50) return '#3b82f6';
+    if (risk < 0.50) return '#64748b';
     if (risk < 0.70) return '#eab308';
     return '#ef4444';
 }
@@ -6148,7 +5936,7 @@ function dashDisplayResult(r, domain, output) {
     const recs = r.recommendations || [];
     if (recs.length > 0 && recsWrap && recsList) {
         recsWrap.style.display = 'block';
-        const sevColors = { critical: '#ef4444', high: '#f97316', medium: '#eab308', low: '#3b82f6', info: '#22c55e' };
+        const sevColors = { critical: '#ef4444', high: '#f97316', medium: '#eab308', low: '#64748b', info: '#22c55e' };
         recsList.innerHTML = recs.map(rec => {
             const c = sevColors[rec.severity] || 'var(--text-muted)';
             return `<div style="padding:6px 8px;margin-bottom:4px;border-left:2px solid ${c};background:${c}08;border-radius:0 4px 4px 0;font-size:11px;color:var(--text-secondary);line-height:1.5">
