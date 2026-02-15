@@ -1492,6 +1492,67 @@ a.info-val:hover { color: var(--text); }
                 <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text-muted)">CS-2026-001 · n=100 · regex scoring · open methodology</div>
             </div>
 
+            <!-- INTEGRATION (collapsible) -->
+            <div style="margin-bottom:12px">
+                <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;overflow:hidden">
+                    <div style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="const b=document.getElementById('integration-body');const a=document.getElementById('integration-arrow');if(b.style.display==='none'){b.style.display='block';a.style.transform='rotate(180deg)'}else{b.style.display='none';a.style.transform='rotate(0deg)'}">
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <span style="font-size:12px;font-weight:600">Integration</span>
+                            <span style="font-size:9px;color:var(--text-muted)">One line change. No SDK. No retraining.</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <button onclick="event.stopPropagation();copyIntegrationCode()" style="background:none;border:1px solid var(--border);border-radius:3px;padding:2px 8px;font-size:9px;color:var(--text-muted);cursor:pointer;font-family:'Inter',sans-serif" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">Copy code</button>
+                            <svg id="integration-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2" style="transition:transform 0.2s"><polyline points="6,9 12,15 18,9"/></svg>
+                        </div>
+                    </div>
+                    <div id="integration-body" style="display:none">
+                        <div style="padding:14px 16px;background:#0c0f14;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7;overflow-x:auto;border-top:1px solid var(--border)">
+                            <div style="color:var(--text-muted);margin-bottom:6px"># Before (direct to provider):</div>
+                            <div><span style="color:#e2e8f0">client</span> <span style="color:var(--text-muted)">=</span> <span style="color:#22c55e">OpenAI</span>(<span style="color:rgba(34,197,94,0.7)">api_key</span>=<span style="color:#4ade80">"sk-..."</span>)</div>
+                            <div style="height:10px"></div>
+                            <div style="color:var(--text-muted);margin-bottom:6px"># After (through ONTO proxy — GOLD injected server-side):</div>
+                            <div><span style="color:#e2e8f0">client</span> <span style="color:var(--text-muted)">=</span> <span style="color:#22c55e">OpenAI</span>(</div>
+                            <div style="padding-left:24px"><span style="color:rgba(34,197,94,0.7)">api_key</span>=<span style="color:#4ade80">"onto_sk_..."</span>,</div>
+                            <div style="padding-left:24px"><span style="color:rgba(34,197,94,0.7)">base_url</span>=<span style="color:#4ade80">"https://api.ontostandard.org/v1/proxy"</span></div>
+                            <div>)</div>
+                            <div style="height:10px"></div>
+                            <div style="color:var(--text-muted)"># Everything else stays the same</div>
+                            <div><span style="color:#e2e8f0">response</span> <span style="color:var(--text-muted)">=</span> <span style="color:#e2e8f0">client</span>.<span style="color:#e2e8f0">chat</span>.<span style="color:#e2e8f0">completions</span>.<span style="color:#22c55e">create</span>(</div>
+                            <div style="padding-left:24px"><span style="color:rgba(34,197,94,0.7)">model</span>=<span style="color:#4ade80">"gpt-4o"</span>,</div>
+                            <div style="padding-left:24px"><span style="color:rgba(34,197,94,0.7)">messages</span>=[{<span style="color:#4ade80">"role"</span>: <span style="color:#4ade80">"user"</span>, <span style="color:#4ade80">"content"</span>: <span style="color:#4ade80">"your question"</span>}]</div>
+                            <div>)</div>
+                        </div>
+                        <div style="padding:8px 16px;border-top:1px solid var(--border);display:flex;gap:16px;font-size:9px;color:var(--text-muted)">
+                            <span>✓ GOLD injected</span>
+                            <span>✓ Certificate issued</span>
+                            <span>✓ Hash generated</span>
+                            <span>✓ Publicly verifiable</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADD PROJECT -->
+            <div style="margin-bottom:20px">
+                <div style="padding:16px 20px;background:var(--accent-subtle);border:1px solid rgba(21,128,61,0.25);border-radius:6px;cursor:pointer;transition:all 0.2s" onclick="showAddModelModal()" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(21,128,61,0.25)'">
+                    <div style="display:flex;align-items:center;justify-content:space-between">
+                        <div style="display:flex;align-items:center;gap:16px">
+                            <div style="width:40px;height:40px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(21,128,61,0.08)">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--accent)" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            </div>
+                            <div>
+                                <div style="font-size:14px;font-weight:600;color:var(--text)">Add project</div>
+                                <div style="font-size:10px;color:var(--text-secondary);margin-top:2px">Register a model to connect through ONTO proxy. Multiple models per account.</div>
+                            </div>
+                        </div>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
+                    </div>
+                    <div style="margin-top:10px;padding:8px 12px;background:rgba(21,128,61,0.06);border-radius:4px;border-left:2px solid var(--accent)">
+                        <div style="font-size:10px;color:var(--text-secondary);line-height:1.5">Recommendation: review the Evidence section below before connecting. Run a baseline test to see the difference ONTO GOLD makes on your model.</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- DEMO -->
             <div style="margin-bottom:20px">
                 <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:20px">
@@ -1548,66 +1609,6 @@ a.info-val:hover { color: var(--text); }
                 </div>
             </div>
 
-            <!-- CONNECT -->
-            <div style="margin-bottom:20px">
-                <div style="font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Integration</div>
-                <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;overflow:hidden">
-                    <div style="padding:16px 20px;border-bottom:1px solid var(--border)">
-                        <div style="font-size:14px;font-weight:600;margin-bottom:4px">One line change</div>
-                        <div style="font-size:11px;color:var(--text-secondary);line-height:1.5">Replace your provider's base URL with the ONTO proxy endpoint. GOLD is injected server-side on every request. No SDK required. No model retraining. Certificate issued automatically upon first request.</div>
-                    </div>
-
-                    <!-- Code -->
-                    <div style="padding:16px 20px;background:#0c0f14;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7;overflow-x:auto">
-                        <div style="color:var(--text-muted);margin-bottom:8px"># Before (direct to provider):</div>
-                        <div><span style="color:#e2e8f0">client</span> <span style="color:var(--text-muted)">=</span> <span style="color:#22c55e">OpenAI</span>(<span style="color:rgba(34,197,94,0.7)">api_key</span>=<span style="color:#4ade80">"sk-..."</span>)</div>
-                        <div style="height:12px"></div>
-                        <div style="color:var(--text-muted);margin-bottom:8px"># After (through ONTO proxy — GOLD injected server-side):</div>
-                        <div><span style="color:#e2e8f0">client</span> <span style="color:var(--text-muted)">=</span> <span style="color:#22c55e">OpenAI</span>(</div>
-                        <div style="padding-left:24px"><span style="color:rgba(34,197,94,0.7)">api_key</span>=<span style="color:#4ade80">"onto_sk_..."</span>,</div>
-                        <div style="padding-left:24px"><span style="color:rgba(34,197,94,0.7)">base_url</span>=<span style="color:#4ade80">"https://api.ontostandard.org/v1/proxy"</span></div>
-                        <div>)</div>
-                        <div style="height:12px"></div>
-                        <div style="color:var(--text-muted)"># Everything else stays the same</div>
-                        <div><span style="color:#e2e8f0">response</span> <span style="color:var(--text-muted)">=</span> <span style="color:#e2e8f0">client</span>.<span style="color:#e2e8f0">chat</span>.<span style="color:#e2e8f0">completions</span>.<span style="color:#22c55e">create</span>(</div>
-                        <div style="padding-left:24px"><span style="color:rgba(34,197,94,0.7)">model</span>=<span style="color:#4ade80">"gpt-4o"</span>,</div>
-                        <div style="padding-left:24px"><span style="color:rgba(34,197,94,0.7)">messages</span>=[{<span style="color:#4ade80">"role"</span>: <span style="color:#4ade80">"user"</span>, <span style="color:#4ade80">"content"</span>: <span style="color:#4ade80">"your question"</span>}]</div>
-                        <div>)</div>
-                    </div>
-
-                    <!-- What happens -->
-                    <div style="padding:12px 20px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1px">
-                        <div style="text-align:center;padding:4px">
-                            <div style="font-size:12px;color:var(--accent)">✓</div>
-                            <div style="font-size:8px;color:var(--text-muted);margin-top:1px">GOLD injected</div>
-                        </div>
-                        <div style="text-align:center;padding:4px">
-                            <div style="font-size:12px;color:var(--accent)">✓</div>
-                            <div style="font-size:8px;color:var(--text-muted);margin-top:1px">Certificate issued</div>
-                        </div>
-                        <div style="text-align:center;padding:4px">
-                            <div style="font-size:12px;color:var(--accent)">✓</div>
-                            <div style="font-size:8px;color:var(--text-muted);margin-top:1px">Hash generated</div>
-                        </div>
-                        <div style="text-align:center;padding:4px">
-                            <div style="font-size:12px;color:var(--accent)">✓</div>
-                            <div style="font-size:8px;color:var(--text-muted);margin-top:1px">Publicly verifiable</div>
-                        </div>
-                    </div>
-
-                    <!-- API key -->
-                    <div style="padding:12px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-                        <div style="display:flex;align-items:center;gap:10px">
-                            <span style="font-size:10px;color:var(--text-muted)">Your API key:</span>
-                            <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-secondary);background:#0c0f14;padding:3px 8px;border-radius:3px;border:1px solid var(--border)">onto_sk_••••••••••••</code>
-                        </div>
-                        <div style="display:flex;gap:6px">
-                            <button onclick="copyApiKey()" style="background:none;border:1px solid var(--border);border-radius:3px;padding:3px 10px;font-size:9px;color:var(--text-muted);cursor:pointer;font-family:'Inter',sans-serif" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">Copy key</button>
-                            <a href="#" onclick="showPage('api');return false" style="font-size:9px;color:var(--text-muted);text-decoration:none;padding:3px 10px;border:1px solid var(--border);border-radius:3px" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-muted)'">Full docs →</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <!-- HOW GOLD WORKS -->
             <div style="margin-bottom:20px">
@@ -4369,6 +4370,24 @@ const mockModels = [
 ];
 
 // Old comparison/grid functions removed — dashboard v2 uses compact model list
+
+function copyIntegrationCode() {
+    const code = `# Before (direct to provider):
+client = OpenAI(api_key="sk-...")
+
+# After (through ONTO proxy — GOLD injected server-side):
+client = OpenAI(
+    api_key="onto_sk_...",
+    base_url="https://api.ontostandard.org/v1/proxy"
+)
+
+# Everything else stays the same
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[{"role": "user", "content": "your question"}]
+)`;
+    navigator.clipboard.writeText(code).then(() => showToast('Code copied'));
+}
 
 function showAddModelModal() {
     document.getElementById('reg-model-provider').value = '';
