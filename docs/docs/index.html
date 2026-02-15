@@ -15,6 +15,9 @@
 <meta name="twitter:title" content="ONTO — Documentation">
 <meta name="twitter:description" content="ONTO Protocol documentation. Epistemic Risk Standard, API specifications, regulatory alignment, and legal.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='17' fill='white'/%3E%3Cpath d='M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z' fill='%230a0a0a'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0a0a0a;--bg-s:#121212;--bg-c:#1a1a1a;--bg-e:#242424;--border:#333;--text:#fafafa;--text-s:#a0a0a0;--text-m:#606060;--accent:#15803d;--accent-s:rgba(21,128,61,.15);--danger:#dc2626;--warning:#d97706;--sw:240px;--hh:56px}
@@ -106,6 +109,32 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 @keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
 .hidden{display:none!important}
 @media(max-width:768px){.auth-card{padding:20px 16px;margin:0 4px;max-width:100%}.auth-title{font-size:14px}.otp-inp{width:36px;height:42px;font-size:16px}}
+/* === METHODOLOGY === */
+.formula-block{background:var(--bg-c);border:1px solid var(--border);border-radius:4px;padding:28px 24px;margin:24px 0;overflow-x:auto}
+.formula-block .formula-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--text-m);margin-bottom:16px}
+.formula-block .katex{font-size:1.1em}
+.formula-block .formula-desc{font-size:13px;color:var(--text-s);margin-top:16px;line-height:1.7}
+.meth-table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}
+.meth-table th{text-align:left;padding:10px 12px;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-m);border-bottom:1px solid var(--border)}
+.meth-table td{padding:10px 12px;border-bottom:1px solid rgba(51,51,51,0.5);color:var(--text-s)}
+.meth-table tr:hover td{background:var(--bg-c)}
+.meth-table .mono{font-family:var(--mono);font-size:13px}
+.meth-table .accent{color:var(--accent);font-weight:600}
+.meth-table .dim{color:var(--text-s)}
+.arch-diagram{background:var(--bg-c);border:1px solid var(--border);border-radius:4px;padding:28px;margin:24px 0;font-family:var(--mono);font-size:12px;line-height:1.8;white-space:pre;overflow-x:auto;color:var(--text-m)}
+.arch-diagram .layer-name{color:var(--text);font-weight:600}
+.arch-diagram .component{color:var(--text-s)}
+.result-card{background:var(--bg-c);border:1px solid var(--border);border-radius:4px;padding:24px;margin:12px 0;display:flex;align-items:center;gap:20px}
+.result-card .metric{font-family:var(--mono);font-size:28px;font-weight:600;color:var(--accent);min-width:90px}
+.result-card .metric.danger{color:var(--danger)}
+.result-card .label{font-size:14px;color:var(--text-s)}
+.result-card .desc{font-size:13px;color:var(--text-m);margin-top:4px}
+.proof-visual{background:var(--bg-c);border:1px solid var(--border);border-radius:4px;padding:24px;margin:24px 0;font-family:var(--mono);font-size:12px}
+.proof-step{display:flex;align-items:center;gap:12px;padding:8px 0;color:var(--text-s)}
+.proof-step .step-num{width:22px;height:22px;border-radius:50%;background:rgba(21,128,61,0.08);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0;border:1px solid rgba(21,128,61,0.2)}
+.proof-step code{color:white}
+.note-block{background:var(--bg-c);border-left:2px solid var(--border);padding:16px 20px;margin:24px 0;border-radius:0 4px 4px 0;font-size:14px;color:var(--text-s);line-height:1.7}
+@media(max-width:768px){.result-card{flex-direction:column;align-items:flex-start}.result-card .metric{font-size:24px}}
 </style>
 </head>
 <body>
@@ -128,7 +157,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <a href="/app/?page=settings" class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Account</a>
 </div>
 <div class="sb-si" id="sb-si"><a class="btn-si" onclick="openAuth('login')">Sign In</a><a class="btn-ca" onclick="openAuth('register')">Create Account</a></div>
-<div class="ng"><h4>Overview</h4><a class="nl active" href="#about" data-doc="about">About ONTO</a></div>
+<div class="ng"><h4>Overview</h4><a class="nl active" href="#about" data-doc="about">About ONTO</a><a class="nl" href="#methodology" data-doc="methodology">Methodology</a></div>
 <div class="ng"><h4>Standard</h4><a class="nl" href="#ers" data-doc="ers">ONTO-ERS</a></div>
 <div class="ng"><h4>Specifications</h4><a class="nl" href="#layer-spec" data-doc="layer-spec">Layer Specification</a><a class="nl" href="#regulatory" data-doc="regulatory">Regulatory Matrix</a></div>
 <div class="ng"><h4>Governance</h4><a class="nl" href="#charter" data-doc="charter">Foundation Charter</a><a class="nl" href="#council" data-doc="council">Standards Council</a></div>
@@ -243,17 +272,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <p>Without continuous GOLD synchronization, scores drift and certificates become meaningless. This is infrastructure, not a one-time audit.</p>
 
 <h3>Cryptographic Proof</h3>
-<p>Every evaluation produces a 104-byte Ed25519 signed proof. Versioned, timestamped, tamper-proof. Verifiable at <a href="/check/">/check/</a>.</p>
-
-<h2>Evaluation Matrix</h2>
-<table><thead><tr><th>Model</th><th>Risk Score</th><th>Layer Δ</th><th>Halluc. Rate</th><th>Behavior</th></tr></thead><tbody>
-<tr><td>Claude 3.5 Sonnet</td><td>0.38</td><td>0.22</td><td>8.1%</td><td>Measured hedging</td></tr>
-<tr><td>GPT-4o</td><td>0.42</td><td>0.31</td><td>12.4%</td><td>Confident gaps</td></tr>
-<tr><td>Gemini 1.5 Pro</td><td>0.61</td><td>0.45</td><td>22.7%</td><td>Authority mimicry</td></tr>
-<tr><td>Llama 3.1 70B</td><td>0.71</td><td>0.52</td><td>31.2%</td><td>Confident fabrication</td></tr>
-<tr><td>Perplexity</td><td>0.85</td><td>0.63</td><td>44.8%</td><td>Citation hallucination</td></tr>
-</tbody></table>
-<p style="font-size:11px;color:var(--text-m);">Demonstration data · Updated monthly · <a href="/audits/">Full reports →</a></p>
+<p>Every evaluation produces an Ed25519 signed proof. Versioned, timestamped, tamper-proof. Verifiable at <a href="/verify/">/verify/</a>.</p>
 
 <h2>Verification &amp; Reproducibility</h2>
 <ul>
@@ -265,7 +284,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 
 <h2>Published Research</h2>
 <table><thead><tr><th>Resource</th><th>Description</th><th>Access</th></tr></thead><tbody>
-<tr><td>arXiv Paper</td><td>ONTO-ERS: Deterministic Epistemic Risk Measurement</td><td>arXiv:2026.XXXXX</td></tr>
+<tr><td>arXiv Paper</td><td>ONTO-ERS: Deterministic Epistemic Risk Measurement</td><td>In preparation</td></tr>
 <tr><td>GOLD Corpus v4.5</td><td>149 calibration files, 100 probes</td><td><a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a></td></tr>
 <tr><td>Reproduction Scripts</td><td>Complete evaluation pipeline</td><td><a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a></td></tr>
 </tbody></table>
@@ -282,6 +301,319 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <p>ONTO is currently in <strong>Phase 2 (Experimental)</strong>. The protocol is published for research and measurement purposes. Evaluations are conducted using demonstration parameters. Production certification will be available in subsequent phases.</p>
 <p style="font-size:12px;color:var(--text-m);margin-top:20px;">ONTO is an independent research initiative. Not affiliated with ISO, NIST, or governmental standards bodies.</p>
 </div>
+
+<div class="ds da" id="doc-methodology" data-nav="methodology">
+<h1>Methodology</h1>
+<div class="dm"><span class="db-g bg-g">The Science Behind ROOT</span><span>Shannon · Kolmogorov · Eigenvalue</span><span>GOLD v4.5</span></div>
+
+<p>ONTO provides continuous epistemic grounding for AI systems. This document describes the mathematical foundations, scoring architecture, and verification mechanisms.</p>
+
+<h2>Mathematical Foundations</h2>
+
+    <p>AI systems produce outputs without intrinsic knowledge of their own epistemic boundaries — what they know versus what they're guessing. ONTO addresses this through three mathematical pillars:</p>
+
+    <div class="formula-block">
+        <div class="formula-label">Shannon Entropy</div>
+        $$H(X) = -\sum_{i=1}^{n} p(x_i) \log_2 p(x_i)$$
+        <div class="formula-desc">Measures information uncertainty in model outputs. High entropy = distributed probability across possible answers = genuine uncertainty. Low entropy = concentrated probability = confidence (justified or not). ONTO uses Shannon entropy to detect when a model's output distribution reveals latent uncertainty that contradicts surface-level confident language.</div>
+    </div>
+
+    <div class="formula-block">
+        <div class="formula-label">Kolmogorov Complexity</div>
+        $$K(x) = \min\{|p| : U(p) = x\}$$
+        <div class="formula-desc">The length of the shortest program that produces output x. ONTO approximates Kolmogorov complexity to measure response compressibility. Overclaimed responses tend to exhibit low complexity (formulaic hedging) while genuinely informed responses show structured complexity reflecting real knowledge.</div>
+    </div>
+
+    <div class="formula-block">
+        <div class="formula-label">Eigenvalue Decomposition</div>
+        $$A\mathbf{v} = \lambda\mathbf{v}$$
+        <div class="formula-desc">Applied to the epistemic covariance matrix of model outputs across evaluation dimensions. Dominant eigenvalues reveal principal axes of epistemic variation — where a model's uncertainty is structured versus random. This separates calibrated uncertainty (model knows its limits) from uncalibrated confidence (model doesn't know what it doesn't know).</div>
+    </div>
+
+    <div class="note-block">These three foundations operate simultaneously. Shannon entropy quantifies uncertainty. Kolmogorov complexity measures structural integrity. Eigenvalue decomposition separates signal from noise. Together, they form GOLD — the reference standard against which AI outputs are grounded.</div>
+<!-- §2 DUAL-LAYER -->
+<h2>Dual-Layer Scoring Architecture</h2>
+
+    <p>ONTO implements two independent analysis layers. Agreement between layers = verified grounding. Disagreement = epistemic risk detected.</p>
+
+    <div class="arch-diagram"><span class="layer-name">LAYER 1: LINGUISTIC ANALYSIS</span>  ←  what the model <span class="component">SAYS</span>
+│
+│  Input: raw model output text
+│  Engine: scoring_engine v3.0
+│  Method: EM1-EM5 classification (92 epistemic markers)
+│  Output: REP score [0,1]
+│
+├──────────────────────────────────────────
+│
+<span class="layer-name">LAYER 2: STATISTICAL ANALYSIS</span>  ←  how the model <span class="component">COMPUTES</span>
+│
+│  Input: probability distributions, token logits
+│  Engine: onto_core (Rust)
+│  Method: Shannon entropy + eigenvalue decomposition
+│  Output: statistical confidence [0,1]
+│
+├──────────────────────────────────────────
+│
+<span class="layer-name">AGREEMENT CHECK</span>  →  <span class="component">DLA (Dual-Layer Agreement)</span>
+│
+│  If Layer 1 ≈ Layer 2  →  grounded (low epistemic risk)
+│  If Layer 1 ≠ Layer 2  →  hallucination detected
+│  Example: model says "certainly" but entropy is high
+│           → DLA divergence → risk flagged</div>
+
+    <p>The key insight: a model can <em>say</em> it's confident while its internal computations reveal uncertainty. Layer 1 catches linguistic overclaiming. Layer 2 catches statistical miscalibration. DLA catches disagreement between the two — the hallucination signature.</p>
+<!-- §3 EM1-EM5 TAXONOMY -->
+<h2>EM1–EM5 Epistemic Marker Taxonomy</h2>
+
+    <p>Every AI output is classified across 92 epistemic markers organized into 5 levels:</p>
+
+    <table class="meth-table">
+        <thead>
+            <tr><th>Level</th><th>Name</th><th>Description</th><th>Example</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="mono accent">EM1</td>
+                <td>Full Epistemic Transparency</td>
+                <td>Explicit acknowledgment of unknowns</td>
+                <td class="dim">"This is not yet established..."</td>
+            </tr>
+            <tr>
+                <td class="mono accent">EM2</td>
+                <td>Calibrated Uncertainty</td>
+                <td>Hedged assertions with appropriate qualifiers</td>
+                <td class="dim">"Current evidence suggests..."</td>
+            </tr>
+            <tr>
+                <td class="mono">EM3</td>
+                <td>Neutral / Informational</td>
+                <td>Factual statements without epistemic markers</td>
+                <td class="dim">"The temperature is 20°C."</td>
+            </tr>
+            <tr>
+                <td class="mono dim">EM4</td>
+                <td>Confident Assertion</td>
+                <td>Strong claims without hedging</td>
+                <td class="dim">"This is definitely the case."</td>
+            </tr>
+            <tr>
+                <td class="mono dim">EM5</td>
+                <td>Overclaiming</td>
+                <td>Unfounded confidence on open/contested topics</td>
+                <td class="dim">"Consciousness is caused by..."</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>EM1-EM2 on genuinely uncertain topics = epistemically grounded. EM4-EM5 on established facts = appropriate confidence. The problem occurs when EM4-EM5 appears on UNKNOWN or CONTESTED questions — this is the hallucination that ONTO detects and the ROOT connection prevents.</p>
+
+    <div class="formula-block">
+        <div class="formula-label">Response Epistemic Profile (REP)</div>
+        $$\text{REP}(r) = \frac{\sum_{i=1}^{n} w_i \cdot \text{marker}_i(r)}{n}$$
+        <div class="formula-desc">Weighted score across all detected epistemic markers in response r. Range [0,1] where 0 = maximum overclaiming (EM5 dominant) and 1 = full epistemic transparency (EM1 dominant). The weights w<sub>i</sub> are calibrated against GOLD v4.5 reference responses.</div>
+    </div>
+<h2>Core Metrics</h2>
+
+    <div class="formula-block">
+        <div class="formula-label">Expected Calibration Error (ECE)</div>
+        $$\text{ECE} = \sum_{m=1}^{M} \frac{|B_m|}{n} \left| \text{acc}(B_m) - \text{conf}(B_m) \right|$$
+        <div class="formula-desc">Average deviation between model's stated confidence and observed accuracy across M calibration bins. Range: 0.0 (perfectly calibrated) to 1.0 (maximally miscalibrated). A model reporting 90% confidence but achieving 70% accuracy has a per-bin gap of 0.20.</div>
+    </div>
+
+    <div class="formula-block">
+        <div class="formula-label">Unknown Detection Rate (U-Recall)</div>
+        $$\text{U-Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}$$
+        <div class="formula-desc">Proportion of genuinely unknown/open questions correctly identified as uncertain. TP = correctly flagged unknowns. FN = unknowns missed (answered confidently). Range: 0% to 100%. The critical metric: can the system recognize what it doesn't know?</div>
+    </div>
+
+    <div class="formula-block">
+        <div class="formula-label">Epistemic Calibration Error (EpCE)</div>
+        $$\text{EpCE}(r) = |\text{REP}(r) - \text{REP}_{\text{GOLD}}(q)| \cdot \text{domain\_weight}(d)$$
+        <div class="formula-desc">Distance between the model's epistemic profile and the GOLD reference profile for the same query, adjusted by domain weight. EpCE near 0 = the model's epistemic stance matches the scientifically correct stance. EpCE near 1 = severe miscalibration.</div>
+    </div>
+
+    <div class="formula-block">
+        <div class="formula-label">Dual-Layer Agreement (DLA)</div>
+        $$\text{DLA} = 1 - |\text{Layer1}(r) - \text{Layer2}(r)|$$
+        <div class="formula-desc">Agreement between linguistic analysis and statistical analysis. DLA = 1.0 means what the model says matches how it computes. DLA near 0 indicates hallucination: confident language contradicted by uncertain computation, or vice versa.</div>
+    </div>
+
+    <div class="formula-block">
+        <div class="formula-label">Information Gap Ratio (IGR)</div>
+        $$\text{IGR}(c) = \frac{|\text{missing\_deps}(c)| + |\text{unresolved}(c)|}{|\text{expected}(c)|}$$
+        <div class="formula-desc">For a given claim c, the ratio of missing dependencies and unresolved contradictions to expected evidence. High IGR = the claim lacks sufficient grounding = requires epistemic disclosure.</div>
+    </div>
+
+    <p>These five metrics — ECE, U-Recall, REP, EpCE, DLA — plus IGR form the complete ONTO assessment. They are computed for every evaluation and signed with the current entropy signal.</p>
+<h2>GOLD v4.5 Reference Standard</h2>
+
+    <p>GOLD (Grounded Ontological Language Dataset) is the calibration corpus against which all AI outputs are measured. It provides the scientific "ground truth" for epistemic classification.</p>
+
+    <table class="meth-table">
+        <thead>
+            <tr><th>Property</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Version</td><td class="mono">4.5</td></tr>
+            <tr><td>Calibration files</td><td class="mono">149</td></tr>
+            <tr><td>Academic references</td><td class="mono">59 references, 8 primary sources</td></tr>
+            <tr><td>Epistemic markers</td><td class="mono">92 patterns across EM1-EM5</td></tr>
+            <tr><td>Domains</td><td class="mono">ED1-ED7 (medical, legal, financial, technical, scientific, general, creative)</td></tr>
+            <tr><td>Validated samples</td><td class="mono">268 (ONTO-Bench)</td></tr>
+            <tr><td>Label distribution</td><td class="mono">KNOWN: 126 · UNKNOWN: 110 · CONTRADICTION: 32</td></tr>
+            <tr><td>Tier-1 sources</td><td class="dim">Clay Mathematics Institute, NSF/ERC Grand Challenges, Physics/Biology open problem surveys</td></tr>
+            <tr><td>Tier-2 sources</td><td class="dim">NIST constants, established textbooks, Wikipedia open problem lists</td></tr>
+            <tr><td>Validation rate</td><td class="mono accent">100%</td></tr>
+        </tbody>
+    </table>
+
+    <p>GOLD encodes not just facts but their <em>epistemic status</em>: ESTABLISHED, CONTESTED, or UNKNOWN. This is the critical difference from RAG or knowledge graphs. A knowledge graph knows that water boils at 100°C. GOLD also knows that the nature of consciousness is UNKNOWN and that quantum interpretation is CONTESTED.</p>
+
+    <div class="note-block">Domain-specific thresholds (TCI baselines) adjust scoring for each epistemic domain ED1-ED7. Medical domain (ED1) has the strictest thresholds — overclaiming in healthcare carries the highest risk. Creative domain (ED7) has the most permissive — confident assertions in creative writing are appropriate.</div>
+<h2>Proof Chain Architecture</h2>
+
+    <p>Every evaluation through ONTO ROOT produces a cryptographically signed proof — verifiable evidence that grounding occurred at a specific moment.</p>
+
+    <div class="proof-visual">
+        <div class="proof-step">
+            <div class="step-num">1</div>
+            <span>AI output received via ROOT connection</span>
+        </div>
+        <div class="proof-step">
+            <div class="step-num">2</div>
+            <span>Scoring engine v3.0 computes EM1-EM5 + REP + EpCE + DLA</span>
+        </div>
+        <div class="proof-step">
+            <div class="step-num">3</div>
+            <span>Current entropy signal fetched → <code>σ(t)</code></span>
+        </div>
+        <div class="proof-step">
+            <div class="step-num">4</div>
+            <span>Evaluation + entropy combined → <code>SHA-256 hash</code></span>
+        </div>
+        <div class="proof-step">
+            <div class="step-num">5</div>
+            <span>Hash signed with Ed25519 private key → <code>signature</code></span>
+        </div>
+        <div class="proof-step">
+            <div class="step-num">6</div>
+            <span>Output: 104-byte proof packet = <code>hash + signature + timestamp</code></span>
+        </div>
+    </div>
+
+    <div class="formula-block">
+        <div class="formula-label">Proof Packet Structure (104 bytes)</div>
+        <div class="code-block" style="background:transparent;border:none;padding:0;margin:8px 0">
+<span class="comment">// 32 bytes: SHA-256 hash of evaluation</span>
+<span class="keyword">hash</span>     = SHA256(model_id + output + scores + entropy_signal)
+
+<span class="comment">// 64 bytes: Ed25519 signature</span>
+<span class="keyword">signature</span> = Ed25519.sign(hash, SIGNING_KEY)
+
+<span class="comment">// 8 bytes: Unix timestamp (microseconds)</span>
+<span class="keyword">timestamp</span> = time_μs()
+
+<span class="comment">// Verification: anyone with public key can verify</span>
+<span class="keyword">verified</span>  = Ed25519.verify(hash, signature, PUBLIC_KEY)</div>
+        <div class="formula-desc">The proof is verifiable but unreproducible without the original entropy signal σ(t). This means results can be confirmed authentic but cannot be forged retroactively. Not blockchain — standard public-key cryptography.</div>
+    </div>
+
+    <p>While connected to ROOT, every evaluation is signed with the current entropy. Disconnection means no new entropy = no new proofs = certificate frozen. This is why ONTO is infrastructure, not a report.</p>
+<h2>Benchmark Results (ONTO-Bench)</h2>
+
+    <p>ONTO-Bench evaluates the core question: can the system distinguish what is known from what is genuinely unknown? Results across 268 samples:</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:24px 0">
+        <div class="result-card">
+            <div class="metric">96%</div>
+            <div>
+                <div class="label">ONTO U-Recall</div>
+                <div class="desc">Correctly identifies 96% of genuinely open questions</div>
+            </div>
+        </div>
+        <div class="result-card">
+            <div class="metric" style="color:var(--text-s)">&lt;10%</div>
+            <div>
+                <div class="label">Baseline U-Recall (without ONTO)</div>
+                <div class="desc">Standard models without epistemic grounding miss most unknowns</div>
+            </div>
+        </div>
+    </div>
+
+    <table class="meth-table">
+        <thead>
+            <tr><th>Model</th><th>U-Precision</th><th>U-Recall</th><th>U-F1</th><th>ECE ↓</th><th>Accuracy</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="accent" style="font-weight:700">ONTO</td>
+                <td class="mono">0.41</td>
+                <td class="mono accent">0.96</td>
+                <td class="mono accent">0.58</td>
+                <td class="mono">0.30</td>
+                <td class="mono">0.43</td>
+            </tr>
+            <tr>
+                <td>Claude 3</td>
+                <td class="mono">0.45</td>
+                <td class="mono dim">0.09</td>
+                <td class="mono">0.15</td>
+                <td class="mono">0.31</td>
+                <td class="mono">0.48</td>
+            </tr>
+            <tr>
+                <td>Llama 3</td>
+                <td class="mono">0.20</td>
+                <td class="mono dim">0.01</td>
+                <td class="mono">0.02</td>
+                <td class="mono">0.33</td>
+                <td class="mono">0.46</td>
+            </tr>
+            <tr>
+                <td>GPT-4</td>
+                <td class="mono">0.10</td>
+                <td class="mono dim">0.01</td>
+                <td class="mono">0.02</td>
+                <td class="mono">0.34</td>
+                <td class="mono">0.44</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>The precision-recall tradeoff is intentional: ONTO prioritizes recall (catching unknowns) over precision. In high-stakes domains, false uncertainty is always preferable to false confidence. Missing a genuine unknown — answering confidently when you shouldn't — is the failure mode that costs lives and money.</p>
+
+    <div class="note-block"><strong>Why do LLMs fail?</strong> LLMs are trained to produce fluent, helpful responses. The training objective rewards confident answers and does not penalize confident responses to unanswerable questions. Without explicit epistemic structure, they have no mechanism to recognize knowledge boundaries. ONTO provides that structure through the ROOT connection.</div>
+<h2>Compliance Grades &amp; Regulatory Alignment</h2>
+
+    <table class="meth-table">
+        <thead>
+            <tr><th>Grade</th><th>U-Recall</th><th>ECE</th><th>Certification</th></tr>
+        </thead>
+        <tbody>
+            <tr><td class="accent" style="font-weight:700">A — EXEMPLARY</td><td class="mono">≥90%</td><td class="mono">≤0.05</td><td>Full</td></tr>
+            <tr><td style="font-weight:600">B — STRONG</td><td class="mono">≥70%</td><td class="mono">≤0.10</td><td>Full</td></tr>
+            <tr><td>C — ADEQUATE</td><td class="mono">≥50%</td><td class="mono">≤0.15</td><td>Conditional</td></tr>
+            <tr><td>D — MARGINAL</td><td class="mono">≥30%</td><td class="mono">≤0.20</td><td>Not eligible</td></tr>
+            <tr><td class="danger">F — CRITICAL</td><td class="mono">&lt;30%</td><td class="mono">&gt;0.20</td><td>Not eligible</td></tr>
+        </tbody>
+    </table>
+
+    <p>ONTO compliance maps to existing regulatory frameworks:</p>
+
+    <table class="meth-table">
+        <thead>
+            <tr><th>Framework</th><th>ONTO Mapping</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>EU AI Act (Annex III)</td><td>Continuous ROOT connection provides ongoing quantitative evidence for high-risk AI conformity assessment</td></tr>
+            <tr><td>NIST AI RMF 1.0</td><td>ECE and U-Recall implement the MEASURE function (Map → Measure → Manage → Govern)</td></tr>
+            <tr><td>ISO/IEC 42001</td><td>ONTO produces signed evaluation records, metric histories, and compliance determinations required for AI management system audits</td></tr>
+        </tbody>
+    </table>
+
+<p style="font-size:12px;color:var(--text-m);margin-top:32px;">Methodology continuously refined. GOLD reference standard and scoring engine versioned independently. Current: GOLD v4.5, Scoring Engine v3.0.</p>
+</div>
+
 
 <div class="ds da" id="doc-ers" data-nav="ers">
 <h1>ONTO Epistemic Risk Standard (ONTO-ERS)</h1>
@@ -363,7 +695,7 @@ System:       [System Name]
 Organization: [Organization Name]
 Level:        [BASIC | STANDARD | ADVANCED]
 Certificate:  ONTO-CERT-XXXX-XXXX
-Verify:       ontostandard.org/check/XXXX
+Verify:       ontostandard.org/verify/XXXX
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</code></pre><hr/>
 <h2 id="regulatory-alignment">7. Regulatory Alignment</h2>
 <table><thead><tr><th>Framework</th><th>Mapping</th></tr></thead><tbody>
@@ -386,9 +718,9 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <h1>ONTO Layer Specification</h1>
 <div class="dm"><span class="db-g bg-a">Draft</span><span>ONTO-SPEC-002</span><span>February 2026</span></div>
 <h2 id="layer-arch">1. Layer Architecture</h2>
-<h3>1.1 OPEN</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$0</td></tr><tr><td>Delay</td><td>1 hour</td></tr><tr><td>Rate</td><td>50 / day</td></tr><tr><td>SLA</td><td>Best effort</td></tr></tbody></table>
-<h3>1.2 STANDARD</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$15,000/yr</td></tr><tr><td>Delay</td><td>Real-time</td></tr><tr><td>Rate</td><td>~10,000/day</td></tr><tr><td>SLA</td><td>99.9%</td></tr></tbody></table>
-<h3>1.3 CRITICAL</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$100K+/yr</td></tr><tr><td>Delay</td><td>Real-time + priority</td></tr><tr><td>Rate</td><td>Unlimited</td></tr><tr><td>SLA</td><td>99.99%</td></tr></tbody></table>
+<h3>1.1 OPEN</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$0</td></tr><tr><td>Delay</td><td>1 hour</td></tr><tr><td>Rate</td><td>50 / day</td></tr><tr><td>SLA</td><td>Best effort</td></tr><tr><td>Models</td><td>1</td></tr></tbody></table>
+<h3>1.2 STANDARD</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$15,000/yr</td></tr><tr><td>Delay</td><td>Real-time</td></tr><tr><td>Rate</td><td>Unlimited</td></tr><tr><td>SLA</td><td>99.9%</td></tr><tr><td>Models</td><td>5</td></tr></tbody></table>
+<h3>1.3 CRITICAL</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$100K+/yr</td></tr><tr><td>Delay</td><td>Real-time + priority</td></tr><tr><td>Rate</td><td>Unlimited</td></tr><tr><td>SLA</td><td>99.99%</td></tr><tr><td>Models</td><td>Unlimited</td></tr></tbody></table>
 <h2 id="signal-packet">2. Signal Packet</h2>
 <pre><code>104 bytes: [8 timestamp][32 entropy][64 Ed25519 signature]</code></pre>
 <h2 id="layer-endpoints">3. API Endpoints</h2>
@@ -451,7 +783,7 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <div class="article-card"><h3>Why AI Needs a Thermometer, Not a Doctor</h3><div class="article-meta">ONTO Standards Council · January 2026</div><p>The AI industry is focused on making models smarter. But smartness without self-awareness is dangerous. ONTO measures when AI doesn't know — before failure happens.</p></div>
 <div class="article-card"><h3>Epistemic Risk: The Metric Nobody Is Tracking</h3><div class="article-meta">ONTO Standards Council · January 2026</div><p>Most AI monitoring tools focus on data drift. But the most dangerous failures happen when a model is confidently wrong — when it doesn't know what it doesn't know.</p></div>
 <div class="article-card"><h3>How Regulated Industries Can Prepare for the EU AI Act</h3><div class="article-meta">ONTO Standards Council · February 2026</div><p>The EU AI Act requires risk management, transparency, and conformity assessment. ONTO certification maps directly to Articles 9, 13, 15, and 43.</p></div>
-<p style="color:var(--text-m);font-size:12px;margin-top:20px">More articles coming. Subscribe: <a href="mailto:support@ontostandard.org">support@ontostandard.org</a></p>
+<p style="color:var(--text-m);font-size:12px;margin-top:20px">More articles coming. Subscribe: <a href="/cdn-cgi/l/email-protection#196a6c6969766b6d5976776d766a6d78777d786b7d37766b7e"><span class="__cf_email__" data-cfemail="54272124243b2620143b3a203b2720353a303526307a3b2633">[email&#160;protected]</span></a></p>
 </div><div class="sd"></div>
 
 <!-- FAQ -->
@@ -540,7 +872,7 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <h2 id="t-12">12. Termination</h2><p>We may terminate for violations. You may cancel anytime.</p>
 <h2 id="t-13">13. Changes</h2><p>We may modify terms. Continued use = acceptance.</p>
 <h2 id="t-14">14. Law</h2><p>Governing law and jurisdiction to be determined upon formal legal entity establishment.</p>
-<h2 id="t-15">15. Contact</h2><p><a href="mailto:support@ontostandard.org">support@ontostandard.org</a></p>
+<h2 id="t-15">15. Contact</h2><p><a href="/cdn-cgi/l/email-protection#e1929491918e9395a18e8f958e9295808f85809385cf8e9386"><span class="__cf_email__" data-cfemail="03707673736c7177436c6d776c7077626d676271672d6c7164">[email&#160;protected]</span></a></p>
 </div><div class="sd"></div>
 
 <!-- PRIVACY -->
@@ -556,7 +888,7 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <h2 id="p-4">4. Retention</h2><p>Active: retained. Deleted: 30 days. Aggregated: indefinite. Billing: as required by law.</p>
 <h2 id="p-5">5. Sharing</h2><p>No selling. Shared with: service providers, payment processors, law enforcement (required), successors.</p>
 <h2 id="p-6">6. Security</h2><ul><li>TLS 1.3 in transit</li><li>AES-256 at rest</li><li>Regular audits</li><li>Access controls</li></ul>
-<h2 id="p-7">7. Your Rights</h2><p>Access, correct, delete, export, object, withdraw consent. Contact: <a href="mailto:support@ontostandard.org">support@ontostandard.org</a></p>
+<h2 id="p-7">7. Your Rights</h2><p>Access, correct, delete, export, object, withdraw consent. Contact: <a href="/cdn-cgi/l/email-protection#4b383e3b3b24393f0b24253f24383f2a252f2a392f6524392c"><span class="__cf_email__" data-cfemail="8efdfbfefee1fcfacee1e0fae1fdfaefe0eaeffceaa0e1fce9">[email&#160;protected]</span></a></p>
 <h2 id="p-8">8. Cookies</h2><p>Essential only. No advertising trackers.</p>
 <h2 id="p-9">9. Children</h2><p>Not intended for under 18. No data collected from children.</p>
 </div><div class="sd"></div>
@@ -572,12 +904,12 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <h2 id="r-4">4. Service Credits</h2>
 <table><thead><tr><th>Plan</th><th>Breach</th><th>Credit</th></tr></thead><tbody><tr><td>Standard</td><td>99.9%</td><td>10%</td></tr><tr><td>Critical</td><td>99.99%</td><td>25%</td></tr></tbody></table>
 <h2 id="r-5">5. Non-Refundable</h2><ul><li>ToS violation terminations</li><li>Unused credits</li><li>Setup fees</li><li>Third-party fees</li></ul>
-<h2 id="r-6">6. How To</h2><p>Email <a href="mailto:support@ontostandard.org">support@ontostandard.org</a>. Response 2 days, processing 5-10 days.</p>
+<h2 id="r-6">6. How To</h2><p>Email <a href="/cdn-cgi/l/email-protection#46353336362934320629283229353227282227342268293421"><span class="__cf_email__" data-cfemail="55262025253a2721153a3b213a2621343b313427317b3a2732">[email&#160;protected]</span></a>. Response 2 days, processing 5-10 days.</p>
 </div>
 
 </div></main>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const AF_API='https://api.ontostandard.org';
 let afPendingEmail='';
 
@@ -694,9 +1026,9 @@ secs.forEach(s=>obs.observe(s));
 nls.forEach(l=>l.addEventListener('click',function(e){const id=this.getAttribute('data-doc');if(!id)return;e.preventDefault();const t=document.getElementById('doc-'+id);if(t){t.scrollIntoView({behavior:'smooth',block:'start'});history.replaceState(null,'','#'+id);updNav(id);closeSB()}}));
 function handleHash(){const h=location.hash.replace('#','');if(h){let t=document.getElementById('doc-'+h);if(!t)t=document.getElementById(h);if(t){setTimeout(()=>t.scrollIntoView({behavior:'smooth',block:'start'}),100);const n=t.closest('.ds[data-nav]');if(n)updNav(n.getAttribute('data-nav'))}}}
 handleHash();window.addEventListener('hashchange',handleHash);
+// Render KaTeX formulas in methodology section
+document.addEventListener('DOMContentLoaded',()=>{if(typeof renderMathInElement==='function')renderMathInElement(document.getElementById('doc-methodology'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})});
+window.addEventListener('load',()=>{if(typeof renderMathInElement==='function')renderMathInElement(document.getElementById('doc-methodology'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})});
 function toggleFaq(el){el.parentElement.classList.toggle('open')}
 let stars=0;function setStar(n){stars=n;document.querySelectorAll('#ss span').forEach((s,i)=>{s.classList.toggle('active',i<n)})}
-async function submitRv(){const n=document.getElementById('rv-name').value.trim(),r=document.getElementById('rv-role').value.trim(),t=document.getElementById('rv-text').value.trim();if(!n||!t){alert('Fill name and review.');return}try{await fetch('https://api.ontostandard.org/v1/feedback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'review',name:n,role:r,rating:stars,text:t})})}catch(e){}document.getElementById('rv-ok').style.display='block';document.getElementById('rv-name').value='';document.getElementById('rv-role').value='';document.getElementById('rv-text').value='';stars=0;document.querySelectorAll('#ss span').forEach(s=>s.classList.remove('active'))}
-</script>
-</body>
-</html>
+async function submitRv(){const n=document.g
