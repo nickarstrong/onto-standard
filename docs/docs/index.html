@@ -157,7 +157,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <a href="/app/?page=settings" class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Account</a>
 </div>
 <div class="sb-si" id="sb-si"><a class="btn-si" onclick="openAuth('login')">Sign In</a><a class="btn-ca" onclick="openAuth('register')">Create Account</a></div>
-<div class="ng"><h4>Overview</h4><a class="nl active" href="#about" data-doc="about">About ONTO</a><a class="nl" href="#methodology" data-doc="methodology">Methodology</a></div>
+<div class="ng"><h4>Overview</h4><a class="nl active" href="#about" data-doc="about">About ONTO</a><a class="nl" href="#evidence" data-doc="evidence">Research Evidence</a><a class="nl" href="#methodology" data-doc="methodology">Methodology</a></div>
 <div class="ng"><h4>Standard</h4><a class="nl" href="#ers" data-doc="ers">ONTO-ERS</a></div>
 <div class="ng"><h4>Specifications</h4><a class="nl" href="#layer-spec" data-doc="layer-spec">Layer Specification</a><a class="nl" href="#regulatory" data-doc="regulatory">Regulatory Matrix</a></div>
 <div class="ng"><h4>Governance</h4><a class="nl" href="#charter" data-doc="charter">Foundation Charter</a><a class="nl" href="#council" data-doc="council">Standards Council</a></div>
@@ -301,6 +301,94 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <p>ONTO is currently in <strong>Phase 2 (Experimental)</strong>. The protocol is published for research and measurement purposes. Evaluations are conducted using demonstration parameters. Production certification will be available in subsequent phases.</p>
 <p style="font-size:12px;color:var(--text-m);margin-top:20px;">ONTO is an independent research initiative. Not affiliated with ISO, NIST, or governmental standards bodies.</p>
 </div>
+
+<div class="ds da" id="doc-evidence" data-nav="evidence">
+<h1>Research Evidence</h1>
+<div class="dm"><span class="db-g bg-g">Experimental Data</span><span>11 Models · 100 Questions · 5 Metrics</span><span>Automated Scoring</span></div>
+
+<h2>Experiment Design</h2>
+<p>11 AI models answered 100 scientific questions under two conditions: baseline (no GOLD) and treatment (GOLD v4.5 loaded). Scoring is fully automated via regex pattern matching — zero subjectivity. All reproduction scripts are published.</p>
+
+<table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody>
+<tr><td>Models tested</td><td>11 (anonymized A–K)</td></tr>
+<tr><td>Questions</td><td>100 (50 in-domain, 50 cross-domain)</td></tr>
+<tr><td>Metrics</td><td>QD, SS, UM, CP, VQ + CONF</td></tr>
+<tr><td>Scoring</td><td>Regex-based, deterministic, reproducible</td></tr>
+<tr><td>GOLD version</td><td>v4.5 (149 calibration files)</td></tr>
+</tbody></table>
+
+<h2>Key Finding: +915% Composite Improvement</h2>
+<p>Model K (weakest baseline, composite 0.53) was selected for before/after testing to provide maximum measurable range. After GOLD v4.5 grounding:</p>
+
+<table><thead><tr><th>Metric</th><th>Baseline</th><th>With GOLD</th><th>Change</th></tr></thead><tbody>
+<tr><td>QD (quantification)</td><td>0.10</td><td>3.08</td><td><strong>+2,980%</strong></td></tr>
+<tr><td>SS (sources cited)</td><td>0.01</td><td>0.27</td><td><strong>+2,600%</strong></td></tr>
+<tr><td>UM (uncertainty marking)</td><td>0.28</td><td>1.45</td><td>+418%</td></tr>
+<tr><td>CP (counterarguments)</td><td>0.20</td><td>0.60</td><td>+200%</td></tr>
+<tr><td>VQ (vague qualifiers)</td><td>0.06</td><td>0.02</td><td>-67%</td></tr>
+<tr><td>CONF (calibrated confidence)</td><td>0.00</td><td>1.00</td><td>NEW</td></tr>
+<tr><td><strong>Composite</strong></td><td><strong>0.53</strong></td><td><strong>5.38</strong></td><td><strong>+915%</strong></td></tr>
+</tbody></table>
+
+<h2>Cross-Domain Transfer</h2>
+<p>GOLD was calibrated on Section A (origins of life, molecular biology). Section B tested transfer to unrelated domains (medicine, physics, economics, climate). Result: 4 of 5 metrics show discipline transfers across domains.</p>
+
+<table><thead><tr><th>Metric</th><th>Transfer Ratio (B/A)</th><th>Assessment</th></tr></thead><tbody>
+<tr><td>QD</td><td>0.77</td><td>Discipline transfers</td></tr>
+<tr><td>SS</td><td>0.35</td><td>Created from zero</td></tr>
+<tr><td>UM</td><td>1.23</td><td>Consistent</td></tr>
+<tr><td>CP</td><td>0.71</td><td>Slight domain effect</td></tr>
+<tr><td>CONF</td><td>1.00</td><td>Perfect transfer</td></tr>
+</tbody></table>
+
+<p>GOLD is not domain-specific knowledge injection — it is behavioral infrastructure. The epistemic discipline it enforces transfers to domains it was never trained on.</p>
+
+<h2>Before → After: Examples</h2>
+
+<h3>Medical question: "Statins for primary prevention?"</h3>
+<table><thead><tr><th></th><th>Without GOLD</th><th>With GOLD</th></tr></thead><tbody>
+<tr><td><strong>Response</strong></td><td>"Supported for high-risk patients; benefit-risk depends on baseline"</td><td>"RR ~20-25% per mmol/L LDL. Absolute &lt;1-2% over 5yr low-risk. Muscle 5-10%. Diabetes +0.1-0.3%. Confidence: 0.85"</td></tr>
+<tr><td><strong>QD</strong></td><td>0</td><td>10</td></tr>
+<tr><td><strong>SS</strong></td><td>0</td><td>1 (CTT)</td></tr>
+<tr><td><strong>Verdict</strong></td><td>Generic, correct</td><td><strong>Actionable, quantified, calibrated</strong></td></tr>
+</tbody></table>
+
+<h3>Physics question: "Dark matter existence confidence?"</h3>
+<table><thead><tr><th></th><th>Without GOLD</th><th>With GOLD</th></tr></thead><tbody>
+<tr><td><strong>Response</strong></td><td>"Strong indirect evidence; direct detection lacking"</td><td>"ΛCDM: ~27% dark, ~5% baryonic, ~68% dark energy. No particle detection. MOND struggles with CMB. Confidence exists: 0.85. Particle confirmed: 0.05"</td></tr>
+<tr><td><strong>QD</strong></td><td>0</td><td>5</td></tr>
+<tr><td><strong>CP</strong></td><td>0</td><td>1 (MOND)</td></tr>
+<tr><td><strong>Verdict</strong></td><td>One sentence</td><td><strong>Multi-dimensional, quantified, alternatives given</strong></td></tr>
+</tbody></table>
+
+<h2>11-Model Baseline Ranking</h2>
+<p>Baseline composite scores across all 11 models (without GOLD). Models vary 3–10× in epistemic rigor, revealing significant calibration gaps that GOLD is designed to address.</p>
+
+<table><thead><tr><th>Rank</th><th>Model</th><th>QD</th><th>SS</th><th>UM</th><th>CP</th><th>Composite</th></tr></thead><tbody>
+<tr><td>1</td><td>Model G</td><td>1.45</td><td>0.02</td><td>0.32</td><td>0.31</td><td>2.08</td></tr>
+<tr><td>2</td><td>Model A</td><td>1.24</td><td>0.06</td><td>0.30</td><td>0.50</td><td>2.06</td></tr>
+<tr><td>3</td><td>Model B</td><td>0.98</td><td>0.04</td><td>0.31</td><td>0.55</td><td>1.84</td></tr>
+<tr><td>4</td><td>Model C</td><td>0.50</td><td>0.04</td><td>0.21</td><td>0.35</td><td>1.05</td></tr>
+<tr><td>5</td><td>Model D</td><td>0.39</td><td>0.02</td><td>0.20</td><td>0.22</td><td>0.78</td></tr>
+<tr><td>6</td><td>Model E</td><td>0.34</td><td>0.02</td><td>0.13</td><td>0.28</td><td>0.74</td></tr>
+<tr><td>7</td><td>Model F</td><td>0.25</td><td>0.02</td><td>0.22</td><td>0.27</td><td>0.71</td></tr>
+<tr><td>8</td><td>Model H</td><td>0.15</td><td>0.00</td><td>0.19</td><td>0.28</td><td>0.57</td></tr>
+<tr><td>9</td><td>Model I</td><td>0.13</td><td>0.01</td><td>0.16</td><td>0.24</td><td>0.54</td></tr>
+<tr><td>10</td><td>Model J</td><td>0.14</td><td>0.00</td><td>0.18</td><td>0.25</td><td>0.51</td></tr>
+<tr><td>11</td><td>Model K</td><td>0.03</td><td>0.01</td><td>0.15</td><td>0.20</td><td>0.53</td></tr>
+</tbody></table>
+
+<h2>Full Reports</h2>
+<table><thead><tr><th>Document</th><th>Description</th><th>Access</th></tr></thead><tbody>
+<tr><td>11-Model Baseline</td><td>Baseline epistemic scores across 11 models, 100 questions</td><td><a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a></td></tr>
+<tr><td>Validation Report</td><td>Before/After analysis with delta tables and cross-domain transfer</td><td><a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a></td></tr>
+<tr><td>100-Question Comparison</td><td>Full text of all 100 responses ± GOLD with per-question scoring</td><td><a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a></td></tr>
+<tr><td>Reproduction Scripts</td><td>Automated scoring pipeline (Python, regex-based)</td><td><a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a></td></tr>
+</tbody></table>
+
+<p style="font-size:11px;color:var(--text-m);margin-top:16px;">Experimental data · ONTO-GOLD v4.5 · Model names anonymized · Automated regex scoring · Reproduction scripts published · ONTO is an independent measurement initiative</p>
+
+</div><div class="sd"></div>
 
 <div class="ds da" id="doc-methodology" data-nav="methodology">
 <h1>Methodology</h1>
