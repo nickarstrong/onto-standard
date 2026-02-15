@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://api.ontostandard.org; frame-ancestors 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ONTO — Client Portal</title>
 <meta name="description" content="ONTO Client Portal — Connect your AI model, measure epistemic discipline, get scored and certified. +915% measured improvement.">
@@ -1498,7 +1499,7 @@ a.info-val:hover { color: var(--text); }
             <div class="dash-card-clean" style="margin-bottom:16px">
                 <div class="card-head" style="margin-bottom:12px">API Key</div>
                 <div class="key-row">
-                    <input type="password" class="key-input" id="api-key-display" value="onto_sk_demo_key_12345" readonly>
+                    <input type="password" class="key-input" id="api-key-display" value="" readonly placeholder="Loading...">
                     <div class="key-buttons">
                         <button class="btn-minimal" onclick="toggleApiKeyVisibility()" id="toggle-key-btn">Show</button>
                         <button class="btn-minimal" onclick="copyApiKey(this)">Copy</button>
@@ -2403,7 +2404,7 @@ async function api(endpoint, options = {}) {
         
         return data;
     } catch (error) {
-        console.error('API Error:', error);
+        console.error('API request failed');
         throw error;
     }
 }
@@ -2686,6 +2687,11 @@ async function handleRegister(btn) {
         return;
     }
     
+    if (password.length < 8) {
+        showToast('Password must be at least 8 characters', 'error');
+        return;
+    }
+    
     if (!termsAgreed) {
         showToast('Please agree to the Terms of Service', 'error');
         return;
@@ -2864,7 +2870,7 @@ async function resendVerification() {
         const response = await fetch(`${API_BASE}/v1/auth/resend-verification`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: pendingVerificationEmail, password: '' })
+            body: JSON.stringify({ email: pendingVerificationEmail })
         });
         
         const data = await response.json();
@@ -3807,7 +3813,7 @@ function regenerateApiKey(btn) {
         btn.textContent = 'Regenerate Key';
         btn.disabled = false;
         showToast('Regen failed: ' + (error.message || 'Unknown error'), 'error');
-        console.error('[ONTO] Regenerate failed:', error);
+        console.error('[ONTO] Regenerate failed');
     });
 }
 
@@ -4186,7 +4192,7 @@ async function loadSignalData() {
             startSignalCountdown();
         }
     } catch (e) {
-        console.error('Signal load error:', e);
+        console.error('Signal load error');
         document.getElementById('signal-hash').textContent = 'Connection error';
     }
 }
@@ -4301,7 +4307,7 @@ async function refreshProofStats() {
                 if (timeEl && stats.last_proof_time) timeEl.textContent = new Date(stats.last_proof_time).toLocaleString();
             }
         }
-    } catch(e) { console.log('Proof stats load:', e); }
+    } catch(e) { // proof stats load error }
 }
 
 // === ACCOUNTS FUNCTIONS ===
@@ -4361,7 +4367,7 @@ async function loadAccountsData() {
             renderAccounts(filtered);
         }
     } catch (e) {
-        console.error('Accounts load error:', e);
+        console.error('Accounts load error');
         if (container) container.innerHTML = '<div class="accounts-loading">Failed to load</div>';
     }
 }
@@ -4544,9 +4550,11 @@ async function deleteAccount(userId, email) {
     
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
+        const headers = { 'x-api-key': apiKey };
+        if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
         const res = await fetch(`${API_BASE}/v1/docs/admin/users/${userId}`, {
             method: 'DELETE',
-            headers: { 'x-api-key': apiKey }
+            headers
         });
         if (res.ok) {
             showToast('Account deleted', 'success');
@@ -4646,7 +4654,7 @@ function drawIndustryChart() {
 }
 
 // === CERTIFICATE VERIFICATION ===
-const ermCertHash = 'a1b2c3d4e5f67890abcdef1234567890a1b2c3d4e5f67890abcdef1234567890';
+const ermCertHash = Array.from({length: 64}, () => '0123456789abcdef'[Math.floor(Math.random()*16)]).join('');
 let ermProxyActive = true;
 
 function ermVerifyHash(input) {
@@ -5151,7 +5159,7 @@ async function loadSnapshots() {
         
         renderSnapshotTimeline(snaps);
     } catch (e) {
-        console.error('Snapshots load error:', e);
+        console.error('Snapshots load error');
         document.getElementById('snap-timeline-list').innerHTML = 
             '<div style="padding:40px;text-align:center;color:var(--text-muted);font-size:12px">Failed to load snapshots</div>';
     }
