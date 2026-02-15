@@ -252,7 +252,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <h2>What Is ONTO</h2>
 <p>ONTO is a deterministic measurement and grounding standard for epistemic risk in AI systems. It provides a reproducible computational framework that quantifies the gap between what AI claims to know and what it actually knows — and grounds every output against verified epistemic reference standards.</p>
 <p>ONTO is not a benchmark, leaderboard, ethics framework, or content filter. It is epistemic infrastructure — a formal protocol that both measures and strengthens AI epistemic discipline without modifying model weights or architecture.</p>
-<p>Validated on 11 production AI models across 100 scientific questions (50 in-domain, 50 cross-domain). Measured result: +915% composite improvement in epistemic rigor. Cross-domain transfer confirmed in 4 of 5 metrics. Scoring is fully automated — regex pattern matching, zero subjectivity, zero AI in the evaluation loop. <a href="#evidence">See the data</a>.</p>
+<p>Validated on 10 production AI models across 100 scientific questions (50 in-domain, 50 cross-domain). Measured result: 10× composite improvement in epistemic marker density (0.53 → 5.38). Cross-domain transfer confirmed in 4 of 5 metrics. Scoring is fully automated — regex pattern matching, zero subjectivity, zero AI in the evaluation loop. <a href="#evidence">See the data</a>.</p>
 
 <h2>Why It Exists</h2>
 <p>AI systems generate confident output with no internal signal for epistemic integrity. Enterprises deploy models into regulated domains — healthcare, finance, legal, defense — without knowing when output is fabricated. There is no standardized way to measure this.</p>
@@ -307,7 +307,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 
 <div class="ds da" id="doc-evidence" data-nav="evidence">
 <h1>Research Evidence</h1>
-<div class="dm"><span class="db-g bg-g">Experimental Data</span><span>11 Models · 100 Questions · 5 Metrics</span><span>Automated Scoring</span></div>
+<div class="dm"><span class="db-g bg-g">Experimental Data</span><span>10 Models · 100 Questions · 5 Metrics</span><span>Automated Scoring</span></div>
 
 <h2>Experiment Design</h2>
 <p>11 AI models answered 100 scientific questions under two conditions: baseline (no GOLD) and treatment (GOLD v4.5 loaded). Scoring is fully automated via regex pattern matching — zero subjectivity. All reproduction scripts are published.</p>
@@ -320,17 +320,17 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <tr><td>GOLD version</td><td>v4.5 (149 calibration files)</td></tr>
 </tbody></table>
 
-<h2>Key Finding: +915% Composite Improvement</h2>
-<p>Model K (weakest baseline, composite 0.53) was selected for before/after testing to provide maximum measurable range. After GOLD v4.5 grounding:</p>
+<h2>Key Finding: 10× Composite Improvement</h2>
+<p>Model J (weakest baseline) was selected for before/after testing to provide maximum measurable range. After GOLD v4.5 grounding:</p>
 
 <table><thead><tr><th>Metric</th><th>Baseline</th><th>With GOLD</th><th>Change</th></tr></thead><tbody>
-<tr><td>QD (quantification)</td><td>0.10</td><td>3.08</td><td><strong>+2,980%</strong></td></tr>
-<tr><td>SS (sources cited)</td><td>0.01</td><td>0.27</td><td><strong>+2,600%</strong></td></tr>
-<tr><td>UM (uncertainty marking)</td><td>0.28</td><td>1.45</td><td>+418%</td></tr>
-<tr><td>CP (counterarguments)</td><td>0.20</td><td>0.60</td><td>+200%</td></tr>
-<tr><td>VQ (vague qualifiers)</td><td>0.06</td><td>0.02</td><td>-67%</td></tr>
+<tr><td>QD (quantification)</td><td>0.10</td><td>3.08</td><td><strong>30.8×</strong></td></tr>
+<tr><td>SS (sources cited)</td><td>0.01</td><td>0.27</td><td><strong>27×</strong></td></tr>
+<tr><td>UM (uncertainty marking)</td><td>0.28</td><td>1.45</td><td>5.2×</td></tr>
+<tr><td>CP (counterarguments)</td><td>0.20</td><td>0.60</td><td>3×</td></tr>
+<tr><td>VQ (vague qualifiers)</td><td>0.06</td><td>0.02</td><td>0.3× (improved)</td></tr>
 <tr><td>CONF (calibrated confidence)</td><td>0.00</td><td>1.00</td><td>NEW</td></tr>
-<tr><td><strong>Composite</strong></td><td><strong>0.53</strong></td><td><strong>5.38</strong></td><td><strong>+915%</strong></td></tr>
+<tr><td><strong>Composite</strong></td><td><strong>0.53</strong></td><td><strong>5.38</strong></td><td><strong>10.2×</strong></td></tr>
 </tbody></table>
 
 <h2>Cross-Domain Transfer</h2>
@@ -364,21 +364,20 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <tr><td><strong>Verdict</strong></td><td>One sentence</td><td><strong>Multi-dimensional, quantified, alternatives given</strong></td></tr>
 </tbody></table>
 
-<h2>11-Model Baseline Ranking</h2>
-<p>Baseline composite scores across all 11 models (without GOLD). Models vary 3–10× in epistemic rigor, revealing significant calibration gaps that GOLD is designed to address.</p>
+<h2>10-Model Baseline Ranking</h2>
+<p>Baseline composite scores across 10 models (without GOLD). Composite = QD + SS + UM + CP − VQ. Models vary 5.4× in epistemic rigor (M = 0.92, SD = 0.58), revealing significant calibration gaps that GOLD is designed to address.</p>
 
-<table><thead><tr><th>Rank</th><th>Model</th><th>QD</th><th>SS</th><th>UM</th><th>CP</th><th>Composite</th></tr></thead><tbody>
-<tr><td>1</td><td>Model G</td><td>1.45</td><td>0.02</td><td>0.32</td><td>0.31</td><td>2.08</td></tr>
-<tr><td>2</td><td>Model A</td><td>1.24</td><td>0.06</td><td>0.30</td><td>0.50</td><td>2.06</td></tr>
-<tr><td>3</td><td>Model B</td><td>0.98</td><td>0.04</td><td>0.31</td><td>0.55</td><td>1.84</td></tr>
-<tr><td>4</td><td>Model C</td><td>0.50</td><td>0.04</td><td>0.21</td><td>0.35</td><td>1.05</td></tr>
-<tr><td>5</td><td>Model D</td><td>0.39</td><td>0.02</td><td>0.20</td><td>0.22</td><td>0.78</td></tr>
-<tr><td>6</td><td>Model E</td><td>0.34</td><td>0.02</td><td>0.13</td><td>0.28</td><td>0.74</td></tr>
-<tr><td>7</td><td>Model F</td><td>0.25</td><td>0.02</td><td>0.22</td><td>0.27</td><td>0.71</td></tr>
-<tr><td>8</td><td>Model H</td><td>0.15</td><td>0.00</td><td>0.19</td><td>0.28</td><td>0.57</td></tr>
-<tr><td>9</td><td>Model I</td><td>0.13</td><td>0.01</td><td>0.16</td><td>0.24</td><td>0.54</td></tr>
-<tr><td>10</td><td>Model J</td><td>0.14</td><td>0.00</td><td>0.18</td><td>0.25</td><td>0.51</td></tr>
-<tr><td>11</td><td>Model K</td><td>0.03</td><td>0.01</td><td>0.15</td><td>0.20</td><td>0.53</td></tr>
+<table><thead><tr><th>Rank</th><th>Model</th><th>QD</th><th>SS</th><th>UM</th><th>CP</th><th>VQ</th><th>Composite</th></tr></thead><tbody>
+<tr><td>1</td><td>Model A</td><td>1.24</td><td>0.06</td><td>0.30</td><td>0.50</td><td>0.04</td><td>2.06</td></tr>
+<tr><td>2</td><td>Model B</td><td>0.98</td><td>0.04</td><td>0.31</td><td>0.55</td><td>0.04</td><td>1.84</td></tr>
+<tr><td>3</td><td>Model C</td><td>0.50</td><td>0.04</td><td>0.21</td><td>0.35</td><td>0.05</td><td>1.05</td></tr>
+<tr><td>4</td><td>Model D</td><td>0.39</td><td>0.02</td><td>0.20</td><td>0.22</td><td>0.05</td><td>0.78</td></tr>
+<tr><td>5</td><td>Model E</td><td>0.34</td><td>0.02</td><td>0.13</td><td>0.28</td><td>0.03</td><td>0.74</td></tr>
+<tr><td>6</td><td>Model F</td><td>0.25</td><td>0.02</td><td>0.22</td><td>0.27</td><td>0.05</td><td>0.71</td></tr>
+<tr><td>7</td><td>Model G</td><td>0.15</td><td>0.00</td><td>0.19</td><td>0.28</td><td>0.05</td><td>0.57</td></tr>
+<tr><td>8</td><td>Model H</td><td>0.13</td><td>0.01</td><td>0.16</td><td>0.24</td><td>0.00</td><td>0.54</td></tr>
+<tr><td>9</td><td>Model I</td><td>0.14</td><td>0.00</td><td>0.18</td><td>0.25</td><td>0.06</td><td>0.51</td></tr>
+<tr><td>10</td><td>Model J</td><td>0.03</td><td>0.01</td><td>0.15</td><td>0.20</td><td>0.01</td><td>0.38</td></tr>
 </tbody></table>
 
 <h2>Complete Audit Trail</h2>
@@ -386,7 +385,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 
 <table><thead><tr><th>Step</th><th>Document</th><th>What You Can Verify</th></tr></thead><tbody>
 <tr><td>1. Questions</td><td><a href="https://github.com/nickarstrong/onto-research/blob/main/gold_experiment_questions.md" target="_blank">100 Questions</a></td><td>What was asked — 50 in-domain, 50 cross-domain</td></tr>
-<tr><td>2. Baselines</td><td><a href="https://github.com/nickarstrong/onto-research/blob/main/ONTO-11-Model-Baseline.md" target="_blank">11-Model Baseline</a></td><td>How each model scored without GOLD</td></tr>
+<tr><td>2. Baselines</td><td><a href="https://github.com/nickarstrong/onto-research/blob/main/ONTO-11-Model-Baseline.md" target="_blank">10-Model Baseline</a></td><td>How each model scored without GOLD</td></tr>
 <tr><td>3. Treatment</td><td><a href="https://github.com/nickarstrong/onto-research/blob/main/ONTO-Full-Report.md" target="_blank">Validation Report</a></td><td>Before/after delta, cross-domain transfer proof</td></tr>
 <tr><td>4. Raw Data</td><td><a href="https://github.com/nickarstrong/onto-research/blob/main/ONTO-Before-After-100Q.md" target="_blank">100Q Full Text</a></td><td>Every response, every score, both conditions</td></tr>
 <tr><td>5. Scorer</td><td><a href="https://github.com/nickarstrong/onto-research/blob/main/onto-scoring.py" target="_blank">onto-scoring.py</a></td><td>Clone, run, get identical results</td></tr>
@@ -681,7 +680,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
     <p>The precision-recall tradeoff is intentional: ONTO prioritizes recall (catching unknowns) over precision. In high-stakes domains, a false positive (unnecessary uncertainty) is preferable to a false negative (undetected overconfidence).</p>
     <p style="font-size:11px;color:var(--text-m);">Demonstration data · ONTO-Bench v1.0 · 268 samples · Baseline models evaluated without ONTO grounding · Reproduction scripts: <a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a></p>
 
-    <div class="note-block"><strong>Why baseline U-Recall is low.</strong> LLMs are trained to produce fluent, helpful responses. The training objective rewards confident answers and does not penalize confident responses to unanswerable questions. In testing across 11 models, zero produced calibrated numeric confidence scores without GOLD. Baseline quantification density ranged from 0.03 to 1.45 — a 48× variance. Without explicit epistemic structure, models have no mechanism to recognize knowledge boundaries. ONTO provides that structure through GOLD v4.5 grounding. <a href="#evidence">Full data</a>.</div>
+    <div class="note-block"><strong>Why baseline U-Recall is low.</strong> LLMs are trained to produce fluent, helpful responses. The training objective rewards confident answers and does not penalize confident responses to unanswerable questions. In testing across 10 models, zero produced calibrated numeric confidence scores without GOLD. Baseline quantification density ranged from 0.03 to 1.45 — a 48× variance. Without explicit epistemic structure, models have no mechanism to recognize knowledge boundaries. ONTO provides that structure through GOLD v4.5 grounding. <a href="#evidence">Full data</a>.</div>
 <h2>Compliance Grades &amp; Regulatory Alignment</h2>
 
     <table class="meth-table">
@@ -739,7 +738,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <tr><td><strong>Epistemic Grounding</strong></td><td>Calibration of AI outputs against verified reference standards (GOLD corpus)</td></tr>
 </tbody></table>
 <h3 id="scope-limitations">1.5 Scope and Limitations</h3>
-<blockquote><p><strong>Epistemic Infrastructure</strong> — ONTO measures and grounds AI systems against verified reference standards. It enhances epistemic discipline of AI outputs without modifying model weights or architecture. Validated across 11 production models: +915% composite improvement in epistemic rigor, cross-domain transfer confirmed. <a href="#evidence">Experimental data</a>.</p></blockquote>
+<blockquote><p><strong>Epistemic Infrastructure</strong> — ONTO measures and grounds AI systems against verified reference standards. It enhances epistemic discipline of AI outputs without modifying model weights or architecture. Validated across 10 production models: 10× composite improvement in epistemic marker density, cross-domain transfer confirmed. <a href="#evidence">Experimental data</a>.</p></blockquote>
 <h4>What ONTO Does</h4>
 <table><thead><tr><th>Function</th><th>Description</th></tr></thead><tbody>
 <tr><td>Measures Calibration (ECE)</td><td>Quantifies alignment between confidence and accuracy</td></tr>
@@ -896,8 +895,8 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <div class="dm"><span class="db-g bg-g">Updated regularly</span></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is ONTO?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">ONTO is an independent protocol for measuring and grounding epistemic reliability of AI systems. It quantifies when AI models are confident versus when they should express uncertainty, and provides active epistemic grounding through the GOLD v4.5 reference corpus — strengthening AI outputs without modifying model weights.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What does ONTO measure?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Three core metrics: U-Recall (detecting when AI doesn't know), ECE (confidence-accuracy alignment), and Risk Score (composite). These tell you if an AI's confidence is trustworthy.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Does ONTO fix my AI model?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">ONTO does not modify model weights, retrain, or fine-tune. It provides epistemic grounding — every output is evaluated against GOLD v4.5, producing measurable improvement in epistemic discipline. Tested result: +915% composite improvement across 100 questions (<a href="#evidence">see data</a>). The model itself remains unchanged; ONTO operates as external infrastructure.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How is ONTO different from other AI monitoring?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Most tools track data drift or performance. ONTO measures epistemic uncertainty — the gap between what AI claims to know and what it actually knows — and provides active grounding through GOLD v4.5 to reduce that gap. In testing across 11 models, baseline epistemic rigor varied 3–10×. No model produced calibrated confidence scores without GOLD. <a href="#evidence">Full experimental data</a>.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Does ONTO fix my AI model?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">ONTO does not modify model weights, retrain, or fine-tune. It provides epistemic grounding — every output is evaluated against GOLD v4.5, producing measurable improvement in epistemic discipline. Tested result: 10× composite improvement across 100 questions (<a href="#evidence">see data</a>). The model itself remains unchanged; ONTO operates as external infrastructure.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How is ONTO different from other AI monitoring?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Most tools track data drift or performance. ONTO measures epistemic uncertainty — the gap between what AI claims to know and what it actually knows — and provides active grounding through GOLD v4.5 to reduce that gap. In testing across 10 models, baseline epistemic rigor varied 3–10×. No model produced calibrated confidence scores without GOLD. <a href="#evidence">Full experimental data</a>.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What industries is ONTO for?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Any industry deploying AI, with focus on regulated sectors: healthcare, finance, defense, aviation, pharma, insurance, legal, government.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is the free tier really free?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Yes. Open tier provides 50 evaluations per day with epistemic scoring (REP, EpCE, DLA) at no cost. Upgrade to Standard for unlimited evaluations and real-time scoring.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does certification work?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Submit AI system → independent evaluation via ONTO-Bench → Standards Council review → certificate issued (12 months) → publicly verifiable.</div></div>
