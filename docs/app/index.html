@@ -1510,7 +1510,7 @@ a.info-val:hover { color: var(--text); }
                         </div>
                         <div>
                             <div style="font-size:16px;font-weight:700;color:var(--text)">Add your model</div>
-                            <div style="font-size:12px;color:var(--text-secondary);margin-top:2px">One API key → 3 minutes → signed before/after report</div>
+                            <div style="font-size:12px;color:var(--text-secondary);margin-top:2px">One API key → proxy active → epistemic discipline on every response</div>
                         </div>
                     </div>
                     <div style="display:flex;align-items:center;gap:10px">
@@ -1588,7 +1588,7 @@ a.info-val:hover { color: var(--text); }
                 <div class="erm-connect-wrap">
                     <div class="erm-section-label" style="color:var(--accent)">Step 2 · Connect</div>
                     <div style="font-size:18px;font-weight:700;margin-bottom:4px">Measure your AI</div>
-                    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:16px">One API key → 100 questions → signed report.<br>Measures epistemic error, over-confidence, source quality.<br>Your results will vary — we measure, not promise.</div>
+                    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:16px">One API key → proxy active → GOLD injected into every request.<br>Improves epistemic quality of AI outputs. Does not guarantee accuracy.<br>ONTO is not responsible for decisions made by AI systems or their operators.</div>
                 </div>
 
                 <div class="erm-connect-form">
@@ -1612,8 +1612,8 @@ a.info-val:hover { color: var(--text); }
                     <button class="erm-connect-btn" onclick="showAddModelModal()">Measure →</button>
                     <div style="margin-top:8px;display:flex;justify-content:center;gap:16px;font-size:10px;color:var(--text-muted)">
                         <span>AES-256 encrypted</span>
-                        <span>~3 min</span>
-                        <span>Ed25519 signed report</span>
+                        <span>Instant activation</span>
+                        <span>Ed25519 signed</span>
                     </div>
                 </div>
 
@@ -1621,23 +1621,23 @@ a.info-val:hover { color: var(--text); }
                     <div class="erm-step">
                         <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
                             <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:700">1</span>
-                            <span style="font-size:11px;font-weight:600">Baseline</span>
+                            <span style="font-size:11px;font-weight:600">Connect</span>
                         </div>
-                        <div style="font-size:10px;color:var(--text-muted)">100Q sent directly. Scored by regex.</div>
+                        <div style="font-size:10px;color:var(--text-muted)">Enter provider API key. AES-256 encrypted.</div>
                     </div>
                     <div class="erm-step">
                         <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
                             <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:700">2</span>
-                            <span style="font-size:11px;font-weight:600">Treatment</span>
+                            <span style="font-size:11px;font-weight:600">Active</span>
                         </div>
-                        <div style="font-size:10px;color:var(--text-muted)">Same 100Q via proxy. GOLD injected.</div>
+                        <div style="font-size:10px;color:var(--text-muted)">GOLD injected server-side via proxy. Every request.</div>
                     </div>
                     <div class="erm-step">
                         <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
                             <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:700">3</span>
-                            <span style="font-size:11px;font-weight:600">Report</span>
+                            <span style="font-size:11px;font-weight:600">Certified</span>
                         </div>
-                        <div style="font-size:10px;color:var(--text-muted)">Before/after. Signed. PDF + badge.</div>
+                        <div style="font-size:10px;color:var(--text-muted)">ONTO layer active → compliance certificate issued.</div>
                     </div>
                 </div>
             </div>
@@ -6137,7 +6137,7 @@ function renderModelRow(m, isLast) {
     const evalText = m.eval_count > 0 ? `${m.eval_count} eval${m.eval_count !== 1 ? 's' : ''}` : 'No evaluations yet';
     const actionBtn = m.eval_count > 0
         ? `<button class="btn-minimal" onclick="event.stopPropagation();openDashModelDetail('${m.id}')" style="font-size:10px;padding:3px 10px;border:1px solid var(--border)">Details →</button>`
-        : `<button class="eval-submit-btn" onclick="event.stopPropagation();showToast('Evaluation runs 100Q baseline + treatment','info')" style="font-size:10px;padding:3px 12px">Run Evaluation</button>`;
+        : `<button class="eval-submit-btn" onclick="event.stopPropagation();showToast('Proxy activates GOLD on every request','info')" style="font-size:10px;padding:3px 12px">Run Evaluation</button>`;
     
     return `<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;${border}cursor:pointer;transition:background 0.15s" onmouseover="this.style.background='var(--bg-elevated)'" onmouseout="this.style.background=''" onclick="openDashModelDetail('${m.id}')">
         <div style="flex:1;min-width:0">
