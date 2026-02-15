@@ -1480,159 +1480,195 @@ a.info-val:hover { color: var(--text); }
         <div class="page active" id="page-monitor">
 
             <!-- PROOF STRIP -->
-            <div class="erm-proof-strip">
+            <div style="padding:14px 0;border-bottom:1px solid var(--border);margin-bottom:20px">
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-                    <span style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);font-weight:600">Measured result</span>
-                    <span style="font-size:9px;color:var(--text-muted)">· GPT 5.2 · Feb 2026</span>
+                    <span style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);font-weight:600">Public experiment</span>
+                    <span style="font-size:9px;color:var(--text-muted)">· GPT 5.2 · Feb 2026 · CS-2026-001</span>
                 </div>
-                <div class="erm-positioning">ONTO reduces epistemic error in production LLM systems through deterministic discipline enforcement and auditable scoring.</div>
-                <div class="erm-scores">
-                    <span class="erm-score before">0.12</span>
+                <div style="font-size:11px;color:var(--text-secondary);line-height:1.5;margin-bottom:8px">ONTO reduces epistemic error in production LLM systems through deterministic discipline enforcement and auditable scoring.</div>
+                <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:6px">
+                    <span style="font-size:26px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--danger)">0.12</span>
                     <span style="color:var(--text-muted);font-size:14px">→</span>
-                    <span class="erm-score after">0.78</span>
-                    <span class="erm-headline" style="margin-left:4px">Epistemic error reduced by 75%</span>
+                    <span style="font-size:26px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent)">0.78</span>
+                    <span style="font-size:13px;font-weight:700;color:var(--text);margin-left:4px">Epistemic error reduced by 75%</span>
                 </div>
-                <div class="erm-stats">
+                <div style="display:flex;gap:16px;font-size:11px;margin-bottom:4px">
                     <span style="color:var(--text-secondary)">Over-confidence: <span style="color:var(--accent);font-weight:600">−35%</span></span>
                     <span style="color:var(--text-secondary)">Cross-domain: <span style="color:var(--text);font-weight:600">Δ +0.58</span></span>
-                    <span style="color:var(--text-secondary)">Score: 0–1 scale</span>
+                    <span style="color:var(--text-secondary)">Scale: 0–1</span>
                 </div>
-                <div class="erm-method">n=100 · regex scoring · zero AI judge · reproducible</div>
+                <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text-muted)">n=100 · regex scoring · zero AI judge · reproducible</div>
             </div>
 
-            <!-- STEP 1: CONNECT -->
-            <div style="padding:16px;margin-bottom:0;background:var(--accent-subtle);border:1px solid rgba(21,128,61,0.2);border-radius:6px;cursor:pointer;transition:background 0.2s" onclick="showAddModelModal()" onmouseover="this.style.background='rgba(21,128,61,0.18)'" onmouseout="this.style.background='var(--accent-subtle)'">
-                <div style="display:flex;align-items:center;justify-content:space-between">
-                    <div style="display:flex;align-items:center;gap:16px">
-                        <div class="erm-step-num">1</div>
-                        <div>
-                            <div style="font-size:16px;font-weight:700;color:var(--text)">Add your model</div>
-                            <div style="font-size:12px;color:var(--text-secondary);margin-top:2px">One API key → proxy active → GOLD on every response</div>
+            <!-- STEP 1: ADD MODEL -->
+            <div style="margin-bottom:20px">
+                <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Step 1</div>
+                <div style="padding:20px;background:var(--accent-subtle);border:1px solid rgba(21,128,61,0.25);border-radius:6px;cursor:pointer;transition:all 0.2s" onclick="showAddModelModal()" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(21,128,61,0.25)'">
+                    <div style="display:flex;align-items:center;justify-content:space-between">
+                        <div style="display:flex;align-items:center;gap:20px">
+                            <div style="width:56px;height:56px;border-radius:50%;border:2.5px solid var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(21,128,61,0.08)">
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="var(--accent)" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            </div>
+                            <div>
+                                <div style="font-size:18px;font-weight:700;color:var(--text)">Add your model</div>
+                                <div style="font-size:12px;color:var(--text-secondary);margin-top:3px">One API key → proxy active → GOLD on every response</div>
+                            </div>
                         </div>
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
                     </div>
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
                 </div>
             </div>
 
             <!-- STEP 2: VERIFY -->
-            <div class="erm-zone">
-                <div class="erm-step-header">
-                    <div class="erm-step-num">2</div>
-                    <div>
-                        <div class="erm-step-title">Verify with your own eyes</div>
-                        <div class="erm-step-sub">Same model. Same question. Less epistemic risk.</div>
+            <div style="margin-bottom:20px">
+                <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Step 2</div>
+                <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:20px">
+                    <div style="font-size:15px;font-weight:600;margin-bottom:4px;letter-spacing:-0.2px">Verify with your own eyes</div>
+                    <div style="font-size:11px;color:var(--text-secondary);margin-bottom:14px">Same model. Same question. Less epistemic risk. Try our curated questions or send all 100.</div>
+
+                    <!-- Category tabs -->
+                    <div class="erm-cat-tabs" id="erm-cat-tabs"></div>
+
+                    <!-- Question pills -->
+                    <div class="erm-q-pills" id="erm-q-pills"></div>
+
+                    <!-- Split view -->
+                    <div class="erm-split">
+                        <div class="erm-split-panel before">
+                            <div class="erm-split-header">
+                                <span style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--danger);font-weight:600">Without ONTO</span>
+                                <span style="font-size:8px;padding:2px 6px;border-radius:3px;color:var(--text-muted);background:var(--danger-subtle)">Raw</span>
+                            </div>
+                            <div class="erm-split-body" id="erm-before-body"></div>
+                            <div class="erm-split-footer" id="erm-before-footer" style="color:var(--danger)"></div>
+                        </div>
+                        <div class="erm-split-panel after">
+                            <div class="erm-split-header">
+                                <span style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);font-weight:600">With ONTO</span>
+                                <span style="font-size:8px;padding:2px 6px;border-radius:3px;color:var(--accent);background:var(--accent-subtle)">Proxy</span>
+                            </div>
+                            <div class="erm-split-body" id="erm-after-body"><span style="color:var(--text-muted);font-style:italic">Waiting...</span></div>
+                            <div class="erm-split-footer" id="erm-after-footer" style="display:none;color:var(--accent)"></div>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Category tabs -->
-                <div class="erm-cat-tabs" id="erm-cat-tabs"></div>
-
-                <!-- Question pills -->
-                <div class="erm-q-pills" id="erm-q-pills"></div>
-
-                <!-- Split view -->
-                <div class="erm-split">
-                    <div class="erm-split-panel before">
-                        <div class="erm-split-header">
-                            <span style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--danger);font-weight:600">Without ONTO</span>
-                            <span class="erm-badge" style="color:var(--text-muted);background:var(--danger-subtle)">Raw</span>
-                        </div>
-                        <div class="erm-split-body" id="erm-before-body"></div>
-                        <div class="erm-split-footer" id="erm-before-footer" style="color:var(--danger)"></div>
+                    <!-- What changed -->
+                    <div class="erm-changed" id="erm-changed" style="display:none">
+                        <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:6px">What changed · regex · zero AI</div>
+                        <div id="erm-changed-rows"></div>
                     </div>
-                    <div class="erm-split-panel after">
-                        <div class="erm-split-header">
-                            <span style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);font-weight:600">With ONTO</span>
-                            <span class="erm-badge" style="color:var(--accent);background:var(--accent-subtle)">Proxy</span>
-                        </div>
-                        <div class="erm-split-body" id="erm-after-body"><span style="color:var(--text-muted);font-style:italic">Waiting...</span></div>
-                        <div class="erm-split-footer" id="erm-after-footer" style="display:none;color:var(--accent)"></div>
+
+                    <!-- Downloads -->
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border-radius:6px;overflow:hidden;margin-top:12px">
+                        <a style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--bg-card);text-decoration:none;cursor:pointer;transition:background 0.15s" onmouseover="this.style.background='var(--bg-elevated)'" onmouseout="this.style.background='var(--bg-card)'" href="#">
+                            <div><div style="font-size:11px;color:var(--text);font-weight:500">Full Report</div><div style="font-size:9px;color:var(--text-muted);margin-top:1px">100Q before/after · 12p</div></div>
+                            <span style="font-size:8px;font-family:'JetBrains Mono',monospace;color:var(--text-muted);border:1px solid var(--border);border-radius:2px;padding:1px 5px">PDF</span>
+                        </a>
+                        <a style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--bg-card);text-decoration:none;cursor:pointer;transition:background 0.15s" onmouseover="this.style.background='var(--bg-elevated)'" onmouseout="this.style.background='var(--bg-card)'" href="#">
+                            <div><div style="font-size:11px;color:var(--text);font-weight:500">11-Model Baseline</div><div style="font-size:9px;color:var(--text-muted);margin-top:1px">All models ranked</div></div>
+                            <span style="font-size:8px;font-family:'JetBrains Mono',monospace;color:var(--text-muted);border:1px solid var(--border);border-radius:2px;padding:1px 5px">PDF</span>
+                        </a>
+                        <a style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--bg-card);text-decoration:none;cursor:pointer;transition:background 0.15s" onmouseover="this.style.background='var(--bg-elevated)'" onmouseout="this.style.background='var(--bg-card)'" href="#">
+                            <div><div style="font-size:11px;color:var(--text);font-weight:500">Raw Data + Scorer</div><div style="font-size:9px;color:var(--text-muted);margin-top:1px">Download, run, reproduce</div></div>
+                            <span style="font-size:8px;font-family:'JetBrains Mono',monospace;color:var(--text-muted);border:1px solid var(--border);border-radius:2px;padding:1px 5px">ZIP</span>
+                        </a>
                     </div>
-                </div>
-
-                <!-- What changed -->
-                <div class="erm-changed" id="erm-changed" style="display:none">
-                    <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:6px">What changed · regex · zero AI</div>
-                    <div id="erm-changed-rows"></div>
-                </div>
-
-                <!-- Downloads -->
-                <div class="erm-downloads">
-                    <a class="erm-download-item" href="#">
-                        <div>
-                            <div style="font-size:11px;color:var(--text);font-weight:500">Full Report</div>
-                            <div style="font-size:9px;color:var(--text-muted);margin-top:1px">100Q before/after, 12p</div>
-                        </div>
-                        <span style="font-size:8px;font-family:'JetBrains Mono',monospace;color:var(--text-muted);border:1px solid var(--border);border-radius:2px;padding:1px 5px">PDF</span>
-                    </a>
-                    <a class="erm-download-item" href="#">
-                        <div>
-                            <div style="font-size:11px;color:var(--text);font-weight:500">11-Model Baseline</div>
-                            <div style="font-size:9px;color:var(--text-muted);margin-top:1px">All models ranked</div>
-                        </div>
-                        <span style="font-size:8px;font-family:'JetBrains Mono',monospace;color:var(--text-muted);border:1px solid var(--border);border-radius:2px;padding:1px 5px">PDF</span>
-                    </a>
-                    <a class="erm-download-item" href="#">
-                        <div>
-                            <div style="font-size:11px;color:var(--text);font-weight:500">Raw Data + Scorer</div>
-                            <div style="font-size:9px;color:var(--text-muted);margin-top:1px">Download, run, reproduce</div>
-                        </div>
-                        <span style="font-size:8px;font-family:'JetBrains Mono',monospace;color:var(--text-muted);border:1px solid var(--border);border-radius:2px;padding:1px 5px">ZIP</span>
-                    </a>
                 </div>
             </div>
 
-            <!-- CONTEXT -->
-            <div class="erm-zone">
-                <div class="erm-section-label">How GOLD works</div>
-                <div class="erm-gold-grid">
-                    <div class="erm-gold-item">
-                        <div style="font-size:11px;font-weight:600;margin-bottom:2px">Discipline, not knowledge</div>
-                        <div style="font-size:10px;color:var(--text-muted);line-height:1.5">Teaches HOW — cite, quantify, mark uncertainty. Zero new facts.</div>
-                    </div>
-                    <div class="erm-gold-item">
-                        <div style="font-size:11px;font-weight:600;margin-bottom:2px">Never leaves the server</div>
-                        <div style="font-size:10px;color:var(--text-muted);line-height:1.5">Injected server-side via proxy. You see results, not the document.</div>
-                    </div>
-                    <div class="erm-gold-item">
-                        <div style="font-size:11px;font-weight:600;margin-bottom:2px">Cross-domain proof</div>
-                        <div style="font-size:10px;color:var(--text-muted);line-height:1.5">Topics NOT in GOLD improved Δ +0.58. Structure, not answers.</div>
-                    </div>
-                    <div class="erm-gold-item">
-                        <div style="font-size:11px;font-weight:600;margin-bottom:2px">Zero-AI scoring</div>
-                        <div style="font-size:10px;color:var(--text-muted);line-height:1.5">Regex only. Same script → same results. Open source.</div>
-                    </div>
+            <!-- HOW GOLD WORKS -->
+            <div style="margin-bottom:20px">
+                <div style="font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">How GOLD works</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border-radius:6px;overflow:hidden">
+                    <div style="background:var(--bg-card);padding:12px 14px"><div style="font-size:11px;font-weight:600;margin-bottom:2px">Discipline, not knowledge</div><div style="font-size:10px;color:var(--text-muted);line-height:1.5">Teaches HOW — cite, quantify, mark uncertainty. Zero new facts.</div></div>
+                    <div style="background:var(--bg-card);padding:12px 14px"><div style="font-size:11px;font-weight:600;margin-bottom:2px">Never leaves the server</div><div style="font-size:10px;color:var(--text-muted);line-height:1.5">Injected server-side via proxy. You see results, not the document.</div></div>
+                    <div style="background:var(--bg-card);padding:12px 14px"><div style="font-size:11px;font-weight:600;margin-bottom:2px">Cross-domain proof</div><div style="font-size:10px;color:var(--text-muted);line-height:1.5">Topics NOT in GOLD improved Δ +0.58. Structure, not answers.</div></div>
+                    <div style="background:var(--bg-card);padding:12px 14px"><div style="font-size:11px;font-weight:600;margin-bottom:2px">Zero-AI scoring</div><div style="font-size:10px;color:var(--text-muted);line-height:1.5">Regex only. Same script → same results. Open source.</div></div>
                 </div>
+            </div>
 
-                <!-- ONTO VERIFIED -->
-                <div class="erm-section-label" style="margin-top:20px">ONTO VERIFIED</div>
-                <div style="display:grid;grid-template-columns:1fr 200px;gap:16px">
-                    <div>
-                        <div style="font-size:11px;font-weight:600;margin-bottom:8px">Certificate = fact of connection, not a score</div>
-                        <div class="erm-compliance-table">
-                            <div class="erm-compliance-row"><span style="color:var(--accent);font-size:14px">✓</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);font-weight:600">PROXY</span><span style="color:var(--text-secondary)">Model connected through ONTO proxy</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:600">active</span></div>
-                            <div class="erm-compliance-row"><span style="color:var(--accent);font-size:14px">✓</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);font-weight:600">GOLD</span><span style="color:var(--text-secondary)">GOLD layer injected on every request</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:600">active</span></div>
-                            <div class="erm-compliance-row"><span style="color:var(--accent);font-size:14px">✓</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);font-weight:600">SIG</span><span style="color:var(--text-secondary)">Ed25519 cryptographic signature</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:600">valid</span></div>
-                            <div class="erm-compliance-row"><span style="color:var(--accent);font-size:14px">✓</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);font-weight:600">CHAIN</span><span style="color:var(--text-secondary)">Proof chain 104-byte packet verified</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:600">valid</span></div>
+            <!-- ONTO VERIFIED CERTIFICATE -->
+            <div style="margin-bottom:20px">
+                <div style="font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">ONTO Verified</div>
+
+                <!-- Certificate -->
+                <div id="erm-cert-section" style="background:var(--bg-card);border:1px solid rgba(21,128,61,0.3);border-radius:8px;overflow:hidden">
+                    <!-- Accent stripe -->
+                    <div style="height:3px;background:linear-gradient(90deg,var(--accent),rgba(21,128,61,0.3))"></div>
+
+                    <div style="padding:24px">
+                        <!-- Header -->
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+                            <div>
+                                <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+                                    <svg viewBox="0 0 32 32" width="20" height="20"><rect x="2" y="2" width="28" height="28" rx="4" fill="none" stroke="var(--accent)" stroke-width="2.5"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="var(--accent)"/></svg>
+                                    <span style="font-size:14px;font-weight:700;letter-spacing:2px;color:var(--accent)">ONTO VERIFIED</span>
+                                </div>
+                                <div style="font-size:10px;color:var(--text-muted)">This model operates under ONTO GOLD epistemic discipline layer</div>
+                            </div>
+                            <div id="erm-cert-status" style="display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:4px;background:var(--accent-subtle);border:1px solid rgba(21,128,61,0.3)">
+                                <span style="width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite"></span>
+                                <span style="font-size:10px;font-weight:700;color:var(--accent);letter-spacing:1px">ACTIVE</span>
+                            </div>
                         </div>
-                        <div style="font-size:9px;color:var(--text-muted);margin-top:6px">Like SSL: not "model is good" but "model is under discipline". Proxy off → certificate suspended.</div>
-                    </div>
-                    <div class="erm-cert-card">
-                        <div class="erm-cert-stripe"></div>
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-                            <span style="font-size:9px;letter-spacing:1.5px;color:var(--accent);font-weight:600">ONTO VERIFIED</span>
-                            <span style="font-size:7px;color:var(--text-muted);border:1px solid var(--border);border-radius:2px;padding:1px 4px;text-transform:uppercase">Example</span>
+
+                        <!-- Certificate body -->
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+                            <div>
+                                <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Organization</div>
+                                <div id="erm-cert-org" style="font-size:16px;font-weight:600">Acme Corp</div>
+                                <div id="erm-cert-model" style="font-size:11px;color:var(--text-secondary);margin-top:2px">GPT-4o · OpenAI</div>
+                            </div>
+                            <div>
+                                <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Connected since</div>
+                                <div id="erm-cert-date" style="font-size:16px;font-weight:600;font-variant-numeric:tabular-nums">Feb 15, 2026</div>
+                                <div style="font-size:11px;color:var(--text-secondary);margin-top:2px">Proxy: active · GOLD: injected</div>
+                            </div>
                         </div>
-                        <div style="font-size:13px;font-weight:600;margin-bottom:2px">Acme Corp</div>
-                        <div style="font-size:10px;color:var(--text-secondary);margin-bottom:6px">GPT-4o + GOLD layer</div>
-                        <div style="font-size:9px;color:var(--text-muted);margin-bottom:1px">GOLD layer: active</div>
-                        <div style="font-size:9px;color:var(--text-muted);margin-bottom:1px">Connected since: Feb 15, 2026</div>
-                        <div style="font-size:9px;color:var(--text-muted);margin-bottom:6px">ontostandard.org/c/ACM-2026</div>
-                        <div style="display:flex;align-items:center;gap:4px">
-                            <span style="width:5px;height:5px;border-radius:50%;background:var(--accent)"></span>
-                            <span style="font-size:9px;color:var(--accent);font-weight:600">ACTIVE</span>
+
+                        <!-- Hash -->
+                        <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:14px 16px;margin-bottom:16px">
+                            <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Certificate Hash · Ed25519</div>
+                            <div id="erm-cert-hash" style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent);font-weight:500;word-break:break-all;line-height:1.6;letter-spacing:0.5px">a1b2c3d4e5f6...signing...7890abcd</div>
+                            <div style="display:flex;gap:16px;margin-top:8px;font-size:10px;color:var(--text-muted)">
+                                <span>Algorithm: Ed25519</span>
+                                <span>Packet: 104 bytes</span>
+                                <span>Chain: SHA-256</span>
+                                <span id="erm-cert-verify-url">ontostandard.org/c/ACM-2026-001</span>
+                            </div>
                         </div>
-                        <div style="margin-top:6px;font-size:8px;color:var(--text-muted);line-height:1.4;border-top:1px solid var(--border);padding-top:6px">Active while proxy connected. Suspended when disconnected.</div>
+
+                        <!-- Verification input -->
+                        <div style="margin-bottom:16px">
+                            <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Verify certificate</div>
+                            <div style="display:flex;gap:8px">
+                                <input type="text" id="erm-verify-input" class="form-input" placeholder="Paste certificate hash to verify..." style="flex:1;padding:9px 12px;font-family:'JetBrains Mono',monospace;font-size:12px" oninput="ermVerifyHash(this.value)">
+                                <div id="erm-verify-result" style="width:40px;display:flex;align-items:center;justify-content:center;border-radius:4px;font-size:16px;transition:all 0.3s"></div>
+                            </div>
+                            <div id="erm-verify-msg" style="font-size:10px;margin-top:4px;min-height:16px"></div>
+                        </div>
+
+                        <!-- Status grid -->
+                        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-radius:6px;overflow:hidden">
+                            <div style="background:var(--bg-card);padding:10px 12px;text-align:center">
+                                <div style="font-size:14px;color:var(--accent)">✓</div>
+                                <div style="font-size:9px;color:var(--text-muted);margin-top:2px">PROXY</div>
+                            </div>
+                            <div style="background:var(--bg-card);padding:10px 12px;text-align:center">
+                                <div style="font-size:14px;color:var(--accent)">✓</div>
+                                <div style="font-size:9px;color:var(--text-muted);margin-top:2px">GOLD</div>
+                            </div>
+                            <div style="background:var(--bg-card);padding:10px 12px;text-align:center">
+                                <div style="font-size:14px;color:var(--accent)">✓</div>
+                                <div style="font-size:9px;color:var(--text-muted);margin-top:2px">SIGNATURE</div>
+                            </div>
+                            <div style="background:var(--bg-card);padding:10px 12px;text-align:center">
+                                <div style="font-size:14px;color:var(--accent)">✓</div>
+                                <div style="font-size:9px;color:var(--text-muted);margin-top:2px">CHAIN</div>
+                            </div>
+                        </div>
+
+                        <div style="font-size:9px;color:var(--text-muted);margin-top:10px;line-height:1.5">Like SSL: not "model is good" but "model is under epistemic discipline". Proxy disconnected → certificate suspended instantly → hash invalidated → notification sent.</div>
                     </div>
                 </div>
             </div>
@@ -1677,9 +1713,9 @@ a.info-val:hover { color: var(--text); }
             </div>
 
             <!-- Footer -->
-            <div class="erm-footer">
-                <span style="font-size:9px;color:var(--text-muted)">Ed25519 signed · ontostandard.org/verify · ONTO-SPEC v1.0</span>
-                <span style="font-size:9px;color:var(--text-muted)">ONTO is not responsible for decisions made by AI systems or their operators.</span>
+            <div style="padding:10px 0;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);margin-top:8px">
+                <span style="font-size:9px;color:var(--text-muted)">ONTO-SPEC v1.0 · ontostandard.org/verify</span>
+                <span style="font-size:9px;color:var(--text-muted)">ONTO does not guarantee accuracy. Not responsible for decisions made by AI systems or their operators.</span>
             </div>
         </div>
 
@@ -3515,7 +3551,7 @@ function showPage(page, el) {
         });
     }
     if (page === 'audit' || page === 'evaluate') populateEvalModels();
-    if (page === 'monitor') { renderDashModels(); loadUserSignal(); initERM(); }
+    if (page === 'monitor') { renderDashModels(); loadUserSignal(); initERM(); initErmCert(); }
     if (page === 'certify') updateCertifyPage();
     if (page === 'sdk') updateSdkPage();
 }
@@ -5314,6 +5350,74 @@ function drawIndustryChart() {
     ).join('');
 }
 
+// === CERTIFICATE VERIFICATION ===
+const ermCertHash = 'a1b2c3d4e5f67890abcdef1234567890a1b2c3d4e5f67890abcdef1234567890';
+let ermProxyActive = true;
+
+function ermVerifyHash(input) {
+    const result = document.getElementById('erm-verify-result');
+    const msg = document.getElementById('erm-verify-msg');
+    if (!input || input.length < 4) {
+        result.innerHTML = '';
+        result.style.background = 'none';
+        msg.innerHTML = '';
+        return;
+    }
+    if (!ermProxyActive) {
+        result.innerHTML = '✕';
+        result.style.background = 'var(--danger-subtle)';
+        result.style.color = 'var(--danger)';
+        msg.innerHTML = '<span style="color:var(--danger)">Certificate suspended — proxy disconnected</span>';
+        return;
+    }
+    if (input.trim() === ermCertHash) {
+        result.innerHTML = '✓';
+        result.style.background = 'var(--accent-subtle)';
+        result.style.color = 'var(--accent)';
+        msg.innerHTML = '<span style="color:var(--accent)">Valid — ONTO GOLD layer active since Feb 15, 2026</span>';
+    } else {
+        result.innerHTML = '✕';
+        result.style.background = 'var(--danger-subtle)';
+        result.style.color = 'var(--danger)';
+        msg.innerHTML = '<span style="color:var(--danger)">Invalid hash — certificate not found</span>';
+    }
+}
+
+function ermSuspendCert() {
+    ermProxyActive = false;
+    const status = document.getElementById('erm-cert-status');
+    const hash = document.getElementById('erm-cert-hash');
+    if (status) {
+        status.style.background = 'var(--danger-subtle)';
+        status.style.borderColor = 'var(--danger)';
+        status.innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:var(--danger)"></span><span style="font-size:10px;font-weight:700;color:var(--danger);letter-spacing:1px">SUSPENDED</span>';
+    }
+    if (hash) hash.style.color = 'var(--danger)';
+    const section = document.getElementById('erm-cert-section');
+    if (section) section.style.borderColor = 'rgba(220,38,38,0.3)';
+    showToast('Certificate suspended — proxy disconnected', 'error');
+}
+
+function ermRestoreCert() {
+    ermProxyActive = true;
+    const status = document.getElementById('erm-cert-status');
+    const hash = document.getElementById('erm-cert-hash');
+    if (status) {
+        status.style.background = 'var(--accent-subtle)';
+        status.style.borderColor = 'rgba(21,128,61,0.3)';
+        status.innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite"></span><span style="font-size:10px;font-weight:700;color:var(--accent);letter-spacing:1px">ACTIVE</span>';
+    }
+    if (hash) hash.style.color = 'var(--accent)';
+    const section = document.getElementById('erm-cert-section');
+    if (section) section.style.borderColor = 'rgba(21,128,61,0.3)';
+    showToast('Certificate restored — proxy reconnected', 'success');
+}
+
+function initErmCert() {
+    const hash = document.getElementById('erm-cert-hash');
+    if (hash) hash.textContent = ermCertHash;
+}
+
 // === EPISTEMIC RISK MONITOR ===
 const ermQuestions = {
     med: [
@@ -5516,6 +5620,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     checkWelcomeBanner();
     initERM();
+    initErmCert();
     updateSignalHash();
     updateUTCClock();
     updateSparkline();
