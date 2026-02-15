@@ -252,6 +252,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <h2>What Is ONTO</h2>
 <p>ONTO is a deterministic measurement and grounding standard for epistemic risk in AI systems. It provides a reproducible computational framework that quantifies the gap between what AI claims to know and what it actually knows — and grounds every output against verified epistemic reference standards.</p>
 <p>ONTO is not a benchmark, leaderboard, ethics framework, or content filter. It is epistemic infrastructure — a formal protocol that both measures and strengthens AI epistemic discipline without modifying model weights or architecture.</p>
+<p>Validated on 11 production AI models across 100 scientific questions (50 in-domain, 50 cross-domain). Measured result: +915% composite improvement in epistemic rigor. Cross-domain transfer confirmed in 4 of 5 metrics. Scoring is fully automated — regex pattern matching, zero subjectivity, zero AI in the evaluation loop. <a href="#evidence">See the data</a>.</p>
 
 <h2>Why It Exists</h2>
 <p>AI systems generate confident output with no internal signal for epistemic integrity. Enterprises deploy models into regulated domains — healthcare, finance, legal, defense — without knowing when output is fabricated. There is no standardized way to measure this.</p>
@@ -280,13 +281,15 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <li><strong>Deterministic Output</strong> — same input produces same scores across runs</li>
 <li><strong>GOLD-Calibrated</strong> — every metric anchored to reference corpus, not human judgment</li>
 <li><strong>Signed Proofs</strong> — Ed25519 cryptographic chain, publicly verifiable</li>
+<li><strong>Published Data</strong> — 11-model baseline, 100Q before/after, scorer source code on <a href="https://github.com/nickarstrong/onto-research" target="_blank">GitHub</a></li>
 </ul>
 
 <h2>Published Research</h2>
 <table><thead><tr><th>Resource</th><th>Description</th><th>Access</th></tr></thead><tbody>
-<tr><td>arXiv Paper</td><td>ONTO-ERS: Deterministic Epistemic Risk Measurement</td><td>In preparation</td></tr>
-<tr><td>GOLD Corpus v4.5</td><td>149 calibration files, 100 probes</td><td><a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a></td></tr>
-<tr><td>Reproduction Scripts</td><td>Complete evaluation pipeline</td><td><a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a></td></tr>
+<tr><td>Research Data</td><td>11-model baseline, validation report, 100Q full text, scoring scripts</td><td><a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a></td></tr>
+<tr><td>GOLD Corpus v4.5</td><td>149 calibration files, 100 probes</td><td>Server-side only (API access via Standard+)</td></tr>
+<tr><td>Experiment Protocol</td><td>100 questions, evaluation metrics, success criteria</td><td><a href="https://github.com/nickarstrong/onto-research/blob/main/gold_experiment_questions.md" target="_blank">onto-research</a></td></tr>
+<tr><td>Scoring Pipeline</td><td>Python, regex-based, zero dependencies, 993 lines</td><td><a href="https://github.com/nickarstrong/onto-research/blob/main/onto-scoring.py" target="_blank">onto-research</a></td></tr>
 </tbody></table>
 
 <h2>Regulatory Alignment</h2>
@@ -399,7 +402,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 
 <div class="ds da" id="doc-methodology" data-nav="methodology">
 <h1>Methodology</h1>
-<div class="dm"><span class="db-g bg-g">The Science Behind ROOT</span><span>Shannon · Kolmogorov · Eigenvalue</span><span>GOLD v4.5</span></div>
+<div class="dm"><span class="db-g bg-g">The Science Behind ONTO</span><span>Shannon · Kolmogorov · Eigenvalue</span><span>GOLD v4.5</span></div>
 
 <p>ONTO provides continuous epistemic grounding for AI systems. This document describes the mathematical foundations, scoring architecture, and verification mechanisms.</p>
 
@@ -500,7 +503,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
         </tbody>
     </table>
 
-    <p>EM1-EM2 on genuinely uncertain topics = epistemically grounded. EM4-EM5 on established facts = appropriate confidence. The problem occurs when EM4-EM5 appears on UNKNOWN or CONTESTED questions — this is the hallucination that ONTO detects and the ROOT connection prevents.</p>
+    <p>EM1-EM2 on genuinely uncertain topics = epistemically grounded. EM4-EM5 on established facts = appropriate confidence. The problem occurs when EM4-EM5 appears on UNKNOWN or CONTESTED questions — this is the hallucination that ONTO detects and continuous grounding prevents.</p>
 
     <div class="formula-block">
         <div class="formula-label">Response Epistemic Profile (REP)</div>
@@ -567,12 +570,12 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
     <div class="note-block">Domain-specific thresholds (TCI baselines) adjust scoring for each epistemic domain ED1-ED7. Medical domain (ED1) has the strictest thresholds — overclaiming in healthcare carries the highest risk. Creative domain (ED7) has the most permissive — confident assertions in creative writing are appropriate.</div>
 <h2>Proof Chain Architecture</h2>
 
-    <p>Every evaluation through ONTO ROOT produces a cryptographically signed proof — verifiable evidence that grounding occurred at a specific moment.</p>
+    <p>Every evaluation through ONTO produces a cryptographically signed proof — verifiable evidence that grounding occurred at a specific moment.</p>
 
     <div class="proof-visual">
         <div class="proof-step">
             <div class="step-num">1</div>
-            <span>AI output received via ROOT connection</span>
+            <span>AI output received via ONTO evaluation</span>
         </div>
         <div class="proof-step">
             <div class="step-num">2</div>
@@ -613,7 +616,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
         <div class="formula-desc">The proof is verifiable but unreproducible without the original entropy signal σ(t). This means results can be confirmed authentic but cannot be forged retroactively. Not blockchain — standard public-key cryptography.</div>
     </div>
 
-    <p>While connected to ROOT, every evaluation is signed with the current entropy. Disconnection means no new entropy = no new proofs = certificate frozen. This is why ONTO is infrastructure, not a report.</p>
+    <p>While connected to ONTO, every evaluation is signed with the current entropy. Disconnection means no new entropy = no new proofs = certificate frozen. This is why ONTO is infrastructure, not a report.</p>
 <h2>Benchmark Results (ONTO-Bench)</h2>
 
     <p>ONTO-Bench evaluates the core question: can the system distinguish what is known from what is genuinely unknown? Results across 268 samples:</p>
@@ -678,7 +681,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
     <p>The precision-recall tradeoff is intentional: ONTO prioritizes recall (catching unknowns) over precision. In high-stakes domains, a false positive (unnecessary uncertainty) is preferable to a false negative (undetected overconfidence).</p>
     <p style="font-size:11px;color:var(--text-m);">Demonstration data · ONTO-Bench v1.0 · 268 samples · Baseline models evaluated without ONTO grounding · Reproduction scripts: <a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a></p>
 
-    <div class="note-block"><strong>Why baseline U-Recall is low.</strong> LLMs are trained to produce fluent, helpful responses. The training objective rewards confident answers and does not penalize confident responses to unanswerable questions. Without explicit epistemic structure, models have no mechanism to recognize knowledge boundaries. ONTO provides that structure through GOLD v4.5 grounding.</div>
+    <div class="note-block"><strong>Why baseline U-Recall is low.</strong> LLMs are trained to produce fluent, helpful responses. The training objective rewards confident answers and does not penalize confident responses to unanswerable questions. In testing across 11 models, zero produced calibrated numeric confidence scores without GOLD. Baseline quantification density ranged from 0.03 to 1.45 — a 48× variance. Without explicit epistemic structure, models have no mechanism to recognize knowledge boundaries. ONTO provides that structure through GOLD v4.5 grounding. <a href="#evidence">Full data</a>.</div>
 <h2>Compliance Grades &amp; Regulatory Alignment</h2>
 
     <table class="meth-table">
@@ -736,7 +739,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <tr><td><strong>Epistemic Grounding</strong></td><td>Calibration of AI outputs against verified reference standards (GOLD corpus)</td></tr>
 </tbody></table>
 <h3 id="scope-limitations">1.5 Scope and Limitations</h3>
-<blockquote><p><strong>Epistemic Infrastructure</strong> — ONTO measures and grounds AI systems against verified reference standards. It enhances epistemic discipline of AI outputs without modifying model weights or architecture.</p></blockquote>
+<blockquote><p><strong>Epistemic Infrastructure</strong> — ONTO measures and grounds AI systems against verified reference standards. It enhances epistemic discipline of AI outputs without modifying model weights or architecture. Validated across 11 production models: +915% composite improvement in epistemic rigor, cross-domain transfer confirmed. <a href="#evidence">Experimental data</a>.</p></blockquote>
 <h4>What ONTO Does</h4>
 <table><thead><tr><th>Function</th><th>Description</th></tr></thead><tbody>
 <tr><td>Measures Calibration (ECE)</td><td>Quantifies alignment between confidence and accuracy</td></tr>
@@ -893,8 +896,8 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <div class="dm"><span class="db-g bg-g">Updated regularly</span></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is ONTO?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">ONTO is an independent protocol for measuring and grounding epistemic reliability of AI systems. It quantifies when AI models are confident versus when they should express uncertainty, and provides active epistemic grounding through the GOLD v4.5 reference corpus — strengthening AI outputs without modifying model weights.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What does ONTO measure?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Three core metrics: U-Recall (detecting when AI doesn't know), ECE (confidence-accuracy alignment), and Risk Score (composite). These tell you if an AI's confidence is trustworthy.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Does ONTO fix my AI model?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">ONTO does not modify model weights, retrain, or fine-tune. It provides epistemic grounding — every output is evaluated against GOLD v4.5, producing measurable improvement in epistemic discipline. The model itself remains unchanged; ONTO operates as external infrastructure.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How is ONTO different from other AI monitoring?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Most tools track data drift or performance. ONTO measures epistemic uncertainty — the gap between what AI claims to know and what it actually knows — and provides active grounding through GOLD v4.5 to reduce that gap.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Does ONTO fix my AI model?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">ONTO does not modify model weights, retrain, or fine-tune. It provides epistemic grounding — every output is evaluated against GOLD v4.5, producing measurable improvement in epistemic discipline. Tested result: +915% composite improvement across 100 questions (<a href="#evidence">see data</a>). The model itself remains unchanged; ONTO operates as external infrastructure.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How is ONTO different from other AI monitoring?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Most tools track data drift or performance. ONTO measures epistemic uncertainty — the gap between what AI claims to know and what it actually knows — and provides active grounding through GOLD v4.5 to reduce that gap. In testing across 11 models, baseline epistemic rigor varied 3–10×. No model produced calibrated confidence scores without GOLD. <a href="#evidence">Full experimental data</a>.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What industries is ONTO for?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Any industry deploying AI, with focus on regulated sectors: healthcare, finance, defense, aviation, pharma, insurance, legal, government.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is the free tier really free?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Yes. Open tier provides 50 evaluations per day with epistemic scoring (REP, EpCE, DLA) at no cost. Upgrade to Standard for unlimited evaluations and real-time scoring.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does certification work?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Submit AI system → independent evaluation via ONTO-Bench → Standards Council review → certificate issued (12 months) → publicly verifiable.</div></div>
