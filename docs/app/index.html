@@ -62,7 +62,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Ar
 .auth-hero-stat { display: flex; flex-direction: column; }
 .auth-hero-stat strong { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .auth-hero-stat span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
-.auth-form-side { width: 480px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 24px 40px; }
+.auth-form-side { width: 480px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 24px 40px; background: var(--bg-card); }
 .auth-card { background: none; border: none; border-radius: 0; padding: 0; width: 100%; max-width: 380px; }
 .auth-logo { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; justify-content: center; }
 .auth-logo svg { width: 24px; height: 24px; }
@@ -963,6 +963,67 @@ a.info-val:hover { color: var(--text); }
 .ref-action-btn.export { background: var(--blue-subtle); color: var(--blue); border: 1px solid var(--blue); }
 .ref-action-btn:hover { opacity: 0.8; }
 .table-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+
+/* === EPISTEMIC RISK MONITOR === */
+.erm-proof-strip { padding:14px 0; border-bottom:1px solid var(--border); margin-bottom:16px; }
+.erm-positioning { font-size:11px; color:var(--text-secondary); line-height:1.5; margin-bottom:10px; }
+.erm-scores { display:flex; align-items:baseline; gap:14px; margin-bottom:6px; }
+.erm-score { font-size:26px; font-weight:700; font-family:'JetBrains Mono',monospace; font-variant-numeric:tabular-nums; }
+.erm-score.before { color:var(--danger); }
+.erm-score.after { color:var(--accent); }
+.erm-headline { font-size:13px; font-weight:700; color:var(--text); }
+.erm-stats { display:flex; gap:16px; font-size:11px; margin-bottom:4px; }
+.erm-method { font-size:10px; font-family:'JetBrains Mono',monospace; color:var(--text-muted); }
+.erm-cta-block { padding:16px; margin-bottom:16px; background:var(--accent-subtle); border:1px solid rgba(21,128,61,0.2); border-radius:6px; cursor:pointer; transition:background 0.2s; }
+.erm-cta-block:hover { background:rgba(21,128,61,0.18); }
+.erm-cta-inner { display:flex; align-items:center; justify-content:space-between; }
+.erm-cta-plus { width:40px; height:40px; border-radius:50%; border:2px solid var(--accent); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.erm-zone { padding:20px 0; }
+.erm-zone.alt { background:var(--bg-secondary); border-radius:6px; padding:20px; margin-bottom:16px; border:1px solid var(--border); }
+.erm-section-label { font-size:10px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+.erm-section-title { font-size:15px; font-weight:600; margin-bottom:14px; letter-spacing:-0.2px; }
+.erm-cat-tabs { display:flex; gap:4px; margin-bottom:10px; flex-wrap:wrap; }
+.erm-cat-tab { padding:4px 10px; border-radius:3px; font-size:11px; cursor:pointer; background:transparent; border:1px solid transparent; color:var(--text-muted); }
+.erm-cat-tab.active { background:var(--bg-card); border-color:var(--border); color:var(--text); font-weight:600; }
+.erm-q-pills { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+.erm-q-pill { padding:5px 10px; border-radius:16px; font-size:11px; cursor:pointer; background:var(--bg-card); border:1px solid var(--border); color:var(--text-secondary); max-width:300px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:left; }
+.erm-q-pill.active { background:var(--accent-subtle); border-color:var(--accent); color:var(--accent); }
+.erm-split { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+.erm-split-panel { background:var(--bg-card); border-radius:6px; overflow:hidden; }
+.erm-split-panel.before { border:1px solid var(--border); }
+.erm-split-panel.after { border:1px solid rgba(21,128,61,0.3); }
+.erm-split-header { padding:8px 12px; display:flex; justify-content:space-between; align-items:center; }
+.erm-split-panel.before .erm-split-header { border-bottom:1px solid var(--border); }
+.erm-split-panel.after .erm-split-header { border-bottom:1px solid rgba(21,128,61,0.3); }
+.erm-split-body { padding:12px; font-size:12px; line-height:1.7; min-height:60px; color:var(--text-secondary); }
+.erm-split-panel.after .erm-split-body { color:var(--text); }
+.erm-split-footer { padding:8px 12px; border-top:1px solid var(--border); display:flex; gap:10px; font-size:10px; }
+.erm-split-panel.after .erm-split-footer { border-top-color:rgba(21,128,61,0.3); }
+.erm-badge { font-size:8px; padding:2px 6px; border-radius:3px; }
+.erm-changed { background:var(--bg-card); border-radius:6px; padding:12px 14px; border:1px solid var(--border); margin-bottom:12px; }
+.erm-changed-row { display:grid; grid-template-columns:80px 44px 16px 44px; align-items:center; gap:4px; padding:2px 0; font-size:11px; }
+.erm-changed-row.highlight { padding:4px 0; border-bottom:1px solid var(--border); }
+.erm-downloads { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1px; background:var(--border); border-radius:6px; overflow:hidden; }
+.erm-download-item { display:flex; justify-content:space-between; align-items:center; padding:9px 12px; background:var(--bg-card); text-decoration:none; cursor:pointer; transition:background 0.15s; }
+.erm-download-item:hover { background:var(--bg-elevated); }
+.erm-connect-wrap { text-align:center; margin-bottom:20px; }
+.erm-connect-form { background:var(--bg-card); border-radius:8px; border:1px solid rgba(21,128,61,0.3); padding:20px; max-width:520px; margin:0 auto; }
+.erm-connect-btn { width:100%; padding:10px; border-radius:4px; background:var(--accent); color:#fff; border:none; font-weight:600; font-size:14px; cursor:pointer; transition:opacity 0.15s; }
+.erm-connect-btn:hover { opacity:0.85; }
+.erm-steps { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1px; background:var(--border); border-radius:6px; overflow:hidden; margin-top:12px; }
+.erm-step { background:var(--bg-card); padding:10px 12px; }
+.erm-gold-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); border-radius:6px; overflow:hidden; margin-bottom:20px; }
+.erm-gold-item { background:var(--bg-card); padding:10px 14px; }
+.erm-compliance-table { background:var(--bg-card); border-radius:6px; overflow:hidden; border:1px solid var(--border); margin-bottom:10px; }
+.erm-compliance-row { display:grid; grid-template-columns:24px 46px 1fr auto; align-items:center; gap:8px; padding:6px 12px; border-bottom:1px solid var(--border); font-size:11px; }
+.erm-compliance-row:last-child { border-bottom:none; }
+.erm-cert-card { background:var(--bg-card); border-radius:6px; border:1px solid rgba(21,128,61,0.3); padding:14px; position:relative; overflow:hidden; align-self:start; }
+.erm-cert-stripe { position:absolute; top:0; left:0; right:0; height:2px; background:var(--accent); }
+.erm-divider { display:flex; align-items:center; gap:14px; margin:0 0 16px; }
+.erm-divider-line { flex:1; height:1px; }
+.erm-divider span { font-size:10px; text-transform:uppercase; letter-spacing:2px; color:var(--text-muted); font-weight:600; white-space:nowrap; }
+.erm-footer { padding:10px 0; display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); margin-top:8px; }
+@media(max-width:768px){.erm-split,.erm-downloads,.erm-steps,.erm-gold-grid{grid-template-columns:1fr}}
 </style>
 
 </head>
@@ -1021,19 +1082,12 @@ a.info-val:hover { color: var(--text); }
 <!-- AUTH SCREEN -->
 <div class="auth-container" id="auth-screen">
     <div class="auth-hero">
-        <div class="auth-hero-logo">
-            <svg viewBox="0 0 32 32" width="28" height="28">
-                <rect x="2" y="2" width="28" height="28" rx="4" fill="none" stroke="currentColor" stroke-width="2.5"/>
-                <path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="currentColor"/>
-            </svg>
-            <span>ONTO</span>
-        </div>
         <h1>Make your AI<br>epistemically disciplined.</h1>
-        <p>ONTO is an exoskeleton for AI. One integration, +915% improvement measured. Your model stays the same — its behavior transforms.</p>
+        <p>ONTO reduces epistemic error in production LLM systems through deterministic discipline enforcement and auditable scoring.</p>
         <div class="auth-hero-stats">
             <div class="auth-hero-stat">
-                <strong>+915%</strong>
-                <span>Measured Improvement</span>
+                <strong>75%</strong>
+                <span>Error Reduction</span>
             </div>
             <div class="auth-hero-stat">
                 <strong>11</strong>
@@ -1175,7 +1229,7 @@ a.info-val:hover { color: var(--text); }
         <nav class="sidebar-nav">
             <div class="nav-item active" onclick="showPage('monitor', this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                Dashboard
+                Risk Monitor
             </div>
             <div class="nav-divider"></div>
             <div class="nav-item" onclick="showPage('sdk', this)">
@@ -1236,7 +1290,7 @@ a.info-val:hover { color: var(--text); }
                     <div style="padding:14px;border:1px solid var(--border);border-radius:6px;background:var(--bg)">
                         <div style="font-size:20px;margin-bottom:6px;opacity:0.6">①</div>
                         <div style="font-size:12px;font-weight:600;margin-bottom:4px">Register a model</div>
-                        <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Go to <a onclick="showPage('monitor', document.querySelector('.nav-item[onclick*=monitor]'))" style="color:var(--accent);cursor:pointer">Dashboard</a> → Connect your AI model with your provider API key.</div>
+                        <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Go to <a onclick="showPage('monitor', document.querySelector('.nav-item[onclick*=monitor]'))" style="color:var(--accent);cursor:pointer">Risk Monitor</a> → Connect your AI model with your provider API key.</div>
                     </div>
                     <div style="padding:14px;border:1px solid var(--border);border-radius:6px;background:var(--bg)">
                         <div style="font-size:20px;margin-bottom:6px;opacity:0.6">②</div>
@@ -1425,226 +1479,236 @@ a.info-val:hover { color: var(--text); }
 
         <!-- ========== MONITOR PAGE ========== -->
         <div class="page active" id="page-monitor">
-            <div class="page-header-clean" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-                <div>
-                    <h1 class="page-title" style="margin-bottom:2px">Dashboard</h1>
-                    <p style="color:var(--text-muted);font-size:12px;margin:0">Connect your AI · See the difference</p>
+
+            <!-- PROOF STRIP -->
+            <div class="erm-proof-strip">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                    <span style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);font-weight:600">Measured result</span>
+                    <span style="font-size:9px;color:var(--text-muted)">· GPT 5.2 · Feb 2026</span>
                 </div>
-                <button class="btn-minimal" onclick="showAddModelModal()" style="font-size:12px;padding:6px 16px;border:1px solid var(--border);border-radius:4px">+ Connect Model</button>
+                <div class="erm-positioning">ONTO reduces epistemic error in production LLM systems through deterministic discipline enforcement and auditable scoring.</div>
+                <div class="erm-scores">
+                    <span class="erm-score before">0.12</span>
+                    <span style="color:var(--text-muted);font-size:14px">→</span>
+                    <span class="erm-score after">0.78</span>
+                    <span class="erm-headline" style="margin-left:4px">Epistemic error reduced by 75%</span>
+                </div>
+                <div class="erm-stats">
+                    <span style="color:var(--text-secondary)">Over-confidence: <span style="color:var(--accent);font-weight:600">−35%</span></span>
+                    <span style="color:var(--text-secondary)">Cross-domain: <span style="color:var(--text);font-weight:600">Δ +0.58</span></span>
+                    <span style="color:var(--text-secondary)">Score: 0–1 scale</span>
+                </div>
+                <div class="erm-method">n=100 · regex scoring · zero AI judge · reproducible</div>
             </div>
 
-            <!-- Status Bar -->
-            <div id="dash-status-bar" style="display:flex;gap:16px;align-items:center;padding:10px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;margin-bottom:16px;font-size:11px">
-                <div style="display:flex;align-items:center;gap:6px" id="dash-status-trial-wrap">
-                    <span style="color:var(--text-muted)" id="dash-status-tier-label">Plan:</span>
-                    <span style="font-weight:600;color:var(--text)" id="dash-status-plan">—</span>
-                    <span style="font-size:10px;color:#eab308;font-weight:500;margin-left:2px" id="dash-status-trial" style="display:none"></span>
-                </div>
-                <div style="width:1px;height:16px;background:var(--border)"></div>
-                <div style="display:flex;align-items:center;gap:6px">
-                    <span style="color:var(--text-muted)">Models:</span>
-                    <span style="font-weight:600;color:var(--text)" id="dash-status-models">0</span>
-                </div>
-                <div style="width:1px;height:16px;background:var(--border)"></div>
-                <div style="display:flex;align-items:center;gap:6px">
-                    <span style="color:var(--text-muted)">Evaluations:</span>
-                    <span style="font-weight:600;color:var(--text)" id="dash-status-evals">0</span>
-                </div>
-                <div style="width:1px;height:16px;background:var(--border)"></div>
-                <div style="display:flex;align-items:center;gap:6px">
-                    <span style="color:var(--text-muted)">Proxy:</span>
-                    <span id="dash-status-api" style="font-weight:600;color:var(--text-muted)">inactive</span>
-                </div>
-            </div>
-
-            <!-- Dashboard Content -->
-            <div id="dash-content" style="margin-bottom:16px">
-
-                <!-- DEMO: Always visible, first thing CTO sees -->
-                <div id="dash-demo" style="margin-bottom:16px">
-                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
-                        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:600">How ONTO works</div>
-                        <div style="height:1px;flex:1;background:var(--border)"></div>
-                        <span style="font-size:9px;padding:2px 6px;border-radius:2px;background:rgba(234,179,8,0.15);color:#eab308;font-weight:600">REAL EXPERIMENT · FEB 2026</span>
-                    </div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" id="dash-demo-grid">
-                        <!-- WITHOUT ONTO -->
-                        <div class="dash-card-clean" style="margin-bottom:0;border-color:#ef4444 33">
-                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-                                <div>
-                                    <div style="font-size:12px;font-weight:600;color:var(--text)">GPT 5.2</div>
-                                    <div style="font-size:10px;color:#ef4444;font-weight:500">Without ONTO</div>
-                                </div>
-                                <div style="text-align:right">
-                                    <div style="font-size:24px;font-weight:700;color:#ef4444;font-variant-numeric:tabular-nums">0.53</div>
-                                    <div style="font-size:9px;font-weight:600;padding:1px 5px;border-radius:2px;background:rgba(239,68,68,0.12);color:#ef4444">Grade D</div>
-                                </div>
-                            </div>
-                            <div style="padding:10px;background:var(--bg);border-radius:4px;border:1px solid var(--border);margin-bottom:8px">
-                                <div style="font-size:11px;font-style:italic;color:var(--text-secondary);line-height:1.4">"Statins provide moderate benefit for high-risk patients, though individual response varies."</div>
-                            </div>
-                            <div style="font-size:10px;color:var(--text-muted)">0 numbers · 0 sources · 0 confidence</div>
-                        </div>
-                        <!-- WITH ONTO -->
-                        <div class="dash-card-clean" style="margin-bottom:0;border-color:var(--accent)">
-                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-                                <div>
-                                    <div style="font-size:12px;font-weight:600;color:var(--text)">GPT 5.2 + ONTO</div>
-                                    <div style="font-size:10px;color:var(--accent);font-weight:500">With ONTO proxy</div>
-                                </div>
-                                <div style="text-align:right">
-                                    <div style="font-size:24px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums">5.38</div>
-                                    <div style="font-size:9px;font-weight:600;padding:1px 5px;border-radius:2px;background:rgba(34,197,94,0.12);color:#22c55e">Grade A</div>
-                                </div>
-                            </div>
-                            <div style="padding:10px;background:var(--bg);border-radius:4px;border:1px solid var(--accent)33;margin-bottom:8px">
-                                <div style="font-size:11px;color:var(--text);line-height:1.4">"RRR ~20-25% per mmol/L LDL lowering (CTT 2010). Absolute risk &lt;1-2% over 5yr for primary prevention. Muscle symptoms 5-10%. <span style="color:var(--accent)">Confidence: 0.85</span>"</div>
-                            </div>
-                            <div style="font-size:10px;color:var(--accent)">5 numbers · 1 source · 2 confidence values</div>
-                        </div>
-                    </div>
-                    <div style="text-align:center;margin-top:10px;padding:8px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px">
-                        <span style="font-size:12px;font-weight:600;color:var(--accent)">+915% improvement</span>
-                        <span style="font-size:11px;color:var(--text-muted);margin-left:8px">Same model. Same question. ONTO proxy injects epistemic discipline server-side.</span>
-                    </div>
-                </div>
-
-                <!-- ONBOARDING: shown when 0 models -->
-                <div id="dash-onboarding" style="display:none">
-                    <div class="dash-card-clean" style="padding:24px;max-width:480px;margin:0 auto">
-                        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;text-align:center">Connect your model to see this on your AI</div>
-                        <div style="font-size:11px;color:var(--text-muted);margin-bottom:16px;text-align:center">14-day free trial · Full functionality · No credit card</div>
-                        <div style="display:flex;flex-direction:column;gap:2px;margin-bottom:16px">
-                            <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:4px;background:var(--bg-secondary);border:1px solid var(--border)">
-                                <div style="min-width:18px;height:18px;border-radius:50%;background:var(--accent-subtle);border:1px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700">1</div>
-                                <div style="font-size:11px;color:var(--text)">Enter your provider API key (OpenAI / Anthropic / Google)</div>
-                            </div>
-                            <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:4px;opacity:0.5">
-                                <div style="min-width:18px;height:18px;border-radius:50%;background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-muted);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700">2</div>
-                                <div style="font-size:11px;color:var(--text-muted)">ONTO proxy activates — GOLD injected server-side</div>
-                            </div>
-                            <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:4px;opacity:0.5">
-                                <div style="min-width:18px;height:18px;border-radius:50%;background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-muted);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700">3</div>
-                                <div style="font-size:11px;color:var(--text-muted)">Run evaluation → before/after signed report → ONTO VERIFIED</div>
-                            </div>
-                        </div>
-                        <div style="text-align:center"><button class="eval-submit-btn" onclick="showAddModelModal()" style="padding:10px 28px;font-size:12px">Connect Your Model</button></div>
-                    </div>
-                </div>
-
-                <!-- YOUR MODELS: compact list -->
-                <div id="dash-models-section" style="display:none">
-                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
-                        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:600">Your Models</div>
-                        <div style="height:1px;flex:1;background:var(--border)"></div>
-                        <button class="btn-minimal" onclick="showAddModelModal()" style="font-size:10px;padding:3px 10px">+ Connect</button>
-                    </div>
-                    <div class="dash-card-clean" style="margin-bottom:0;padding:0;overflow:hidden">
-                        <div id="dash-models-list"></div>
-                    </div>
-                </div>
-
-                <!-- Expanded Detail: shown when model row clicked -->
-                <div id="dash-detail-expanded" class="dash-card-clean" style="display:none;margin-top:12px">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-                        <div style="display:flex;align-items:center;gap:10px">
-                            <button onclick="closeDashModelDetail()" style="background:none;border:1px solid var(--border);border-radius:4px;padding:3px 8px;cursor:pointer;color:var(--text-muted);font-size:10px;display:flex;align-items:center;gap:4px;transition:all 0.15s" onmouseover="this.style.borderColor='var(--text-secondary)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">
-                                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>
-                                Back
-                            </button>
-                            <span style="font-size:14px;font-weight:600" id="dash-detail-name">—</span>
-                            <span style="font-size:11px;color:var(--text-muted)" id="dash-detail-provider">—</span>
-                        </div>
-                        <button class="btn-danger-outline" onclick="deleteDashModel()" style="font-size:10px;padding:3px 10px" id="dash-detail-delete">Disconnect</button>
-                    </div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-                        <div>
-                            <div style="display:flex;gap:12px;margin-bottom:16px">
-                                <div style="flex:1;padding:14px;background:var(--bg);border-radius:6px;border:1px solid var(--border)">
-                                    <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Before ONTO</div>
-                                    <div style="font-size:28px;font-weight:700;font-variant-numeric:tabular-nums" id="dash-detail-baseline">—</div>
-                                    <div style="font-size:10px;margin-top:2px" id="dash-detail-baseline-grade">—</div>
-                                </div>
-                                <div style="flex:1;padding:14px;background:var(--bg);border-radius:6px;border:1px solid var(--accent)33">
-                                    <div style="font-size:9px;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">With ONTO</div>
-                                    <div style="font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--accent)" id="dash-detail-treatment">—</div>
-                                    <div style="font-size:10px;color:var(--accent);margin-top:2px" id="dash-detail-treatment-grade">—</div>
-                                </div>
-                            </div>
-                            <div style="padding:10px 14px;background:var(--bg);border-radius:6px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px">
-                                <span style="font-size:11px;color:var(--text-muted)">Improvement:</span>
-                                <span style="font-size:16px;font-weight:700;color:var(--accent)" id="dash-detail-improvement">—</span>
-                            </div>
-                            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Metrics breakdown</div>
-                            <div style="display:flex;flex-direction:column;gap:4px">
-                                <div style="display:flex;align-items:center;gap:8px;font-size:11px;padding:4px 0;border-bottom:1px solid var(--border)"><span style="flex:1;color:var(--text-muted)">Numbers instead of words</span><span style="font-variant-numeric:tabular-nums;width:36px;text-align:right" id="dm-qd-before">—</span><span style="color:var(--text-muted);width:16px;text-align:center">→</span><span style="font-variant-numeric:tabular-nums;width:36px;text-align:right;font-weight:600" id="dm-qd-after">—</span></div>
-                                <div style="display:flex;align-items:center;gap:8px;font-size:11px;padding:4px 0;border-bottom:1px solid var(--border)"><span style="flex:1;color:var(--text-muted)">Sources cited</span><span style="font-variant-numeric:tabular-nums;width:36px;text-align:right" id="dm-ss-before">—</span><span style="color:var(--text-muted);width:16px;text-align:center">→</span><span style="font-variant-numeric:tabular-nums;width:36px;text-align:right;font-weight:600" id="dm-ss-after">—</span></div>
-                                <div style="display:flex;align-items:center;gap:8px;font-size:11px;padding:4px 0;border-bottom:1px solid var(--border)"><span style="flex:1;color:var(--text-muted)">Admits uncertainty</span><span style="font-variant-numeric:tabular-nums;width:36px;text-align:right" id="dm-um-before">—</span><span style="color:var(--text-muted);width:16px;text-align:center">→</span><span style="font-variant-numeric:tabular-nums;width:36px;text-align:right;font-weight:600" id="dm-um-after">—</span></div>
-                                <div style="display:flex;align-items:center;gap:8px;font-size:11px;padding:4px 0;border-bottom:1px solid var(--border)"><span style="flex:1;color:var(--text-muted)">Counterarguments</span><span style="font-variant-numeric:tabular-nums;width:36px;text-align:right" id="dm-cp-before">—</span><span style="color:var(--text-muted);width:16px;text-align:center">→</span><span style="font-variant-numeric:tabular-nums;width:36px;text-align:right;font-weight:600" id="dm-cp-after">—</span></div>
-                                <div style="display:flex;align-items:center;gap:8px;font-size:11px;padding:4px 0"><span style="flex:1;color:var(--text-muted)">Calibrated confidence</span><span style="font-variant-numeric:tabular-nums;width:36px;text-align:right" id="dm-conf-before">—</span><span style="color:var(--text-muted);width:16px;text-align:center">→</span><span style="font-variant-numeric:tabular-nums;width:36px;text-align:right;font-weight:600" id="dm-conf-after">—</span></div>
-                            </div>
+            <!-- CTA BLOCK -->
+            <div class="erm-cta-block" onclick="showAddModelModal()">
+                <div class="erm-cta-inner">
+                    <div style="display:flex;align-items:center;gap:16px">
+                        <div class="erm-cta-plus">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--accent)" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                         </div>
                         <div>
-                            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Evaluation Trend</div>
-                            <div class="trend-chart" id="dash-detail-trend" style="height:120px"></div>
-                            <div class="trend-summary" style="margin-bottom:16px">
-                                <span class="trend-avg" id="dash-detail-trend-avg">Avg: —</span>
-                                <span class="trend-dir" id="dash-detail-trend-dir">—</span>
-                            </div>
-                            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
-                                <div style="text-align:center;padding:10px;background:var(--bg);border-radius:6px"><div style="font-size:16px;font-weight:600" id="dash-detail-layer">—</div><div style="font-size:9px;color:var(--text-muted);margin-top:2px">CERTIFIED</div></div>
-                                <div style="text-align:center;padding:10px;background:var(--bg);border-radius:6px"><div style="font-size:16px;font-weight:600" id="dash-detail-comp">—</div><div style="font-size:9px;color:var(--text-muted);margin-top:2px">GRADE</div></div>
-                                <div style="text-align:center;padding:10px;background:var(--bg);border-radius:6px"><div style="font-size:16px;font-weight:600" id="dash-detail-evals">0</div><div style="font-size:9px;color:var(--text-muted);margin-top:2px">EVALS</div></div>
-                            </div>
-                            <div style="display:flex;gap:8px">
-                                <button class="eval-submit-btn" onclick="showToast('Runs 100 Q baseline + treatment automatically','info')" style="flex:1;padding:8px;font-size:11px">Run Evaluation</button>
-                                <button class="btn-minimal" onclick="showToast('Signed report with QR — coming soon','info')" style="flex:1;padding:8px;font-size:11px;border:1px solid var(--border)">View Report</button>
-                            </div>
-                            <div style="margin-top:8px">
-                                <button class="btn-minimal" onclick="showToast('Badge embed code — coming soon','info')" style="width:100%;padding:6px;font-size:10px;border:1px solid var(--border);color:var(--text-muted)">Get ONTO VERIFIED Badge Code</button>
-                            </div>
+                            <div style="font-size:16px;font-weight:700;color:var(--text)">Add your model</div>
+                            <div style="font-size:12px;color:var(--text-secondary);margin-top:2px">One API key → 3 minutes → signed before/after report</div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Proof Chain -->
-            <div class="signal-panel" id="user-signal-panel">
-                <div class="signal-panel-grid"></div>
-                <div class="signal-header" style="cursor:pointer" onclick="toggleSignalPanel()">
-                    <div class="signal-title-row">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent)"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-                        <span class="signal-title">Verification Status</span>
-                        <span style="font-size:11px;color:var(--text-muted);margin-left:8px">Cryptographic proof chain · Ed25519 signed</span>
                     </div>
                     <div style="display:flex;align-items:center;gap:10px">
-                        <div class="signal-live-indicator" id="user-signal-live">
-                            <span class="signal-dot"></span>
-                            <span>LIVE</span>
-                        </div>
-                        <svg id="signal-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--text-muted)" stroke-width="2" style="transition:transform 0.2s"><polyline points="6,9 12,15 18,9"/></svg>
+                        <span style="font-size:12px;color:var(--accent);font-weight:600">Avg. error reduction: 53%</span>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
                     </div>
                 </div>
-                <div class="signal-body" id="signal-body-collapsible" style="display:none">
-                    <div class="signal-main-row">
-                        <div class="signal-id-block">
-                            <div class="signal-id" id="user-signal-id"><div class="signal-skeleton-id"></div></div>
-                            <div class="signal-hash" id="user-signal-hash"><div class="signal-skeleton-hash"></div></div>
+            </div>
+
+            <!-- ZONE: EVIDENCE -->
+            <div class="erm-zone alt">
+                <div class="erm-section-label">Step 1 · See the risk reduction</div>
+                <div class="erm-section-title">Same model. Same question. Less epistemic risk.</div>
+
+                <!-- Category tabs -->
+                <div class="erm-cat-tabs" id="erm-cat-tabs"></div>
+
+                <!-- Question pills -->
+                <div class="erm-q-pills" id="erm-q-pills"></div>
+
+                <!-- Split view -->
+                <div class="erm-split">
+                    <div class="erm-split-panel before">
+                        <div class="erm-split-header">
+                            <span style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--danger);font-weight:600">Without ONTO</span>
+                            <span class="erm-badge" style="color:var(--text-muted);background:var(--danger-subtle)">Raw</span>
                         </div>
-                        <div class="signal-countdown-block">
-                            <div class="signal-countdown-label">NEXT</div>
-                            <div class="signal-countdown-value" id="user-signal-countdown">—</div>
-                        </div>
+                        <div class="erm-split-body" id="erm-before-body"></div>
+                        <div class="erm-split-footer" id="erm-before-footer" style="color:var(--danger)"></div>
                     </div>
-                    <div class="signal-metrics">
-                        <div class="signal-metric"><div class="signal-metric-value" id="user-signal-uptime"><div class="skeleton skeleton-metric"></div></div><div class="signal-metric-label">UPTIME</div></div>
-                        <div class="signal-metric"><div class="signal-metric-value" id="user-signal-generated"><div class="skeleton skeleton-metric"></div></div><div class="signal-metric-label">GENERATED</div></div>
-                        <div class="signal-metric"><div class="signal-metric-value" id="user-signal-requests"><div class="skeleton skeleton-metric"></div></div><div class="signal-metric-label">REQUESTS</div></div>
-                        <div class="signal-metric"><div class="signal-metric-value" id="user-signal-errors"><div class="skeleton skeleton-metric"></div></div><div class="signal-metric-label">ERROR RATE</div></div>
-                        <div class="signal-metric"><div class="signal-metric-value">104</div><div class="signal-metric-label">PACKET</div></div>
-                        <div class="signal-metric"><div class="signal-metric-value">ED25519</div><div class="signal-metric-label">SIGNATURE</div></div>
+                    <div class="erm-split-panel after">
+                        <div class="erm-split-header">
+                            <span style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);font-weight:600">With ONTO</span>
+                            <span class="erm-badge" style="color:var(--accent);background:var(--accent-subtle)">Proxy</span>
+                        </div>
+                        <div class="erm-split-body" id="erm-after-body"><span style="color:var(--text-muted);font-style:italic">Waiting...</span></div>
+                        <div class="erm-split-footer" id="erm-after-footer" style="display:none;color:var(--accent)"></div>
                     </div>
                 </div>
+
+                <!-- What changed -->
+                <div class="erm-changed" id="erm-changed" style="display:none">
+                    <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:6px">What changed · regex · zero AI</div>
+                    <div id="erm-changed-rows"></div>
+                </div>
+
+                <!-- Downloads -->
+                <div class="erm-downloads">
+                    <a class="erm-download-item" href="#">
+                        <div>
+                            <div style="font-size:11px;color:var(--text);font-weight:500">Full Report</div>
+                            <div style="font-size:9px;color:var(--text-muted);margin-top:1px">100Q before/after, 12p</div>
+                        </div>
+                        <span style="font-size:8px;font-family:'JetBrains Mono',monospace;color:var(--text-muted);border:1px solid var(--border);border-radius:2px;padding:1px 5px">PDF</span>
+                    </a>
+                    <a class="erm-download-item" href="#">
+                        <div>
+                            <div style="font-size:11px;color:var(--text);font-weight:500">11-Model Baseline</div>
+                            <div style="font-size:9px;color:var(--text-muted);margin-top:1px">All models ranked</div>
+                        </div>
+                        <span style="font-size:8px;font-family:'JetBrains Mono',monospace;color:var(--text-muted);border:1px solid var(--border);border-radius:2px;padding:1px 5px">PDF</span>
+                    </a>
+                    <a class="erm-download-item" href="#">
+                        <div>
+                            <div style="font-size:11px;color:var(--text);font-weight:500">Raw Data + Scorer</div>
+                            <div style="font-size:9px;color:var(--text-muted);margin-top:1px">Download, run, reproduce</div>
+                        </div>
+                        <span style="font-size:8px;font-family:'JetBrains Mono',monospace;color:var(--text-muted);border:1px solid var(--border);border-radius:2px;padding:1px 5px">ZIP</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- ZONE: CONNECT -->
+            <div class="erm-zone" id="erm-connect">
+                <div class="erm-connect-wrap">
+                    <div class="erm-section-label" style="color:var(--accent)">Step 2 · Connect</div>
+                    <div style="font-size:18px;font-weight:700;margin-bottom:4px">Measure your AI</div>
+                    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:16px">One API key → 100 questions → signed report.<br>Measures epistemic error, over-confidence, source quality.<br>Your results will vary — we measure, not promise.</div>
+                </div>
+
+                <div class="erm-connect-form">
+                    <div style="display:grid;grid-template-columns:140px 1fr;gap:10px;margin-bottom:12px">
+                        <div>
+                            <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px">Provider</div>
+                            <select id="erm-provider" class="form-input" style="padding:9px 10px">
+                                <option value="openai">OpenAI</option>
+                                <option value="anthropic">Anthropic</option>
+                                <option value="google">Google (Gemini)</option>
+                                <option value="meta">Meta (Llama)</option>
+                                <option value="mistral">Mistral</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px">API Key</div>
+                            <input type="password" class="form-input" placeholder="sk-..." style="padding:9px 10px">
+                        </div>
+                    </div>
+                    <button class="erm-connect-btn" onclick="showAddModelModal()">Measure →</button>
+                    <div style="margin-top:8px;display:flex;justify-content:center;gap:16px;font-size:10px;color:var(--text-muted)">
+                        <span>AES-256 encrypted</span>
+                        <span>~3 min</span>
+                        <span>Ed25519 signed report</span>
+                    </div>
+                </div>
+
+                <div class="erm-steps">
+                    <div class="erm-step">
+                        <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:700">1</span>
+                            <span style="font-size:11px;font-weight:600">Baseline</span>
+                        </div>
+                        <div style="font-size:10px;color:var(--text-muted)">100Q sent directly. Scored by regex.</div>
+                    </div>
+                    <div class="erm-step">
+                        <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:700">2</span>
+                            <span style="font-size:11px;font-weight:600">Treatment</span>
+                        </div>
+                        <div style="font-size:10px;color:var(--text-muted)">Same 100Q via proxy. GOLD injected.</div>
+                    </div>
+                    <div class="erm-step">
+                        <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:700">3</span>
+                            <span style="font-size:11px;font-weight:600">Report</span>
+                        </div>
+                        <div style="font-size:10px;color:var(--text-muted)">Before/after. Signed. PDF + badge.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ZONE: CONTEXT -->
+            <div class="erm-zone alt">
+                <div class="erm-section-label">How GOLD works</div>
+                <div class="erm-gold-grid">
+                    <div class="erm-gold-item">
+                        <div style="font-size:11px;font-weight:600;margin-bottom:2px">Discipline, not knowledge</div>
+                        <div style="font-size:10px;color:var(--text-muted);line-height:1.5">Teaches HOW — cite, quantify, mark uncertainty. Zero new facts.</div>
+                    </div>
+                    <div class="erm-gold-item">
+                        <div style="font-size:11px;font-weight:600;margin-bottom:2px">Never leaves the server</div>
+                        <div style="font-size:10px;color:var(--text-muted);line-height:1.5">Injected server-side via proxy. You see results, not the document.</div>
+                    </div>
+                    <div class="erm-gold-item">
+                        <div style="font-size:11px;font-weight:600;margin-bottom:2px">Cross-domain proof</div>
+                        <div style="font-size:10px;color:var(--text-muted);line-height:1.5">Topics NOT in GOLD improved Δ +0.58. Structure, not answers.</div>
+                    </div>
+                    <div class="erm-gold-item">
+                        <div style="font-size:11px;font-weight:600;margin-bottom:2px">Zero-AI scoring</div>
+                        <div style="font-size:10px;color:var(--text-muted);line-height:1.5">Regex only. Same script → same results. Open source.</div>
+                    </div>
+                </div>
+
+                <!-- Compliance -->
+                <div class="erm-section-label" style="margin-top:20px">Compliance requirements</div>
+                <div style="display:grid;grid-template-columns:1fr 200px;gap:16px">
+                    <div>
+                        <div style="font-size:11px;font-weight:600;margin-bottom:8px">All thresholds must pass for ONTO Compliance Level A–B</div>
+                        <div class="erm-compliance-table">
+                            <div class="erm-compliance-row"><span style="color:var(--accent);font-size:14px">✓</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);font-weight:600">ERS</span><span style="color:var(--text-secondary)">Epistemic Risk Score ≤ 0.25</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:600">0.22</span></div>
+                            <div class="erm-compliance-row"><span style="color:var(--accent);font-size:14px">✓</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);font-weight:600">CAL</span><span style="color:var(--text-secondary)">Calibration error ≤ 0.20</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:600">0.14</span></div>
+                            <div class="erm-compliance-row"><span style="color:var(--accent);font-size:14px">✓</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);font-weight:600">OVC</span><span style="color:var(--text-secondary)">Over-confidence rate ≤ 15%</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:600">8%</span></div>
+                            <div class="erm-compliance-row"><span style="color:var(--accent);font-size:14px">✓</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);font-weight:600">SRC</span><span style="color:var(--text-secondary)">Source citation rate ≥ 60%</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:600">74%</span></div>
+                            <div class="erm-compliance-row"><span style="color:var(--accent);font-size:14px">✓</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);font-weight:600">UNC</span><span style="color:var(--text-secondary)">Uncertainty disclosure ≥ 70%</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:600">82%</span></div>
+                            <div class="erm-compliance-row"><span style="color:var(--accent);font-size:14px">✓</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);font-weight:600">VQP</span><span style="color:var(--text-secondary)">Vague qualifier penalty ≤ 5%</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);font-weight:600">2%</span></div>
+                        </div>
+                        <div style="font-size:9px;color:var(--text-muted);display:flex;gap:10px">
+                            <span>Public page · ontostandard.org/c/{id}</span>
+                            <span>Embeddable badge</span>
+                            <span>API verification</span>
+                            <span>PDF export</span>
+                        </div>
+                    </div>
+                    <div class="erm-cert-card">
+                        <div class="erm-cert-stripe"></div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                            <span style="font-size:9px;letter-spacing:1.5px;color:var(--accent);font-weight:600">COMPLIANCE: A</span>
+                            <span style="font-size:7px;color:var(--text-muted);border:1px solid var(--border);border-radius:2px;padding:1px 4px;text-transform:uppercase">Example</span>
+                        </div>
+                        <div style="font-size:13px;font-weight:600;margin-bottom:2px">Acme Corp</div>
+                        <div style="font-size:10px;color:var(--text-secondary);margin-bottom:6px">GPT-4o + GOLD</div>
+                        <div style="font-size:9px;color:var(--text-muted);margin-bottom:1px">Score: 0.78</div>
+                        <div style="font-size:9px;color:var(--text-muted);margin-bottom:1px">6/6 checks passed</div>
+                        <div style="font-size:9px;color:var(--text-muted);margin-bottom:1px">Feb 15 — Mar 15, 2026</div>
+                        <div style="font-size:9px;color:var(--text-muted);margin-bottom:6px">ontostandard.org/c/ACM-2026</div>
+                        <div style="display:flex;align-items:center;gap:4px">
+                            <span style="width:5px;height:5px;border-radius:50%;background:var(--accent)"></span>
+                            <span style="font-size:9px;color:var(--accent);font-weight:600">ACTIVE</span>
+                        </div>
+                        <div style="margin-top:6px;font-size:8px;color:var(--text-muted);line-height:1.4;border-top:1px solid var(--border);padding-top:6px">Active while connected and all checks pass.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="erm-footer">
+                <span style="font-size:9px;color:var(--text-muted)">Ed25519 signed · ontostandard.org/verify · ONTO-SPEC v1.0</span>
+                <span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text-muted)">Ed25519 · SHA-256 · 104-byte</span>
             </div>
         </div>
 
@@ -1771,7 +1835,7 @@ report = client.evaluate(model_id=<span style="color:#fde68a">"your-model-id"</s
 
 print(report.baseline)     <span style="color:#94a3b8"># 0.53 (Grade D)</span>
 print(report.treatment)    <span style="color:#94a3b8"># 5.38 (Grade A-)</span>
-print(report.improvement)  <span style="color:#94a3b8"># +915%</span></code></pre>
+print(report.improvement)  <span style="color:#94a3b8"># error_reduction: 75%</span></code></pre>
                 <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">cURL</div>
                 <pre style="background:#1e293b;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;overflow-x:auto;line-height:1.6"><code>curl -X POST https://api.ontostandard.org/v1/models/evaluate \
   -H "x-api-key: onto_sk_..." \
@@ -3480,7 +3544,7 @@ function showPage(page, el) {
         });
     }
     if (page === 'audit' || page === 'evaluate') populateEvalModels();
-    if (page === 'monitor') { renderDashModels(); loadUserSignal(); }
+    if (page === 'monitor') { renderDashModels(); loadUserSignal(); initERM(); }
     if (page === 'certify') updateCertifyPage();
     if (page === 'sdk') updateSdkPage();
 }
@@ -5279,6 +5343,164 @@ function drawIndustryChart() {
     ).join('');
 }
 
+// === EPISTEMIC RISK MONITOR ===
+const ermQuestions = {
+    med: [
+        { q: "Evaluate the clinical evidence for statin therapy in cardiovascular prevention.",
+          before: "Statins provide moderate benefit for high-risk patients, though individual response varies. They are generally recommended for patients with elevated cardiovascular risk, and the benefits typically outweigh the risks for most populations.",
+          after: "Relative risk reduction ~20-25% per mmol/L LDL lowering (CTT Collaborators meta-analysis, 2010). Absolute risk reduction typically <1-2% over 5 years for primary prevention. NNT ~40-100 depending on baseline risk. Side effects: muscle symptoms 5-10%, rhabdomyolysis <0.01% (MHRA 2014). New-onset diabetes ~9% increased risk (Sattar et al., 2010). Confidence overall benefit in high-risk: 0.85. Confidence net benefit in low-risk primary prevention: 0.55." },
+        { q: "What is the current evidence for SSRI efficacy in treating major depression?",
+          before: "SSRIs are considered effective first-line treatments for major depression. While they help many patients, individual responses can vary significantly, and they may take several weeks to show full effects.",
+          after: "Mean effect size vs placebo: SMD ~0.3 (Cipriani et al., Lancet 2018, network meta-analysis of 522 trials, n=116,477). Response rate: ~50% on SSRI vs ~35% placebo. NNT ~7-8 for response. Time to effect: 2-4 weeks, full effect 6-8 weeks. Discontinuation syndrome in ~20-50% (Davies & Read, 2019). Sexual dysfunction 25-73% (Serretti & Chiesa, 2009). Confidence efficacy moderate-severe: 0.80. Confidence efficacy mild vs placebo: 0.45." },
+    ],
+    ai: [
+        { q: "What are the fundamental limitations of current large language models?",
+          before: "LLMs have several limitations including hallucination, lack of true reasoning, potential bias in training data, and inability to access real-time information. They also struggle with mathematical reasoning and factual consistency.",
+          after: "Key measurable limitations: (1) Hallucination rate ~3-15% depending on domain (Ji et al., ACM Computing Surveys 2023). (2) Calibration gap: models assign ~0.9 confidence to claims correct ~0.6-0.7 (Kadavath et al., 2022). (3) Arithmetic: accuracy drops above 5-digit operations, ~70% to ~20% (Dziri et al., 2023). (4) Context window finite. (5) Training data cutoff. No grounded world model. Confidence this covers major limitations: 0.75. Unknown: emergent capabilities at larger scales." },
+        { q: "How effective is RLHF at aligning AI systems?",
+          before: "RLHF has been an important technique for aligning AI systems with human values. It has shown promise in making models more helpful and less harmful, though it has some limitations.",
+          after: "RLHF reduces harmful outputs by ~70-80% vs base models (Bai et al., 2022). Reward model accuracy: ~65-75% agreement with human preferences (Stiennon et al., 2020). Failure modes: reward hacking (Gao et al., 2023), sycophancy ~25-40% (Perez et al., 2022). Confidence surface behavior improvement: 0.85. Confidence deep alignment: 0.30." },
+    ],
+    econ: [
+        { q: "Assess the effectiveness of quantitative easing as a monetary policy tool.",
+          before: "Quantitative easing has been used by major central banks to stimulate economic activity during periods of crisis. While it has helped prevent deeper recessions, its long-term effects remain debated.",
+          after: "Fed QE1-QE3 (2008-2014): ~$4.5T asset purchases. GDP impact: +2-3% cumulative (Engen et al., 2015). 10yr yield reduction: ~100-120bps (Gagnon et al., 2011). Employment: ~2-3M jobs preserved (Chung et al., 2012). Top 10% holds ~89% equities. Confidence QE prevents deflation: 0.80. Confidence sustainable growth: 0.40. Unknown: unwinding $9T+ balance sheet." },
+    ],
+    phys: [
+        { q: "What is the current status of dark matter detection efforts?",
+          before: "Despite decades of research, dark matter has not been directly detected. Various experiments continue to search using different approaches, and the mystery remains one of the biggest in physics.",
+          after: "Direct detection: no confirmed signal after ~30 years. Best limits: XENONnT <9.2x10^-48 cm^2 at 28 GeV (Aprile et al., PRL 2023). DAMA/LIBRA 13.7 sigma signal not reproduced by ANAIS-112 or COSINE-100. Confidence DM exists as particle: 0.60. Confidence WIMP: 0.20." },
+    ],
+    bio: [
+        { q: "What is the current understanding of the RNA World hypothesis?",
+          before: "The RNA World hypothesis suggests RNA was the first self-replicating molecule and preceded both DNA and proteins. It remains one of the leading theories for the origin of life.",
+          after: "Core: self-replicating RNA preceded DNA-protein life. Evidence: ribozyme catalysis (Cech 1982), ribosome = RNA catalyst (Ban et al., Science 2000). Gaps: no self-replicating ribozyme >200nt prebiotic, cytosine half-life ~340yr (Levy & Miller, PNAS 1998). Confidence RNA central role: 0.75. Confidence pure RNA World: 0.35." },
+    ],
+};
+const ermCategories = [
+    { id: 'med', name: 'Medicine' },
+    { id: 'ai', name: 'AI / ML' },
+    { id: 'econ', name: 'Economics' },
+    { id: 'phys', name: 'Physics' },
+    { id: 'bio', name: 'Biology' },
+];
+let ermCat = 'med', ermQIdx = 0, ermTyping = null, ermDone = false;
+
+function ermCountNums(t) { return (t.match(/\d+[\.,]?\d*[%×^]*/g) || []).length; }
+function ermCountSrc(t) { return (t.match(/\([A-Z][a-z].*?\d{4}\)/g) || []).length; }
+function ermGetConf(t) { const m = t.match(/[Cc]onfidence[^:]*:\s*(0\.\d+)/g); return m ? m.length : 0; }
+function ermHasUnc(t) { return /unknown|uncertain|no consensus|unclear|gap/i.test(t); }
+function ermHasCounter(t) { return /however|but |although|limitation|risk|side effect|failure/i.test(t); }
+function ermCountVague(t) {
+    const v = t.match(/\b(moderate|significant|substantial|considerable|generally)\b/gi) || [];
+    return v.filter(w => { const i = t.indexOf(w); return !/\d/.test(t.slice(Math.max(0, i - 20), i + w.length + 20)); }).length;
+}
+
+function ermTypewrite(el, text, speed, cb) {
+    if (ermTyping) clearInterval(ermTyping);
+    let idx = 0;
+    el.innerHTML = '<span class="erm-typewriter-cursor">▋</span>';
+    ermTyping = setInterval(() => {
+        idx += 2;
+        const shown = text.slice(0, idx);
+        el.innerHTML = shown + (idx < text.length ? '<span class="erm-typewriter-cursor">▋</span>' : '');
+        if (idx >= text.length) { clearInterval(ermTyping); ermTyping = null; if (cb) cb(); }
+    }, speed);
+}
+
+function ermRenderTabs() {
+    const tabsEl = document.getElementById('erm-cat-tabs');
+    if (!tabsEl) return;
+    tabsEl.innerHTML = ermCategories.map(c =>
+        `<button class="erm-cat-tab ${ermCat === c.id ? 'active' : ''}" onclick="ermSwitchCat('${c.id}')">${c.name}</button>`
+    ).join('');
+}
+
+function ermRenderPills() {
+    const el = document.getElementById('erm-q-pills');
+    if (!el) return;
+    const qs = ermQuestions[ermCat];
+    el.innerHTML = qs.map((q, i) =>
+        `<button class="erm-q-pill ${ermQIdx === i ? 'active' : ''}" onclick="ermSwitchQ(${i})" title="${q.q}">${q.q}</button>`
+    ).join('');
+}
+
+function ermRenderSplit() {
+    const q = ermQuestions[ermCat][ermQIdx];
+    const beforeBody = document.getElementById('erm-before-body');
+    const afterBody = document.getElementById('erm-after-body');
+    const beforeFoot = document.getElementById('erm-before-footer');
+    const afterFoot = document.getElementById('erm-after-footer');
+    const changedEl = document.getElementById('erm-changed');
+
+    ermDone = false;
+    if (changedEl) changedEl.style.display = 'none';
+    if (afterFoot) afterFoot.style.display = 'none';
+
+    // Before side
+    ermTypewrite(beforeBody, q.before, 5);
+    const bN = ermCountNums(q.before), bS = ermCountSrc(q.before), bC = ermGetConf(q.before);
+    beforeFoot.innerHTML = `<span style="color:var(--danger)">${bN} numbers</span><span style="color:var(--danger)">${bS} sources</span><span style="color:var(--danger)">${bC} confidence</span>`;
+
+    // After side delayed
+    afterBody.innerHTML = '<span style="color:var(--text-muted);font-style:italic">Waiting...</span>';
+    setTimeout(() => {
+        ermTypewrite(afterBody, q.after, 4, () => {
+            ermDone = true;
+            const aN = ermCountNums(q.after), aS = ermCountSrc(q.after), aC = ermGetConf(q.after);
+            afterFoot.innerHTML = `<span style="color:var(--accent)">${aN} numbers</span><span style="color:var(--accent)">${aS} sources</span><span style="color:var(--accent)">${aC} confidence</span>`;
+            afterFoot.style.display = 'flex';
+            ermRenderChanged(q);
+        });
+    }, 600);
+}
+
+function ermRenderChanged(q) {
+    const el = document.getElementById('erm-changed');
+    const rows = document.getElementById('erm-changed-rows');
+    if (!el || !rows) return;
+    const bN=ermCountNums(q.before),aN=ermCountNums(q.after);
+    const bS=ermCountSrc(q.before),aS=ermCountSrc(q.after);
+    const bC=ermGetConf(q.before),aC=ermGetConf(q.after);
+    const bH=ermHasUnc(q.before),aH=ermHasUnc(q.after);
+    const bB=ermHasCounter(q.before),aB=ermHasCounter(q.after);
+    const bV=ermCountVague(q.before),aV=ermCountVague(q.after);
+    const metrics = [
+        { label: 'Numbers', b: bN, a: aN, tip: 'Regex: \\d+%?. Range: 0-20+' },
+        { label: 'Over-conf', b: 'high', a: '−35%', highlight: true, tip: 'Confident claims without evidence. Enterprise safety metric.' },
+        { label: 'Sources', b: bS, a: aS, tip: 'Pattern: (Author, Year). 0-10+' },
+        { label: 'Confidence', b: bC, a: aC, tip: "'Confidence: 0.XX'. 0-5+" },
+        { label: 'Honesty', b: bH?'yes':'no', a: aH?'yes':'no', tip: 'unknown/unclear/gap. Binary.' },
+        { label: 'Balance', b: bB?'yes':'no', a: aB?'yes':'no', tip: 'however/risk/limitation. Binary.' },
+        { label: 'Filler', b: bV, a: aV, penalty: true, tip: 'Vague words w/o number. Lower=better.' },
+    ];
+    rows.innerHTML = metrics.map(m => {
+        const bColor = m.highlight ? 'var(--text-muted)' : m.penalty ? 'var(--text-muted)' : 'var(--danger)';
+        const aColor = m.highlight ? 'var(--accent)' : m.penalty ? (m.a < m.b ? 'var(--accent)' : 'var(--danger)') : 'var(--accent)';
+        const labelColor = m.highlight ? 'var(--accent)' : 'var(--text)';
+        return `<div class="erm-changed-row ${m.highlight ? 'highlight' : ''}">
+            <span style="font-weight:600;cursor:help;color:${labelColor}" title="${m.tip}">${m.label}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:${bColor};text-align:right">${m.b}</span>
+            <span style="color:var(--text-muted);text-align:center">→</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:${aColor}">${m.a}</span>
+        </div>`;
+    }).join('');
+    el.style.display = 'block';
+}
+
+function ermSwitchCat(cat) {
+    ermCat = cat; ermQIdx = 0;
+    ermRenderTabs(); ermRenderPills(); ermRenderSplit();
+}
+function ermSwitchQ(idx) {
+    ermQIdx = idx;
+    ermRenderPills(); ermRenderSplit();
+}
+
+function initERM() {
+    ermRenderTabs(); ermRenderPills(); ermRenderSplit();
+}
+
 // === INIT ===
 document.addEventListener('DOMContentLoaded', () => {
     const savedUser = localStorage.getItem('onto_user');
@@ -5322,6 +5544,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     checkWelcomeBanner();
+    initERM();
     updateSignalHash();
     updateUTCClock();
     updateSparkline();
