@@ -1189,7 +1189,8 @@ a.info-val:hover { color: var(--text); }
                             <div style="color:var(--text-muted);margin-bottom:6px"># After (through ONTO proxy — GOLD injected server-side):</div>
                             <div><span style="color:#e2e8f0">client</span> <span style="color:var(--text-muted)">=</span> <span style="color:#22c55e">OpenAI</span>(</div>
                             <div style="padding-left:24px"><span style="color:rgba(34,197,94,0.7)">api_key</span>=<span style="color:#4ade80">"onto_sk_..."</span>,</div>
-                            <div style="padding-left:24px"><span style="color:rgba(34,197,94,0.7)">base_url</span>=<span style="color:#4ade80">"https://api.ontostandard.org/v1/proxy"</span></div>
+                            <div style="padding-left:24px"><span style="color:rgba(34,197,94,0.7)">base_url</span>=<span style="color:#4ade80">"https://api.ontostandard.org/v1/proxy"</span>,</div>
+                            <div style="padding-left:24px"><span style="color:rgba(34,197,94,0.7)">default_headers</span>={<span style="color:#4ade80">"X-Provider-Key"</span>: <span style="color:#4ade80">"sk-...your_key"</span>}</div>
                             <div>)</div>
                             <div style="height:10px"></div>
                             <div style="color:var(--text-muted)"># Everything else stays the same</div>
@@ -1492,7 +1493,7 @@ a.info-val:hover { color: var(--text); }
         <div class="page" id="page-sdk">
             <div class="page-header-clean" style="margin-bottom:20px">
                 <h1 class="page-title" style="margin-bottom:2px">API & SDK</h1>
-                <p style="color:var(--text-muted);font-size:12px;margin:0">Integrate ONTO evaluation into your pipeline</p>
+                <p style="color:var(--text-muted);font-size:12px;margin:0">Connect your AI to ONTO GOLD epistemic discipline</p>
             </div>
 
             <!-- API Key -->
@@ -1515,14 +1516,15 @@ a.info-val:hover { color: var(--text); }
             <!-- Quick Start -->
             <div class="dash-card-clean" style="margin-bottom:16px">
                 <div class="card-head" style="margin-bottom:12px">Quick Start</div>
-                <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Use ONTO Proxy (one line change)</div>
+                <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Python — OpenAI-compatible (3 lines changed)</div>
                 <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:16px;overflow-x:auto;line-height:1.6"><code><span style="color:var(--text-muted)"># Before (direct to OpenAI):</span>
 client = OpenAI(api_key=<span style="color:#4ade80">"sk-..."</span>)
 
 <span style="color:var(--text-muted)"># After (through ONTO proxy — GOLD injected server-side):</span>
 client = OpenAI(
     api_key=<span style="color:#4ade80">"onto_sk_..."</span>,
-    base_url=<span style="color:#4ade80">"https://api.ontostandard.org/v1/proxy"</span>
+    base_url=<span style="color:#4ade80">"https://api.ontostandard.org/v1/proxy"</span>,
+    default_headers={<span style="color:#4ade80">"X-Provider-Key"</span>: <span style="color:#4ade80">"sk-...your_openai_key"</span>}
 )
 
 <span style="color:var(--text-muted)"># Everything else stays the same</span>
@@ -1530,22 +1532,25 @@ response = client.chat.completions.create(
     model=<span style="color:#4ade80">"gpt-4o"</span>,
     messages=[{<span style="color:#4ade80">"role"</span>: <span style="color:#4ade80">"user"</span>, <span style="color:#4ade80">"content"</span>: <span style="color:#4ade80">"Your question"</span>}]
 )</code></pre>
-                <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Run Evaluation</div>
-                <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:16px;overflow-x:auto;line-height:1.6"><code><span style="color:#22c55e">import</span> onto
-
-client = onto.Client(api_key=<span style="color:#4ade80">"onto_sk_..."</span>)
-
-<span style="color:var(--text-muted)"># Runs 100 Q baseline + 100 Q with GOLD → before/after report</span>
-report = client.evaluate(model_id=<span style="color:#4ade80">"your-model-id"</span>)
-
-print(report.baseline)     <span style="color:var(--text-muted)"># 0.53 (Grade D)</span>
-print(report.treatment)    <span style="color:var(--text-muted)"># 5.38 (Grade A-)</span>
-print(report.improvement)  <span style="color:var(--text-muted)"># error_reduction: 75%</span></code></pre>
+                <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Other providers (DeepSeek, Groq, Mistral, etc.)</div>
+                <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:16px;overflow-x:auto;line-height:1.6"><code><span style="color:var(--text-muted)"># Same endpoint, add X-Provider-Base-URL header:</span>
+client = OpenAI(
+    api_key=<span style="color:#4ade80">"onto_sk_..."</span>,
+    base_url=<span style="color:#4ade80">"https://api.ontostandard.org/v1/proxy"</span>,
+    default_headers={
+        <span style="color:#4ade80">"X-Provider-Key"</span>: <span style="color:#4ade80">"sk-...your_provider_key"</span>,
+        <span style="color:#4ade80">"X-Provider-Base-URL"</span>: <span style="color:#4ade80">"https://api.deepseek.com/v1"</span>
+    }
+)</code></pre>
                 <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">cURL</div>
-                <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;overflow-x:auto;line-height:1.6"><code>curl -X POST https://api.ontostandard.org/v1/models/evaluate \
+                <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:16px;overflow-x:auto;line-height:1.6"><code>curl -X POST https://api.ontostandard.org/v1/proxy/chat/completions \
   -H "x-api-key: onto_sk_..." \
+  -H "X-Provider-Key: sk-...your_openai_key" \
   -H "Content-Type: application/json" \
-  -d '{"output": "AI response text", "domain": "general"}'</code></pre>
+  -d '{"model":"gpt-4o","messages":[{"role":"user","content":"Your question"}]}'</code></pre>
+                <div style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.15);border-radius:6px;padding:10px 14px;font-size:11px;color:var(--text-secondary);line-height:1.5">
+                    <span style="color:var(--accent);font-weight:600">How it works:</span> Your request → ONTO injects GOLD discipline into system prompt → forwards to your provider → returns enhanced response. ONTO never stores your prompts or responses. Standard provider token costs apply.
+                </div>
             </div>
 
             <!-- Rate Limits -->
@@ -1554,27 +1559,27 @@ print(report.improvement)  <span style="color:var(--text-muted)"># error_reducti
                 <table style="width:100%;border-collapse:collapse;font-size:12px">
                     <tr style="border-bottom:1px solid var(--border)">
                         <th style="text-align:left;padding:8px 10px;font-weight:500;color:var(--text-muted);font-size:10px;text-transform:uppercase">Tier</th>
-                        <th style="text-align:left;padding:8px 10px;font-weight:500;color:var(--text-muted);font-size:10px;text-transform:uppercase">Rate</th>
-                        <th style="text-align:left;padding:8px 10px;font-weight:500;color:var(--text-muted);font-size:10px;text-transform:uppercase">Persistence</th>
-                        <th style="text-align:left;padding:8px 10px;font-weight:500;color:var(--text-muted);font-size:10px;text-transform:uppercase">Certification</th>
+                        <th style="text-align:left;padding:8px 10px;font-weight:500;color:var(--text-muted);font-size:10px;text-transform:uppercase">Proxy Rate</th>
+                        <th style="text-align:left;padding:8px 10px;font-weight:500;color:var(--text-muted);font-size:10px;text-transform:uppercase">GOLD Level</th>
+                        <th style="text-align:left;padding:8px 10px;font-weight:500;color:var(--text-muted);font-size:10px;text-transform:uppercase">Proof Chain</th>
                     </tr>
                     <tr style="border-bottom:1px solid var(--border)">
                         <td style="padding:8px 10px;font-weight:500">Open</td>
                         <td style="padding:8px 10px;color:var(--text-secondary)">10/hr · 50/day</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">Full API</td>
-                        <td style="padding:8px 10px;color:var(--text-muted)">Marker only (diagnostic)</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">TIER 2 — Protocol + Core</td>
+                        <td style="padding:8px 10px;color:var(--text-muted)">Diagnostic only</td>
                     </tr>
                     <tr style="border-bottom:1px solid var(--border)">
                         <td style="padding:8px 10px;font-weight:500">Standard</td>
                         <td style="padding:8px 10px;color:var(--text-secondary)">420/hr · 10K/day</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">Full API + Proof Chain</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">Signed evaluations</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">TIER 4 — Full Modules</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">Signed + Ed25519</td>
                     </tr>
                     <tr>
                         <td style="padding:8px 10px;font-weight:500">Certified</td>
                         <td style="padding:8px 10px;color:var(--text-secondary)">Unlimited</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">Full API + Proof Chain + Audit</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">Certification + public verify</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">TIER 6 — Full Corpus</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">Full audit trail</td>
                     </tr>
                 </table>
                 <div style="margin-top:12px">
@@ -1587,8 +1592,8 @@ print(report.improvement)  <span style="color:var(--text-muted)"># error_reducti
                 <div style="display:flex;justify-content:space-between;align-items:center">
                     <div>
                         <div class="card-head" style="margin-bottom:4px">Current Plan</div>
-                        <div style="font-size:13px"><span style="font-weight:600" id="sdk-plan-name">Open</span> · <span style="color:var(--text-muted)" id="sdk-plan-rate">10 evals / hour</span></div>
-                        <div style="font-size:11px;color:var(--text-muted);margin-top:4px" id="sdk-plan-calls">0 / 50 calls used today</div>
+                        <div style="font-size:13px"><span style="font-weight:600" id="sdk-plan-name">Open</span> · <span style="color:var(--text-muted)" id="sdk-plan-rate">10 requests / hour</span></div>
+                        <div style="font-size:11px;color:var(--text-muted);margin-top:4px" id="sdk-plan-calls">0 / 50 proxy calls used today</div>
                     </div>
                     <button class="btn-upgrade" id="sdk-upgrade-btn" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))" style="font-size:12px;padding:8px 20px">Upgrade →</button>
                 </div>
@@ -4019,7 +4024,8 @@ client = OpenAI(api_key="sk-...")
 # After (through ONTO proxy — GOLD injected server-side):
 client = OpenAI(
     api_key="onto_sk_...",
-    base_url="https://api.ontostandard.org/v1/proxy"
+    base_url="https://api.ontostandard.org/v1/proxy",
+    default_headers={"X-Provider-Key": "sk-...your_key"}
 )
 
 # Everything else stays the same
