@@ -805,7 +805,7 @@ a.info-val:hover { color: var(--text); }
                 <p><strong>Service.</strong> ONTO provides AI evaluation and epistemic risk scoring as a hosted service. Your evaluation data, API keys, and account credentials are stored securely and never shared with third parties.</p>
                 <p><strong>Acceptable Use.</strong> You may use the ONTO platform to evaluate AI model outputs, track risk scores, and obtain certifications for your organization. Automated abuse, reverse engineering of scoring algorithms, and redistribution of evaluation results without attribution are prohibited.</p>
                 <p><strong>Data &amp; Privacy.</strong> We collect email, name, and usage metrics necessary to provide the service. Data is processed in accordance with GDPR. We never sell your data. You may request deletion at any time.</p>
-                <p><strong>Billing.</strong> Open tier includes limited evaluations. Standard billed monthly. Enterprise billed annually. Refund policy applies within 30 days of first payment.</p>
+                <p><strong>Billing.</strong> Open tier includes limited evaluations. Standard billed monthly. Certified billed annually. Refund policy applies within 30 days of first payment.</p>
                 <p style="margin-top: 12px;"><strong>Full terms:</strong> <a href="/legal" target="_blank">ontostandard.org/legal</a></p>
             </div>
             
@@ -961,7 +961,7 @@ a.info-val:hover { color: var(--text); }
                     </div>
                 </div>
                 <div style="margin-top:14px;padding:10px 12px;background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.1);border-radius:4px;font-size:11px;color:var(--text-secondary);line-height:1.5">
-                    <strong style="color:var(--text)">How it works:</strong> Open = try it (500 proxy/day, 5 models). Standard ($1.5K/mo) = production use, 50K proxy/day, up to 20 models, signed proofs. Enterprise = unlimited proxy, SLA, dedicated support.
+                    <strong style="color:var(--text)">How it works:</strong> Open = try it (50 evals/day, 5 models). Standard ($15K/yr) = production use, 10K evals/day, up to 20 models, signed proofs. Certified ($100K+/yr) = full compliance, up to 100 models, certification, dedicated support.
                 </div>
                 <div style="margin-top:10px;display:flex;gap:12px;align-items:center">
                     <a href="/docs/" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Documentation →</a>
@@ -1565,20 +1565,20 @@ client = OpenAI(
                     </tr>
                     <tr style="border-bottom:1px solid var(--border)">
                         <td style="padding:8px 10px;font-weight:500">Open</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">500/day</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">10/hr · 50/day</td>
                         <td style="padding:8px 10px;color:var(--text-secondary)">TIER 2 — Protocol + Core</td>
                         <td style="padding:8px 10px;color:var(--text-muted)">Diagnostic only</td>
                     </tr>
                     <tr style="border-bottom:1px solid var(--border)">
                         <td style="padding:8px 10px;font-weight:500">Standard</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">50K/day</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">420/hr · 10K/day</td>
                         <td style="padding:8px 10px;color:var(--text-secondary)">TIER 4 — Full Modules</td>
                         <td style="padding:8px 10px;color:var(--text-secondary)">Signed + Ed25519</td>
                     </tr>
                     <tr>
-                        <td style="padding:8px 10px;font-weight:500">Enterprise</td>
+                        <td style="padding:8px 10px;font-weight:500">Certified</td>
                         <td style="padding:8px 10px;color:var(--text-secondary)">Unlimited</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">TIER 4 — Full Modules</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">TIER 6 — Full Corpus</td>
                         <td style="padding:8px 10px;color:var(--text-secondary)">Full audit trail</td>
                     </tr>
                 </table>
@@ -1592,8 +1592,8 @@ client = OpenAI(
                 <div style="display:flex;justify-content:space-between;align-items:center">
                     <div>
                         <div class="card-head" style="margin-bottom:4px">Current Plan</div>
-                        <div style="font-size:13px"><span style="font-weight:600" id="sdk-plan-name">Open</span> · <span style="color:var(--text-muted)" id="sdk-plan-rate">500 proxy/day</span></div>
-                        <div style="font-size:11px;color:var(--text-muted);margin-top:4px" id="sdk-plan-calls">0 / 500 proxy calls used today</div>
+                        <div style="font-size:13px"><span style="font-weight:600" id="sdk-plan-name">Open</span> · <span style="color:var(--text-muted)" id="sdk-plan-rate">10 requests / hour</span></div>
+                        <div style="font-size:11px;color:var(--text-muted);margin-top:4px" id="sdk-plan-calls">0 / 50 proxy calls used today</div>
                     </div>
                     <button class="btn-upgrade" id="sdk-upgrade-btn" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))" style="font-size:12px;padding:8px 20px">Upgrade →</button>
                 </div>
@@ -1823,11 +1823,6 @@ client = OpenAI(
             <div class="page-header-clean">
                 <h1 class="page-title">Access Tiers</h1>
             </div>
-
-            <!-- PRODUCT 1: PROXY -->
-            <div style="margin-bottom:10px">
-                <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">ONTO Proxy — for companies using AI</div>
-            </div>
             
             <div class="tiers-grid">
                 <!-- OPEN -->
@@ -1839,8 +1834,7 @@ client = OpenAI(
                         <li>500 proxy requests/day</li>
                         <li>GOLD TIER 2 — Protocol + Core</li>
                         <li>Up to 5 models</li>
-                        <li>Epistemic scoring (REP, EpCE, DLA)</li>
-                        <li>JSON evaluation reports</li>
+                        <li>Epistemic scoring + JSON reports</li>
                     </ul>
                     <button class="btn-tier current" id="btn-free" disabled>Current</button>
                 </div>
@@ -1870,7 +1864,6 @@ client = OpenAI(
                     <ul class="tier-list">
                         <li>Everything in Standard</li>
                         <li>Unlimited proxy requests</li>
-                        <li>GOLD TIER 4 — Full Modules</li>
                         <li>Up to 100 models</li>
                         <li>24-month audit trail</li>
                         <li>Dedicated support + SLA</li>
@@ -1879,54 +1872,14 @@ client = OpenAI(
                 </div>
             </div>
 
-            <!-- PRODUCT 2: CERTIFICATION -->
-            <div style="margin-top:32px;margin-bottom:10px">
-                <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">ONTO Certification — for AI providers</div>
-            </div>
-
-            <div class="tiers-grid">
-                <!-- EVALUATION -->
-                <div class="tier-card">
-                    <div class="tier-name">Evaluation</div>
-                    <div class="tier-price">$25,000</div>
-                    <div class="tier-desc">Independent epistemic quality assessment of your model</div>
-                    <ul class="tier-list">
-                        <li>1,100 calibrated probes</li>
-                        <li>Baseline + GOLD treatment comparison</li>
-                        <li>Composite score + factor breakdown</li>
-                        <li>Detailed report with recommendations</li>
-                    </ul>
-                    <button class="btn-tier" onclick="contactSales()">Contact</button>
-                </div>
-
-                <!-- CERTIFICATION -->
-                <div class="tier-card">
-                    <div class="tier-name">Certified</div>
-                    <div class="tier-price">$100,000<span>/year</span></div>
-                    <div class="tier-desc">ONTO CERTIFIED — publicly verifiable epistemic compliance</div>
-                    <ul class="tier-list">
-                        <li>Quarterly independent evaluation</li>
-                        <li>Public certificate + verification page</li>
-                        <li>Proof chain with Ed25519 signatures</li>
-                        <li>Regulatory compliance reports</li>
-                        <li>ONTO CERTIFIED badge for marketing</li>
-                    </ul>
-                    <button class="btn-tier" onclick="contactSales()">Contact</button>
-                </div>
-
-                <!-- CONTINUOUS -->
-                <div class="tier-card">
-                    <div class="tier-name">Continuous</div>
-                    <div class="tier-price">$250,000<span>/year</span></div>
-                    <div class="tier-desc">Real-time epistemic monitoring + advisory board seat</div>
-                    <ul class="tier-list">
-                        <li>Everything in Certified</li>
-                        <li>Monthly evaluation cycle</li>
-                        <li>Real-time monitoring dashboard</li>
-                        <li>Dedicated advisory support</li>
-                        <li>Early access to protocol updates</li>
-                    </ul>
-                    <button class="btn-tier" onclick="contactSales()">Contact</button>
+            <!-- CERTIFICATION (contact-only) -->
+            <div style="margin-top:24px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:20px">
+                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+                    <div>
+                        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">ONTO Certification — for AI providers</div>
+                        <div style="font-size:12px;color:var(--text-secondary);line-height:1.5">Independent epistemic quality assessment and certification for AI models. Evaluation ($25K), Certified ($100K/yr), Continuous ($250K/yr).</div>
+                    </div>
+                    <a href="mailto:council@ontostandard.org" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500;white-space:nowrap">Contact → council@ontostandard.org</a>
                 </div>
             </div>
 
@@ -2232,7 +2185,7 @@ client = OpenAI(
             <div class="order-section">
                 <div class="form-section-title">Includes</div>
                 <div class="order-features" id="order-features">
-                    <div class="order-feature">50,000 proxy requests/day</div>
+                    <div class="order-feature">10,000 evaluations/day</div>
                     <div class="order-feature">GOLD-backed scoring</div>
                     <div class="order-feature">Ed25519 signed proof chain</div>
                     <div class="order-feature">Batch evaluation</div>
@@ -2378,7 +2331,7 @@ client = OpenAI(
                             <span class="tier-badge tier-critical">ENTERPRISE</span>
                             <span class="tier-option-price">Custom</span>
                         </div>
-                        <div class="tier-option-desc">Unlimited proxy, GOLD TIER 4, SLA</div>
+                        <div class="tier-option-desc">Unlimited proxy, SLA</div>
                     </div>
                 </label>
             </div>
@@ -3075,8 +3028,8 @@ function updateDashboardMetrics() {
     const sub = currentUser.subscription;
     const plan = currentUser.plan || 'free';
     
-    const planNames = { free: 'Open', business: 'Standard', enterprise: 'Enterprise' };
-    const rateLimits = { free: '500 proxy/day', business: '50K proxy/day', enterprise: 'Unlimited' };
+    const planNames = { free: 'Open', business: 'Standard', enterprise: 'Certified' };
+    const rateLimits = { free: '10/hr · 50/day', business: '420/hr · 10K/day', enterprise: 'Unlimited' };
     
     // Plan card
     const nameEl = document.getElementById('dash-plan-name');
@@ -3088,7 +3041,7 @@ function updateDashboardMetrics() {
     const switchSelect = document.getElementById('plan-switch');
     
     if (nameEl) nameEl.textContent = planNames[plan] || 'Open';
-    if (rateEl) rateEl.textContent = rateLimits[plan] || '500 proxy/day';
+    if (rateEl) rateEl.textContent = rateLimits[plan] || '10 evals / hour';
     
     // Hide upgrade for paid plans
     if (upgradeBtn) upgradeBtn.style.display = plan === 'free' ? 'block' : 'none';
@@ -3128,7 +3081,7 @@ function updateDashboardMetrics() {
         const planIncludes = {
             free: 'Free: 1 eval/hr · 5 models · Public /check endpoint',
             business: 'Standard: 10K eval/day · 20 models · Signed proofs · Batch evaluation',
-            enterprise: 'Enterprise: Unlimited proxy · GOLD TIER 4 · SLA · 24mo audit · Dedicated support'
+            enterprise: 'Certified: Unlimited evals · 100 models · Certification · 24mo audit · Dedicated support'
         };
         includesEl.textContent = planIncludes[plan] || planIncludes.free;
     }
@@ -3195,7 +3148,7 @@ function switchActivePlan(newPlan) {
     updateDashboardMetrics();
     updateBillingUI();
     
-    showToast('Switched to ' + (newPlan === 'enterprise' ? 'Enterprise' : 'Standard'), 'success');
+    showToast('Switched to ' + (newPlan === 'enterprise' ? 'Certified' : 'Standard'), 'success');
 }
 
 function showPage(page, el) {
@@ -3357,7 +3310,7 @@ function downloadInvoice() {
     const invoiceId = 'INV-' + new Date(sub.started).getFullYear() + '-' + Date.now().toString(36).toUpperCase();
     const plan = sub.plan;
     const amount = sub.amount;
-    const planNames = { business: 'Standard', enterprise: 'Enterprise' };
+    const planNames = { business: 'Standard', enterprise: 'Certified' };
     
     const invoice = {
         schema: 'onto-invoice/v1',
@@ -3610,8 +3563,8 @@ function updateBillingUI() {
     document.getElementById('btn-enterprise').textContent = 'Select';
     document.getElementById('btn-enterprise').disabled = false;
     
-    const planNames = { free: 'Open (Free)', business: 'Standard', enterprise: 'Enterprise' };
-    const rateLimits = { free: '500/day', business: '50K/day', enterprise: 'Unlimited' };
+    const planNames = { free: 'Open (Free)', business: 'Standard', enterprise: 'Certified' };
+    const rateLimits = { free: '10/hr', business: '420/hr', enterprise: 'Unlimited' };
     
     // Update current plan indicator
     if (currentUser.plan === 'free' || !currentUser.subscription) {
@@ -3668,7 +3621,7 @@ function updateBillingUI() {
 // === SUBSCRIBE MODAL ===
 function openSubscribeModal(plan) {
     selectedPlan = plan;
-    const planNames = { business: 'Standard', enterprise: 'Enterprise' };
+    const planNames = { business: 'Standard', enterprise: 'Certified' };
     document.getElementById('subscribe-plan-name').textContent = planNames[plan] || plan;
     const prices = PLANS[plan];
     document.getElementById('price-annual-display').textContent = '$' + prices.annual.toLocaleString();
@@ -3687,10 +3640,10 @@ function updateOrderSummary() {
     const cycle = document.querySelector('input[name="billing-cycle"]:checked')?.value || 'annual';
     selectedCycle = cycle;
     const prices = PLANS[selectedPlan];
-    const planNames = { business: 'Standard', enterprise: 'Enterprise' };
+    const planNames = { business: 'Standard', enterprise: 'Certified' };
     const planName = planNames[selectedPlan] || selectedPlan;
     const planFeatures = {
-        business: ['50,000 proxy requests/day', 'Up to 20 models', 'Real-time scoring', 'Ed25519 signed proof chain', 'Batch evaluation (up to 100)', 'Model trends & comparison'],
+        business: ['10,000 evaluations/day', 'Up to 20 models', 'Real-time scoring', 'Ed25519 signed proof chain', 'Batch evaluation (up to 100)', 'Model trends & comparison'],
         enterprise: ['Everything in Standard', 'Unlimited evaluations', 'Up to 100 models', 'Certification after evaluation', 'Public proof verification', '24-month audit trail', 'Dedicated support']
     };
     const featuresEl = document.getElementById('order-features');
@@ -5324,15 +5277,15 @@ function riskColor(risk) {
 function updateSdkPage() {
     if (!currentUser) return;
     const plan = currentUser.plan || 'free';
-    const planNames = { free: 'Open', business: 'Standard', enterprise: 'Enterprise' };
-    const rateLimits = { free: '500 proxy/day', business: '50K proxy/day', enterprise: 'Unlimited' };
+    const planNames = { free: 'Open', business: 'Standard', enterprise: 'Certified' };
+    const rateLimits = { free: '10/hr · 50/day', business: '420/hr · 10K/day', enterprise: 'Unlimited' };
     
     const nameEl = document.getElementById('sdk-plan-name');
     const rateEl = document.getElementById('sdk-plan-rate');
     const callsEl = document.getElementById('sdk-plan-calls');
     const upgradeBtn = document.getElementById('sdk-upgrade-btn');
     if (nameEl) nameEl.textContent = planNames[plan] || 'Open';
-    if (rateEl) rateEl.textContent = rateLimits[plan] || '500 proxy/day';
+    if (rateEl) rateEl.textContent = rateLimits[plan] || '10 evals / hour';
     if (upgradeBtn) upgradeBtn.style.display = plan === 'free' ? 'inline-block' : 'none';
     
     const realApiKey = localStorage.getItem('onto_first_api_key');
