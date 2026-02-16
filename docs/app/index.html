@@ -805,7 +805,7 @@ a.info-val:hover { color: var(--text); }
                 <p><strong>Service.</strong> ONTO provides AI evaluation and epistemic risk scoring as a hosted service. Your evaluation data, API keys, and account credentials are stored securely and never shared with third parties.</p>
                 <p><strong>Acceptable Use.</strong> You may use the ONTO platform to evaluate AI model outputs, track risk scores, and obtain certifications for your organization. Automated abuse, reverse engineering of scoring algorithms, and redistribution of evaluation results without attribution are prohibited.</p>
                 <p><strong>Data &amp; Privacy.</strong> We collect email, name, and usage metrics necessary to provide the service. Data is processed in accordance with GDPR. We never sell your data. You may request deletion at any time.</p>
-                <p><strong>Billing.</strong> Open tier includes limited evaluations. Standard billed monthly. Certified billed annually. Refund policy applies within 30 days of first payment.</p>
+                <p><strong>Billing.</strong> Open tier includes limited evaluations. Standard and Enterprise billed monthly or annually. Refund policy applies within 30 days of first payment.</p>
                 <p style="margin-top: 12px;"><strong>Full terms:</strong> <a href="/legal" target="_blank">ontostandard.org/legal</a></p>
             </div>
             
@@ -1576,7 +1576,7 @@ client = OpenAI(
                         <td style="padding:8px 10px;color:var(--text-secondary)">Signed + Ed25519</td>
                     </tr>
                     <tr>
-                        <td style="padding:8px 10px;font-weight:500">Certified</td>
+                        <td style="padding:8px 10px;font-weight:500">Enterprise</td>
                         <td style="padding:8px 10px;color:var(--text-secondary)">Unlimited</td>
                         <td style="padding:8px 10px;color:var(--text-secondary)">TIER 6 — Full Corpus</td>
                         <td style="padding:8px 10px;color:var(--text-secondary)">Full audit trail</td>
@@ -1769,7 +1769,7 @@ client = OpenAI(
                         <span class="info-val" id="sub-rate">—</span>
                     </div>
                     <div class="info-row" id="sub-critical-row">
-                        <span class="info-key">Certified</span>
+                        <span class="info-key">Enterprise</span>
                         <span class="info-val" id="sub-critical-days">—</span>
                     </div>
                     <div class="info-row" id="sub-pro-row">
@@ -1842,8 +1842,9 @@ client = OpenAI(
                 <!-- STANDARD -->
                 <div class="tier-card" id="card-business">
                     <div class="tier-name">Standard</div>
-                    <div class="tier-price">$1,500<span>/month</span></div>
-                    <div style="font-size:11px;color:var(--accent);margin-bottom:8px">or $15,000/year</div>
+                    <div class="tier-price">$2,500<span>/month</span></div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">or $30,000/year</div>
+                    <div style="font-size:10px;color:var(--text-secondary);margin-bottom:8px;opacity:0.7">Founding Cohort — $990/mo · 18 of 20 slots</div>
                     <div class="tier-desc">Production GOLD discipline — enhanced AI on every request</div>
                     <ul class="tier-list">
                         <li>50,000 proxy requests/day</li>
@@ -1859,16 +1860,20 @@ client = OpenAI(
                 <!-- ENTERPRISE -->
                 <div class="tier-card" id="card-enterprise">
                     <div class="tier-name">Enterprise</div>
-                    <div class="tier-price">Custom</div>
-                    <div class="tier-desc">Unlimited proxy + SLA + dedicated infrastructure</div>
+                    <div class="tier-price">$9,500<span>/month</span></div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">or $114,000/year</div>
+                    <div style="font-size:10px;color:var(--text-secondary);margin-bottom:8px;opacity:0.7">Founding Cohort — $4,800/mo · contact for availability</div>
+                    <div class="tier-desc">Governance infrastructure with independent evaluation</div>
                     <ul class="tier-list">
                         <li>Everything in Standard</li>
                         <li>Unlimited proxy requests</li>
                         <li>Up to 100 models</li>
+                        <li>Quarterly independent evaluation</li>
+                        <li>Public certificate + verification badge</li>
                         <li>24-month audit trail</li>
                         <li>Dedicated support + SLA</li>
                     </ul>
-                    <button class="btn-tier" id="btn-enterprise" onclick="contactSales()">Contact</button>
+                    <button class="btn-tier" id="btn-enterprise" onclick="openSubscribeModal('enterprise')">Select</button>
                 </div>
             </div>
 
@@ -1927,7 +1932,7 @@ client = OpenAI(
                         <option value="">All Plans</option>
                         <option value="open">Open</option>
                         <option value="standard">Standard</option>
-                        <option value="certified">Certified</option>
+                        <option value="enterprise">Enterprise</option>
                     </select>
                 </div>
                 <div id="accounts-list" style="font-size:12px"></div>
@@ -2185,10 +2190,12 @@ client = OpenAI(
             <div class="order-section">
                 <div class="form-section-title">Includes</div>
                 <div class="order-features" id="order-features">
-                    <div class="order-feature">10,000 evaluations/day</div>
-                    <div class="order-feature">GOLD-backed scoring</div>
+                    <div class="order-feature">50,000 proxy requests/day</div>
+                    <div class="order-feature">GOLD TIER 4 — Full Modules</div>
+                    <div class="order-feature">Up to 20 models</div>
                     <div class="order-feature">Ed25519 signed proof chain</div>
-                    <div class="order-feature">Batch evaluation</div>
+                    <div class="order-feature">Batch evaluation (up to 100)</div>
+                    <div class="order-feature">Model trends &amp; comparison</div>
                 </div>
             </div>
             <div class="order-section">
@@ -2200,7 +2207,7 @@ client = OpenAI(
                             <span class="billing-option-name">Annual</span>
                             <span class="billing-option-detail">Billed once per year</span>
                         </span>
-                        <span class="billing-option-price" id="price-annual-display">$15,000</span>
+                        <span class="billing-option-price" id="price-annual-display">$30,000</span>
                     </label>
                     <label class="billing-option" id="billing-monthly">
                         <input type="radio" name="billing-cycle" value="monthly" onchange="updateOrderSummary()">
@@ -2208,7 +2215,7 @@ client = OpenAI(
                             <span class="billing-option-name">Monthly</span>
                             <span class="billing-option-detail">Billed each month</span>
                         </span>
-                        <span class="billing-option-price" id="price-monthly-display">$1,500/mo</span>
+                        <span class="billing-option-price" id="price-monthly-display">$2,500/mo</span>
                     </label>
                 </div>
             </div>
@@ -2229,12 +2236,12 @@ client = OpenAI(
             </div>
             <div class="order-summary">
                 <div class="order-summary-row">
-                    <span class="order-summary-label" id="summary-plan">Standard - Annual</span>
-                    <span class="order-summary-value" id="summary-price">$15,000</span>
+                    <span class="order-summary-label" id="summary-plan">Standard Tier — Annual</span>
+                    <span class="order-summary-value" id="summary-price">$30,000</span>
                 </div>
                 <div class="order-summary-row total">
                     <span class="order-summary-label">Total due</span>
-                    <span class="order-summary-value" id="summary-total">$15,000</span>
+                    <span class="order-summary-value" id="summary-total">$30,000</span>
                 </div>
             </div>
         </div>
@@ -2266,7 +2273,7 @@ client = OpenAI(
         </div>
         <div class="modal-body form-inst">
             <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">
-                For Certified tier, custom integrations, or enterprise requirements.
+                For Enterprise tier, Founding Cohort access, custom integrations, or certification inquiries.
             </p>
             <div class="form-group">
                 <label class="form-label">Name</label>
@@ -2319,9 +2326,9 @@ client = OpenAI(
                     <div class="tier-option-content">
                         <div class="tier-option-header">
                             <span class="tier-badge tier-standard">STANDARD</span>
-                            <span class="tier-option-price">$1.5K/mo</span>
+                            <span class="tier-option-price">$2.5K/mo</span>
                         </div>
-                        <div class="tier-option-desc">50K proxy/day, GOLD TIER 4</div>
+                        <div class="tier-option-desc">50K proxy/day, GOLD TIER 4, Ed25519 proof</div>
                     </div>
                 </label>
                 <label class="tier-option" data-tier="critical">
@@ -2329,9 +2336,9 @@ client = OpenAI(
                     <div class="tier-option-content">
                         <div class="tier-option-header">
                             <span class="tier-badge tier-critical">ENTERPRISE</span>
-                            <span class="tier-option-price">Custom</span>
+                            <span class="tier-option-price">$9.5K/mo</span>
                         </div>
-                        <div class="tier-option-desc">Unlimited proxy, SLA</div>
+                        <div class="tier-option-desc">Unlimited proxy, quarterly eval, certificate, SLA</div>
                     </div>
                 </label>
             </div>
@@ -2446,8 +2453,8 @@ const STRINGS = {
     confirmRegenerate: 'Are you sure you want to regenerate your API key?\n\nThis will immediately invalidate your current key.'
 };
 const PLANS = {
-    business: { monthly: 1500, annual: 15000, monthlyEquiv: 1250 },
-    enterprise: { monthly: null, annual: 100000, monthlyEquiv: 8333 }
+    business: { monthly: 2500, annual: 30000, monthlyEquiv: 2500, foundingMonthly: 990, foundingAnnual: 11880 },
+    enterprise: { monthly: 9500, annual: 114000, monthlyEquiv: 9500, foundingMonthly: 4800, foundingAnnual: 57600 }
 };
 let selectedPlan = 'business';
 let selectedCycle = 'annual';
@@ -2997,7 +3004,7 @@ function showDashboard() {
     if (currentUser) {
         document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
         document.getElementById('user-name').textContent = currentUser.name;
-        document.getElementById('user-plan').textContent = currentUser.plan === 'enterprise' ? 'CRITICAL' : currentUser.plan === 'business' ? 'PRO' : 'FREE';
+        document.getElementById('user-plan').textContent = currentUser.plan === 'enterprise' ? 'ENTERPRISE' : currentUser.plan === 'business' ? 'STANDARD' : 'OPEN';
         document.getElementById('settings-name').textContent = currentUser.name;
         document.getElementById('settings-email').textContent = currentUser.email;
         
@@ -3028,8 +3035,8 @@ function updateDashboardMetrics() {
     const sub = currentUser.subscription;
     const plan = currentUser.plan || 'free';
     
-    const planNames = { free: 'Open', business: 'Standard', enterprise: 'Certified' };
-    const rateLimits = { free: '10/hr · 50/day', business: '420/hr · 10K/day', enterprise: 'Unlimited' };
+    const planNames = { free: 'Open', business: 'Standard', enterprise: 'Enterprise' };
+    const rateLimits = { free: '10/hr · 500/day', business: '420/hr · 50K/day', enterprise: 'Unlimited' };
     
     // Plan card
     const nameEl = document.getElementById('dash-plan-name');
@@ -3142,7 +3149,7 @@ function switchActivePlan(newPlan) {
     currentUser.subscription.plan = newPlan;
     localStorage.setItem('onto_user', JSON.stringify(currentUser));
     
-    const planLabel = newPlan === 'enterprise' ? 'CRITICAL' : 'PRO';
+    const planLabel = newPlan === 'enterprise' ? 'ENTERPRISE' : 'STANDARD';
     document.getElementById('user-plan').textContent = planLabel;
     
     updateDashboardMetrics();
@@ -3310,7 +3317,7 @@ function downloadInvoice() {
     const invoiceId = 'INV-' + new Date(sub.started).getFullYear() + '-' + Date.now().toString(36).toUpperCase();
     const plan = sub.plan;
     const amount = sub.amount;
-    const planNames = { business: 'Standard', enterprise: 'Certified' };
+    const planNames = { business: 'Standard', enterprise: 'Enterprise' };
     
     const invoice = {
         schema: 'onto-invoice/v1',
@@ -3563,7 +3570,7 @@ function updateBillingUI() {
     document.getElementById('btn-enterprise').textContent = 'Select';
     document.getElementById('btn-enterprise').disabled = false;
     
-    const planNames = { free: 'Open (Free)', business: 'Standard', enterprise: 'Certified' };
+    const planNames = { free: 'Open (Free)', business: 'Standard', enterprise: 'Enterprise' };
     const rateLimits = { free: '10/hr', business: '420/hr', enterprise: 'Unlimited' };
     
     // Update current plan indicator
@@ -3621,7 +3628,7 @@ function updateBillingUI() {
 // === SUBSCRIBE MODAL ===
 function openSubscribeModal(plan) {
     selectedPlan = plan;
-    const planNames = { business: 'Standard', enterprise: 'Certified' };
+    const planNames = { business: 'Standard', enterprise: 'Enterprise' };
     document.getElementById('subscribe-plan-name').textContent = planNames[plan] || plan;
     const prices = PLANS[plan];
     document.getElementById('price-annual-display').textContent = '$' + prices.annual.toLocaleString();
@@ -3640,11 +3647,11 @@ function updateOrderSummary() {
     const cycle = document.querySelector('input[name="billing-cycle"]:checked')?.value || 'annual';
     selectedCycle = cycle;
     const prices = PLANS[selectedPlan];
-    const planNames = { business: 'Standard', enterprise: 'Certified' };
+    const planNames = { business: 'Standard', enterprise: 'Enterprise' };
     const planName = planNames[selectedPlan] || selectedPlan;
     const planFeatures = {
-        business: ['10,000 evaluations/day', 'Up to 20 models', 'Real-time scoring', 'Ed25519 signed proof chain', 'Batch evaluation (up to 100)', 'Model trends & comparison'],
-        enterprise: ['Everything in Standard', 'Unlimited evaluations', 'Up to 100 models', 'Certification after evaluation', 'Public proof verification', '24-month audit trail', 'Dedicated support']
+        business: ['50,000 proxy requests/day', 'GOLD TIER 4 — Full Modules', 'Up to 20 models', 'Ed25519 signed proof chain', 'Batch evaluation (up to 100)', 'Usage analytics dashboard'],
+        enterprise: ['Everything in Standard', 'Unlimited proxy requests', 'Up to 100 models', 'Quarterly independent evaluation', 'Public certificate + verification badge', '24-month audit trail', 'Dedicated support + SLA']
     };
     const featuresEl = document.getElementById('order-features');
     featuresEl.innerHTML = (planFeatures[selectedPlan]||[]).map(f => '<div class="order-feature">'+f+'</div>').join('');
@@ -3686,7 +3693,7 @@ function redirectToAirwallex() {
     localStorage.setItem('onto_user', JSON.stringify(currentUser));
     closeModal('payment-modal');
     updateBillingUI(); updateDashboardMetrics();
-    document.getElementById('user-plan').textContent = activePlan==='enterprise'?'CRITICAL':(activePlan==='business'?'PRO':'FREE');
+    document.getElementById('user-plan').textContent = activePlan==='enterprise'?'ENTERPRISE':(activePlan==='business'?'STANDARD':'OPEN');
     let msg = 'Subscription activated!';
     if (criticalDays>0 && proDays>0) msg = 'Activated! '+criticalDays+'d Certified then '+proDays+'d Pro';
     else if (criticalDays>0) msg = 'Activated! '+criticalDays+' days Certified';
@@ -5277,8 +5284,8 @@ function riskColor(risk) {
 function updateSdkPage() {
     if (!currentUser) return;
     const plan = currentUser.plan || 'free';
-    const planNames = { free: 'Open', business: 'Standard', enterprise: 'Certified' };
-    const rateLimits = { free: '10/hr · 50/day', business: '420/hr · 10K/day', enterprise: 'Unlimited' };
+    const planNames = { free: 'Open', business: 'Standard', enterprise: 'Enterprise' };
+    const rateLimits = { free: '10/hr · 500/day', business: '420/hr · 50K/day', enterprise: 'Unlimited' };
     
     const nameEl = document.getElementById('sdk-plan-name');
     const rateEl = document.getElementById('sdk-plan-rate');
@@ -5617,7 +5624,7 @@ function renderModelRow(m, isLast) {
 function updateDashStatusBar(models) {
     models = models || window._cachedModels || [];
     const plan = currentUser ? (currentUser.plan || 'free') : 'free';
-    const planNames = { free: 'Trial', trial: 'Trial', business: 'Standard', enterprise: 'Critical' };
+    const planNames = { free: 'Trial', trial: 'Trial', business: 'Standard', enterprise: 'Enterprise' };
     const planEl = document.getElementById('dash-status-plan');
     const trialEl = document.getElementById('dash-status-trial');
     const modelsEl = document.getElementById('dash-status-models');
