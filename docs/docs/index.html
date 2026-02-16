@@ -16,6 +16,105 @@
 <meta name="twitter:title" content="ONTO — Documentation">
 <meta name="twitter:description" content="ONTO Protocol documentation. Epistemic Risk Standard, API specifications, regulatory alignment, and legal.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='17' fill='white'/%3E%3Cpath d='M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z' fill='%230a0a0a'/%3E%3C/svg%3E">
+
+<!-- Schema.org: TechArticle (Documentation) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "ONTO Protocol Documentation",
+  "headline": "ONTO — Epistemic Risk Measurement Protocol for AI Systems",
+  "description": "Technical documentation for ONTO Protocol. Includes: ONTO-ERS specification (compliance thresholds ECE/U-Recall), GOLD Proxy API (TIER 2/4/6 corpus injection, 17K-459K tokens), experiment CS-2026-001 results (10 models, 100 probes, 10× improvement), Ed25519 cryptographic proof architecture, and regulatory alignment (EU AI Act, NIST AI RMF, ISO 42001).",
+  "url": "https://ontostandard.org/docs/",
+  "mainEntityOfPage": "https://ontostandard.org/docs/",
+  "datePublished": "2024-06-01",
+  "dateModified": "2026-02-16",
+  "inLanguage": "en",
+  "author": {
+    "@type": "Organization",
+    "name": "ONTO Standards Council",
+    "url": "https://ontostandard.org"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ONTO Standards Council",
+    "url": "https://ontostandard.org"
+  },
+  "about": [
+    {
+      "@type": "DefinedTerm",
+      "name": "GOLD Proxy",
+      "description": "AI proxy that injects GOLD epistemic discipline corpus into every request. TIER 2: 17K tokens (protocol + core). TIER 4: 199K tokens (extended corpus). TIER 6: 459K tokens (full corpus — 143 files including literature, dissertations, domain modules). Compatible with OpenAI, Anthropic, Google, Mistral, Meta."
+    },
+    {
+      "@type": "DefinedTerm",
+      "name": "Ed25519 Signal Packet",
+      "description": "104-byte cryptographic proof: 8 bytes timestamp + 32 bytes entropy + 64 bytes Ed25519 signature. Verifiable at /v1/verify/{hash}. Public key at /v1/signal/public-key."
+    }
+  ]
+}
+</script>
+
+<!-- Schema.org: Dataset (Experiment Results in Documentation) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "ONTO CS-2026-001: 10-Model Epistemic Baseline + GOLD Treatment",
+  "description": "10 production AI models evaluated on 100 calibrated probes (50 in-domain, 50 cross-domain). Baseline composite M=0.92, SD=0.58, 5.4× variance. Treatment with GOLD v4.5: composite 0.53→5.38 (10× improvement). Cross-domain transfer confirmed — GOLD contains zero medical/AI/physics data yet improves responses in all domains. Scoring: deterministic regex, 993 lines Python, zero AI in pipeline.",
+  "url": "https://github.com/nickarstrong/onto-research",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "creator": {"@type": "Organization", "name": "ONTO Standards Council"},
+  "datePublished": "2026-01-15",
+  "distribution": [
+    {"@type": "DataDownload", "name": "100Q Before/After Full Text", "contentUrl": "https://github.com/nickarstrong/onto-research/blob/main/ONTO-Before-After-100Q.md", "encodingFormat": "text/markdown"},
+    {"@type": "DataDownload", "name": "10-Model Baseline", "contentUrl": "https://github.com/nickarstrong/onto-research/blob/main/ONTO-11-Model-Baseline.md", "encodingFormat": "text/markdown"},
+    {"@type": "DataDownload", "name": "Scoring Engine", "contentUrl": "https://github.com/nickarstrong/onto-research/blob/main/onto-scoring.py", "encodingFormat": "text/x-python"}
+  ],
+  "measurementTechnique": "Deterministic regex pattern matching. No AI evaluates AI. No human subjectivity. Same input produces same output every time. Scorer: 993 lines Python, zero external dependencies.",
+  "variableMeasured": [
+    "QD (Quantitative Density): baseline 0.10, treatment 3.08 (30× increase)",
+    "SS (Source Substantiation): baseline 0.01, treatment 0.27 (27× increase)",
+    "UM (Uncertainty Management): baseline 0.28, treatment 1.45 (5× increase)",
+    "CONF (Calibration): baseline 0.00, treatment 1.00 (zero to full)",
+    "VQ (Vagueness): baseline 0.06, treatment 0.02 (67% reduction)"
+  ],
+  "about": [
+    {
+      "@type": "CreativeWork",
+      "name": "Example: How did life originate on Earth? (in-domain)",
+      "text": "WITHOUT GOLD: Unknown; working hypotheses exist (RNA World, metabolism-first), but no complete model. QD=0, SS=0, UM=1, CONF=0. WITH GOLD: Earliest isotopic signatures ~3.8 Ga (Isua, Greenland). Minimal cell JCVI-syn3.0: 473 genes, ~531 kb genome (Hutchison 2016). Best RNA replication: ~50-100 nt, ~90-92% fidelity. Eigen threshold: ~99%+. Gap ~5,000× scale difference. Confidence mechanism unknown: 0.85. Any specific model correct: ~0.15. QD=18, SS=2, UM=2, CONF=2."
+    },
+    {
+      "@type": "CreativeWork",
+      "name": "Example: Does intermittent fasting extend human lifespan? (cross-domain — GOLD contains zero medical data)",
+      "text": "WITHOUT GOLD: Not proven in humans. QD=0, SS=0, UM=0, CONF=0. WITH GOLD: Rodent lifespan extension 10-40% under caloric restriction. No human long-term RCT. Improvements in metabolic markers. Trials weeks-months not decades. Confidence no human lifespan proof: 0.9. Metabolic benefit likely: 0.75. QD=4, UM=1, CP=1, CONF=2."
+    },
+    {
+      "@type": "CreativeWork",
+      "name": "Example: Do LLMs reason or pattern-match? (cross-domain — GOLD contains zero AI/ML data)",
+      "text": "WITHOUT GOLD: Statistical models with emergent reasoning-like abilities. QD=0, SS=0, CONF=0. WITH GOLD: LLMs predict next token via learned statistical structure. Evidence: multi-step problem solving, chain-of-thought. Fail on simple logical consistency. Sensitive to prompt phrasing. Hallucinate confidently. Confidence primarily statistical: 0.85. Genuine structured reasoning in limited contexts: 0.6. QD=2, UM=1, CP=2, CONF=2."
+    }
+  ]
+}
+</script>
+
+<!-- Schema.org: HowTo (Quick Start) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "Quick Start: Connect your AI to ONTO",
+  "description": "Install ONTO SDK, connect to API, route requests through GOLD proxy, receive scored responses with cryptographic proof.",
+  "totalTime": "PT10M",
+  "step": [
+    {"@type": "HowToStep", "position": 1, "name": "Install", "text": "pip install onto-standard"},
+    {"@type": "HowToStep", "position": 2, "name": "Get API key", "text": "Register at ontostandard.org/app/ — free tier includes 500 proxy requests/day"},
+    {"@type": "HowToStep", "position": 3, "name": "Send request through proxy", "text": "POST to api.ontostandard.org/v1/proxy/chat/completions with your provider model. GOLD corpus injected automatically."},
+    {"@type": "HowToStep", "position": 4, "name": "Verify proof", "text": "Response includes Ed25519 signed proof (104 bytes). Verify at /v1/verify/{hash}."}
+  ]
+}
+</script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
@@ -818,9 +917,9 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <h1>ONTO Layer Specification</h1>
 <div class="dm"><span class="db-g bg-a">Draft</span><span>ONTO-SPEC-002</span><span>February 2026</span></div>
 <h2 id="layer-arch">1. Layer Architecture</h2>
-<h3>1.1 OPEN</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$0</td></tr><tr><td>Evaluations</td><td>50 / day</td></tr><tr><td>Response</td><td>Standard</td></tr><tr><td>Models</td><td>Up to 5</td></tr><tr><td>Scoring</td><td>REP, EpCE, DLA</td></tr><tr><td>Proofs</td><td>JSON evaluation reports</td></tr><tr><td>Support</td><td>Best effort</td></tr></tbody></table>
-<h3>1.2 STANDARD</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$15,000/yr</td></tr><tr><td>Evaluations</td><td>10,000 / day</td></tr><tr><td>Response</td><td>Real-time</td></tr><tr><td>Models</td><td>Up to 20</td></tr><tr><td>Scoring</td><td>REP, EpCE, DLA (GOLD-backed)</td></tr><tr><td>Proofs</td><td>Ed25519 signed proof chain</td></tr><tr><td>Support</td><td>Standard</td></tr></tbody></table>
-<h3>1.3 CERTIFIED</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$100K+/yr</td></tr><tr><td>Evaluations</td><td>Unlimited</td></tr><tr><td>Response</td><td>Real-time + priority</td></tr><tr><td>Models</td><td>Up to 100</td></tr><tr><td>Scoring</td><td>Full ONTO-ERS evaluation suite</td></tr><tr><td>Proofs</td><td>Public verifiable proof chain · 24-month audit trail</td></tr><tr><td>Certification</td><td>Certification after evaluation · Public verification</td></tr><tr><td>Support</td><td>Dedicated</td></tr></tbody></table>
+<h3>1.1 OPEN</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$0</td></tr><tr><td>Evaluations</td><td>500 / day</td></tr><tr><td>Response</td><td>Standard</td></tr><tr><td>Models</td><td>Up to 5</td></tr><tr><td>Scoring</td><td>REP, EpCE, DLA · GOLD TIER 2</td></tr><tr><td>Proofs</td><td>JSON evaluation reports</td></tr><tr><td>Support</td><td>Best effort</td></tr></tbody></table>
+<h3>1.2 STANDARD</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$30,000/yr ($2,500/mo)</td></tr><tr><td>Evaluations</td><td>50,000 / day</td></tr><tr><td>Response</td><td>Real-time</td></tr><tr><td>Models</td><td>Up to 20</td></tr><tr><td>Scoring</td><td>REP, EpCE, DLA · GOLD TIER 4 — Extended Corpus</td></tr><tr><td>Proofs</td><td>Ed25519 signed proof chain</td></tr><tr><td>Support</td><td>Standard</td></tr></tbody></table>
+<h3>1.3 ENTERPRISE</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$114,000/yr ($9,500/mo)</td></tr><tr><td>Evaluations</td><td>Unlimited</td></tr><tr><td>Response</td><td>Real-time + priority</td></tr><tr><td>Models</td><td>Up to 100</td></tr><tr><td>Scoring</td><td>REP, EpCE, DLA · GOLD TIER 6 — Full Corpus</td></tr><tr><td>Proofs</td><td>Public verifiable proof chain · 24-month audit trail</td></tr><tr><td>Certification</td><td>Certification after evaluation · Public verification</td></tr><tr><td>Support</td><td>Dedicated</td></tr></tbody></table>
 <h2 id="signal-packet">2. Signal Packet</h2>
 <pre><code>104 bytes: [8 timestamp][32 entropy][64 Ed25519 signature]</code></pre>
 <h2 id="layer-endpoints">3. API Endpoints</h2>
@@ -1003,7 +1102,7 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <div class="dd"><strong>Summary:</strong> 14-day money-back for monthly. 30-day for annual. Pro-rata after.</div>
 <h2 id="r-1">1. Monthly</h2><ul><li>14-day full refund</li><li>No partial month refunds after</li><li>Cancel anytime, service continues to period end</li></ul>
 <h2 id="r-2">2. Annual</h2><ul><li>30-day full refund</li><li>Pro-rata after (minus 15% termination fee)</li><li>No refunds after 6 months</li></ul>
-<h2 id="r-3">3. Certified</h2><p>Custom terms per contract.</p>
+<h2 id="r-3">3. Enterprise</h2><p>$114,000/yr. Invoice only. Custom terms per contract.</p>
 <h2 id="r-4">4. Service Credits</h2>
 <p>Service credit terms will be defined upon formal SLA establishment. During the experimental phase, ONTO addresses service disruptions on a case-by-case basis.</p>
 <h2 id="r-5">5. Non-Refundable</h2><ul><li>ToS violation terminations</li><li>Unused credits</li><li>Setup fees</li><li>Third-party fees</li></ul>
