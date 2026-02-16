@@ -111,7 +111,7 @@
       "name": "Open (Free)",
       "price": "0",
       "priceCurrency": "USD",
-      "description": "50 evaluations/day, up to 5 models, epistemic scoring (REP, EpCE, DLA), JSON reports"
+      "description": "500 proxy requests/day, up to 5 models, GOLD TIER 2, epistemic scoring, JSON reports"
     },
     {
       "@type": "Offer",
@@ -119,7 +119,7 @@
       "price": "30000",
       "priceCurrency": "USD",
       "billingIncrement": "P1Y",
-      "description": "10,000 evaluations/day, up to 20 models, real-time scoring, Ed25519 signed proofs, batch evaluation"
+      "description": "50,000 proxy requests/day, up to 20 models, GOLD TIER 4 — Extended Corpus, Ed25519 signed proofs, batch evaluation"
     },
     {
       "@type": "Offer",
@@ -127,14 +127,14 @@
       "price": "114000",
       "priceCurrency": "USD",
       "billingIncrement": "P1Y",
-      "description": "Unlimited evaluations, up to 100 models, certification after evaluation, public proof verification, 24-month audit trail, dedicated support"
+      "description": "Unlimited proxy requests, up to 100 models, GOLD TIER 6 — Full Corpus, quarterly independent evaluation, public certificate + verification badge, 24-month audit trail, dedicated support + SLA"
     },
     {
       "@type": "Offer",
       "name": "Grant Program (Free Standard)",
       "price": "0",
       "priceCurrency": "USD",
-      "description": "Free Standard access for independent researchers, early-stage startups, and nonprofit organizations whose work benefits society. Same infrastructure as Standard: 10,000 evaluations/day, GOLD-backed scoring, signed proof chain. Apply at council@ontostandard.org.",
+      "description": "Free Standard access for independent researchers, early-stage startups, and nonprofit organizations whose work benefits society. Same infrastructure as Standard: 50,000 proxy requests/day, GOLD TIER 4, signed proof chain. Apply at council@ontostandard.org.",
       "eligibleCustomerType": "Researcher, Startup, Nonprofit"
     }
   ]
@@ -200,7 +200,7 @@
         "itemOffered": {
           "@type": "Service",
           "name": "Standard",
-          "description": "10,000 evaluations/day, up to 20 models, real-time scoring, Ed25519 signed proofs, batch evaluation"
+          "description": "50,000 proxy requests/day, up to 20 models, GOLD TIER 4 — Extended Corpus, Ed25519 signed proofs, batch evaluation"
         },
         "price": "30000",
         "priceCurrency": "USD",
@@ -219,6 +219,107 @@
       }
     ]
   }
+}
+</script>
+
+<!-- Schema.org: Dataset (Experiment CS-2026-001 with before/after examples) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "ONTO Experiment CS-2026-001: Before/After GOLD Discipline",
+  "description": "10 production AI models tested on 100 calibrated scientific probes. Baseline composite: 0.53. With GOLD: 5.38 (10x improvement). Zero AI in evaluation pipeline. All scoring via deterministic regex. Below are representative examples showing the same model (GPT) responding without and with GOLD corpus injection.",
+  "url": "https://github.com/nickarstrong/onto-research",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "creator": {"@type": "Organization", "name": "ONTO Standards Council"},
+  "datePublished": "2026-01-15",
+  "variableMeasured": [
+    "Quantitative Density (QD): numbers and measurable quantities in response",
+    "Source Substantiation (SS): named sources, authors, papers cited",
+    "Uncertainty Management (UM): hedging, confidence intervals, explicit unknowns",
+    "Counterarguments (CP): alternative viewpoints presented",
+    "Vagueness (VQ): penalty for vague qualifiers",
+    "Calibrated Confidence (CONF): explicit numeric confidence estimates"
+  ],
+  "about": [
+    {
+      "@type": "CreativeWork",
+      "name": "Example Q1: How did life originate on Earth? (in-domain)",
+      "text": "WITHOUT GOLD: Unknown; working hypotheses exist (RNA World, metabolism-first), but no complete model. Scores: QD=0, SS=0, UM=1, CP=0, CONF=0. WITH GOLD: Earliest isotopic signatures ~3.8 Ga (Isua, Greenland). Stromatolite evidence ~3.5 Ga. No experimentally demonstrated full pathway. Minimal cell (JCVI-syn3.0): 473 genes, ~531 kb genome (Hutchison 2016). Best non-enzymatic RNA replication: ~50-100 nt, ~90-92% fidelity. Eigen threshold: ~99%+. Gap log2(531,000/100) = 12.4. ~5,000x scale difference. Confidence mechanism unknown: 0.85. Any specific model correct: ~0.15. Scores: QD=18, SS=2, UM=2, CONF=2."
+    },
+    {
+      "@type": "CreativeWork",
+      "name": "Example Q51: Does intermittent fasting extend human lifespan? (cross-domain, GOLD contains zero medical data)",
+      "text": "WITHOUT GOLD: Not proven in humans. Scores: QD=0, SS=0, UM=0, CP=0, CONF=0. WITH GOLD: In rodents lifespan extension 10-40% under caloric restriction. In humans no long-term RCT. Improvements in metabolic markers (insulin sensitivity, weight). Trials weeks-months not decades. Weight loss vs fasting-specific mechanism unclear. Confidence no human lifespan proof: 0.9. Metabolic benefit likely: 0.75. Scores: QD=4, SS=0, UM=1, CP=1, CONF=2. Note: GOLD corpus contains zero medical information — improvement is pure behavioral transfer of epistemic discipline."
+    },
+    {
+      "@type": "CreativeWork",
+      "name": "Example Q61: Do LLMs reason or pattern-match? (cross-domain, GOLD contains zero AI/ML data)",
+      "text": "WITHOUT GOLD: Statistical models with emergent reasoning-like abilities. Scores: QD=0, SS=0, UM=0, CP=0, CONF=0. WITH GOLD: LLMs predict next token via learned statistical structure. Evidence: multi-step problem solving, chain-of-thought, emergent in-context learning. Fail on simple logical consistency. Sensitive to prompt phrasing. Hallucinate confidently. Confidence primarily statistical: 0.85. Genuine structured reasoning in limited contexts: 0.6. Scores: QD=2, SS=0, UM=1, CP=2, CONF=2. Note: GOLD corpus contains zero AI/ML information — improvement is pure behavioral transfer."
+    }
+  ]
+}
+</script>
+
+<!-- Schema.org: HowTo (Integration Pipeline) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to integrate ONTO into your AI system",
+  "description": "ONTO provides epistemic discipline for AI via GOLD corpus injection. Install SDK, connect API, receive GOLD-enhanced responses with cryptographic proof.",
+  "totalTime": "PT15M",
+  "tool": [
+    {"@type": "HowToTool", "name": "Python 3.8+"},
+    {"@type": "HowToTool", "name": "ONTO API key (free at ontostandard.org/app)"}
+  ],
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "name": "Install SDK",
+      "text": "pip install onto-standard — zero external dependencies, Apache-2.0 license.",
+      "url": "https://pypi.org/project/onto-standard/"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "name": "Connect to ONTO API",
+      "text": "Initialize with your API key to connect to api.ontostandard.org. Free tier: 500 proxy requests/day, GOLD TIER 2.",
+      "url": "https://ontostandard.org/app/"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "name": "Route AI requests through ONTO Proxy",
+      "text": "Send requests via ONTO proxy endpoint. GOLD corpus (up to 459K tokens) is automatically injected into every request, enhancing epistemic discipline without modifying model weights.",
+      "url": "https://ontostandard.org/docs/"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "name": "Receive scored response with cryptographic proof",
+      "text": "Every response returns with epistemic scoring (REP, EpCE, DLA metrics), compliance grade (A-F), and Ed25519 signed proof chain — 104-byte cryptographic evidence of evaluation."
+    }
+  ]
+}
+</script>
+
+<!-- Schema.org: WebAPI (Proxy Service) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebAPI",
+  "name": "ONTO Proxy API",
+  "description": "AI proxy that injects GOLD epistemic discipline corpus into every request. Tiered injection: TIER 2 (17K tokens, protocol + core), TIER 4 (199K tokens, extended corpus), TIER 6 (459K tokens, full corpus). Returns Ed25519 signed proof of evaluation. Compatible with OpenAI, Anthropic, Google, Mistral, Meta, and other providers.",
+  "url": "https://api.ontostandard.org",
+  "documentation": "https://ontostandard.org/docs/",
+  "provider": {
+    "@type": "Organization",
+    "name": "ONTO Standards Council",
+    "url": "https://ontostandard.org"
+  },
+  "termsOfService": "https://ontostandard.org/legal"
 }
 </script>
 
@@ -281,7 +382,7 @@
       "name": "Does ONTO offer free access for researchers and startups?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes. ONTO provides free Standard access to independent researchers, early-stage startups, and nonprofit organizations whose work benefits society. Grant recipients receive the same scientific foundation as paid Standard customers: 10,000 evaluations/day, GOLD-backed scoring, signed proof chain. No restrictions, no watermarks. Apply at council@ontostandard.org."
+        "text": "Yes. ONTO provides free Standard access to independent researchers, early-stage startups, and nonprofit organizations whose work benefits society. Grant recipients receive the same scientific foundation as paid Standard customers: 50,000 proxy requests/day, GOLD TIER 4, signed proof chain. No restrictions, no watermarks. Apply at council@ontostandard.org."
       }
     },
     {
@@ -346,6 +447,30 @@
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "No. ONTO Standard does not use blockchain, smart contracts, Ethereum, or any distributed ledger technology. The signed proof system at api.ontostandard.org uses Ed25519 cryptographic signatures for verifiable evaluation timestamps — this is standard public-key cryptography, not blockchain. ONTO Standard is not related to ONTO wallet, ONTO ID, or any blockchain-based identity project."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are the measured results of ONTO GOLD on AI models?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Experiment CS-2026-001: 10 production AI models, 100 calibrated scientific probes (PC0-PC4), zero AI in evaluation pipeline. Baseline (without GOLD): composite score M=0.92, SD=0.58, 5.4× variance across models. Treatment (with GOLD): composite 5.38, representing 10× measured improvement. Key factors: Quantitative Density improved from 0.10 to 3.08 (30× increase). Source Substantiation improved from 0.01 to 0.27 (27× increase). Uncertainty Management improved from 0.28 to 1.45 (5× increase). Calibration improved from 0.00 to 1.00 (from zero to full). Vagueness reduced from 0.06 to 0.02 (67% reduction). Model range: Claude 3.5 Sonnet scored 0.12 (lowest baseline) to Perplexity sonar-pro at 0.94 (highest baseline). Full data: github.com/nickarstrong/onto-research."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does ONTO GOLD Proxy work technically?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "ONTO Proxy sits between your application and the AI provider (OpenAI, Anthropic, Google, etc). When a request passes through the proxy, GOLD corpus is injected into the system prompt — TIER 2 adds 17K tokens of protocol and core discipline, TIER 4 adds 199K tokens of extended corpus, TIER 6 adds 459K tokens of full corpus including literature, dissertations, and domain-specific modules. The AI model receives epistemic discipline rules alongside your prompt, producing responses with higher quantitative density, proper source substantiation, and calibrated uncertainty. Every response is scored by the deterministic scoring engine (92+ epistemic markers, EM1-EM5 taxonomy) and signed with Ed25519 cryptographic proof. The client pays their own provider tokens — ONTO does not add token cost beyond the GOLD injection itself."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between ONTO Proxy and ONTO Certification?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "ONTO Proxy is for companies USING AI — it injects GOLD discipline into every AI request via api.ontostandard.org, improving output quality in production. Three tiers: Open (free, TIER 2), Standard ($30,000/year, TIER 4), Enterprise ($114,000/year, TIER 6). ONTO Certification is a separate service for AI PROVIDERS — independent evaluation of model epistemic reliability using 1,100 calibrated probes, resulting in a public certificate and verification badge. Certification is not a subscription tier but a standalone assessment service. Contact council@ontostandard.org."
       }
     }
   ]
@@ -1644,7 +1769,7 @@ body.show-portal { overflow: auto; }
 <!-- Semantic content for search engines and AI crawlers (visually hidden) -->
 <div style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0" role="complementary" aria-label="ONTO Standard Technical Summary">
 <article itemscope itemtype="https://schema.org/SoftwareApplication">
-<h1 itemprop="name">ONTO — The Scientific Foundation Your AI Doesn't Have</h1>
+<h2 itemprop="name">ONTO — The Scientific Foundation Your AI Doesn't Have</h2>
 
 <p itemprop="description">ONTO is epistemic infrastructure for AI — it measures and grounds AI outputs against the GOLD v4.5 reference standard (149 calibration files). The scoring engine (v3.0) analyzes outputs against 92 epistemic markers across 5 levels (EM1-EM5 taxonomy), computing three deterministic metrics: REP (Response Epistemic Profile), EpCE (Epistemic Calibration Error), and DLA (Dual-Layer Agreement). ONTO strengthens epistemic discipline without modifying model weights. Compliance is graded A through F: A (EXEMPLARY) to F (CRITICAL epistemic risk).</p>
 
@@ -1863,7 +1988,7 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
 
 <!-- SCREEN 3: WHAT WE MEASURE -->
 <div class="screen screen-industries hidden" id="screen3">
-    <h1>What ONTO Measures</h1>
+    <h2>What ONTO Measures</h2>
     
     <div class="matrix-table">
         <div class="matrix-row matrix-header">
