@@ -1844,7 +1844,7 @@ client = OpenAI(
                     <div class="tier-name">Standard</div>
                     <div class="tier-price">$2,500<span>/month</span></div>
                     <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">or $30,000/year</div>
-                    <div style="font-size:10px;color:var(--text-secondary);margin-bottom:8px;opacity:0.7">Founding Cohort — $990/mo · 18 of 20 slots</div>
+                    <div style="font-size:10px;color:var(--text-secondary);margin-bottom:8px;opacity:0.7">First 10 clients receive 2× subscription duration</div>
                     <div class="tier-desc">Production GOLD discipline — enhanced AI on every request</div>
                     <ul class="tier-list">
                         <li>50,000 proxy requests/day</li>
@@ -1862,7 +1862,7 @@ client = OpenAI(
                     <div class="tier-name">Enterprise</div>
                     <div class="tier-price">$9,500<span>/month</span></div>
                     <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">or $114,000/year</div>
-                    <div style="font-size:10px;color:var(--text-secondary);margin-bottom:8px;opacity:0.7">Founding Cohort — $4,800/mo · contact for availability</div>
+                    <div style="font-size:10px;color:var(--text-secondary);margin-bottom:8px;opacity:0.7">First 10 clients receive 2× subscription duration</div>
                     <div class="tier-desc">Governance infrastructure with independent evaluation</div>
                     <ul class="tier-list">
                         <li>Everything in Standard</li>
@@ -2253,14 +2253,18 @@ client = OpenAI(
 </div>
 
 <!-- PAYMENT PENDING MODAL -->
-<div class="modal-overlay" id="payment-modal">
+<div class="modal-overlay" id="payment-modal" onclick="if(event.target===this)closeModal('payment-modal')">
     <div class="modal modal-inst" style="max-width: 380px; text-align: center;">
-        <div class="modal-body" style="padding: 36px;">
+        <div class="modal-header" style="justify-content:flex-end;border:none;padding:12px 16px 0">
+            <button class="modal-close" onclick="closeModal('payment-modal')">&times;</button>
+        </div>
+        <div class="modal-body" style="padding: 12px 36px 36px;">
             <div style="font-size: 36px; margin-bottom: 12px;">&#x1F680;</div>
             <h2 style="font-size: 15px; font-weight: 500; margin-bottom: 6px;">Complete Payment</h2>
             <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 12px;">You will be redirected to our secure payment provider.</p>
             <button class="btn btn-primary" onclick="redirectToAirwallex()">Continue to Payment</button>
-            <p style="margin-top: 12px; font-size: 11px; color: var(--text-muted);">Questions? Contact <a href="mailto:support@ontostandard.org">support@ontostandard.org</a></p>
+            <p style="margin-top: 16px;"><button class="btn-minimal" onclick="closeModal('payment-modal')" style="font-size:12px;">Cancel</button></p>
+            <p style="margin-top: 8px; font-size: 11px; color: var(--text-muted);">Questions? Contact <a href="mailto:support@ontostandard.org">support@ontostandard.org</a></p>
         </div>
     </div>
 </div>
