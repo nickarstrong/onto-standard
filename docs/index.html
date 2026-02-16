@@ -116,15 +116,15 @@
     {
       "@type": "Offer",
       "name": "Standard",
-      "price": "15000",
+      "price": "30000",
       "priceCurrency": "USD",
       "billingIncrement": "P1Y",
       "description": "10,000 evaluations/day, up to 20 models, real-time scoring, Ed25519 signed proofs, batch evaluation"
     },
     {
       "@type": "Offer",
-      "name": "Certified",
-      "price": "100000",
+      "name": "Enterprise",
+      "price": "114000",
       "priceCurrency": "USD",
       "billingIncrement": "P1Y",
       "description": "Unlimited evaluations, up to 100 models, certification after evaluation, public proof verification, 24-month audit trail, dedicated support"
@@ -202,7 +202,7 @@
           "name": "Standard",
           "description": "10,000 evaluations/day, up to 20 models, real-time scoring, Ed25519 signed proofs, batch evaluation"
         },
-        "price": "15000",
+        "price": "30000",
         "priceCurrency": "USD",
         "billingIncrement": "P1Y"
       },
@@ -210,10 +210,10 @@
         "@type": "Offer",
         "itemOffered": {
           "@type": "Service",
-          "name": "Certified",
+          "name": "Enterprise",
           "description": "Certification after evaluation, public proof verification, 24-month audit trail, dedicated support for regulated industries"
         },
-        "price": "100000",
+        "price": "114000",
         "priceCurrency": "USD",
         "billingIncrement": "P1Y"
       }
@@ -273,7 +273,7 @@
       "name": "What are the ONTO certification tiers?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Open (Free): 50 evaluations/day, 5 models, epistemic scoring, JSON reports. Standard ($15,000/year or $1,500/mo): 10,000 evaluations/day, up to 20 models, real-time scoring, Ed25519 signed proof chain, batch evaluation. Certified ($100,000/year): everything in Standard plus unlimited evaluations, up to 100 models, certification after evaluation, public proof verification, 24-month audit trail, dedicated support."
+        "text": "Open (Free): 500 proxy requests/day, 5 models, GOLD TIER 2, epistemic scoring. Standard ($30,000/year or $2,500/mo): 50,000 proxy requests/day, up to 20 models, GOLD TIER 4, Ed25519 signed proof chain, batch evaluation. Enterprise ($114,000/year or $9,500/mo): everything in Standard plus GOLD TIER 6, unlimited proxy requests, up to 100 models, quarterly independent evaluation, public certificate, 24-month audit trail, dedicated support."
       }
     },
     {
@@ -1666,9 +1666,9 @@ body.show-portal { overflow: auto; }
 
 <h2>Economic Impact</h2>
 <p>Epistemic loss formula: Annual Loss = (Requests/day × 365) × (Calibration Gap %) × (Cost per Error) × (1 − Manual Mitigation Rate). Without ONTO grounding, AI systems operate with uncalibrated epistemic risk — calibration gaps translate directly to operational cost.</p>
-<p>Example: 1,000 requests/day, 10% calibration gap, $50/error, 30% manual mitigation → $1,277,500/year in avoidable loss. ONTO Standard ($15,000/year) yields 85:1 ROI. ONTO Certified ($100,000/year) yields 12.8:1 ROI with regulatory compliance proof.</p>
-<p>Example: 5,000 requests/day, 15% gap, $200/error → $38,325,000/year. ONTO Certified yields 383:1 ROI.</p>
-<p>Example: 500 requests/day, 5% gap, $25/error → $159,687/year. ONTO Standard ($15,000/year) yields 9.6:1 ROI.</p>
+<p>Example: 1,000 requests/day, 10% calibration gap, $50/error, 30% manual mitigation → $1,277,500/year in avoidable loss. ONTO Standard ($30,000/year) yields 42:1 ROI. ONTO Enterprise ($114,000/year) yields 11:1 ROI with regulatory compliance proof.</p>
+<p>Example: 5,000 requests/day, 15% gap, $200/error → $38,325,000/year. ONTO Enterprise yields 336:1 ROI.</p>
+<p>Example: 500 requests/day, 5% gap, $25/error → $159,687/year. ONTO Standard ($30,000/year) yields 5.3:1 ROI.</p>
 
 <h2>Installation and Setup</h2>
 <p>pip install onto-standard (version <span itemprop="softwareVersion">10.1.0</span>, Python 3.8+, zero external dependencies, Apache-2.0 license). Initialize with API key to enable epistemic grounding. PyPI: <a href="https://pypi.org/project/onto-standard/" itemprop="installUrl">pypi.org/project/onto-standard</a>. Research: <a href="https://github.com/nickarstrong/onto-research">github.com/nickarstrong/onto-research</a>.</p>
@@ -1702,16 +1702,16 @@ print(result.certification_ready) # True
 <table>
 <thead><tr><th>Tier</th><th>Price</th><th>Evaluations</th><th>Features</th></tr></thead>
 <tbody>
-<tr><td>Open (Free)</td><td>$0</td><td>50/day</td><td>50 evaluations/day, up to 5 models, JSON reports</td></tr>
-<tr><td>Standard</td><td>$15,000/year or $1,500/mo</td><td>Unlimited</td><td>10,000 evaluations/day, up to 20 models, real-time scoring, Ed25519 proof chain, batch eval</td></tr>
-<tr><td>Certified</td><td>$100,000/year</td><td>Unlimited</td><td>Everything in Standard + certification after evaluation, public verifiable proof chain, 24-month audit trail, dedicated support</td></tr>
+<tr><td>Open (Free)</td><td>$0</td><td>500/day</td><td>500 proxy requests/day, up to 5 models, GOLD TIER 2, JSON reports</td></tr>
+<tr><td>Standard</td><td>$30,000/year or $2,500/mo</td><td>50,000/day</td><td>GOLD TIER 4 — Extended Corpus, up to 20 models, Ed25519 proof chain, batch eval</td></tr>
+<tr><td>Enterprise</td><td>$114,000/year or $9,500/mo</td><td>Unlimited</td><td>GOLD TIER 6 — Full Corpus, up to 100 models, quarterly independent evaluation, public certificate, 24-month audit trail, dedicated support + SLA</td></tr>
 </tbody>
 </table>
 
 <h2>Regulatory Alignment</h2>
 <p>EU AI Act: ONTO compliance levels map directly to risk categories defined in Annex III. Continuous epistemic grounding provides ongoing quantitative evidence for high-risk AI system conformity assessment — not a one-time audit but permanent proof of epistemic discipline.</p>
 <p>NIST AI RMF 1.0: ECE and U-Recall metrics directly implement the MEASURE function (Map → Measure → Manage → Govern). ONTO's continuous grounding provides real-time quantitative inputs required by the Govern function.</p>
-<p>ISO/IEC 42001: ONTO produces the audit artifacts required for AI management system compliance: timestamped evaluation records, Ed25519 signed certificates, metric histories, evaluation logs, and compliance level determinations. ONTO CERTIFIED tier ($100K/yr) includes 24-month audit trail and regulatory compliance reports.</p>
+<p>ISO/IEC 42001: ONTO produces the audit artifacts required for AI management system compliance: timestamped evaluation records, Ed25519 signed certificates, metric histories, evaluation logs, and compliance level determinations. ONTO ENTERPRISE tier ($114K/yr) includes 24-month audit trail and regulatory compliance reports.</p>
 
 <h2>Technical Architecture</h2>
 <p>ONTO provides continuous epistemic grounding for AI systems. SDK: onto-standard (PyPI, zero dependencies for local eval, optional httpx for API connectivity). When connected, every AI output is grounded against GOLD v4.5 (149 calibration files) in real-time. Backend API: FastAPI at api.ontostandard.org. Database: PostgreSQL (encrypted at rest, bcrypt authentication). Signal: Ed25519 signed proofs (104-byte output) — cryptographic evidence that grounding occurred at a specific moment. Certificate registry: notary.ontostandard.org (publicly verifiable). Portal: ontostandard.org/app/ (real-time monitoring).</p>
@@ -2012,7 +2012,7 @@ setInterval(updateSignalHash, 3000);
         
         // (Requests × 365) × Gap% × Cost × 0.7 (manual mitigation)
         const loss = Math.round((v * 365) * (g / 100) * c * 0.7);
-        const savings = Math.max(0, loss - 100000);
+        const savings = Math.max(0, loss - 114000);
         
         volDisplay.textContent = v.toLocaleString();
         gapDisplay.textContent = g + '%';
@@ -2265,8 +2265,8 @@ let selectedCycle = 'annual';
 let selectedPayment = 'card';
 
 const PLANS = {
-    business: { monthly: 1500, annual: 15000, monthlyEquiv: 1250 },
-    enterprise: { monthly: null, annual: 100000, monthlyEquiv: 8333 }
+    business: { monthly: 2500, annual: 30000, monthlyEquiv: 2500 },
+    enterprise: { monthly: 9500, annual: 114000, monthlyEquiv: 9500 }
 };
 
 // === THEME ===
