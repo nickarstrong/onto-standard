@@ -1882,7 +1882,7 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
 <p>These standards are complementary, not competing. NIST AI RMF defines what risks to manage. ISO 42001 defines how to manage them organizationally. ONTO provides the continuous scientific grounding that proves a specific AI system operates on a verified epistemic foundation.</p>
 
 <h2>How to Connect Your AI to ONTO</h2>
-<p>Step 1: Install the SDK with pip install onto-standard (Python 3.8+, zero dependencies). Step 2: Initialize with your API key. Step 3: Every AI output routed through ONTO is grounded against GOLD v4.5 in real-time. Step 4: Monitor epistemic scores via the portal at ontostandard.org/app/. ONTO grounds outputs using Shannon entropy, Kolmogorov complexity, and eigenvalue decomposition. Supports any model including GPT-4, GPT-5, Claude, Gemini, Llama, Mistral, and custom fine-tuned models. No model weights access required.</p>
+<p>One-line integration: change your AI client's base_url to api.ontostandard.org/v1/proxy/chat/completions. GOLD epistemic discipline is injected server-side into every request. No SDK installation required for proxy mode. Works with OpenAI, Anthropic, Google, Mistral, Meta, Groq. For local evaluation: pip install onto-standard (Python 3.8+, zero dependencies). Monitor epistemic scores via the portal at ontostandard.org/app/. Supports GPT-4, GPT-5, Claude, Gemini, Llama, Mistral, and custom fine-tuned models. No model weights access required.</p>
 
 <h2>CI/CD Integration</h2>
 <p>ONTO integrates into deployment pipelines as an epistemic gate: no model ships without verified grounding. The JSON report includes model identity, ECE score, U-Recall score, compliance level, risk category (LOW/MEDIUM/HIGH/CRITICAL), and pass/fail. Block releases if epistemic risk exceeds thresholds. Compatible with GitHub Actions, GitLab CI, Jenkins, and any CI/CD system that can run Python scripts. In production, continuous grounding ensures epistemic discipline at every output — not just at deploy time.</p>
@@ -2033,6 +2033,23 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
 <div class="screen screen-final hidden" id="screen4">
     <div class="final-content">
         <p class="governed-text">Your AI, grounded.</p>
+
+        <div style="max-width:480px;margin:0 auto 24px;text-align:left;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:20px 24px">
+            <div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(34,197,94,0.7);margin-bottom:12px;font-weight:600">One-line integration</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:4px"># Before</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:8px">client = OpenAI(api_key="sk-...")</div>
+            <div style="font-size:12px;color:rgba(34,197,94,0.7);margin-bottom:4px"># After — GOLD injected server-side</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(255,255,255,0.9);line-height:1.6">client = OpenAI(<br>&nbsp;&nbsp;api_key="onto_...",<br>&nbsp;&nbsp;base_url="<span style="color:rgb(34,197,94)">api.ontostandard.org/v1/proxy</span>"<br>)</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:12px">Works with OpenAI, Anthropic, Google, Mistral, Meta, Groq. No SDK required.</div>
+        </div>
+
+        <div style="max-width:480px;margin:0 auto 24px;border:1px solid rgba(34,197,94,0.2);border-radius:8px;padding:16px 24px;text-align:center">
+            <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgb(34,197,94);margin-bottom:8px;font-weight:600">Founding Cohort</div>
+            <div style="font-size:14px;color:rgba(255,255,255,0.9);margin-bottom:6px">First 10 clients get <strong style="color:rgb(34,197,94)">2× subscription duration</strong></div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.6">Buy 12 months → get 24 months. Case study rights, quarterly calls, roadmap influence.</div>
+            <div style="margin-top:12px"><a href="mailto:council@ontostandard.org" style="font-size:12px;color:rgb(34,197,94);text-decoration:none;border:1px solid rgba(34,197,94,0.3);padding:6px 16px;border-radius:4px">Contact council@ontostandard.org →</a></div>
+        </div>
+
         <div class="pip-install" onclick="copyPip()" title="Click to copy">
             <span class="pip-prompt">$</span>
             <span class="pip-command">pip install onto-standard</span>
