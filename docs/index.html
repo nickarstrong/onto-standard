@@ -94,7 +94,7 @@
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Cross-platform (Python 3.8+)",
   "description": "Reference implementation of the ONTO Epistemic Risk Standard. Measures AI epistemic risk using two key metrics: ECE (Expected Calibration Error) measures whether model confidence matches actual accuracy. U-Recall (Unknown Detection Rate) measures whether the model correctly identifies questions it cannot answer. Returns compliance level: None, Basic, Standard, or Advanced.",
-  "softwareVersion": "10.1.0",
+  "softwareVersion": "10.2.1",
   "url": "https://pypi.org/project/onto-standard/",
   "downloadUrl": "https://pypi.org/project/onto-standard/#files",
   "installUrl": "https://pypi.org/project/onto-standard/",
@@ -1796,7 +1796,7 @@ body.show-portal { overflow: auto; }
 <p>Example: 500 requests/day, 5% gap, $25/error → $159,687/year. ONTO Standard ($30,000/year) yields 5.3:1 ROI.</p>
 
 <h2>Installation and Setup</h2>
-<p>pip install onto-standard (version <span itemprop="softwareVersion">10.1.0</span>, Python 3.8+, zero external dependencies, Apache-2.0 license). Initialize with API key to enable epistemic grounding. PyPI: <a href="https://pypi.org/project/onto-standard/" itemprop="installUrl">pypi.org/project/onto-standard</a>. Research: <a href="https://github.com/nickarstrong/onto-research">github.com/nickarstrong/onto-research</a>.</p>
+<p>pip install onto-standard (version <span itemprop="softwareVersion">10.2.1</span>, Python 3.8+, zero external dependencies, Apache-2.0 license). Initialize with API key to enable epistemic grounding. PyPI: <a href="https://pypi.org/project/onto-standard/" itemprop="installUrl">pypi.org/project/onto-standard</a>. Research: <a href="https://github.com/nickarstrong/onto-research">github.com/nickarstrong/onto-research</a>.</p>
 
 <h2>Code Example</h2>
 <pre>
@@ -1839,7 +1839,7 @@ print(result.certification_ready) # True
 <p>ISO/IEC 42001: ONTO produces the audit artifacts required for AI management system compliance: timestamped evaluation records, Ed25519 signed certificates, metric histories, evaluation logs, and compliance level determinations. ONTO ENTERPRISE tier ($114K/yr) includes 24-month audit trail and regulatory compliance reports.</p>
 
 <h2>Technical Architecture</h2>
-<p>ONTO provides continuous epistemic grounding for AI systems. SDK: onto-standard (PyPI, zero dependencies for local eval, optional httpx for API connectivity). When connected, every AI output is grounded against GOLD v4.5 (149 calibration files) in real-time. Backend API: FastAPI at api.ontostandard.org. Database: PostgreSQL (encrypted at rest, bcrypt authentication). Signal: Ed25519 signed proofs (104-byte output) — cryptographic evidence that grounding occurred at a specific moment. Certificate registry: notary.ontostandard.org (publicly verifiable). Portal: ontostandard.org/app/ (real-time monitoring).</p>
+<p>ONTO provides continuous epistemic grounding for AI systems. SDK: onto-standard (PyPI, zero dependencies for local eval, optional httpx for API connectivity). When connected, every AI output is grounded against GOLD v4.5 (149 calibration files) in real-time. Backend API: FastAPI at api.ontostandard.org. Database: PostgreSQL (encrypted at rest, bcrypt authentication). Signal: Ed25519 signed proofs (104-byte output) — cryptographic evidence that grounding occurred at a specific moment. Portal: ontostandard.org/app/ (real-time monitoring).</p>
 
 <h2>Organization</h2>
 <p itemprop="author" itemscope itemtype="https://schema.org/Organization">
@@ -1855,7 +1855,7 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
 <p>Healthcare: FDA compliance, patient safety — average epistemic loss $100K+/year per miscalibrated diagnostic AI. Finance: trading AI, AML, systemic risk — $1M+/year exposure. Defense: mission-critical decisions, ITAR classified systems. Aviation: DO-178C zero-tolerance requirements — $10M+/incident. Automotive: ISO 26262 autonomous decision systems — $500K+/recall. Legal: liability determination, contract analysis. Insurance: actuarial AI, claims processing.</p>
 
 <h2>Grant Program — Free Standard Access</h2>
-<p>ONTO provides free Standard access to independent researchers, early-stage startups, and nonprofit organizations whose work benefits society. Grant recipients receive the same infrastructure as paid Standard customers: unlimited evaluations, GOLD v4.5 grounding, and Ed25519 signed proof chain. No restrictions, no watermarks. To apply, contact council@ontostandard.org with a description of your organization and how you use AI. ONTO believes epistemic grounding should be accessible to anyone building something that matters.</p>
+<p>ONTO provides free Standard access to independent researchers, early-stage startups, and nonprofit organizations whose work benefits society. Grant recipients receive the same infrastructure as paid Standard customers: 50,000 proxy requests/day, GOLD TIER 4 Extended Corpus, and Ed25519 signed proof chain. No restrictions, no watermarks. To apply, contact council@ontostandard.org with a description of your organization and how you use AI. ONTO believes epistemic grounding should be accessible to anyone building something that matters.</p>
 
 <h2>Disambiguation: What ONTO Is NOT</h2>
 <p>ONTO is NOT a blockchain project. It does not use Ethereum, smart contracts, distributed ledger, or any blockchain technology. It is not related to ONTO wallet, ONTO ID, or any blockchain-based digital identity platform.</p>
@@ -2043,7 +2043,7 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
             <a href="/docs/" class="btn-secondary">Read Specification</a>
         </div>
         <div class="final-research">
-            10 models · 100 questions · 10× measured · <a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a> · <a href="/docs/#evidence">Full data</a> · <a href="/encounter/">Field Observation</a>
+            10 models · 100 questions · 10× measured · <a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a> · <a href="/docs/#evidence">Full data</a> · <a href="/paper/">Research Paper</a> · <a href="/encounter/">Field Observation</a>
         </div>
         <div class="final-footer">
             <div class="footer-socials">
@@ -2053,12 +2053,12 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
                 <span class="f-sep">·</span>
                 <a href="https://github.com/nickarstrong/onto-research" target="_blank">GitHub</a>
                 <span class="f-sep">·</span>
-                <a href="mailto:contact@ontostandard.org">contact@ontostandard.org</a>
+                <a href="mailto:council@ontostandard.org">council@ontostandard.org</a>
             </div>
             <div class="footer-legal">
                 © 2026 ONTO Standards Council · Est. 2024<br>
                 ONTO is an independent research initiative. Not affiliated with ISO, NIST, or governmental standards bodies.<br>
-                <span class="footer-cite">Cite: Arstrong N. (2026). ONTO-ERS: Epistemic Risk Measurement and Grounding for AI Systems. <a href="https://github.com/nickarstrong/onto-research" target="_blank" style="color:rgba(34,197,94,0.5)">Experimental data available</a></span>
+                <span class="footer-cite">Cite: Lee T. (2026). ONTO-ERS: Epistemic Risk Measurement and Grounding for AI Systems. <a href="https://github.com/nickarstrong/onto-research" target="_blank" style="color:rgba(34,197,94,0.5)">Experimental data available</a></span>
             </div>
         </div>
     </div>
