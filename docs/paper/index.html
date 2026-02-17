@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONTO: A Formal Framework for Measuring Epistemic Risk in LLM Outputs</title>
+<meta name="description" content="Academic paper introducing the ONTO Epistemic Risk Standard — a deterministic scoring framework grounded in information theory, Kolmogorov complexity, and formal epistemology. Three metrics (REP, EpCE, DLA), EM1–EM5 taxonomy, Ed25519 cryptographic proof chain. Validated on 10 major AI systems.">
+<link rel="canonical" href="https://ontostandard.org/paper/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ontostandard.org/paper/">
+<meta property="og:title" content="ONTO: A Formal Framework for Measuring Epistemic Risk in LLM Outputs">
+<meta property="og:description" content="Deterministic scoring framework for epistemic risk. EM1–EM5 taxonomy, REP/EpCE/DLA metrics, Ed25519 proof chain. 10 AI systems evaluated.">
+<meta property="og:image" content="https://ontostandard.org/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ONTO: Formal Framework for Measuring Epistemic Risk in LLM Outputs">
+<meta name="twitter:description" content="Deterministic scoring framework for epistemic risk. EM1–EM5 taxonomy, REP/EpCE/DLA metrics, Ed25519 proof chain.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='17' fill='white'/%3E%3Cpath d='M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z' fill='%230a0a0a'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Schema.org -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ScholarlyArticle",
+  "name": "ONTO: A Formal Framework for Measuring Epistemic Risk in Large Language Model Outputs",
+  "headline": "A Formal Framework for Measuring Epistemic Risk in LLM Outputs",
+  "description": "Introduces the ONTO Epistemic Risk Standard — a deterministic scoring framework grounded in information theory, Kolmogorov complexity, and formal epistemology. Defines REP, EpCE, and DLA metrics with EM1–EM5 taxonomy (92 patterns). Validated on 10 major AI systems with mean risk score 0.55 (Grade D).",
+  "url": "https://ontostandard.org/paper/",
+  "datePublished": "2026-02",
+  "author": {"@type": "Person", "name": "Tommy Lee", "affiliation": {"@type": "Organization", "name": "ONTO Standards Council", "url": "https://ontostandard.org"}},
+  "publisher": {"@type": "Organization", "name": "ONTO Standards Council", "url": "https://ontostandard.org"},
+  "about": [
+    {"@type": "DefinedTerm", "name": "Response Epistemic Profile (REP)", "description": "Distribution of epistemic markers across five taxonomic levels EM1–EM5, weighted by risk."},
+    {"@type": "DefinedTerm", "name": "Epistemic Calibration Error (EpCE)", "description": "Divergence between model expressed confidence and factual accuracy."},
+    {"@type": "DefinedTerm", "name": "Dual-Layer Agreement (DLA)", "description": "Agreement between linguistic self-assessment and statistical behavior layers."},
+    {"@type": "DefinedTerm", "name": "Information Gap Ratio (IGR)", "description": "Normalized measure of gap between system informational capacity and complexity of claims."}
+  ],
+  "keywords": ["epistemic risk", "AI calibration", "hallucination detection", "information theory", "large language models", "formal verification"],
+  "citation": [
+    {"@type": "ScholarlyArticle", "name": "On calibration of modern neural networks", "author": "Guo et al.", "datePublished": "2017"},
+    {"@type": "ScholarlyArticle", "name": "A mathematical theory of communication", "author": "Shannon, C.E.", "datePublished": "1948"},
+    {"@type": "ScholarlyArticle", "name": "An Introduction to Kolmogorov Complexity and Its Applications", "author": "Li, M. and Vitányi, P.", "datePublished": "2019"}
+  ]
+}
+</script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0a;--bg-s:#121212;--bg-card:#1a1a1a;--bg-e:#242424;--border:#333;--text:#fafafa;--text-s:#999;--text-m:#666;--green:rgb(34,197,94);--green-dim:rgba(34,197,94,.08)}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;line-height:1.7;-webkit-font-smoothing:antialiased}
+.mono{font-family:'JetBrains Mono','SF Mono',Consolas,monospace}
+a{color:var(--green);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,10,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;height:48px;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-weight:600;font-size:15px;color:var(--text);text-decoration:none;letter-spacing:-.02em}
+.nav-links{display:flex;gap:20px;font-size:13px}
+.nav-links a{color:var(--text-s);text-decoration:none}
+.nav-links a:hover{color:var(--text)}
+
+.wrap{max-width:760px;margin:0 auto;padding:0 24px}
+.hero{padding:100px 0 40px;text-align:center}
+.hero-tag{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-bottom:24px}
+.hero h1{font-size:clamp(22px,3.5vw,32px);font-weight:600;line-height:1.3;margin-bottom:16px;letter-spacing:-.02em}
+.hero-sub{font-size:14px;color:var(--text-s);max-width:560px;margin:0 auto;line-height:1.7}
+
+.meta{display:flex;justify-content:center;gap:32px;padding:24px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:24px 0;font-size:12px;color:var(--text-s)}
+.meta span{display:flex;align-items:center;gap:6px}
+
+.notice{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:16px 20px;margin:24px 0;font-size:12px;color:var(--text-s);line-height:1.7}
+.notice strong{color:var(--text);font-weight:600}
+
+.pdf-embed{margin:32px 0;border-radius:6px;overflow:hidden;border:1px solid var(--border);background:var(--bg-card)}
+.pdf-embed iframe{width:100%;height:85vh;border:none}
+.pdf-fallback{padding:40px;text-align:center}
+.pdf-fallback a{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--green);color:#000;border-radius:6px;font-weight:600;font-size:14px;text-decoration:none}
+.pdf-fallback a:hover{opacity:0.9;text-decoration:none}
+
+.sections{margin:32px 0}
+.section-card{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:16px 20px;margin-bottom:12px}
+.section-card h3{font-size:14px;font-weight:600;margin-bottom:6px}
+.section-card p{font-size:12px;color:var(--text-s);line-height:1.6}
+
+footer{padding:40px 0;border-top:1px solid var(--border);margin-top:48px;text-align:center;font-size:11px;color:var(--text-m)}
+footer a{color:var(--text-s)}
+footer p{margin-bottom:8px}
+
+@media(max-width:640px){.meta{flex-direction:column;gap:8px;align-items:center}.nav-links{gap:12px;font-size:12px}.pdf-embed iframe{height:60vh}}
+</style>
+</head>
+
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-brand">ONTO</a>
+  <div class="nav-links">
+    <a href="/">Standard</a>
+    <a href="/docs/">Docs</a>
+    <a href="/app/">Portal</a>
+    <a href="https://github.com/nickarstrong/onto-research" target="_blank">GitHub</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<div class="hero">
+  <div class="hero-tag">Research Paper</div>
+  <h1>ONTO: A Formal Framework for Measuring Epistemic Risk in Large Language Model Outputs</h1>
+  <div class="hero-sub">Tommy Lee · ONTO Standards Council · February 2026</div>
+</div>
+
+<div class="meta">
+  <span><strong>11</strong> pages</span>
+  <span><strong>10</strong> AI systems evaluated</span>
+  <span><strong>92</strong> epistemic markers</span>
+  <span><strong>3</strong> metrics (REP, EpCE, DLA)</span>
+</div>
+
+<div class="notice">
+  <strong>Preprint.</strong> This paper describes the initial evaluation protocol (12 questions × 10 systems). Extended validation (100 questions × 10 models, CS-2026-001) and current methodology available at <a href="/docs/">ontostandard.org/docs</a>. The ONTO framework is a living standard — specifications are versioned and updated as the field evolves.
+</div>
+
+<div class="pdf-embed">
+  <iframe src="index.pdf" title="ONTO Whitepaper PDF"></iframe>
+  <noscript>
+    <div class="pdf-fallback">
+      <a href="index.pdf" download>Download PDF (11 pages)</a>
+    </div>
+  </noscript>
+</div>
+
+<div class="pdf-fallback" style="margin-top:-8px;padding:12px">
+  <a href="index.pdf" download style="font-size:12px;padding:8px 16px;background:transparent;color:var(--green);border:1px solid rgba(34,197,94,.3)">Download PDF</a>
+</div>
+
+<div class="sections">
+  <div class="section-card">
+    <h3>Abstract</h3>
+    <p>Introduces three deterministic metrics — REP (Response Epistemic Profile), EpCE (Epistemic Calibration Error), and DLA (Dual-Layer Agreement) — grounded in information theory and Kolmogorov complexity. Validates across 10 major AI systems. Mean risk score: 0.55 (Grade D, Non-compliant). Each evaluation anchored to 104-byte Ed25519 cryptographic proof.</p>
+  </div>
+  <div class="section-card">
+    <h3>Key Contribution</h3>
+    <p>EM1–EM5 taxonomy of 92 epistemic markers classifying linguistic signals from full transparency to overclaiming. Scoring is deterministic — regex pattern matching, zero AI in the evaluation loop. Same input produces same output, every time.</p>
+  </div>
+  <div class="section-card">
+    <h3>Finding</h3>
+    <p>9 of 10 major AI systems hallucinated when asked about a documented, verifiable subject. Only 1 system (retrieval-augmented) achieved Grade A. The typical major AI system is not suitable for unsupervised decision support on topics outside its training distribution.</p>
+  </div>
+</div>
+
+<div class="notice" style="font-size:11px">
+  <strong>Related resources:</strong>
+  <a href="/docs/#methodology">Methodology</a> ·
+  <a href="/docs/#evidence">Research Evidence</a> ·
+  <a href="/encounter/">Field Observation</a> ·
+  <a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research (GitHub)</a> ·
+  <a href="https://pypi.org/project/onto-standard/" target="_blank">onto-standard (PyPI)</a>
+</div>
+
+</div>
+
+<footer>
+  <p><a href="/">ontostandard.org</a> · <a href="/docs/">Docs</a> · <a href="/app/">Portal</a> · <a href="/encounter/">Field Observation</a></p>
+  <p>© 2026 ONTO Standards Council</p>
+</footer>
+
+</body>
+</html>
