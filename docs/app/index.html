@@ -4724,7 +4724,7 @@ function renderAccounts(accounts) {
                     ` : ''}
                 </div>
                 <div class="account-actions">
-                    <button class="account-action-btn" onclick="event.stopPropagation(); editPlan('${safeId}', '${safeTier}', '${safeEmail}')" ${isSelf ? 'disabled title="Cannot modify own plan"' : ''}>Edit Plan</button>
+                    <button class="account-action-btn" onclick="event.stopPropagation(); editPlan('${safeId}', '${safeTier}', '${safeEmail}')">Edit Plan</button>
                     <button class="account-action-btn" onclick="event.stopPropagation(); toggleAccountStatus('${safeId}', ${isActive})" ${isSelf ? 'disabled title="Cannot pause own account"' : ''}>${isActive ? 'Pause' : 'Activate'}</button>
                     <button class="account-action-btn danger" onclick="event.stopPropagation(); deleteAccount('${safeId}', '${safeEmail}')" ${isSelf ? 'disabled title="Cannot delete own account"' : ''}>Delete</button>
                 </div>
@@ -4747,11 +4747,6 @@ let editingUserId = null;
 let editingUserEmail = null;
 
 function editPlan(userId, currentTier, userEmail) {
-    if (userId === currentUserId) {
-        showSignal104b('self_action_attempt', '/admin/users/tier');
-        return;
-    }
-    
     editingUserId = userId;
     editingUserEmail = userEmail || 'User';
     
@@ -4793,6 +4788,11 @@ async function saveTierChange() {
         if (res.ok) {
             showToast(`Plan updated to ${tier.toUpperCase()}`, 'success');
             closeModal('tier-modal');
+            // Update localStorage if changing own tier
+            if (editingUserId === currentUserId) {
+                localStorage.setItem('onto_layer', tier);
+                if (currentUser) currentUser.plan = layerToPlan(tier);
+            }
             loadAccountsData();
         } else {
             const err = await res.json();
