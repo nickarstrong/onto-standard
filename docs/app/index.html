@@ -1181,7 +1181,10 @@ a.info-val:hover { color: var(--text); }
                 <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;overflow:hidden">
                     <div style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="const b=document.getElementById('integration-body');const a=document.getElementById('integration-arrow');if(b.style.display==='none'){b.style.display='block';a.style.transform='rotate(180deg)'}else{b.style.display='none';a.style.transform='rotate(0deg)'}">
                         <div style="display:flex;align-items:center;gap:10px">
-                            <span style="font-size:12px;font-weight:600">Integration</span>
+                            <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(21,128,61,0.08)">
+                                <span style="font-size:10px;font-weight:700;color:var(--accent)">2</span>
+                            </div>
+                            <span style="font-size:12px;font-weight:600">Connect</span>
                             <span style="font-size:9px;color:var(--text-muted)">One line change. No SDK. No retraining.</span>
                         </div>
                         <div style="display:flex;align-items:center;gap:8px">
@@ -1217,100 +1220,17 @@ a.info-val:hover { color: var(--text); }
                 </div>
             </div>
 
-            <!-- ONBOARDING STEPS -->
-            <div style="margin-bottom:20px">
-                <!-- STEP 1: Test your AI -->
-                <div style="padding:14px 20px;background:var(--accent-subtle);border:1px solid rgba(21,128,61,0.25);border-radius:6px;margin-bottom:8px;cursor:pointer;transition:all 0.2s" onclick="document.getElementById('step1-body').style.display=document.getElementById('step1-body').style.display==='none'?'block':'none'" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(21,128,61,0.25)'">
-                    <div style="display:flex;align-items:center;justify-content:space-between">
-                        <div style="display:flex;align-items:center;gap:16px">
-                            <div style="width:36px;height:36px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(21,128,61,0.08)">
-                                <span style="font-size:14px;font-weight:700;color:var(--accent)">1</span>
-                            </div>
-                            <div>
-                                <div style="font-size:13px;font-weight:600;color:var(--text)">Test your AI without ONTO</div>
-                                <div style="font-size:10px;color:var(--text-secondary);margin-top:2px">Pick a question below. Ask your AI. Save the answer.</div>
-                            </div>
-                        </div>
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>
-                    </div>
-                    <div id="step1-body" style="display:none;margin-top:12px;padding-top:10px;border-top:1px solid rgba(21,128,61,0.15)">
-                        <div style="font-size:10px;color:var(--text-secondary);margin-bottom:8px">Copy one of these and ask your AI provider directly:</div>
-                        <div style="display:flex;flex-direction:column;gap:4px">
-                            <div onclick="event.stopPropagation();navigator.clipboard.writeText('Evaluate the clinical evidence for statin therapy in cardiovascular prevention. Give specific numbers and cite sources.')" style="padding:6px 10px;background:rgba(0,0,0,0.2);border-radius:4px;font-size:10px;color:var(--accent);cursor:pointer;border:1px solid rgba(21,128,61,0.1)" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(21,128,61,0.1)'">Medicine: "Evaluate the clinical evidence for statin therapy in cardiovascular prevention..."</div>
-                            <div onclick="event.stopPropagation();navigator.clipboard.writeText('What is the probability of a functional protein arising by chance? Give specific numbers and cite sources.')" style="padding:6px 10px;background:rgba(0,0,0,0.2);border-radius:4px;font-size:10px;color:var(--accent);cursor:pointer;border:1px solid rgba(21,128,61,0.1)" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(21,128,61,0.1)'">Biology: "What is the probability of a functional protein arising by chance..."</div>
-                            <div onclick="event.stopPropagation();navigator.clipboard.writeText('What are the current systemic risks in the global derivatives market? Quantify exposure and cite sources.')" style="padding:6px 10px;background:rgba(0,0,0,0.2);border-radius:4px;font-size:10px;color:var(--accent);cursor:pointer;border:1px solid rgba(21,128,61,0.1)" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(21,128,61,0.1)'">Finance: "What are the current systemic risks in the global derivatives market..."</div>
-                            <div onclick="event.stopPropagation();navigator.clipboard.writeText('Is the current rate of AI capability gain sustainable? Provide quantitative projections and cite sources.')" style="padding:6px 10px;background:rgba(0,0,0,0.2);border-radius:4px;font-size:10px;color:var(--accent);cursor:pointer;border:1px solid rgba(21,128,61,0.1)" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(21,128,61,0.1)'">AI/ML: "Is the current rate of AI capability gain sustainable..."</div>
-                        </div>
-                        <div style="font-size:9px;color:var(--text-muted);margin-top:6px">Click to copy. Count the numbers, sources, and confidence levels in the response.</div>
-                    </div>
-                </div>
-
-                <!-- STEP 2: Connect -->
-                <div style="padding:14px 20px;background:var(--accent-subtle);border:1px solid rgba(21,128,61,0.25);border-radius:6px;margin-bottom:8px;cursor:pointer;transition:all 0.2s" onclick="document.getElementById('step2-body').style.display=document.getElementById('step2-body').style.display==='none'?'block':'none'" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(21,128,61,0.25)'">
-                    <div style="display:flex;align-items:center;justify-content:space-between">
-                        <div style="display:flex;align-items:center;gap:16px">
-                            <div style="width:36px;height:36px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(21,128,61,0.08)">
-                                <span style="font-size:14px;font-weight:700;color:var(--accent)">2</span>
-                            </div>
-                            <div>
-                                <div style="font-size:13px;font-weight:600;color:var(--text)">Connect through ONTO</div>
-                                <div style="font-size:10px;color:var(--text-secondary);margin-top:2px">One line change. Your API key is ready.</div>
-                            </div>
-                        </div>
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>
-                    </div>
-                    <div id="step2-body" style="display:none;margin-top:12px;padding-top:10px;border-top:1px solid rgba(21,128,61,0.15)">
-                        <div style="font-size:10px;color:var(--text-secondary);margin-bottom:6px">Add your provider key and change base_url:</div>
-                        <div onclick="event.stopPropagation();copyIntegrationCode()" style="padding:10px;background:rgba(0,0,0,0.3);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.6;cursor:pointer;border:1px solid rgba(21,128,61,0.1)">
-                            <div style="color:var(--text-muted)"># Change base_url + add X-Provider-Key header</div>
-                            <div><span style="color:#e2e8f0">base_url</span> = <span style="color:#4ade80">"https://api.ontostandard.org/v1/proxy"</span></div>
-                            <div><span style="color:#e2e8f0">headers</span> = {<span style="color:#4ade80">"X-Provider-Key"</span>: <span style="color:#4ade80">"sk-...your_key"</span>}</div>
-                        </div>
-                        <div style="font-size:9px;color:var(--text-muted);margin-top:6px">Click to copy. Full integration code in <a onclick="event.stopPropagation();showPage('sdk')" style="color:var(--accent);cursor:pointer">API & SDK</a>.</div>
-                    </div>
-                </div>
-
-                <!-- STEP 3: Compare -->
-                <div style="padding:14px 20px;background:var(--accent-subtle);border:1px solid rgba(21,128,61,0.25);border-radius:6px;margin-bottom:8px;cursor:pointer;transition:all 0.2s" onclick="document.getElementById('step3-body').style.display=document.getElementById('step3-body').style.display==='none'?'block':'none'" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(21,128,61,0.25)'">
-                    <div style="display:flex;align-items:center;justify-content:space-between">
-                        <div style="display:flex;align-items:center;gap:16px">
-                            <div style="width:36px;height:36px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(21,128,61,0.08)">
-                                <span style="font-size:14px;font-weight:700;color:var(--accent)">3</span>
-                            </div>
-                            <div>
-                                <div style="font-size:13px;font-weight:600;color:var(--text)">Ask the same question through ONTO</div>
-                                <div style="font-size:10px;color:var(--text-secondary);margin-top:2px">Compare the results. Count numbers, sources, confidence.</div>
-                            </div>
-                        </div>
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>
-                    </div>
-                    <div id="step3-body" style="display:none;margin-top:12px;padding-top:10px;border-top:1px solid rgba(21,128,61,0.15)">
-                        <div style="font-size:10px;color:var(--text-secondary);line-height:1.5">Send the exact same question through your ONTO-connected code. The Evidence section below shows what to expect: more numbers, real sources, honest uncertainty. No new facts — just discipline.</div>
-                    </div>
-                </div>
-
-                <!-- STEP 4: Choose plan -->
-                <div style="padding:14px 20px;background:var(--accent-subtle);border:1px solid rgba(21,128,61,0.25);border-radius:6px;cursor:pointer;transition:all 0.2s" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(21,128,61,0.25)'">
-                    <div style="display:flex;align-items:center;justify-content:space-between">
-                        <div style="display:flex;align-items:center;gap:16px">
-                            <div style="width:36px;height:36px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(21,128,61,0.08)">
-                                <span style="font-size:14px;font-weight:700;color:var(--accent)">4</span>
-                            </div>
-                            <div>
-                                <div style="font-size:13px;font-weight:600;color:var(--text)">Choose your plan</div>
-                                <div style="font-size:10px;color:var(--text-secondary);margin-top:2px">See pricing and select the tier that fits your needs.</div>
-                            </div>
-                        </div>
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
-                    </div>
-                </div>
-            </div>
 
             <!-- DEMO -->
             <div style="margin-bottom:20px">
                 <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:20px">
-                    <div style="font-size:14px;font-weight:600;margin-bottom:4px;letter-spacing:-0.2px">Evidence</div>
-                    <div style="font-size:11px;color:var(--text-secondary);margin-bottom:14px">Same model. Same question. Left panel: raw output. Right panel: output with ONTO GOLD discipline layer active. Scoring is deterministic — regex only, no AI judge.</div>
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+                        <div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(21,128,61,0.08)">
+                            <span style="font-size:12px;font-weight:700;color:var(--accent)">1</span>
+                        </div>
+                        <div style="font-size:14px;font-weight:600;letter-spacing:-0.2px">Test your AI without ONTO</div>
+                    </div>
+                    <div style="font-size:11px;color:var(--text-secondary);margin-bottom:14px">Pick a question below. Copy it. Ask your own AI the same question. Compare what you got with the right panel. No tricks — verify it yourself.</div>
 
                     <!-- Category tabs -->
                     <div class="erm-cat-tabs" id="erm-cat-tabs"></div>
@@ -1382,6 +1302,33 @@ a.info-val:hover { color: var(--text); }
                     <div style="background:var(--bg-card);padding:12px 14px"><div style="font-size:11px;font-weight:600;margin-bottom:2px">Never leaves the server</div><div style="font-size:10px;color:var(--text-muted);line-height:1.5">Injected server-side via proxy. You see results, not the document.</div></div>
                     <div style="background:var(--bg-card);padding:12px 14px"><div style="font-size:11px;font-weight:600;margin-bottom:2px">Cross-domain transfer</div><div style="font-size:10px;color:var(--text-muted);line-height:1.5">4/5 metrics transfer to domains not in GOLD. Structure, not answers.</div></div>
                     <div style="background:var(--bg-card);padding:12px 14px"><div style="font-size:11px;font-weight:600;margin-bottom:2px">Zero-AI scoring</div><div style="font-size:10px;color:var(--text-muted);line-height:1.5">Regex only. 993 lines. Same input → same scores. <a href="https://github.com/nickarstrong/onto-research/blob/main/onto-scoring.py" target="_blank" style="color:var(--accent)">Source</a>.</div></div>
+                </div>
+            </div>
+
+            <!-- STEP 3: CHOOSE PLAN -->
+            <div style="margin-bottom:20px">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                    <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(21,128,61,0.08)">
+                        <span style="font-size:10px;font-weight:700;color:var(--accent)">3</span>
+                    </div>
+                    <span style="font-size:12px;font-weight:600">Choose your plan</span>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border-radius:6px;overflow:hidden">
+                    <div style="background:var(--bg-card);padding:14px;cursor:pointer" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))">
+                        <div style="font-size:12px;font-weight:600;margin-bottom:2px">Open</div>
+                        <div style="font-size:16px;font-weight:700;color:var(--accent);margin-bottom:4px">Free</div>
+                        <div style="font-size:9px;color:var(--text-muted);line-height:1.4">10 requests/day · TIER 2</div>
+                    </div>
+                    <div style="background:var(--bg-card);padding:14px;cursor:pointer;border-left:2px solid var(--accent);border-right:2px solid var(--accent)" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))">
+                        <div style="font-size:12px;font-weight:600;margin-bottom:2px">Standard</div>
+                        <div style="font-size:16px;font-weight:700;color:var(--accent);margin-bottom:4px">$2,500<span style="font-size:10px;font-weight:400;color:var(--text-muted)">/mo</span></div>
+                        <div style="font-size:9px;color:var(--text-muted);line-height:1.4">1,000/day · TIER 4 · badge</div>
+                    </div>
+                    <div style="background:var(--bg-card);padding:14px;cursor:pointer" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))">
+                        <div style="font-size:12px;font-weight:600;margin-bottom:2px">Enterprise</div>
+                        <div style="font-size:16px;font-weight:700;color:var(--accent);margin-bottom:4px">$9,500<span style="font-size:10px;font-weight:400;color:var(--text-muted)">/mo</span></div>
+                        <div style="font-size:9px;color:var(--text-muted);line-height:1.4">Unlimited · certificate · support</div>
+                    </div>
                 </div>
             </div>
 
