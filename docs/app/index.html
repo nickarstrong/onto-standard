@@ -884,13 +884,17 @@ a.info-val:hover { color: var(--text); }
             </div>
         </div>
         <nav class="sidebar-nav">
-            <div class="nav-item active" onclick="showPage('monitor', this)">
+            <div class="nav-item active" onclick="showPage('providers', this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                AI Providers
+            </div>
+            <div class="nav-item" onclick="showPage('monitor', this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
                 Companies
             </div>
-            <div class="nav-item" onclick="showPage('providers', this)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-                AI Providers
+            <div class="nav-item" onclick="showPage('research', this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                Research
             </div>
             <div class="nav-divider"></div>
             <div class="nav-item" onclick="showPage('sdk', this)">
@@ -1147,7 +1151,7 @@ a.info-val:hover { color: var(--text); }
         </div>
 
         <!-- ========== MONITOR PAGE ========== -->
-        <div class="page active" id="page-monitor">
+        <div class="page" id="page-monitor">
 
             <!-- INSTITUTIONAL HEADER -->
             <div style="padding:24px 0;border-bottom:1px solid var(--border);margin-bottom:20px">
@@ -1377,7 +1381,7 @@ a.info-val:hover { color: var(--text); }
         </div>
 
         <!-- ========== AI PROVIDERS PAGE ========== -->
-        <div class="page" id="page-providers">
+        <div class="page active" id="page-providers">
             <div style="padding:24px 0;border-bottom:1px solid var(--border);margin-bottom:24px">
                 <div style="font-size:9px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px">For AI model providers</div>
                 <div style="font-size:16px;font-weight:600;letter-spacing:-0.3px;margin-bottom:8px;line-height:1.4;max-width:560px">Integrate ONTO GOLD into your inference pipeline. Your users get measurably better output.</div>
@@ -1447,6 +1451,87 @@ a.info-val:hover { color: var(--text); }
                 <div style="font-size:11px;color:var(--text-secondary);line-height:1.6;margin-bottom:14px">Provider integration includes dedicated GOLD API endpoint, technical onboarding, and access to the full corpus streaming API. Pricing based on volume.</div>
                 <a href="mailto:providers@ontostandard.org" style="display:inline-block;background:var(--accent);color:#0c0f14;padding:8px 24px;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none">providers@ontostandard.org</a>
             </div>
+        </div>
+
+        <!-- ========== RESEARCH PAGE ========== -->
+        <div class="page" id="page-research">
+            <div style="padding:24px 0;border-bottom:1px solid var(--border);margin-bottom:24px">
+                <div style="font-size:9px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px">For universities, institutes & labs</div>
+                <div style="font-size:16px;font-weight:600;letter-spacing:-0.3px;margin-bottom:8px;line-height:1.4;max-width:560px">Open methodology. Reproducible results. Independent verification of AI epistemic quality.</div>
+                <div style="font-size:12px;color:var(--text-secondary);line-height:1.7;max-width:560px">ONTO provides researchers with tools to measure and improve how AI models handle uncertainty, evidence, and confidence calibration. All scoring is deterministic — regex only, zero AI judge.</div>
+            </div>
+
+            <!-- Open resources -->
+            <div style="margin-bottom:24px">
+                <div style="font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Open resources</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border-radius:6px;overflow:hidden">
+                    <a style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--bg-card);text-decoration:none;transition:background 0.15s" onmouseover="this.style.background='var(--bg-elevated)'" onmouseout="this.style.background='var(--bg-card)'" href="https://github.com/nickarstrong/onto-research/blob/main/onto-scoring.py" target="_blank">
+                        <div><div style="font-size:12px;color:var(--text);font-weight:600">Scoring engine</div><div style="font-size:10px;color:var(--text-muted);margin-top:2px">993 lines · Python · zero dependencies</div></div>
+                        <span style="font-size:8px;font-family:'JetBrains Mono',monospace;color:var(--accent);border:1px solid rgba(34,197,94,0.2);border-radius:2px;padding:2px 6px">PY</span>
+                    </a>
+                    <a style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--bg-card);text-decoration:none;transition:background 0.15s" onmouseover="this.style.background='var(--bg-elevated)'" onmouseout="this.style.background='var(--bg-card)'" href="https://github.com/nickarstrong/onto-research/blob/main/ONTO-Full-Report.md" target="_blank">
+                        <div><div style="font-size:12px;color:var(--text);font-weight:600">Full report</div><div style="font-size:10px;color:var(--text-muted);margin-top:2px">Before/after · 10× improvement · methodology</div></div>
+                        <span style="font-size:8px;font-family:'JetBrains Mono',monospace;color:var(--accent);border:1px solid rgba(34,197,94,0.2);border-radius:2px;padding:2px 6px">MD</span>
+                    </a>
+                    <a style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--bg-card);text-decoration:none;transition:background 0.15s" onmouseover="this.style.background='var(--bg-elevated)'" onmouseout="this.style.background='var(--bg-card)'" href="https://github.com/nickarstrong/onto-research/blob/main/ONTO-11-Model-Baseline.md" target="_blank">
+                        <div><div style="font-size:12px;color:var(--text);font-weight:600">11-model baseline</div><div style="font-size:10px;color:var(--text-muted);margin-top:2px">GPT · Claude · Gemini · DeepSeek · Grok · more</div></div>
+                        <span style="font-size:8px;font-family:'JetBrains Mono',monospace;color:var(--accent);border:1px solid rgba(34,197,94,0.2);border-radius:2px;padding:2px 6px">MD</span>
+                    </a>
+                    <a style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--bg-card);text-decoration:none;transition:background 0.15s" onmouseover="this.style.background='var(--bg-elevated)'" onmouseout="this.style.background='var(--bg-card)'" href="https://github.com/nickarstrong/onto-research/blob/main/gold_experiment_questions.md" target="_blank">
+                        <div><div style="font-size:12px;color:var(--text);font-weight:600">100 test questions</div><div style="font-size:10px;color:var(--text-muted);margin-top:2px">5 domains · reproducible protocol</div></div>
+                        <span style="font-size:8px;font-family:'JetBrains Mono',monospace;color:var(--accent);border:1px solid rgba(34,197,94,0.2);border-radius:2px;padding:2px 6px">MD</span>
+                    </a>
+                </div>
+                <div style="margin-top:8px;text-align:right">
+                    <a href="https://github.com/nickarstrong/onto-research" target="_blank" style="font-size:10px;color:var(--accent);text-decoration:none;font-weight:500">All research on GitHub →</a>
+                </div>
+            </div>
+
+            <!-- Key results -->
+            <div style="margin-bottom:24px">
+                <div style="font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Key results · CS-2026-001</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1px;background:var(--border);border-radius:6px;overflow:hidden">
+                    <div style="background:var(--bg-card);padding:14px;text-align:center">
+                        <div style="font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent)">10×</div>
+                        <div style="font-size:9px;color:var(--text-muted);margin-top:4px">Composite improvement</div>
+                        <div style="font-size:8px;color:var(--text-muted)">0.53 → 5.38</div>
+                    </div>
+                    <div style="background:var(--bg-card);padding:14px;text-align:center">
+                        <div style="font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent)">5.4×</div>
+                        <div style="font-size:9px;color:var(--text-muted);margin-top:4px">Variance reduction</div>
+                        <div style="font-size:8px;color:var(--text-muted)">SD 0.58 → 0.11</div>
+                    </div>
+                    <div style="background:var(--bg-card);padding:14px;text-align:center">
+                        <div style="font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent)">0.92</div>
+                        <div style="font-size:9px;color:var(--text-muted);margin-top:4px">Baseline mean</div>
+                        <div style="font-size:8px;color:var(--text-muted)">n=10 models</div>
+                    </div>
+                    <div style="background:var(--bg-card);padding:14px;text-align:center">
+                        <div style="font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent)">100</div>
+                        <div style="font-size:9px;color:var(--text-muted);margin-top:4px">Questions tested</div>
+                        <div style="font-size:8px;color:var(--text-muted)">5 domains</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Free access -->
+            <div style="margin-bottom:24px">
+                <div style="font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Access</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:16px">
+                        <div style="font-size:12px;font-weight:600;margin-bottom:4px">Open tier</div>
+                        <div style="font-size:20px;font-weight:700;color:var(--accent);margin-bottom:4px">Free</div>
+                        <div style="font-size:10px;color:var(--text-secondary);line-height:1.5">10 proxy requests/day · TIER 2 GOLD · proof chain · sufficient for research and evaluation</div>
+                    </div>
+                    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:16px">
+                        <div style="font-size:12px;font-weight:600;margin-bottom:4px">Grant program</div>
+                        <div style="font-size:20px;font-weight:700;color:var(--accent);margin-bottom:4px">1,000/day</div>
+                        <div style="font-size:10px;color:var(--text-secondary);line-height:1.5">Standard tier at no cost for qualifying academic institutions. Apply with institutional email.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="font-size:9px;color:var(--text-muted)">research@ontostandard.org · Cite as: ONTO Standard, CS-2026-001</div>
         </div>
 
         <!-- ========== CERTIFY PAGE ========== -->
