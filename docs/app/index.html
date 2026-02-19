@@ -1366,53 +1366,21 @@ a.info-val:hover { color: var(--text); }
                 <!-- Body (collapsible) -->
                 <div class="signal-body" id="signal-body-collapsible" style="display:none">
 
-                    <!-- Value proposition -->
-                    <div style="font-size:11px;color:rgba(255,255,255,0.6);line-height:1.6;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(34,197,94,0.1)">
-                        Model operates under ONTO GOLD epistemic discipline. Valid while proxy connection is active. Disconnect → certificate suspended instantly.
-                    </div>
-
-                    <!-- Cert grid: info + QR -->
-                    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:14px">
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:1">
-                            <div>
-                                <div style="font-size:8px;color:rgba(34,197,94,0.5);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">Organization</div>
-                                <div style="font-size:13px;font-weight:600;color:#e2e8f0">Acme Corp</div>
-                                <div style="font-size:9px;color:rgba(255,255,255,0.35);margin-top:1px">GPT-4o · OpenAI</div>
-                            </div>
-                            <div>
-                                <div style="font-size:8px;color:rgba(34,197,94,0.5);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">Active since</div>
-                                <div style="font-size:13px;font-weight:600;color:#e2e8f0;font-variant-numeric:tabular-nums">Feb 15, 2026</div>
-                                <div style="font-size:9px;color:rgba(255,255,255,0.35);margin-top:1px">Proxy: active · GOLD: injected</div>
-                            </div>
+                    <!-- Cert grid: org + date -->
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+                        <div>
+                            <div style="font-size:8px;color:rgba(34,197,94,0.5);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">Organization</div>
+                            <div style="font-size:13px;font-weight:600;color:#e2e8f0" id="erm-org-name">Acme Corp</div>
+                            <div style="font-size:9px;color:rgba(255,255,255,0.35);margin-top:1px" id="erm-org-model">GPT-4o · OpenAI</div>
                         </div>
-                        <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0">
-                            <div style="width:64px;height:64px;background:white;border-radius:3px;display:flex;align-items:center;justify-content:center">
-                                <canvas id="erm-qr-canvas" width="64" height="64"></canvas>
-                            </div>
-                            <div style="font-size:7px;color:rgba(34,197,94,0.4);text-transform:uppercase;letter-spacing:0.5px">Verify</div>
+                        <div>
+                            <div style="font-size:8px;color:rgba(34,197,94,0.5);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">Active since</div>
+                            <div style="font-size:13px;font-weight:600;color:#e2e8f0;font-variant-numeric:tabular-nums" id="erm-active-since">Feb 15, 2026</div>
+                            <div style="font-size:9px;color:rgba(255,255,255,0.35);margin-top:1px">Proxy: active · GOLD: injected</div>
                         </div>
                     </div>
 
-                    <!-- Hash + actions -->
-                    <div style="background:rgba(0,0,0,0.3);border:1px solid rgba(34,197,94,0.12);border-radius:4px;padding:8px 10px;margin-bottom:10px">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
-                            <span style="font-size:8px;color:rgba(34,197,94,0.4);text-transform:uppercase;letter-spacing:0.5px">Hash · Ed25519 · 104b · SHA-256</span>
-                            <div style="display:flex;gap:3px">
-                                <button onclick="ermCopyHash()" style="background:none;border:1px solid rgba(34,197,94,0.15);border-radius:2px;padding:1px 6px;font-size:8px;color:rgba(34,197,94,0.6);cursor:pointer" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='rgba(34,197,94,0.6)'">Copy</button>
-                                <button onclick="ermDownloadCert()" style="background:none;border:1px solid rgba(34,197,94,0.15);border-radius:2px;padding:1px 6px;font-size:8px;color:rgba(34,197,94,0.6);cursor:pointer" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='rgba(34,197,94,0.6)'">Download</button>
-                            </div>
-                        </div>
-                        <div id="erm-cert-hash" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);word-break:break-all;line-height:1.4;letter-spacing:0.3px">loading...</div>
-                    </div>
-
-                    <!-- Verify inline -->
-                    <div style="display:flex;gap:5px;margin-bottom:8px">
-                        <input type="text" id="erm-verify-input" placeholder="Paste hash to verify..." style="flex:1;padding:6px 8px;font-family:'JetBrains Mono',monospace;font-size:10px;background:rgba(0,0,0,0.3);border:1px solid rgba(34,197,94,0.12);border-radius:3px;color:#e2e8f0;outline:none" oninput="ermVerifyHash(this.value)">
-                        <div id="erm-verify-result" style="width:30px;display:flex;align-items:center;justify-content:center;border-radius:3px;font-size:14px"></div>
-                    </div>
-                    <div id="erm-verify-msg" style="font-size:9px;min-height:12px;margin-bottom:12px"></div>
-
-                    <!-- Signal metrics (academic grid) -->
+                    <!-- Signal metrics (keep grid + animations) -->
                     <div class="signal-main-row">
                         <div class="signal-id-block">
                             <div class="signal-id" id="user-signal-id"><div class="signal-skeleton-id"></div></div>
@@ -1432,22 +1400,18 @@ a.info-val:hover { color: var(--text); }
                         <div class="signal-metric"><div class="signal-metric-value">ED25519</div><div class="signal-metric-label">SIGNATURE</div></div>
                     </div>
 
-                    <!-- Status checks + verify link -->
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
-                        <div style="display:flex;gap:12px">
-                            <span id="erm-check-proxy" style="font-size:9px;color:rgba(255,255,255,0.4)"><span style="color:var(--accent)">✓</span> PROXY</span>
-                            <span id="erm-check-gold" style="font-size:9px;color:rgba(255,255,255,0.4)"><span style="color:var(--accent)">✓</span> GOLD</span>
-                            <span id="erm-check-sig" style="font-size:9px;color:rgba(255,255,255,0.4)"><span style="color:var(--accent)">✓</span> SIG</span>
-                            <span id="erm-check-chain" style="font-size:9px;color:rgba(255,255,255,0.4)"><span style="color:var(--accent)">✓</span> CHAIN</span>
-                        </div>
-                        <span style="font-size:8px;color:rgba(34,197,94,0.4)">ontostandard.org/c/ACM-2026-001</span>
+                    <!-- Status checks -->
+                    <div style="display:flex;gap:12px;margin-top:10px">
+                        <span id="erm-check-proxy" style="font-size:9px;color:rgba(255,255,255,0.4)"><span style="color:var(--accent)">✓</span> PROXY</span>
+                        <span id="erm-check-gold" style="font-size:9px;color:rgba(255,255,255,0.4)"><span style="color:var(--accent)">✓</span> GOLD</span>
+                        <span id="erm-check-sig" style="font-size:9px;color:rgba(255,255,255,0.4)"><span style="color:var(--accent)">✓</span> SIG</span>
+                        <span id="erm-check-chain" style="font-size:9px;color:rgba(255,255,255,0.4)"><span style="color:var(--accent)">✓</span> CHAIN</span>
                     </div>
                 </div>
             </div>
 
             <!-- Footer -->
-            <div style="padding:10px 0;display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-                <span style="font-size:9px;color:var(--text-muted)">ONTO-SPEC v1.0 · ontostandard.org/verify</span>
+            <div style="padding:10px 0;margin-top:8px">
                 <span style="font-size:9px;color:var(--text-muted)">ONTO does not guarantee accuracy. Not responsible for decisions made by AI systems or their operators.</span>
             </div>
         </div>
