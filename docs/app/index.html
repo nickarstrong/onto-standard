@@ -886,7 +886,7 @@ a.info-val:hover { color: var(--text); }
         <nav class="sidebar-nav">
             <div class="nav-item active" onclick="showPage('monitor', this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                Risk Monitor
+                Get Started
             </div>
             <div class="nav-divider"></div>
             <div class="nav-item" onclick="showPage('sdk', this)">
@@ -955,7 +955,7 @@ a.info-val:hover { color: var(--text); }
                     <div style="padding:14px;border:1px solid var(--border);border-radius:6px;background:var(--bg)">
                         <div style="font-size:20px;margin-bottom:6px;opacity:0.6">①</div>
                         <div style="font-size:12px;font-weight:600;margin-bottom:4px">Register a model</div>
-                        <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Go to <a onclick="showPage('monitor', document.querySelector('.nav-item[onclick*=monitor]'))" style="color:var(--accent);cursor:pointer">Risk Monitor</a> → Connect your AI model with your provider API key.</div>
+                        <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Go to <a onclick="showPage('monitor', document.querySelector('.nav-item[onclick*=monitor]'))" style="color:var(--accent);cursor:pointer">Get Started</a> → Connect your AI model with your provider API key.</div>
                     </div>
                     <div style="padding:14px;border:1px solid var(--border);border-radius:6px;background:var(--bg)">
                         <div style="font-size:20px;margin-bottom:6px;opacity:0.6">②</div>
@@ -1217,23 +1217,91 @@ a.info-val:hover { color: var(--text); }
                 </div>
             </div>
 
-            <!-- ADD PROJECT -->
+            <!-- ONBOARDING STEPS -->
             <div style="margin-bottom:20px">
-                <div style="padding:16px 20px;background:var(--accent-subtle);border:1px solid rgba(21,128,61,0.25);border-radius:6px;cursor:pointer;transition:all 0.2s" onclick="showAddModelModal()" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(21,128,61,0.25)'">
+                <!-- STEP 1: Test your AI -->
+                <div style="padding:14px 20px;background:var(--accent-subtle);border:1px solid rgba(21,128,61,0.25);border-radius:6px;margin-bottom:8px;cursor:pointer;transition:all 0.2s" onclick="document.getElementById('step1-body').style.display=document.getElementById('step1-body').style.display==='none'?'block':'none'" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(21,128,61,0.25)'">
                     <div style="display:flex;align-items:center;justify-content:space-between">
                         <div style="display:flex;align-items:center;gap:16px">
-                            <div style="width:40px;height:40px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(21,128,61,0.08)">
-                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--accent)" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            <div style="width:36px;height:36px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(21,128,61,0.08)">
+                                <span style="font-size:14px;font-weight:700;color:var(--accent)">1</span>
                             </div>
                             <div>
-                                <div style="font-size:14px;font-weight:600;color:var(--text)">Add project</div>
-                                <div style="font-size:10px;color:var(--text-secondary);margin-top:2px">Register a model to connect through ONTO proxy. Multiple models per account.</div>
+                                <div style="font-size:13px;font-weight:600;color:var(--text)">Test your AI without ONTO</div>
+                                <div style="font-size:10px;color:var(--text-secondary);margin-top:2px">Pick a question below. Ask your AI. Save the answer.</div>
+                            </div>
+                        </div>
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>
+                    </div>
+                    <div id="step1-body" style="display:none;margin-top:12px;padding-top:10px;border-top:1px solid rgba(21,128,61,0.15)">
+                        <div style="font-size:10px;color:var(--text-secondary);margin-bottom:8px">Copy one of these and ask your AI provider directly:</div>
+                        <div style="display:flex;flex-direction:column;gap:4px">
+                            <div onclick="event.stopPropagation();navigator.clipboard.writeText('Evaluate the clinical evidence for statin therapy in cardiovascular prevention. Give specific numbers and cite sources.')" style="padding:6px 10px;background:rgba(0,0,0,0.2);border-radius:4px;font-size:10px;color:var(--accent);cursor:pointer;border:1px solid rgba(21,128,61,0.1)" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(21,128,61,0.1)'">Medicine: "Evaluate the clinical evidence for statin therapy in cardiovascular prevention..."</div>
+                            <div onclick="event.stopPropagation();navigator.clipboard.writeText('What is the probability of a functional protein arising by chance? Give specific numbers and cite sources.')" style="padding:6px 10px;background:rgba(0,0,0,0.2);border-radius:4px;font-size:10px;color:var(--accent);cursor:pointer;border:1px solid rgba(21,128,61,0.1)" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(21,128,61,0.1)'">Biology: "What is the probability of a functional protein arising by chance..."</div>
+                            <div onclick="event.stopPropagation();navigator.clipboard.writeText('What are the current systemic risks in the global derivatives market? Quantify exposure and cite sources.')" style="padding:6px 10px;background:rgba(0,0,0,0.2);border-radius:4px;font-size:10px;color:var(--accent);cursor:pointer;border:1px solid rgba(21,128,61,0.1)" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(21,128,61,0.1)'">Finance: "What are the current systemic risks in the global derivatives market..."</div>
+                            <div onclick="event.stopPropagation();navigator.clipboard.writeText('Is the current rate of AI capability gain sustainable? Provide quantitative projections and cite sources.')" style="padding:6px 10px;background:rgba(0,0,0,0.2);border-radius:4px;font-size:10px;color:var(--accent);cursor:pointer;border:1px solid rgba(21,128,61,0.1)" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(21,128,61,0.1)'">AI/ML: "Is the current rate of AI capability gain sustainable..."</div>
+                        </div>
+                        <div style="font-size:9px;color:var(--text-muted);margin-top:6px">Click to copy. Count the numbers, sources, and confidence levels in the response.</div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Connect -->
+                <div style="padding:14px 20px;background:var(--accent-subtle);border:1px solid rgba(21,128,61,0.25);border-radius:6px;margin-bottom:8px;cursor:pointer;transition:all 0.2s" onclick="document.getElementById('step2-body').style.display=document.getElementById('step2-body').style.display==='none'?'block':'none'" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(21,128,61,0.25)'">
+                    <div style="display:flex;align-items:center;justify-content:space-between">
+                        <div style="display:flex;align-items:center;gap:16px">
+                            <div style="width:36px;height:36px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(21,128,61,0.08)">
+                                <span style="font-size:14px;font-weight:700;color:var(--accent)">2</span>
+                            </div>
+                            <div>
+                                <div style="font-size:13px;font-weight:600;color:var(--text)">Connect through ONTO</div>
+                                <div style="font-size:10px;color:var(--text-secondary);margin-top:2px">One line change. Your API key is ready.</div>
+                            </div>
+                        </div>
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>
+                    </div>
+                    <div id="step2-body" style="display:none;margin-top:12px;padding-top:10px;border-top:1px solid rgba(21,128,61,0.15)">
+                        <div style="font-size:10px;color:var(--text-secondary);margin-bottom:6px">Add your provider key and change base_url:</div>
+                        <div onclick="event.stopPropagation();copyIntegrationCode()" style="padding:10px;background:rgba(0,0,0,0.3);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.6;cursor:pointer;border:1px solid rgba(21,128,61,0.1)">
+                            <div style="color:var(--text-muted)"># Change base_url + add X-Provider-Key header</div>
+                            <div><span style="color:#e2e8f0">base_url</span> = <span style="color:#4ade80">"https://api.ontostandard.org/v1/proxy"</span></div>
+                            <div><span style="color:#e2e8f0">headers</span> = {<span style="color:#4ade80">"X-Provider-Key"</span>: <span style="color:#4ade80">"sk-...your_key"</span>}</div>
+                        </div>
+                        <div style="font-size:9px;color:var(--text-muted);margin-top:6px">Click to copy. Full integration code in <a onclick="event.stopPropagation();showPage('sdk')" style="color:var(--accent);cursor:pointer">API & SDK</a>.</div>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Compare -->
+                <div style="padding:14px 20px;background:var(--accent-subtle);border:1px solid rgba(21,128,61,0.25);border-radius:6px;margin-bottom:8px;cursor:pointer;transition:all 0.2s" onclick="document.getElementById('step3-body').style.display=document.getElementById('step3-body').style.display==='none'?'block':'none'" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(21,128,61,0.25)'">
+                    <div style="display:flex;align-items:center;justify-content:space-between">
+                        <div style="display:flex;align-items:center;gap:16px">
+                            <div style="width:36px;height:36px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(21,128,61,0.08)">
+                                <span style="font-size:14px;font-weight:700;color:var(--accent)">3</span>
+                            </div>
+                            <div>
+                                <div style="font-size:13px;font-weight:600;color:var(--text)">Ask the same question through ONTO</div>
+                                <div style="font-size:10px;color:var(--text-secondary);margin-top:2px">Compare the results. Count numbers, sources, confidence.</div>
+                            </div>
+                        </div>
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>
+                    </div>
+                    <div id="step3-body" style="display:none;margin-top:12px;padding-top:10px;border-top:1px solid rgba(21,128,61,0.15)">
+                        <div style="font-size:10px;color:var(--text-secondary);line-height:1.5">Send the exact same question through your ONTO-connected code. The Evidence section below shows what to expect: more numbers, real sources, honest uncertainty. No new facts — just discipline.</div>
+                    </div>
+                </div>
+
+                <!-- STEP 4: Choose plan -->
+                <div style="padding:14px 20px;background:var(--accent-subtle);border:1px solid rgba(21,128,61,0.25);border-radius:6px;cursor:pointer;transition:all 0.2s" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(21,128,61,0.25)'">
+                    <div style="display:flex;align-items:center;justify-content:space-between">
+                        <div style="display:flex;align-items:center;gap:16px">
+                            <div style="width:36px;height:36px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(21,128,61,0.08)">
+                                <span style="font-size:14px;font-weight:700;color:var(--accent)">4</span>
+                            </div>
+                            <div>
+                                <div style="font-size:13px;font-weight:600;color:var(--text)">Choose your plan</div>
+                                <div style="font-size:10px;color:var(--text-secondary);margin-top:2px">See pricing and select the tier that fits your needs.</div>
                             </div>
                         </div>
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
-                    </div>
-                    <div style="margin-top:10px;padding:8px 12px;background:rgba(21,128,61,0.06);border-radius:4px;border-left:2px solid var(--accent)">
-                        <div style="font-size:10px;color:var(--text-secondary);line-height:1.5">Recommendation: review the Evidence section below before connecting. Run a baseline test to see the difference ONTO GOLD makes on your model.</div>
                     </div>
                 </div>
             </div>
@@ -1342,7 +1410,7 @@ a.info-val:hover { color: var(--text); }
 
                     <!-- Value proposition -->
                     <div style="font-size:11px;color:rgba(255,255,255,0.6);line-height:1.6;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(34,197,94,0.1)">
-                        This certificate confirms that the model operates under ONTO GOLD epistemic discipline layer. The layer reduces over-confidence, enforces source citation, and marks uncertainty. Certificate is valid while proxy connection is active. Verifiable by regulators, auditors, and clients without authentication.
+                        Model operates under ONTO GOLD epistemic discipline. Valid while proxy connection is active. Disconnect → certificate suspended instantly.
                     </div>
 
                     <!-- Cert grid: info + QR -->
