@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONTO — Reports</title>
+<meta name="description" content="ONTO field observations, comparative studies, and efficiency reports. Verified epistemic measurement data across production AI models.">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='17' fill='white'/%3E%3Cpath d='M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z' fill='%230a0a0a'/%3E%3C/svg%3E">
+
+<!-- Schema.org -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "ONTO Reports",
+  "description": "Field observations, comparative studies, and efficiency reports from ONTO Standards Council",
+  "url": "https://ontostandard.org/reports/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "ONTO Standards Council",
+    "url": "https://ontostandard.org"
+  }
+}
+</script>
+
+<style>
+:root {
+    color-scheme: dark;
+    --bg: #0a0a0a;
+    --bg-card: #1a1a1a;
+    --bg-elevated: #242424;
+    --border: #333333;
+    --border-hover: #444444;
+    --text: #fafafa;
+    --text-secondary: #a0a0a0;
+    --text-muted: #606060;
+    --accent: #15803d;
+    --accent-hover: #166534;
+    --accent-subtle: rgba(21, 128, 61, 0.08);
+}
+[data-theme="light"] {
+    color-scheme: light;
+    --bg: #ffffff;
+    --bg-card: #ffffff;
+    --bg-elevated: #f5f5f5;
+    --border: #e5e7eb;
+    --border-hover: #d1d5db;
+    --text: #111827;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --accent-subtle: rgba(21, 128, 61, 0.05);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Layout */
+.container { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+
+/* Header */
+.header { margin-bottom: 40px; }
+.header-nav { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; font-size: 13px; color: var(--text-muted); }
+.header-nav a { color: var(--text-muted); text-decoration: none; }
+.header-nav a:hover { color: var(--text); }
+.header-nav .sep { opacity: 0.4; }
+.header-nav .current { color: var(--text-secondary); }
+
+.header h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px; }
+.header p { font-size: 14px; color: var(--text-secondary); max-width: 560px; }
+
+/* Stats bar */
+.stats { display: flex; gap: 32px; margin-bottom: 32px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.stat { font-size: 12px; color: var(--text-muted); letter-spacing: 0.04em; text-transform: uppercase; }
+.stat strong { color: var(--accent); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Filters */
+.filters { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+.filter-btn {
+    font-size: 12px; padding: 5px 12px; border: 1px solid var(--border); border-radius: 4px;
+    background: transparent; color: var(--text-secondary); cursor: pointer;
+    transition: all 0.15s; font-family: inherit;
+}
+.filter-btn:hover { border-color: var(--border-hover); color: var(--text); }
+.filter-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-subtle); }
+
+/* Report cards */
+.reports { display: flex; flex-direction: column; gap: 1px; }
+
+.report {
+    display: grid;
+    grid-template-columns: 72px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+    color: inherit;
+}
+.report:hover { border-color: var(--border-hover); background: var(--bg-card); }
+
+.report-id {
+    font-size: 11px; font-weight: 600; font-family: 'SF Mono', 'Fira Code', monospace;
+    color: var(--accent); letter-spacing: 0.02em; white-space: nowrap;
+}
+
+.report-body { min-width: 0; }
+.report-title {
+    font-size: 14px; font-weight: 500; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.report-meta {
+    font-size: 12px; color: var(--text-muted); margin-top: 2px;
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+}
+.report-meta .sep { opacity: 0.3; }
+
+.report-tag {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 3px; white-space: nowrap;
+}
+.tag-fo { color: #a78bfa; background: rgba(167, 139, 250, 0.1); }
+.tag-cs { color: #60a5fa; background: rgba(96, 165, 250, 0.1); }
+.tag-er { color: #34d399; background: rgba(52, 211, 153, 0.1); }
+.tag-mb { color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
+
+.report-date { font-size: 12px; color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* Empty state */
+.empty { text-align: center; padding: 48px 0; color: var(--text-muted); font-size: 14px; }
+
+/* Footer */
+.footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); }
+.footer a { color: var(--text-secondary); text-decoration: none; }
+.footer a:hover { color: var(--text); }
+
+/* Mobile */
+@media (max-width: 640px) {
+    .container { padding: 24px 16px 64px; }
+    .report { grid-template-columns: 1fr; gap: 4px; }
+    .report-id { font-size: 10px; }
+    .report-date { display: none; }
+    .stats { gap: 16px; flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-nav">
+            <a href="/">ONTO</a>
+            <span class="sep">/</span>
+            <span class="current">Reports</span>
+        </div>
+        <h1>Reports</h1>
+        <p>Field observations, comparative studies, and efficiency measurements across production AI models. All data reproducible.</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats" id="stats">
+        <div class="stat"><strong id="stat-total">2</strong> reports</div>
+        <div class="stat"><strong id="stat-models">11</strong> models tested</div>
+        <div class="stat"><strong id="stat-questions">100</strong> questions scored</div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+        <button class="filter-btn active" onclick="filterReports('all')">All</button>
+        <button class="filter-btn" onclick="filterReports('fo')">Field Observations</button>
+        <button class="filter-btn" onclick="filterReports('cs')">Comparative Studies</button>
+        <button class="filter-btn" onclick="filterReports('er')">Efficiency Reports</button>
+        <button class="filter-btn" onclick="filterReports('mb')">Model Baselines</button>
+    </div>
+
+    <!-- Reports list -->
+    <div class="reports" id="reports-list"></div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <a href="/">ontostandard.org</a> · <a href="/docs/">Documentation</a> · <a href="https://github.com/nickarstrong/onto-research">GitHub</a> · Cite as: ONTO Standard, {report_id}
+    </div>
+
+</div>
+
+<script>
+const REPORTS = [
+    {
+        id: "FO-2026-003",
+        type: "fo",
+        title: "Spontaneous Ontological Demand",
+        subtitle: "AI requests epistemic framework unprompted",
+        model: "Qwen3.5-Plus",
+        date: "2026-02-19",
+        domain: "Macroeconomics",
+        url: "/reports/FO-2026-003.html",
+        md: "https://github.com/nickarstrong/onto-research/blob/main/reports/FO-2026-003.md"
+    },
+    {
+        id: "CS-2026-001",
+        type: "cs",
+        title: "10-Model Comparative Baseline",
+        subtitle: "10× composite improvement, 5.4× variance reduction",
+        model: "GPT · Claude · Gemini · DeepSeek · Grok · Mistral · Kimi · Qwen · +2",
+        date: "2026-01-15",
+        domain: "5 domains · 100 questions",
+        url: "/reports/CS-2026-001.html",
+        md: "https://github.com/nickarstrong/onto-research/blob/main/reports/CS-2026-001.md"
+    }
+];
+
+const TYPE_LABELS = { fo: 'FO', cs: 'CS', er: 'ER', mb: 'MB' };
+const TYPE_TAGS = { fo: 'tag-fo', cs: 'tag-cs', er: 'tag-er', mb: 'tag-mb' };
+
+function renderReports(filter) {
+    const list = document.getElementById('reports-list');
+    const filtered = filter === 'all' ? REPORTS : REPORTS.filter(r => r.type === filter);
+
+    if (!filtered.length) {
+        list.innerHTML = '<div class="empty">No reports in this category yet.</div>';
+        return;
+    }
+
+    list.innerHTML = filtered.map(r => `
+        <a class="report" href="${r.url}" data-type="${r.type}">
+            <div>
+                <span class="report-tag ${TYPE_TAGS[r.type]}">${TYPE_LABELS[r.type]}</span>
+                <div class="report-id">${r.id}</div>
+            </div>
+            <div class="report-body">
+                <div class="report-title">${r.title}</div>
+                <div class="report-meta">
+                    <span>${r.model}</span>
+                    <span class="sep">·</span>
+                    <span>${r.domain}</span>
+                </div>
+            </div>
+            <div class="report-date">${formatDate(r.date)}</div>
+        </a>
+    `).join('');
+}
+
+function filterReports(type) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    renderReports(type);
+}
+
+function formatDate(d) {
+    const [y, m, day] = d.split('-');
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${months[+m-1]} ${+day}`;
+}
+
+// Theme detection
+if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+    document.documentElement.setAttribute('data-theme', 'light');
+}
+
+// Init
+renderReports('all');
+</script>
+
+</body>
+</html>
