@@ -1267,34 +1267,70 @@ a.info-val:hover { color: var(--text); }
                     </div>
 
                     <div id="connect-body" style="display:none;margin-top:14px;border-top:1px solid rgba(21,128,61,0.15);padding-top:14px">
-                        <!-- Your API key -->
-                        <div style="margin-bottom:10px">
-                            <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Your ONTO API key</div>
-                            <div style="display:flex;gap:6px;align-items:center">
-                                <div id="connect-api-key" style="flex:1;padding:6px 10px;background:rgba(0,0,0,0.3);border:1px solid rgba(21,128,61,0.12);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:0.3px">onto_sk_••••••••</div>
-                                <button onclick="event.stopPropagation();copyApiKey()" style="background:none;border:1px solid rgba(21,128,61,0.25);border-radius:4px;padding:5px 12px;font-size:9px;color:var(--accent);cursor:pointer;font-weight:500" onmouseover="this.style.background='rgba(21,128,61,0.1)'" onmouseout="this.style.background='none'">Copy</button>
+
+                        <!-- Sub-step 1: ONTO key -->
+                        <div style="margin-bottom:16px">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                                <div style="width:20px;height:20px;border-radius:50%;background:rgba(21,128,61,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:9px;font-weight:700;color:var(--accent)">1</span></div>
+                                <span style="font-size:11px;font-weight:600;color:var(--text)">Your ONTO API key</span>
+                                <span style="font-size:9px;color:var(--text-muted)">— already generated, just copy it</span>
+                            </div>
+                            <div style="display:flex;gap:6px;align-items:center;padding-left:28px">
+                                <div id="connect-api-key" style="flex:1;padding:8px 12px;background:rgba(0,0,0,0.3);border:1px solid rgba(21,128,61,0.12);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:0.3px">onto_sk_••••••••</div>
+                                <button onclick="event.stopPropagation();copyApiKey()" style="background:var(--accent);border:none;border-radius:4px;padding:7px 16px;font-size:10px;color:#0c0f14;cursor:pointer;font-weight:600;white-space:nowrap">Copy</button>
+                            </div>
+                            <div style="font-size:9px;color:var(--text-muted);padding-left:28px;margin-top:4px">This key authenticates you with ONTO. Paste it as <span style="color:var(--accent);font-family:'JetBrains Mono',monospace">api_key</span> in step 3.</div>
+                        </div>
+
+                        <!-- Sub-step 2: Provider key -->
+                        <div style="margin-bottom:16px">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                                <div style="width:20px;height:20px;border-radius:50%;background:rgba(21,128,61,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:9px;font-weight:700;color:var(--accent)">2</span></div>
+                                <span style="font-size:11px;font-weight:600;color:var(--text)">Your provider API key</span>
+                                <span style="font-size:9px;color:var(--text-muted)">— from OpenAI, Anthropic, or your provider</span>
+                            </div>
+                            <div style="font-size:10px;color:var(--text-secondary);line-height:1.5;padding-left:28px">Get it from your AI provider dashboard (e.g. <span style="color:var(--text)">platform.openai.com/api-keys</span>). ONTO sends your requests to this provider. Your key is encrypted (AES-256) and never stored in plaintext. Paste it as <span style="color:var(--accent);font-family:'JetBrains Mono',monospace">X-Provider-Key</span> in step 3.</div>
+                        </div>
+
+                        <!-- Sub-step 3: Code -->
+                        <div style="margin-bottom:16px">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                                <div style="width:20px;height:20px;border-radius:50%;background:rgba(21,128,61,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:9px;font-weight:700;color:var(--accent)">3</span></div>
+                                <span style="font-size:11px;font-weight:600;color:var(--text)">Replace 3 lines in your code</span>
+                            </div>
+                            <div style="padding-left:28px">
+                                <div onclick="event.stopPropagation();copyIntegrationCode()" style="padding:12px 14px;background:#0c0f14;border:1px solid rgba(21,128,61,0.12);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.8;cursor:pointer">
+                                    <div><span style="color:#e2e8f0">client</span> = <span style="color:#22c55e">OpenAI</span>(</div>
+                                    <div style="padding-left:16px"><span style="color:var(--text-muted)">api_key</span>=<span style="color:#4ade80">"onto_sk_..."</span>,          <span style="color:rgba(255,255,255,0.25)">← your ONTO key from step 1</span></div>
+                                    <div style="padding-left:16px"><span style="color:var(--text-muted)">base_url</span>=<span style="color:#4ade80">"https://api.ontostandard.org/v1/proxy"</span>,</div>
+                                    <div style="padding-left:16px"><span style="color:var(--text-muted)">default_headers</span>={<span style="color:#4ade80">"X-Provider-Key"</span>: <span style="color:#4ade80">"sk-..."</span>}  <span style="color:rgba(255,255,255,0.25)">← your provider key from step 2</span></div>
+                                    <div>)</div>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+                                    <span style="font-size:9px;color:var(--text-muted)">Click code block to copy. Rest of your code stays the same.</span>
+                                    <button onclick="event.stopPropagation();copyIntegrationCode()" style="background:var(--accent);border:none;border-radius:4px;padding:5px 14px;font-size:9px;color:#0c0f14;cursor:pointer;font-weight:600">Copy code</button>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Code snippet -->
-                        <div onclick="event.stopPropagation();copyIntegrationCode()" style="padding:12px 14px;background:#0c0f14;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.7;cursor:pointer;border:1px solid rgba(21,128,61,0.1);margin-bottom:8px">
-                            <div style="color:var(--text-muted);margin-bottom:4px"># Before:</div>
-                            <div><span style="color:#e2e8f0">client</span> = <span style="color:#22c55e">OpenAI</span>(<span style="color:rgba(34,197,94,0.7)">api_key</span>=<span style="color:#4ade80">"sk-..."</span>)</div>
-                            <div style="height:8px"></div>
-                            <div style="color:var(--text-muted);margin-bottom:4px"># After (GOLD injected server-side):</div>
-                            <div><span style="color:#e2e8f0">client</span> = <span style="color:#22c55e">OpenAI</span>(</div>
-                            <div style="padding-left:20px"><span style="color:rgba(34,197,94,0.7)">api_key</span>=<span style="color:#4ade80">"onto_sk_..."</span>,</div>
-                            <div style="padding-left:20px"><span style="color:rgba(34,197,94,0.7)">base_url</span>=<span style="color:#4ade80">"https://api.ontostandard.org/v1/proxy"</span>,</div>
-                            <div style="padding-left:20px"><span style="color:rgba(34,197,94,0.7)">default_headers</span>={<span style="color:#4ade80">"X-Provider-Key"</span>: <span style="color:#4ade80">"sk-...your_key"</span>}</div>
-                            <div>)</div>
+                        <!-- Sub-step 4: What happens -->
+                        <div style="margin-bottom:10px">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                                <div style="width:20px;height:20px;border-radius:50%;background:rgba(21,128,61,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:9px;font-weight:700;color:var(--accent)">4</span></div>
+                                <span style="font-size:11px;font-weight:600;color:var(--text)">What happens next</span>
+                            </div>
+                            <div style="padding-left:28px;font-size:10px;color:var(--text-secondary);line-height:1.6">
+                                Your request goes to ONTO → GOLD discipline layer is injected → request is forwarded to your provider → response comes back with quantified data, real sources, and calibrated confidence. Every response is cryptographically signed (Ed25519) and publicly verifiable.
+                            </div>
                         </div>
-                        <div style="display:flex;justify-content:space-between;align-items:center">
+
+                        <div style="margin-top:12px;border-top:1px solid rgba(21,128,61,0.1);padding-top:10px;display:flex;justify-content:space-between;align-items:center">
                             <div style="display:flex;gap:12px;font-size:9px;color:var(--text-muted)">
                                 <span>✓ GOLD injected</span>
                                 <span>✓ Proof signed</span>
                                 <span>✓ Verifiable</span>
                             </div>
-                            <button onclick="event.stopPropagation();copyIntegrationCode()" style="background:var(--accent);border:none;border-radius:4px;padding:6px 16px;font-size:10px;color:#0c0f14;cursor:pointer;font-weight:600">Copy code</button>
+                            <a onclick="event.stopPropagation();showPage('sdk')" style="font-size:9px;color:var(--accent);cursor:pointer;font-weight:500">Full documentation →</a>
                         </div>
                     </div>
                 </div>
