@@ -922,9 +922,9 @@ a.info-val:hover { color: var(--text); }
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                 Docs ↗
             </a>
-            <a class="nav-item" href="/encounter/" target="_blank" style="text-decoration: none; color: var(--text-muted);">
+            <a class="nav-item" href="/reports/" target="_blank" style="text-decoration: none; color: var(--text-muted);">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
-                Field Observation ↗
+                Reports ↗
             </a>
             <div class="nav-item" onclick="toggleTheme()" style="color: var(--text-muted);">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>
@@ -1585,10 +1585,10 @@ a.info-val:hover { color: var(--text); }
                         <div style="font-size:10px;color:var(--text-muted);line-height:1.5">Before/after on real questions. Test any domain. Verify yourself.</div>
                         <div style="font-size:9px;color:var(--accent);margin-top:6px">Companies → Evidence ↗</div>
                     </a>
-                    <a href="/encounter/" target="_blank" style="display:block;padding:16px;background:var(--bg-card);text-decoration:none;transition:background 0.15s" onmouseover="this.style.background='var(--bg-elevated)'" onmouseout="this.style.background='var(--bg-card)'">
-                        <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px">Field observation</div>
-                        <div style="font-size:10px;color:var(--text-muted);line-height:1.5">12-phase behavioral analysis. Hallucination Inside Apology pattern. 4 acts.</div>
-                        <div style="font-size:9px;color:var(--accent);margin-top:6px">ontostandard.org/encounter ↗</div>
+                    <a href="/reports/" target="_blank" style="display:block;padding:16px;background:var(--bg-card);text-decoration:none;transition:background 0.15s" onmouseover="this.style.background='var(--bg-elevated)'" onmouseout="this.style.background='var(--bg-card)'">
+                        <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px">Reports</div>
+                        <div style="font-size:10px;color:var(--text-muted);line-height:1.5">Field observations, comparative studies, before/after evaluations.</div>
+                        <div style="font-size:9px;color:var(--accent);margin-top:6px">ontostandard.org/reports ↗</div>
                     </a>
                     <a href="/docs/" target="_blank" style="display:block;padding:16px;background:var(--bg-card);text-decoration:none;transition:background 0.15s" onmouseover="this.style.background='var(--bg-elevated)'" onmouseout="this.style.background='var(--bg-card)'">
                         <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px">Full methodology</div>
@@ -1885,7 +1885,6 @@ client = OpenAI(
                         <div class="card-head" style="margin-bottom:4px">Current Plan</div>
                         <div style="font-size:13px"><span style="font-weight:600" id="sdk-plan-name">Open</span> · <span style="color:var(--text-muted)" id="sdk-plan-rate">10 requests / hour</span></div>
                         <div style="font-size:11px;color:var(--text-muted);margin-top:4px" id="sdk-plan-calls">0 / 50 proxy calls used today</div>
-                        <div style="font-size:11px;margin-top:4px;display:none" id="sdk-plan-expires"></div>
                     </div>
                     <button class="btn-upgrade" id="sdk-upgrade-btn" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))" style="font-size:12px;padding:8px 20px">Upgrade →</button>
                 </div>
@@ -3306,7 +3305,8 @@ function showDashboard() {
         document.getElementById('settings-email').textContent = currentUser.email;
         
         updateCompanyUI();
-        fetchTierExpiry().then(() => { updateBillingUI(); updateDashboardMetrics(); });
+        updateBillingUI();
+        updateDashboardMetrics();
         checkWelcomeBanner();
         resetSessionTimer();
         
@@ -3854,40 +3854,6 @@ function highlightEmptyFields() {
 }
 
 // === BILLING ===
-async function fetchTierExpiry() {
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    const userId = currentUser?.id;
-    if (!apiKey || !userId) return;
-    try {
-        const res = await fetch(`${API_BASE}/v1/docs/admin/users/${userId}`, { headers: { 'x-api-key': apiKey } });
-        if (res.ok) {
-            const data = await res.json();
-            if (data.tier_expires) {
-                if (!currentUser.subscription) currentUser.subscription = {};
-                currentUser.subscription.expires_at = data.tier_expires;
-                currentUser.plan = layerToPlan(data.tier || 'open');
-                localStorage.setItem('onto_layer', data.tier || 'open');
-                // Update Dashboard plan expiry
-                const expiresDate = new Date(data.tier_expires);
-                const now = new Date();
-                const daysLeft = Math.ceil((expiresDate - now) / (1000 * 60 * 60 * 24));
-                const expiresEl = document.getElementById('sdk-plan-expires');
-                if (expiresEl) {
-                    const dateStr = expiresDate.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
-                    if (daysLeft < 0) {
-                        expiresEl.innerHTML = `<span style="color:var(--danger)">Plan expired ${dateStr}</span>`;
-                    } else if (daysLeft < 30) {
-                        expiresEl.innerHTML = `<span style="color:var(--warning,#f59e0b)">Expires ${dateStr} (${daysLeft} days left)</span>`;
-                    } else {
-                        expiresEl.innerHTML = `<span style="color:var(--text-muted)">Valid until ${dateStr}</span>`;
-                    }
-                    expiresEl.style.display = 'block';
-                }
-            }
-        }
-    } catch(e) {}
-}
-
 function updateBillingUI() {
     const invoiceStatus = document.getElementById('invoice-status');
     const invoiceDownload = document.getElementById('invoice-download');
