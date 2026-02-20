@@ -119,7 +119,7 @@
       "price": "30000",
       "priceCurrency": "USD",
       "billingIncrement": "P1Y",
-      "description": "1,000 proxy requests/day, GOLD Extended — Extended Corpus, Ed25519 signed proofs, batch evaluation"
+      "description": "1,000 proxy requests/day, GOLD Extended Corpus, unlimited SSE stream, Ed25519 signed proofs"
     },
     {
       "@type": "Offer",
@@ -134,7 +134,7 @@
       "name": "Grant Program (Free Standard)",
       "price": "0",
       "priceCurrency": "USD",
-      "description": "Free Standard access for independent researchers, early-stage startups, and nonprofit organizations whose work benefits society. Same infrastructure as Standard: 1,000 proxy requests/day, GOLD Extended, signed proof chain. Apply at council@ontostandard.org.",
+      "description": "Free Standard access for researchers, startups, nonprofits. 1,000 proxy requests/day, GOLD Extended, signed proof chain. Apply at council@ontostandard.org.",
       "eligibleCustomerType": "Researcher, Startup, Nonprofit"
     }
   ]
@@ -200,7 +200,7 @@
         "itemOffered": {
           "@type": "Service",
           "name": "Standard",
-          "description": "1,000 proxy requests/day, GOLD Extended — Extended Corpus, Ed25519 signed proofs, batch evaluation"
+          "description": "1,000 proxy requests/day, GOLD Extended Corpus, unlimited SSE stream, Ed25519 signed proofs"
         },
         "price": "30000",
         "priceCurrency": "USD",
@@ -374,7 +374,7 @@
       "name": "What are the ONTO certification tiers?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Open (Free): 10 proxy requests/day, GOLD Core, epistemic scoring. Standard ($30,000/year or $2,500/mo): 1,000 proxy requests/day, GOLD Extended, unlimited SSE stream, Ed25519 signed proof chain. AI Provider ($250,000/year): Full GOLD Corpus via SSE, all production models, unlimited scoring, full audit trail. Contact providers@ontostandard.org."
+        "text": "Open (Free): 10 proxy requests/day, GOLD Core, epistemic scoring. Standard ($30,000/year or $2,500/mo): 1,000 proxy requests/day, GOLD Extended, unlimited SSE stream, Ed25519 signed proof chain. AI Provider ($250,000/year): Full GOLD Corpus via SSE, all production models, unlimited scoring. Contact providers@ontostandard.org."
       }
     },
     {
@@ -1827,8 +1827,8 @@ print(result.certification_ready) # True
 <table>
 <thead><tr><th>Tier</th><th>Price</th><th>Evaluations</th><th>Features</th></tr></thead>
 <tbody>
-<tr><td>Open (Free)</td><td>$0</td><td>10/day</td><td>10 proxy requests/day, GOLD Core, JSON reports</td></tr>
-<tr><td>Standard</td><td>$30,000/year or $2,500/mo</td><td>1,000/day</td><td>GOLD Extended — Extended Corpus, Ed25519 proof chain, batch eval</td></tr>
+<tr><td>Open (Free)</td><td>$0</td><td>10/day</td><td>10 proxy requests/day, GOLD Core, scoring API, Ed25519 proof chain</td></tr>
+<tr><td>Standard</td><td>$30,000/year or $2,500/mo</td><td>1,000/day</td><td>GOLD Extended Corpus, unlimited SSE stream, Ed25519 proof chain</td></tr>
 <tr><td>AI Provider</td><td>$250,000/year</td><td>Unlimited</td><td>Full GOLD Corpus via SSE, all production models, unlimited scoring, full audit trail</td></tr>
 </tbody>
 </table>
@@ -2432,4 +2432,27 @@ function toggleTheme() {
 function showToast(message, type = 'info') {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
-    toast.class
+    toast.className = 'toast ' + type;
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+function toggleMobile() {
+    document.querySelector('.sidebar').classList.toggle('mobile-open');
+    document.getElementById('mobile-overlay').classList.toggle('active');
+}
+
+function setLoading(btn, loading) {
+    if (loading) {
+        btn.classList.add('loading');
+        btn.disabled = true;
+    } else {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+    }
+}
+</script>
+
+</body>
+</html>
