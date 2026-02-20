@@ -683,7 +683,6 @@ a.info-val:hover { color: var(--text); }
 @media(max-width:768px){.erm-split,.erm-downloads,.erm-steps,.erm-gold-grid{grid-template-columns:1fr}}
 </style>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -3616,9 +3615,6 @@ function downloadInvoice() {
         return;
     }
     
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    
     const sub = currentUser.subscription;
     const plan = currentUser.plan || 'free';
     const planNames = { free: 'Open', business: 'Standard', enterprise: 'Enterprise' };
@@ -3631,176 +3627,149 @@ function downloadInvoice() {
     const co = currentUser.company;
     const fmtDate = (d) => d.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
     const fmtMoney = (n) => '$' + n.toLocaleString('en-US', {minimumFractionDigits:2});
-    
-    // Colors
-    const dark = [12, 15, 20];
-    const accent = [46, 194, 126];
-    const gray = [140, 140, 140];
-    const white = [255, 255, 255];
-    
-    // Header bar
-    doc.setFillColor(...dark);
-    doc.rect(0, 0, 210, 36, 'F');
-    doc.setTextColor(...white);
-    doc.setFontSize(20);
-    doc.setFont('helvetica', 'bold');
-    doc.text('ONTO', 20, 18);
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Standards Council', 20, 25);
-    doc.text('ontostandard.org', 20, 31);
-    
-    // Invoice title
-    doc.setFontSize(22);
-    doc.setTextColor(...accent);
-    doc.text('INVOICE', 150, 18);
-    doc.setFontSize(9);
-    doc.setTextColor(...white);
-    doc.text(invoiceId, 150, 25);
-    
-    // From / To
-    let y = 48;
-    doc.setTextColor(...gray);
-    doc.setFontSize(8);
-    doc.text('FROM', 20, y);
-    doc.text('BILL TO', 110, y);
-    
-    y += 6;
-    doc.setTextColor(...dark);
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'bold');
-    doc.text('ONTO Standard', 20, y);
-    doc.text(co.name || currentUser.name, 110, y);
-    
-    y += 5;
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(80, 80, 80);
-    doc.text('billing@ontostandard.org', 20, y);
-    doc.text(co.email || currentUser.email, 110, y);
-    y += 5;
-    doc.text('ontostandard.org/legal', 20, y);
-    if (co.address) doc.text(co.address, 110, y);
-    y += 5;
-    const cityLine = [co.city, co.postal, co.country].filter(Boolean).join(', ');
-    if (cityLine) doc.text(cityLine, 110, y);
-    y += 5;
-    if (co.reg) { doc.text('Tax ID: ' + co.reg, 110, y); y += 5; }
-    
-    // Dates row
-    y += 6;
-    doc.setFillColor(245, 245, 245);
-    doc.rect(20, y - 4, 170, 14, 'F');
-    doc.setFontSize(8);
-    doc.setTextColor(...gray);
-    doc.text('ISSUE DATE', 24, y + 2);
-    doc.text('DUE DATE', 74, y + 2);
-    doc.text('STATUS', 134, y + 2);
-    y += 8;
-    doc.setTextColor(...dark);
-    doc.setFontSize(9);
-    doc.text(fmtDate(startedAt), 24, y);
-    doc.text(fmtDate(dueDate), 74, y);
-    doc.setTextColor(...accent);
-    doc.setFont('helvetica', 'bold');
-    doc.text('PAID', 134, y);
-    
-    // Line items header
-    y += 14;
-    doc.setFillColor(...dark);
-    doc.rect(20, y - 4, 170, 10, 'F');
-    doc.setTextColor(...white);
-    doc.setFontSize(8);
-    doc.setFont('helvetica', 'bold');
-    doc.text('DESCRIPTION', 24, y + 2);
-    doc.text('PERIOD', 100, y + 2);
-    doc.text('AMOUNT', 160, y + 2);
-    
-    // Line item
-    y += 12;
-    doc.setTextColor(...dark);
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'bold');
-    doc.text('ONTO Protocol — ' + (planNames[plan] || plan) + ' License', 24, y);
-    doc.setFont('helvetica', 'normal');
-    doc.text(fmtDate(startedAt) + ' — ' + fmtDate(expiresAt), 100, y);
-    doc.text(fmtMoney(amount), 160, y);
-    
-    y += 5;
-    doc.setFontSize(8);
-    doc.setTextColor(100, 100, 100);
-    doc.text('Annual subscription · 12 months · Wire transfer', 24, y);
-    
-    // Totals
-    y += 14;
-    doc.setDrawColor(220, 220, 220);
-    doc.line(110, y, 190, y);
-    y += 7;
-    doc.setFontSize(9);
-    doc.setTextColor(...gray);
-    doc.text('Subtotal', 110, y);
-    doc.setTextColor(...dark);
-    doc.text(fmtMoney(amount), 160, y);
-    y += 6;
-    doc.setTextColor(...gray);
-    doc.text('Tax (0%)', 110, y);
-    doc.setTextColor(...dark);
-    doc.text('$0.00', 160, y);
-    y += 8;
-    doc.setDrawColor(220, 220, 220);
-    doc.line(110, y - 2, 190, y - 2);
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(...accent);
-    doc.text('Total', 110, y + 4);
-    doc.text(fmtMoney(amount), 155, y + 4);
-    
-    // Service details
-    y += 20;
-    doc.setFillColor(245, 245, 245);
-    doc.rect(20, y - 4, 170, 28, 'F');
-    doc.setFontSize(8);
-    doc.setTextColor(...gray);
-    doc.setFont('helvetica', 'bold');
-    doc.text('SERVICE DETAILS', 24, y + 2);
-    doc.setFont('helvetica', 'normal');
-    y += 8;
-    doc.setTextColor(80, 80, 80);
-    doc.text('Layer: ' + (planNames[plan] || plan), 24, y);
-    doc.text('Rate limit: ' + (plan === 'enterprise' ? 'Unlimited' : '50,000/day'), 90, y);
-    y += 5;
-    doc.text('Period: ' + fmtDate(startedAt) + ' — ' + fmtDate(expiresAt), 24, y);
-    doc.text('Support: ' + (plan === 'enterprise' ? 'Priority 24/7' : 'Business hours'), 90, y);
-    y += 5;
-    doc.text('Proof chain: Ed25519 signed', 24, y);
-    
-    // Payment info
-    y += 14;
-    doc.setFontSize(8);
-    doc.setTextColor(...gray);
-    doc.text('PAYMENT', 24, y);
-    y += 5;
-    doc.setTextColor(80, 80, 80);
-    doc.text('Method: Wire transfer  |  Terms: Prepaid  |  Reference: ' + invoiceId, 24, y);
-    
-    // Footer
-    y = 272;
-    doc.setDrawColor(220, 220, 220);
-    doc.line(20, y, 190, y);
-    y += 5;
-    doc.setFontSize(7);
-    doc.setTextColor(...gray);
-    doc.text('ONTO Standards Council · Est. 2024 · Independent research initiative', 105, y, {align: 'center'});
-    y += 4;
-    doc.text('ontostandard.org  |  billing@ontostandard.org  |  ontostandard.org/legal', 105, y, {align: 'center'});
-    
-    // Hash
-    y += 4;
     const hash = simpleHash(invoiceId + (co.name || currentUser.name) + plan + amount);
-    doc.text('Verification: ' + hash, 105, y, {align: 'center'});
+    const cityLine = [co.city, co.postal, co.country].filter(Boolean).join(', ');
     
-    doc.save('ONTO_Invoice_' + (planNames[plan] || plan) + '_' + new Date().toISOString().split('T')[0] + '.pdf');
-    showToast('Invoice downloaded', 'success');
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>ONTO Invoice ${invoiceId}</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,Helvetica,Arial,sans-serif;color:#1a1a1a;font-size:13px;line-height:1.5;padding:40px}
+.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;padding-bottom:20px;border-bottom:3px solid #0c0f14}
+.logo{font-size:28px;font-weight:700;color:#0c0f14;letter-spacing:-0.5px}
+.logo-sub{font-size:10px;color:#888;margin-top:2px}
+.inv-title{text-align:right}
+.inv-title h2{font-size:24px;color:#2ec27e;font-weight:700;margin-bottom:4px}
+.inv-id{font-size:11px;color:#666}
+.parties{display:flex;gap:60px;margin-bottom:28px}
+.party{flex:1}
+.party-label{font-size:9px;text-transform:uppercase;color:#999;letter-spacing:1px;margin-bottom:6px;font-weight:600}
+.party-name{font-size:14px;font-weight:600;margin-bottom:4px}
+.party-detail{font-size:11px;color:#555;line-height:1.6}
+.dates{display:flex;gap:40px;background:#f7f7f7;padding:12px 16px;border-radius:4px;margin-bottom:24px}
+.date-col .date-label{font-size:9px;text-transform:uppercase;color:#999;letter-spacing:0.5px}
+.date-col .date-val{font-size:12px;font-weight:600;margin-top:2px}
+.status-paid{color:#2ec27e;font-weight:700}
+table{width:100%;border-collapse:collapse;margin-bottom:24px}
+thead th{background:#0c0f14;color:#fff;padding:8px 12px;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;text-align:left}
+thead th:last-child{text-align:right}
+tbody td{padding:10px 12px;border-bottom:1px solid #eee;font-size:12px}
+tbody td:last-child{text-align:right;font-weight:600}
+.item-sub{font-size:10px;color:#888;margin-top:2px}
+.totals{display:flex;justify-content:flex-end;margin-bottom:28px}
+.totals-table{width:220px}
+.totals-row{display:flex;justify-content:space-between;padding:4px 0;font-size:12px;color:#666}
+.totals-total{display:flex;justify-content:space-between;padding:8px 0;font-size:16px;font-weight:700;color:#2ec27e;border-top:2px solid #0c0f14;margin-top:4px}
+.details{background:#f7f7f7;padding:14px 16px;border-radius:4px;margin-bottom:24px}
+.details-title{font-size:9px;text-transform:uppercase;color:#999;letter-spacing:1px;margin-bottom:8px;font-weight:600}
+.details-grid{display:flex;gap:40px;font-size:11px;color:#555}
+.details-grid div{line-height:1.8}
+.footer{border-top:1px solid #ddd;padding-top:12px;text-align:center;font-size:9px;color:#aaa;line-height:1.8}
+@media print{body{padding:20px}@page{margin:15mm}}
+</style></head><body>
+
+<div class="header">
+    <div>
+        <div class="logo">ONTO</div>
+        <div class="logo-sub">Standards Council · Est. 2024</div>
+        <div class="logo-sub">ontostandard.org</div>
+    </div>
+    <div class="inv-title">
+        <h2>INVOICE</h2>
+        <div class="inv-id">${invoiceId}</div>
+    </div>
+</div>
+
+<div class="parties">
+    <div class="party">
+        <div class="party-label">From</div>
+        <div class="party-name">ONTO Standard</div>
+        <div class="party-detail">
+            billing@ontostandard.org<br>
+            ontostandard.org/legal
+        </div>
+    </div>
+    <div class="party">
+        <div class="party-label">Bill To</div>
+        <div class="party-name">${co.name || currentUser.name}</div>
+        <div class="party-detail">
+            ${co.email || currentUser.email}<br>
+            ${co.address ? co.address + '<br>' : ''}
+            ${cityLine ? cityLine + '<br>' : ''}
+            ${co.reg ? 'Tax ID: ' + co.reg : ''}
+        </div>
+    </div>
+</div>
+
+<div class="dates">
+    <div class="date-col">
+        <div class="date-label">Issue Date</div>
+        <div class="date-val">${fmtDate(startedAt)}</div>
+    </div>
+    <div class="date-col">
+        <div class="date-label">Due Date</div>
+        <div class="date-val">${fmtDate(dueDate)}</div>
+    </div>
+    <div class="date-col">
+        <div class="date-label">Status</div>
+        <div class="date-val status-paid">PAID</div>
+    </div>
+</div>
+
+<table>
+    <thead><tr>
+        <th>Description</th>
+        <th>Period</th>
+        <th style="text-align:right">Amount</th>
+    </tr></thead>
+    <tbody><tr>
+        <td>
+            <strong>ONTO Protocol — ${planNames[plan] || plan} License</strong>
+            <div class="item-sub">Annual subscription · 12 months · Wire transfer</div>
+        </td>
+        <td>${fmtDate(startedAt)} — ${fmtDate(expiresAt)}</td>
+        <td>${fmtMoney(amount)}</td>
+    </tr></tbody>
+</table>
+
+<div class="totals">
+    <div class="totals-table">
+        <div class="totals-row"><span>Subtotal</span><span>${fmtMoney(amount)}</span></div>
+        <div class="totals-row"><span>Tax (0%)</span><span>$0.00</span></div>
+        <div class="totals-total"><span>Total</span><span>${fmtMoney(amount)}</span></div>
+    </div>
+</div>
+
+<div class="details">
+    <div class="details-title">Service Details</div>
+    <div class="details-grid">
+        <div>
+            Layer: ${planNames[plan] || plan}<br>
+            Period: ${fmtDate(startedAt)} — ${fmtDate(expiresAt)}
+        </div>
+        <div>
+            Rate limit: ${plan === 'enterprise' ? 'Unlimited' : '50,000/day'}<br>
+            Support: ${plan === 'enterprise' ? 'Priority 24/7' : 'Business hours'}
+        </div>
+    </div>
+</div>
+
+<div style="font-size:10px;color:#888;margin-bottom:20px">
+    <strong>Payment:</strong> Wire transfer · Prepaid · Ref: ${invoiceId}
+</div>
+
+<div class="footer">
+    ONTO Standards Council · Est. 2024 · Independent research initiative<br>
+    ontostandard.org · billing@ontostandard.org · ontostandard.org/legal<br>
+    Verification: ${hash}
+</div>
+
+</body></html>`;
+    
+    const w = window.open('', '_blank', 'width=800,height=1000');
+    w.document.write(html);
+    w.document.close();
+    setTimeout(() => { w.print(); }, 500);
+    showToast('Invoice opened — use Save as PDF in print dialog', 'success');
 }
 
 function simpleHash(str) {
@@ -5414,10 +5383,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedLoggedIn = localStorage.getItem('onto_logged_in');
     
     if (savedLoggedIn === 'true' && savedApiKey) {
-        // Restore subscription from onto_user JSON if available
+        // Restore subscription and company from onto_user JSON if available
         let savedSub = null;
+        let savedCompany = null;
+        let savedCanInvoice = false;
         if (savedUser) {
-            try { savedSub = JSON.parse(savedUser).subscription || null; } catch(e) {}
+            try {
+                const parsed = JSON.parse(savedUser);
+                savedSub = parsed.subscription || null;
+                savedCompany = parsed.company || null;
+                savedCanInvoice = parsed.can_invoice || false;
+            } catch(e) {}
         }
         currentUser = {
             id: localStorage.getItem('onto_user_id'),
@@ -5428,7 +5404,9 @@ document.addEventListener('DOMContentLoaded', () => {
             layer: localStorage.getItem('onto_layer'),
             plan: layerToPlan(localStorage.getItem('onto_layer')),
             role: localStorage.getItem('onto_role'),
-            subscription: savedSub
+            subscription: savedSub,
+            company: savedCompany,
+            can_invoice: savedCanInvoice
         };
         authToken = savedToken || savedApiKey;
         showDashboard();
