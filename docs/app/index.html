@@ -3294,6 +3294,14 @@ function showDashboard() {
         document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
         document.getElementById('user-name').textContent = currentUser.name;
         document.getElementById('user-plan').textContent = currentUser.plan === 'enterprise' ? 'ENTERPRISE' : currentUser.plan === 'business' ? 'STANDARD' : 'OPEN';
+        // Add expiry to sidebar
+        if (currentUser.subscription && currentUser.subscription.expires_at) {
+            const exp = new Date(currentUser.subscription.expires_at);
+            const dateStr = exp.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+            const planEl = document.getElementById('user-plan');
+            const planName = currentUser.plan === 'enterprise' ? 'ENTERPRISE' : currentUser.plan === 'business' ? 'STANDARD' : 'OPEN';
+            planEl.textContent = `${planName} · до ${dateStr}`;
+        }
         document.getElementById('settings-name').textContent = currentUser.name;
         document.getElementById('settings-email').textContent = currentUser.email;
         
