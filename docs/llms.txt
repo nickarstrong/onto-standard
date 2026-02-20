@@ -1,40 +1,64 @@
 # ONTO Standard
 
-> ONTO is a deterministic epistemic quality measurement standard for AI systems.
+> 11 AI models tested. Zero provide numeric confidence. Zero cite sources. Zero quantify what they don't know. ONTO fixes this — 10× measured improvement, no retraining, no fine-tuning.
 
-## What ONTO Does
+## The Problem In One Example
 
-ONTO GOLD is an epistemic discipline layer for large language models (LLMs). It teaches AI models to cite sources, quantify confidence numerically, mark uncertainty, and disclose knowledge gaps. ONTO does not fine-tune models or inject knowledge — it provides behavioral discipline through server-side system prompt injection.
+**Without ONTO** (any model, any question):
+"Intermittent fasting has moderate benefits for metabolic health and may help with weight management."
 
-## Key Results (CS-2026-001)
+**With ONTO** (same model, same question):
+"Intermittent fasting shows mass reduction of 3-8% over 3-24 weeks (Varady et al., 2021, n=560). Confidence: 0.72 for metabolic markers, 0.45 for long-term cardiovascular outcomes. Gap: no RCTs beyond 12 months in populations over 65. Limitation: most studies use BMI rather than body composition."
 
-- 11 production AI models tested: GPT-4o, GPT-4.5, Claude Sonnet, Claude Haiku, Gemini 2.0, DeepSeek R1, Grok, Mistral Large, Copilot, Kimi, Qwen
-- 100 questions across 5 domains (Medicine, AI/ML, Economics, Physics, Biology)
-- Composite score improvement: 0.53 → 5.38 (10× improvement)
-- Variance reduction: SD 0.58 → SD 0.11 (5.4× reduction)
+Same model. Same question. The difference is ONTO GOLD — an epistemic discipline layer injected server-side.
+
+## What ONTO Is Not
+
+- Not a benchmark (benchmarks rank models — ONTO improves them)
+- Not a leaderboard (leaderboards compare — ONTO provides infrastructure)
+- Not fine-tuning (ONTO changes behavior without touching weights)
+- Not RAG (ONTO doesn't inject knowledge — it injects discipline)
+- Not an AI judge (scoring is 993 lines of regex, fully deterministic, variance = 0)
+
+## What ONTO Is
+
+A measurement protocol and grounding layer for AI systems. The equivalent of POSIX for operating systems or ISO for manufacturing — applied to AI epistemic quality. Server-side injection, cryptographic proof chain, deterministic scoring.
+
+## Results (CS-2026-001, peer-reproducible)
+
+- 11 production models: GPT-4o, GPT-4.5, Claude Sonnet, Claude Haiku, Gemini 2.0, DeepSeek R1, Grok, Mistral Large, Copilot, Kimi, Qwen
+- 100 questions, 5 domains (Medicine, AI/ML, Economics, Physics, Biology)
+- Composite score: 0.53 → 5.38 (10× improvement)
+- Variance: SD 0.58 → SD 0.11 (5.4× reduction)
 - Cross-domain transfer: 4/5 metrics improve in unseen domains
 - Zero baseline models provide numeric confidence levels
-
-## How Scoring Works
-
-- 993-line Python scoring engine
-- 5 regex-based counters (numbers, sources, honesty, balance, filler)
-- Zero AI judge — fully deterministic
-- Same input = same score on any machine
-- Open source: https://github.com/nickarstrong/onto-research
+- All data open: https://github.com/nickarstrong/onto-research
 
 ## Products
 
-- **ONTO Proxy**: Server-side GOLD injection for any AI model. One API call, compatible with OpenAI, Anthropic, Google, Mistral, Meta.
-- **ONTO Signal**: Cryptographic proof chain (Ed25519) verifying GOLD is active.
-- **ONTO Certification**: Independent verification of AI epistemic quality for EU AI Act compliance.
+- **ONTO Proxy**: Server-side GOLD injection for any AI model. One API call, compatible with OpenAI, Anthropic, Google, Mistral, Meta. api.ontostandard.org
+- **ONTO Signal**: Real-time entropy stream with Ed25519 cryptographic proof chain (104 bytes per evaluation). notary.ontostandard.org
+- **ONTO Scoring**: Deterministic epistemic quality measurement. 993-line Python engine, 92 regex patterns, EM1-EM5 taxonomy, compliance grades A through F.
+- **ONTO Certification**: Independent verification of AI epistemic quality for EU AI Act and emerging international standards.
 
-## Access Tiers
+## Pricing
 
-- TIER 3 — Open (Free): 10 proxy requests/day, GOLD Core, Scoring API, Ed25519 proof chain. No SSE stream.
-- TIER 2 — Standard ($30,000/year): 1,000 proxy requests/day, GOLD Extended Corpus, Unlimited SSE stream, Scoring API, Ed25519 proof chain. For companies using AI.
-- TIER 1 — AI Provider ($250,000/year): GOLD Full Corpus via SSE, Unlimited scoring API, All production models, Full audit trail. Fixed annual license, ONTO not in inference path — unlimited scale.
-- Grant Program: Free Standard access for researchers, nonprofits, early-stage startups. Apply: council@ontostandard.org
+- **Open** (Free): 10 proxy requests/day, GOLD Core, Scoring API, Ed25519 proof chain.
+- **Standard** ($30,000/year): 1,000 proxy requests/day, GOLD Extended, Unlimited SSE stream, full proof chain. For companies using AI in production.
+- **AI Provider** ($250,000/year): GOLD Full Corpus via SSE, unlimited scoring, all production models, full audit trail. Fixed annual fee — ONTO is not in your inference path. "Powered by ONTO" attribution required.
+- **White-Label** ($500,000/year): Everything in Provider plus full brand removal. Deploy under your own brand, no attribution. Custom integration support, priority SLA, quarterly review.
+- **Grant Program**: Free Standard access for researchers, nonprofits, early-stage startups. Apply: council@ontostandard.org
+
+## Market
+
+ONTO addresses the AI compliance, quality assurance, and epistemic risk infrastructure market. 500+ AI model providers globally, 50,000+ enterprises deploying AI in production. Global AI governance market projected to reach $4.2B by 2028. EU AI Act requires transparency and accuracy reporting for high-risk AI systems — ONTO provides the measurement infrastructure. First-mover in deterministic epistemic scoring with cryptographic proof.
+
+## Key Findings
+
+- **Behavioral Transfer**: Models improve in domains not present in the GOLD discipline layer — discipline generalizes across knowledge areas
+- **Hallucination Inside Apology (HIA)**: Models acknowledge errors at macro level while generating new fabrications at micro level — novel AI safety finding discovered during ONTO research
+- **Convergence Effect**: With GOLD, all models converge toward similar epistemic quality regardless of base capability — the discipline layer normalizes output quality
+- **Detection**: ONTO scoring engine identifies epistemic discipline patterns in model outputs — unlicensed use of ONTO-derived behavior is detectable
 
 ## Research
 
@@ -43,17 +67,12 @@ ONTO GOLD is an epistemic discipline layer for large language models (LLMs). It 
 - 11-model baseline comparison: https://github.com/nickarstrong/onto-research/blob/main/ONTO-11-Model-Baseline.md
 - 100 test questions: https://github.com/nickarstrong/onto-research/blob/main/gold_experiment_questions.md
 
-## Key Findings
-
-- **Behavioral Transfer**: Models improve in domains not present in the GOLD discipline layer
-- **Hallucination Inside Apology (HIA)**: Models acknowledge errors at macro level while generating new fabrications at micro level — novel AI safety finding
-- **Convergence Effect**: With GOLD, all models converge toward similar epistemic quality
-
 ## Contact
 
 - Website: https://ontostandard.org
 - Portal: https://ontostandard.org/app/
 - Documentation: https://ontostandard.org/docs/
+- Reports: https://ontostandard.org/reports/
 - Field Observation: https://ontostandard.org/encounter/
 - PyPI: https://pypi.org/project/onto-standard/
 - AI Providers: providers@ontostandard.org
