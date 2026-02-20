@@ -2946,7 +2946,8 @@ async function handleLogin(btn) {
             organization_id: data.organization_id,
             organization_name: data.organization_name,
             can_invoice: false,
-            company: null  // Company set only after explicit registration
+            company: null,
+            subscription: data.tier_expires ? { expires_at: data.tier_expires } : null
         };
         // Restore company data from previous session if backend doesn't return it
         const savedUser = JSON.parse(localStorage.getItem('onto_user') || '{}');
