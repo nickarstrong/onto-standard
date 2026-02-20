@@ -1885,6 +1885,7 @@ client = OpenAI(
                         <div class="card-head" style="margin-bottom:4px">Current Plan</div>
                         <div style="font-size:13px"><span style="font-weight:600" id="sdk-plan-name">Open</span> · <span style="color:var(--text-muted)" id="sdk-plan-rate">10 requests / hour</span></div>
                         <div style="font-size:11px;color:var(--text-muted);margin-top:4px" id="sdk-plan-calls">0 / 50 proxy calls used today</div>
+                        <div style="font-size:11px;margin-top:4px;display:none" id="sdk-plan-expires"></div>
                     </div>
                     <button class="btn-upgrade" id="sdk-upgrade-btn" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))" style="font-size:12px;padding:8px 20px">Upgrade →</button>
                 </div>
@@ -2134,7 +2135,7 @@ client = OpenAI(
                     <div class="tier-name">Standard</div>
                     <div class="tier-price">$2,500<span>/month</span></div>
                     <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">or $30,000/year</div>
-                    <div style="font-size:10px;color:var(--text-secondary);margin-bottom:8px;opacity:0.7">First 10 clients receive 2× subscription duration</div>
+                    <div style="font-size:10px;color:var(--text-secondary);margin-bottom:8px;opacity:0.7">First 20 clients receive 2× subscription duration</div>
                     <div class="tier-desc">Production GOLD discipline — enhanced AI on every request</div>
                     <ul class="tier-list">
                         <li>1,000 proxy requests/day</li>
@@ -2150,7 +2151,7 @@ client = OpenAI(
                     <div class="tier-name">Enterprise</div>
                     <div class="tier-price">$9,500<span>/month</span></div>
                     <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">or $114,000/year</div>
-                    <div style="font-size:10px;color:var(--text-secondary);margin-bottom:8px;opacity:0.7">First 10 clients receive 2× subscription duration</div>
+                    <div style="font-size:10px;color:var(--text-secondary);margin-bottom:8px;opacity:0.7">First 20 clients receive 2× subscription duration</div>
                     <div class="tier-desc">Governance infrastructure with independent evaluation</div>
                     <ul class="tier-list">
                         <li>Everything in Standard</li>
@@ -3296,8 +3297,7 @@ function showDashboard() {
         document.getElementById('settings-email').textContent = currentUser.email;
         
         updateCompanyUI();
-        updateBillingUI();
-        updateDashboardMetrics();
+        fetchTierExpiry().then(() => { updateBillingUI(); updateDashboardMetrics(); });
         checkWelcomeBanner();
         resetSessionTimer();
         
@@ -3845,6 +3845,40 @@ function highlightEmptyFields() {
 }
 
 // === BILLING ===
+async function fetchTierExpiry() {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    const userId = currentUser?.id;
+    if (!apiKey || !userId) return;
+    try {
+        const res = await fetch(`${API_BASE}/v1/docs/admin/users/${userId}`, { headers: { 'x-api-key': apiKey } });
+        if (res.ok) {
+            const data = await res.json();
+            if (data.tier_expires) {
+                if (!currentUser.subscription) currentUser.subscription = {};
+                currentUser.subscription.expires_at = data.tier_expires;
+                currentUser.plan = layerToPlan(data.tier || 'open');
+                localStorage.setItem('onto_layer', data.tier || 'open');
+                // Update Dashboard plan expiry
+                const expiresDate = new Date(data.tier_expires);
+                const now = new Date();
+                const daysLeft = Math.ceil((expiresDate - now) / (1000 * 60 * 60 * 24));
+                const expiresEl = document.getElementById('sdk-plan-expires');
+                if (expiresEl) {
+                    const dateStr = expiresDate.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+                    if (daysLeft < 0) {
+                        expiresEl.innerHTML = `<span style="color:var(--danger)">Plan expired ${dateStr}</span>`;
+                    } else if (daysLeft < 30) {
+                        expiresEl.innerHTML = `<span style="color:var(--warning,#f59e0b)">Expires ${dateStr} (${daysLeft} days left)</span>`;
+                    } else {
+                        expiresEl.innerHTML = `<span style="color:var(--text-muted)">Valid until ${dateStr}</span>`;
+                    }
+                    expiresEl.style.display = 'block';
+                }
+            }
+        }
+    } catch(e) {}
+}
+
 function updateBillingUI() {
     const invoiceStatus = document.getElementById('invoice-status');
     const invoiceDownload = document.getElementById('invoice-download');
