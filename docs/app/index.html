@@ -805,7 +805,7 @@ a.info-val:hover { color: var(--text); }
                 <p><strong>Service.</strong> ONTO provides AI evaluation and epistemic risk scoring as a hosted service. Your evaluation data, API keys, and account credentials are stored securely and never shared with third parties.</p>
                 <p><strong>Acceptable Use.</strong> You may use the ONTO platform to evaluate AI model outputs, track risk scores, and obtain certifications for your organization. Automated abuse, reverse engineering of scoring algorithms, and redistribution of evaluation results without attribution are prohibited.</p>
                 <p><strong>Data &amp; Privacy.</strong> We collect email, name, and usage metrics necessary to provide the service. Data is processed in accordance with GDPR. We never sell your data. You may request deletion at any time.</p>
-                <p><strong>Billing.</strong> Open tier includes limited evaluations. Standard and Enterprise billed monthly or annually. Refund policy applies within 30 days of first payment.</p>
+                <p><strong>Billing.</strong> Open tier includes limited evaluations. Standard billed monthly or annually. AI Provider licensing by agreement. Refund policy applies within 30 days of first payment.</p>
                 <p style="margin-top: 12px;"><strong>Full terms:</strong> <a href="/legal" target="_blank">ontostandard.org/legal</a></p>
             </div>
             
@@ -977,7 +977,7 @@ a.info-val:hover { color: var(--text); }
                     </div>
                 </div>
                 <div style="margin-top:14px;padding:10px 12px;background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.1);border-radius:4px;font-size:11px;color:var(--text-secondary);line-height:1.5">
-                    <strong style="color:var(--text)">How it works:</strong> Open = try it (10 requests/day). Standard ($30K/yr) = production use, 1,000 requests/day, signed proofs. Enterprise ($114K/yr) = unlimited requests, certificate, priority support.
+                    <strong style="color:var(--text)">How it works:</strong> Open = try it (10 requests/day). Standard ($30K/yr) = production use, 1,000 requests/day, signed proofs. AI Providers = contact for licensing.
                 </div>
                 <div style="margin-top:10px;display:flex;gap:12px;align-items:center">
                     <a href="/docs/" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Documentation →</a>
@@ -1336,12 +1336,12 @@ a.info-val:hover { color: var(--text); }
                     <div style="background:var(--bg-card);padding:14px;cursor:pointer" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))">
                         <div style="font-size:12px;font-weight:600;margin-bottom:2px">Open</div>
                         <div style="font-size:16px;font-weight:700;color:var(--accent);margin-bottom:4px">Free</div>
-                        <div style="font-size:9px;color:var(--text-muted);line-height:1.4">10 requests/day · TIER 2</div>
+                        <div style="font-size:9px;color:var(--text-muted);line-height:1.4">10 requests/day · GOLD Core</div>
                     </div>
                     <div style="background:var(--bg-card);padding:14px;cursor:pointer;border-left:2px solid var(--accent);border-right:2px solid var(--accent)" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))">
                         <div style="font-size:12px;font-weight:600;margin-bottom:2px">Standard</div>
                         <div style="font-size:16px;font-weight:700;color:var(--accent);margin-bottom:4px">$2,500<span style="font-size:10px;font-weight:400;color:var(--text-muted)">/mo</span></div>
-                        <div style="font-size:9px;color:var(--text-muted);line-height:1.4">1,000/day · TIER 4 · badge</div>
+                        <div style="font-size:9px;color:var(--text-muted);line-height:1.4">1,000/day · GOLD Extended · badge</div>
                     </div>
                     <div style="background:var(--bg-card);padding:14px;cursor:pointer" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))">
                         <div style="font-size:12px;font-weight:600;margin-bottom:2px">Enterprise</div>
@@ -1696,7 +1696,7 @@ a.info-val:hover { color: var(--text); }
                     <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:16px">
                         <div style="font-size:12px;font-weight:600;margin-bottom:4px">Open tier</div>
                         <div style="font-size:20px;font-weight:700;color:var(--accent);margin-bottom:4px">Free</div>
-                        <div style="font-size:10px;color:var(--text-secondary);line-height:1.5">10 proxy requests/day · TIER 2 GOLD · proof chain · sufficient for research and evaluation</div>
+                        <div style="font-size:10px;color:var(--text-secondary);line-height:1.5">10 proxy requests/day · GOLD Core GOLD · proof chain · sufficient for research and evaluation</div>
                     </div>
                     <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:16px">
                         <div style="font-size:12px;font-weight:600;margin-bottom:4px">Grant program</div>
@@ -1857,20 +1857,20 @@ client = OpenAI(
                     <tr style="border-bottom:1px solid var(--border)">
                         <td style="padding:8px 10px;font-weight:500">Open</td>
                         <td style="padding:8px 10px;color:var(--text-secondary)">10/day</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">TIER 2 — Protocol + Core</td>
-                        <td style="padding:8px 10px;color:var(--text-muted)">Diagnostic only</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">GOLD Core</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">Ed25519 signed</td>
                     </tr>
                     <tr style="border-bottom:1px solid var(--border)">
                         <td style="padding:8px 10px;font-weight:500">Standard</td>
                         <td style="padding:8px 10px;color:var(--text-secondary)">1,000/day</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">TIER 4 — Full Modules</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">Signed + Ed25519</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">GOLD Extended</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">Ed25519 signed</td>
                     </tr>
                     <tr>
-                        <td style="padding:8px 10px;font-weight:500">Enterprise</td>
+                        <td style="padding:8px 10px;font-weight:500">AI Provider</td>
                         <td style="padding:8px 10px;color:var(--text-secondary)">Unlimited</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">TIER 4 — Full Corpus</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">Full audit trail</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">GOLD Full</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">Ed25519 + audit trail</td>
                     </tr>
                 </table>
                 <div style="margin-top:12px">
@@ -2117,60 +2117,60 @@ client = OpenAI(
             </div>
             
             <div class="tiers-grid">
-                <!-- OPEN -->
+                <!-- OPEN (TIER 3) -->
                 <div class="tier-card" id="card-free">
                     <div class="tier-name">Open</div>
                     <div class="tier-price">Free</div>
-                    <div class="tier-desc">Try ONTO on your AI — see the effect before you commit</div>
+                    <div class="tier-desc">Evaluate ONTO on your AI before you commit</div>
                     <ul class="tier-list">
                         <li>10 proxy requests/day</li>
-                        <li>GOLD TIER 2 — Protocol + Core</li>
-                        <li>Ed25519 signed proof chain</li>
+                        <li>GOLD Core (~17K tokens)</li>
+                        <li>Scoring API</li>
+                        <li>Ed25519 proof chain</li>
                     </ul>
                     <button class="btn-tier current" id="btn-free" disabled>Current</button>
                 </div>
                 
-                <!-- STANDARD -->
+                <!-- STANDARD (GOLD Core) -->
                 <div class="tier-card" id="card-business">
                     <div class="tier-name">Standard</div>
                     <div class="tier-price">$2,500<span>/month</span></div>
                     <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">or $30,000/year</div>
                     <div style="font-size:10px;color:var(--text-secondary);margin-bottom:8px;opacity:0.7">First 20 clients receive 2× subscription duration</div>
-                    <div class="tier-desc">Production GOLD discipline — enhanced AI on every request</div>
+                    <div class="tier-desc">Production GOLD discipline for companies using AI</div>
                     <ul class="tier-list">
                         <li>1,000 proxy requests/day</li>
-                        <li>GOLD TIER 4 — Extended Corpus</li>
-                        <li>Ed25519 signed proof chain</li>
-                        <li>Public verification badge</li>
+                        <li>GOLD Extended Corpus</li>
+                        <li>Unlimited SSE stream</li>
+                        <li>Scoring API</li>
+                        <li>Ed25519 proof chain</li>
                     </ul>
                     <button class="btn-tier" id="btn-business" onclick="openSubscribeModal('business')">Select</button>
                 </div>
                 
-                <!-- ENTERPRISE -->
+                <!-- PROVIDER (TIER 1) -->
                 <div class="tier-card" id="card-enterprise">
-                    <div class="tier-name">Enterprise</div>
-                    <div class="tier-price">$9,500<span>/month</span></div>
-                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">or $114,000/year</div>
-                    <div style="font-size:10px;color:var(--text-secondary);margin-bottom:8px;opacity:0.7">First 20 clients receive 2× subscription duration</div>
-                    <div class="tier-desc">Governance infrastructure with independent evaluation</div>
+                    <div class="tier-name">AI Provider</div>
+                    <div class="tier-price">$250,000<span>/year</span></div>
+                    <div class="tier-desc">Full GOLD access for AI model providers</div>
                     <ul class="tier-list">
-                        <li>Everything in Standard</li>
-                        <li>Unlimited proxy requests</li>
-                        <li>Public certificate + verification badge</li>
-                        <li>Priority support</li>
+                        <li>GOLD Full Corpus via SSE</li>
+                        <li>Unlimited scoring API</li>
+                        <li>Up to 100 models</li>
+                        <li>Ed25519 proof chain</li>
+                        <li>Full audit trail</li>
                     </ul>
-                    <button class="btn-tier" id="btn-enterprise" onclick="openSubscribeModal('enterprise')">Select</button>
+                    <a href="mailto:providers@ontostandard.org" class="btn-tier" style="text-align:center;text-decoration:none;display:block">Contact</a>
                 </div>
             </div>
 
-            <!-- CERTIFICATION (contact-only) -->
+            <!-- Provider licensing doc -->
             <div style="margin-top:24px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:20px">
                 <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
                     <div>
-                        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">ONTO Certification — for AI providers</div>
-                        <div style="font-size:12px;color:var(--text-secondary);line-height:1.5">Independent epistemic quality assessment and certification for production AI models. Evaluation, certification, and continuous monitoring programs available.</div>
+                        <div style="font-size:11px;color:var(--text-secondary)">SSE integration · fixed annual license · unlimited scale · ONTO not in inference path</div>
                     </div>
-                    <a href="mailto:council@ontostandard.org" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500;white-space:nowrap">Contact → council@ontostandard.org</a>
+                    <a href="https://github.com/nickarstrong/onto-research/blob/main/ONTO_PROVIDER_LICENSING.md" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500;white-space:nowrap">Provider Licensing →</a>
                 </div>
             </div>
 
@@ -2181,7 +2181,7 @@ client = OpenAI(
                     <div style="font-size:13px;font-weight:600;color:var(--text)">Grant Program</div>
                 </div>
                 <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;margin-bottom:12px">
-                    Free Standard access for independent researchers, early-stage startups, and nonprofit organizations whose work benefits society. Grant recipients receive the same infrastructure as paid Standard customers: 1,000 proxy requests/day, GOLD TIER 4, signed proof chain. No restrictions, no watermarks.
+                    Free Standard access for independent researchers, early-stage startups, and nonprofit organizations whose work benefits society. Grant recipients receive the same infrastructure as paid Standard customers: 1,000 proxy requests/day, GOLD Extended, signed proof chain. No restrictions, no watermarks.
                 </div>
                 <div style="display:flex;align-items:center;gap:12px">
                     <a href="mailto:council@ontostandard.org" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Apply → council@ontostandard.org</a>
@@ -2477,7 +2477,7 @@ client = OpenAI(
                 <div class="form-section-title">Includes</div>
                 <div class="order-features" id="order-features">
                     <div class="order-feature">1,000 proxy requests/day</div>
-                    <div class="order-feature">GOLD TIER 4 — Extended Corpus</div>
+                    <div class="order-feature">GOLD Extended — Extended Corpus</div>
                     <div class="order-feature">Ed25519 signed proof chain</div>
                     <div class="order-feature">Public verification badge</div>
                 </div>
@@ -2561,7 +2561,7 @@ client = OpenAI(
         </div>
         <div class="modal-body form-inst">
             <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">
-                For Enterprise tier, Founding Cohort access, custom integrations, or certification inquiries.
+                For AI Provider licensing, Founding Cohort access, custom integrations, or certification inquiries.
             </p>
             <div class="form-group">
                 <label class="form-label">Name</label>
@@ -2606,7 +2606,7 @@ client = OpenAI(
                             <span class="tier-badge tier-open">OPEN</span>
                             <span class="tier-option-price">Free</span>
                         </div>
-                        <div class="tier-option-desc">10 proxy/day, GOLD TIER 2</div>
+                        <div class="tier-option-desc">10 proxy/day, GOLD Core</div>
                     </div>
                 </label>
                 <label class="tier-option" data-tier="standard">
@@ -2616,7 +2616,7 @@ client = OpenAI(
                             <span class="tier-badge tier-standard">STANDARD</span>
                             <span class="tier-option-price">$2.5K/mo</span>
                         </div>
-                        <div class="tier-option-desc">1K proxy/day, GOLD TIER 4, Ed25519 proof</div>
+                        <div class="tier-option-desc">1K proxy/day, GOLD Extended, Ed25519 proof</div>
                     </div>
                 </label>
                 <label class="tier-option" data-tier="critical">
@@ -2742,7 +2742,7 @@ const STRINGS = {
 };
 const PLANS = {
     business: { monthly: 2500, annual: 30000, monthlyEquiv: 2500, foundingMonthly: 990, foundingAnnual: 11880 },
-    enterprise: { monthly: 9500, annual: 114000, monthlyEquiv: 9500, foundingMonthly: 4800, foundingAnnual: 57600 }
+    enterprise: { monthly: 0, annual: 250000, monthlyEquiv: 0, foundingMonthly: 0, foundingAnnual: 0 }
 };
 let selectedPlan = 'business';
 let selectedCycle = 'annual';
@@ -3293,7 +3293,7 @@ function showDashboard() {
     if (currentUser) {
         document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
         document.getElementById('user-name').textContent = currentUser.name;
-        document.getElementById('user-plan').textContent = currentUser.plan === 'enterprise' ? 'ENTERPRISE' : currentUser.plan === 'business' ? 'STANDARD' : 'OPEN';
+        document.getElementById('user-plan').textContent = currentUser.plan === 'enterprise' ? 'PROVIDER' : currentUser.plan === 'business' ? 'STANDARD' : 'OPEN';
         // Add expiry to sidebar
         if (currentUser.subscription && currentUser.subscription.expires_at) {
             const exp = new Date(currentUser.subscription.expires_at);
@@ -3385,8 +3385,8 @@ function updateDashboardMetrics() {
     const includesEl = document.getElementById('plan-includes-text');
     if (includesEl) {
         const planIncludes = {
-            free: 'Free: 10 requests/day · GOLD TIER 2 · Signed proofs',
-            business: 'Standard: 1K proxy/day · GOLD TIER 4 · Signed proofs',
+            free: 'Free: 10 requests/day · GOLD Core · Signed proofs',
+            business: 'Standard: 1K proxy/day · GOLD Extended · Signed proofs',
             enterprise: 'Enterprise: Unlimited proxy · Certificate + badge · Priority support'
         };
         includesEl.textContent = planIncludes[plan] || planIncludes.free;
@@ -3618,7 +3618,7 @@ function downloadInvoice() {
     const sub = currentUser.subscription;
     const plan = currentUser.plan || 'free';
     const planNames = { free: 'Open', business: 'Standard', enterprise: 'Enterprise' };
-    const planPrices = { free: 0, business: 30000, enterprise: 114000 };
+    const planPrices = { free: 0, business: 30000, enterprise: 250000 };
     const amount = planPrices[plan] || 0;
     const invoiceId = 'INV-' + new Date().getFullYear() + '-' + Date.now().toString(36).toUpperCase();
     const expiresAt = new Date(sub.expires_at);
@@ -4043,7 +4043,7 @@ function updateOrderSummary() {
     const planNames = { business: 'Standard', enterprise: 'Enterprise' };
     const planName = planNames[selectedPlan] || selectedPlan;
     const planFeatures = {
-        business: ['1,000 proxy requests/day', 'GOLD TIER 4 — Extended Corpus', 'Ed25519 signed proof chain', 'Public verification badge'],
+        business: ['1,000 proxy requests/day', 'GOLD Extended — Extended Corpus', 'Ed25519 signed proof chain', 'Public verification badge'],
         enterprise: ['Everything in Standard', 'Unlimited proxy requests', 'Public certificate + verification badge', 'Priority support']
     };
     const featuresEl = document.getElementById('order-features');
