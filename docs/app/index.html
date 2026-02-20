@@ -1343,10 +1343,10 @@ a.info-val:hover { color: var(--text); }
                         <div style="font-size:16px;font-weight:700;color:var(--accent);margin-bottom:4px">$2,500<span style="font-size:10px;font-weight:400;color:var(--text-muted)">/mo</span></div>
                         <div style="font-size:9px;color:var(--text-muted);line-height:1.4">1,000/day · GOLD Extended · badge</div>
                     </div>
-                    <div style="background:var(--bg-card);padding:14px;cursor:pointer" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))">
-                        <div style="font-size:12px;font-weight:600;margin-bottom:2px">Enterprise</div>
-                        <div style="font-size:16px;font-weight:700;color:var(--accent);margin-bottom:4px">$9,500<span style="font-size:10px;font-weight:400;color:var(--text-muted)">/mo</span></div>
-                        <div style="font-size:9px;color:var(--text-muted);line-height:1.4">Unlimited · certificate · support</div>
+                    <div style="background:var(--bg-card);padding:14px;cursor:pointer" onclick="window.location.href='mailto:providers@ontostandard.org'">
+                        <div style="font-size:12px;font-weight:600;margin-bottom:2px">AI Provider</div>
+                        <div style="font-size:16px;font-weight:700;color:var(--accent);margin-bottom:4px">$250K<span style="font-size:10px;font-weight:400;color:var(--text-muted)">/yr</span></div>
+                        <div style="font-size:9px;color:var(--text-muted);line-height:1.4">Full GOLD · unlimited · all models</div>
                     </div>
                 </div>
             </div>
@@ -1394,7 +1394,7 @@ a.info-val:hover { color: var(--text); }
                 <div style="font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Business impact</div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border-radius:6px;overflow:hidden">
                     <div style="background:var(--bg-card);padding:18px">
-                        <div style="font-size:13px;font-weight:600;margin-bottom:6px;color:var(--accent)">Enterprise adoption</div>
+                        <div style="font-size:13px;font-weight:600;margin-bottom:6px;color:var(--accent)">Enterprise deals</div>
                         <div style="font-size:11px;color:var(--text-secondary);line-height:1.6">B2B clients choose providers with verifiable output quality. Measurable standard = faster procurement, larger contracts, shorter sales cycles.</div>
                     </div>
                     <div style="background:var(--bg-card);padding:18px">
@@ -1485,7 +1485,7 @@ a.info-val:hover { color: var(--text); }
                         <div style="padding:10px 14px;text-align:center;color:var(--accent);font-weight:700;font-family:'JetBrains Mono',monospace">↓</div>
                     </div>
                 </div>
-                <div style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text-muted);margin-top:6px">n=100 · 10 baseline models · regex scoring · open methodology · <a href="https://github.com/nickarstrong/onto-research" target="_blank" style="color:var(--accent)">reproduce</a></div>
+                <div style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text-muted);margin-top:6px">n=100 · 11 baseline models · regex scoring · open methodology · <a href="https://github.com/nickarstrong/onto-research" target="_blank" style="color:var(--accent)">reproduce</a></div>
             </div>
 
             <!-- WHAT GOLD GIVES YOUR MODEL -->
@@ -1679,7 +1679,7 @@ a.info-val:hover { color: var(--text); }
                     <div style="background:var(--bg-card);padding:14px;text-align:center">
                         <div style="font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent)">0.92</div>
                         <div style="font-size:9px;color:var(--text-muted);margin-top:4px">Baseline mean</div>
-                        <div style="font-size:8px;color:var(--text-muted)">n=10 models</div>
+                        <div style="font-size:8px;color:var(--text-muted)">n=11 models</div>
                     </div>
                     <div style="background:var(--bg-card);padding:14px;text-align:center">
                         <div style="font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent)">100</div>
@@ -2060,7 +2060,7 @@ client = OpenAI(
                         <span class="info-val" id="sub-rate">—</span>
                     </div>
                     <div class="info-row" id="sub-critical-row">
-                        <span class="info-key">Enterprise</span>
+                        <span class="info-key">Provider</span>
                         <span class="info-val" id="sub-critical-days">—</span>
                     </div>
                     <div class="info-row" id="sub-pro-row">
@@ -2218,7 +2218,7 @@ client = OpenAI(
                         <option value="">All Plans</option>
                         <option value="open">Open</option>
                         <option value="standard">Standard</option>
-                        <option value="enterprise">Enterprise</option>
+                        <option value="enterprise">AI Provider</option>
                     </select>
                 </div>
                 <div id="accounts-list" style="font-size:12px"></div>
@@ -2741,8 +2741,8 @@ const STRINGS = {
     confirmRegenerate: 'Are you sure you want to regenerate your API key?\n\nThis will immediately invalidate your current key.'
 };
 const PLANS = {
-    business: { monthly: 2500, annual: 30000, monthlyEquiv: 2500, foundingMonthly: 990, foundingAnnual: 11880 },
-    enterprise: { monthly: 0, annual: 250000, monthlyEquiv: 0, foundingMonthly: 0, foundingAnnual: 0 }
+    business: { monthly: 2500, annual: 30000, monthlyEquiv: 2500 },
+    enterprise: { monthly: 0, annual: 250000, monthlyEquiv: 0 }
 };
 let selectedPlan = 'business';
 let selectedCycle = 'annual';
@@ -3387,7 +3387,7 @@ function updateDashboardMetrics() {
         const planIncludes = {
             free: 'Free: 10 requests/day · GOLD Core · Signed proofs',
             business: 'Standard: 1K proxy/day · GOLD Extended · Signed proofs',
-            enterprise: 'Enterprise: Unlimited proxy · Certificate + badge · Priority support'
+            enterprise: 'AI Provider: Unlimited · Full GOLD · All models · Proof chain'
         };
         includesEl.textContent = planIncludes[plan] || planIncludes.free;
     }
@@ -5037,7 +5037,7 @@ function drawIndustryChart() {
         { label: 'Finance', value: 28, color: '#d97706' },
         { label: 'Healthcare', value: 22, color: '#dc2626' },
         { label: 'AI Labs', value: 18, color: '#15803d' },
-        { label: 'Enterprise', value: 12, color: '#64748b' },
+        { label: 'Provider', value: 12, color: '#64748b' },
         { label: 'Other', value: 20, color: '#6b7280' }
     ];
     
