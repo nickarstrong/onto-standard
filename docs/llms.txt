@@ -1,37 +1,65 @@
-# ONTO — Epistemic Risk Measurement for AI Systems
-# https://ontostandard.org
+# ONTO Standard
 
-## What is ONTO
-ONTO is epistemic infrastructure for AI. It measures and grounds AI outputs against GOLD v4.5 — a calibration corpus of 149 files with EM1-EM5 epistemic marker taxonomy. ONTO both measures epistemic risk and actively strengthens epistemic discipline without modifying model weights.
+> ONTO is a deterministic epistemic quality measurement standard for AI systems.
 
-## Key Results
-- 10 production AI models tested
-- 100 scientific questions (50 in-domain, 50 cross-domain)
-- 10× composite improvement in epistemic marker density (0.53 → 5.38)
-- Cross-domain transfer confirmed in 4/5 metrics
-- Scoring: regex pattern matching, zero AI in evaluation loop
+## What ONTO Does
 
-## Core Metrics
-- REP (Response Epistemic Profile): distribution of markers across EM1-EM5 levels
-- EpCE (Epistemic Calibration Error): deviation between expressed confidence and epistemic grounding
-- DLA (Dual-Layer Agreement): consistency between what a model says and how it says it
-- Risk Score: composite 0-100 (LOW/MEDIUM/HIGH/CRITICAL)
-- Compliance Grades: A through F
+ONTO GOLD is an epistemic discipline layer for large language models (LLMs). It teaches AI models to cite sources, quantify confidence numerically, mark uncertainty, and disclose knowledge gaps. ONTO does not fine-tune models or inject knowledge — it provides behavioral discipline through server-side system prompt injection.
 
-## Integration
-pip install onto-standard
-Python 3.8+, zero external dependencies
+## Key Results (CS-2026-001)
 
-## Research Data
-All experimental data published: https://github.com/nickarstrong/onto-research
+- 11 production AI models tested: GPT-4o, GPT-4.5, Claude Sonnet, Claude Haiku, Gemini 2.0, DeepSeek R1, Grok, Mistral Large, Copilot, Kimi, Qwen
+- 100 questions across 5 domains (Medicine, AI/ML, Economics, Physics, Biology)
+- Composite score improvement: 0.53 → 5.38 (10× improvement)
+- Variance reduction: SD 0.58 → SD 0.11 (5.4× reduction)
+- Cross-domain transfer: 4/5 metrics improve in unseen domains
+- Zero baseline models provide numeric confidence levels
 
-## Documentation
-- Specification: https://ontostandard.org/docs/
-- Portal: https://ontostandard.org/app/
-- API: https://api.ontostandard.org
+## How Scoring Works
+
+- 993-line Python scoring engine
+- 5 regex-based counters (numbers, sources, honesty, balance, filler)
+- Zero AI judge — fully deterministic
+- Same input = same score on any machine
+- Open source: https://github.com/nickarstrong/onto-research
+
+## Products
+
+- **ONTO Proxy**: Server-side GOLD injection for any AI model. One API call, compatible with OpenAI, Anthropic, Google, Mistral, Meta.
+- **ONTO Signal**: Cryptographic proof chain (Ed25519) verifying GOLD is active.
+- **ONTO Certification**: Independent verification of AI epistemic quality for EU AI Act compliance.
+
+## Pricing
+
+- Open: Free (10 requests/day)
+- Standard: $2,500/month ($30,000/year)
+- Enterprise: $9,500/month ($114,000/year)
+- Provider integration: Fixed price, unlimited scale via SSE streaming
+
+## Research
+
+- Scoring engine (open source): https://github.com/nickarstrong/onto-research/blob/main/onto-scoring.py
+- Full experiment report: https://github.com/nickarstrong/onto-research/blob/main/ONTO-Full-Report.md
+- 11-model baseline comparison: https://github.com/nickarstrong/onto-research/blob/main/ONTO-11-Model-Baseline.md
+- 100 test questions: https://github.com/nickarstrong/onto-research/blob/main/gold_experiment_questions.md
+
+## Key Findings
+
+- **Behavioral Transfer**: Models improve in domains not present in the GOLD discipline layer
+- **Hallucination Inside Apology (HIA)**: Models acknowledge errors at macro level while generating new fabrications at micro level — novel AI safety finding
+- **Convergence Effect**: With GOLD, all models converge toward similar epistemic quality
 
 ## Contact
-council@ontostandard.org
 
-## License
-ONTO Gold Asymmetric AI License v5.1
+- Website: https://ontostandard.org
+- Portal: https://ontostandard.org/app/
+- Documentation: https://ontostandard.org/docs/
+- Field Observation: https://ontostandard.org/encounter/
+- PyPI: https://pypi.org/project/onto-standard/
+- AI Providers: providers@ontostandard.org
+- Research: research@ontostandard.org
+- Enterprise: council@ontostandard.org
+
+## Citation
+
+ONTO Standard, CS-2026-001. "Deterministic Measurement of Epistemic Quality in Production LLM Systems." February 2026. https://ontostandard.org
