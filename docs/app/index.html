@@ -4690,7 +4690,7 @@ function renderAccounts(accounts) {
             <div class="account-row" onclick="toggleAccountDetails('${safeId}')">
                 <div class="account-email">${safeEmail}${isSelf ? ' <span style="color: var(--accent); font-size: 9px;">(you)</span>' : ''}</div>
                 <div class="account-type">${hasCompany ? 'Company' : 'Individual'}</div>
-                <div class="account-plan"><span class="tier-badge tier-${safeTier}">${safeTier}</span></div>
+                <div class="account-plan"><span class="tier-badge tier-${safeTier}">${safeTier}</span>${u.tier_expires ? '<span style="font-size:10px;color:var(--text-muted);margin-left:6px;">→ ' + new Date(u.tier_expires).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'}) + '</span>' : ''}</div>
                 <div class="account-status ${isActive ? 'active' : 'paused'}">${isActive ? 'Active' : 'Paused'}</div>
                 <div class="account-date">${date}</div>
             </div>
@@ -4711,6 +4711,10 @@ function renderAccounts(accounts) {
                     <div class="account-detail-item">
                         <div class="account-detail-label">Organization</div>
                         <div class="account-detail-value">${safeOrgName}</div>
+                    </div>
+                    <div class="account-detail-item">
+                        <div class="account-detail-label">Tier Expires</div>
+                        <div class="account-detail-value">${u.tier_expires ? new Date(u.tier_expires).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) + (new Date(u.tier_expires) < new Date() ? ' <span style="color:var(--danger)">EXPIRED</span>' : '') : 'No expiry'}</div>
                     </div>
                     ${hasCompany ? `
                     <div class="account-detail-item">
