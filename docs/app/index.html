@@ -683,6 +683,7 @@ a.info-val:hover { color: var(--text); }
 @media(max-width:768px){.erm-split,.erm-downloads,.erm-steps,.erm-gold-grid{grid-template-columns:1fr}}
 </style>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -2020,8 +2021,8 @@ client = OpenAI(
             <div class="section-block">
                 <div class="section-label">Organization</div>
                 <div id="company-not-registered">
-                    <p class="section-text">No organization registered. Required for institutional access tier.</p>
-                    <button class="btn-minimal" onclick="openCompanyModal()">Register Organization</button>
+                    <p class="section-text">No organization registered. Required to generate invoices and access institutional features.</p>
+                    <button class="btn-minimal" onclick="openCompanyModal()" style="background:var(--accent);color:#0c0f14;border-color:var(--accent)">Register Organization →</button>
                 </div>
                 <div id="company-registered" class="hidden">
                     <div class="info-row">
@@ -2087,8 +2088,9 @@ client = OpenAI(
                 </div>
                 <div class="doc-row" id="invoice-row">
                     <span class="doc-name">Invoice</span>
-                    <span class="doc-status" id="invoice-status">No active subscription</span>
+                    <span class="doc-status" id="invoice-status" style="cursor:default">No active subscription</span>
                     <span class="doc-link hidden" id="invoice-download" onclick="downloadInvoice()">Download</span>
+                    <span class="doc-link hidden" id="invoice-register-org" onclick="openCompanyModal()" style="color:var(--accent)">Register Organization first →</span>
                 </div>
             </div>
             
@@ -3605,99 +3607,199 @@ function openCompanyModal() {
 }
 
 function downloadInvoice() {
-    if (!currentUser?.subscription) {
+    if (!currentUser?.subscription?.expires_at) {
         showToast('No active subscription', 'error');
         return;
     }
+    if (!currentUser?.company) {
+        showToast('Register organization first', 'error');
+        return;
+    }
     
-    const now = new Date();
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
     const sub = currentUser.subscription;
-    const invoiceId = 'INV-' + new Date(sub.started).getFullYear() + '-' + Date.now().toString(36).toUpperCase();
-    const plan = sub.plan;
-    const amount = sub.amount;
-    const planNames = { business: 'Standard', enterprise: 'Enterprise' };
+    const plan = currentUser.plan || 'free';
+    const planNames = { free: 'Open', business: 'Standard', enterprise: 'Enterprise' };
+    const planPrices = { free: 0, business: 30000, enterprise: 114000 };
+    const amount = planPrices[plan] || 0;
+    const invoiceId = 'INV-' + new Date().getFullYear() + '-' + Date.now().toString(36).toUpperCase();
+    const expiresAt = new Date(sub.expires_at);
+    const startedAt = new Date(expiresAt.getTime() - 365*24*60*60*1000);
+    const dueDate = new Date(startedAt.getTime() + 30*24*60*60*1000);
+    const co = currentUser.company;
+    const fmtDate = (d) => d.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+    const fmtMoney = (n) => '$' + n.toLocaleString('en-US', {minimumFractionDigits:2});
     
-    const invoice = {
-        schema: 'onto-invoice/v1',
-        id: invoiceId,
-        created_at: sub.started,
-        due_date: new Date(new Date(sub.started).getTime() + 30*24*60*60*1000).toISOString(),
-        status: 'PAID',
-        
-        provider: {
-            name: 'ONTO Standard',
-            jurisdiction: 'See ontostandard.org/legal',
-            email: 'billing@ontostandard.org',
-            website: 'https://ontostandard.org',
-            tax_id: null
-        },
-        
-        client: {
-            company: currentUser?.company?.name || currentUser.name,
-            legal_name: currentUser?.company?.name || null,
-            tax_id: currentUser?.company?.reg || null,
-            industry: currentUser?.company?.industry || null,
-            address: {
-                street: currentUser?.company?.address || null,
-                city: currentUser?.company?.city || null,
-                postal: currentUser?.company?.postal || null,
-                country: currentUser?.company?.country || null
-            },
-            signatory: currentUser?.company?.signatory || currentUser.name,
-            email: currentUser?.company?.email || currentUser.email
-        },
-        
-        line_items: [{
-            description: 'ONTO Protocol — ' + planNames[plan] + ' Layer',
-            details: sub.cycle === 'annual' ? 'Annual subscription (12 months)' : 'Monthly subscription',
-            quantity: 1,
-            unit_price: amount,
-            amount: amount
-        }],
-        
-        subtotal: amount,
-        total_paid: sub.total_paid || amount,
-        tax: { rate: 0, amount: 0 },
-        total: amount,
-        currency: 'USD',
-        
-        payment: {
-            terms: sub.cycle === 'annual' ? 'PREPAID' : 'NET_30',
-            method: 'invoice',
-            reference: invoiceId,
-            paid_at: sub.started
-        },
-        
-        service: {
-            layer: planNames[plan],
-            cycle: sub.cycle,
-            term_months: sub.cycle === 'annual' ? 12 : 1,
-            started: sub.started,
-            expires_at: sub.expires_at || null,
-            features: plan === 'enterprise' ? {
-                rate_limit: 'unlimited',
-                signal: 'dedicated',
-                sla: 'Priority',
-                support: '24/7'
-            } : {
-                rate_limit: '1/8.64s',
-                signal: 'real-time',
-                sla: '99.5%',
-                support: 'business hours'
-            }
-        },
-        
-        hash: simpleHash(invoiceId + (currentUser?.company?.name || currentUser.name) + plan + amount)
-    };
+    // Colors
+    const dark = [12, 15, 20];
+    const accent = [46, 194, 126];
+    const gray = [140, 140, 140];
+    const white = [255, 255, 255];
     
-    const blob = new Blob([JSON.stringify(invoice, null, 2)], {type: 'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'ONTO_Invoice_' + planNames[plan] + '_' + new Date(sub.started).toISOString().split('T')[0] + '.json';
-    a.click();
-    URL.revokeObjectURL(url);
+    // Header bar
+    doc.setFillColor(...dark);
+    doc.rect(0, 0, 210, 36, 'F');
+    doc.setTextColor(...white);
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.text('ONTO', 20, 18);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Standards Council', 20, 25);
+    doc.text('ontostandard.org', 20, 31);
     
+    // Invoice title
+    doc.setFontSize(22);
+    doc.setTextColor(...accent);
+    doc.text('INVOICE', 150, 18);
+    doc.setFontSize(9);
+    doc.setTextColor(...white);
+    doc.text(invoiceId, 150, 25);
+    
+    // From / To
+    let y = 48;
+    doc.setTextColor(...gray);
+    doc.setFontSize(8);
+    doc.text('FROM', 20, y);
+    doc.text('BILL TO', 110, y);
+    
+    y += 6;
+    doc.setTextColor(...dark);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text('ONTO Standard', 20, y);
+    doc.text(co.name || currentUser.name, 110, y);
+    
+    y += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(80, 80, 80);
+    doc.text('billing@ontostandard.org', 20, y);
+    doc.text(co.email || currentUser.email, 110, y);
+    y += 5;
+    doc.text('ontostandard.org/legal', 20, y);
+    if (co.address) doc.text(co.address, 110, y);
+    y += 5;
+    const cityLine = [co.city, co.postal, co.country].filter(Boolean).join(', ');
+    if (cityLine) doc.text(cityLine, 110, y);
+    y += 5;
+    if (co.reg) { doc.text('Tax ID: ' + co.reg, 110, y); y += 5; }
+    
+    // Dates row
+    y += 6;
+    doc.setFillColor(245, 245, 245);
+    doc.rect(20, y - 4, 170, 14, 'F');
+    doc.setFontSize(8);
+    doc.setTextColor(...gray);
+    doc.text('ISSUE DATE', 24, y + 2);
+    doc.text('DUE DATE', 74, y + 2);
+    doc.text('STATUS', 134, y + 2);
+    y += 8;
+    doc.setTextColor(...dark);
+    doc.setFontSize(9);
+    doc.text(fmtDate(startedAt), 24, y);
+    doc.text(fmtDate(dueDate), 74, y);
+    doc.setTextColor(...accent);
+    doc.setFont('helvetica', 'bold');
+    doc.text('PAID', 134, y);
+    
+    // Line items header
+    y += 14;
+    doc.setFillColor(...dark);
+    doc.rect(20, y - 4, 170, 10, 'F');
+    doc.setTextColor(...white);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'bold');
+    doc.text('DESCRIPTION', 24, y + 2);
+    doc.text('PERIOD', 100, y + 2);
+    doc.text('AMOUNT', 160, y + 2);
+    
+    // Line item
+    y += 12;
+    doc.setTextColor(...dark);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text('ONTO Protocol — ' + (planNames[plan] || plan) + ' License', 24, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(fmtDate(startedAt) + ' — ' + fmtDate(expiresAt), 100, y);
+    doc.text(fmtMoney(amount), 160, y);
+    
+    y += 5;
+    doc.setFontSize(8);
+    doc.setTextColor(100, 100, 100);
+    doc.text('Annual subscription · 12 months · Wire transfer', 24, y);
+    
+    // Totals
+    y += 14;
+    doc.setDrawColor(220, 220, 220);
+    doc.line(110, y, 190, y);
+    y += 7;
+    doc.setFontSize(9);
+    doc.setTextColor(...gray);
+    doc.text('Subtotal', 110, y);
+    doc.setTextColor(...dark);
+    doc.text(fmtMoney(amount), 160, y);
+    y += 6;
+    doc.setTextColor(...gray);
+    doc.text('Tax (0%)', 110, y);
+    doc.setTextColor(...dark);
+    doc.text('$0.00', 160, y);
+    y += 8;
+    doc.setDrawColor(220, 220, 220);
+    doc.line(110, y - 2, 190, y - 2);
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...accent);
+    doc.text('Total', 110, y + 4);
+    doc.text(fmtMoney(amount), 155, y + 4);
+    
+    // Service details
+    y += 20;
+    doc.setFillColor(245, 245, 245);
+    doc.rect(20, y - 4, 170, 28, 'F');
+    doc.setFontSize(8);
+    doc.setTextColor(...gray);
+    doc.setFont('helvetica', 'bold');
+    doc.text('SERVICE DETAILS', 24, y + 2);
+    doc.setFont('helvetica', 'normal');
+    y += 8;
+    doc.setTextColor(80, 80, 80);
+    doc.text('Layer: ' + (planNames[plan] || plan), 24, y);
+    doc.text('Rate limit: ' + (plan === 'enterprise' ? 'Unlimited' : '50,000/day'), 90, y);
+    y += 5;
+    doc.text('Period: ' + fmtDate(startedAt) + ' — ' + fmtDate(expiresAt), 24, y);
+    doc.text('Support: ' + (plan === 'enterprise' ? 'Priority 24/7' : 'Business hours'), 90, y);
+    y += 5;
+    doc.text('Proof chain: Ed25519 signed', 24, y);
+    
+    // Payment info
+    y += 14;
+    doc.setFontSize(8);
+    doc.setTextColor(...gray);
+    doc.text('PAYMENT', 24, y);
+    y += 5;
+    doc.setTextColor(80, 80, 80);
+    doc.text('Method: Wire transfer  |  Terms: Prepaid  |  Reference: ' + invoiceId, 24, y);
+    
+    // Footer
+    y = 272;
+    doc.setDrawColor(220, 220, 220);
+    doc.line(20, y, 190, y);
+    y += 5;
+    doc.setFontSize(7);
+    doc.setTextColor(...gray);
+    doc.text('ONTO Standards Council · Est. 2024 · Independent research initiative', 105, y, {align: 'center'});
+    y += 4;
+    doc.text('ontostandard.org  |  billing@ontostandard.org  |  ontostandard.org/legal', 105, y, {align: 'center'});
+    
+    // Hash
+    y += 4;
+    const hash = simpleHash(invoiceId + (co.name || currentUser.name) + plan + amount);
+    doc.text('Verification: ' + hash, 105, y, {align: 'center'});
+    
+    doc.save('ONTO_Invoice_' + (planNames[plan] || plan) + '_' + new Date().toISOString().split('T')[0] + '.pdf');
     showToast('Invoice downloaded', 'success');
 }
 
@@ -3784,7 +3886,8 @@ function registerCompany() {
         btn.textContent = originalText;
         closeModal('company-modal');
         updateCompanyUI();
-        showToast(isEdit ? 'Organization updated' : 'Organization registered', 'success');
+        updateBillingUI();
+        showToast(isEdit ? 'Organization updated' : 'Organization registered. You can now download invoices.', 'success');
     }, 800);
 }
 
@@ -3892,8 +3995,16 @@ function updateBillingUI() {
             document.getElementById('btn-enterprise').textContent = 'Extend';
         }
         
-        invoiceStatus.classList.add('hidden');
-        invoiceDownload.classList.remove('hidden');
+        const invoiceRegOrg = document.getElementById('invoice-register-org');
+        if (currentUser?.company) {
+            invoiceStatus.classList.add('hidden');
+            invoiceDownload.classList.remove('hidden');
+            if (invoiceRegOrg) invoiceRegOrg.classList.add('hidden');
+        } else {
+            invoiceStatus.classList.add('hidden');
+            invoiceDownload.classList.add('hidden');
+            if (invoiceRegOrg) invoiceRegOrg.classList.remove('hidden');
+        }
         
         if (subNone) subNone.classList.add('hidden');
         if (subActive) subActive.classList.remove('hidden');
