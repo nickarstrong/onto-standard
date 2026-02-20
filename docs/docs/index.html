@@ -157,14 +157,15 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <a href="/app/?page=settings" class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Account</a>
 </div>
 <div class="sb-si" id="sb-si"><a class="btn-si" onclick="openAuth('login')">Sign In</a><a class="btn-ca" onclick="openAuth('register')">Create Account</a></div>
-<div class="ng"><h4>Overview</h4><a class="nl active" href="#about" data-doc="about">About ONTO</a><a class="nl" href="#evidence" data-doc="evidence">Research Evidence</a><a class="nl" href="#methodology" data-doc="methodology">Methodology</a></div>
+<div class="ng"><h4>Getting Started</h4><a class="nl" href="#quickstart" data-doc="quickstart">Quick Start (5 min)</a><a class="nl" href="#api-ref" data-doc="api-ref">API Reference</a></div>
+<div class="ng"><h4>Overview</h4><a class="nl" href="#about" data-doc="about">About ONTO</a><a class="nl" href="#evidence" data-doc="evidence">Research Evidence</a><a class="nl" href="#methodology" data-doc="methodology">Methodology</a></div>
 <div class="ng"><h4>Standard</h4><a class="nl" href="#ers" data-doc="ers">ONTO-ERS</a></div>
 <div class="ng"><h4>Specifications</h4><a class="nl" href="#layer-spec" data-doc="layer-spec">Layer Specification</a><a class="nl" href="#regulatory" data-doc="regulatory">Regulatory Matrix</a></div>
 <div class="ng"><h4>Governance</h4><a class="nl" href="#charter" data-doc="charter">Foundation Charter</a><a class="nl" href="#council" data-doc="council">Standards Council</a></div>
-<div class="ng"><h4>Resources</h4><a class="nl" href="#articles" data-doc="articles">Articles</a><a class="nl" href="#faq" data-doc="faq">FAQ</a></div>
+<div class="ng"><h4>Resources</h4><a class="nl" href="#articles" data-doc="articles">Articles</a><a class="nl" href="#faq" data-doc="faq">FAQ</a><a class="nl" href="#changelog" data-doc="changelog">Changelog</a></div>
 <div class="ng"><h4>Community</h4><a class="nl" href="#reviews" data-doc="reviews">Reviews</a><a class="nl" href="#feedback" data-doc="feedback">Feedback</a></div>
 <div class="ng"><h4>Legal</h4><a class="nl" href="#license" data-doc="license">License</a><a class="nl" href="#terms" data-doc="terms">Terms of Service</a><a class="nl" href="#privacy" data-doc="privacy">Privacy Policy</a><a class="nl" href="#refund" data-doc="refund">Refund Policy</a></div>
-<div class="ng"><h4>Pages</h4><a class="nl" href="/reports/">Reports ↗</a><a class="nl" href="/paper/">Research Paper ↗</a><a class="nl" href="/encounter/">Field Observation ↗</a><a class="nl" href="/verify/">Verify ↗</a></div>
+<div class="ng"><h4>Pages</h4><a class="nl" href="/reports/">Reports ↗</a><a class="nl" href="/paper/">Research Paper ↗</a><a class="nl" href="/encounter/">Field Observation ↗</a><a class="nl" href="/verify/">Verify ↗</a><a class="nl" href="https://api.ontostandard.org/health" target="_blank">Status ↗</a></div>
 </nav>
 <div class="sb-f"><div class="sb-fa">
 <button class="sb-fb" onclick="toggleTheme()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>Theme</button>
@@ -245,7 +246,145 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 
 <main class="mc"><div class="db">
 
-<!-- ONTO-ERS -->
+<!-- QUICK START -->
+<div class="ds da" id="doc-quickstart" data-nav="quickstart">
+<h1>Quick Start</h1>
+<div class="dm"><span class="db-g bg-g">5 minutes</span><span>No dependencies</span></div>
+
+<h2>1. Score Any AI Response</h2>
+<p>No account needed. Send any AI-generated text and get an epistemic quality score.</p>
+<pre><code>curl -X POST https://api.ontostandard.org/v1/check \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "Intermittent fasting has moderate benefits for metabolic health.",
+    "domain": "medicine"
+  }'</code></pre>
+<p>Response:</p>
+<pre><code>{
+  "score": 1.2,
+  "grade": "F",
+  "rep": {"numbers": 0, "sources": 0, "hedges": 1, "balance": 0},
+  "proof": "σ_1708123456_ed25519_a3f8...",
+  "attribution": "Evaluated by ONTO Standard | ontostandard.org"
+}</code></pre>
+
+<h2>2. Use ONTO Proxy (GOLD Injection)</h2>
+<p>One line change. Your existing OpenAI/Anthropic code gains epistemic discipline.</p>
+
+<h3>OpenAI-compatible</h3>
+<pre><code># Before
+curl https://api.openai.com/v1/chat/completions \
+  -H "Authorization: Bearer sk-..." \
+  -d '{"model":"gpt-4o","messages":[{"role":"user","content":"..."}]}'
+
+# After — GOLD injected server-side
+curl https://api.ontostandard.org/v1/proxy/chat/completions \
+  -H "Authorization: Bearer onto_..." \
+  -H "X-Provider-Key: sk-..." \
+  -d '{"model":"gpt-4o","messages":[{"role":"user","content":"..."}]}'</code></pre>
+
+<h3>Anthropic</h3>
+<pre><code>curl https://api.ontostandard.org/v1/proxy/anthropic/messages \
+  -H "Authorization: Bearer onto_..." \
+  -H "X-Provider-Key: sk-ant-..." \
+  -d '{"model":"claude-sonnet-4-5-20250929","messages":[{"role":"user","content":"..."}]}'</code></pre>
+
+<h3>Python SDK</h3>
+<pre><code>from openai import OpenAI
+
+# One line change — base_url
+client = OpenAI(
+    api_key="onto_...",
+    base_url="https://api.ontostandard.org/v1/proxy"
+)
+
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[{"role": "user", "content": "What is intermittent fasting?"}],
+    extra_headers={"X-Provider-Key": "sk-..."}
+)
+print(response.choices[0].message.content)
+# → Response now includes citations, confidence levels, uncertainty markers</code></pre>
+
+<h2>3. Get API Key</h2>
+<p>Create a free account at <a href="/app/">ontostandard.org/app</a>. Open tier: 10 requests/day, no credit card. Upgrade to Standard ($2,500/mo) for 1,000 requests/day.</p>
+
+<h2>4. Verify a Proof</h2>
+<pre><code>curl https://api.ontostandard.org/v1/verify/σ_1708123456_ed25519_a3f8...</code></pre>
+<p>Every ONTO evaluation is signed with Ed25519. Proofs are publicly verifiable.</p>
+</div>
+<div class="sd"></div>
+
+<!-- API REFERENCE -->
+<div class="ds da" id="doc-api-ref" data-nav="api-ref">
+<h1>API Reference</h1>
+<div class="dm"><span class="db-g bg-b">api.ontostandard.org</span><span>REST · JSON · Ed25519</span></div>
+
+<h2>Authentication</h2>
+<p>All authenticated endpoints require an API key in the Authorization header:</p>
+<pre><code>Authorization: Bearer onto_sk_...</code></pre>
+<p>Get your key at <a href="/app/?page=api">Dashboard → API Keys</a>.</p>
+
+<h2>Endpoints</h2>
+
+<h3>POST /v1/check</h3>
+<p>Score any text. No auth required (rate limited: 5/min by IP).</p>
+<table><thead><tr><th>Param</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
+<tr><td>text</td><td>string</td><td>Yes</td><td>AI-generated text to evaluate</td></tr>
+<tr><td>domain</td><td>string</td><td>No</td><td>Domain hint (medicine, finance, physics, etc.)</td></tr>
+</tbody></table>
+
+<h3>POST /v1/proxy/chat/completions</h3>
+<p>OpenAI-compatible proxy with GOLD injection. Auth required.</p>
+<table><thead><tr><th>Header</th><th>Required</th><th>Description</th></tr></thead><tbody>
+<tr><td>Authorization</td><td>Yes</td><td>ONTO API key</td></tr>
+<tr><td>X-Provider-Key</td><td>Yes</td><td>Your OpenAI/provider API key</td></tr>
+</tbody></table>
+<p>Request body: standard OpenAI chat completions format. GOLD is injected server-side into system prompt.</p>
+
+<h3>POST /v1/proxy/anthropic/messages</h3>
+<p>Anthropic proxy with GOLD injection. Same auth headers as above.</p>
+
+<h3>POST /v1/models/evaluate</h3>
+<p>Full evaluation with scoring breakdown. Auth required.</p>
+<table><thead><tr><th>Param</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
+<tr><td>model_id</td><td>string</td><td>Yes</td><td>Registered model identifier</td></tr>
+<tr><td>text</td><td>string</td><td>Yes</td><td>Model response to evaluate</td></tr>
+<tr><td>question</td><td>string</td><td>No</td><td>Original question for context</td></tr>
+</tbody></table>
+
+<h3>GET /v1/verify/{proof_hash}</h3>
+<p>Verify an Ed25519 signed proof. No auth required.</p>
+
+<h3>GET /v1/pricing</h3>
+<p>Current tier limits and pricing. No auth required.</p>
+
+<h3>GET /v1/signal/status</h3>
+<p>ONTO Signal server status. No auth required.</p>
+
+<h3>GET /health</h3>
+<p>Service health check. Returns 200 if operational.</p>
+
+<h2>Rate Limits</h2>
+<table><thead><tr><th>Tier</th><th>Limit</th><th>Window</th></tr></thead><tbody>
+<tr><td>Unauthenticated</td><td>5 requests</td><td>per minute</td></tr>
+<tr><td>Open</td><td>10 requests</td><td>per day</td></tr>
+<tr><td>Standard</td><td>1,000 requests</td><td>per day</td></tr>
+<tr><td>AI Provider</td><td>Unlimited</td><td>—</td></tr>
+</tbody></table>
+<p>Rate limit headers: <code>X-RateLimit-Limit</code>, <code>X-RateLimit-Remaining</code>, <code>X-RateLimit-Reset</code>.</p>
+
+<h2>Errors</h2>
+<table><thead><tr><th>Code</th><th>Meaning</th></tr></thead><tbody>
+<tr><td>401</td><td>Missing or invalid API key</td></tr>
+<tr><td>429</td><td>Rate limit exceeded</td></tr>
+<tr><td>400</td><td>Invalid request body</td></tr>
+<tr><td>500</td><td>Server error</td></tr>
+</tbody></table>
+</div>
+<div class="sd"></div>
+
+<!-- ABOUT ONTO -->
 <div class="ds da" id="doc-about" data-nav="about">
 <h1>About ONTO</h1>
 <div class="dm"><span class="db-g bg-g">Phase 2 — Experimental</span><span class="db-g bg-b">Public Research Release</span><span>ONTO-ERS v10.0</span><span>Scoring Engine v3.0</span><span>GOLD v4.5</span></div>
@@ -819,9 +958,12 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <h1>ONTO Layer Specification</h1>
 <div class="dm"><span class="db-g bg-a">Draft</span><span>ONTO-SPEC-002</span><span>February 2026</span></div>
 <h2 id="layer-arch">1. Layer Architecture</h2>
-<h3>1.1 OPEN</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$0</td></tr><tr><td>Proxy requests</td><td>500 / day</td></tr><tr><td>GOLD Tier</td><td>TIER 2 — Protocol + Core (~17K tokens)</td></tr><tr><td>Models</td><td>Up to 5</td></tr><tr><td>Scoring</td><td>REP, EpCE, DLA</td></tr><tr><td>Proofs</td><td>Ed25519 signed proof</td></tr><tr><td>Support</td><td>Best effort</td></tr></tbody></table>
-<h3>1.2 STANDARD</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$30,000/yr ($2,500/mo)</td></tr><tr><td>Proxy requests</td><td>50,000 / day</td></tr><tr><td>GOLD Tier</td><td>TIER 4 — Extended Corpus (~199K tokens)</td></tr><tr><td>Models</td><td>Up to 20</td></tr><tr><td>Scoring</td><td>REP, EpCE, DLA</td></tr><tr><td>Proofs</td><td>Ed25519 signed proof chain</td></tr><tr><td>Support</td><td>Email (48h)</td></tr></tbody></table>
-<h3>1.3 ENTERPRISE</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$114,000/yr ($9,500/mo)</td></tr><tr><td>Proxy requests</td><td>Unlimited</td></tr><tr><td>GOLD Tier</td><td>TIER 6 — Full Corpus (~459K tokens)</td></tr><tr><td>Models</td><td>Up to 100</td></tr><tr><td>Scoring</td><td>Full ONTO-ERS evaluation suite</td></tr><tr><td>Proofs</td><td>Public verifiable proof chain · 24-month audit trail</td></tr><tr><td>Evaluation</td><td>Quarterly independent evaluation (1,100 probes)</td></tr><tr><td>Certificate</td><td>Public certificate + verification badge</td></tr><tr><td>Support</td><td>Dedicated (4h SLA)</td></tr></tbody></table>
+<h3>1.1 OPEN</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$0</td></tr><tr><td>Proxy requests</td><td>10 / day</td></tr><tr><td>GOLD</td><td>GOLD Core (~17K tokens)</td></tr><tr><td>Scoring</td><td>REP, EpCE, DLA</td></tr><tr><td>Proofs</td><td>Ed25519 signed proof</td></tr><tr><td>Attribution</td><td>Required: "Enhanced by ONTO Standard"</td></tr><tr><td>Support</td><td>Best effort</td></tr></tbody></table>
+<h3>1.2 STANDARD</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$30,000/yr ($2,500/mo)</td></tr><tr><td>Proxy requests</td><td>1,000 / day</td></tr><tr><td>GOLD</td><td>GOLD Extended (~142K tokens)</td></tr><tr><td>SSE Stream</td><td>Unlimited</td></tr><tr><td>Scoring</td><td>REP, EpCE, DLA</td></tr><tr><td>Proofs</td><td>Ed25519 signed proof chain</td></tr><tr><td>Support</td><td>Email (48h)</td></tr></tbody></table>
+<h3>1.3 AI PROVIDER</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$250,000/yr (fixed annual)</td></tr><tr><td>Proxy requests</td><td>Unlimited</td></tr><tr><td>GOLD</td><td>GOLD Full Corpus via SSE (~412K tokens)</td></tr><tr><td>Scoring</td><td>Full ONTO-ERS evaluation suite</td></tr><tr><td>Proofs</td><td>Ed25519 proof chain · 24-month audit trail</td></tr><tr><td>Attribution</td><td>"Powered by ONTO Standard" required</td></tr><tr><td>Scale</td><td>ONTO not in inference path — unlimited requests</td></tr><tr><td>Support</td><td>Email (24h)</td></tr></tbody></table>
+
+<h3>1.4 WHITE-LABEL</h3><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Price</td><td>$500,000/yr (fixed annual)</td></tr><tr><td>Includes</td><td>Everything in AI Provider</td></tr><tr><td>Attribution</td><td>None — deploy under your brand</td></tr><tr><td>Custom support</td><td>Dedicated integration engineer</td></tr><tr><td>SLA</td><td>Priority (4h)</td></tr><tr><td>Review</td><td>Quarterly with ONTO Standards Council</td></tr></tbody></table>
+<p>Unlicensed use of ONTO-derived epistemic patterns is detectable via scoring engine and constitutes IP violation. White-Label is the only authorized path to deploy ONTO-enhanced outputs without attribution.</p>
 <h2 id="signal-packet">2. Signal Packet</h2>
 <pre><code>104 bytes: [8 timestamp][32 entropy][64 Ed25519 signature]</code></pre>
 <h2 id="layer-endpoints">3. API Endpoints</h2>
@@ -889,7 +1031,7 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <div class="article-card"><h3>How Regulated Industries Can Prepare for the EU AI Act</h3><div class="article-meta">ONTO Standards Council · February 2026</div><p>The EU AI Act requires risk management, transparency, and conformity assessment. ONTO certification maps directly to Articles 9, 13, 15, and 43.</p></div>
 <div class="article-card" style="border-color:rgba(34,197,94,.3)"><h3><a href="/paper/" style="color:var(--text);text-decoration:none">ONTO: A Formal Framework for Measuring Epistemic Risk in LLM Outputs</a></h3><div class="article-meta">Tommy Lee · ONTO Standards Council · February 2026 · 11 pages</div><p>Academic paper introducing the ONTO Epistemic Risk Standard. Three deterministic metrics (REP, EpCE, DLA), EM1–EM5 taxonomy (92 patterns), Information Gap Ratio grounded in Kolmogorov complexity. Validated on 10 major AI systems — mean risk score 0.55 (Grade D). Ed25519 cryptographic proof chain. <a href="/paper/">Read paper →</a></p></div>
 <div class="article-card" style="border-color:rgba(34,197,94,.3)"><h3><a href="/encounter/" style="color:var(--text);text-decoration:none">Field Observation: What Happens When AI Encounters ONTO</a></h3><div class="article-meta">ONTO Standards Council · February 2026 · 4 Acts, 12 Phases</div><p>A production AI model encountered ontostandard.org without GOLD injection. Documented: behavioral transfer, confident fabrication, self-diagnosis, spontaneous ROI calculation, discovery of "hallucination inside apology" pattern, and the model independently writing ONTO Proxy's value proposition through its own failures. <a href="/encounter/">Read full observation →</a></p></div>
-<p style="color:var(--text-m);font-size:12px;margin-top:20px">More articles coming. Subscribe: <a href="/cdn-cgi/l/email-protection#196a6c6969766b6d5976776d766a6d78777d786b7d37766b7e"><span class="__cf_email__" data-cfemail="54272124243b2620143b3a203b2720353a303526307a3b2633">[email&#160;protected]</span></a></p>
+<p style="color:var(--text-m);font-size:12px;margin-top:20px">More articles coming. Subscribe: <a href="mailto:council@ontostandard.org">council@ontostandard.org</a></p>
 </div><div class="sd"></div>
 
 <!-- FAQ -->
@@ -901,11 +1043,11 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Does ONTO fix my AI model?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">ONTO does not modify model weights, retrain, or fine-tune. It provides epistemic grounding — every output is evaluated against GOLD v4.5, producing measurable improvement in epistemic discipline. Tested result: 10× composite improvement across 100 questions (<a href="#evidence">see data</a>). The model itself remains unchanged; ONTO operates as external infrastructure.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How is ONTO different from other AI monitoring?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Most tools track data drift or performance. ONTO measures epistemic uncertainty — the gap between what AI claims to know and what it actually knows — and provides active grounding through GOLD v4.5 to reduce that gap. In testing across 10 models, baseline epistemic rigor varied 3–10×. No model produced calibrated confidence scores without GOLD. <a href="#evidence">Full experimental data</a>.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What industries is ONTO for?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Any industry deploying AI, with focus on regulated sectors: healthcare, finance, defense, aviation, pharma, insurance, legal, government.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is the free tier really free?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Yes. Open tier provides 500 proxy requests per day with GOLD TIER 2 injection (~17K tokens) and Ed25519 signed scoring at no cost. Upgrade to Standard ($30K/yr) for 50,000 requests/day and GOLD TIER 4 Extended Corpus.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is the free tier really free?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Yes. Open tier provides 10 proxy requests per day with GOLD Core injection (~17K tokens) and Ed25519 signed scoring at no cost. Attribution required. Upgrade to Standard ($30K/yr) for 1,000 requests/day and GOLD Extended Corpus.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does certification work?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Submit AI system → independent evaluation via ONTO-Bench → Standards Council review → certificate issued (12 months) → publicly verifiable.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Does ONTO help with EU AI Act?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">ONTO maps to Art. 9 (risk), Art. 13 (transparency), Art. 15 (accuracy), Art. 43 (conformity). Not a substitute for full compliance, but provides documented evidence.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is the signed proof?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Every evaluation produces a cryptographically signed proof — timestamped, versioned, and tamper-proof using Ed25519 signatures. This is your audit trail: verifiable evidence that an evaluation was conducted at a specific time with specific results.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I try before committing?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Yes. Create a free account for OPEN tier access. 500 proxy requests/day with GOLD TIER 2 injection. See the difference on the <a href="/app/">portal dashboard</a>, then upgrade when ready.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I try before committing?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Yes. Create a free account for OPEN tier access. 10 proxy requests/day with GOLD Core injection. See the difference on the <a href="/app/">portal dashboard</a>, then upgrade when ready.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is the GOLD proxy?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">ONTO Proxy injects the GOLD epistemic discipline corpus into every AI request server-side. You change one line of code (base_url) — your model's outputs gain measurable epistemic discipline. GOLD never leaves the server. You get the effect, not the document. Compatible with OpenAI, Anthropic, Google, Mistral, Meta, Groq.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is the Founding Cohort?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">First 10 clients get 2× subscription duration (buy 12 months → get 24 months). Includes case study rights, quarterly calls, and roadmap influence. Contact <a href="mailto:council@ontostandard.org">council@ontostandard.org</a>.</div></div>
 </div><div class="sd"></div>
@@ -944,6 +1086,47 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 </div>
 </div><div class="sd"></div>
 
+<!-- CHANGELOG -->
+<div class="ds da" id="doc-changelog" data-nav="changelog">
+<h1>Changelog</h1>
+<div class="dm"><span class="db-g bg-g">Latest updates</span></div>
+
+<h2>2026-02-20</h2>
+<ul>
+<li>Pricing: AI Provider tier ($250,000/yr) and White-Label ($500,000/yr) added</li>
+<li>Rate limits: Open 10/day, Standard 1,000/day, Provider unlimited</li>
+<li>GOLD proxy endpoints live: <code>/v1/proxy/chat/completions</code>, <code>/v1/proxy/anthropic/messages</code></li>
+<li>Detection clause: unlicensed ONTO-derived patterns detectable via scoring engine</li>
+<li>Portal v20: 4-tier pricing cards, Provider licensing comparison</li>
+<li>Docs: Quick Start guide, API Reference, CF email cleanup</li>
+</ul>
+
+<h2>2026-02-17</h2>
+<ul>
+<li>GOLD proxy LIVE — Anthropic tested, 18,897 input tokens</li>
+<li>CS-2026-002: 9 baseline models benchmarked, ONTO 4-12× improvement</li>
+<li>Signal server v2.0 on notary.ontostandard.org</li>
+<li>Admin panel: 15 stealth endpoints</li>
+<li>SSE stream: AES-256-GCM + JWT authentication</li>
+</ul>
+
+<h2>2026-02-11</h2>
+<ul>
+<li>Landing page: 7 sections, institutional design</li>
+<li>Public Experimental Run: 11 models scored</li>
+<li>Schema.org: 15+ structured data types</li>
+<li>SEO optimization complete</li>
+</ul>
+
+<h2>2026-02-01</h2>
+<ul>
+<li>CS-2026-001: 10 models × 100 questions, composite 0.53 → 5.38 (10×)</li>
+<li>Scoring engine v3.0 (993 lines, GOLD-backed)</li>
+<li>PyPI 10.2.1 published</li>
+<li>Phase 1 PROVE complete (8/8)</li>
+</ul>
+</div><div class="sd"></div>
+
 <!-- LICENSE -->
 <div class="ds da" id="doc-license" data-nav="license">
 <h1>ONTO Gold Asymmetric AI License</h1>
@@ -980,7 +1163,7 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <h2 id="t-12">12. Termination</h2><p>We may terminate for violations. You may cancel anytime.</p>
 <h2 id="t-13">13. Changes</h2><p>We may modify terms. Continued use = acceptance.</p>
 <h2 id="t-14">14. Law</h2><p>Governing law and jurisdiction to be determined upon formal legal entity establishment.</p>
-<h2 id="t-15">15. Contact</h2><p><a href="/cdn-cgi/l/email-protection#e1929491918e9395a18e8f958e9295808f85809385cf8e9386"><span class="__cf_email__" data-cfemail="03707673736c7177436c6d776c7077626d676271672d6c7164">[email&#160;protected]</span></a></p>
+<h2 id="t-15">15. Contact</h2><p><a href="mailto:council@ontostandard.org">council@ontostandard.org</a></p>
 </div><div class="sd"></div>
 
 <!-- PRIVACY -->
@@ -996,7 +1179,7 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <h2 id="p-4">4. Retention</h2><p>Active: retained. Deleted: 30 days. Aggregated: indefinite. Billing: as required by law.</p>
 <h2 id="p-5">5. Sharing</h2><p>No selling. Shared with: service providers, payment processors, law enforcement (required), successors.</p>
 <h2 id="p-6">6. Security</h2><ul><li>TLS 1.3 in transit</li><li>AES-256 at rest</li><li>Regular audits</li><li>Access controls</li></ul>
-<h2 id="p-7">7. Your Rights</h2><p>Access, correct, delete, export, object, withdraw consent. Contact: <a href="/cdn-cgi/l/email-protection#4b383e3b3b24393f0b24253f24383f2a252f2a392f6524392c"><span class="__cf_email__" data-cfemail="8efdfbfefee1fcfacee1e0fae1fdfaefe0eaeffceaa0e1fce9">[email&#160;protected]</span></a></p>
+<h2 id="p-7">7. Your Rights</h2><p>Access, correct, delete, export, object, withdraw consent. Contact: <a href="mailto:council@ontostandard.org">council@ontostandard.org</a></p>
 <h2 id="p-8">8. Cookies</h2><p>Essential only. No advertising trackers.</p>
 <h2 id="p-9">9. Children</h2><p>Not intended for under 18. No data collected from children.</p>
 </div><div class="sd"></div>
@@ -1012,12 +1195,12 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <h2 id="r-4">4. Service Credits</h2>
 <p>Service credit terms will be defined upon formal SLA establishment. During the experimental phase, ONTO addresses service disruptions on a case-by-case basis.</p>
 <h2 id="r-5">5. Non-Refundable</h2><ul><li>ToS violation terminations</li><li>Unused credits</li><li>Setup fees</li><li>Third-party fees</li></ul>
-<h2 id="r-6">6. How To</h2><p>Email <a href="/cdn-cgi/l/email-protection#46353336362934320629283229353227282227342268293421"><span class="__cf_email__" data-cfemail="55262025253a2721153a3b213a2621343b313427317b3a2732">[email&#160;protected]</span></a>. Response 2 days, processing 5-10 days.</p>
+<h2 id="r-6">6. How To</h2><p>Email <a href="mailto:council@ontostandard.org">council@ontostandard.org</a>. Response 2 days, processing 5-10 days.</p>
 </div>
 
 </div></main>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 const AF_API='https://api.ontostandard.org';
 let afPendingEmail='';
 
@@ -1142,7 +1325,7 @@ function closeSB(){document.getElementById('sb').classList.remove('open');docume
 function checkAuth(){
 const t=localStorage.getItem('onto_token'),u=localStorage.getItem('onto_user');
 const a=document.getElementById('sb-auth'),s=document.getElementById('sb-si');
-if(t&&u){try{const d=JSON.parse(u);document.getElementById('d-av').textContent=(d.name||'U')[0].toUpperCase();document.getElementById('d-un').textContent=d.name||'User';document.getElementById('d-up').textContent=d.plan==='enterprise'?'ENTERPRISE':d.plan==='standard'?'STANDARD':'OPEN';a.style.display='block';s.style.display='none'}catch(e){a.style.display='none';s.style.display='block'}}else{a.style.display='none';s.style.display='block'}}
+if(t&&u){try{const d=JSON.parse(u);document.getElementById('d-av').textContent=(d.name||'U')[0].toUpperCase();document.getElementById('d-un').textContent=d.name||'User';document.getElementById('d-up').textContent=d.plan==='enterprise'?'AI PROVIDER':d.plan==='standard'?'STANDARD':'OPEN';a.style.display='block';s.style.display='none'}catch(e){a.style.display='none';s.style.display='block'}}else{a.style.display='none';s.style.display='block'}}
 checkAuth();
 const secs=document.querySelectorAll('.ds[data-nav]'),nls=document.querySelectorAll('.nl[data-doc]');
 function updNav(id){nls.forEach(l=>l.classList.remove('active'));const t=document.querySelector(`.nl[data-doc="${id}"]`);if(t){t.classList.add('active');t.scrollIntoView({block:'nearest',behavior:'smooth'})}}
