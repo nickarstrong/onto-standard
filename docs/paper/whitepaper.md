@@ -8,7 +8,7 @@ ontostandard.org · council@ontostandard.org
 ---
 
 **Status:** Public Experimental Run (Phase 2)  
-**Version:** 2.1  
+**Version:** 2.2  
 **License:** CC BY 4.0 (text), proprietary (GOLD corpus, scoring engine)
 
 ---
@@ -440,7 +440,20 @@ IGR ≈ 0     → model capacity sufficient for evaluation
 IGR ≥ 0.7   → critical gap, external source mandatory
 ```
 
-IGR provides a theoretical basis for determining when AI self-evaluation is adequate vs. when external discipline enforcement is required.
+**Calibration examples** (from ONTO Knowledge Base, canonical):
+
+```
+Phenomenon               K(E)        H_max(S)    IGR     Assessment
+──────────────────────────────────────────────────────────────────────
+Ideal gas behavior       ~50 bits    ~100 bits   0       Model sufficient
+Projectile motion        ~30 bits    ~50 bits    0       Classical physics sufficient
+Turbulence (specific)    ~1000 bits  ~500 bits   0.50    Partial gap
+Protein folding (origin) ~2000 bits  ~800 bits   0.60    Significant gap
+Minimal self-replicator  ~6000 bits  ~500 bits   0.92    Critical gap
+JCVI-syn3.0 cell         500K bits   ~500 bits   0.999   Extreme gap
+```
+
+For AI evaluation, IGR provides a theoretical basis for determining when AI self-evaluation is adequate vs. when external discipline enforcement is required. When the evaluation task's complexity K(E) exceeds the evaluating model's maximum entropy H_max(S), the model cannot reliably assess its own output — external infrastructure is mandatory.
 
 ### 7.3 Estimation Interfaces
 
@@ -527,6 +540,8 @@ ONTO is an exoskeleton for AI. The same model, measurably better.
 **Scoring Engine v3.0** — Deterministic regex-based epistemic quality scorer. 993 lines, GOLD-backed, EM1–EM5 taxonomy. Source: github.com/nickarstrong/onto-standard
 
 **ONTO Protocol v3.2** — Formal constraint specifications for epistemic evaluation. Execution modes (CALC/SYNTH/AUDIT), K(E) and H_max(S) estimation interfaces, falsifiability conditions, IGR metric. Source: github.com/nickarstrong/onto-protocol
+
+**ONTO Knowledge Base v1.0** — Formal definitions and metrics. Central Law (L1/L2 thesis, 5 supporting pillars, 9 DOI references), IGR calibration examples, probability bounds. Source: github.com/nickarstrong/onto-kb
 
 ---
 
