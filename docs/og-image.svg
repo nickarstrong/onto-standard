@@ -1,53 +1,130 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <defs>
-    <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
-      <path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#071a0e"/>
+      <stop offset="0.5" stop-color="#0d2818"/>
+      <stop offset="1" stop-color="#071a0e"/>
+    </linearGradient>
+    <pattern id="grid" width="38" height="38" patternUnits="userSpaceOnUse">
+      <path d="M38 0L0 0 0 38" fill="none" stroke="rgba(34,197,94,0.13)" stroke-width="0.5"/>
     </pattern>
-    <radialGradient id="glow" cx="50%" cy="42%" r="35%">
-      <stop offset="0%" stop-color="rgba(21,128,61,0.08)"/>
-      <stop offset="100%" stop-color="rgba(10,10,10,0)"/>
+    <radialGradient id="glow" cx="50%" cy="40%" rx="50%" ry="55%">
+      <stop offset="0" stop-color="rgba(34,197,94,0.08)"/>
+      <stop offset="1" stop-color="transparent"/>
     </radialGradient>
+    <linearGradient id="scan" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="transparent"/>
+      <stop offset="0.5" stop-color="rgba(34,197,94,0.8)"/>
+      <stop offset="1" stop-color="transparent"/>
+    </linearGradient>
+    <linearGradient id="al" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#22c55e" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#22c55e" stop-opacity="0.6"/>
+      <stop offset="1" stop-color="#22c55e" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="bR" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgba(239,68,68,0.4)"/>
+      <stop offset="1" stop-color="rgba(239,68,68,0.15)"/>
+    </linearGradient>
+    <linearGradient id="bG" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgba(34,197,94,0.4)"/>
+      <stop offset="1" stop-color="rgba(34,197,94,0.12)"/>
+    </linearGradient>
+    <linearGradient id="divH" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgba(34,197,94,0)"/>
+      <stop offset="0.05" stop-color="rgba(34,197,94,0.2)"/>
+      <stop offset="0.95" stop-color="rgba(34,197,94,0.2)"/>
+      <stop offset="1" stop-color="rgba(34,197,94,0)"/>
+    </linearGradient>
   </defs>
 
-  <rect width="1200" height="630" fill="#0a0a0a"/>
+  <rect width="1200" height="630" fill="url(#bg)"/>
   <rect width="1200" height="630" fill="url(#grid)"/>
   <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect x="0" y="0" width="1200" height="2" fill="url(#scan)"/>
 
-  <!-- Formulas -->
-  <g font-family="'Courier New', monospace" font-size="12" fill="#15803d" opacity="0.25">
-    <text x="70" y="80">U-Recall</text>
-    <text x="1060" y="65">ECE</text>
-    <text x="55" y="560">EpCE</text>
-    <text x="1070" y="575">DLA</text>
-    <text x="80" y="320">EM1..EM5</text>
-    <text x="1040" y="310">GOLD v4.5</text>
-  </g>
-
-  <!-- Orb rings -->
-  <circle cx="600" cy="240" r="120" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-  <circle cx="600" cy="240" r="90" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-  <circle cx="600" cy="240" r="60" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-
-  <!-- Logo — exact landing v6: circle + path, properly centered -->
-  <g transform="translate(600, 240) scale(2.588) translate(-18, -18)">
-    <circle cx="18" cy="18" r="17" fill="#fafafa"/>
+  <!-- Header: Logo + name + label -->
+  <svg x="60" y="28" width="32" height="32" viewBox="0 0 36 36">
+    <circle cx="18" cy="18" r="17" fill="white"/>
     <path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/>
-  </g>
+  </svg>
+  <text x="100" y="50" fill="#e2e8f0" font-family="Inter,system-ui,sans-serif" font-size="18" font-weight="700">ONTO Standard</text>
+  <text x="1140" y="42" fill="rgba(34,197,94,0.35)" font-family="JetBrains Mono,monospace" font-size="10" font-weight="600" text-anchor="end" letter-spacing="1.5">CS-2026-001 · WITHOUT GOLD → WITH GOLD</text>
 
-  <!-- ONTO -->
-  <text x="600" y="365" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="64" fill="#fafafa" letter-spacing="8">ONTO</text>
+  <!-- Killer tezises -->
+  <text x="100" y="72" fill="rgba(226,232,240,0.5)" font-family="Inter,sans-serif" font-size="15" font-weight="500">Cite sources · Quantify confidence · Disclose unknowns</text>
 
-  <!-- Accent line -->
-  <rect x="520" y="383" width="160" height="2" rx="1" fill="#15803d" opacity="0.6"/>
+  <!-- ═══ FULL-WIDTH BARS ═══ -->
+  <!-- Bar area: x=60..1140 → max bar width ~900px -->
 
-  <!-- Subtitle -->
-  <text x="600" y="425" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="400" font-size="18" fill="#a0a0a0">Epistemic Risk Standard</text>
+  <!-- Composite score -->
+  <text x="60" y="100" fill="rgba(226,232,240,0.6)" font-family="Inter,sans-serif" font-size="15" font-weight="500">Composite score</text>
+  <rect x="60" y="110" width="90" height="26" rx="4" fill="url(#bR)"/>
+  <text x="72" y="128" fill="rgba(239,68,68,0.8)" font-family="JetBrains Mono,monospace" font-size="12" font-weight="600">0.53</text>
+  <rect x="156" y="110" width="780" height="26" rx="4" fill="url(#bG)"/>
+  <text x="168" y="128" fill="rgba(34,197,94,0.9)" font-family="JetBrains Mono,monospace" font-size="12" font-weight="600">5.38</text>
+  <text x="1140" y="130" fill="#22c55e" font-family="JetBrains Mono,monospace" font-size="18" font-weight="700" text-anchor="end">10×</text>
 
-  <!-- Status -->
-  <text x="600" y="460" text-anchor="middle" font-family="'Courier New', monospace" font-weight="400" font-size="13" fill="#606060">Protocol v3.0  ·  Ed25519 Signed  ·  GOLD v4.5</text>
+  <!-- Source citations -->
+  <text x="60" y="168" fill="rgba(226,232,240,0.6)" font-family="Inter,sans-serif" font-size="15" font-weight="500">Source citations</text>
+  <rect x="60" y="178" width="32" height="26" rx="4" fill="url(#bR)"/>
+  <text x="67" y="196" fill="rgba(239,68,68,0.8)" font-family="JetBrains Mono,monospace" font-size="12" font-weight="600">0</text>
+  <rect x="98" y="178" width="560" height="26" rx="4" fill="url(#bG)"/>
+  <text x="110" y="196" fill="rgba(34,197,94,0.9)" font-family="JetBrains Mono,monospace" font-size="12" font-weight="600">3+</text>
+  <text x="1140" y="198" fill="#22c55e" font-family="JetBrains Mono,monospace" font-size="18" font-weight="700" text-anchor="end">0 → 3+</text>
 
-  <!-- CTA -->
-  <rect x="460" y="495" width="280" height="40" rx="6" fill="#1a1a1a" stroke="#333333" stroke-width="1"/>
-  <text x="488" y="520" font-family="'Courier New', monospace" font-size="14" fill="#606060">$</text>
-  <text x="506" y="520" font-family="'Courier New', monospace" font-weight="600" font-size="14" fill="#fafafa">pip install onto-standard</text>
+  <!-- Confidence calibration -->
+  <text x="60" y="236" fill="rgba(226,232,240,0.6)" font-family="Inter,sans-serif" font-size="15" font-weight="500">Confidence calibration</text>
+  <rect x="60" y="246" width="32" height="26" rx="4" fill="url(#bR)"/>
+  <text x="67" y="264" fill="rgba(239,68,68,0.8)" font-family="JetBrains Mono,monospace" font-size="12" font-weight="600">0</text>
+  <rect x="98" y="246" width="560" height="26" rx="4" fill="url(#bG)"/>
+  <text x="110" y="264" fill="rgba(34,197,94,0.9)" font-family="JetBrains Mono,monospace" font-size="12" font-weight="600">1.0</text>
+  <text x="1140" y="266" fill="#22c55e" font-family="JetBrains Mono,monospace" font-size="18" font-weight="700" text-anchor="end">0 → 1.0</text>
+
+  <!-- Variance (SD) -->
+  <text x="60" y="304" fill="rgba(226,232,240,0.6)" font-family="Inter,sans-serif" font-size="15" font-weight="500">Variance (SD)</text>
+  <rect x="60" y="314" width="440" height="26" rx="4" fill="url(#bR)"/>
+  <text x="72" y="332" fill="rgba(239,68,68,0.8)" font-family="JetBrains Mono,monospace" font-size="12" font-weight="600">0.58</text>
+  <rect x="506" y="314" width="80" height="26" rx="4" fill="url(#bG)"/>
+  <text x="518" y="332" fill="rgba(34,197,94,0.9)" font-family="JetBrains Mono,monospace" font-size="12" font-weight="600">0.11</text>
+  <text x="1140" y="334" fill="#22c55e" font-family="JetBrains Mono,monospace" font-size="18" font-weight="700" text-anchor="end">5.4×</text>
+
+  <!-- Cross-domain transfer -->
+  <text x="60" y="372" fill="rgba(226,232,240,0.6)" font-family="Inter,sans-serif" font-size="15" font-weight="500">Cross-domain transfer</text>
+  <rect x="60" y="382" width="32" height="26" rx="4" fill="url(#bR)"/>
+  <text x="67" y="400" fill="rgba(239,68,68,0.8)" font-family="JetBrains Mono,monospace" font-size="12" font-weight="600">0/5</text>
+  <rect x="98" y="382" width="680" height="26" rx="4" fill="url(#bG)"/>
+  <text x="110" y="400" fill="rgba(34,197,94,0.9)" font-family="JetBrains Mono,monospace" font-size="12" font-weight="600">4/5</text>
+  <text x="1140" y="402" fill="#22c55e" font-family="JetBrains Mono,monospace" font-size="18" font-weight="700" text-anchor="end">80%</text>
+
+  <!-- Vague qualifiers (VQ) -->
+  <text x="60" y="440" fill="rgba(226,232,240,0.6)" font-family="Inter,sans-serif" font-size="15" font-weight="500">Vague qualifiers (VQ)</text>
+  <rect x="60" y="450" width="280" height="26" rx="4" fill="url(#bR)"/>
+  <text x="72" y="468" fill="rgba(239,68,68,0.8)" font-family="JetBrains Mono,monospace" font-size="12" font-weight="600">0.06</text>
+  <rect x="346" y="450" width="80" height="26" rx="4" fill="url(#bG)"/>
+  <text x="358" y="468" fill="rgba(34,197,94,0.9)" font-family="JetBrains Mono,monospace" font-size="12" font-weight="600">0.02</text>
+  <text x="1140" y="468" fill="#22c55e" font-family="JetBrains Mono,monospace" font-size="18" font-weight="700" text-anchor="end">−67%</text>
+
+  <!-- Legend -->
+  <rect x="60" y="496" width="12" height="12" rx="2" fill="rgba(239,68,68,0.35)"/>
+  <text x="78" y="507" fill="rgba(226,232,240,0.4)" font-family="Inter,sans-serif" font-size="12">Without ONTO</text>
+  <rect x="190" y="496" width="12" height="12" rx="2" fill="rgba(34,197,94,0.35)"/>
+  <text x="208" y="507" fill="rgba(226,232,240,0.4)" font-family="Inter,sans-serif" font-size="12">With ONTO</text>
+
+  <!-- ═══ DIVIDER ═══ -->
+  <rect x="60" y="528" width="1080" height="1" fill="url(#divH)"/>
+
+  <!-- ═══ DESCRIPTION ═══ -->
+  <text x="60" y="556" fill="rgba(226,232,240,0.55)" font-family="Inter,sans-serif" font-size="14" font-weight="400">Server-side GOLD injection · No retraining · No model access · Deterministic scoring · Ed25519-signed</text>
+  <text x="60" y="580" fill="rgba(226,232,240,0.35)" font-family="Inter,sans-serif" font-size="13">11 models tested · 100 questions · 5 domains · 993 lines regex · Zero AI in evaluation loop</text>
+
+  <!-- Signal + URL -->
+  <rect x="60" y="598" width="260" height="24" rx="3" fill="rgba(10,26,15,0.5)" stroke="rgba(34,197,94,0.2)" stroke-width="0.7"/>
+  <text x="70" y="614" fill="rgba(34,197,94,0.5)" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700">σ_CS-2026-001</text>
+  <text x="176" y="614" fill="rgba(34,197,94,0.25)" font-family="JetBrains Mono,monospace" font-size="8">n=1,000 · ✓PROXY ✓GOLD ✓SIG ✓CHAIN</text>
+
+  <text x="1140" y="616" fill="rgba(34,197,94,0.5)" font-family="JetBrains Mono,monospace" font-size="13" font-weight="600" text-anchor="end">ontostandard.org</text>
+
+  <!-- Bottom accent -->
+  <rect x="0" y="627" width="1200" height="3" fill="url(#al)"/>
 </svg>
