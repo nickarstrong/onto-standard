@@ -8,7 +8,7 @@ ontostandard.org · council@ontostandard.org
 ---
 
 **Status:** Public Experimental Run (Phase 2)  
-**Version:** 2.2  
+**Version:** 2.4  
 **License:** CC BY 4.0 (text), proprietary (GOLD corpus, scoring engine)
 
 ---
@@ -542,6 +542,16 @@ ONTO is an exoskeleton for AI. The same model, measurably better.
 **ONTO Protocol v3.2** — Formal constraint specifications for epistemic evaluation. Execution modes (CALC/SYNTH/AUDIT), K(E) and H_max(S) estimation interfaces, falsifiability conditions, IGR metric. Source: github.com/nickarstrong/onto-protocol
 
 **ONTO Knowledge Base v1.0** — Formal definitions and metrics. Central Law (L1/L2 thesis, 5 supporting pillars, 9 DOI references), IGR calibration examples, probability bounds. Source: github.com/nickarstrong/onto-kb
+
+**Theoretical Foundations (cited in §7):**
+
+1. Shannon CE (1948) A mathematical theory of communication. *Bell Syst Tech J* 27:379–423. doi:10.1002/j.1538-7305.1948.tb01338.x
+2. Kolmogorov AN (1965) Three approaches to the quantitative definition of information. *Probl Inform Transm* 1(1):1–7.
+3. Chaitin GJ (1966) On the length of programs for computing finite binary sequences. *J ACM* 13(4):547–569. doi:10.1145/321356.321363
+4. Landauer R (1961) Irreversibility and heat generation in the computing process. *IBM J Res Dev* 5(3):183–191. doi:10.1147/rd.53.0183
+5. Eigen M (1971) Selforganization of matter and evolution of biological macromolecules. *Naturwissenschaften* 58:465–523. doi:10.1007/BF00623322
+6. Cover TM, Thomas JA (2006) *Elements of Information Theory*, 2nd ed. Wiley-Interscience. ISBN:978-0471241959
+7. Popper KR (1959) *The Logic of Scientific Discovery*. Hutchinson. ISBN:978-0415278447
 
 ---
 
