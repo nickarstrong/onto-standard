@@ -355,7 +355,7 @@
       "name": "What is ONTO Standard?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "ONTO is epistemic infrastructure for AI. It measures and grounds AI outputs against GOLD v4.5 — 149 calibration files, EM1-EM5 taxonomy, and 3 deterministic metrics (REP, EpCE, DLA). ONTO both measures epistemic risk and actively strengthens epistemic discipline without modifying model weights. Validated on 10 production AI models across 100 scientific questions with 10× composite improvement measured. Compliance is graded A through F. Full data at github.com/nickarstrong/onto-research."
+        "text": "ONTO is epistemic infrastructure for AI. It measures and grounds AI outputs against the GOLD v4.5 calibration corpus, EM1-EM5 taxonomy, and 3 deterministic metrics (REP, EpCE, DLA). ONTO both measures epistemic risk and actively strengthens epistemic discipline without modifying model weights. Validated on 10 production AI models across 100 scientific questions with 10× composite improvement measured. Compliance is graded A through F. Full data at github.com/nickarstrong/onto-research."
       }
     },
     {
@@ -475,7 +475,7 @@
       "name": "What are the measured results of ONTO GOLD on AI models?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Experiment CS-2026-001: 10 production AI models, 100 calibrated scientific probes (PC0-PC4), zero AI in evaluation pipeline. Baseline (without GOLD): composite score M=0.92, SD=0.58, 5.4× variance across models. Treatment (with GOLD): composite 5.38, representing 10× measured improvement. Key factors: Quantitative Density improved from 0.10 to 3.08 (30× increase). Source Substantiation improved from 0.01 to 0.27 (27× increase). Uncertainty Management improved from 0.28 to 1.45 (5× increase). Calibration improved from 0.00 to 1.00 (from zero to full). Vagueness reduced from 0.06 to 0.02 (67% reduction). Model range: Claude 3.5 Sonnet scored 0.12 (lowest baseline) to Perplexity sonar-pro at 0.94 (highest baseline). Full data: github.com/nickarstrong/onto-research."
+        "text": "Experiment CS-2026-001: 11 commercial AI models (10 ranked, 1 excluded for conflict of interest), 100 scientific questions, zero AI in evaluation pipeline. Baseline (without GOLD): composite score M=0.92, SD=0.58, 5.4× variance across models. Treatment (with GOLD): composite 5.38, representing 10× measured improvement. Key factors: Quantitative Density improved from 0.10 to 3.08 (30× increase). Source Substantiation improved from 0.01 to 0.27 (27× increase). Uncertainty Management improved from 0.28 to 1.45 (5× increase). Calibration improved from 0.00 to 1.00 (from zero to full). Vagueness reduced from 0.06 to 0.02 (67% reduction). Composite range: 0.38 (lowest baseline) to 2.06 (highest baseline). Zero models produced calibrated confidence at baseline (CONF=0.00 across all 11). Full data: github.com/nickarstrong/onto-research."
       }
     },
     {
@@ -1792,7 +1792,7 @@ body.show-portal { overflow: auto; }
 <article itemscope itemtype="https://schema.org/SoftwareApplication">
 <h2 itemprop="name">ONTO — The Scientific Foundation Your AI Doesn't Have</h2>
 
-<p itemprop="description">ONTO is epistemic infrastructure for AI — it measures and grounds AI outputs against the GOLD v4.5 reference standard (149 calibration files). The scoring engine (v3.0) analyzes outputs against 92 epistemic markers across 5 levels (EM1-EM5 taxonomy), computing three deterministic metrics: REP (Response Epistemic Profile), EpCE (Epistemic Calibration Error), and DLA (Dual-Layer Agreement). ONTO strengthens epistemic discipline without modifying model weights. Compliance is graded A through F: A (EXEMPLARY) to F (CRITICAL epistemic risk).</p>
+<p itemprop="description">ONTO is epistemic infrastructure for AI — it measures and grounds AI outputs against the GOLD v4.5 reference standard. The scoring engine (v3.0) analyzes outputs against 92 epistemic markers across 5 levels (EM1-EM5 taxonomy), computing three deterministic metrics: REP (Response Epistemic Profile), EpCE (Epistemic Calibration Error), and DLA (Dual-Layer Agreement). ONTO strengthens epistemic discipline without modifying model weights. Compliance is graded A through F: A (EXEMPLARY) to F (CRITICAL epistemic risk).</p>
 
 <h2>Metrics Definition</h2>
 <p><strong>ECE (Expected Calibration Error)</strong> = Σ (|accuracy_bin − confidence_bin| × n_bin / N). Measures average deviation between model stated confidence and observed accuracy across K calibration bins. Range: 0.0 (perfect calibration) to 1.0 (maximum miscalibration). Example: a model that reports 90% confidence but is correct only 70% of the time has a per-bin calibration gap of 0.20.</p>
@@ -1864,7 +1864,7 @@ print(result.certification_ready) # True
 <p>ISO/IEC 42001: ONTO produces the audit artifacts required for AI management system compliance: timestamped evaluation records, Ed25519 signed certificates, metric histories, evaluation logs, and compliance level determinations. All paid tiers include audit trail and compliance reports.</p>
 
 <h2>Technical Architecture</h2>
-<p>ONTO provides continuous epistemic grounding for AI systems. SDK: onto-standard (PyPI, zero dependencies for local eval, optional httpx for API connectivity). When connected, every AI output is grounded against GOLD v4.5 (149 calibration files) in real-time. Backend API: FastAPI at api.ontostandard.org. Database: PostgreSQL (encrypted at rest, bcrypt authentication). Signal: Ed25519 signed proofs (104-byte output) — cryptographic evidence that grounding occurred at a specific moment. Portal: ontostandard.org/app/ (real-time monitoring).</p>
+<p>ONTO provides continuous epistemic grounding for AI systems. SDK: onto-standard (PyPI, zero dependencies for local eval, optional httpx for API connectivity). When connected, every AI output is grounded against GOLD v4.5 in real-time. Backend API: FastAPI at api.ontostandard.org. Database: PostgreSQL (encrypted at rest, bcrypt authentication). Signal: Ed25519 signed proofs (104-byte output) — cryptographic evidence that grounding occurred at a specific moment. Portal: ontostandard.org/app/ (real-time monitoring).</p>
 
 <h2>Organization</h2>
 <p itemprop="author" itemscope itemtype="https://schema.org/Organization">
