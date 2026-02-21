@@ -3,167 +3,341 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ONTO: A Formal Framework for Measuring Epistemic Risk in LLM Outputs</title>
-<meta name="description" content="Academic paper introducing the ONTO Epistemic Risk Standard — a deterministic scoring framework grounded in information theory, Kolmogorov complexity, and formal epistemology. Three metrics (REP, EpCE, DLA), EM1–EM5 taxonomy, Ed25519 cryptographic proof chain. Validated on 10 major AI systems.">
-<link rel="canonical" href="https://ontostandard.org/paper/">
-<meta property="og:type" content="article">
+<title>ONTO: Deterministic Epistemic Discipline Enforcement for Production LLM Systems</title>
+<meta name="description" content="Technical report on the ONTO Epistemic Risk Standard — deterministic scoring framework for measuring epistemic quality in AI outputs. 11 models tested, 10× improvement demonstrated.">
+<meta property="og:title" content="ONTO Standard — Research Paper">
+<meta property="og:description" content="Deterministic epistemic discipline enforcement for production LLM systems. 11 models, 1,100 evaluations, 10× improvement.">
 <meta property="og:url" content="https://ontostandard.org/paper/">
-<meta property="og:title" content="ONTO: A Formal Framework for Measuring Epistemic Risk in LLM Outputs">
-<meta property="og:description" content="Deterministic scoring framework for epistemic risk. EM1–EM5 taxonomy, REP/EpCE/DLA metrics, Ed25519 proof chain. 10 AI systems evaluated.">
-<meta property="og:image" content="https://ontostandard.org/og-image.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="ONTO: Formal Framework for Measuring Epistemic Risk in LLM Outputs">
-<meta name="twitter:description" content="Deterministic scoring framework for epistemic risk. EM1–EM5 taxonomy, REP/EpCE/DLA metrics, Ed25519 proof chain.">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='17' fill='white'/%3E%3Cpath d='M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z' fill='%230a0a0a'/%3E%3C/svg%3E">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-<!-- Schema.org -->
+<meta property="og:type" content="article">
+<link rel="canonical" href="https://ontostandard.org/paper/">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "ScholarlyArticle",
-  "name": "ONTO: A Formal Framework for Measuring Epistemic Risk in Large Language Model Outputs",
-  "headline": "A Formal Framework for Measuring Epistemic Risk in LLM Outputs",
-  "description": "Introduces the ONTO Epistemic Risk Standard — a deterministic scoring framework grounded in information theory, Kolmogorov complexity, and formal epistemology. Defines REP, EpCE, and DLA metrics with EM1–EM5 taxonomy (92 patterns). Validated on 10 major AI systems with mean risk score 0.55 (Grade D).",
-  "url": "https://ontostandard.org/paper/",
-  "datePublished": "2026-02",
-  "author": {"@type": "Person", "name": "Tommy Lee", "affiliation": {"@type": "Organization", "name": "ONTO Standards Council", "url": "https://ontostandard.org"}},
+  "name": "ONTO Standard: Deterministic Epistemic Discipline Enforcement for Production LLM Systems",
+  "author": {"@type": "Person", "name": "Tommy Lee"},
   "publisher": {"@type": "Organization", "name": "ONTO Standards Council", "url": "https://ontostandard.org"},
-  "about": [
-    {"@type": "DefinedTerm", "name": "Response Epistemic Profile (REP)", "description": "Distribution of epistemic markers across five taxonomic levels EM1–EM5, weighted by risk."},
-    {"@type": "DefinedTerm", "name": "Epistemic Calibration Error (EpCE)", "description": "Divergence between model expressed confidence and factual accuracy."},
-    {"@type": "DefinedTerm", "name": "Dual-Layer Agreement (DLA)", "description": "Agreement between linguistic self-assessment and statistical behavior layers."},
-    {"@type": "DefinedTerm", "name": "Information Gap Ratio (IGR)", "description": "Normalized measure of gap between system informational capacity and complexity of claims."}
-  ],
-  "keywords": ["epistemic risk", "AI calibration", "hallucination detection", "information theory", "large language models", "formal verification"],
-  "citation": [
-    {"@type": "ScholarlyArticle", "name": "On calibration of modern neural networks", "author": "Guo et al.", "datePublished": "2017"},
-    {"@type": "ScholarlyArticle", "name": "A mathematical theory of communication", "author": "Shannon, C.E.", "datePublished": "1948"},
-    {"@type": "ScholarlyArticle", "name": "An Introduction to Kolmogorov Complexity and Its Applications", "author": "Li, M. and Vitányi, P.", "datePublished": "2019"}
-  ]
+  "datePublished": "2026-02",
+  "description": "Technical report on deterministic epistemic discipline enforcement for production LLM systems. 11 models tested, 10× improvement demonstrated.",
+  "url": "https://ontostandard.org/paper/",
+  "keywords": ["epistemic risk", "AI calibration", "hallucination detection", "LLM evaluation"]
 }
 </script>
-
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0a0a0a;--bg-s:#121212;--bg-card:#1a1a1a;--bg-e:#242424;--border:#333;--text:#fafafa;--text-s:#999;--text-m:#666;--green:rgb(34,197,94);--green-dim:rgba(34,197,94,.08)}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;line-height:1.7;-webkit-font-smoothing:antialiased}
-.mono{font-family:'JetBrains Mono','SF Mono',Consolas,monospace}
-a{color:var(--green);text-decoration:none}
-a:hover{text-decoration:underline}
+:root {
+    --bg: #0c0f14;
+    --bg-panel: #121722;
+    --border: #1d2330;
+    --accent: #2ec27e;
+    --text: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+}
 
-.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,10,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;height:48px;display:flex;align-items:center;justify-content:space-between}
-.nav-brand{font-weight:600;font-size:15px;color:var(--text);text-decoration:none;letter-spacing:-.02em}
-.nav-links{display:flex;gap:20px;font-size:13px}
-.nav-links a{color:var(--text-s);text-decoration:none}
-.nav-links a:hover{color:var(--text)}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-.wrap{max-width:760px;margin:0 auto;padding:0 24px}
-.hero{padding:100px 0 40px;text-align:center}
-.hero-tag{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-bottom:24px}
-.hero h1{font-size:clamp(22px,3.5vw,32px);font-weight:600;line-height:1.3;margin-bottom:16px;letter-spacing:-.02em}
-.hero-sub{font-size:14px;color:var(--text-s);max-width:560px;margin:0 auto;line-height:1.7}
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
 
-.meta{display:flex;justify-content:center;gap:32px;padding:24px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:24px 0;font-size:12px;color:var(--text-s)}
-.meta span{display:flex;align-items:center;gap:6px}
+/* NAV */
+nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(12,15,20,0.92); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px; height: 48px;
+    display: flex; align-items: center; justify-content: space-between;
+}
+nav a { color: var(--text-secondary); text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.2s; }
+nav a:hover { color: var(--text); }
+.nav-logo { color: var(--text); font-weight: 700; font-size: 15px; letter-spacing: -0.3px; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+.nav-logo svg { width: 22px; height: 22px; }
+.nav-links { display: flex; gap: 24px; }
 
-.notice{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:16px 20px;margin:24px 0;font-size:12px;color:var(--text-s);line-height:1.7}
-.notice strong{color:var(--text);font-weight:600}
+/* LAYOUT */
+.wrapper {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 48px;
+}
 
-.pdf-embed{margin:32px 0;border-radius:6px;overflow:hidden;border:1px solid var(--border);background:var(--bg-card)}
-.pdf-embed iframe{width:100%;height:85vh;border:none}
-.pdf-fallback{padding:40px;text-align:center}
-.pdf-fallback a{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--green);color:#000;border-radius:6px;font-weight:600;font-size:14px;text-decoration:none}
-.pdf-fallback a:hover{opacity:0.9;text-decoration:none}
+/* TOC SIDEBAR */
+.toc {
+    position: sticky; top: 64px;
+    width: 220px; min-width: 220px;
+    height: calc(100vh - 64px);
+    overflow-y: auto;
+    padding: 24px 16px 24px 24px;
+    border-right: 1px solid var(--border);
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+.toc-title {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.8px;
+    color: var(--text-muted); text-transform: uppercase;
+    margin-bottom: 12px;
+}
+.toc a {
+    display: block; padding: 4px 0;
+    font-size: 12px; color: var(--text-muted);
+    text-decoration: none; line-height: 1.5;
+    transition: color 0.15s;
+}
+.toc a:hover { color: var(--text); }
+.toc a.active { color: var(--accent); font-weight: 500; }
+.toc a.toc-h3 { padding-left: 12px; font-size: 11px; }
 
-.sections{margin:32px 0}
-.section-card{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:16px 20px;margin-bottom:12px}
-.section-card h3{font-size:14px;font-weight:600;margin-bottom:6px}
-.section-card p{font-size:12px;color:var(--text-s);line-height:1.6}
+/* ARTICLE */
+article {
+    flex: 1; min-width: 0;
+    padding: 40px 48px 80px;
+    max-width: 780px;
+}
 
-footer{padding:40px 0;border-top:1px solid var(--border);margin-top:48px;text-align:center;font-size:11px;color:var(--text-m)}
-footer a{color:var(--text-s)}
-footer p{margin-bottom:8px}
+/* PAPER HEADER */
+.paper-meta {
+    margin-bottom: 32px; padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+}
+.paper-meta .badge {
+    display: inline-block;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.6px;
+    color: var(--accent); border: 1px solid rgba(46,194,126,0.3);
+    padding: 3px 8px; border-radius: 3px; text-transform: uppercase;
+    margin-bottom: 12px;
+}
+.paper-stats {
+    display: flex; gap: 24px; margin-top: 16px;
+}
+.paper-stats span {
+    font-size: 11px; color: var(--text-muted);
+}
+.paper-stats strong {
+    color: var(--text-secondary); font-family: 'JetBrains Mono', monospace;
+}
 
-@media(max-width:640px){.meta{flex-direction:column;gap:8px;align-items:center}.nav-links{gap:12px;font-size:12px}.pdf-embed iframe{height:60vh}}
+/* MARKDOWN CONTENT */
+article h1 {
+    font-size: 26px; font-weight: 700; line-height: 1.3;
+    letter-spacing: -0.5px; margin-bottom: 8px;
+    color: var(--text);
+}
+article h2 {
+    font-size: 20px; font-weight: 700; margin-top: 48px; margin-bottom: 16px;
+    padding-top: 24px; border-top: 1px solid var(--border);
+    color: var(--text); letter-spacing: -0.3px;
+}
+article h3 {
+    font-size: 15px; font-weight: 600; margin-top: 32px; margin-bottom: 12px;
+    color: var(--text-secondary);
+}
+article h4 {
+    font-size: 13px; font-weight: 600; margin-top: 24px; margin-bottom: 8px;
+    color: var(--text-secondary);
+}
+article p {
+    margin-bottom: 14px; font-size: 14px; color: var(--text-secondary);
+}
+article strong { color: var(--text); font-weight: 600; }
+article em { color: var(--text-secondary); font-style: italic; }
+article a { color: var(--accent); text-decoration: none; }
+article a:hover { text-decoration: underline; }
+article hr {
+    border: none; border-top: 1px solid var(--border);
+    margin: 32px 0;
+}
+article ul, article ol {
+    margin: 0 0 14px 24px; font-size: 14px; color: var(--text-secondary);
+}
+article li { margin-bottom: 6px; }
+article blockquote {
+    border-left: 3px solid var(--accent);
+    padding: 12px 16px; margin: 16px 0;
+    background: rgba(46,194,126,0.04);
+    border-radius: 0 4px 4px 0;
+}
+article blockquote p { margin-bottom: 0; color: var(--text-secondary); font-size: 13px; }
+
+/* TABLES */
+article table {
+    width: 100%; border-collapse: collapse;
+    margin: 16px 0; font-size: 13px;
+}
+article thead { border-bottom: 2px solid var(--border); }
+article th {
+    text-align: left; padding: 8px 12px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.4px;
+    color: var(--text-muted); text-transform: uppercase;
+}
+article td {
+    padding: 8px 12px; border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+}
+article tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+/* CODE */
+article code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; background: var(--bg-panel);
+    padding: 2px 6px; border-radius: 3px;
+    border: 1px solid var(--border);
+    color: var(--accent);
+}
+article pre {
+    background: var(--bg-panel); border: 1px solid var(--border);
+    border-radius: 6px; padding: 16px; margin: 16px 0;
+    overflow-x: auto;
+}
+article pre code {
+    background: none; border: none; padding: 0;
+    font-size: 12px; color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* LOADING */
+.loading {
+    text-align: center; padding: 80px 0;
+    color: var(--text-muted); font-size: 13px;
+}
+.loading-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin: 0 3px; animation: pulse 1.2s ease-in-out infinite; }
+.loading-dot:nth-child(2) { animation-delay: 0.2s; }
+.loading-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes pulse { 0%,100%{opacity:0.3;transform:scale(0.8)} 50%{opacity:1;transform:scale(1)} }
+
+/* FOOTER */
+footer {
+    text-align: center; padding: 32px; font-size: 11px;
+    color: var(--text-muted); border-top: 1px solid var(--border);
+}
+footer a { color: var(--text-muted); text-decoration: none; }
+footer a:hover { color: var(--accent); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .toc { display: none; }
+    article { padding: 24px 20px 60px; }
+}
+@media (max-width: 600px) {
+    article h1 { font-size: 20px; }
+    article h2 { font-size: 17px; }
+    .paper-stats { flex-wrap: wrap; gap: 12px; }
+    .nav-links { gap: 16px; }
+    nav a { font-size: 12px; }
+}
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
 
-<nav class="nav">
-  <a href="/" class="nav-brand">ONTO</a>
-  <div class="nav-links">
-    <a href="/">Standard</a>
-    <a href="/docs/">Docs</a>
-    <a href="/app/">Portal</a>
-    <a href="https://github.com/nickarstrong/onto-research" target="_blank">GitHub</a>
-  </div>
+<nav>
+    <a href="/" class="nav-logo"><svg width="22" height="22" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/></svg> ONTO</a>
+    <div class="nav-links">
+        <a href="/">Standard</a>
+        <a href="/docs/">Docs</a>
+        <a href="/app/">Portal</a>
+        <a href="/reports/">Reports</a>
+        <a href="https://github.com/nickarstrong/onto-research">GitHub</a>
+    </div>
 </nav>
 
-<div class="wrap">
+<div class="wrapper">
+    <aside class="toc" id="toc">
+        <div class="toc-title">Contents</div>
+    </aside>
 
-<div class="hero">
-  <div class="hero-tag">Research Paper</div>
-  <h1>ONTO: A Formal Framework for Measuring Epistemic Risk in Large Language Model Outputs</h1>
-  <div class="hero-sub">Tommy Lee · ONTO Standards Council · February 2026</div>
-</div>
-
-<div class="meta">
-  <span><strong>11</strong> pages</span>
-  <span><strong>10</strong> AI systems evaluated</span>
-  <span><strong>92</strong> epistemic markers</span>
-  <span><strong>3</strong> metrics (REP, EpCE, DLA)</span>
-</div>
-
-<div class="notice">
-  <strong>Preprint.</strong> This paper describes the initial evaluation protocol (12 questions × 10 systems). Extended validation (100 questions × 10 models, CS-2026-001) and current methodology available at <a href="/docs/">ontostandard.org/docs</a>. The ONTO framework is a living standard — specifications are versioned and updated as the field evolves.
-</div>
-
-<div class="pdf-embed">
-  <iframe src="index.pdf" title="ONTO Whitepaper PDF"></iframe>
-  <noscript>
-    <div class="pdf-fallback">
-      <a href="index.pdf" download>Download PDF (11 pages)</a>
-    </div>
-  </noscript>
-</div>
-
-<div class="pdf-fallback" style="margin-top:-8px;padding:12px">
-  <a href="index.pdf" download style="font-size:12px;padding:8px 16px;background:transparent;color:var(--green);border:1px solid rgba(34,197,94,.3)">Download PDF</a>
-</div>
-
-<div class="sections">
-  <div class="section-card">
-    <h3>Abstract</h3>
-    <p>Introduces three deterministic metrics — REP (Response Epistemic Profile), EpCE (Epistemic Calibration Error), and DLA (Dual-Layer Agreement) — grounded in information theory and Kolmogorov complexity. Validates across 10 major AI systems. Mean risk score: 0.55 (Grade D, Non-compliant). Each evaluation anchored to 104-byte Ed25519 cryptographic proof.</p>
-  </div>
-  <div class="section-card">
-    <h3>Key Contribution</h3>
-    <p>EM1–EM5 taxonomy of 92 epistemic markers classifying linguistic signals from full transparency to overclaiming. Scoring is deterministic — regex pattern matching, zero AI in the evaluation loop. Same input produces same output, every time.</p>
-  </div>
-  <div class="section-card">
-    <h3>Finding</h3>
-    <p>9 of 10 major AI systems hallucinated when asked about a documented, verifiable subject. Only 1 system (retrieval-augmented) achieved Grade A. The typical major AI system is not suitable for unsupervised decision support on topics outside its training distribution.</p>
-  </div>
-</div>
-
-<div class="notice" style="font-size:11px">
-  <strong>Related resources:</strong>
-  <a href="/docs/#methodology">Methodology</a> ·
-  <a href="/docs/#evidence">Research Evidence</a> ·
-  <a href="/encounter/">Field Observation</a> ·
-  <a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research (GitHub)</a> ·
-  <a href="https://pypi.org/project/onto-standard/" target="_blank">onto-standard (PyPI)</a>
-</div>
-
+    <article id="content">
+        <div class="paper-meta">
+            <div class="badge">Technical Report · WP-2026-001</div>
+            <div id="md-target">
+                <div class="loading">
+                    <span class="loading-dot"></span>
+                    <span class="loading-dot"></span>
+                    <span class="loading-dot"></span>
+                    <div style="margin-top:12px">Loading paper...</div>
+                </div>
+            </div>
+        </div>
+    </article>
 </div>
 
 <footer>
-  <p><a href="/">ontostandard.org</a> · <a href="/docs/">Docs</a> · <a href="/app/">Portal</a> · <a href="/encounter/">Field Observation</a></p>
-  <p>© 2026 ONTO Standards Council</p>
+    <a href="/">ontostandard.org</a> · <a href="/docs/">Docs</a> · <a href="/app/">Portal</a> · <a href="/encounter/">Field Observation</a>
+    <br>© 2026 ONTO Standards Council
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
+<script>
+(async function() {
+    const target = document.getElementById('md-target');
+    const tocEl = document.getElementById('toc');
+    
+    try {
+        const res = await fetch('whitepaper.md');
+        if (!res.ok) throw new Error(res.status);
+        const md = await res.text();
+        
+        // Render markdown
+        marked.setOptions({
+            gfm: true,
+            breaks: false,
+            headerIds: true
+        });
+        
+        const html = marked.parse(md);
+        
+        // Remove paper-meta wrapper, inject directly
+        const article = document.getElementById('content');
+        article.innerHTML = html;
+        
+        // Add IDs to headings and build TOC
+        const headings = article.querySelectorAll('h1, h2, h3');
+        let tocHTML = '<div class="toc-title">Contents</div>';
+        let h2Count = 0;
+        
+        headings.forEach((h, i) => {
+            const id = h.textContent.toLowerCase()
+                .replace(/[^a-z0-9\s]/g, '')
+                .replace(/\s+/g, '-')
+                .substring(0, 60);
+            h.id = id;
+            
+            if (h.tagName === 'H1') {
+                // Skip H1 from TOC (it's the title)
+            } else if (h.tagName === 'H2') {
+                h2Count++;
+                tocHTML += `<a href="#${id}">${h.textContent}</a>`;
+            } else if (h.tagName === 'H3') {
+                tocHTML += `<a href="#${id}" class="toc-h3">${h.textContent}</a>`;
+            }
+        });
+        
+        tocEl.innerHTML = tocHTML;
+        
+        // Active TOC tracking
+        const tocLinks = tocEl.querySelectorAll('a');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    tocLinks.forEach(l => l.classList.remove('active'));
+                    const active = tocEl.querySelector(`a[href="#${entry.target.id}"]`);
+                    if (active) active.classList.add('active');
+                }
+            });
+        }, { rootMargin: '-80px 0px -70% 0px' });
+        
+        headings.forEach(h => { if (h.id) observer.observe(h); });
+        
+    } catch (err) {
+        target.innerHTML = `<p style="color:var(--text-muted)">Failed to load paper. <a href="whitepaper.md">Download source →</a></p>`;
+    }
+})();
+</script>
 </body>
 </html>
