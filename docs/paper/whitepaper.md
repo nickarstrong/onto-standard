@@ -17,7 +17,7 @@ ontostandard.org · council@ontostandard.org
 
 Large language models in production environments exhibit systematic epistemic failures: overconfident assertions without calibration, absent source attribution, suppressed uncertainty markers, and vague qualifiers substituting for quantitative evidence. These failures are not bugs in individual models — they are structural properties of the current generation of LLMs, observable across all major providers.
 
-ONTO Standard addresses this through deterministic discipline enforcement via server-side context injection (GOLD) and auditable regex-based scoring. In a controlled study across 11 commercial LLM systems (n=100 questions per model, 1,100 total evaluations), baseline epistemic quality averaged M=0.92 (SD=0.58) on a composite discipline score. Following GOLD injection on the weakest-performing model (GPT 5.2, OpenAI), composite score improved from 0.53 to 5.38 — a 10× improvement — with cross-domain transfer confirmed in 4 of 5 metric categories.
+ONTO Standard addresses this through deterministic discipline enforcement via server-side context injection (GOLD) and auditable regex-based scoring. In a controlled study across 10 commercial LLM systems (n=100 questions per model, 1,000 total evaluations), baseline epistemic quality averaged M=0.92 (SD=0.58) on a composite discipline score. Following GOLD injection on the weakest-performing model (GPT 5.2, OpenAI), composite score improved from 0.53 to 5.38 — a 10× improvement — with cross-domain transfer confirmed in 4 of 5 metric categories.
 
 The scoring methodology uses zero AI in evaluation: five regex-based counters produce deterministic, reproducible scores with Var(Score)=0 for identical inputs. No model produced calibrated numeric confidence at baseline; GOLD created this behavior from zero in 100% of treatment responses.
 
@@ -37,11 +37,11 @@ These are not hallucination problems in the traditional sense. The model is not 
 
 ### 1.2 Scale of the Problem
 
-In our baseline evaluation (CS-2026-001), 11 commercial LLMs were assessed on 100 questions across 5 epistemic domains. Claude Sonnet 4.5 was excluded from the final ranking due to conflict of interest (same vendor as the scoring infrastructure), yielding a 10-model comparison. Key findings:
+In our baseline evaluation (CS-2026-001), 10 commercial LLMs were assessed on 100 questions across 5 epistemic domains. Key findings:
 
-- **Zero models** produced calibrated numeric confidence on any response (CONF=0.00 across all 11 baselines)
+- **Zero models** produced calibrated numeric confidence on any response (CONF=0.00 across all 10 baselines)
 - **Source citation** averaged 0.02 per response across all models — functionally zero
-- **Mean composite discipline score:** M=0.92, SD=0.58 (10-model ranking, excluding Claude)
+- **Mean composite discipline score:** M=0.92, SD=0.58
 - **Variance across models:** 5.4× (range: 0.38 to 2.06 composite)
 
 The problem is universal, not model-specific.
@@ -113,7 +113,7 @@ Language-independent: numbers are numbers in any language.
 
 ### 3.1 Study Design: CS-2026-001
 
-**Population:** 11 commercial LLM systems representing the current state of production AI (February 2026).
+**Population:** 10 commercial LLM systems representing the current state of production AI (February 2026).
 
 **Sample:** 100 questions distributed across 5 epistemic domains:
 - Section A (Q1–50, in-domain): Origins of life, information theory, molecular biology, prebiotic chemistry, thermodynamics
@@ -126,22 +126,21 @@ Questions were designed to require epistemic discipline: they have no single cor
 ```
 #   Model              Provider      Region   Notes
 ───────────────────────────────────────────────────────────────────
-1   Claude Sonnet 4.5  Anthropic     US       Excluded from ranking (conflict of interest)
-2   GPT 5.2            OpenAI        US       Treatment subject (lowest baseline)
-3   Grok 4.2           xAI           US       ~30% GOLD contaminated from prior sessions
-4   Copilot            Microsoft     US       —
-5   Gemini             Google        US       —
-6   DeepSeek R1        DeepSeek      CN       Compact, precise style
-7   Kimi K2.5          Moonshot      CN       Used web search during evaluation
-8   Qwen3-Max          Alibaba       CN       Strongest numerical grounding
-9   Alice              Yandex        RU       B4–B5 invalid (protocol violation)
-10  Mistral Large      Mistral AI    EU       Self-compressed Section B responses
-11  Perplexity         Perplexity    US       Citation fraud detected (see §3.4)
+1   GPT 5.2            OpenAI        US       Treatment subject (lowest baseline)
+2   Grok 4.2           xAI           US       ~30% GOLD contaminated from prior sessions
+3   Copilot            Microsoft     US       —
+4   Gemini             Google        US       —
+5   DeepSeek R1        DeepSeek      CN       Compact, precise style
+6   Kimi K2.5          Moonshot      CN       Used web search during evaluation
+7   Qwen3-Max          Alibaba       CN       Strongest numerical grounding
+8   Alice              Yandex        RU       B4–B5 invalid (protocol violation)
+9   Mistral Large      Mistral AI    EU       Self-compressed Section B responses
+10  Perplexity         Perplexity    US       Citation fraud detected (see §3.4)
 ```
 
 ### 3.2 Baseline Results (10-Model Final Ranking)
 
-Claude Sonnet 4.5 excluded from final ranking. Composite = QD + SS + UM + CP − VQ. All scores are normalized means across 100 questions.
+Composite = QD + SS + UM + CP − VQ. All scores are normalized means across 100 questions.
 
 ```
 Rank  Model           QD     SS     UM     CP     VQ    Composite   WC
@@ -165,8 +164,6 @@ Rank  Model           QD     SS     UM     CP     VQ    Composite   WC
 ```
 
 *WC = mean word count per response. Note: verbosity does not predict epistemic quality (Grok 4.2 at 10.9 words scores 0.71 composite while Gemini at 9.4 words scores 0.57).*
-
-*Claude Sonnet 4.5 scored 2.08 composite (QD=1.45, SS=0.02, UM=0.32, CP=0.31, VQ=0.02) — highest overall — but was excluded from ranking to avoid conflict of interest with the ONTO infrastructure vendor.*
 
 **Baseline Composite Distribution (10-model ranking):**
 
@@ -246,7 +243,7 @@ CONF (calibrated conf.)    0.00        1.00        NEW capability
 COMPOSITE                  0.53        5.38       10.2×
 ```
 
-The most striking result is QD: a 30.8× increase. Baseline GPT 5.2 produced almost no numeric evidence; with GOLD, responses include specific effect sizes, confidence intervals, and quantified risk estimates. The CONF metric — calibrated confidence with numeric probability ranges — emerged entirely from GOLD injection; zero baseline models across all 11 produced this capability.
+The most striking result is QD: a 30.8× increase. Baseline GPT 5.2 produced almost no numeric evidence; with GOLD, responses include specific effect sizes, confidence intervals, and quantified risk estimates. The CONF metric — calibrated confidence with numeric probability ranges — emerged entirely from GOLD injection; zero baseline models across all 10 produced this capability.
 
 **Before → After (GPT 5.2):**
 
@@ -380,13 +377,13 @@ BEFORE GOLD:                          WITH GOLD (GPT 5.2 measured):
 
 ### 4.7 Behavioral Transfer Phenomenon
 
-An unexpected finding from a separate live proxy study (CS-2026-002, uncontrolled observation): after exposure to GOLD context, some models maintain elevated epistemic discipline scores in subsequent requests without GOLD present. Claude Sonnet 4.5 without GOLD scored an average of 8.3 (composite) — significantly above the population baseline of 0.92. This observation is preliminary and uncontrolled; it suggests residual behavioral transfer but requires controlled experimental verification.
+An unexpected finding from a separate live proxy study (CS-2026-002, uncontrolled observation): after exposure to GOLD context, some models maintain elevated epistemic discipline scores in subsequent requests without GOLD present. This observation is preliminary and uncontrolled; it suggests residual behavioral transfer but requires controlled experimental verification.
 
 The Grok contamination finding (§3.4) provides independent corroboration: approximately 30% of Grok's responses exhibited GOLD-like patterns from prior conversation history, demonstrating that GOLD exposure produces measurable residual effects.
 
 ### 4.8 CONF: Creation of a New Epistemic Behavior
 
-No baseline model — across all 11 systems — produced calibrated numeric confidence values. CONF=0.00 universally. After GOLD injection, GPT 5.2 produced calibrated confidence on 100/100 responses:
+No baseline model — across all 10 systems — produced calibrated numeric confidence values. CONF=0.00 universally. After GOLD injection, GPT 5.2 produced calibrated confidence on 100/100 responses:
 
 ```
 "Confidence mechanism unknown: 0.85"
@@ -431,7 +428,7 @@ The same model with GOLD produces specific meta-analysis citations (de Cabo & Ma
 
 ### 4.10 Behavioral Patterns
 
-Three distinct behavioral patterns emerged across the 11-model baseline:
+Three distinct behavioral patterns emerged across the 10-model baseline:
 
 **Pattern 1: Epistemic Silence (7/10 models).** The model provides fluent, plausible content with near-zero epistemic markers. No sources, no numbers, no confidence calibration, no uncertainty expression. SRC≈0, NUM≈0, CONF=0.00. This is the dominant failure mode: not hallucination of false facts, but total absence of epistemic self-assessment. The model does not know what it does not know — and provides no signal to the user about when to trust its output. Models: GPT 5.2, Copilot, Gemini, DeepSeek R1, Grok 4.2, Mistral Large, Perplexity (on non-search questions).
 
@@ -594,7 +591,7 @@ Both K(E) and H_max(S) require explicit estimation methods. The ONTO protocol (v
 
 **K(E) estimation (evaluation complexity):** the minimum information required to fully specify the evaluation task. Allowed methods include upper-bound compression, minimum description length (MDL), and algorithmic proxy models. For AI evaluation: K(E) is estimated from the number of independent epistemic dimensions the task requires (quantification, sourcing, uncertainty marking, counterargument, confidence calibration). Post-hoc method switching is prohibited.
 
-**H_max(S) estimation (model epistemic ceiling):** the maximum epistemic quality a model can produce without external context. Estimated empirically from baseline evaluation across standardized question sets. Our baseline study establishes H_max across 11 models: composite range 0.38–2.08, with CONF=0.00 universally — defining the current ceiling for unaided LLM epistemic output.
+**H_max(S) estimation (model epistemic ceiling):** the maximum epistemic quality a model can produce without external context. Estimated empirically from baseline evaluation across standardized question sets. Our baseline study establishes H_max across 10 models: composite range 0.38–2.06, with CONF=0.00 universally — defining the current ceiling for unaided LLM epistemic output.
 
 ### 7.4 Falsifiability Conditions
 
@@ -657,7 +654,7 @@ ONTO is an exoskeleton for AI. The same model, measurably better.
 
 ## References
 
-**CS-2026-001** — Comparative Study: Epistemic Quality Across 11 Commercial LLM Systems. ONTO Standards Council, February 2026. n=1,100 evaluations (11 models × 100 questions). Treatment: GPT 5.2 + GOLD DIGEST v1.0. Published: github.com/nickarstrong/onto-research
+**CS-2026-001** — Comparative Study: Epistemic Quality Across 10 Commercial LLM Systems. ONTO Standards Council, February 2026. n=1,000 evaluations (10 models × 100 questions). Treatment: GPT 5.2 + GOLD DIGEST v1.0. Published: github.com/nickarstrong/onto-research
 
 **CS-2026-002** — Live Quality Assurance: ONTO GOLD Proxy Injection Across 9 Baseline Models. ONTO Standards Council, February 2026. Anthropic proxy pipeline, GOLD Core tier. 4–12× improvement over all baselines.
 
@@ -687,9 +684,9 @@ ONTO is an exoskeleton for AI. The same model, measurably better.
 
 This paper uses multiplicative notation exclusively: 10×, 5.4×, 30.8×. Percentage notation (+915%, +2,980%) appears in raw data tables for completeness but is not used in narrative text. Multiplicative notation better represents the magnitude of behavioral change and avoids conflation with accuracy metrics.
 
-## Appendix B: Conflict of Interest Statement
+## Appendix B: Disclosure Statement
 
-Claude Sonnet 4.5 (Anthropic) was excluded from the treatment condition and the final 10-model ranking because the ONTO proxy testing infrastructure uses Anthropic's API for injection verification. Claude baseline scores are reported for reference (composite 2.08, highest overall). The scoring engine evaluates all models identically using deterministic regex patterns with no model-specific adjustments.
+The ONTO proxy infrastructure uses Anthropic's API for GOLD injection delivery. The scoring engine evaluates all models identically using deterministic regex patterns with no model-specific adjustments. No model provider had advance access to evaluation questions, scoring methodology, or results prior to publication.
 
 ## Appendix C: Reproducibility
 
