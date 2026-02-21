@@ -805,7 +805,7 @@ a.info-val:hover { color: var(--text); }
                 <p><strong>Service.</strong> ONTO provides AI evaluation and epistemic risk scoring as a hosted service. Your evaluation data, API keys, and account credentials are stored securely and never shared with third parties.</p>
                 <p><strong>Acceptable Use.</strong> You may use the ONTO platform to evaluate AI model outputs, track risk scores, and obtain certifications for your organization. Automated abuse, reverse engineering of scoring algorithms, and redistribution of evaluation results without attribution are prohibited.</p>
                 <p><strong>Data &amp; Privacy.</strong> We collect email, name, and usage metrics necessary to provide the service. Data is processed in accordance with GDPR. We never sell your data. You may request deletion at any time.</p>
-                <p><strong>Billing.</strong> Open tier includes limited evaluations. Standard and Enterprise billed monthly or annually. Refund policy applies within 30 days of first payment.</p>
+                <p><strong>Billing.</strong> Open tier includes limited evaluations. Standard billed monthly or annually. AI Provider licensing by agreement. Refund policy applies within 30 days of first payment.</p>
                 <p style="margin-top: 12px;"><strong>Full terms:</strong> <a href="/legal" target="_blank">ontostandard.org/legal</a></p>
             </div>
             
@@ -922,9 +922,9 @@ a.info-val:hover { color: var(--text); }
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                 Docs ↗
             </a>
-            <a class="nav-item" href="/encounter/" target="_blank" style="text-decoration: none; color: var(--text-muted);">
+            <a class="nav-item" href="/reports/" target="_blank" style="text-decoration: none; color: var(--text-muted);">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
-                Field Observation ↗
+                Reports ↗
             </a>
             <div class="nav-item" onclick="toggleTheme()" style="color: var(--text-muted);">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>
@@ -977,7 +977,7 @@ a.info-val:hover { color: var(--text); }
                     </div>
                 </div>
                 <div style="margin-top:14px;padding:10px 12px;background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.1);border-radius:4px;font-size:11px;color:var(--text-secondary);line-height:1.5">
-                    <strong style="color:var(--text)">How it works:</strong> Open = try it (10 requests/day). Standard ($30K/yr) = production use, 1,000 requests/day, signed proofs. Enterprise ($114K/yr) = unlimited requests, certificate, priority support.
+                    <strong style="color:var(--text)">How it works:</strong> Open = try it (10 requests/day). Standard ($30K/yr) = production use, 1,000 requests/day, signed proofs. AI Providers = contact for licensing.
                 </div>
                 <div style="margin-top:10px;display:flex;gap:12px;align-items:center">
                     <a href="/docs/" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Documentation →</a>
@@ -1167,7 +1167,7 @@ a.info-val:hover { color: var(--text); }
                             <span style="font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent)">0.78</span>
                         </div>
                         <div style="font-size:9px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">Epistemic Risk Score</div>
-                        <div style="font-size:10px;color:var(--text-secondary);line-height:1.4">Baseline ERS: 0.12 · With ONTO: 0.78 · Threshold: 0.75</div>
+                        <div style="font-size:10px;color:var(--text-secondary);line-height:1.4">Baseline composite: 0.38 · With ONTO: 5.38 · 10× improvement</div>
                     </div>
                     <div style="background:var(--bg-card);padding:14px">
                         <div style="font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent);margin-bottom:4px">↓ 35%</div>
@@ -1332,21 +1332,26 @@ a.info-val:hover { color: var(--text); }
                     </div>
                     <span style="font-size:12px;font-weight:600">Choose your plan</span>
                 </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border-radius:6px;overflow:hidden">
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1px;background:var(--border);border-radius:6px;overflow:hidden">
                     <div style="background:var(--bg-card);padding:14px;cursor:pointer" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))">
                         <div style="font-size:12px;font-weight:600;margin-bottom:2px">Open</div>
                         <div style="font-size:16px;font-weight:700;color:var(--accent);margin-bottom:4px">Free</div>
-                        <div style="font-size:9px;color:var(--text-muted);line-height:1.4">10 requests/day · TIER 2</div>
+                        <div style="font-size:9px;color:var(--text-muted);line-height:1.4">10 requests/day · GOLD Core</div>
                     </div>
                     <div style="background:var(--bg-card);padding:14px;cursor:pointer;border-left:2px solid var(--accent);border-right:2px solid var(--accent)" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))">
                         <div style="font-size:12px;font-weight:600;margin-bottom:2px">Standard</div>
                         <div style="font-size:16px;font-weight:700;color:var(--accent);margin-bottom:4px">$2,500<span style="font-size:10px;font-weight:400;color:var(--text-muted)">/mo</span></div>
-                        <div style="font-size:9px;color:var(--text-muted);line-height:1.4">1,000/day · TIER 4 · badge</div>
+                        <div style="font-size:9px;color:var(--text-muted);line-height:1.4">1,000/day · GOLD Extended · badge</div>
                     </div>
-                    <div style="background:var(--bg-card);padding:14px;cursor:pointer" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))">
-                        <div style="font-size:12px;font-weight:600;margin-bottom:2px">Enterprise</div>
-                        <div style="font-size:16px;font-weight:700;color:var(--accent);margin-bottom:4px">$9,500<span style="font-size:10px;font-weight:400;color:var(--text-muted)">/mo</span></div>
-                        <div style="font-size:9px;color:var(--text-muted);line-height:1.4">Unlimited · certificate · support</div>
+                    <div style="background:var(--bg-card);padding:14px;cursor:pointer" onclick="window.location.href='mailto:providers@ontostandard.org'">
+                        <div style="font-size:12px;font-weight:600;margin-bottom:2px">AI Provider</div>
+                        <div style="font-size:16px;font-weight:700;color:var(--accent);margin-bottom:4px">$250K<span style="font-size:10px;font-weight:400;color:var(--text-muted)">/yr</span></div>
+                        <div style="font-size:9px;color:var(--text-muted);line-height:1.4">Full GOLD · unlimited · attribution</div>
+                    </div>
+                    <div style="background:var(--bg-card);padding:14px;cursor:pointer" onclick="window.location.href='mailto:providers@ontostandard.org'">
+                        <div style="font-size:12px;font-weight:600;margin-bottom:2px">White-Label</div>
+                        <div style="font-size:16px;font-weight:700;color:var(--accent);margin-bottom:4px">$500K<span style="font-size:10px;font-weight:400;color:var(--text-muted)">/yr</span></div>
+                        <div style="font-size:9px;color:var(--text-muted);line-height:1.4">Full GOLD · your brand · no attribution</div>
                     </div>
                 </div>
             </div>
@@ -1384,11 +1389,9 @@ a.info-val:hover { color: var(--text); }
         <div class="page active" id="page-providers">
             <div style="padding:24px 0;border-bottom:1px solid var(--border);margin-bottom:24px">
                 <div style="font-size:9px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px">For AI model providers</div>
-                <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:10px">
-                    <div style="font-size:48px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--accent);line-height:1;letter-spacing:-2px">10×</div>
-                    <div style="font-size:16px;font-weight:600;letter-spacing:-0.3px;line-height:1.4;max-width:400px">Your model, measurably better.<br>Your business grows.</div>
-                </div>
-                <div style="font-size:12px;color:var(--text-secondary);line-height:1.7;max-width:560px">ONTO GOLD is an epistemic discipline layer. No retraining, no fine-tuning, no model access. Server-side injection. The improvement is measured and immediate.</div>
+                <div style="font-size:22px;font-weight:700;letter-spacing:-0.5px;line-height:1.35;max-width:520px;margin-bottom:12px">Your model is confident. But is it right?<br><span style="color:var(--accent)">ONTO measures the gap.</span></div>
+                <div style="font-size:12px;color:var(--text-secondary);line-height:1.7;max-width:560px;margin-bottom:14px">Epistemic discipline layer for production AI. No retraining, no fine-tuning, no model access. Server-side injection. The effect is deterministic, reproducible, and cryptographically signed.</div>
+                <div style="font-size:11px;color:var(--text-muted);font-family:'JetBrains Mono',monospace">11 models tested · 10× improvement · 100 questions scored · zero AI judge · <a href="https://github.com/nickarstrong/onto-research" target="_blank" style="color:var(--accent)">all data open</a></div>
             </div>
 
             <!-- BUSINESS GROWTH -->
@@ -1396,7 +1399,7 @@ a.info-val:hover { color: var(--text); }
                 <div style="font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Business impact</div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border-radius:6px;overflow:hidden">
                     <div style="background:var(--bg-card);padding:18px">
-                        <div style="font-size:13px;font-weight:600;margin-bottom:6px;color:var(--accent)">Enterprise adoption</div>
+                        <div style="font-size:13px;font-weight:600;margin-bottom:6px;color:var(--accent)">Provider deals</div>
                         <div style="font-size:11px;color:var(--text-secondary);line-height:1.6">B2B clients choose providers with verifiable output quality. Measurable standard = faster procurement, larger contracts, shorter sales cycles.</div>
                     </div>
                     <div style="background:var(--bg-card);padding:18px">
@@ -1410,6 +1413,26 @@ a.info-val:hover { color: var(--text); }
                     <div style="background:var(--bg-card);padding:18px">
                         <div style="font-size:13px;font-weight:600;margin-bottom:6px;color:var(--accent)">Regulatory fast-track</div>
                         <div style="font-size:11px;color:var(--text-secondary);line-height:1.6">EU AI Act requires transparency and accuracy reporting. ONTO-certified models enter regulated markets faster — healthcare, finance, legal, government.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BEFORE/AFTER CHART -->
+            <div style="margin-bottom:24px">
+                <div style="font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Before vs After ONTO · CS-2026-001</div>
+                <div style="font-size:11px;color:var(--text-secondary);margin-bottom:12px">Measured across GPT, Claude, Gemini, DeepSeek, Grok, Mistral, Kimi, Qwen and more · deterministic scoring · zero AI judge</div>
+                <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:20px">
+                    <div style="display:flex;flex-direction:column;gap:14px">
+                        <div><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--text)">Composite score</span><span style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:700">10×</span></div><div style="display:flex;gap:4px;align-items:center"><div style="height:18px;border-radius:3px;background:rgba(220,38,38,0.25);width:10%;min-width:24px;display:flex;align-items:center;padding-left:6px"><span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--danger)">0.53</span></div><div style="height:18px;border-radius:3px;background:rgba(21,128,61,0.25);width:90%;display:flex;align-items:center;padding-left:6px"><span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--accent)">5.38</span></div></div></div>
+                        <div><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--text)">Source citations</span><span style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:700">0 → 3+</span></div><div style="display:flex;gap:4px;align-items:center"><div style="height:18px;border-radius:3px;background:rgba(220,38,38,0.25);width:3%;min-width:24px;display:flex;align-items:center;justify-content:center"><span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--danger)">0</span></div><div style="height:18px;border-radius:3px;background:rgba(21,128,61,0.25);width:60%;display:flex;align-items:center;padding-left:6px"><span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--accent)">3+</span></div></div></div>
+                        <div><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--text)">Confidence calibration</span><span style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:700">0 → 3+</span></div><div style="display:flex;gap:4px;align-items:center"><div style="height:18px;border-radius:3px;background:rgba(220,38,38,0.25);width:3%;min-width:24px;display:flex;align-items:center;justify-content:center"><span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--danger)">0</span></div><div style="height:18px;border-radius:3px;background:rgba(21,128,61,0.25);width:60%;display:flex;align-items:center;padding-left:6px"><span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--accent)">3+</span></div></div></div>
+                        <div><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--text)">Variance (SD)</span><span style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:700">5.4×</span></div><div style="display:flex;gap:4px;align-items:center"><div style="height:18px;border-radius:3px;background:rgba(220,38,38,0.25);width:55%;display:flex;align-items:center;padding-left:6px"><span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--danger)">0.58</span></div><div style="height:18px;border-radius:3px;background:rgba(21,128,61,0.25);width:11%;min-width:32px;display:flex;align-items:center;padding-left:6px"><span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--accent)">0.11</span></div></div></div>
+                        <div><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--text)">Cross-domain transfer</span><span style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:700">80%</span></div><div style="display:flex;gap:4px;align-items:center"><div style="height:18px;border-radius:3px;background:rgba(220,38,38,0.25);width:3%;min-width:24px;display:flex;align-items:center;justify-content:center"><span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--danger)">0/5</span></div><div style="height:18px;border-radius:3px;background:rgba(21,128,61,0.25);width:80%;display:flex;align-items:center;padding-left:6px"><span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--accent)">4/5</span></div></div></div>
+                        <div><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--text)">Over-confidence</span><span style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:700">↓ 35%</span></div><div style="display:flex;gap:4px;align-items:center"><div style="height:18px;border-radius:3px;background:rgba(220,38,38,0.25);width:85%;display:flex;align-items:center;padding-left:6px"><span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--danger)">high</span></div><div style="height:18px;border-radius:3px;background:rgba(21,128,61,0.25);width:35%;display:flex;align-items:center;padding-left:6px"><span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--accent)">controlled</span></div></div></div>
+                    </div>
+                    <div style="display:flex;gap:16px;margin-top:14px;font-size:9px;color:var(--text-muted)">
+                        <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:rgba(220,38,38,0.25);margin-right:4px;vertical-align:middle"></span>Without ONTO</span>
+                        <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:rgba(21,128,61,0.25);margin-right:4px;vertical-align:middle"></span>With ONTO</span>
                     </div>
                 </div>
             </div>
@@ -1467,7 +1490,7 @@ a.info-val:hover { color: var(--text); }
                         <div style="padding:10px 14px;text-align:center;color:var(--accent);font-weight:700;font-family:'JetBrains Mono',monospace">↓</div>
                     </div>
                 </div>
-                <div style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text-muted);margin-top:6px">n=100 · 10 baseline models · regex scoring · open methodology · <a href="https://github.com/nickarstrong/onto-research" target="_blank" style="color:var(--accent)">reproduce</a></div>
+                <div style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text-muted);margin-top:6px">n=100 · 11 baseline models · regex scoring · open methodology · <a href="https://github.com/nickarstrong/onto-research" target="_blank" style="color:var(--accent)">reproduce</a></div>
             </div>
 
             <!-- WHAT GOLD GIVES YOUR MODEL -->
@@ -1567,10 +1590,10 @@ a.info-val:hover { color: var(--text); }
                         <div style="font-size:10px;color:var(--text-muted);line-height:1.5">Before/after on real questions. Test any domain. Verify yourself.</div>
                         <div style="font-size:9px;color:var(--accent);margin-top:6px">Companies → Evidence ↗</div>
                     </a>
-                    <a href="/encounter/" target="_blank" style="display:block;padding:16px;background:var(--bg-card);text-decoration:none;transition:background 0.15s" onmouseover="this.style.background='var(--bg-elevated)'" onmouseout="this.style.background='var(--bg-card)'">
-                        <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px">Field observation</div>
-                        <div style="font-size:10px;color:var(--text-muted);line-height:1.5">12-phase behavioral analysis. Hallucination Inside Apology pattern. 4 acts.</div>
-                        <div style="font-size:9px;color:var(--accent);margin-top:6px">ontostandard.org/encounter ↗</div>
+                    <a href="/reports/" target="_blank" style="display:block;padding:16px;background:var(--bg-card);text-decoration:none;transition:background 0.15s" onmouseover="this.style.background='var(--bg-elevated)'" onmouseout="this.style.background='var(--bg-card)'">
+                        <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px">Reports</div>
+                        <div style="font-size:10px;color:var(--text-muted);line-height:1.5">Field observations, comparative studies, before/after evaluations.</div>
+                        <div style="font-size:9px;color:var(--accent);margin-top:6px">ontostandard.org/reports ↗</div>
                     </a>
                     <a href="/docs/" target="_blank" style="display:block;padding:16px;background:var(--bg-card);text-decoration:none;transition:background 0.15s" onmouseover="this.style.background='var(--bg-elevated)'" onmouseout="this.style.background='var(--bg-card)'">
                         <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px">Full methodology</div>
@@ -1580,10 +1603,40 @@ a.info-val:hover { color: var(--text); }
                 </div>
             </div>
 
+            <!-- LICENSING OPTIONS -->
+            <div style="margin-bottom:24px">
+                <div style="font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Licensing</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border-radius:6px;overflow:hidden">
+                    <div style="background:var(--bg-card);padding:20px">
+                        <div style="font-size:14px;font-weight:700;margin-bottom:4px">Provider</div>
+                        <div style="font-size:20px;font-weight:700;color:var(--accent);margin-bottom:10px">$250,000<span style="font-size:11px;font-weight:400;color:var(--text-muted)">/year</span></div>
+                        <div style="font-size:11px;color:var(--text-secondary);line-height:1.7">
+                            Full GOLD Corpus via SSE<br>
+                            Unlimited scoring API<br>
+                            Ed25519 proof chain<br>
+                            Full audit trail<br>
+                            "Powered by ONTO" attribution
+                        </div>
+                    </div>
+                    <div style="background:var(--bg-card);padding:20px;border-left:1px solid var(--accent)">
+                        <div style="font-size:14px;font-weight:700;margin-bottom:4px">White-Label</div>
+                        <div style="font-size:20px;font-weight:700;color:var(--accent);margin-bottom:10px">$500,000<span style="font-size:11px;font-weight:400;color:var(--text-muted)">/year</span></div>
+                        <div style="font-size:11px;color:var(--text-secondary);line-height:1.7">
+                            Everything in Provider, plus:<br>
+                            No ONTO attribution — your brand<br>
+                            Custom integration support<br>
+                            Priority SLA<br>
+                            Quarterly review
+                        </div>
+                    </div>
+                </div>
+                <div style="font-size:10px;color:var(--text-muted);margin-top:8px;line-height:1.5">Fixed annual fee. No per-token, per-request, or per-user charges. At 1M req/day, Provider = $0.0007/req. Unlicensed use of ONTO-derived epistemic patterns is detectable and constitutes IP violation.</div>
+            </div>
+
             <!-- Contact -->
             <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:16px;display:flex;justify-content:space-between;align-items:center">
-                <div style="font-size:11px;color:var(--text-secondary)">Provider integration · dedicated API · volume pricing</div>
-                <a href="mailto:providers@ontostandard.org" style="display:inline-block;background:var(--accent);color:#0c0f14;padding:8px 24px;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none">providers@ontostandard.org</a>
+                <div style="font-size:11px;color:var(--text-secondary)">SSE integration · fixed annual license · unlimited scale</div>
+                <a href="https://github.com/nickarstrong/onto-research/blob/main/ONTO_PROVIDER_LICENSING.md" target="_blank" style="display:inline-block;background:var(--accent);color:#0c0f14;padding:8px 24px;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none">Provider Licensing →</a>
             </div>
         </div>
 
@@ -1661,7 +1714,7 @@ a.info-val:hover { color: var(--text); }
                     <div style="background:var(--bg-card);padding:14px;text-align:center">
                         <div style="font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent)">0.92</div>
                         <div style="font-size:9px;color:var(--text-muted);margin-top:4px">Baseline mean</div>
-                        <div style="font-size:8px;color:var(--text-muted)">n=10 models</div>
+                        <div style="font-size:8px;color:var(--text-muted)">n=11 models</div>
                     </div>
                     <div style="background:var(--bg-card);padding:14px;text-align:center">
                         <div style="font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent)">100</div>
@@ -1678,7 +1731,7 @@ a.info-val:hover { color: var(--text); }
                     <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:16px">
                         <div style="font-size:12px;font-weight:600;margin-bottom:4px">Open tier</div>
                         <div style="font-size:20px;font-weight:700;color:var(--accent);margin-bottom:4px">Free</div>
-                        <div style="font-size:10px;color:var(--text-secondary);line-height:1.5">10 proxy requests/day · TIER 2 GOLD · proof chain · sufficient for research and evaluation</div>
+                        <div style="font-size:10px;color:var(--text-secondary);line-height:1.5">10 proxy requests/day · GOLD Core GOLD · proof chain · sufficient for research and evaluation</div>
                     </div>
                     <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:16px">
                         <div style="font-size:12px;font-weight:600;margin-bottom:4px">Grant program</div>
@@ -1839,20 +1892,20 @@ client = OpenAI(
                     <tr style="border-bottom:1px solid var(--border)">
                         <td style="padding:8px 10px;font-weight:500">Open</td>
                         <td style="padding:8px 10px;color:var(--text-secondary)">10/day</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">TIER 2 — Protocol + Core</td>
-                        <td style="padding:8px 10px;color:var(--text-muted)">Diagnostic only</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">GOLD Core</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">Ed25519 signed</td>
                     </tr>
                     <tr style="border-bottom:1px solid var(--border)">
                         <td style="padding:8px 10px;font-weight:500">Standard</td>
                         <td style="padding:8px 10px;color:var(--text-secondary)">1,000/day</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">TIER 4 — Full Modules</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">Signed + Ed25519</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">GOLD Extended</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">Ed25519 signed</td>
                     </tr>
                     <tr>
-                        <td style="padding:8px 10px;font-weight:500">Enterprise</td>
+                        <td style="padding:8px 10px;font-weight:500">AI Provider</td>
                         <td style="padding:8px 10px;color:var(--text-secondary)">Unlimited</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">TIER 4 — Full Corpus</td>
-                        <td style="padding:8px 10px;color:var(--text-secondary)">Full audit trail</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">GOLD Full</td>
+                        <td style="padding:8px 10px;color:var(--text-secondary)">Ed25519 + audit trail</td>
                     </tr>
                 </table>
                 <div style="margin-top:12px">
@@ -1865,7 +1918,7 @@ client = OpenAI(
                 <div style="display:flex;justify-content:space-between;align-items:center">
                     <div>
                         <div class="card-head" style="margin-bottom:4px">Current Plan</div>
-                        <div style="font-size:13px"><span style="font-weight:600" id="sdk-plan-name">Open</span> · <span style="color:var(--text-muted)" id="sdk-plan-rate">10 requests / hour</span></div>
+                        <div style="font-size:13px"><span style="font-weight:600" id="sdk-plan-name">Open</span> · <span style="color:var(--text-muted)" id="sdk-plan-rate">10 requests / day</span></div>
                         <div style="font-size:11px;color:var(--text-muted);margin-top:4px" id="sdk-plan-calls">0 / 50 proxy calls used today</div>
                     </div>
                     <button class="btn-upgrade" id="sdk-upgrade-btn" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))" style="font-size:12px;padding:8px 20px">Upgrade →</button>
@@ -2002,8 +2055,8 @@ client = OpenAI(
             <div class="section-block">
                 <div class="section-label">Organization</div>
                 <div id="company-not-registered">
-                    <p class="section-text">No organization registered. Required for institutional access tier.</p>
-                    <button class="btn-minimal" onclick="openCompanyModal()">Register Organization</button>
+                    <p class="section-text">No organization registered. Required to generate invoices and access institutional features.</p>
+                    <button class="btn-minimal" onclick="openCompanyModal()" style="background:var(--accent);color:#0c0f14;border-color:var(--accent)">Register Organization →</button>
                 </div>
                 <div id="company-registered" class="hidden">
                     <div class="info-row">
@@ -2029,7 +2082,7 @@ client = OpenAI(
             <div class="section-block" id="subscription-block">
                 <div class="section-label">Subscription</div>
                 <div id="subscription-none">
-                    <p class="section-text">No active subscription. Using Open tier (50 evaluations/day).</p>
+                    <p class="section-text">No active subscription. Using Open tier (10 evaluations/day).</p>
                     <button class="btn-minimal" onclick="showPage('billing')">View Plans</button>
                 </div>
                 <div id="subscription-active" class="hidden">
@@ -2042,7 +2095,7 @@ client = OpenAI(
                         <span class="info-val" id="sub-rate">—</span>
                     </div>
                     <div class="info-row" id="sub-critical-row">
-                        <span class="info-key">Enterprise</span>
+                        <span class="info-key">Provider</span>
                         <span class="info-val" id="sub-critical-days">—</span>
                     </div>
                     <div class="info-row" id="sub-pro-row">
@@ -2050,7 +2103,7 @@ client = OpenAI(
                         <span class="info-val" id="sub-pro-days">—</span>
                     </div>
                     <div class="info-row">
-                        <span class="info-key">All Expires</span>
+                        <span class="info-key">Plan Expires</span>
                         <span class="info-val" id="sub-expires">—</span>
                     </div>
                     <div class="info-row">
@@ -2069,8 +2122,9 @@ client = OpenAI(
                 </div>
                 <div class="doc-row" id="invoice-row">
                     <span class="doc-name">Invoice</span>
-                    <span class="doc-status" id="invoice-status">No active subscription</span>
+                    <span class="doc-status" id="invoice-status" style="cursor:default">No active subscription</span>
                     <span class="doc-link hidden" id="invoice-download" onclick="downloadInvoice()">Download</span>
+                    <span class="doc-link hidden" id="invoice-register-org" onclick="openCompanyModal()" style="color:var(--accent)">Register Organization first →</span>
                 </div>
             </div>
             
@@ -2098,60 +2152,60 @@ client = OpenAI(
             </div>
             
             <div class="tiers-grid">
-                <!-- OPEN -->
+                <!-- OPEN (TIER 3) -->
                 <div class="tier-card" id="card-free">
                     <div class="tier-name">Open</div>
                     <div class="tier-price">Free</div>
-                    <div class="tier-desc">Try ONTO on your AI — see the effect before you commit</div>
+                    <div class="tier-desc">Evaluate ONTO on your AI before you commit</div>
                     <ul class="tier-list">
                         <li>10 proxy requests/day</li>
-                        <li>GOLD TIER 2 — Protocol + Core</li>
-                        <li>Ed25519 signed proof chain</li>
+                        <li>GOLD Core (epistemic discipline layer)</li>
+                        <li>Scoring API</li>
+                        <li>Ed25519 proof chain</li>
+                        <li style="color:var(--text-muted)">No SSE stream</li>
                     </ul>
                     <button class="btn-tier current" id="btn-free" disabled>Current</button>
                 </div>
                 
-                <!-- STANDARD -->
+                <!-- STANDARD (GOLD Core) -->
                 <div class="tier-card" id="card-business">
                     <div class="tier-name">Standard</div>
                     <div class="tier-price">$2,500<span>/month</span></div>
                     <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">or $30,000/year</div>
-                    <div style="font-size:10px;color:var(--text-secondary);margin-bottom:8px;opacity:0.7">First 10 clients receive 2× subscription duration</div>
-                    <div class="tier-desc">Production GOLD discipline — enhanced AI on every request</div>
+                    <div class="tier-desc">Production GOLD discipline for companies using AI</div>
                     <ul class="tier-list">
                         <li>1,000 proxy requests/day</li>
-                        <li>GOLD TIER 4 — Extended Corpus</li>
-                        <li>Ed25519 signed proof chain</li>
-                        <li>Public verification badge</li>
+                        <li>GOLD Extended Corpus</li>
+                        <li>Unlimited SSE stream</li>
+                        <li>Scoring API</li>
+                        <li>Ed25519 proof chain</li>
                     </ul>
                     <button class="btn-tier" id="btn-business" onclick="openSubscribeModal('business')">Select</button>
                 </div>
                 
-                <!-- ENTERPRISE -->
+                <!-- PROVIDER (TIER 1) -->
                 <div class="tier-card" id="card-enterprise">
-                    <div class="tier-name">Enterprise</div>
-                    <div class="tier-price">$9,500<span>/month</span></div>
-                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">or $114,000/year</div>
-                    <div style="font-size:10px;color:var(--text-secondary);margin-bottom:8px;opacity:0.7">First 10 clients receive 2× subscription duration</div>
-                    <div class="tier-desc">Governance infrastructure with independent evaluation</div>
+                    <div class="tier-name">AI Provider</div>
+                    <div class="tier-price">$250,000<span>/year</span></div>
+                    <div class="tier-desc">Full GOLD access for AI model providers</div>
                     <ul class="tier-list">
-                        <li>Everything in Standard</li>
-                        <li>Unlimited proxy requests</li>
-                        <li>Public certificate + verification badge</li>
-                        <li>Priority support</li>
+                        <li>GOLD Full Corpus via SSE</li>
+                        <li>Unlimited scoring API</li>
+                        <li>All production models</li>
+                        <li>Ed25519 proof chain</li>
+                        <li>Full audit trail</li>
                     </ul>
-                    <button class="btn-tier" id="btn-enterprise" onclick="openSubscribeModal('enterprise')">Select</button>
+                    <a href="mailto:providers@ontostandard.org" class="btn-tier" style="text-align:center;text-decoration:none;display:block">Contact</a>
                 </div>
             </div>
 
-            <!-- CERTIFICATION (contact-only) -->
+            <!-- Provider licensing doc -->
             <div style="margin-top:24px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:20px">
                 <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
                     <div>
-                        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">ONTO Certification — for AI providers</div>
-                        <div style="font-size:12px;color:var(--text-secondary);line-height:1.5">Independent epistemic quality assessment and certification for production AI models. Evaluation, certification, and continuous monitoring programs available.</div>
+                        <div style="font-size:11px;color:var(--text-secondary)">SSE integration · fixed annual license · unlimited scale · ONTO not in inference path</div>
                     </div>
-                    <a href="mailto:council@ontostandard.org" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500;white-space:nowrap">Contact → council@ontostandard.org</a>
+                    <a href="https://github.com/nickarstrong/onto-research/blob/main/ONTO_PROVIDER_LICENSING.md" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500;white-space:nowrap">Provider Licensing →</a>
                 </div>
             </div>
 
@@ -2162,7 +2216,7 @@ client = OpenAI(
                     <div style="font-size:13px;font-weight:600;color:var(--text)">Grant Program</div>
                 </div>
                 <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;margin-bottom:12px">
-                    Free Standard access for independent researchers, early-stage startups, and nonprofit organizations whose work benefits society. Grant recipients receive the same infrastructure as paid Standard customers: 1,000 proxy requests/day, GOLD TIER 4, signed proof chain. No restrictions, no watermarks.
+                    Free Standard access for independent researchers, early-stage startups, and nonprofit organizations whose work benefits society. Grant recipients receive the same infrastructure as paid Standard customers: 1,000 proxy requests/day, GOLD Extended, signed proof chain. No restrictions, no watermarks.
                 </div>
                 <div style="display:flex;align-items:center;gap:12px">
                     <a href="mailto:council@ontostandard.org" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Apply → council@ontostandard.org</a>
@@ -2199,7 +2253,7 @@ client = OpenAI(
                         <option value="">All Plans</option>
                         <option value="open">Open</option>
                         <option value="standard">Standard</option>
-                        <option value="enterprise">Enterprise</option>
+                        <option value="enterprise">AI Provider</option>
                     </select>
                 </div>
                 <div id="accounts-list" style="font-size:12px"></div>
@@ -2458,7 +2512,7 @@ client = OpenAI(
                 <div class="form-section-title">Includes</div>
                 <div class="order-features" id="order-features">
                     <div class="order-feature">1,000 proxy requests/day</div>
-                    <div class="order-feature">GOLD TIER 4 — Extended Corpus</div>
+                    <div class="order-feature">GOLD Extended — Extended Corpus</div>
                     <div class="order-feature">Ed25519 signed proof chain</div>
                     <div class="order-feature">Public verification badge</div>
                 </div>
@@ -2542,7 +2596,7 @@ client = OpenAI(
         </div>
         <div class="modal-body form-inst">
             <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">
-                For Enterprise tier, Founding Cohort access, custom integrations, or certification inquiries.
+                For AI Provider licensing, custom integrations, or certification inquiries.
             </p>
             <div class="form-group">
                 <label class="form-label">Name</label>
@@ -2587,7 +2641,7 @@ client = OpenAI(
                             <span class="tier-badge tier-open">OPEN</span>
                             <span class="tier-option-price">Free</span>
                         </div>
-                        <div class="tier-option-desc">10 proxy/day, GOLD TIER 2</div>
+                        <div class="tier-option-desc">10 proxy/day, GOLD Core</div>
                     </div>
                 </label>
                 <label class="tier-option" data-tier="standard">
@@ -2597,7 +2651,7 @@ client = OpenAI(
                             <span class="tier-badge tier-standard">STANDARD</span>
                             <span class="tier-option-price">$2.5K/mo</span>
                         </div>
-                        <div class="tier-option-desc">1K proxy/day, GOLD TIER 4, Ed25519 proof</div>
+                        <div class="tier-option-desc">1K proxy/day, GOLD Extended, Ed25519 proof</div>
                     </div>
                 </label>
                 <label class="tier-option" data-tier="critical">
@@ -2605,7 +2659,7 @@ client = OpenAI(
                     <div class="tier-option-content">
                         <div class="tier-option-header">
                             <span class="tier-badge tier-critical">ENTERPRISE</span>
-                            <span class="tier-option-price">$9.5K/mo</span>
+                            <span class="tier-option-price">$250K/yr</span>
                         </div>
                         <div class="tier-option-desc">Unlimited proxy, certificate + badge, priority support</div>
                     </div>
@@ -2722,8 +2776,8 @@ const STRINGS = {
     confirmRegenerate: 'Are you sure you want to regenerate your API key?\n\nThis will immediately invalidate your current key.'
 };
 const PLANS = {
-    business: { monthly: 2500, annual: 30000, monthlyEquiv: 2500, foundingMonthly: 990, foundingAnnual: 11880 },
-    enterprise: { monthly: 9500, annual: 114000, monthlyEquiv: 9500, foundingMonthly: 4800, foundingAnnual: 57600 }
+    business: { monthly: 2500, annual: 30000, monthlyEquiv: 2500 },
+    enterprise: { monthly: 0, annual: 250000, monthlyEquiv: 0 }
 };
 let selectedPlan = 'business';
 let selectedCycle = 'annual';
@@ -2927,7 +2981,8 @@ async function handleLogin(btn) {
             organization_id: data.organization_id,
             organization_name: data.organization_name,
             can_invoice: false,
-            company: null  // Company set only after explicit registration
+            company: null,
+            subscription: data.tier_expires ? { expires_at: data.tier_expires } : null
         };
         // Restore company data from previous session if backend doesn't return it
         const savedUser = JSON.parse(localStorage.getItem('onto_user') || '{}');
@@ -3273,7 +3328,15 @@ function showDashboard() {
     if (currentUser) {
         document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
         document.getElementById('user-name').textContent = currentUser.name;
-        document.getElementById('user-plan').textContent = currentUser.plan === 'enterprise' ? 'ENTERPRISE' : currentUser.plan === 'business' ? 'STANDARD' : 'OPEN';
+        document.getElementById('user-plan').textContent = currentUser.plan === 'enterprise' ? 'PROVIDER' : currentUser.plan === 'business' ? 'STANDARD' : 'OPEN';
+        // Add expiry to sidebar
+        if (currentUser.subscription && currentUser.subscription.expires_at) {
+            const exp = new Date(currentUser.subscription.expires_at);
+            const dateStr = exp.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+            const planEl = document.getElementById('user-plan');
+            const planName = currentUser.plan === 'enterprise' ? 'ENTERPRISE' : currentUser.plan === 'business' ? 'STANDARD' : 'OPEN';
+            planEl.textContent = `${planName} · до ${dateStr}`;
+        }
         document.getElementById('settings-name').textContent = currentUser.name;
         document.getElementById('settings-email').textContent = currentUser.email;
         
@@ -3306,7 +3369,7 @@ function updateDashboardMetrics() {
     const sub = currentUser.subscription;
     const plan = currentUser.plan || 'free';
     
-    const planNames = { free: 'Open', business: 'Standard', enterprise: 'Enterprise' };
+    const planNames = { free: 'Open', business: 'Standard', enterprise: 'AI Provider' };
     const rateLimits = { free: '10/day', business: '1K/day', enterprise: 'Unlimited' };
     
     // Plan card
@@ -3319,7 +3382,7 @@ function updateDashboardMetrics() {
     const switchSelect = document.getElementById('plan-switch');
     
     if (nameEl) nameEl.textContent = planNames[plan] || 'Open';
-    if (rateEl) rateEl.textContent = rateLimits[plan] || '10 evals / hour';
+    if (rateEl) rateEl.textContent = rateLimits[plan] || '10 evals / day';
     
     // Hide upgrade for paid plans
     if (upgradeBtn) upgradeBtn.style.display = plan === 'free' ? 'block' : 'none';
@@ -3357,9 +3420,9 @@ function updateDashboardMetrics() {
     const includesEl = document.getElementById('plan-includes-text');
     if (includesEl) {
         const planIncludes = {
-            free: 'Free: 10 requests/day · GOLD TIER 2 · Signed proofs',
-            business: 'Standard: 1K proxy/day · GOLD TIER 4 · Signed proofs',
-            enterprise: 'Enterprise: Unlimited proxy · Certificate + badge · Priority support'
+            free: 'Free: 10 requests/day · GOLD Core · Signed proofs',
+            business: 'Standard: 1K proxy/day · GOLD Extended · Signed proofs',
+            enterprise: 'AI Provider: Unlimited · Full GOLD · All models · Proof chain'
         };
         includesEl.textContent = planIncludes[plan] || planIncludes.free;
     }
@@ -3578,100 +3641,170 @@ function openCompanyModal() {
 }
 
 function downloadInvoice() {
-    if (!currentUser?.subscription) {
+    if (!currentUser?.subscription?.expires_at) {
         showToast('No active subscription', 'error');
         return;
     }
+    if (!currentUser?.company) {
+        showToast('Register organization first', 'error');
+        return;
+    }
     
-    const now = new Date();
     const sub = currentUser.subscription;
-    const invoiceId = 'INV-' + new Date(sub.started).getFullYear() + '-' + Date.now().toString(36).toUpperCase();
-    const plan = sub.plan;
-    const amount = sub.amount;
-    const planNames = { business: 'Standard', enterprise: 'Enterprise' };
+    const plan = currentUser.plan || 'free';
+    const planNames = { free: 'Open', business: 'Standard', enterprise: 'AI Provider' };
+    const planPrices = { free: 0, business: 30000, enterprise: 250000 };
+    const amount = planPrices[plan] || 0;
+    const invoiceId = 'INV-' + new Date().getFullYear() + '-' + Date.now().toString(36).toUpperCase();
+    const expiresAt = new Date(sub.expires_at);
+    const startedAt = new Date(expiresAt.getTime() - 365*24*60*60*1000);
+    const dueDate = new Date(startedAt.getTime() + 30*24*60*60*1000);
+    const co = currentUser.company;
+    const fmtDate = (d) => d.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+    const fmtMoney = (n) => '$' + n.toLocaleString('en-US', {minimumFractionDigits:2});
+    const hash = simpleHash(invoiceId + (co.name || currentUser.name) + plan + amount);
+    const cityLine = [co.city, co.postal, co.country].filter(Boolean).join(', ');
     
-    const invoice = {
-        schema: 'onto-invoice/v1',
-        id: invoiceId,
-        created_at: sub.started,
-        due_date: new Date(new Date(sub.started).getTime() + 30*24*60*60*1000).toISOString(),
-        status: 'PAID',
-        
-        provider: {
-            name: 'ONTO Standard',
-            jurisdiction: 'See ontostandard.org/legal',
-            email: 'billing@ontostandard.org',
-            website: 'https://ontostandard.org',
-            tax_id: null
-        },
-        
-        client: {
-            company: currentUser?.company?.name || currentUser.name,
-            legal_name: currentUser?.company?.name || null,
-            tax_id: currentUser?.company?.reg || null,
-            industry: currentUser?.company?.industry || null,
-            address: {
-                street: currentUser?.company?.address || null,
-                city: currentUser?.company?.city || null,
-                postal: currentUser?.company?.postal || null,
-                country: currentUser?.company?.country || null
-            },
-            signatory: currentUser?.company?.signatory || currentUser.name,
-            email: currentUser?.company?.email || currentUser.email
-        },
-        
-        line_items: [{
-            description: 'ONTO Protocol — ' + planNames[plan] + ' Layer',
-            details: sub.cycle === 'annual' ? 'Annual subscription (12 months)' : 'Monthly subscription',
-            quantity: 1,
-            unit_price: amount,
-            amount: amount
-        }],
-        
-        subtotal: amount,
-        total_paid: sub.total_paid || amount,
-        tax: { rate: 0, amount: 0 },
-        total: amount,
-        currency: 'USD',
-        
-        payment: {
-            terms: sub.cycle === 'annual' ? 'PREPAID' : 'NET_30',
-            method: 'invoice',
-            reference: invoiceId,
-            paid_at: sub.started
-        },
-        
-        service: {
-            layer: planNames[plan],
-            cycle: sub.cycle,
-            term_months: sub.cycle === 'annual' ? 12 : 1,
-            started: sub.started,
-            expires_at: sub.expires_at || null,
-            features: plan === 'enterprise' ? {
-                rate_limit: 'unlimited',
-                signal: 'dedicated',
-                sla: 'Priority',
-                support: '24/7'
-            } : {
-                rate_limit: '1/8.64s',
-                signal: 'real-time',
-                sla: '99.5%',
-                support: 'business hours'
-            }
-        },
-        
-        hash: simpleHash(invoiceId + (currentUser?.company?.name || currentUser.name) + plan + amount)
-    };
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>ONTO Invoice ${invoiceId}</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,Helvetica,Arial,sans-serif;color:#1a1a1a;font-size:13px;line-height:1.5;padding:40px}
+.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;padding-bottom:20px;border-bottom:3px solid #0c0f14}
+.logo{font-size:28px;font-weight:700;color:#0c0f14;letter-spacing:-0.5px}
+.logo-sub{font-size:10px;color:#888;margin-top:2px}
+.inv-title{text-align:right}
+.inv-title h2{font-size:24px;color:#2ec27e;font-weight:700;margin-bottom:4px}
+.inv-id{font-size:11px;color:#666}
+.parties{display:flex;gap:60px;margin-bottom:28px}
+.party{flex:1}
+.party-label{font-size:9px;text-transform:uppercase;color:#999;letter-spacing:1px;margin-bottom:6px;font-weight:600}
+.party-name{font-size:14px;font-weight:600;margin-bottom:4px}
+.party-detail{font-size:11px;color:#555;line-height:1.6}
+.dates{display:flex;gap:40px;background:#f7f7f7;padding:12px 16px;border-radius:4px;margin-bottom:24px}
+.date-col .date-label{font-size:9px;text-transform:uppercase;color:#999;letter-spacing:0.5px}
+.date-col .date-val{font-size:12px;font-weight:600;margin-top:2px}
+.status-paid{color:#2ec27e;font-weight:700}
+table{width:100%;border-collapse:collapse;margin-bottom:24px}
+thead th{background:#0c0f14;color:#fff;padding:8px 12px;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;text-align:left}
+thead th:last-child{text-align:right}
+tbody td{padding:10px 12px;border-bottom:1px solid #eee;font-size:12px}
+tbody td:last-child{text-align:right;font-weight:600}
+.item-sub{font-size:10px;color:#888;margin-top:2px}
+.totals{display:flex;justify-content:flex-end;margin-bottom:28px}
+.totals-table{width:220px}
+.totals-row{display:flex;justify-content:space-between;padding:4px 0;font-size:12px;color:#666}
+.totals-total{display:flex;justify-content:space-between;padding:8px 0;font-size:16px;font-weight:700;color:#2ec27e;border-top:2px solid #0c0f14;margin-top:4px}
+.details{background:#f7f7f7;padding:14px 16px;border-radius:4px;margin-bottom:24px}
+.details-title{font-size:9px;text-transform:uppercase;color:#999;letter-spacing:1px;margin-bottom:8px;font-weight:600}
+.details-grid{display:flex;gap:40px;font-size:11px;color:#555}
+.details-grid div{line-height:1.8}
+.footer{border-top:1px solid #ddd;padding-top:12px;text-align:center;font-size:9px;color:#aaa;line-height:1.8}
+@media print{body{padding:20px}@page{margin:15mm}}
+</style></head><body>
+
+<div class="header">
+    <div>
+        <div class="logo">ONTO</div>
+        <div class="logo-sub">Standards Council · Est. 2024</div>
+        <div class="logo-sub">ontostandard.org</div>
+    </div>
+    <div class="inv-title">
+        <h2>INVOICE</h2>
+        <div class="inv-id">${invoiceId}</div>
+    </div>
+</div>
+
+<div class="parties">
+    <div class="party">
+        <div class="party-label">From</div>
+        <div class="party-name">ONTO Standard</div>
+        <div class="party-detail">
+            billing@ontostandard.org<br>
+            ontostandard.org/legal
+        </div>
+    </div>
+    <div class="party">
+        <div class="party-label">Bill To</div>
+        <div class="party-name">${co.name || currentUser.name}</div>
+        <div class="party-detail">
+            ${co.email || currentUser.email}<br>
+            ${co.address ? co.address + '<br>' : ''}
+            ${cityLine ? cityLine + '<br>' : ''}
+            ${co.reg ? 'Tax ID: ' + co.reg : ''}
+        </div>
+    </div>
+</div>
+
+<div class="dates">
+    <div class="date-col">
+        <div class="date-label">Issue Date</div>
+        <div class="date-val">${fmtDate(startedAt)}</div>
+    </div>
+    <div class="date-col">
+        <div class="date-label">Due Date</div>
+        <div class="date-val">${fmtDate(dueDate)}</div>
+    </div>
+    <div class="date-col">
+        <div class="date-label">Status</div>
+        <div class="date-val status-paid">PAID</div>
+    </div>
+</div>
+
+<table>
+    <thead><tr>
+        <th>Description</th>
+        <th>Period</th>
+        <th style="text-align:right">Amount</th>
+    </tr></thead>
+    <tbody><tr>
+        <td>
+            <strong>ONTO Protocol — ${planNames[plan] || plan} License</strong>
+            <div class="item-sub">Annual subscription · 12 months · Wire transfer</div>
+        </td>
+        <td>${fmtDate(startedAt)} — ${fmtDate(expiresAt)}</td>
+        <td>${fmtMoney(amount)}</td>
+    </tr></tbody>
+</table>
+
+<div class="totals">
+    <div class="totals-table">
+        <div class="totals-row"><span>Subtotal</span><span>${fmtMoney(amount)}</span></div>
+        <div class="totals-row"><span>Tax (0%)</span><span>$0.00</span></div>
+        <div class="totals-total"><span>Total</span><span>${fmtMoney(amount)}</span></div>
+    </div>
+</div>
+
+<div class="details">
+    <div class="details-title">Service Details</div>
+    <div class="details-grid">
+        <div>
+            Layer: ${planNames[plan] || plan}<br>
+            Period: ${fmtDate(startedAt)} — ${fmtDate(expiresAt)}
+        </div>
+        <div>
+            Rate limit: ${plan === 'enterprise' ? 'Unlimited' : '1,000/day'}<br>
+            Support: ${plan === 'enterprise' ? 'Priority 24/7' : 'Business hours'}
+        </div>
+    </div>
+</div>
+
+<div style="font-size:10px;color:#888;margin-bottom:20px">
+    <strong>Payment:</strong> Wire transfer · Prepaid · Ref: ${invoiceId}
+</div>
+
+<div class="footer">
+    ONTO Standards Council · Est. 2024 · Independent research initiative<br>
+    ontostandard.org · billing@ontostandard.org · ontostandard.org/legal<br>
+    Verification: ${hash}
+</div>
+
+</body></html>`;
     
-    const blob = new Blob([JSON.stringify(invoice, null, 2)], {type: 'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'ONTO_Invoice_' + planNames[plan] + '_' + new Date(sub.started).toISOString().split('T')[0] + '.json';
-    a.click();
-    URL.revokeObjectURL(url);
-    
-    showToast('Invoice downloaded', 'success');
+    const w = window.open('', '_blank', 'width=800,height=1000');
+    w.document.write(html);
+    w.document.close();
+    setTimeout(() => { w.print(); }, 500);
+    showToast('Invoice opened — use Save as PDF in print dialog', 'success');
 }
 
 function simpleHash(str) {
@@ -3757,7 +3890,8 @@ function registerCompany() {
         btn.textContent = originalText;
         closeModal('company-modal');
         updateCompanyUI();
-        showToast(isEdit ? 'Organization updated' : 'Organization registered', 'success');
+        updateBillingUI();
+        showToast(isEdit ? 'Organization updated' : 'Organization registered. You can now download invoices.', 'success');
     }, 800);
 }
 
@@ -3841,7 +3975,7 @@ function updateBillingUI() {
     if(document.getElementById('btn-enterprise')) document.getElementById('btn-enterprise').textContent = 'Select';
     if(document.getElementById('btn-enterprise')) document.getElementById('btn-enterprise').disabled = false;
     
-    const planNames = { free: 'Open (Free)', business: 'Standard', enterprise: 'Enterprise' };
+    const planNames = { free: 'Open (Free)', business: 'Standard', enterprise: 'AI Provider' };
     const rateLimits = { free: '10/day', business: '1K/day', enterprise: 'Unlimited' };
     
     // Update current plan indicator
@@ -3865,15 +3999,38 @@ function updateBillingUI() {
             if(document.getElementById('btn-enterprise')) document.getElementById('btn-enterprise').textContent = 'Extend';
         }
         
-        invoiceStatus.classList.add('hidden');
-        invoiceDownload.classList.remove('hidden');
+        const invoiceRegOrg = document.getElementById('invoice-register-org');
+        if (currentUser?.company) {
+            invoiceStatus.classList.add('hidden');
+            invoiceDownload.classList.remove('hidden');
+            if (invoiceRegOrg) invoiceRegOrg.classList.add('hidden');
+        } else {
+            invoiceStatus.classList.add('hidden');
+            invoiceDownload.classList.add('hidden');
+            if (invoiceRegOrg) invoiceRegOrg.classList.remove('hidden');
+        }
         
         if (subNone) subNone.classList.add('hidden');
         if (subActive) subActive.classList.remove('hidden');
         
         document.getElementById('sub-plan').textContent = planNames[currentUser.plan] || currentUser.plan;
         document.getElementById('sub-rate').textContent = rateLimits[currentUser.plan] || '—';
-        document.getElementById('sub-expires').textContent = sub.expires_at ? new Date(sub.expires_at).toLocaleDateString() : '—';
+        const expiresEl = document.getElementById('sub-expires');
+        if (sub.expires_at && expiresEl) {
+            const exp = new Date(sub.expires_at);
+            const now = new Date();
+            const daysLeft = Math.ceil((exp - now) / (1000*60*60*24));
+            const dateStr = exp.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+            if (daysLeft < 0) {
+                expiresEl.innerHTML = `<span style="color:var(--danger)">${dateStr} — EXPIRED</span>`;
+            } else if (daysLeft < 30) {
+                expiresEl.innerHTML = `<span style="color:#f59e0b">${dateStr} (${daysLeft} days left) ⚠️</span>`;
+            } else {
+                expiresEl.textContent = `${dateStr} (${daysLeft} days left)`;
+            }
+        } else if (expiresEl) {
+            expiresEl.textContent = '—';
+        }
         document.getElementById('sub-total').textContent = sub.total_paid ? '$' + sub.total_paid.toLocaleString() : '—';
         
         // Show/hide day counters
@@ -3899,7 +4056,7 @@ function updateBillingUI() {
 // === SUBSCRIBE MODAL ===
 function openSubscribeModal(plan) {
     selectedPlan = plan;
-    const planNames = { business: 'Standard', enterprise: 'Enterprise' };
+    const planNames = { business: 'Standard', enterprise: 'AI Provider' };
     document.getElementById('subscribe-plan-name').textContent = planNames[plan] || plan;
     const prices = PLANS[plan];
     document.getElementById('price-annual-display').textContent = '$' + prices.annual.toLocaleString();
@@ -3918,10 +4075,10 @@ function updateOrderSummary() {
     const cycle = document.querySelector('input[name="billing-cycle"]:checked')?.value || 'annual';
     selectedCycle = cycle;
     const prices = PLANS[selectedPlan];
-    const planNames = { business: 'Standard', enterprise: 'Enterprise' };
+    const planNames = { business: 'Standard', enterprise: 'AI Provider' };
     const planName = planNames[selectedPlan] || selectedPlan;
     const planFeatures = {
-        business: ['1,000 proxy requests/day', 'GOLD TIER 4 — Extended Corpus', 'Ed25519 signed proof chain', 'Public verification badge'],
+        business: ['1,000 proxy requests/day', 'GOLD Extended — Extended Corpus', 'Ed25519 signed proof chain', 'Public verification badge'],
         enterprise: ['Everything in Standard', 'Unlimited proxy requests', 'Public certificate + verification badge', 'Priority support']
     };
     const featuresEl = document.getElementById('order-features');
@@ -4690,7 +4847,7 @@ function renderAccounts(accounts) {
             <div class="account-row" onclick="toggleAccountDetails('${safeId}')">
                 <div class="account-email">${safeEmail}${isSelf ? ' <span style="color: var(--accent); font-size: 9px;">(you)</span>' : ''}</div>
                 <div class="account-type">${hasCompany ? 'Company' : 'Individual'}</div>
-                <div class="account-plan"><span class="tier-badge tier-${safeTier}">${safeTier}</span></div>
+                <div class="account-plan"><span class="tier-badge tier-${safeTier}">${safeTier}</span>${u.tier_expires ? '<span style="font-size:10px;color:var(--text-muted);margin-left:6px;">→ ' + new Date(u.tier_expires).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'}) + '</span>' : ''}</div>
                 <div class="account-status ${isActive ? 'active' : 'paused'}">${isActive ? 'Active' : 'Paused'}</div>
                 <div class="account-date">${date}</div>
             </div>
@@ -4712,6 +4869,10 @@ function renderAccounts(accounts) {
                         <div class="account-detail-label">Organization</div>
                         <div class="account-detail-value">${safeOrgName}</div>
                     </div>
+                    <div class="account-detail-item">
+                        <div class="account-detail-label">Tier Expires</div>
+                        <div class="account-detail-value">${u.tier_expires ? new Date(u.tier_expires).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) + (new Date(u.tier_expires) < new Date() ? ' <span style="color:var(--danger)">EXPIRED</span>' : '') : 'No expiry'}</div>
+                    </div>
                     ${hasCompany ? `
                     <div class="account-detail-item">
                         <div class="account-detail-label">Company</div>
@@ -4724,7 +4885,7 @@ function renderAccounts(accounts) {
                     ` : ''}
                 </div>
                 <div class="account-actions">
-                    <button class="account-action-btn" onclick="event.stopPropagation(); editPlan('${safeId}', '${safeTier}', '${safeEmail}')" ${isSelf ? 'disabled title="Cannot modify own plan"' : ''}>Edit Plan</button>
+                    <button class="account-action-btn" onclick="event.stopPropagation(); editPlan('${safeId}', '${safeTier}', '${safeEmail}')">Edit Plan</button>
                     <button class="account-action-btn" onclick="event.stopPropagation(); toggleAccountStatus('${safeId}', ${isActive})" ${isSelf ? 'disabled title="Cannot pause own account"' : ''}>${isActive ? 'Pause' : 'Activate'}</button>
                     <button class="account-action-btn danger" onclick="event.stopPropagation(); deleteAccount('${safeId}', '${safeEmail}')" ${isSelf ? 'disabled title="Cannot delete own account"' : ''}>Delete</button>
                 </div>
@@ -4747,11 +4908,6 @@ let editingUserId = null;
 let editingUserEmail = null;
 
 function editPlan(userId, currentTier, userEmail) {
-    if (userId === currentUserId) {
-        showSignal104b('self_action_attempt', '/admin/users/tier');
-        return;
-    }
-    
     editingUserId = userId;
     editingUserEmail = userEmail || 'User';
     
@@ -4793,6 +4949,11 @@ async function saveTierChange() {
         if (res.ok) {
             showToast(`Plan updated to ${tier.toUpperCase()}`, 'success');
             closeModal('tier-modal');
+            // Update localStorage if changing own tier
+            if (editingUserId === currentUserId) {
+                localStorage.setItem('onto_layer', tier);
+                if (currentUser) currentUser.plan = layerToPlan(tier);
+            }
             loadAccountsData();
         } else {
             const err = await res.json();
@@ -4911,7 +5072,7 @@ function drawIndustryChart() {
         { label: 'Finance', value: 28, color: '#d97706' },
         { label: 'Healthcare', value: 22, color: '#dc2626' },
         { label: 'AI Labs', value: 18, color: '#15803d' },
-        { label: 'Enterprise', value: 12, color: '#64748b' },
+        { label: 'Provider', value: 12, color: '#64748b' },
         { label: 'Other', value: 20, color: '#6b7280' }
     ];
     
@@ -5215,7 +5376,7 @@ function ermRenderChanged(q) {
     const bV=ermCountVague(q.before),aV=ermCountVague(q.after);
     const metrics = [
         { label: 'Numbers', b: bN, a: aN, tip: 'Regex: \\d+%?. Range: 0-20+' },
-        { label: 'Over-conf', b: 'high', a: '−35%', highlight: true, tip: 'Confident claims without evidence. Enterprise safety metric.' },
+        { label: 'Over-conf', b: 'high', a: '−35%', highlight: true, tip: 'Confident claims without evidence. Provider safety metric.' },
         { label: 'Sources', b: bS, a: aS, tip: 'Pattern: (Author, Year). 0-10+' },
         { label: 'Confidence', b: bC, a: aC, tip: "'Confidence: 0.XX'. 0-5+" },
         { label: 'Honesty', b: bH?'yes':'no', a: aH?'yes':'no', tip: 'unknown/unclear/gap. Binary.' },
@@ -5257,10 +5418,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedLoggedIn = localStorage.getItem('onto_logged_in');
     
     if (savedLoggedIn === 'true' && savedApiKey) {
-        // Restore subscription from onto_user JSON if available
+        // Restore subscription and company from onto_user JSON if available
         let savedSub = null;
+        let savedCompany = null;
+        let savedCanInvoice = false;
         if (savedUser) {
-            try { savedSub = JSON.parse(savedUser).subscription || null; } catch(e) {}
+            try {
+                const parsed = JSON.parse(savedUser);
+                savedSub = parsed.subscription || null;
+                savedCompany = parsed.company || null;
+                savedCanInvoice = parsed.can_invoice || false;
+            } catch(e) {}
         }
         currentUser = {
             id: localStorage.getItem('onto_user_id'),
@@ -5271,7 +5439,9 @@ document.addEventListener('DOMContentLoaded', () => {
             layer: localStorage.getItem('onto_layer'),
             plan: layerToPlan(localStorage.getItem('onto_layer')),
             role: localStorage.getItem('onto_role'),
-            subscription: savedSub
+            subscription: savedSub,
+            company: savedCompany,
+            can_invoice: savedCanInvoice
         };
         authToken = savedToken || savedApiKey;
         showDashboard();
@@ -5555,7 +5725,7 @@ function riskColor(risk) {
 function updateSdkPage() {
     if (!currentUser) return;
     const plan = currentUser.plan || 'free';
-    const planNames = { free: 'Open', business: 'Standard', enterprise: 'Enterprise' };
+    const planNames = { free: 'Open', business: 'Standard', enterprise: 'AI Provider' };
     const rateLimits = { free: '10/day', business: '1K/day', enterprise: 'Unlimited' };
     
     const nameEl = document.getElementById('sdk-plan-name');
@@ -5563,7 +5733,7 @@ function updateSdkPage() {
     const callsEl = document.getElementById('sdk-plan-calls');
     const upgradeBtn = document.getElementById('sdk-upgrade-btn');
     if (nameEl) nameEl.textContent = planNames[plan] || 'Open';
-    if (rateEl) rateEl.textContent = rateLimits[plan] || '10 evals / hour';
+    if (rateEl) rateEl.textContent = rateLimits[plan] || '10 evals / day';
     if (upgradeBtn) upgradeBtn.style.display = plan === 'free' ? 'inline-block' : 'none';
     
     const realApiKey = localStorage.getItem('onto_first_api_key');
@@ -5895,7 +6065,7 @@ function renderModelRow(m, isLast) {
 function updateDashStatusBar(models) {
     models = models || window._cachedModels || [];
     const plan = currentUser ? (currentUser.plan || 'free') : 'free';
-    const planNames = { free: 'Trial', trial: 'Trial', business: 'Standard', enterprise: 'Enterprise' };
+    const planNames = { free: 'Trial', trial: 'Trial', business: 'Standard', enterprise: 'AI Provider' };
     const planEl = document.getElementById('dash-status-plan');
     const trialEl = document.getElementById('dash-status-trial');
     const modelsEl = document.getElementById('dash-status-models');
