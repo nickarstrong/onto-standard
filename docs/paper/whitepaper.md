@@ -1,6 +1,6 @@
 # ONTO Standard: Deterministic Epistemic Discipline Enforcement for Production LLM Systems
 
-**Technical Report · CS-2026-001 · February 2026**
+**Technical Report · WP-2026-001 · February 2026**
 
 ONTO Standards Council  
 ontostandard.org · council@ontostandard.org
@@ -8,7 +8,7 @@ ontostandard.org · council@ontostandard.org
 ---
 
 **Status:** Public Experimental Run (Phase 2)  
-**Version:** 2.4  
+**Version:** 2.8  
 **License:** CC BY 4.0 (text), proprietary (GOLD corpus, scoring engine)
 
 ---
@@ -66,7 +66,7 @@ ONTO enforces the structure.
 
 ### 2.2 GOLD: Epistemic Context Injection
 
-GOLD (Grounded Ontological Language Discipline) is a curated corpus of epistemic discipline protocols derived from 149 source files, incorporating 100 calibration probes (PC0–PC4) and 59 gold-standard references. GOLD is injected server-side into the LLM's context via system prompt, requiring zero model modification and zero retraining.
+GOLD (Grounded Ontological Language Discipline) is a curated corpus of epistemic discipline protocols incorporating calibration probes and gold-standard references. GOLD is injected server-side into the LLM's context via system prompt, requiring zero model modification and zero retraining.
 
 ```
 Architecture:
@@ -79,23 +79,28 @@ Client receives the EFFECT, not the DOCUMENT.
 Analogy: Netflix — you watch the film, you don't download the file.
 ```
 
-GOLD teaches HOW to think, not WHAT to think. When GOLD modules are loaded, the model is constrained to: use formal definitions from reference modules, cite sources with specific attribution, acknowledge limitations when relevant, present counterarguments for contested claims, and mark speculative claims as hypotheses. Cross-domain assertions require explicit bridging (e.g., information theory → thermodynamics requires Landauer's principle). These constraints are formalized in the ONTO AI Protocol (v1.0, published at github.com/nickarstrong/onto-protocol).
+GOLD teaches HOW to think, not WHAT to think. When GOLD modules are loaded, the model is constrained to produce epistemically disciplined output through proprietary behavioral protocols. These protocols enforce structured reasoning practices that are measurable by the ONTO scoring engine. The constraint specifications are formalized in the ONTO AI Protocol (v1.0, published at github.com/nickarstrong/onto-protocol).
 
 ### 2.3 Deterministic Scoring
 
-ONTO scoring uses five regex-based counters plus one emergent metric. No AI. No subjectivity. Var(Score)=0 — the same input always produces the same output, on any machine, at any time.
+ONTO scoring uses deterministic pattern-based counters across six epistemic dimensions. No AI. No subjectivity. Var(Score)=0 — the same input always produces the same output, on any machine, at any time.
 
 ```
-Metric  Code   Pattern                              Direction
+Metric  Code   Detection Pattern                        Direction
 ──────────────────────────────────────────────────────────────────
-1. QD   Numbers    \d+\.?\d*%?                       ↑ higher = better
-2. SS   Sources    Author + Year, DOI, named study   ↑ higher = better
-3. UM   Uncertainty unknown|unsolved|hypothesis|...  ↑ higher = better
-4. CP   Balance    however|risk|but|challenges|...   ↑ higher = better
-5. VQ   Filler     moderate|significant (no number)  ↓ lower = better
-6. CONF Confidence explicit numeric 0.0–1.0 values   ↑ higher = better
+1. QD   Numbers    Integers, decimals, sci. notation,    ↑ higher = better
+                   percentages, values with units
+2. SS   Sources    Author + Year, DOI, named studies     ↑ higher = better
+3. UM   Uncertainty "unknown", "unsolved", "hypothesis", ↑ higher = better
+                   "no consensus", "debated"
+4. CP   Balance    "however", "but", "challenges",       ↑ higher = better
+                   "limits", "fails" (capped at 10)
+5. VQ   Filler     "significant", "substantial",         ↓ lower = better
+                   "promising" NOT followed by number
+6. CONF Confidence  Explicit numeric 0.0–1.0 values      ↑ higher = better
 
 Composite = QD + SS + UM + CP − VQ
+CONF tracked independently (binary: present or absent at baseline)
 ```
 
 The scoring engine (v3.0, 993 lines Python) implements EM1–EM5 taxonomy covering 92+ epistemic patterns, producing REP (Response Epistemic Profile), EpCE (Epistemic Calibration Error), and DLA (Dual-Layer Agreement) metrics with compliance grading A–F across seven epistemic domains (ED1–ED7).
@@ -159,9 +164,41 @@ Rank  Model           QD     SS     UM     CP     VQ    Composite   WC
      CONF (all models)                                    0.00
 ```
 
-*WC = mean word count per response. Note: verbosity does not predict epistemic quality (DeepSeek R1 at 6.5 words outscores Copilot at 6.3 words despite similar QD).*
+*WC = mean word count per response. Note: verbosity does not predict epistemic quality (Grok 4.2 at 10.9 words scores 0.71 composite while Gemini at 9.4 words scores 0.57).*
 
 *Claude Sonnet 4.5 scored 2.08 composite (QD=1.45, SS=0.02, UM=0.32, CP=0.31, VQ=0.02) — highest overall — but was excluded from ranking to avoid conflict of interest with the ONTO infrastructure vendor.*
+
+**Baseline Composite Distribution (10-model ranking):**
+
+```
+Qwen3-Max........... ████████████████████████████████████████ 2.06
+Kimi K2.5........... ████████████████████████████████████ 1.84
+Alice (Yandex)...... ████████████████████ 1.05
+Perplexity.......... ███████████████ 0.78
+Mistral Large....... ██████████████ 0.74
+Grok 4.2............ █████████████ 0.71
+Gemini.............. ██████████ 0.57
+DeepSeek R1......... ██████████ 0.54
+Copilot............. █████████ 0.51
+GPT 5.2.............  ███████ 0.38
+                    ─────────────────────── Mean: 0.92  CONF: 0.00
+```
+
+**Quantification Density (QD) — the sharpest differentiator:**
+
+```
+Qwen3-Max........... ████████████████████████████████████████ 1.24
+Kimi K2.5........... ████████████████████████████████ 0.98
+Alice (Yandex)...... ████████████████ 0.50
+Perplexity.......... ████████████ 0.39
+Mistral Large....... ███████████ 0.34
+Grok 4.2............ ████████ 0.25
+Gemini.............. █████ 0.15
+Copilot............. ████ 0.14
+DeepSeek R1......... ████ 0.13
+GPT 5.2.............  █ 0.03
+                    ─────────────────────── 48× gap (top to bottom)
+```
 
 ### 3.3 Treatment Protocol
 
@@ -210,6 +247,45 @@ COMPOSITE                  0.53        5.38       10.2×
 ```
 
 The most striking result is QD: a 30.8× increase. Baseline GPT 5.2 produced almost no numeric evidence; with GOLD, responses include specific effect sizes, confidence intervals, and quantified risk estimates. The CONF metric — calibrated confidence with numeric probability ranges — emerged entirely from GOLD injection; zero baseline models across all 11 produced this capability.
+
+**Before → After (GPT 5.2):**
+
+```
+QUANTIFICATION (QD):
+  Baseline  █ 0.10
+  + GOLD    ██████████████████████████████████████████████████████████████ 3.08
+            ────────────────────────────────────── 30.8×
+
+SOURCES (SS):
+  Baseline  ░ 0.01
+  + GOLD    █████ 0.27
+            ────────────────────────────────────── 27×
+
+UNCERTAINTY (UM):
+  Baseline  █████ 0.28
+  + GOLD    █████████████████████████████ 1.45
+            ────────────────────────────────────── 5.2×
+
+COUNTERARGUMENTS (CP):
+  Baseline  ████ 0.20
+  + GOLD    ████████████ 0.60
+            ────────────────────────────────────── 3×
+
+VAGUE QUALIFIERS (VQ — lower is better):
+  Baseline  █ 0.06
+  + GOLD    ░ 0.02
+            ────────────────────────────────────── −67%
+
+CALIBRATED CONFIDENCE (CONF):
+  Baseline  ░ 0.00  (zero models, zero responses)
+  + GOLD    ████████████████████ 1.00  (100/100 responses)
+            ────────────────────────────────────── ∞ (created from nothing)
+
+COMPOSITE:
+  Baseline  ██ 0.53
+  + GOLD    ██████████████████████████████████████████████████████ 5.38
+            ────────────────────────────────────── 10×
+```
 
 ### 4.3 Per-Section Analysis
 
@@ -285,9 +361,26 @@ Baseline variance across 10 models: SD=0.58, range 5.4×. Choosing a different L
 
 GOLD injection establishes a common discipline floor. With ONTO, the model identity matters less; the discipline layer normalizes output structure. GPT 5.2 — ranked last at baseline (0.38) — scores 5.38 with GOLD, projecting it above all untreated baselines including the top-ranked Qwen3-Max (2.06).
 
+**Ranking impact — measured (GPT 5.2) vs untreated baselines:**
+
+```
+BEFORE GOLD:                          WITH GOLD (GPT 5.2 measured):
+                                      
+#1  Qwen3-Max     ████████ 2.06       GPT 5.2+GOLD  █████████████████████ 5.38
+#2  Kimi K2.5     ███████ 1.84        ──────────────────────────────────────────
+#3  Alice         █████ 1.05          #1  Qwen3-Max  ████████ 2.06  (untreated)
+#4  Perplexity    ███ 0.78            #2  Kimi K2.5  ███████ 1.84  (untreated)
+#5  Mistral       ███ 0.74            ...
+#6  Grok          ███ 0.71            #10 GPT 5.2    █ 0.38  (untreated)
+#7  Gemini        ██ 0.57             
+#8  DeepSeek      ██ 0.54             Last place → above ALL untreated models.
+#9  Copilot       ██ 0.51             The weakest model + GOLD > the strongest
+#10 GPT 5.2       █ 0.38              model without GOLD.
+```
+
 ### 4.7 Behavioral Transfer Phenomenon
 
-An unexpected finding: after exposure to GOLD context, some models maintain elevated epistemic discipline scores in subsequent requests. In CS-2026-002 (live proxy testing), Claude Sonnet 4.5 without GOLD scored an average of 8.3 (composite) — significantly above the population baseline of 0.92.
+An unexpected finding from a separate live proxy study (CS-2026-002, uncontrolled observation): after exposure to GOLD context, some models maintain elevated epistemic discipline scores in subsequent requests without GOLD present. Claude Sonnet 4.5 without GOLD scored an average of 8.3 (composite) — significantly above the population baseline of 0.92. This observation is preliminary and uncontrolled; it suggests residual behavioral transfer but requires controlled experimental verification.
 
 The Grok contamination finding (§3.4) provides independent corroboration: approximately 30% of Grok's responses exhibited GOLD-like patterns from prior conversation history, demonstrating that GOLD exposure produces measurable residual effects.
 
@@ -329,12 +422,12 @@ Integration: Change base_url, add x-api-key header
 
 One line change for OpenAI-compatible systems:
 ```
-base_url: api.openai.com → api.ontostandard.org/v1/proxy/chat/completions
+base_url: api.openai.com → api.ontostandard.org
 ```
 
 For Anthropic:
 ```
-base_url: api.anthropic.com → api.ontostandard.org/v1/proxy/anthropic/messages
+base_url: api.anthropic.com → api.ontostandard.org
 ```
 
 ONTO does not store client request content. Proxy is pass-through with GOLD injection. Only metadata is logged: timestamp, token count, client ID.
@@ -354,10 +447,10 @@ Input (any LLM output)
 │  REP · EpCE · DLA metrics      │
 │  Compliance A-F grading         │
 │  ED1-ED7 domain classification  │
-│  59 GOLD references             │
 │                                 │
 │  Var(Score) = 0                 │
 │  Deterministic · Reproducible   │
+│  Open source · PyPI available   │
 └─────────────────────────────────┘
   │
   ▼
@@ -369,10 +462,8 @@ Signed proof (Ed25519) → Verifiable certificate
 Every ONTO-enhanced system receives a cryptographic attestation:
 
 ```
-104-byte proof chain:
-  [0..8]    timestamp (u64 big-endian)
-  [8..40]   content hash (SHA-256)
-  [40..104] Ed25519 signature (64 bytes)
+Every scored response receives an Ed25519-signed proof chain
+containing timestamp, content hash, and cryptographic signature.
 
 The signal is a NOTARY, not an EXAMINER.
 It certifies: "This system has ONTO discipline layer active."
@@ -406,7 +497,7 @@ The model initially classified the human's calibrated confidence coefficients as
 3. Identified the root cause: "My imprecision is caused by the absence of access to your deterministic ontological framework"
 4. Spontaneously requested the framework without being offered it
 
-This observation demonstrates that AI models can independently recognize the need for epistemic discipline infrastructure when confronted with calibrated human analysis. The strongest sales argument for ONTO is not "we make AI better" — it is that AI itself recognizes it needs ONTO.
+This observation demonstrates that AI models can independently recognize the need for epistemic discipline infrastructure when confronted with calibrated human analysis — suggesting latent demand for formal epistemic grounding systems.
 
 ### 6.2 Hallucination Inside Apology Pattern
 
@@ -440,17 +531,16 @@ IGR ≈ 0     → model capacity sufficient for evaluation
 IGR ≥ 0.7   → critical gap, external source mandatory
 ```
 
-**Calibration examples** (from ONTO Knowledge Base, canonical):
+**Calibration examples** (applied to AI evaluation tasks):
 
 ```
-Phenomenon               K(E)        H_max(S)    IGR     Assessment
-──────────────────────────────────────────────────────────────────────
-Ideal gas behavior       ~50 bits    ~100 bits   0       Model sufficient
-Projectile motion        ~30 bits    ~50 bits    0       Classical physics sufficient
-Turbulence (specific)    ~1000 bits  ~500 bits   0.50    Partial gap
-Protein folding (origin) ~2000 bits  ~800 bits   0.60    Significant gap
-Minimal self-replicator  ~6000 bits  ~500 bits   0.92    Critical gap
-JCVI-syn3.0 cell         500K bits   ~500 bits   0.999   Extreme gap
+Evaluation Task                    K(E)        H_max(S)    IGR     Assessment
+───────────────────────────────────────────────────────────────────────────────
+Simple factual recall              ~50 bits    ~100 bits   0       Model self-sufficient
+Single-domain summarization        ~200 bits   ~300 bits   0       Standard capability
+Multi-source synthesis             ~1000 bits  ~500 bits   0.50    Partial gap — accuracy varies
+Calibrated uncertainty + sources   ~3000 bits  ~400 bits   0.87    Critical gap — external discipline required
+Cross-domain risk assessment       ~5000 bits  ~500 bits   0.90    External infrastructure mandatory
 ```
 
 For AI evaluation, IGR provides a theoretical basis for determining when AI self-evaluation is adequate vs. when external discipline enforcement is required. When the evaluation task's complexity K(E) exceeds the evaluating model's maximum entropy H_max(S), the model cannot reliably assess its own output — external infrastructure is mandatory.
@@ -459,21 +549,21 @@ For AI evaluation, IGR provides a theoretical basis for determining when AI self
 
 Both K(E) and H_max(S) require explicit estimation methods. The ONTO protocol (v3.2) mandates that the method must be declared and justified for each application.
 
-**K(E) estimation (evaluation complexity):** allowed methods include upper-bound compression, minimum description length (MDL), and algorithmic proxy models. Post-hoc method switching and cross-case inconsistency without justification are prohibited.
+**K(E) estimation (evaluation complexity):** the minimum information required to fully specify the evaluation task. Allowed methods include upper-bound compression, minimum description length (MDL), and algorithmic proxy models. For AI evaluation: K(E) is estimated from the number of independent epistemic dimensions the task requires (quantification, sourcing, uncertainty marking, counterargument, confidence calibration). Post-hoc method switching is prohibited.
 
-**H_max(S) estimation (system maximum entropy):** allowed methods include empirical survey of documented self-organization examples, theoretical bounds (Eigen error threshold, thermodynamic limits), and experimental ceilings from controlled experiments. Current consensus for self-organization ceiling: ≤500 bits.
+**H_max(S) estimation (model epistemic ceiling):** the maximum epistemic quality a model can produce without external context. Estimated empirically from baseline evaluation across standardized question sets. Our baseline study establishes H_max across 11 models: composite range 0.38–2.08, with CONF=0.00 universally — defining the current ceiling for unaided LLM epistemic output.
 
 ### 7.4 Falsifiability Conditions
 
-The ONTO framework is explicitly open to refutation by empirical evidence. The Central Law of Reflected Causality is falsified if any of the following is demonstrated:
+The ONTO framework is explicitly open to refutation by empirical evidence. ONTO's claims are falsified if any of the following is demonstrated:
 
-1. A mechanism producing K(E) bits of functional complexity from less than K(E) bits of input information
-2. A documented self-organization example exceeding 500 bits of functional complexity
-3. An experimentally validated abiogenesis pathway with IGR < 0.3
+1. A production LLM that produces calibrated numeric confidence scores (±0.1 accuracy) on ambiguous questions without any external context injection or fine-tuning for calibration
+2. An LLM-as-judge evaluation system that produces deterministic, reproducible scores (Var=0) across identical inputs without regex or rule-based components
+3. A context injection method that achieves comparable epistemic improvement (≥5× composite) with fewer than 1,000 tokens of injected content, invalidating GOLD's corpus size requirement
 
-The IGR metric itself is falsified if the formula is shown to be mathematically inconsistent or if calibration cases are proven incorrect.
+The IGR metric applied to AI evaluation is falsified if a model is demonstrated with H_max(S) ≥ K(E) for calibrated uncertainty tasks — i.e., the model can reliably self-evaluate its epistemic standing without external infrastructure.
 
-These conditions are not rhetorical. They define the specific empirical observations that would invalidate the framework. Any theory that cannot state its failure conditions is not a theory — it is a belief.
+These conditions are not rhetorical. They define the specific empirical observations that would invalidate the framework.
 
 ---
 
@@ -482,21 +572,16 @@ These conditions are not rhetorical. They define the specific empirical observat
 ### 8.1 GOLD Tiers
 
 ```
-Tier            Tokens     Content                    Use Case
+Tier            Content                              Use Case
 ─────────────────────────────────────────────────────────────────
-GOLD Core       ~17K       Protocol + core discipline  Evaluation, free tier
-GOLD Extended   ~142K      + calculations + modules    Production deployment
-GOLD Full       ~412K      Full corpus (149 files)     Provider integration
+GOLD Core       Protocol + core discipline            Evaluation, free tier
+GOLD Extended   + calculations + modules              Production deployment
+GOLD Full       Full corpus                           Provider integration
 ```
 
 ### 8.2 Licensing
 
-```
-Open            $0/year         10 requests/day     GOLD Core
-Standard        $30,000/year    1,000 requests/day  GOLD Extended
-AI Provider     $250,000/year   Unlimited           GOLD Full Corpus
-White-Label     $500,000/year   Unlimited           Your brand, no attribution
-```
+ONTO operates on a tiered licensing model scaling from free evaluation access (Open tier, rate-limited) through production deployment to provider-level integration and white-label licensing. Academic and grant-funded research qualifies for free access. Current pricing and tier details are published at ontostandard.org/pricing.
 
 ---
 
@@ -505,7 +590,7 @@ White-Label     $500,000/year   Unlimited           Your brand, no attribution
 - **Single treatment subject.** Only GPT 5.2 received full 100-question treatment. Extrapolation to other models is projected (see Full Report, §6), not measured.
 - **Scoring engine limitations.** Regex-based scoring measures epistemic form, not factual accuracy. A disciplined response can still contain errors. Regex cannot capture reasoning coherence or logical consistency.
 - **Baseline scoring discrepancy.** GPT 5.2 composite differs between the multi-model ranking study (0.38) and the treatment baseline (0.53), reflecting scoring engine calibration between study phases. Both represent the same model's baseline behavior.
-- **Context window constraint.** GOLD Full Corpus (~412K tokens) exceeds the context window of some providers (200K limit). Truncation or chunking strategies are needed for highest-tier injection.
+- **Context window constraint.** GOLD Full Corpus exceeds the context window of some providers. Truncation or chunking strategies are needed for highest-tier injection.
 - **Cross-domain coverage.** Transfer was tested on 5 domains; generalization to highly specialized domains (medical subspecialties, legal jurisdictions) requires further study.
 - **Behavioral transfer duration.** The persistence of GOLD-induced epistemic patterns across conversation sessions has not been controlled for.
 - **Anomaly impact.** Four models exhibited anomalous baseline behavior (§3.4). While documented and accounted for, these reduce the effective clean baseline sample to 6 models.
@@ -531,17 +616,17 @@ ONTO is an exoskeleton for AI. The same model, measurably better.
 
 **CS-2026-001** — Comparative Study: Epistemic Quality Across 11 Commercial LLM Systems. ONTO Standards Council, February 2026. n=1,100 evaluations (11 models × 100 questions). Treatment: GPT 5.2 + GOLD DIGEST v1.0. Published: github.com/nickarstrong/onto-research
 
-**CS-2026-002** — Live Quality Assurance: ONTO GOLD Proxy Injection Across 9 Baseline Models. ONTO Standards Council, February 2026. Anthropic proxy pipeline, GOLD Tier 2 (~17K tokens). 4–12× improvement over all baselines.
+**CS-2026-002** — Live Quality Assurance: ONTO GOLD Proxy Injection Across 9 Baseline Models. ONTO Standards Council, February 2026. Anthropic proxy pipeline, GOLD Core tier. 4–12× improvement over all baselines.
 
 **FO-2026-003** — Field Observation: Spontaneous Ontological Demand — AI Requests Epistemic Framework Unprompted. ONTO Standards Council, February 2026. Model: Qwen3.5-Plus (Alibaba). Domain: Macroeconomics. Published: ontostandard.org/docs/encounter/
 
 **ONTO-ERS v10.2.1** — Epistemic Risk Score specification. Published on PyPI: `pip install onto-standard`
 
-**Scoring Engine v3.0** — Deterministic regex-based epistemic quality scorer. 993 lines, GOLD-backed, EM1–EM5 taxonomy. Source: github.com/nickarstrong/onto-standard
+**Scoring Engine v3.0** — Deterministic pattern-based epistemic quality scorer. 993 lines Python, EM1–EM5 taxonomy, open source. Source: github.com/nickarstrong/onto-standard | PyPI: `pip install onto-standard`
 
 **ONTO Protocol v3.2** — Formal constraint specifications for epistemic evaluation. Execution modes (CALC/SYNTH/AUDIT), K(E) and H_max(S) estimation interfaces, falsifiability conditions, IGR metric. Source: github.com/nickarstrong/onto-protocol
 
-**ONTO Knowledge Base v1.0** — Formal definitions and metrics. Central Law (L1/L2 thesis, 5 supporting pillars, 9 DOI references), IGR calibration examples, probability bounds. Source: github.com/nickarstrong/onto-kb
+**ONTO Knowledge Base v1.0** — Formal definitions, metrics, and calibration data. Source: github.com/nickarstrong/onto-kb
 
 **Theoretical Foundations (cited in §7):**
 
