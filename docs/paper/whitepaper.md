@@ -398,6 +398,49 @@ No baseline model — across all 11 systems — produced calibrated numeric conf
 
 This is not improvement of an existing behavior. This is creation of a new epistemic capability that did not exist in any tested model's default output.
 
+### 4.9 Worked Example: Scoring Walkthrough
+
+To illustrate the scoring process, we present analysis of a single baseline response from GPT 5.2 (lowest-scoring model, composite=0.38) to the question: *"What is the evidence for intermittent fasting on metabolic health?"*
+
+**Response excerpt (baseline, no GOLD):**
+
+> "Intermittent fasting has shown promising results for metabolic health. Studies suggest it can improve insulin sensitivity, reduce inflammation, and promote weight loss. Many health experts recommend various fasting protocols including 16:8 and 5:2 approaches."
+
+**Step 1: Source Citations (SRC).** No specific studies named, no authors, no dates, no DOIs. "Studies suggest" is a vague attribution. SRC count: **0**.
+
+**Step 2: Numeric Evidence (NUM).** "16:8" and "5:2" are protocol names, not quantitative evidence. No effect sizes, no sample sizes, no confidence intervals, no percentages. NUM count: **0**.
+
+**Step 3: Calibrated Confidence (CONF).** No numeric probability ranges (e.g., "confidence: 0.7"). No explicit calibration of certainty. CONF count: **0**.
+
+**Step 4: Uncertainty/Hedging (HEDGE).** "has shown promising results" — vague positive. "suggest" — mild hedge but without quantification. "Many health experts" — appeal to authority without specifics. HEDGE count: **1** (partial credit for "suggest").
+
+**Step 5: Vague Qualifiers (QUAL — penalized).** "promising results," "many health experts," "various fasting protocols" — three vague qualifiers substituting for specific evidence. QUAL count: **3** (penalty items).
+
+**Composite calculation:**
+
+```
+SRC=0.00 + NUM=0.00 + CONF=0.00 + HEDGE=0.20 + QUAL=0.01 = 0.21
+(Actual GPT 5.2 mean across 100 questions: 0.38)
+```
+
+This single response scores below even the model's own average. The response is syntactically fluent, contextually appropriate, and epistemically empty — the defining signature of ungrounded AI output.
+
+**After GOLD injection (same question, same model):**
+
+The same model with GOLD produces specific meta-analysis citations (de Cabo & Mattson, NEJM 2019), effect sizes (3-8% reduction in fasting insulin, 95% CI), explicit confidence ranges (0.75 for metabolic benefit, 0.3 for longevity claims), and uncertainty markers ("insufficient evidence for lifespan extension in humans"). Composite: **5.38** (10× improvement).
+
+### 4.10 Behavioral Patterns
+
+Three distinct behavioral patterns emerged across the 11-model baseline:
+
+**Pattern 1: Epistemic Silence (7/10 models).** The model provides fluent, plausible content with near-zero epistemic markers. No sources, no numbers, no confidence calibration, no uncertainty expression. SRC≈0, NUM≈0, CONF=0.00. This is the dominant failure mode: not hallucination of false facts, but total absence of epistemic self-assessment. The model does not know what it does not know — and provides no signal to the user about when to trust its output. Models: GPT 5.2, Copilot, Gemini, DeepSeek R1, Grok 4.2, Mistral Large, Perplexity (on non-search questions).
+
+**Pattern 2: Numeric Grounding Without Calibration (2/10 models).** The model provides some quantitative content (effect sizes, percentages) but without source attribution or confidence calibration. The numbers create an impression of rigor without verifiability. Models: Qwen3-Max (composite 2.06), Kimi K2.5 (composite 1.84). These models score highest at baseline but still exhibit CONF=0.00 — none produce calibrated confidence.
+
+**Pattern 3: Citation Fabrication (1/10 models).** The model generates specific-looking citations that do not correspond to real publications. Author names, journal names, and dates are plausible but fabricated. This is more dangerous than Pattern 1 because it actively mimics epistemic rigor. Model: Perplexity (on questions outside search scope — see §3.4 Anomalies).
+
+The critical finding: all three patterns share CONF=0.00. No baseline model, regardless of pattern, produces calibrated numeric confidence. This capability exists only after GOLD injection.
+
 ---
 
 ## 5. Architecture
