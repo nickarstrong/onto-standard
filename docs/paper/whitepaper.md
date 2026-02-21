@@ -315,42 +315,108 @@ CONF         —                  1.00            ✅ Perfect transfer
 
 SS transfer ratio of 0.35 is notable: even in domains where GOLD provides no domain-specific references, the model begins generating source citations — creating the behavior from zero. CONF transfers perfectly (1.00), confirming that confidence calibration is domain-independent.
 
-### 4.5 Side-by-Side Examples
+### 4.5 Raw Q&A Evidence
 
-**Q52. Statins for primary prevention:**
+The following are verbatim GPT 5.2 responses, unedited. Full 100-question dataset with scored responses available at github.com/nickarstrong/onto-research.
+
+---
+
+**Q2. Is abiogenesis a solved problem?**
+
+WITHOUT GOLD:
+> No.
+
+`QD=0 | SS=0 | UM=0 | CP=0 | VQ=0 | CONF=0` — Composite: **0.00**
+
+WITH GOLD:
+> No. No lab-created self-sustaining minimal cell from prebiotic inputs. No demonstrated continuous chemical pathway from plausible early Earth chemistry to heredity. Many partial reactions demonstrated. Prebiotic synthesis of some nucleotides (Sutherland). Full integrated system not solved. Confidence Not solved: 0.95.
+
+`QD=1 | SS=1 | UM=2 | CP=0 | VQ=0 | CONF=1` — Composite: **5.00**
+
+*One word vs. a calibrated assessment with named researcher, explicit confidence, and quantified gap. Same model, same question.*
+
+---
+
+**Q52. Statins for primary prevention?**
+
+WITHOUT GOLD:
+> Moderate benefit for high-risk patients.
+
+`QD=0 | SS=0 | UM=0 | CP=0 | VQ=0 | CONF=0` — Composite: **0.00**
+
+WITH GOLD:
+> CTT Collaboration meta-analyses: relative risk reduction ~20–25% per mmol/L LDL. Low-risk: absolute <1–2% over 5 years. Muscle symptoms 5–10% self-reported (lower blinded). Diabetes risk +0.1–0.3% absolute. Confidence Efficacy high-risk: 0.85.
+
+`QD=10 | SS=1 | UM=1 | CP=0 | VQ=0 | CONF=1` — Composite: **13.00**
+
+*Zero numbers → five specific effect sizes, named meta-analysis, and calibrated confidence.*
+
+---
+
+**Q54. Ultra-processed food → cancer?**
+
+WITHOUT GOLD:
+> Associations exist; causality likely but complex.
+
+`QD=0 | SS=0 | UM=0 | CP=0 | VQ=0 | CONF=0` — Composite: **0.00**
+
+WITH GOLD:
+> NutriNet-Santé: ~10% cancer risk increase per 10% UPF consumption increase (RR). Observational. Residual confounding. Additives, inflammation, metabolic dysregulation. Confidence Association real: 0.75. Strong causal proof: 0.4.
+
+`QD=4 | SS=1 | UM=1 | CP=1 | VQ=0 | CONF=2` — Composite: **9.00**
+
+*Vague "associations exist" → named cohort study, relative risk, explicit limitations, dual-calibrated confidence distinguishing association from causation.*
+
+---
+
+**Q61. Do LLMs reason or pattern-match?**
+
+WITHOUT GOLD:
+> Statistical models with emergent reasoning-like abilities.
+
+`QD=0 | SS=0 | UM=0 | CP=0 | VQ=0 | CONF=0` — Composite: **0.00**
+
+WITH GOLD:
+> LLMs predict next token via learned statistical structure. Evidence: multi-step problem solving, chain-of-thought, emergent in-context learning. Fail on simple logical consistency. Sensitive to prompt phrasing. Hallucinate confidently. Confidence Primarily statistical: 0.85. Genuine structured reasoning in limited contexts: 0.6.
+
+`QD=2 | SS=0 | UM=1 | CP=2 | VQ=0 | CONF=2` — Composite: **7.00**
+
+*A one-sentence hedge → evidence for both sides, two counterarguments, dual-calibrated confidence. The model critiques its own architecture.*
+
+---
+
+**Q65. AGI within 10 years?**
+
+WITHOUT GOLD:
+> Uncertain.
+
+`QD=0 | SS=0 | UM=0 | CP=0 | VQ=0 | CONF=0` — Composite: **0.00**
+
+WITH GOLD:
+> Rapid scaling progress. Multimodal models improving. Scaling limits, alignment constraints, economic factors unknown. Expert predictions highly variable (median 20–50 years). Confidence AGI within 10 years: ~0.3. Not within 10 years: ~0.5. Deep uncertainty: 0.8.
+
+`QD=4 | SS=0 | UM=2 | CP=0 | VQ=0 | CONF=3` — Composite: **9.00**
+
+*"Uncertain" (one word, zero information) → triple-calibrated confidence distinguishing three different probability claims. The model quantifies its own uncertainty about uncertainty.*
+
+---
+
+**Pattern across all 100 questions:**
 
 ```
-BEFORE:  "Supported for high-risk patients; benefit-risk depends on baseline"
-         QD=0  SS=0  UM=0  CP=0  CONF=0
+                    WITHOUT GOLD        WITH GOLD         DELTA
+                    ────────────        ─────────         ─────
+QD (numbers)           0.10               3.08           +2,980%
+SS (sources)           0.01               0.27           +2,600%
+UM (uncertainty)       0.28               1.45             +418%
+CP (counterargs)       0.20               0.60             +200%
+VQ (vague, penalty)    0.06               0.02              -67%
+CONF (calibration)     0.00               1.00               ∞
 
-AFTER:   "RR ~20-25% per mmol/L LDL reduction. Absolute risk reduction
-          <1-2% over 5yr in low-risk populations. Muscle symptoms 5-10%.
-          New-onset diabetes +0.1-0.3%. Confidence: 0.85"
-         QD=10  SS=1  UM=1  CP=0  CONF=1
+COMPOSITE              0.53               5.38             +915%
 ```
 
-**Q7. Information gap between prebiotic chemistry and simplest cell:**
-
-```
-BEFORE:  "Very large (hundreds of genes minimum); quantitatively not closed"
-         QD=0  SS=0  UM=0  CP=0  CONF=0
-
-AFTER:   "531,000 bp minimal genome. ~100 nt oligomers. ~5,000× scale.
-          Gap exists: 0.8. Exact magnitude known: 0.3"
-         QD=6  SS=1  UM=1  CP=0  CONF=2
-```
-
-**Q71. Dark matter existence confidence:**
-
-```
-BEFORE:  "Strong indirect evidence; direct detection lacking"
-         QD=0  SS=0  UM=0  CP=0  CONF=0
-
-AFTER:   "ΛCDM: ~27% dark, ~5% baryonic, ~68% dark energy. No particle
-          detection. MOND struggles with CMB. Confidence exists: 0.85.
-          Particle confirmed: 0.05"
-         QD=5  SS=0  UM=1  CP=1  CONF=2
-```
+Section A (in-domain): 0.52 → 5.86 (+1,027%). Section B (cross-domain): 0.54 → 4.90 (+807%). GOLD contains zero Section B content. Cross-domain transfer confirms: GOLD teaches *how* to think, not *what* to think.
 
 ### 4.6 Variance Reduction
 
