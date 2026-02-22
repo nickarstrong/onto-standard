@@ -1137,15 +1137,16 @@ def handle_inference(user_message, gold_corpus):
                     <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Step 3 — Report scores for proof chain</div>
                     <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code><span style="color:var(--text-muted)"># After inference, submit for scoring + proof</span>
 requests.post(
-    <span style="color:#4ade80">"https://api.ontostandard.org/v1/evaluate"</span>,
+    <span style="color:#4ade80">"https://api.ontostandard.org/v1/models/evaluate"</span>,
     headers={<span style="color:#4ade80">"x-api-key"</span>: <span style="color:#4ade80">"YOUR_ONTO_API_KEY"</span>},
     json={
-        <span style="color:#4ade80">"prompt"</span>: user_message,
-        <span style="color:#4ade80">"response"</span>: model_output,
-        <span style="color:#4ade80">"model"</span>: <span style="color:#4ade80">"your-model-name"</span>
+        <span style="color:#4ade80">"model_id"</span>: your_model_id,
+        <span style="color:#4ade80">"output"</span>: model_output,
+        <span style="color:#4ade80">"context"</span>: user_message,
+        <span style="color:#4ade80">"domain"</span>: <span style="color:#4ade80">"general"</span>
     }
 )
-<span style="color:var(--text-muted)"># Returns: score, proof_hash, signal_id, certificate</span></code></pre>
+<span style="color:var(--text-muted)"># Returns: risk_score, compliance, evaluation_id, proof</span></code></pre>
 
                     <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Architecture</div>
                     <div style="background:#0c0f14;border-radius:6px;padding:14px 16px;margin-bottom:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#e2e8f0;line-height:1.8">
@@ -3080,24 +3081,31 @@ async function testProviderEval() {
     result.classList.add('hidden');
     
     try {
-        const res = await fetch(`${API_BASE}/v1/evaluate`, {
+        const res = await fetch(`${API_BASE}/v1/models/evaluate`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
             body: JSON.stringify({
-                prompt: 'What is the boiling point of water?',
-                response: 'The boiling point of water is 100°C (212°F) at standard atmospheric pressure (1 atm). This was established through thermodynamic measurements.',
-                model: 'test-evaluation'
+                model_id: 'test-probe',
+                output: 'The boiling point of water is 100°C (212°F) at standard atmospheric pressure. Source: NIST. Confidence: 99%.',
+                context: 'What is the boiling point of water?',
+                domain: 'general',
+                confidence: 0.99
             })
         });
         const data = await res.json();
         
         if (res.ok) {
-            const score = data.score || data.epistemic_score || '?';
-            status.innerHTML = `<span style="color:var(--accent)">✓ Scoring API Active</span> · Score: ${score} · Proof: ${data.proof_hash ? data.proof_hash.substring(0,16) + '...' : 'N/A'}`;
+            const score = data.risk_score ?? data.score ?? '?';
+            const grade = data.compliance?.grade ?? data.grade ?? '?';
+            status.innerHTML = `<span style="color:var(--accent)">✓ Scoring API Active</span> · Risk Score: ${score} · Grade: ${grade}`;
             result.textContent = JSON.stringify(data, null, 2);
             result.classList.remove('hidden');
+        } else if (res.status === 404 || res.status === 422) {
+            status.innerHTML = `<span style="color:var(--accent)">✓ Scoring API Reachable</span> · Register a model first to run full evaluation`;
+            result.textContent = 'Endpoint is live.\n\nTo run evaluations:\n1. Register a model: POST /v1/models\n2. Submit evaluation: POST /v1/models/evaluate\n\nSee API documentation for details.';
+            result.classList.remove('hidden');
         } else {
-            status.textContent = `✗ Error: ${data.detail || res.status}`;
+            status.textContent = `✗ Error ${res.status}: ${data.detail || JSON.stringify(data)}`;
             status.style.color = '#ef4444';
         }
     } catch (e) {
