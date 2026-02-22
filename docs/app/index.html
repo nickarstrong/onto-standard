@@ -2175,11 +2175,28 @@ async function handleLogin(btn) {
             company: null,
             subscription: data.tier_expires ? { expires_at: data.tier_expires } : null
         };
-        // Restore company data from previous session if backend doesn't return it
-        const savedUser = JSON.parse(localStorage.getItem('onto_user') || '{}');
-        if (savedUser.company && savedUser.id === currentUser.id) {
-            currentUser.company = savedUser.company;
-            currentUser.can_invoice = savedUser.can_invoice || false;
+        // Restore company from backend profile (authoritative source)
+        if (data.profile) {
+            const p = data.profile;
+            if (p.company || p.company_name) {
+                currentUser.company = {
+                    name: p.company || p.company_name || '',
+                    type: p.company_type || '',
+                    industry: p.industry || '',
+                    reg: p.company_reg || p.registration_number || '',
+                    vat: p.company_vat || '',
+                    address: p.address || '',
+                    city: p.city || '',
+                    state: p.state || '',
+                    postal: p.postal || p.zip_code || '',
+                    country: p.country || '',
+                    email: p.billing_email || '',
+                    phone: p.phone || '',
+                    signatory: p.signatory_name || '',
+                    signatoryTitle: p.signatory_title || ''
+                };
+                currentUser.can_invoice = true;
+            }
         }
         localStorage.setItem('onto_user', JSON.stringify(currentUser));
         
