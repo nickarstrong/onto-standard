@@ -1068,6 +1068,24 @@ https://ontostandard.org/verify/?hash=5e81aa06742c...</code></pre>
                     <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:11px;color:var(--text-secondary);line-height:1.5">
                         <span style="color:var(--accent);font-weight:600">Includes:</span> 1,000 proxy requests/day · GOLD Extended Corpus · Ed25519 proof chain · Scoring API · Public verification badge
                     </div>
+
+                    <div style="margin-top:12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px 16px">
+                        <div style="font-size:10px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Test Connection</div>
+                        <div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px">Paste your AI provider key to send a test request through ONTO proxy.</div>
+                        <div style="display:flex;gap:8px;margin-bottom:8px">
+                            <select id="test-std-provider" style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:11px;color:var(--text);width:120px">
+                                <option value="anthropic">Anthropic</option>
+                                <option value="openai">OpenAI</option>
+                            </select>
+                            <input type="password" id="test-std-provider-key" placeholder="Provider API key (sk-...)" style="flex:1;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:6px 10px;font-size:11px;color:var(--text)">
+                        </div>
+                        <div style="display:flex;gap:8px;align-items:center">
+                            <button class="btn-minimal" onclick="testStandardProxy()" id="test-std-btn" style="font-size:11px;background:var(--accent);color:white;border-color:var(--accent)">Run Test</button>
+                            <span id="test-std-status" style="font-size:11px;color:var(--text-muted)"></span>
+                        </div>
+                        <div id="test-std-result" class="hidden" style="margin-top:8px;background:#0c0f14;border-radius:6px;padding:10px 12px;font-size:11px;color:#e2e8f0;max-height:200px;overflow-y:auto;white-space:pre-wrap;font-family:'JetBrains Mono',monospace;line-height:1.5"></div>
+                    </div>
+
                     <div style="margin-top:8px"><a href="/docs/" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Full API documentation →</a></div>
                 </div>
             </div>
@@ -1148,6 +1166,18 @@ requests.post(
                     <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:11px;color:var(--text-secondary);line-height:1.5">
                         <span style="color:var(--accent);font-weight:600">Includes:</span> GOLD Full Corpus via SSE · Unlimited scoring API · All production models · Ed25519 proof chain · Full audit trail · Priority 24/7 support
                     </div>
+
+                    <div style="margin-top:12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px 16px">
+                        <div style="font-size:10px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Test Connection</div>
+                        <div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px">Test GOLD stream and scoring endpoint with your API key.</div>
+                        <div style="display:flex;gap:8px;align-items:center">
+                            <button class="btn-minimal" onclick="testProviderSSE()" id="test-prov-btn" style="font-size:11px;background:var(--accent);color:white;border-color:var(--accent)">Test GOLD Stream</button>
+                            <button class="btn-minimal" onclick="testProviderEval()" id="test-eval-btn" style="font-size:11px">Test Scoring API</button>
+                            <span id="test-prov-status" style="font-size:11px;color:var(--text-muted)"></span>
+                        </div>
+                        <div id="test-prov-result" class="hidden" style="margin-top:8px;background:#0c0f14;border-radius:6px;padding:10px 12px;font-size:11px;color:#e2e8f0;max-height:200px;overflow-y:auto;white-space:pre-wrap;font-family:'JetBrains Mono',monospace;line-height:1.5"></div>
+                    </div>
+
                     <div style="margin-top:8px"><a href="/docs/" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Full API documentation →</a></div>
                 </div>
             </div>
@@ -2918,6 +2948,165 @@ function openCompanyModal() {
     
     // Show initial state after short delay
     setTimeout(validateCompanyForm, 50);
+}
+
+// ============ INTEGRATION TESTS ============
+
+async function testStandardProxy() {
+    const providerKey = document.getElementById('test-std-provider-key').value.trim();
+    if (!providerKey) { showToast('Enter your provider API key', 'error'); return; }
+    
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) { showToast('Please sign in first', 'error'); return; }
+    
+    const provider = document.getElementById('test-std-provider').value;
+    const btn = document.getElementById('test-std-btn');
+    const status = document.getElementById('test-std-status');
+    const result = document.getElementById('test-std-result');
+    
+    btn.disabled = true;
+    btn.textContent = 'Testing...';
+    status.textContent = 'Sending request through ONTO proxy...';
+    status.style.color = 'var(--text-muted)';
+    result.classList.add('hidden');
+    
+    const testPrompt = 'What is the boiling point of water? Give specific numbers and cite sources.';
+    
+    try {
+        let url, body, headers;
+        
+        if (provider === 'anthropic') {
+            url = `${API_BASE}/v1/proxy/anthropic/messages`;
+            headers = { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'X-Provider-Key': providerKey };
+            body = JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 512, messages: [{ role: 'user', content: testPrompt }] });
+        } else {
+            url = `${API_BASE}/v1/proxy/chat/completions`;
+            headers = { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'X-Provider-Key': providerKey };
+            body = JSON.stringify({ model: 'gpt-4o', max_tokens: 512, messages: [{ role: 'user', content: testPrompt }] });
+        }
+        
+        const startTime = Date.now();
+        const res = await fetch(url, { method: 'POST', headers, body });
+        const elapsed = Date.now() - startTime;
+        const data = await res.json();
+        
+        if (!res.ok) {
+            status.textContent = `✗ Error ${res.status}: ${data.detail || JSON.stringify(data)}`;
+            status.style.color = '#ef4444';
+            btn.disabled = false;
+            btn.textContent = 'Run Test';
+            return;
+        }
+        
+        // Extract response text
+        let responseText = '';
+        if (provider === 'anthropic') {
+            responseText = (data.content || []).map(c => c.text || '').join('');
+        } else {
+            responseText = data.choices?.[0]?.message?.content || '';
+        }
+        
+        // Check for GOLD markers
+        const goldMarkers = ['[QD:', '[SS:', '[UM:', '[CP:', '[CONF:', 'CONFIDENCE:', 'SOURCE:', 'UNCERTAINTY:', '±', 'CI:', 'p-value', 'citation'];
+        const foundMarkers = goldMarkers.filter(m => responseText.toLowerCase().includes(m.toLowerCase()));
+        
+        const tokens = data.usage || {};
+        const inputTok = tokens.input_tokens || tokens.prompt_tokens || '?';
+        const outputTok = tokens.output_tokens || tokens.completion_tokens || '?';
+        
+        if (foundMarkers.length >= 2) {
+            status.innerHTML = `<span style="color:var(--accent)">✓ GOLD Active</span> · ${elapsed}ms · ${inputTok}+${outputTok} tokens · ${foundMarkers.length} epistemic markers detected`;
+        } else {
+            status.innerHTML = `<span style="color:#f59e0b">⚠ Response received</span> · ${elapsed}ms · ${inputTok}+${outputTok} tokens · GOLD markers may be subtle`;
+        }
+        
+        result.textContent = responseText.substring(0, 1500) + (responseText.length > 1500 ? '...' : '');
+        result.classList.remove('hidden');
+        
+    } catch (e) {
+        status.textContent = `✗ ${e.message}`;
+        status.style.color = '#ef4444';
+    }
+    
+    btn.disabled = false;
+    btn.textContent = 'Run Test';
+}
+
+async function testProviderSSE() {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) { showToast('Please sign in first', 'error'); return; }
+    
+    const btn = document.getElementById('test-prov-btn');
+    const status = document.getElementById('test-prov-status');
+    const result = document.getElementById('test-prov-result');
+    
+    btn.disabled = true;
+    btn.textContent = 'Testing...';
+    status.textContent = 'Connecting to GOLD stream...';
+    result.classList.add('hidden');
+    
+    try {
+        const res = await fetch(`${API_BASE}/v1/proxy/status`, { headers: { 'x-api-key': apiKey } });
+        const data = await res.json();
+        
+        if (res.ok) {
+            status.innerHTML = `<span style="color:var(--accent)">✓ GOLD Stream Connected</span> · Layer: ${data.gold_layer || '?'} · Status: ${data.gold_status || '?'}`;
+            result.textContent = JSON.stringify(data, null, 2);
+            result.classList.remove('hidden');
+        } else {
+            status.textContent = `✗ Error: ${data.detail || res.status}`;
+            status.style.color = '#ef4444';
+        }
+    } catch (e) {
+        status.textContent = `✗ ${e.message}`;
+        status.style.color = '#ef4444';
+    }
+    
+    btn.disabled = false;
+    btn.textContent = 'Test GOLD Stream';
+}
+
+async function testProviderEval() {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) { showToast('Please sign in first', 'error'); return; }
+    
+    const btn = document.getElementById('test-eval-btn');
+    const status = document.getElementById('test-prov-status');
+    const result = document.getElementById('test-prov-result');
+    
+    btn.disabled = true;
+    btn.textContent = 'Testing...';
+    status.textContent = 'Sending test evaluation...';
+    result.classList.add('hidden');
+    
+    try {
+        const res = await fetch(`${API_BASE}/v1/evaluate`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+            body: JSON.stringify({
+                prompt: 'What is the boiling point of water?',
+                response: 'The boiling point of water is 100°C (212°F) at standard atmospheric pressure (1 atm). This was established through thermodynamic measurements.',
+                model: 'test-evaluation'
+            })
+        });
+        const data = await res.json();
+        
+        if (res.ok) {
+            const score = data.score || data.epistemic_score || '?';
+            status.innerHTML = `<span style="color:var(--accent)">✓ Scoring API Active</span> · Score: ${score} · Proof: ${data.proof_hash ? data.proof_hash.substring(0,16) + '...' : 'N/A'}`;
+            result.textContent = JSON.stringify(data, null, 2);
+            result.classList.remove('hidden');
+        } else {
+            status.textContent = `✗ Error: ${data.detail || res.status}`;
+            status.style.color = '#ef4444';
+        }
+    } catch (e) {
+        status.textContent = `✗ ${e.message}`;
+        status.style.color = '#ef4444';
+    }
+    
+    btn.disabled = false;
+    btn.textContent = 'Test Scoring API';
 }
 
 async function downloadInvoice() {
