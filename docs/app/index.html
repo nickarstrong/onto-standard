@@ -1253,12 +1253,6 @@ client = OpenAI(
                     <span class="doc-name">Specifications & Policies</span>
                     <span class="doc-link" onclick="window.open('/docs/', '_blank')">View</span>
                 </div>
-                <div class="doc-row" id="invoice-row">
-                    <span class="doc-name">Invoice</span>
-                    <span class="doc-status" id="invoice-status" style="cursor:default">No active subscription</span>
-                    <span class="doc-link hidden" id="invoice-download" onclick="downloadInvoice()">Download</span>
-                    <span class="doc-link hidden" id="invoice-register-org" onclick="openCompanyModal()" style="color:var(--accent)">Register Organization first →</span>
-                </div>
             </div>
             
             <div class="section-block">
@@ -1319,7 +1313,8 @@ client = OpenAI(
                 <!-- PROVIDER (TIER 1) -->
                 <div class="tier-card" id="card-enterprise">
                     <div class="tier-name">AI Provider</div>
-                    <div class="tier-price">$250,000<span>/year</span></div>
+                    <div class="tier-price">$9,500<span>/month</span></div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">or $114,000/year</div>
                     <div class="tier-desc">Full GOLD access for AI model providers</div>
                     <ul class="tier-list">
                         <li>GOLD Full Corpus via SSE</li>
@@ -1328,7 +1323,7 @@ client = OpenAI(
                         <li>Ed25519 proof chain</li>
                         <li>Full audit trail</li>
                     </ul>
-                    <a href="mailto:providers@ontostandard.org" class="btn-tier" style="text-align:center;text-decoration:none;display:block">Contact</a>
+                    <button class="btn-tier" id="btn-enterprise" onclick="openSubscribeModal('enterprise')">Select</button>
                 </div>
             </div>
 
@@ -1359,6 +1354,20 @@ client = OpenAI(
             <p class="section-footnote" style="text-align: center; margin-top: 16px; font-size: 10px; color: var(--text-muted);">
                 Invoice payment requires registered organization. <a href="#" onclick="showPage('settings')" style="color:var(--accent)">Account settings</a>
             </p>
+            
+            <!-- INVOICE -->
+            <div style="margin-top:24px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:20px" id="billing-invoice-block">
+                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+                    <div>
+                        <div style="font-size:13px;font-weight:600;color:var(--text)">Invoice</div>
+                        <div style="font-size:11px;color:var(--text-secondary);margin-top:4px" id="invoice-status">No active subscription</div>
+                    </div>
+                    <div>
+                        <button class="btn-minimal hidden" id="invoice-download" onclick="downloadInvoice()" style="font-size:12px">Download PDF</button>
+                        <button class="btn-minimal hidden" id="invoice-register-org" onclick="openCompanyModal()" style="font-size:12px;color:var(--accent)">Register Organization first →</button>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- REFERENCE PAGE (ADMIN) -->
         <!-- REFERENCE PAGE (ADMIN) -->
@@ -1775,8 +1784,8 @@ client = OpenAI(
                     <input type="radio" name="tier-select" value="critical">
                     <div class="tier-option-content">
                         <div class="tier-option-header">
-                            <span class="tier-badge tier-critical">ENTERPRISE</span>
-                            <span class="tier-option-price">$250K/yr</span>
+                            <span class="tier-badge tier-critical">AI PROVIDER</span>
+                            <span class="tier-option-price">$114K/yr</span>
                         </div>
                         <div class="tier-option-desc">Unlimited proxy, certificate + badge, priority support</div>
                     </div>
@@ -1894,7 +1903,7 @@ const STRINGS = {
 };
 const PLANS = {
     business: { monthly: 2500, annual: 30000, monthlyEquiv: 2500 },
-    enterprise: { monthly: 0, annual: 250000, monthlyEquiv: 0 }
+    enterprise: { monthly: 9500, annual: 114000, monthlyEquiv: 9500 }
 };
 let selectedPlan = 'business';
 let selectedCycle = 'annual';
@@ -2602,7 +2611,7 @@ function updateDashboardMetrics() {
     }
     
     // Fetch real usage from backend
-    const apiKey = localStorage.getItem('onto_api_key');
+    const apiKey = localStorage.getItem('onto_first_api_key');
     if (apiKey && callsEl) {
         fetch(`${API_BASE}/v1/usage`, { headers: { 'x-api-key': apiKey } })
             .then(r => r.ok ? r.json() : null)
@@ -2766,30 +2775,44 @@ function openCompanyModal() {
     setTimeout(validateCompanyForm, 50);
 }
 
-function downloadInvoice() {
-    if (!currentUser?.subscription?.expires_at) {
-        showToast('No active subscription', 'error');
-        return;
-    }
-    if (!currentUser?.company) {
-        showToast('Register organization first', 'error');
+async function downloadInvoice() {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) { showToast('Please sign in', 'error'); return; }
+    
+    showToast('Loading invoice data...', 'success');
+    
+    let data;
+    try {
+        const res = await fetch(`${API_BASE}/v1/billing/invoice-data`, { headers: { 'x-api-key': apiKey } });
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            showToast(err.detail || 'Failed to load invoice data', 'error');
+            return;
+        }
+        data = await res.json();
+    } catch(e) {
+        showToast('Network error', 'error');
         return;
     }
     
-    const sub = currentUser.subscription;
-    const plan = currentUser.plan || 'free';
-    const planNames = { free: 'Open', business: 'Standard', enterprise: 'AI Provider' };
-    const planPrices = { free: 0, business: 30000, enterprise: 250000 };
-    const amount = planPrices[plan] || 0;
+    const prov = data.provider || {};
+    const client = data.client || {};
+    const sub = data.subscription || {};
+    
+    if (!client.name) { showToast('Register organization first', 'error'); return; }
+    if (sub.layer === 'open') { showToast('No active subscription', 'error'); return; }
+    
     const invoiceId = 'INV-' + new Date().getFullYear() + '-' + Date.now().toString(36).toUpperCase();
-    const expiresAt = new Date(sub.expires_at);
-    const startedAt = new Date(expiresAt.getTime() - 365*24*60*60*1000);
-    const dueDate = new Date(startedAt.getTime() + 30*24*60*60*1000);
-    const co = currentUser.company;
+    const amount = sub.price_annual || 0;
+    const expiresAt = sub.expires_at ? new Date(sub.expires_at) : new Date(Date.now() + 365*86400000);
+    const startedAt = new Date(expiresAt.getTime() - 365*86400000);
+    const dueDate = new Date(startedAt.getTime() + 30*86400000);
     const fmtDate = (d) => d.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
     const fmtMoney = (n) => '$' + n.toLocaleString('en-US', {minimumFractionDigits:2});
-    const hash = simpleHash(invoiceId + (co.name || currentUser.name) + plan + amount);
-    const cityLine = [co.city, co.postal, co.country].filter(Boolean).join(', ');
+    const hash = simpleHash(invoiceId + client.name + sub.layer + amount);
+    
+    const provCity = [prov.city, prov.state, prov.postal, prov.country].filter(Boolean).join(', ');
+    const clientCity = [client.city, client.state, client.postal, client.country].filter(Boolean).join(', ');
     
     const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>ONTO Invoice ${invoiceId}</title>
 <style>
@@ -2831,7 +2854,7 @@ tbody td:last-child{text-align:right;font-weight:600}
 <div class="header">
     <div>
         <div class="logo">ONTO</div>
-        <div class="logo-sub">Standards Council · Est. 2024</div>
+        <div class="logo-sub">${prov.name || 'ONTO Standard'}</div>
         <div class="logo-sub">ontostandard.org</div>
     </div>
     <div class="inv-title">
@@ -2843,20 +2866,24 @@ tbody td:last-child{text-align:right;font-weight:600}
 <div class="parties">
     <div class="party">
         <div class="party-label">From</div>
-        <div class="party-name">ONTO Standard</div>
+        <div class="party-name">${prov.name || 'ONTO Standard'}</div>
         <div class="party-detail">
-            billing@ontostandard.org<br>
-            ontostandard.org/legal
+            ${prov.address ? prov.address + '<br>' : ''}
+            ${provCity ? provCity + '<br>' : ''}
+            ${prov.reg ? 'Reg: ' + prov.reg + '<br>' : ''}
+            ${prov.vat ? 'VAT: ' + prov.vat + '<br>' : ''}
+            ${prov.email || 'billing@ontostandard.org'}
         </div>
     </div>
     <div class="party">
         <div class="party-label">Bill To</div>
-        <div class="party-name">${co.name || currentUser.name}</div>
+        <div class="party-name">${client.name}</div>
         <div class="party-detail">
-            ${co.email || currentUser.email}<br>
-            ${co.address ? co.address + '<br>' : ''}
-            ${cityLine ? cityLine + '<br>' : ''}
-            ${co.reg ? 'Tax ID: ' + co.reg : ''}
+            ${client.address ? client.address + '<br>' : ''}
+            ${clientCity ? clientCity + '<br>' : ''}
+            ${client.reg ? 'Reg: ' + client.reg + '<br>' : ''}
+            ${client.vat ? 'VAT: ' + client.vat + '<br>' : ''}
+            ${client.email}
         </div>
     </div>
 </div>
@@ -2884,8 +2911,8 @@ tbody td:last-child{text-align:right;font-weight:600}
     </tr></thead>
     <tbody><tr>
         <td>
-            <strong>ONTO Protocol — ${planNames[plan] || plan} License</strong>
-            <div class="item-sub">Annual subscription · 12 months · Wire transfer</div>
+            <strong>ONTO Protocol — ${sub.layer_name} License</strong>
+            <div class="item-sub">Annual subscription · 12 months</div>
         </td>
         <td>${fmtDate(startedAt)} — ${fmtDate(expiresAt)}</td>
         <td>${fmtMoney(amount)}</td>
@@ -2904,23 +2931,22 @@ tbody td:last-child{text-align:right;font-weight:600}
     <div class="details-title">Service Details</div>
     <div class="details-grid">
         <div>
-            Layer: ${planNames[plan] || plan}<br>
+            Layer: ${sub.layer_name}<br>
             Period: ${fmtDate(startedAt)} — ${fmtDate(expiresAt)}
         </div>
         <div>
-            Rate limit: ${plan === 'enterprise' ? 'Unlimited' : '1,000/day'}<br>
-            Support: ${plan === 'enterprise' ? 'Priority 24/7' : 'Business hours'}
+            Rate limit: ${sub.layer === 'critical' ? 'Unlimited' : '1,000/day'}<br>
+            Support: ${sub.layer === 'critical' ? 'Priority 24/7' : 'Business hours'}
         </div>
     </div>
 </div>
 
 <div style="font-size:10px;color:#888;margin-bottom:20px">
-    <strong>Payment:</strong> Wire transfer · Prepaid · Ref: ${invoiceId}
+    <strong>Payment:</strong> Ref: ${invoiceId}
 </div>
 
 <div class="footer">
-    ONTO Standards Council · Est. 2024 · Independent research initiative<br>
-    ontostandard.org · billing@ontostandard.org · ontostandard.org/legal<br>
+    ${prov.name || 'ONTO Standard'} · ontostandard.org · ${prov.email || 'billing@ontostandard.org'}<br>
     Verification: ${hash}
 </div>
 
@@ -3120,7 +3146,7 @@ function highlightEmptyFields() {
 
 // === BILLING ===
 async function refreshBillingFromBackend() {
-    const apiKey = localStorage.getItem('onto_api_key');
+    const apiKey = localStorage.getItem('onto_first_api_key');
     if (!apiKey) return;
     try {
         const res = await fetch(`${API_BASE}/v1/billing/status`, { headers: { 'x-api-key': apiKey } });
@@ -3227,10 +3253,7 @@ function openSubscribeModal(plan) {
     document.getElementById('price-annual-display').textContent = '$' + prices.annual.toLocaleString();
     document.getElementById('price-monthly-display').textContent = '$' + (prices.monthly ? prices.monthly.toLocaleString() + '/mo' : 'N/A');
     const monthlyOption = document.getElementById('billing-monthly');
-    if (plan === 'enterprise') {
-        monthlyOption.style.display = 'none';
-        document.querySelector('input[name="billing-cycle"][value="annual"]').checked = true;
-    } else { monthlyOption.style.display = 'flex'; }
+    monthlyOption.style.display = 'flex';
     document.getElementById('subscribe-modal').classList.add('active');
     selectedCycle = 'annual';
     updateOrderSummary();
@@ -3261,7 +3284,7 @@ function updateOrderSummary() {
 async function processPayment() {
     closeModal('subscribe-modal');
     
-    const apiKey = localStorage.getItem('onto_api_key');
+    const apiKey = localStorage.getItem('onto_first_api_key');
     if (!apiKey) { showToast('Please sign in first', 'error'); return; }
     
     // Map portal plan names to backend tier names
