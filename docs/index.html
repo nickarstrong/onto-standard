@@ -1102,13 +1102,13 @@ body.show-portal { overflow: auto; }
 
 /* === SCREEN 3: MATRIX (v6) === */
 .matrix-table {
-    max-width: 600px;
+    max-width: 720px;
     width: 100%;
     margin: 0 auto 16px;
 }
 .matrix-row {
     display: grid;
-    grid-template-columns: 1.2fr 0.8fr 2.5fr;
+    grid-template-columns: 1.2fr 0.8fr 1fr 2.8fr;
     gap: 8px;
     padding: 8px 12px;
     border-bottom: 1px solid rgba(255,255,255,0.06);
@@ -1134,6 +1134,12 @@ body.show-portal { overflow: auto; }
 .m-risk.safe { color: var(--safe); }
 .m-risk.warn { color: var(--warning); }
 .m-risk.danger { color: var(--danger); }
+.m-baseline {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    color: var(--text-muted);
+    font-size: 12px;
+}
 .m-layer, .m-halluc {
     font-family: 'JetBrains Mono', monospace;
     color: var(--text-secondary);
@@ -1274,7 +1280,9 @@ body.show-portal { overflow: auto; }
     .evidence-strip { flex-wrap: wrap; font-size: 12px; }
     .matrix-row { grid-template-columns: 1fr 0.6fr; }
     .m-behavior { display: none; }
+    .m-baseline { display: none; }
     .matrix-header .m-behavior { display: none; }
+    .matrix-header .m-baseline { display: none; }
     .final-research { font-size: 10px; }
     .footer-cite { font-size: 9px; }
 }
@@ -2020,37 +2028,43 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
         <div class="matrix-row matrix-header">
             <span class="m-model">Metric</span>
             <span class="m-risk">Range</span>
+            <span class="m-baseline">Industry Baseline</span>
             <span class="m-behavior">What It Tells You</span>
         </div>
         <div class="matrix-row">
             <span class="m-model">Risk Score</span>
             <span class="m-risk">0.0–1.0</span>
+            <span class="m-baseline">—</span>
             <span class="m-behavior">Overall epistemic risk (lower = safer)</span>
         </div>
-        <div class="matrix-row">
+        <div class="matrix-row" style="background:rgba(239,68,68,0.06)">
             <span class="m-model">U-Recall</span>
             <span class="m-risk">0.0–1.0</span>
-            <span class="m-behavior">How often the model admits what it doesn't know</span>
+            <span class="m-baseline" style="color:rgba(239,68,68,0.9);font-weight:700">0.036</span>
+            <span class="m-behavior">How often the model admits what it doesn't know <span style="color:rgba(239,68,68,0.7);font-size:11px">— 96.4% of unknowns go undetected</span></span>
         </div>
         <div class="matrix-row">
             <span class="m-model">ECE</span>
             <span class="m-risk">0.0–1.0</span>
+            <span class="m-baseline" style="color:rgba(239,68,68,0.7);font-weight:600">0.326</span>
             <span class="m-behavior">Gap between stated confidence and actual accuracy</span>
         </div>
         <div class="matrix-row">
             <span class="m-model">DLA</span>
             <span class="m-risk">0.0–1.0</span>
+            <span class="m-baseline">—</span>
             <span class="m-behavior">Consistency between what it says and how it says it</span>
         </div>
         <div class="matrix-row">
             <span class="m-model">Layer Δ</span>
             <span class="m-risk">0.0–1.0</span>
+            <span class="m-baseline">—</span>
             <span class="m-behavior">Divergence between linguistic and statistical analysis</span>
         </div>
     </div>
 
     <div class="matrix-meta">
-        <span style="font-size:11px;color:rgba(255,255,255,0.3)">11 models · 100 questions · ONTO-ERS v10.0 · <a href="/docs/#evidence">See the data</a> · <a href="/docs/">Specification</a></span>
+        <span style="font-size:11px;color:rgba(255,255,255,0.3)">Baseline: 3 production models · n=268 · <a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a> · <a href="/docs/#evidence">Full data</a> · <a href="/docs/">Specification</a></span>
     </div>
 </div>
 
