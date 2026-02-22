@@ -275,7 +275,12 @@ document.getElementById('proof-input').addEventListener('keydown', e => {
 
 async function verifyProof() {
     const input = document.getElementById('proof-input');
-    const hash = input.value.trim().toLowerCase();
+    let hash = input.value.trim().toLowerCase();
+    
+    // Strip common prefixes users might paste
+    if (hash.startsWith('hash=')) hash = hash.substring(5);
+    if (hash.startsWith('h=')) hash = hash.substring(2);
+    input.value = hash;
     
     if (!hash) { input.focus(); return; }
     if (hash.length !== 64 || !/^[0-9a-f]+$/.test(hash)) {
