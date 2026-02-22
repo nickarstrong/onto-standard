@@ -1134,12 +1134,6 @@ body.show-portal { overflow: auto; }
 .m-risk.safe { color: var(--safe); }
 .m-risk.warn { color: var(--warning); }
 .m-risk.danger { color: var(--danger); }
-.m-baseline {
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 500;
-    color: var(--text-muted);
-    font-size: 12px;
-}
 .m-layer, .m-halluc {
     font-family: 'JetBrains Mono', monospace;
     color: var(--text-secondary);
@@ -1158,6 +1152,134 @@ body.show-portal { overflow: auto; }
     color: var(--safe);
     text-decoration: none;
 }
+
+/* === SCREEN 3: PROOF BARS === */
+.proof-grid {
+    max-width: 660px;
+    width: 100%;
+    margin: 0 auto;
+}
+.proof-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 80px;
+    gap: 12px;
+    align-items: center;
+    padding: 8px 0;
+}
+.proof-row-hero {
+    padding: 10px 0;
+}
+.proof-label-wrap {
+    text-align: right;
+}
+.proof-label {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    text-align: right;
+}
+.proof-desc {
+    font-size: 10px;
+    color: rgba(255,255,255,0.2);
+    text-align: right;
+    margin-top: 1px;
+}
+.proof-metric-id {
+    font-size: 10px;
+    opacity: 0.4;
+    font-style: italic;
+}
+.proof-dir {
+    font-size: 11px;
+    color: rgba(34,197,94,0.5);
+}
+.proof-bars {
+    display: flex;
+    gap: 2px;
+    height: 26px;
+    align-items: center;
+}
+.proof-row-hero .proof-bars {
+    height: 30px;
+}
+.proof-before {
+    background: linear-gradient(90deg, rgba(239,68,68,0.4), rgba(239,68,68,0.15));
+    height: 100%;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+    min-width: 38px;
+}
+.proof-before span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: rgba(239,68,68,0.8);
+    font-weight: 600;
+    white-space: nowrap;
+}
+.proof-after {
+    background: linear-gradient(90deg, rgba(34,197,94,0.4), rgba(34,197,94,0.12));
+    height: 100%;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+    min-width: 38px;
+}
+.proof-after span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: rgba(34,197,94,0.9);
+    font-weight: 600;
+    white-space: nowrap;
+}
+.proof-delta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    color: rgb(34,197,94);
+    text-align: right;
+    white-space: nowrap;
+}
+.proof-delta-hero {
+    font-size: 18px;
+}
+.proof-delta-down {
+    color: rgba(34,197,94,0.6);
+    font-size: 14px;
+}
+.proof-row-highlight {
+    background: rgba(34,197,94,0.04);
+    border-radius: 6px;
+    padding: 12px 10px;
+    margin: 4px -10px;
+    border-left: 2px solid rgba(34,197,94,0.3);
+}
+.proof-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.04);
+    margin: 6px 0;
+}
+.proof-legend {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 16px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+}
+.proof-leg-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.proof-leg-swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+.proof-leg-r { background: rgba(239,68,68,0.35); }
+.proof-leg-g { background: rgba(34,197,94,0.35); }
 
 /* === SCREEN 4: PATH (v6) === */
 .path-steps {
@@ -1280,9 +1402,7 @@ body.show-portal { overflow: auto; }
     .evidence-strip { flex-wrap: wrap; font-size: 12px; }
     .matrix-row { grid-template-columns: 1fr 0.6fr; }
     .m-behavior { display: none; }
-    .m-baseline { display: none; }
     .matrix-header .m-behavior { display: none; }
-    .matrix-header .m-baseline { display: none; }
     .final-research { font-size: 10px; }
     .footer-cite { font-size: 9px; }
 }
@@ -2020,51 +2140,111 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
     </div>
 </div>
 
-<!-- SCREEN 3: WHAT WE MEASURE -->
+<!-- SCREEN 3: BEFORE & AFTER -->
 <div class="screen screen-industries hidden" id="screen3">
-    <h2>What ONTO Measures</h2>
-    
-    <div class="matrix-table">
-        <div class="matrix-row matrix-header">
-            <span class="m-model">Metric</span>
-            <span class="m-risk">Range</span>
-            <span class="m-baseline">Industry Baseline</span>
-            <span class="m-behavior">What It Tells You</span>
+    <h2>Before & After</h2>
+    <p style="text-align:center;color:rgba(255,255,255,0.35);font-size:13px;margin:4px 0 28px">CS-2026-001 · 11 models · 100 questions · 5 domains · scored by regex, not AI</p>
+
+    <div class="proof-grid">
+
+        <div class="proof-row proof-row-hero">
+            <div class="proof-label-wrap">
+                <div class="proof-label">Composite</div>
+                <div class="proof-desc">All metrics combined into one score</div>
+            </div>
+            <div class="proof-bars">
+                <div class="proof-before" style="width:9%"><span>0.53</span></div>
+                <div class="proof-after" style="width:91%"><span>5.38</span></div>
+            </div>
+            <div class="proof-delta proof-delta-hero">10×</div>
         </div>
-        <div class="matrix-row">
-            <span class="m-model">Risk Score</span>
-            <span class="m-risk">0.0–1.0</span>
-            <span class="m-baseline">—</span>
-            <span class="m-behavior">Overall epistemic risk (lower = safer)</span>
+
+        <div class="proof-row proof-row-hero proof-row-highlight">
+            <div class="proof-label-wrap">
+                <div class="proof-label">Unknowns <span class="proof-metric-id">U-Recall</span></div>
+                <div class="proof-desc">Models admit what they don't know</div>
+            </div>
+            <div class="proof-bars">
+                <div class="proof-before" style="width:4%"><span>0.04</span></div>
+                <div class="proof-after" style="width:96%"><span>0.96</span></div>
+            </div>
+            <div class="proof-delta proof-delta-hero" style="font-size:20px">26×</div>
         </div>
-        <div class="matrix-row" style="background:rgba(239,68,68,0.06)">
-            <span class="m-model">U-Recall</span>
-            <span class="m-risk">0.0–1.0</span>
-            <span class="m-baseline" style="color:rgba(239,68,68,0.9);font-weight:700">0.036</span>
-            <span class="m-behavior">How often the model admits what it doesn't know <span style="color:rgba(239,68,68,0.7);font-size:11px">— 96.4% of unknowns go undetected</span></span>
+
+        <div class="proof-divider"></div>
+
+        <div class="proof-row">
+            <div class="proof-label-wrap">
+                <div class="proof-label">Sources cited</div>
+                <div class="proof-desc">Named references per response</div>
+            </div>
+            <div class="proof-bars">
+                <div class="proof-before" style="width:5%"><span>0</span></div>
+                <div class="proof-after" style="width:60%"><span>3+</span></div>
+            </div>
+            <div class="proof-delta">0→3+</div>
         </div>
-        <div class="matrix-row">
-            <span class="m-model">ECE</span>
-            <span class="m-risk">0.0–1.0</span>
-            <span class="m-baseline" style="color:rgba(239,68,68,0.7);font-weight:600">0.326</span>
-            <span class="m-behavior">Gap between stated confidence and actual accuracy</span>
+
+        <div class="proof-row">
+            <div class="proof-label-wrap">
+                <div class="proof-label">Calibration</div>
+                <div class="proof-desc">Confidence matches accuracy</div>
+            </div>
+            <div class="proof-bars">
+                <div class="proof-before" style="width:5%"><span>0</span></div>
+                <div class="proof-after" style="width:60%"><span>1.0</span></div>
+            </div>
+            <div class="proof-delta">0→1.0</div>
         </div>
-        <div class="matrix-row">
-            <span class="m-model">DLA</span>
-            <span class="m-risk">0.0–1.0</span>
-            <span class="m-baseline">—</span>
-            <span class="m-behavior">Consistency between what it says and how it says it</span>
+
+        <div class="proof-row">
+            <div class="proof-label-wrap">
+                <div class="proof-label">Cross-domain</div>
+                <div class="proof-desc">Consistent across domains</div>
+            </div>
+            <div class="proof-bars">
+                <div class="proof-before" style="width:5%"><span>0/5</span></div>
+                <div class="proof-after" style="width:80%"><span>4/5</span></div>
+            </div>
+            <div class="proof-delta">80%</div>
         </div>
-        <div class="matrix-row">
-            <span class="m-model">Layer Δ</span>
-            <span class="m-risk">0.0–1.0</span>
-            <span class="m-baseline">—</span>
-            <span class="m-behavior">Divergence between linguistic and statistical analysis</span>
+
+        <div class="proof-divider"></div>
+
+        <div class="proof-row">
+            <div class="proof-label-wrap">
+                <div class="proof-label">Variance <span class="proof-dir">↓</span></div>
+                <div class="proof-desc">Model-to-model inconsistency</div>
+            </div>
+            <div class="proof-bars">
+                <div class="proof-before" style="width:84%"><span>0.58</span></div>
+                <div class="proof-after" style="width:16%"><span>0.11</span></div>
+            </div>
+            <div class="proof-delta proof-delta-down">−5.4×</div>
         </div>
+
+        <div class="proof-row">
+            <div class="proof-label-wrap">
+                <div class="proof-label">Vague words <span class="proof-dir">↓</span></div>
+                <div class="proof-desc">Empty qualifiers without specifics</div>
+            </div>
+            <div class="proof-bars">
+                <div class="proof-before" style="width:50%"><span>0.06</span></div>
+                <div class="proof-after" style="width:17%"><span>0.02</span></div>
+            </div>
+            <div class="proof-delta proof-delta-down">−67%</div>
+        </div>
+
     </div>
 
-    <div class="matrix-meta">
-        <span style="font-size:11px;color:rgba(255,255,255,0.3)">Baseline: 3 production models · n=268 · <a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a> · <a href="/docs/#evidence">Full data</a> · <a href="/docs/">Specification</a></span>
+    <div class="proof-legend">
+        <span class="proof-leg-item"><span class="proof-leg-swatch proof-leg-r"></span>Without ONTO</span>
+        <span class="proof-leg-item"><span class="proof-leg-swatch proof-leg-g"></span>With ONTO</span>
+        <span class="proof-leg-item" style="color:rgba(255,255,255,0.2)">↓ lower is better</span>
+    </div>
+
+    <div class="matrix-meta" style="margin-top:20px">
+        <span style="font-size:11px;color:rgba(255,255,255,0.3)">Deterministic scoring · 993 lines regex · Zero AI in evaluation · <a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a> · <a href="/docs/#evidence">Full data</a> · <a href="/docs/">Specification</a></span>
     </div>
 </div>
 
