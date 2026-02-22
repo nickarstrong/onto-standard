@@ -278,8 +278,9 @@ async function verifyProof() {
     let hash = input.value.trim().toLowerCase();
     
     // Strip common prefixes users might paste
-    if (hash.startsWith('hash=')) hash = hash.substring(5);
-    if (hash.startsWith('h=')) hash = hash.substring(2);
+    if (hash.includes('hash=')) hash = hash.split('hash=').pop().split('&')[0];
+    if (hash.includes('h=')) hash = hash.split('h=').pop().split('&')[0];
+    hash = hash.replace(/[^0-9a-f]/g, '');
     input.value = hash;
     
     if (!hash) { input.focus(); return; }

@@ -3359,6 +3359,8 @@ function showDashboard() {
         loadUserSignal();
         refreshProofStats();
         checkReferenceAccess();
+        loadOrgFromAPI();
+        loadRealCertHash();
 
     }
 }
@@ -3816,7 +3818,7 @@ function simpleHash(str) {
     return Math.abs(hash).toString(16).padStart(16, '0');
 }
 
-function registerCompany() {
+async function registerCompany() {
     const btn = document.getElementById('register-company-btn');
     const fields = {
         name: document.getElementById('company-name-input'),
@@ -3866,24 +3868,52 @@ function registerCompany() {
     btn.textContent = isEdit ? 'Saving...' : 'Registering...';
     btn.disabled = true;
     
-    // Simulate API call
-    setTimeout(() => {
-        currentUser.company = { 
-            name: fields.name.value,
-            type: fields.type.value,
-            industry: fields.industry.value,
-            reg: fields.reg.value, 
-            vat: fields.vat?.value || '',
-            address: fields.address.value,
-            city: fields.city.value,
-            state: fields.state?.value || '',
-            postal: fields.postal.value,
-            country: fields.country.value,
-            email: fields.email.value,
-            phone: fields.phone?.value || '',
-            signatory: fields.signatory.value,
-            signatoryTitle: fields.signatoryTitle.value
-        };
+    const companyData = { 
+        name: fields.name.value,
+        type: fields.type.value,
+        industry: fields.industry.value,
+        reg: fields.reg.value, 
+        vat: fields.vat?.value || '',
+        address: fields.address.value,
+        city: fields.city.value,
+        state: fields.state?.value || '',
+        postal: fields.postal.value,
+        country: fields.country.value,
+        email: fields.email.value,
+        phone: fields.phone?.value || '',
+        signatory: fields.signatory.value,
+        signatoryTitle: fields.signatoryTitle.value
+    };
+
+    try {
+        const apiKey = localStorage.getItem('onto_first_api_key');
+        const response = await fetch(`${API_BASE}/v1/organization/profile`, {
+            method: 'PUT',
+            headers: { 
+                'Content-Type': 'application/json',
+                'x-api-key': apiKey
+            },
+            body: JSON.stringify({
+                company: companyData.name,
+                industry: companyData.industry,
+                country: companyData.country,
+                address: companyData.address,
+                city: companyData.city,
+                state: companyData.state,
+                postal: companyData.postal,
+                phone: companyData.phone,
+                billing_email: companyData.email,
+                signatory_name: companyData.signatory,
+                signatory_title: companyData.signatoryTitle,
+                company_type: companyData.type,
+                company_reg: companyData.reg,
+                company_vat: companyData.vat
+            })
+        });
+        
+        if (!response.ok) throw new Error('Failed to save');
+        
+        currentUser.company = companyData;
         currentUser.can_invoice = true;
         localStorage.setItem('onto_user', JSON.stringify(currentUser));
         
@@ -3892,7 +3922,11 @@ function registerCompany() {
         updateCompanyUI();
         updateBillingUI();
         showToast(isEdit ? 'Organization updated' : 'Organization registered. You can now download invoices.', 'success');
-    }, 800);
+    } catch (e) {
+        btn.textContent = originalText;
+        btn.disabled = false;
+        showToast('Failed to save organization: ' + e.message, 'error');
+    }
 }
 
 function validateCompanyForm() {
@@ -5107,7 +5141,7 @@ function drawIndustryChart() {
 }
 
 // === CERTIFICATE VERIFICATION ===
-const ermCertHash = Array.from({length: 64}, () => '0123456789abcdef'[Math.floor(Math.random()*16)]).join('');
+let ermCertHash = window._realCertHash || '0'.repeat(64);
 let ermProxyActive = true;
 
 function ermVerifyHash(input) {
@@ -5140,7 +5174,8 @@ function ermVerifyHash(input) {
 }
 
 function ermCopyHash() {
-    navigator.clipboard.writeText(ermCertHash).then(() => {
+    const hash = window._realCertHash || ermCertHash;
+    navigator.clipboard.writeText(hash).then(() => {
         showToast('Hash copied to clipboard', 'success');
     }).catch(() => {
         const el = document.getElementById('erm-cert-hash');
@@ -5150,26 +5185,27 @@ function ermCopyHash() {
 }
 
 function ermDownloadCert() {
+    const hash = window._realCertHash || ermCertHash;
+    const orgName = currentUser?.organization_name || currentUser?.company?.name || 'Unknown';
     const cert = {
         type: 'ONTO_VERIFIED_CERTIFICATE',
         version: '1.0',
-        organization: 'Acme Corp',
-        model: 'GPT-4o',
-        provider: 'OpenAI',
-        connected_since: '2026-02-15T00:00:00Z',
+        organization: orgName,
+        model: 'GOLD Stream',
+        connected_since: new Date().toISOString(),
         proxy_status: ermProxyActive ? 'active' : 'suspended',
         gold_layer: 'injected',
-        hash: ermCertHash,
+        hash: hash,
         algorithm: 'Ed25519',
         packet_size: 104,
         chain: 'SHA-256',
-        verify_url: 'https://ontostandard.org/c/ACM-2026-001',
+        verify_url: `https://ontostandard.org/verify/?hash=${hash}`,
         disclaimer: 'Always verify certificate validity. ONTO does not guarantee accuracy. Not responsible for decisions made by AI systems or their operators.'
     };
     const blob = new Blob([JSON.stringify(cert, null, 2)], {type: 'application/json'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'onto-certificate-ACM-2026-001.json';
+    a.download = `onto-certificate-${hash.substring(0,8)}.json`;
     a.click();
     URL.revokeObjectURL(a.href);
     showToast('Certificate downloaded', 'success');
@@ -5411,6 +5447,92 @@ function initERM() {
 }
 
 // === INIT ===
+async function loadOrgFromAPI() {
+    try {
+        const apiKey = localStorage.getItem('onto_first_api_key');
+        if (!apiKey) return;
+        const resp = await fetch(`${API_BASE}/v1/organization`, {
+            headers: { 'x-api-key': apiKey }
+        });
+        if (!resp.ok) return;
+        const data = await resp.json();
+        
+        // Restore company from profile_data
+        if (data.profile) {
+            const p = data.profile;
+            if (p.company || p.company_name) {
+                currentUser.company = {
+                    name: p.company || p.company_name || '',
+                    type: p.company_type || '',
+                    industry: p.industry || '',
+                    reg: p.company_reg || '',
+                    vat: p.company_vat || '',
+                    address: p.address || '',
+                    city: p.city || '',
+                    state: p.state || '',
+                    postal: p.postal || '',
+                    country: p.country || '',
+                    email: p.billing_email || p.email || '',
+                    phone: p.phone || '',
+                    signatory: p.signatory_name || '',
+                    signatoryTitle: p.signatory_title || ''
+                };
+                currentUser.can_invoice = true;
+                localStorage.setItem('onto_user', JSON.stringify(currentUser));
+                updateCompanyUI();
+            }
+        }
+        
+        // Update org name if changed on server
+        if (data.name && data.name !== currentUser.organization_name) {
+            currentUser.organization_name = data.name;
+            localStorage.setItem('onto_org_name', data.name);
+            localStorage.setItem('onto_user', JSON.stringify(currentUser));
+        }
+    } catch(e) { console.warn('loadOrgFromAPI:', e); }
+}
+
+async function loadRealCertHash() {
+    try {
+        const apiKey = localStorage.getItem('onto_first_api_key');
+        if (!apiKey) return;
+        const resp = await fetch(`${API_BASE}/v1/certificates`, {
+            headers: { 'x-api-key': apiKey }
+        });
+        if (!resp.ok) return;
+        const data = await resp.json();
+        
+        if (data.certificates && data.certificates.length > 0) {
+            const cert = data.certificates[0];
+            const realHash = cert.verification_hash;
+            const isActive = !cert.revoked_at && new Date(cert.expires_at) > new Date();
+            
+            if (realHash) {
+                // Update global hash variables
+                window._realCertHash = realHash;
+                ermCertHash = realHash;
+                
+                // Update ERM cert display
+                const hashEl = document.getElementById('erm-cert-hash');
+                if (hashEl) hashEl.textContent = realHash;
+                
+                // Update cert number
+                const certNumEl = document.getElementById('erm-cert-number');
+                if (certNumEl) certNumEl.textContent = cert.certificate_number || '';
+                
+                // Update verify link
+                const verifyLink = document.getElementById('erm-verify-link');
+                if (verifyLink) verifyLink.href = `https://ontostandard.org/verify/?hash=${realHash}`;
+                
+                // Update status
+                if (!isActive) {
+                    ermSuspendCert();
+                }
+            }
+        }
+    } catch(e) { console.warn('loadRealCertHash:', e); }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const savedUser = localStorage.getItem('onto_user');
     const savedToken = localStorage.getItem('onto_token');
