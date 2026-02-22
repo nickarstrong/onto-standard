@@ -874,6 +874,10 @@ a.info-val:hover { color: var(--text); }
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
                 Account
             </div>
+            <div class="nav-item" id="nav-reference" onclick="showReferencePage(this)" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                Reference
+            </div>
             <div class="nav-divider"></div>
             <a class="nav-item" href="/verify/" target="_blank" style="text-decoration: none; color: var(--text-muted);">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
@@ -1330,6 +1334,39 @@ client = OpenAI(
             </p>
         </div>
         <!-- REFERENCE PAGE (ADMIN) -->
+        <!-- REFERENCE PAGE (ADMIN) -->
+        <div class="page" id="page-reference">
+            <h1 class="page-title" style="margin-bottom:2px">Reference</h1>
+            <p style="color:var(--text-muted);font-size:12px;margin:0 0 20px 0">Admin panel</p>
+
+            <!-- ACCOUNTS -->
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;overflow:hidden">
+                <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+                    <div style="font-size:14px;font-weight:600">Accounts</div>
+                    <input type="text" id="account-search" placeholder="Search email..." oninput="filterAccounts()" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:5px 10px;font-size:11px;color:var(--text);width:200px">
+                </div>
+                <div style="padding:8px 16px;border-bottom:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap">
+                    <select id="filter-type" onchange="filterAccounts()" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:4px 8px;font-size:10px;color:var(--text-secondary)">
+                        <option value="">All Types</option>
+                        <option value="individual">Individual</option>
+                        <option value="organization">Organization</option>
+                    </select>
+                    <select id="filter-status" onchange="filterAccounts()" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:4px 8px;font-size:10px;color:var(--text-secondary)">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="suspended">Suspended</option>
+                    </select>
+                    <select id="filter-plan" onchange="filterAccounts()" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:4px 8px;font-size:10px;color:var(--text-secondary)">
+                        <option value="">All Plans</option>
+                        <option value="open">Open</option>
+                        <option value="standard">Standard</option>
+                        <option value="enterprise">AI Provider</option>
+                    </select>
+                </div>
+                <div id="accounts-list" style="font-size:12px"></div>
+            </div>
+        </div>
+
     </main>
 </div>
 
@@ -2427,6 +2464,7 @@ function showDashboard() {
         loadUserSignal();
         loadOrgFromAPI();
         loadRealCertHash();
+        checkReferenceAccess();
 
     }
 }
@@ -3420,6 +3458,7 @@ function startUserCountdown(seconds) {
 }
 
 setTimeout(loadUserSignal, 500);
+setTimeout(checkReferenceAccess, 1000);
 
 // === CERTIFICATE VERIFICATION ===
 // === CERTIFICATE VERIFICATION ===
@@ -3795,6 +3834,511 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// === REFERENCE (STEALTH ADMIN) ===
+let refAccessGranted = false;
+
+async function checkReferenceAccess() {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) return false;
+    try {
+        const res = await fetch(`${API_BASE}/v1/docs/reference-check`, {
+            headers: { 'x-api-key': apiKey }
+        });
+        if (res.ok) {
+            const data = await res.json();
+            if (data.status === 'ok') {
+                refAccessGranted = true;
+                document.getElementById('nav-reference').style.display = 'flex';
+                return true;
+            }
+        }
+    } catch (e) {}
+    return false;
+}
+
+async function showReferencePage(el) {
+    if (!refAccessGranted) {
+        const hasAccess = await checkReferenceAccess();
+        if (!hasAccess) { showToast('Access denied', 'error'); return; }
+    }
+    showPage('reference', el);
+    initAdminPanel();
+}
+
+// === SIGNAL & ACCOUNTS PANEL ===
+let accountsData = [];
+let currentUserId = null; // For self-protection
+let signalData = null;
+let signalInterval = null;
+
+// Get current user ID on load
+function initAdminPanel() {
+    currentUserId = currentUser?.id || null;
+    loadSignalData();
+    loadAccountsData();
+    startSignalCountdown();
+}
+
+// === SIGNAL FUNCTIONS ===
+async function loadSignalData() {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) return;
+    
+    try {
+        // Get admin status with full stats
+        const statusRes = await fetch(`${API_BASE}/v1/signal/status`, {
+            headers: { 'x-api-key': apiKey }
+        });
+        
+        if (statusRes.ok) {
+            const stats = await statusRes.json();
+            
+            // Update signal ID and hash from current_signal
+            if (stats.current_signal) {
+                document.getElementById('signal-id').textContent = stats.current_signal.sigma_id || `σ_${stats.current_signal.timestamp}`;
+                startHashAnimation(stats.current_signal.entropy_hex || '');
+                
+                // Pulse effect on hash
+                const hashEl = document.getElementById('signal-hash');
+                if (hashEl) {
+                    hashEl.classList.add('pulse');
+                    setTimeout(() => hashEl.classList.remove('pulse'), 1000);
+                }
+            }
+            
+            // Update metrics with pulse effect
+            updateMetric('signal-uptime', formatUptime(stats.uptime_seconds));
+            updateMetric('signal-generated', stats.signals_generated || 0);
+            updateMetric('signal-requests', stats.total_requests || 0);
+            // Error rate: show only if > 5%, otherwise "OK"
+            const errorRate = stats.error_rate_percent || 0;
+            if (errorRate < 5) {
+                updateMetric('signal-errors', 'OK', 'good');
+            } else {
+                updateMetric('signal-errors', errorRate.toFixed(1) + '%', 'warn');
+            }
+            
+            // Update pause state
+            signalPaused = stats.paused || false;
+            const indicator = document.getElementById('signal-live-indicator');
+            if (indicator) {
+                if (signalPaused) {
+                    indicator.innerHTML = '<span class="signal-dot" style="background:#d97706;animation:none;"></span><span>PAUSED</span>';
+                    indicator.style.background = 'rgba(245, 158, 11, 0.15)';
+                    indicator.style.color = '#d97706';
+                } else {
+                    indicator.innerHTML = '<span class="signal-dot"></span><span>LIVE</span>';
+                    indicator.style.background = 'rgba(34, 197, 94, 0.15)';
+                    indicator.style.color = '#15803d';
+                }
+            }
+            
+            // Start countdown
+            signalData = { next_update_in: stats.signal_interval - (stats.uptime_seconds % stats.signal_interval) };
+            startSignalCountdown();
+        }
+    } catch (e) {
+        console.error('Signal load error');
+        document.getElementById('signal-hash').textContent = 'Connection error';
+    }
+}
+
+function updateMetric(id, value, style) {
+    const el = document.getElementById(id);
+    if (el) {
+        el.textContent = value;
+        
+        // Apply style class (good/warn)
+        el.classList.remove('metric-good', 'metric-warn');
+        if (style === 'good') el.classList.add('metric-good');
+        if (style === 'warn') el.classList.add('metric-warn');
+        
+        const metric = el.closest('.signal-metric');
+        if (metric) {
+            metric.classList.add('updated');
+            setTimeout(() => metric.classList.remove('updated'), 800);
+        }
+    }
+}
+
+function formatUptime(seconds) {
+    if (!seconds) return '—';
+    const hours = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    if (hours > 0) return `${hours}h ${mins}m`;
+    return `${mins}m`;
+}
+
+let hashAnimationInterval = null;
+
+function startHashAnimation(baseHash) {
+    const hashEl = document.getElementById('signal-hash');
+    if (!hashEl) return;
+    
+    if (!baseHash) {
+        hashEl.textContent = 'Waiting for signal...';
+        return;
+    }
+    
+    // Stop previous animation
+    if (hashAnimationInterval) clearInterval(hashAnimationInterval);
+    
+    const chars = '0123456789abcdef';
+    const hashArray = baseHash.split('');
+    let frame = 0;
+    
+    hashAnimationInterval = setInterval(() => {
+        frame++;
+        
+        // Animate random positions with green glow
+        const display = hashArray.map((char, i) => {
+            if (frame % 3 === 0 && Math.random() > 0.9) {
+                return `<span style="color:#15803d;text-shadow:0 0 8px #15803d;">${chars[Math.floor(Math.random() * 16)]}</span>`;
+            }
+            return char;
+        }).join('');
+        
+        hashEl.innerHTML = display;
+        
+        // Reset to real hash periodically
+        if (frame % 40 === 0) {
+            hashEl.textContent = baseHash;
+        }
+    }, 80);
+}
+
+function startSignalCountdown() {
+    if (signalInterval) clearInterval(signalInterval);
+    
+    let remaining = signalData?.next_update_in || 300;
+    
+    signalInterval = setInterval(() => {
+        remaining--;
+        
+        if (remaining <= 0) {
+            document.getElementById('signal-countdown').textContent = '0:00';
+            loadSignalData();
+            remaining = 300;
+        } else {
+            const mins = Math.floor(remaining / 60);
+            const secs = remaining % 60;
+            document.getElementById('signal-countdown').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+    }, 1000);
+}
+
+let signalPaused = false;
+
+async function refreshProofStats() {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) return;
+    try {
+        const pkRes = await fetch(`${API_BASE}/v1/signal/public-key`);
+        if (pkRes.ok) {
+            const pk = await pkRes.json();
+            const el = document.getElementById('proof-pubkey');
+            if (el) el.textContent = (pk.public_key_hex || '').substring(0, 8) + '...';
+        }
+        const statsRes = await fetch(`${API_BASE}/v1/admin/stats`, { headers: { 'x-api-key': apiKey } });
+        if (statsRes.ok) {
+            const stats = await statsRes.json();
+            const totalEl = document.getElementById('proof-total');
+            const h24El = document.getElementById('proof-24h');
+            if (totalEl) totalEl.textContent = stats.total_evaluations || '—';
+            if (h24El) h24El.textContent = stats.evaluations_24h || '—';
+            if (stats.last_proof_hash) {
+                const hashEl = document.getElementById('proof-last-hash');
+                if (hashEl) hashEl.textContent = stats.last_proof_hash;
+                const timeEl = document.getElementById('proof-last-time');
+                if (timeEl && stats.last_proof_time) timeEl.textContent = new Date(stats.last_proof_time).toLocaleString();
+            }
+        }
+    } catch(e) { /* proof stats load error */ }
+}
+
+// === ACCOUNTS FUNCTIONS ===
+function filterAccounts() {
+    loadAccountsData();
+}
+
+async function loadAccountsData() {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) return;
+    
+    const search = document.getElementById('accounts-search')?.value || '';
+    const typeFilter = document.getElementById('filter-type')?.value || '';
+    const statusFilter = document.getElementById('filter-status')?.value || '';
+    const planFilter = document.getElementById('filter-plan')?.value || '';
+    
+    const container = document.getElementById('accounts-list');
+    if (container) container.innerHTML = `
+        <div class="account-row" style="padding: 16px;">
+            <div class="skeleton skeleton-text" style="width: 200px; margin-bottom: 8px;"></div>
+            <div class="skeleton skeleton-text-sm" style="width: 120px;"></div>
+        </div>
+        <div class="account-row" style="padding: 16px;">
+            <div class="skeleton skeleton-text" style="width: 180px; margin-bottom: 8px;"></div>
+            <div class="skeleton skeleton-text-sm" style="width: 100px;"></div>
+        </div>
+    `;
+    
+    try {
+        let url = `${API_BASE}/v1/docs/admin/users?limit=50`;
+        if (search) url += `&search=${encodeURIComponent(search)}`;
+        
+        const res = await fetch(url, { headers: { 'x-api-key': apiKey } });
+        
+        if (res.ok) {
+            const data = await res.json();
+            accountsData = data.users || [];
+            
+            // Client-side filtering
+            let filtered = accountsData;
+            if (typeFilter) {
+                filtered = filtered.filter(u => {
+                    const hasCompany = u.profile?.company_name;
+                    return typeFilter === 'company' ? hasCompany : !hasCompany;
+                });
+            }
+            if (statusFilter) {
+                filtered = filtered.filter(u => {
+                    const isActive = !u.suspended && u.is_active;
+                    return statusFilter === 'active' ? isActive : !isActive;
+                });
+            }
+            if (planFilter) {
+                filtered = filtered.filter(u => u.tier === planFilter);
+            }
+            
+            renderAccounts(filtered);
+        }
+    } catch (e) {
+        console.error('Accounts load error');
+        if (container) container.innerHTML = '<div class="accounts-loading">Failed to load</div>';
+    }
+}
+
+function renderAccounts(accounts) {
+    const container = document.getElementById('accounts-list');
+    if (!container) return;
+    
+    if (!accounts.length) {
+        container.innerHTML = '<div class="accounts-loading">No accounts found</div>';
+        return;
+    }
+    
+    container.innerHTML = accounts.map(u => {
+        const isSelf = u.id === currentUserId;
+        const hasCompany = u.profile?.company_name;
+        const isActive = !u.suspended && u.is_active !== false;
+        const date = u.created_at ? new Date(u.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '—';
+        const safeEmail = escapeHtml(u.email || '');
+        const safeName = escapeHtml(u.name || '—');
+        const safeOrgName = escapeHtml(u.org_name || '—');
+        const safeTier = escapeHtml(u.tier || '');
+        const safeCompany = hasCompany ? escapeHtml(u.profile.company_name) : '';
+        const safeIndustry = hasCompany ? escapeHtml(u.profile.industry || '—') : '';
+        const safeId = escapeHtml(u.id || '');
+        
+        return `
+            <div class="account-row" onclick="toggleAccountDetails('${safeId}')">
+                <div class="account-email">${safeEmail}${isSelf ? ' <span style="color: var(--accent); font-size: 9px;">(you)</span>' : ''}</div>
+                <div class="account-type">${hasCompany ? 'Company' : 'Individual'}</div>
+                <div class="account-plan"><span class="tier-badge tier-${safeTier}">${safeTier}</span>${u.tier_expires ? '<span style="font-size:10px;color:var(--text-muted);margin-left:6px;">→ ' + new Date(u.tier_expires).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'}) + '</span>' : ''}</div>
+                <div class="account-status ${isActive ? 'active' : 'paused'}">${isActive ? 'Active' : 'Paused'}</div>
+                <div class="account-date">${date}</div>
+            </div>
+            <div class="account-details" id="details-${safeId}">
+                <div class="account-details-grid">
+                    <div class="account-detail-item">
+                        <div class="account-detail-label">Name</div>
+                        <div class="account-detail-value">${safeName}</div>
+                    </div>
+                    <div class="account-detail-item">
+                        <div class="account-detail-label">Email Verified</div>
+                        <div class="account-detail-value">${u.email_verified ? 'Yes' : 'No'}</div>
+                    </div>
+                    <div class="account-detail-item">
+                        <div class="account-detail-label">Last Login</div>
+                        <div class="account-detail-value">${u.last_login ? new Date(u.last_login).toLocaleString() : 'Never'}</div>
+                    </div>
+                    <div class="account-detail-item">
+                        <div class="account-detail-label">Organization</div>
+                        <div class="account-detail-value">${safeOrgName}</div>
+                    </div>
+                    <div class="account-detail-item">
+                        <div class="account-detail-label">Tier Expires</div>
+                        <div class="account-detail-value">${u.tier_expires ? new Date(u.tier_expires).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) + (new Date(u.tier_expires) < new Date() ? ' <span style="color:var(--danger)">EXPIRED</span>' : '') : 'No expiry'}</div>
+                    </div>
+                    ${hasCompany ? `
+                    <div class="account-detail-item">
+                        <div class="account-detail-label">Company</div>
+                        <div class="account-detail-value">${safeCompany}</div>
+                    </div>
+                    <div class="account-detail-item">
+                        <div class="account-detail-label">Industry</div>
+                        <div class="account-detail-value">${safeIndustry}</div>
+                    </div>
+                    ` : ''}
+                </div>
+                <div class="account-actions">
+                    <button class="account-action-btn" onclick="event.stopPropagation(); editPlan('${safeId}', '${safeTier}', '${safeEmail}')">Edit Plan</button>
+                    <button class="account-action-btn" onclick="event.stopPropagation(); toggleAccountStatus('${safeId}', ${isActive})" ${isSelf ? 'disabled title="Cannot pause own account"' : ''}>${isActive ? 'Pause' : 'Activate'}</button>
+                    <button class="account-action-btn danger" onclick="event.stopPropagation(); deleteAccount('${safeId}', '${safeEmail}')" ${isSelf ? 'disabled title="Cannot delete own account"' : ''}>Delete</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function toggleAccountDetails(id) {
+    const details = document.getElementById(`details-${id}`);
+    if (details) {
+        const isOpen = details.classList.contains('open');
+        // Close all others
+        document.querySelectorAll('.account-details').forEach(d => d.classList.remove('open'));
+        if (!isOpen) details.classList.add('open');
+    }
+}
+
+let editingUserId = null;
+let editingUserEmail = null;
+
+function editPlan(userId, currentTier, userEmail) {
+    editingUserId = userId;
+    editingUserEmail = userEmail || 'User';
+    
+    // Set user info
+    document.getElementById('tier-user-info').innerHTML = `<div class="tier-user-email">${escapeHtml(editingUserEmail)}</div>`;
+    
+    // Reset selection
+    document.querySelectorAll('input[name="tier-select"]').forEach(r => r.checked = false);
+    
+    // Select current tier
+    const currentRadio = document.querySelector(`input[name="tier-select"][value="${currentTier}"]`);
+    if (currentRadio) currentRadio.checked = true;
+    
+    // Reset days
+    document.getElementById('tier-days').value = 30;
+    
+    // Show modal
+    document.getElementById('tier-modal').classList.add('active');
+}
+
+async function saveTierChange() {
+    if (!editingUserId) return;
+    
+    const selectedTier = document.querySelector('input[name="tier-select"]:checked');
+    if (!selectedTier) {
+        showToast('Select a tier', 'error');
+        return;
+    }
+    
+    const tier = selectedTier.value;
+    const days = document.getElementById('tier-days').value || 30;
+    
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    try {
+        const res = await fetch(`${API_BASE}/v1/docs/admin/users/${editingUserId}/tier?tier=${tier}&days=${days}`, {
+            method: 'PUT',
+            headers: { 'x-api-key': apiKey }
+        });
+        if (res.ok) {
+            showToast(`Plan updated to ${tier.toUpperCase()}`, 'success');
+            closeModal('tier-modal');
+            // Update localStorage if changing own tier
+            if (editingUserId === currentUserId) {
+                localStorage.setItem('onto_layer', tier);
+                if (currentUser) currentUser.plan = layerToPlan(tier);
+            }
+            loadAccountsData();
+        } else {
+            const err = await res.json();
+            showToast(err.detail || 'Update failed', 'error');
+        }
+    } catch (e) {
+        showToast('Update failed', 'error');
+    }
+}
+
+async function toggleAccountStatus(userId, isCurrentlyActive) {
+    if (userId === currentUserId) {
+        showSignal104b('self_action_attempt', '/admin/users/suspend');
+        return;
+    }
+    
+    const action = isCurrentlyActive ? 'pause' : 'activate';
+    if (!confirm(`${action.charAt(0).toUpperCase() + action.slice(1)} this account?`)) return;
+    
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    try {
+        const res = await fetch(`${API_BASE}/v1/docs/admin/users/${userId}/suspend?suspend=${isCurrentlyActive}`, {
+            method: 'PUT',
+            headers: { 'x-api-key': apiKey }
+        });
+        if (res.ok) {
+            showToast(`Account ${action}d`, 'success');
+            loadAccountsData();
+        } else {
+            showToast('Action failed', 'error');
+        }
+    } catch (e) {
+        showToast('Action failed', 'error');
+    }
+}
+
+async function deleteAccount(userId, email) {
+    if (userId === currentUserId) {
+        showSignal104b('self_action_attempt', '/admin/users/delete');
+        return;
+    }
+    
+    if (prompt(`Type the email to confirm deletion:\n${email}`) !== email) {
+        showToast('Deletion cancelled', 'info');
+        return;
+    }
+    
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    try {
+        const headers = { 'x-api-key': apiKey };
+        if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
+        const res = await fetch(`${API_BASE}/v1/docs/admin/users/${userId}`, {
+            method: 'DELETE',
+            headers
+        });
+        if (res.ok) {
+            showToast('Account deleted', 'success');
+            loadAccountsData();
+        } else {
+            const data = await res.json();
+            showToast(data.detail || 'Delete failed', 'error');
+        }
+    } catch (e) {
+        showToast('Delete failed', 'error');
+    }
+}
+
+// === SIGNAL 104b ===
+function showSignal104b(action, endpoint) {
+    showToast('Action rejected. Signal: 104b', 'error');
+    
+    // Show log panel
+    const panel = document.getElementById('signal-log-panel');
+    if (panel) panel.style.display = 'block';
+    
+    const list = document.getElementById('signal-log-list');
+    if (list) {
+        const item = document.createElement('div');
+        item.className = 'signal-log-item';
+        item.innerHTML = `
+            <span class="signal-log-code">104b</span>
+            <span class="signal-log-endpoint">${endpoint}</span>
+            <span class="signal-log-time">${new Date().toLocaleTimeString()}</span>
+            <div style="margin-top: 4px; color: var(--text-muted);">${action.replace(/_/g, ' ')}</div>
+        `;
+        list.insertBefore(item, list.firstChild);
+    }
+}
 </script>
 </body>
 </html>
