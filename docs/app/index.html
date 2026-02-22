@@ -968,7 +968,6 @@ a.info-val:hover { color: var(--text); }
             <div class="dash-card-clean" style="margin-bottom:16px">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
                     <div class="card-head">API Key</div>
-                    <a onclick="document.getElementById('connect-details').classList.remove('hidden');document.getElementById('connect-details').scrollIntoView({behavior:'smooth'})" style="font-size:11px;color:var(--accent);cursor:pointer">Connect guide ↓</a>
                 </div>
                 <div class="key-row">
                     <input type="password" class="key-input" id="dash-api-key" value="" readonly placeholder="Loading...">
@@ -999,33 +998,157 @@ a.info-val:hover { color: var(--text); }
                 <div style="font-size:10px;color:var(--text-muted);margin-top:8px">Share this hash with regulators, auditors, or clients to verify your AI system is ONTO-certified.</div>
             </div>
 
-            <!-- CONNECT -->
-            <div class="dash-card-clean" style="margin-bottom:16px">
-                <div onclick="document.getElementById('connect-details').classList.toggle('hidden');this.querySelector('svg').style.transform=document.getElementById('connect-details').classList.contains('hidden')?'':'rotate(90deg)'" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer">
+            <!-- INTEGRATION: STANDARD -->
+            <div class="dash-card-clean" style="margin-bottom:12px">
+                <div onclick="document.getElementById('guide-standard').classList.toggle('hidden');this.querySelector('svg').style.transform=document.getElementById('guide-standard').classList.contains('hidden')?'':'rotate(90deg)'" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer">
                     <div>
-                        <div class="card-head">Connect your AI</div>
-                        <div style="font-size:11px;color:var(--text-muted)">One line change. No SDK, no retraining.</div>
+                        <div class="card-head">Standard Integration</div>
+                        <div style="font-size:11px;color:var(--text-muted)">Proxy — route requests through ONTO. 3 lines of code.</div>
                     </div>
                     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0"><polyline points="9,18 15,12 9,6"/></svg>
                 </div>
-                <div id="connect-details" class="hidden" style="margin-top:12px">
-                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Python — OpenAI-compatible</div>
-                    <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code><span style="color:var(--text-muted)"># Change base_url + add your ONTO key:</span>
-client = OpenAI(
-    api_key=<span style="color:#4ade80">"onto_sk_..."</span>,
-    base_url=<span style="color:#4ade80">"https://api.ontostandard.org/v1/proxy"</span>,
-    default_headers={<span style="color:#4ade80">"X-Provider-Key"</span>: <span style="color:#4ade80">"sk-...your_openai_key"</span>}
-)</code></pre>
-                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">cURL</div>
-                    <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code>curl -X POST https://api.ontostandard.org/v1/proxy/chat/completions \
-  -H "x-api-key: onto_sk_..." \
-  -H "X-Provider-Key: sk-...your_openai_key" \
-  -H "Content-Type: application/json" \
-  -d '{"model":"gpt-4o","messages":[{"role":"user","content":"Your question"}]}'</code></pre>
-                    <div style="font-size:11px;color:var(--text-secondary);line-height:1.5">
-                        <span style="color:var(--accent);font-weight:600">How it works:</span> Your request → ONTO injects GOLD → forwards to your provider → returns enhanced response. No data stored.
+                <div id="guide-standard" class="hidden" style="margin-top:12px">
+                    <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px 16px;margin-bottom:12px">
+                        <div style="font-size:10px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">How it works</div>
+                        <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">
+                            Your app → <span style="color:var(--accent);font-weight:600">ONTO Proxy</span> → AI Provider (OpenAI, Anthropic, etc.)<br>
+                            ONTO injects GOLD discipline layer into every request. Your provider key never stored. Response includes proof chain.
+                        </div>
                     </div>
-                    <div style="margin-top:8px"><a href="/docs/" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Full API docs →</a></div>
+
+                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Step 1 — Python (OpenAI-compatible)</div>
+                    <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code><span style="color:var(--text-muted)"># Replace your OpenAI client with:</span>
+from openai import OpenAI
+
+client = OpenAI(
+    api_key=<span style="color:#4ade80">"YOUR_ONTO_API_KEY"</span>,
+    base_url=<span style="color:#4ade80">"https://api.ontostandard.org/v1/proxy"</span>,
+    default_headers={
+        <span style="color:#4ade80">"X-Provider-Key"</span>: <span style="color:#4ade80">"sk-...your_openai_key"</span>
+    }
+)
+
+<span style="color:var(--text-muted)"># Use exactly as before — GOLD is injected automatically</span>
+response = client.chat.completions.create(
+    model=<span style="color:#4ade80">"gpt-4o"</span>,
+    messages=[{<span style="color:#4ade80">"role"</span>: <span style="color:#4ade80">"user"</span>, <span style="color:#4ade80">"content"</span>: <span style="color:#4ade80">"Your question"</span>}]
+)</code></pre>
+
+                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Step 2 — cURL</div>
+                    <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code>curl -X POST https://api.ontostandard.org/v1/proxy/chat/completions \
+  -H <span style="color:#4ade80">"x-api-key: YOUR_ONTO_API_KEY"</span> \
+  -H <span style="color:#4ade80">"X-Provider-Key: sk-...your_openai_key"</span> \
+  -H <span style="color:#4ade80">"Content-Type: application/json"</span> \
+  -d <span style="color:#4ade80">'{"model":"gpt-4o","messages":[{"role":"user","content":"Your question"}]}'</span></code></pre>
+
+                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Step 3 — Verify proof chain</div>
+                    <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code><span style="color:var(--text-muted)"># Check response headers for proof:</span>
+X-ONTO-Proof-Hash: 5e81aa06742c...
+X-ONTO-Signal-ID: σ(1771774373)
+X-ONTO-Score: 7.2
+
+<span style="color:var(--text-muted)"># Verify at:</span>
+https://ontostandard.org/verify/?hash=5e81aa06742c...</code></pre>
+
+                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">What changes in your code</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+                        <div style="background:#1a1a2e;border-radius:6px;padding:10px 12px">
+                            <div style="font-size:9px;color:#ef4444;font-weight:600;margin-bottom:4px">BEFORE</div>
+                            <code style="font-size:11px;color:#e2e8f0">base_url: api.openai.com</code><br>
+                            <code style="font-size:11px;color:#e2e8f0">api_key: sk-...</code>
+                        </div>
+                        <div style="background:#1a2e1a;border-radius:6px;padding:10px 12px">
+                            <div style="font-size:9px;color:var(--accent);font-weight:600;margin-bottom:4px">AFTER</div>
+                            <code style="font-size:11px;color:#e2e8f0">base_url: api.ontostandard.org</code><br>
+                            <code style="font-size:11px;color:#e2e8f0">api_key: onto_sk_...</code><br>
+                            <code style="font-size:11px;color:#e2e8f0">X-Provider-Key: sk-...</code>
+                        </div>
+                    </div>
+
+                    <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:11px;color:var(--text-secondary);line-height:1.5">
+                        <span style="color:var(--accent);font-weight:600">Includes:</span> 1,000 proxy requests/day · GOLD Extended Corpus · Ed25519 proof chain · Scoring API · Public verification badge
+                    </div>
+                    <div style="margin-top:8px"><a href="/docs/" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Full API documentation →</a></div>
+                </div>
+            </div>
+
+            <!-- INTEGRATION: AI PROVIDER -->
+            <div class="dash-card-clean" style="margin-bottom:16px">
+                <div onclick="document.getElementById('guide-provider').classList.toggle('hidden');this.querySelector('svg').style.transform=document.getElementById('guide-provider').classList.contains('hidden')?'':'rotate(90deg)'" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer">
+                    <div>
+                        <div class="card-head">AI Provider Integration</div>
+                        <div style="font-size:11px;color:var(--text-muted)">SSE — direct GOLD injection into your inference pipeline.</div>
+                    </div>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0"><polyline points="9,18 15,12 9,6"/></svg>
+                </div>
+                <div id="guide-provider" class="hidden" style="margin-top:12px">
+                    <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px 16px;margin-bottom:12px">
+                        <div style="font-size:10px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">How it works</div>
+                        <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">
+                            Your inference server connects to ONTO SSE stream → receives full GOLD corpus in real-time → injects into system prompt before inference. ONTO is <span style="color:var(--accent);font-weight:600">not in the inference path</span> — zero latency impact.
+                        </div>
+                    </div>
+
+                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Step 1 — Connect to GOLD SSE stream</div>
+                    <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code><span style="color:var(--text-muted)"># Python — subscribe to GOLD corpus stream</span>
+import requests
+
+stream = requests.get(
+    <span style="color:#4ade80">"https://api.ontostandard.org/v1/gold/stream"</span>,
+    headers={<span style="color:#4ade80">"x-api-key"</span>: <span style="color:#4ade80">"YOUR_ONTO_API_KEY"</span>},
+    stream=True
+)
+
+<span style="color:var(--text-muted)"># GOLD corpus delivered as SSE events</span>
+for line in stream.iter_lines():
+    if line.startswith(b<span style="color:#4ade80">"data: "</span>):
+        gold_payload = json.loads(line[6:])
+        <span style="color:var(--text-muted)"># gold_payload contains full discipline layer</span>
+        update_system_prompt(gold_payload)</code></pre>
+
+                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Step 2 — Inject into inference pipeline</div>
+                    <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code><span style="color:var(--text-muted)"># Inject GOLD as system prompt prefix</span>
+def handle_inference(user_message, gold_corpus):
+    messages = [
+        {<span style="color:#4ade80">"role"</span>: <span style="color:#4ade80">"system"</span>, <span style="color:#4ade80">"content"</span>: gold_corpus[<span style="color:#4ade80">"discipline_layer"</span>]},
+        {<span style="color:#4ade80">"role"</span>: <span style="color:#4ade80">"user"</span>, <span style="color:#4ade80">"content"</span>: user_message}
+    ]
+    response = your_model.generate(messages)
+    return response</code></pre>
+
+                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Step 3 — Report scores for proof chain</div>
+                    <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code><span style="color:var(--text-muted)"># After inference, submit for scoring + proof</span>
+requests.post(
+    <span style="color:#4ade80">"https://api.ontostandard.org/v1/evaluate"</span>,
+    headers={<span style="color:#4ade80">"x-api-key"</span>: <span style="color:#4ade80">"YOUR_ONTO_API_KEY"</span>},
+    json={
+        <span style="color:#4ade80">"prompt"</span>: user_message,
+        <span style="color:#4ade80">"response"</span>: model_output,
+        <span style="color:#4ade80">"model"</span>: <span style="color:#4ade80">"your-model-name"</span>
+    }
+)
+<span style="color:var(--text-muted)"># Returns: score, proof_hash, signal_id, certificate</span></code></pre>
+
+                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Architecture</div>
+                    <div style="background:#0c0f14;border-radius:6px;padding:14px 16px;margin-bottom:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#e2e8f0;line-height:1.8">
+                        <span style="color:var(--text-muted)">┌──────────────┐</span><br>
+                        <span style="color:var(--text-muted)">│</span> ONTO SSE     <span style="color:var(--text-muted)">│──→ GOLD corpus (real-time updates)</span><br>
+                        <span style="color:var(--text-muted)">└──────┬───────┘</span><br>
+                        <span style="color:var(--text-muted)">       ↓</span><br>
+                        <span style="color:var(--text-muted)">┌──────────────┐     ┌──────────────┐</span><br>
+                        <span style="color:var(--text-muted)">│</span> <span style="color:var(--accent)">Your Server</span>  <span style="color:var(--text-muted)">│────→│</span> Your Model   <span style="color:var(--text-muted)">│</span><br>
+                        <span style="color:var(--text-muted)">│</span> inject GOLD  <span style="color:var(--text-muted)">│     │</span> inference    <span style="color:var(--text-muted)">│</span><br>
+                        <span style="color:var(--text-muted)">└──────────────┘     └──────┬───────┘</span><br>
+                        <span style="color:var(--text-muted)">                            ↓</span><br>
+                        <span style="color:var(--text-muted)">                     ┌──────────────┐</span><br>
+                        <span style="color:var(--text-muted)">                     │</span> ONTO Scoring <span style="color:var(--text-muted)">│──→ proof chain</span><br>
+                        <span style="color:var(--text-muted)">                     └──────────────┘</span>
+                    </div>
+
+                    <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:11px;color:var(--text-secondary);line-height:1.5">
+                        <span style="color:var(--accent);font-weight:600">Includes:</span> GOLD Full Corpus via SSE · Unlimited scoring API · All production models · Ed25519 proof chain · Full audit trail · Priority 24/7 support
+                    </div>
+                    <div style="margin-top:8px"><a href="/docs/" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Full API documentation →</a></div>
                 </div>
             </div>
 
