@@ -988,6 +988,8 @@ a.info-val:hover { color: var(--text); }
                         <select id="test-std-provider" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 8px;font-size:12px;color:var(--text);width:130px">
                             <option value="anthropic">Anthropic</option>
                             <option value="openai">OpenAI</option>
+                            <option value="deepseek">DeepSeek</option>
+                            <option value="mistral">Mistral</option>
                         </select>
                         <input type="text" id="test-std-provider-key" placeholder="Provider API key (sk-...)" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--text)">
                     </div>
@@ -2973,7 +2975,11 @@ async function testStandardProxy() {
         } else {
             url = `${API_BASE}/v1/proxy/chat/completions`;
             headers = { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'X-Provider-Key': providerKey };
-            body = JSON.stringify({ model: 'gpt-4o', max_tokens: 512, messages: [{ role: 'user', content: testPrompt }] });
+            const models = { openai: 'gpt-4o', deepseek: 'deepseek-chat', mistral: 'mistral-large-latest' };
+            const model = models[provider] || 'gpt-4o';
+            body = JSON.stringify({ model, max_tokens: 512, messages: [{ role: 'user', content: testPrompt }] });
+            if (provider === 'deepseek') headers['X-Provider-Base-URL'] = 'https://api.deepseek.com/v1';
+            if (provider === 'mistral') headers['X-Provider-Base-URL'] = 'https://api.mistral.ai/v1';
         }
         
         const startTime = Date.now();
