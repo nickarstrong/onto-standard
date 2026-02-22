@@ -3108,22 +3108,24 @@ async function loadModels() {
         let selectHtml = '<option value="">Select model...</option>';
         
         for (const m of data.models) {
-            const scoreColor = m.avg_score >= 7 ? 'var(--accent)' : m.avg_score >= 5 ? '#f59e0b' : m.avg_score ? '#ef4444' : 'var(--text-muted)';
-            const scoreText = m.avg_score !== null ? m.avg_score.toFixed(1) : '—';
-            const gradeText = m.grade || '—';
-            const evalText = m.eval_count > 0 ? m.eval_count.toLocaleString() + ' eval' : 'no evaluations';
+            const hasEvals = m.eval_count > 0;
+            const scoreColor = !hasEvals ? 'var(--text-muted)' : m.avg_score >= 7 ? 'var(--accent)' : m.avg_score >= 5 ? '#f59e0b' : '#ef4444';
+            const scoreText = hasEvals && m.avg_score !== null ? m.avg_score.toFixed(1) : '—';
+            const gradeText = hasEvals && m.grade ? m.grade : '';
+            const evalText = hasEvals ? m.eval_count.toLocaleString() + ' eval' : 'awaiting first evaluation';
+            const dotColor = hasEvals ? scoreColor : 'var(--text-muted)';
             
             html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">
                 <div style="display:flex;align-items:center;gap:10px;flex:1">
-                    <div style="width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0"></div>
+                    <div style="width:6px;height:6px;border-radius:50%;background:${dotColor};flex-shrink:0"></div>
                     <div>
-                        <div style="font-size:12px;font-weight:600;color:var(--text)">${m.name}</div>
+                        <div style="font-size:13px;font-weight:600;color:var(--text)">${m.name}</div>
                         <div style="font-size:10px;color:var(--text-muted)">${evalText}</div>
                     </div>
                 </div>
                 <div style="display:flex;align-items:center;gap:16px">
                     <div style="text-align:right">
-                        <div style="font-size:14px;font-weight:700;color:${scoreColor}">${scoreText}</div>
+                        <div style="font-size:15px;font-weight:700;color:${scoreColor}">${scoreText}</div>
                         <div style="font-size:9px;color:var(--text-muted)">${gradeText}</div>
                     </div>
                     <button onclick="removeModel('${m.id}','${m.name}')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;padding:2px 4px" title="Remove">×</button>
