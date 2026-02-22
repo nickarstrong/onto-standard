@@ -1313,8 +1313,7 @@ client = OpenAI(
                 <!-- PROVIDER (TIER 1) -->
                 <div class="tier-card" id="card-enterprise">
                     <div class="tier-name">AI Provider</div>
-                    <div class="tier-price">$9,500<span>/month</span></div>
-                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">or $114,000/year</div>
+                    <div class="tier-price">$250,000<span>/year</span></div>
                     <div class="tier-desc">Full GOLD access for AI model providers</div>
                     <ul class="tier-list">
                         <li>GOLD Full Corpus via SSE</li>
@@ -1785,7 +1784,7 @@ client = OpenAI(
                     <div class="tier-option-content">
                         <div class="tier-option-header">
                             <span class="tier-badge tier-critical">AI PROVIDER</span>
-                            <span class="tier-option-price">$114K/yr</span>
+                            <span class="tier-option-price">$250K/yr</span>
                         </div>
                         <div class="tier-option-desc">Unlimited proxy, certificate + badge, priority support</div>
                     </div>
@@ -1903,7 +1902,8 @@ const STRINGS = {
 };
 const PLANS = {
     business: { monthly: 2500, annual: 30000, monthlyEquiv: 2500 },
-    enterprise: { monthly: 9500, annual: 114000, monthlyEquiv: 9500 }
+    enterprise: { annual: 250000 },
+    white_label: { annual: 500000 }
 };
 let selectedPlan = 'business';
 let selectedCycle = 'annual';
@@ -3266,36 +3266,83 @@ function openSubscribeModal(plan) {
     selectedPlan = plan;
     const planNames = { business: 'Standard', enterprise: 'AI Provider' };
     document.getElementById('subscribe-plan-name').textContent = planNames[plan] || plan;
-    const prices = PLANS[plan];
-    document.getElementById('price-annual-display').textContent = '$' + prices.annual.toLocaleString();
-    document.getElementById('price-monthly-display').textContent = '$' + (prices.monthly ? prices.monthly.toLocaleString() + '/mo' : 'N/A');
+    
+    const annualLabel = document.querySelector('#billing-annual .billing-option-name');
+    const annualDetail = document.querySelector('#billing-annual .billing-option-detail');
+    const monthlyLabel = document.querySelector('#billing-monthly .billing-option-name');
+    const monthlyDetail = document.querySelector('#billing-monthly .billing-option-detail');
     const monthlyOption = document.getElementById('billing-monthly');
-    monthlyOption.style.display = 'flex';
+    
+    if (plan === 'enterprise') {
+        // AI Provider: two license tiers
+        annualLabel.textContent = 'AI Provider';
+        annualDetail.textContent = 'Full GOLD access for AI model providers';
+        document.getElementById('price-annual-display').textContent = '$250,000';
+        monthlyOption.style.display = 'flex';
+        monthlyLabel.textContent = 'White Label';
+        monthlyDetail.textContent = 'Full integration · your brand · unlimited scale';
+        document.getElementById('price-monthly-display').textContent = '$500,000';
+        // Both are annual invoice-only
+        document.querySelector('#billing-annual input').value = 'annual';
+        document.querySelector('#billing-monthly input').value = 'white_label';
+    } else {
+        // Standard: annual/monthly
+        annualLabel.textContent = 'Annual';
+        annualDetail.textContent = 'Billed once per year';
+        document.getElementById('price-annual-display').textContent = '$' + PLANS.business.annual.toLocaleString();
+        monthlyOption.style.display = 'flex';
+        monthlyLabel.textContent = 'Monthly';
+        monthlyDetail.textContent = 'Billed each month';
+        document.getElementById('price-monthly-display').textContent = '$' + PLANS.business.monthly.toLocaleString() + '/mo';
+        document.querySelector('#billing-annual input').value = 'annual';
+        document.querySelector('#billing-monthly input').value = 'monthly';
+    }
+    
+    document.querySelector('#billing-annual input').checked = true;
     document.getElementById('subscribe-modal').classList.add('active');
     selectedCycle = 'annual';
     updateOrderSummary();
 }
 
 function updateOrderSummary() {
-    const cycle = document.querySelector('input[name="billing-cycle"]:checked')?.value || 'annual';
-    selectedCycle = cycle;
-    const prices = PLANS[selectedPlan];
-    const planNames = { business: 'Standard', enterprise: 'AI Provider' };
-    const planName = planNames[selectedPlan] || selectedPlan;
+    const cycleVal = document.querySelector('input[name="billing-cycle"]:checked')?.value || 'annual';
+    selectedCycle = cycleVal;
+    
     const planFeatures = {
         business: ['1,000 proxy requests/day', 'GOLD Extended — Extended Corpus', 'Ed25519 signed proof chain', 'Public verification badge'],
-        enterprise: ['Everything in Standard', 'Unlimited proxy requests', 'Public certificate + verification badge', 'Priority support']
+        enterprise: ['GOLD Full Corpus via SSE', 'Unlimited proxy requests', 'Ed25519 proof chain', 'Full audit trail', 'Priority support']
     };
     const featuresEl = document.getElementById('order-features');
-    featuresEl.innerHTML = (planFeatures[selectedPlan]||[]).map(f => '<div class="order-feature">'+f+'</div>').join('');
-    let price = cycle === 'annual' ? prices.annual : prices.monthly;
-    document.getElementById('summary-plan').textContent = planName + ' Tier \u2014 ' + (cycle==='annual'?'Annual':'Monthly');
+    
+    let planLabel, price;
+    
+    if (selectedPlan === 'enterprise') {
+        if (cycleVal === 'white_label') {
+            planLabel = 'White Label — Annual';
+            price = 500000;
+            featuresEl.innerHTML = ['Everything in AI Provider', 'White-label integration', 'Your brand · unlimited scale', 'Dedicated support'].map(f => '<div class="order-feature">'+f+'</div>').join('');
+        } else {
+            planLabel = 'AI Provider — Annual';
+            price = 250000;
+            featuresEl.innerHTML = (planFeatures.enterprise||[]).map(f => '<div class="order-feature">'+f+'</div>').join('');
+        }
+    } else {
+        planLabel = 'Standard Tier — ' + (cycleVal === 'annual' ? 'Annual' : 'Monthly');
+        price = cycleVal === 'annual' ? PLANS.business.annual : PLANS.business.monthly;
+        featuresEl.innerHTML = (planFeatures.business||[]).map(f => '<div class="order-feature">'+f+'</div>').join('');
+    }
+    
+    document.getElementById('summary-plan').textContent = planLabel;
     document.getElementById('summary-price').textContent = '$' + price.toLocaleString();
     document.getElementById('summary-total').textContent = '$' + price.toLocaleString();
+    
     const invoiceInput = document.querySelector('#payment-invoice input');
     const cardInput = document.querySelector('#payment-card input');
-    if (cycle === 'annual') { invoiceInput.disabled=false; cardInput.disabled=true; invoiceInput.checked=true; }
-    else { invoiceInput.disabled=true; cardInput.disabled=false; cardInput.checked=true; }
+    if (selectedPlan === 'enterprise' || cycleVal === 'annual') {
+        invoiceInput.disabled = false; cardInput.disabled = true; invoiceInput.checked = true;
+    } else {
+        invoiceInput.disabled = true; cardInput.disabled = false; cardInput.checked = true;
+    }
 }
 
 async function processPayment() {
@@ -3306,7 +3353,11 @@ async function processPayment() {
     
     // Map portal plan names to backend tier names
     const planToTier = { business: 'standard', enterprise: 'critical' };
-    const tier = planToTier[selectedPlan];
+    let tier = planToTier[selectedPlan];
+    // White Label override
+    if (selectedPlan === 'enterprise' && selectedCycle === 'white_label') {
+        tier = 'white_label';
+    }
     if (!tier) { showToast('Invalid plan', 'error'); return; }
     
     showToast('Redirecting to checkout...', 'success');
