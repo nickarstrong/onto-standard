@@ -751,6 +751,7 @@ a.info-val:hover { color: var(--text); }
                 </div>
             </div>
             <button class="btn btn-primary" id="login-btn" onclick="handleLogin(this)">Sign In</button>
+            <p style="text-align:right;margin-top:8px"><a onclick="showForgotPassword()" style="color:#8b95a5;font-size:13px;cursor:pointer">Forgot password?</a></p>
             <p class="auth-switch">Don't have an account? <a onclick="showRegister()">Create one</a></p>
         </div>
         
@@ -838,6 +839,32 @@ a.info-val:hover { color: var(--text); }
             <h1 class="auth-title">Email verified!</h1>
             <p class="auth-subtitle">Your account is ready. You can now sign in.</p>
             <button class="btn btn-primary" style="margin-top: 24px;" onclick="showLogin()">Sign In</button>
+        </div>
+        
+        <!-- FORGOT PASSWORD -->
+        <div id="forgot-form" class="hidden">
+            <h1 class="auth-title">Reset password</h1>
+            <p class="auth-subtitle">Enter your email and we'll send a reset link</p>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="forgot-email" placeholder="you@company.com">
+            </div>
+            <button class="btn btn-primary" id="forgot-btn" onclick="handleForgotPassword(this)">Send Reset Link</button>
+            <p class="auth-switch" style="margin-top:16px"><a onclick="showLogin()">Back to sign in</a></p>
+        </div>
+        
+        <!-- RESET PASSWORD (from email link) -->
+        <div id="reset-form" class="hidden">
+            <h1 class="auth-title">Set new password</h1>
+            <p class="auth-subtitle">Choose a strong password</p>
+            <div class="form-group">
+                <label class="form-label">New Password</label>
+                <div class="password-wrapper">
+                    <input type="password" class="form-input" id="reset-password" placeholder="••••••••">
+                    <button type="button" class="password-toggle" onclick="togglePassword('reset-password', this)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                </div>
+            </div>
+            <button class="btn btn-primary" id="reset-btn" onclick="handleResetPassword(this)">Reset Password</button>
         </div>
     </div>
     </div>
@@ -1678,23 +1705,6 @@ client = OpenAI(
     </div>
 </div>
 
-<!-- PAYMENT PENDING MODAL -->
-<div class="modal-overlay" id="payment-modal" onclick="if(event.target===this)closeModal('payment-modal')">
-    <div class="modal modal-inst" style="max-width: 380px; text-align: center;">
-        <div class="modal-header" style="justify-content:flex-end;border:none;padding:12px 16px 0">
-            <button class="modal-close" onclick="closeModal('payment-modal')">&times;</button>
-        </div>
-        <div class="modal-body" style="padding: 12px 36px 36px;">
-            <div style="font-size: 36px; margin-bottom: 12px;">&#x1F680;</div>
-            <h2 style="font-size: 15px; font-weight: 500; margin-bottom: 6px;">Complete Payment</h2>
-            <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 12px;">You will be redirected to our secure payment provider.</p>
-            <button class="btn btn-primary" onclick="redirectToAirwallex()">Continue to Payment</button>
-            <p style="margin-top: 16px;"><button class="btn-minimal" onclick="closeModal('payment-modal')" style="font-size:12px;">Cancel</button></p>
-            <p style="margin-top: 8px; font-size: 11px; color: var(--text-muted);">Questions? Contact <a href="mailto:support@ontostandard.org">support@ontostandard.org</a></p>
-        </div>
-    </div>
-</div>
-
 <div class="modal-overlay" id="contact-modal">
     <div class="modal modal-inst" style="max-width: 440px;">
         <div class="modal-header">
@@ -2021,6 +2031,8 @@ function showLogin() {
     document.getElementById('register-form').classList.add('hidden');
     document.getElementById('verify-pending').classList.add('hidden');
     document.getElementById('verify-success').classList.add('hidden');
+    document.getElementById('forgot-form').classList.add('hidden');
+    document.getElementById('reset-form').classList.add('hidden');
 }
 
 function showRegister() {
@@ -2028,6 +2040,69 @@ function showRegister() {
     document.getElementById('register-form').classList.remove('hidden');
     document.getElementById('verify-pending').classList.add('hidden');
     document.getElementById('verify-success').classList.add('hidden');
+    document.getElementById('forgot-form').classList.add('hidden');
+    document.getElementById('reset-form').classList.add('hidden');
+}
+
+function showForgotPassword() {
+    document.getElementById('login-form').classList.add('hidden');
+    document.getElementById('register-form').classList.add('hidden');
+    document.getElementById('verify-pending').classList.add('hidden');
+    document.getElementById('verify-success').classList.add('hidden');
+    document.getElementById('forgot-form').classList.remove('hidden');
+    document.getElementById('reset-form').classList.add('hidden');
+    const loginEmail = document.getElementById('login-email').value;
+    if (loginEmail) document.getElementById('forgot-email').value = loginEmail;
+}
+
+async function handleForgotPassword(btn) {
+    const email = document.getElementById('forgot-email').value.trim();
+    if (!email) { showToast('Enter your email', 'error'); return; }
+    setLoading(btn, true);
+    try {
+        const res = await fetch(`${API_BASE}/v1/auth/forgot-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+        if (res.ok) {
+            showToast('Reset link sent to your email', 'success');
+            showLogin();
+        } else {
+            showToast(data.detail || 'Failed to send reset link', 'error');
+        }
+    } catch(e) {
+        showToast('Network error', 'error');
+    }
+    setLoading(btn, false);
+}
+
+async function handleResetPassword(btn) {
+    const password = document.getElementById('reset-password').value;
+    if (!password || password.length < 8) { showToast('Password must be at least 8 characters', 'error'); return; }
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('reset_token');
+    if (!token) { showToast('Invalid reset link', 'error'); return; }
+    setLoading(btn, true);
+    try {
+        const res = await fetch(`${API_BASE}/v1/auth/reset-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token, new_password: password })
+        });
+        const data = await res.json();
+        if (res.ok) {
+            showToast('Password reset. Sign in with your new password.', 'success');
+            window.history.replaceState({}, '', window.location.pathname);
+            showLogin();
+        } else {
+            showToast(data.detail || 'Reset failed', 'error');
+        }
+    } catch(e) {
+        showToast('Network error', 'error');
+    }
+    setLoading(btn, false);
 }
 
 function togglePassword(inputId, btn) {
@@ -2524,6 +2599,23 @@ function updateDashboardMetrics() {
             enterprise: 'AI Provider: Unlimited · Full GOLD · All models · Proof chain'
         };
         includesEl.textContent = planIncludes[plan] || planIncludes.free;
+    }
+    
+    // Fetch real usage from backend
+    const apiKey = localStorage.getItem('onto_api_key');
+    if (apiKey && callsEl) {
+        fetch(`${API_BASE}/v1/usage`, { headers: { 'x-api-key': apiKey } })
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+                if (!data) return;
+                const daily = data.daily || {};
+                if (daily.unlimited) {
+                    callsEl.textContent = daily.used + ' today';
+                } else {
+                    callsEl.textContent = daily.used + ' / ' + daily.limit;
+                }
+            })
+            .catch(() => {});
     }
 }
 
@@ -3027,6 +3119,33 @@ function highlightEmptyFields() {
 }
 
 // === BILLING ===
+async function refreshBillingFromBackend() {
+    const apiKey = localStorage.getItem('onto_api_key');
+    if (!apiKey) return;
+    try {
+        const res = await fetch(`${API_BASE}/v1/billing/status`, { headers: { 'x-api-key': apiKey } });
+        if (!res.ok) return;
+        const data = await res.json();
+        // Update currentUser with real tier from backend
+        const tierToPlan = { open: 'free', standard: 'business', critical: 'enterprise', white_label: 'enterprise' };
+        currentUser.plan = tierToPlan[data.layer] || 'free';
+        currentUser.layer = data.layer;
+        localStorage.setItem('onto_layer', data.layer);
+        if (data.subscription && data.subscription.current_period_end) {
+            currentUser.subscription = currentUser.subscription || {};
+            currentUser.subscription.expires_at = data.subscription.current_period_end;
+            currentUser.subscription.plan = currentUser.plan;
+        } else if (data.tier_expires) {
+            currentUser.subscription = currentUser.subscription || {};
+            currentUser.subscription.expires_at = data.tier_expires;
+        }
+        localStorage.setItem('onto_user', JSON.stringify(currentUser));
+        document.getElementById('user-plan').textContent = currentUser.plan === 'enterprise' ? 'PROVIDER' : (currentUser.plan === 'business' ? 'STANDARD' : 'OPEN');
+        updateBillingUI();
+        updateDashboardMetrics();
+    } catch(e) {}
+}
+
 function updateBillingUI() {
     const invoiceStatus = document.getElementById('invoice-status');
     const invoiceDownload = document.getElementById('invoice-download');
@@ -3139,69 +3258,39 @@ function updateOrderSummary() {
     else { invoiceInput.disabled=true; cardInput.disabled=false; cardInput.checked=true; }
 }
 
-function processPayment() {
+async function processPayment() {
     closeModal('subscribe-modal');
-    document.getElementById('payment-modal').classList.add('active');
+    
+    const apiKey = localStorage.getItem('onto_api_key');
+    if (!apiKey) { showToast('Please sign in first', 'error'); return; }
+    
+    // Map portal plan names to backend tier names
+    const planToTier = { business: 'standard', enterprise: 'critical' };
+    const tier = planToTier[selectedPlan];
+    if (!tier) { showToast('Invalid plan', 'error'); return; }
+    
+    showToast('Redirecting to checkout...', 'success');
+    
+    try {
+        const res = await fetch(`${API_BASE}/v1/billing/checkout`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+            body: JSON.stringify({ layer: tier })
+        });
+        const data = await res.json();
+        
+        if (res.ok && data.checkout_url) {
+            window.location.href = data.checkout_url;
+        } else if (res.status === 503) {
+            showToast('Billing is being configured. Contact sales@ontostandard.org', 'error');
+        } else {
+            showToast(data.detail || 'Checkout failed', 'error');
+        }
+    } catch(e) {
+        showToast('Network error. Try again.', 'error');
+    }
 }
 
-function redirectToAirwallex() {
-    const isAnnual = selectedCycle === 'annual';
-    const daysToAdd = isAnnual ? 365 : 30;
-    const amount = isAnnual ? PLANS[selectedPlan].annual : PLANS[selectedPlan].monthly;
-    const now = new Date();
-    const sub = currentUser.subscription || {};
-    
-    // Claude-like logic: one tier at a time
-    // Upgrade = instant, remaining days on old tier converted proportionally
-    // Downgrade = takes effect at end of current billing cycle
-    const tierOrder = { free: 0, business: 1, enterprise: 2 };
-    const currentTier = currentUser.plan || 'free';
-    const isUpgrade = (tierOrder[selectedPlan] || 0) > (tierOrder[currentTier] || 0);
-    const isDowngrade = (tierOrder[selectedPlan] || 0) < (tierOrder[currentTier] || 0);
-    
-    let newExpiry;
-    if (isUpgrade && sub.expires_at) {
-        // Prorate remaining days from old tier
-        const oldExpiry = new Date(sub.expires_at);
-        const remainingMs = Math.max(0, oldExpiry - now);
-        const remainingDays = Math.ceil(remainingMs / 86400000);
-        // Add prorated remaining + new period
-        newExpiry = new Date(now.getTime() + (remainingDays + daysToAdd) * 86400000);
-    } else {
-        newExpiry = new Date(now.getTime() + daysToAdd * 86400000);
-    }
-    
-    if (isDowngrade && sub.expires_at && new Date(sub.expires_at) > now) {
-        // Downgrade: schedule for end of current period
-        currentUser.subscription = {
-            ...sub,
-            pending_downgrade: selectedPlan,
-            last_payment: now.toISOString(),
-            amount: amount, total_paid: (sub.total_paid||0) + amount
-        };
-        localStorage.setItem('onto_user', JSON.stringify(currentUser));
-        closeModal('payment-modal');
-        updateBillingUI(); updateDashboardMetrics();
-        showToast('Downgrade scheduled. Current plan active until ' + new Date(sub.expires_at).toLocaleDateString(), 'success');
-        return;
-    }
-    
-    // Upgrade or new subscription: apply immediately
-    currentUser.subscription = {
-        plan: selectedPlan, cycle: selectedCycle,
-        started: sub.started || now.toISOString(), last_payment: now.toISOString(),
-        expires_at: newExpiry.toISOString(),
-        amount: amount, total_paid: (sub.total_paid||0) + amount
-    };
-    currentUser.plan = selectedPlan;
-    localStorage.setItem('onto_user', JSON.stringify(currentUser));
-    closeModal('payment-modal');
-    updateBillingUI(); updateDashboardMetrics();
-    document.getElementById('user-plan').textContent = selectedPlan==='enterprise'?'PROVIDER':(selectedPlan==='business'?'STANDARD':'OPEN');
-    const planLabel = selectedPlan==='enterprise' ? 'AI Provider' : 'Standard';
-    const daysLabel = isAnnual ? '1 year' : '30 days';
-    showToast(`${planLabel} activated — ${daysLabel}`, 'success');
-}
 function contactSales() {
     document.getElementById('contact-modal').classList.add('active');
     // Pre-fill if user logged in
@@ -3225,19 +3314,15 @@ function submitContactForm() {
         return;
     }
     
-    // Simulate sending
-    const btn = document.querySelector('#contact-modal .modal-footer button:last-child');
-    btn.textContent = 'Sending...';
-    btn.disabled = true;
-    
-    setTimeout(() => {
-        closeModal('contact-modal');
-        showToast('Message sent. We\'ll be in touch within 24 hours.', 'success');
-        btn.textContent = 'Send';
-        btn.disabled = false;
-        // Clear form
-        document.getElementById('contact-message').value = '';
-    }, 800);
+    // Send via mailto with pre-filled data
+    const subject = encodeURIComponent(`ONTO Inquiry — ${org || name}`);
+    const body = encodeURIComponent(
+        `Name: ${name}\nOrganization: ${org || '—'}\nEmail: ${email}\n\n${message || 'Interested in ONTO Protocol.'}`
+    );
+    window.open(`mailto:sales@ontostandard.org?subject=${subject}&body=${body}`, '_blank');
+    closeModal('contact-modal');
+    showToast('Email client opened. Send to complete your inquiry.', 'success');
+    document.getElementById('contact-message').value = '';
 }
 
 
@@ -3815,6 +3900,23 @@ document.addEventListener('DOMContentLoaded', () => {
         showAuthScreen();
     }
     
+    // Handle reset_token URL param
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('reset_token')) {
+        showAuthScreen();
+        document.getElementById('login-form').classList.add('hidden');
+        document.getElementById('reset-form').classList.remove('hidden');
+    }
+    
+    // Handle Stripe billing callback
+    if (urlParams.get('billing') === 'success') {
+        window.history.replaceState({}, '', window.location.pathname);
+        setTimeout(() => {
+            showToast('Subscription activated! Refreshing...', 'success');
+            refreshBillingFromBackend();
+        }, 500);
+    }
+    
     checkWelcomeBanner();
     initERM();
     initErmCert();
@@ -4039,7 +4141,7 @@ async function refreshProofStats() {
             const el = document.getElementById('proof-pubkey');
             if (el) el.textContent = (pk.public_key_hex || '').substring(0, 8) + '...';
         }
-        const statsRes = await fetch(`${API_BASE}/v1/admin/stats`, { headers: { 'x-api-key': apiKey } });
+        const statsRes = await fetch(`${API_BASE}/v1/docs/admin/stats`, { headers: { 'x-api-key': apiKey } });
         if (statsRes.ok) {
             const stats = await statsRes.json();
             const totalEl = document.getElementById('proof-total');
