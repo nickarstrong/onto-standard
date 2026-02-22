@@ -1361,7 +1361,13 @@ client = OpenAI(
                         <div style="font-size:13px;font-weight:600;color:var(--text)">Invoice</div>
                         <div style="font-size:11px;color:var(--text-secondary);margin-top:4px" id="invoice-status">No active subscription</div>
                     </div>
-                    <div>
+                    <div style="display:flex;align-items:center;gap:8px">
+                        <select id="invoice-tier-select" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:4px;font-size:12px">
+                            <option value="standard_monthly">Standard — $2,500/mo</option>
+                            <option value="standard">Standard — $30,000/yr</option>
+                            <option value="critical">AI Provider — $250,000/yr</option>
+                            <option value="white_label">White Label — $500,000/yr</option>
+                        </select>
                         <button class="btn-minimal hidden" id="invoice-download" onclick="downloadInvoice()" style="font-size:12px">Download PDF</button>
                         <button class="btn-minimal hidden" id="invoice-register-org" onclick="openCompanyModal()" style="font-size:12px;color:var(--accent)">Register Organization first →</button>
                     </div>
@@ -2815,14 +2821,29 @@ async function downloadInvoice() {
     const client = data.client || {};
     const sub = data.subscription || {};
     
+    // Override tier from dropdown selection
+    const selectedTier = document.getElementById('invoice-tier-select')?.value;
+    if (selectedTier) {
+        const tierMap = {
+            standard_monthly: { layer: 'standard', layer_name: 'Standard', price_annual: 2500, is_monthly: true },
+            standard: { layer: 'standard', layer_name: 'Standard', price_annual: 30000 },
+            critical: { layer: 'critical', layer_name: 'AI Provider', price_annual: 250000 },
+            white_label: { layer: 'white_label', layer_name: 'White-Label', price_annual: 500000 }
+        };
+        const t = tierMap[selectedTier];
+        if (t) { sub.layer = t.layer; sub.layer_name = t.layer_name; sub.price_annual = t.price_annual; sub.is_monthly = t.is_monthly || false; }
+    }
+    
     if (!client.name) { showToast('Register organization first', 'error'); return; }
-    if (sub.layer === 'open') { showToast('No active subscription', 'error'); return; }
     
     const invoiceId = 'INV-' + new Date().getFullYear() + '-' + Date.now().toString(36).toUpperCase();
+    const isMonthly = sub.is_monthly || false;
     const amount = sub.price_annual || 0;
-    const expiresAt = sub.expires_at ? new Date(sub.expires_at) : new Date(Date.now() + 365*86400000);
-    const startedAt = new Date(expiresAt.getTime() - 365*86400000);
+    const periodDays = isMonthly ? 30 : 365;
+    const expiresAt = sub.expires_at ? new Date(sub.expires_at) : new Date(Date.now() + periodDays*86400000);
+    const startedAt = new Date(expiresAt.getTime() - periodDays*86400000);
     const dueDate = new Date(startedAt.getTime() + 30*86400000);
+    const periodLabel = isMonthly ? 'Monthly subscription · 1 month' : 'Annual subscription · 12 months';
     const fmtDate = (d) => d.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
     const fmtMoney = (n) => '$' + n.toLocaleString('en-US', {minimumFractionDigits:2});
     const hash = simpleHash(invoiceId + client.name + sub.layer + amount);
@@ -2928,7 +2949,7 @@ tbody td:last-child{text-align:right;font-weight:600}
     <tbody><tr>
         <td>
             <strong>ONTO Protocol — ${sub.layer_name} License</strong>
-            <div class="item-sub">Annual subscription · 12 months</div>
+            <div class="item-sub">${periodLabel}</div>
         </td>
         <td>${fmtDate(startedAt)} — ${fmtDate(expiresAt)}</td>
         <td>${fmtMoney(amount)}</td>
@@ -3211,7 +3232,11 @@ function updateBillingUI() {
         document.getElementById('btn-free').disabled = true;
         invoiceStatus.textContent = 'No active subscription';
         invoiceStatus.classList.remove('hidden');
-        invoiceDownload.classList.add('hidden');
+        if (currentUser?.company) {
+            invoiceDownload.classList.remove('hidden');
+        } else {
+            invoiceDownload.classList.add('hidden');
+        }
         
         if (subNone) subNone.classList.remove('hidden');
         if (subActive) subActive.classList.add('hidden');
@@ -3229,6 +3254,12 @@ function updateBillingUI() {
             invoiceStatus.classList.add('hidden');
             invoiceDownload.classList.remove('hidden');
             if (invoiceRegOrg) invoiceRegOrg.classList.add('hidden');
+            // Auto-select tier in invoice dropdown
+            const tierSelect = document.getElementById('invoice-tier-select');
+            if (tierSelect) {
+                const planToTier = { business: 'standard', enterprise: 'critical' };
+                tierSelect.value = planToTier[currentUser.plan] || 'standard';
+            }
         } else {
             invoiceStatus.classList.add('hidden');
             invoiceDownload.classList.add('hidden');
