@@ -942,7 +942,7 @@ a.info-val:hover { color: var(--text); }
         <!-- ========== AUDIT PAGE ========== -->
         <div class="page active" id="page-monitor">
 
-            <!-- PLAN STATUS -->
+            <!-- PLAN STATUS (shared) -->
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
                 <div class="dash-card-clean" style="padding:14px 16px;margin-bottom:0">
                     <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Plan</div>
@@ -964,7 +964,7 @@ a.info-val:hover { color: var(--text); }
                 </div>
             </div>
 
-            <!-- API KEY -->
+            <!-- API KEY (shared) -->
             <div class="dash-card-clean" style="margin-bottom:16px">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
                     <div class="card-head">API Key</div>
@@ -978,7 +978,165 @@ a.info-val:hover { color: var(--text); }
                 </div>
             </div>
 
-            <!-- CERTIFICATE -->
+            <!-- ═══════════ PROXY DASHBOARD (Open + Standard) ═══════════ -->
+            <div id="dash-proxy-view">
+                <!-- QUICK TEST — always visible -->
+                <div class="dash-card-clean" style="margin-bottom:16px">
+                    <div class="card-head" style="margin-bottom:4px">Connect your AI</div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Paste your provider key → test GOLD in one click. No code changes needed yet.</div>
+                    <div style="display:flex;gap:8px;margin-bottom:8px">
+                        <select id="test-std-provider" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 8px;font-size:12px;color:var(--text);width:130px">
+                            <option value="anthropic">Anthropic</option>
+                            <option value="openai">OpenAI</option>
+                        </select>
+                        <input type="text" id="test-std-provider-key" placeholder="Provider API key (sk-...)" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--text)">
+                    </div>
+                    <div style="display:flex;gap:8px;align-items:center">
+                        <button class="btn-minimal" onclick="testStandardProxy()" id="test-std-btn" style="font-size:12px;padding:7px 20px;background:var(--accent);color:white;border-color:var(--accent)">Test Connection</button>
+                        <span id="test-std-status" style="font-size:11px;color:var(--text-muted)"></span>
+                    </div>
+                    <div id="test-std-result" class="hidden" style="margin-top:10px;background:#0c0f14;border-radius:6px;padding:10px 12px;font-size:11px;color:#e2e8f0;max-height:200px;overflow-y:auto;white-space:pre-wrap;font-family:'JetBrains Mono',monospace;line-height:1.5"></div>
+                </div>
+
+                <!-- INTEGRATION DETAILS (collapsible) -->
+                <div class="dash-card-clean" style="margin-bottom:16px">
+                    <div onclick="document.getElementById('guide-standard').classList.toggle('hidden');this.querySelector('svg').style.transform=document.getElementById('guide-standard').classList.contains('hidden')?'':'rotate(90deg)'" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer">
+                        <div>
+                            <div class="card-head">Integration guide</div>
+                            <div style="font-size:11px;color:var(--text-muted)">Python, cURL, proof chain — 3 lines of code</div>
+                        </div>
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0"><polyline points="9,18 15,12 9,6"/></svg>
+                    </div>
+                    <div id="guide-standard" class="hidden" style="margin-top:12px">
+                        <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px 16px;margin-bottom:12px">
+                            <div style="font-size:10px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">How it works</div>
+                            <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">
+                                Your app → <span style="color:var(--accent);font-weight:600">ONTO Proxy</span> → AI Provider (OpenAI, Anthropic, etc.)<br>
+                                ONTO injects GOLD discipline layer into every request. Your provider key never stored.
+                            </div>
+                        </div>
+                        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Python (OpenAI-compatible)</div>
+                        <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code><span style="color:var(--text-muted)"># Replace your OpenAI client with:</span>
+client = OpenAI(
+    api_key=<span style="color:#4ade80">"YOUR_ONTO_API_KEY"</span>,
+    base_url=<span style="color:#4ade80">"https://api.ontostandard.org/v1/proxy"</span>,
+    default_headers={
+        <span style="color:#4ade80">"X-Provider-Key"</span>: <span style="color:#4ade80">"sk-...your_openai_key"</span>
+    }
+)</code></pre>
+                        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">cURL</div>
+                        <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code>curl -X POST https://api.ontostandard.org/v1/proxy/chat/completions \
+  -H <span style="color:#4ade80">"x-api-key: YOUR_ONTO_API_KEY"</span> \
+  -H <span style="color:#4ade80">"X-Provider-Key: sk-...your_openai_key"</span> \
+  -H <span style="color:#4ade80">"Content-Type: application/json"</span> \
+  -d <span style="color:#4ade80">'{"model":"gpt-4o","messages":[{"role":"user","content":"Your question"}]}'</span></code></pre>
+                        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">What changes</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+                            <div style="background:#1a1a2e;border-radius:6px;padding:10px 12px">
+                                <div style="font-size:9px;color:#ef4444;font-weight:600;margin-bottom:4px">BEFORE</div>
+                                <code style="font-size:11px;color:#e2e8f0">base_url: api.openai.com</code><br>
+                                <code style="font-size:11px;color:#e2e8f0">api_key: sk-...</code>
+                            </div>
+                            <div style="background:#1a2e1a;border-radius:6px;padding:10px 12px">
+                                <div style="font-size:9px;color:var(--accent);font-weight:600;margin-bottom:4px">AFTER</div>
+                                <code style="font-size:11px;color:#e2e8f0">base_url: api.ontostandard.org</code><br>
+                                <code style="font-size:11px;color:#e2e8f0">api_key: onto_sk_...</code><br>
+                                <code style="font-size:11px;color:#e2e8f0">X-Provider-Key: sk-...</code>
+                            </div>
+                        </div>
+                        <div style="margin-top:4px"><a href="/docs/" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Full API documentation →</a></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════ PROVIDER DASHBOARD (AI Provider + White Label) ═══════════ -->
+            <div id="dash-provider-view" class="hidden">
+                <!-- GOLD STREAM STATUS -->
+                <div class="dash-card-clean" style="margin-bottom:16px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                        <div class="card-head">GOLD Stream</div>
+                        <div id="prov-stream-status" style="font-size:10px;font-weight:600;color:var(--accent)">● CONNECTED</div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:10px">
+                        <div>
+                            <div style="font-size:10px;color:var(--text-muted)">Layer</div>
+                            <div style="font-size:13px;font-weight:600;color:var(--text)" id="prov-gold-layer">TIER4</div>
+                        </div>
+                        <div>
+                            <div style="font-size:10px;color:var(--text-muted)">Cache</div>
+                            <div style="font-size:13px;font-weight:600;color:var(--text)" id="prov-gold-cache">Active</div>
+                        </div>
+                        <div>
+                            <div style="font-size:10px;color:var(--text-muted)">Updated</div>
+                            <div style="font-size:13px;font-weight:600;color:var(--text)" id="prov-gold-age">—</div>
+                        </div>
+                    </div>
+                    <button class="btn-minimal" onclick="testProviderSSE()" id="test-prov-btn" style="font-size:11px">Refresh Status</button>
+                </div>
+
+                <!-- QUICK EVALUATE -->
+                <div class="dash-card-clean" style="margin-bottom:16px">
+                    <div class="card-head" style="margin-bottom:4px">Test Scoring</div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Paste any AI output → get epistemic risk score instantly.</div>
+                    <textarea id="test-eval-output" placeholder="Paste model output here..." style="width:100%;min-height:80px;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);resize:vertical;font-family:inherit;box-sizing:border-box"></textarea>
+                    <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+                        <button class="btn-minimal" onclick="testProviderEval()" id="test-eval-btn" style="font-size:12px;padding:7px 20px;background:var(--accent);color:white;border-color:var(--accent)">Evaluate</button>
+                        <span id="test-prov-status" style="font-size:11px;color:var(--text-muted)"></span>
+                    </div>
+                    <div id="test-prov-result" class="hidden" style="margin-top:10px;background:#0c0f14;border-radius:6px;padding:10px 12px;font-size:11px;color:#e2e8f0;max-height:200px;overflow-y:auto;white-space:pre-wrap;font-family:'JetBrains Mono',monospace;line-height:1.5"></div>
+                </div>
+
+                <!-- INTEGRATION DETAILS (collapsible) -->
+                <div class="dash-card-clean" style="margin-bottom:16px">
+                    <div onclick="document.getElementById('guide-provider').classList.toggle('hidden');this.querySelector('svg').style.transform=document.getElementById('guide-provider').classList.contains('hidden')?'':'rotate(90deg)'" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer">
+                        <div>
+                            <div class="card-head">Integration guide</div>
+                            <div style="font-size:11px;color:var(--text-muted)">SSE stream, scoring API, architecture</div>
+                        </div>
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0"><polyline points="9,18 15,12 9,6"/></svg>
+                    </div>
+                    <div id="guide-provider" class="hidden" style="margin-top:12px">
+                        <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px 16px;margin-bottom:12px">
+                            <div style="font-size:10px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">How it works</div>
+                            <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">
+                                Your server connects to ONTO SSE → receives GOLD corpus → injects into system prompt. ONTO is <span style="color:var(--accent);font-weight:600">not in inference path</span> — zero latency.
+                            </div>
+                        </div>
+                        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Connect to GOLD SSE</div>
+                        <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code>stream = requests.get(
+    <span style="color:#4ade80">"https://api.ontostandard.org/v1/gold/stream"</span>,
+    headers={<span style="color:#4ade80">"x-api-key"</span>: <span style="color:#4ade80">"YOUR_ONTO_KEY"</span>},
+    stream=True
+)
+for line in stream.iter_lines():
+    if line.startswith(b<span style="color:#4ade80">"data: "</span>):
+        gold = json.loads(line[6:])
+        update_system_prompt(gold)</code></pre>
+                        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Submit for scoring</div>
+                        <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code>requests.post(
+    <span style="color:#4ade80">"https://api.ontostandard.org/v1/models/evaluate"</span>,
+    headers={<span style="color:#4ade80">"x-api-key"</span>: <span style="color:#4ade80">"YOUR_ONTO_KEY"</span>},
+    json={
+        <span style="color:#4ade80">"model_id"</span>: your_model_id,
+        <span style="color:#4ade80">"output"</span>: model_output,
+        <span style="color:#4ade80">"context"</span>: user_message,
+        <span style="color:#4ade80">"domain"</span>: <span style="color:#4ade80">"general"</span>
+    }
+)</code></pre>
+                        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Architecture</div>
+                        <div style="background:#0c0f14;border-radius:6px;padding:12px 16px;margin-bottom:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#e2e8f0;line-height:1.8">
+                            ONTO SSE ──→ GOLD corpus (real-time)<br>
+                            &nbsp;&nbsp;&nbsp;↓<br>
+                            <span style="color:var(--accent)">Your Server</span> ──→ Your Model (inference)<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ONTO Scoring ──→ proof chain
+                        </div>
+                        <div style="margin-top:4px"><a href="/docs/" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Full API documentation →</a></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CERTIFICATE (shared) -->
             <div class="dash-card-clean" style="margin-bottom:16px">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
                     <div class="card-head">Certificate</div>
@@ -995,195 +1153,9 @@ a.info-val:hover { color: var(--text); }
                     <a id="dash-verify-link" href="/verify/" target="_blank" class="btn-minimal" style="text-decoration:none;text-align:center;flex:1">Verify ↗</a>
                     <button class="btn-minimal" onclick="ermDownloadCert()" style="flex:1">Download JSON</button>
                 </div>
-                <div style="font-size:10px;color:var(--text-muted);margin-top:8px">Share this hash with regulators, auditors, or clients to verify your AI system is ONTO-certified.</div>
             </div>
 
-            <!-- INTEGRATION: STANDARD -->
-            <div class="dash-card-clean" style="margin-bottom:12px">
-                <div onclick="document.getElementById('guide-standard').classList.toggle('hidden');this.querySelector('svg').style.transform=document.getElementById('guide-standard').classList.contains('hidden')?'':'rotate(90deg)'" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer">
-                    <div>
-                        <div class="card-head">Standard Integration</div>
-                        <div style="font-size:11px;color:var(--text-muted)">Proxy — route requests through ONTO. 3 lines of code.</div>
-                    </div>
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0"><polyline points="9,18 15,12 9,6"/></svg>
-                </div>
-                <div id="guide-standard" class="hidden" style="margin-top:12px">
-                    <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px 16px;margin-bottom:12px">
-                        <div style="font-size:10px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">How it works</div>
-                        <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">
-                            Your app → <span style="color:var(--accent);font-weight:600">ONTO Proxy</span> → AI Provider (OpenAI, Anthropic, etc.)<br>
-                            ONTO injects GOLD discipline layer into every request. Your provider key never stored. Response includes proof chain.
-                        </div>
-                    </div>
-
-                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Step 1 — Python (OpenAI-compatible)</div>
-                    <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code><span style="color:var(--text-muted)"># Replace your OpenAI client with:</span>
-from openai import OpenAI
-
-client = OpenAI(
-    api_key=<span style="color:#4ade80">"YOUR_ONTO_API_KEY"</span>,
-    base_url=<span style="color:#4ade80">"https://api.ontostandard.org/v1/proxy"</span>,
-    default_headers={
-        <span style="color:#4ade80">"X-Provider-Key"</span>: <span style="color:#4ade80">"sk-...your_openai_key"</span>
-    }
-)
-
-<span style="color:var(--text-muted)"># Use exactly as before — GOLD is injected automatically</span>
-response = client.chat.completions.create(
-    model=<span style="color:#4ade80">"gpt-4o"</span>,
-    messages=[{<span style="color:#4ade80">"role"</span>: <span style="color:#4ade80">"user"</span>, <span style="color:#4ade80">"content"</span>: <span style="color:#4ade80">"Your question"</span>}]
-)</code></pre>
-
-                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Step 2 — cURL</div>
-                    <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code>curl -X POST https://api.ontostandard.org/v1/proxy/chat/completions \
-  -H <span style="color:#4ade80">"x-api-key: YOUR_ONTO_API_KEY"</span> \
-  -H <span style="color:#4ade80">"X-Provider-Key: sk-...your_openai_key"</span> \
-  -H <span style="color:#4ade80">"Content-Type: application/json"</span> \
-  -d <span style="color:#4ade80">'{"model":"gpt-4o","messages":[{"role":"user","content":"Your question"}]}'</span></code></pre>
-
-                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Step 3 — Verify proof chain</div>
-                    <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code><span style="color:var(--text-muted)"># Check response headers for proof:</span>
-X-ONTO-Proof-Hash: 5e81aa06742c...
-X-ONTO-Signal-ID: σ(1771774373)
-X-ONTO-Score: 7.2
-
-<span style="color:var(--text-muted)"># Verify at:</span>
-https://ontostandard.org/verify/?hash=5e81aa06742c...</code></pre>
-
-                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">What changes in your code</div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
-                        <div style="background:#1a1a2e;border-radius:6px;padding:10px 12px">
-                            <div style="font-size:9px;color:#ef4444;font-weight:600;margin-bottom:4px">BEFORE</div>
-                            <code style="font-size:11px;color:#e2e8f0">base_url: api.openai.com</code><br>
-                            <code style="font-size:11px;color:#e2e8f0">api_key: sk-...</code>
-                        </div>
-                        <div style="background:#1a2e1a;border-radius:6px;padding:10px 12px">
-                            <div style="font-size:9px;color:var(--accent);font-weight:600;margin-bottom:4px">AFTER</div>
-                            <code style="font-size:11px;color:#e2e8f0">base_url: api.ontostandard.org</code><br>
-                            <code style="font-size:11px;color:#e2e8f0">api_key: onto_sk_...</code><br>
-                            <code style="font-size:11px;color:#e2e8f0">X-Provider-Key: sk-...</code>
-                        </div>
-                    </div>
-
-                    <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:11px;color:var(--text-secondary);line-height:1.5">
-                        <span style="color:var(--accent);font-weight:600">Includes:</span> 1,000 proxy requests/day · GOLD Extended Corpus · Ed25519 proof chain · Scoring API · Public verification badge
-                    </div>
-
-                    <div style="margin-top:12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px 16px">
-                        <div style="font-size:10px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Test Connection</div>
-                        <div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px">Paste your AI provider key to send a test request through ONTO proxy.</div>
-                        <div style="display:flex;gap:8px;margin-bottom:8px">
-                            <select id="test-std-provider" style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:11px;color:var(--text);width:120px">
-                                <option value="anthropic">Anthropic</option>
-                                <option value="openai">OpenAI</option>
-                            </select>
-                            <input type="password" id="test-std-provider-key" placeholder="Provider API key (sk-...)" style="flex:1;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:6px 10px;font-size:11px;color:var(--text)">
-                        </div>
-                        <div style="display:flex;gap:8px;align-items:center">
-                            <button class="btn-minimal" onclick="testStandardProxy()" id="test-std-btn" style="font-size:11px;background:var(--accent);color:white;border-color:var(--accent)">Run Test</button>
-                            <span id="test-std-status" style="font-size:11px;color:var(--text-muted)"></span>
-                        </div>
-                        <div id="test-std-result" class="hidden" style="margin-top:8px;background:#0c0f14;border-radius:6px;padding:10px 12px;font-size:11px;color:#e2e8f0;max-height:200px;overflow-y:auto;white-space:pre-wrap;font-family:'JetBrains Mono',monospace;line-height:1.5"></div>
-                    </div>
-
-                    <div style="margin-top:8px"><a href="/docs/" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Full API documentation →</a></div>
-                </div>
-            </div>
-
-            <!-- INTEGRATION: AI PROVIDER -->
-            <div class="dash-card-clean" style="margin-bottom:16px">
-                <div onclick="document.getElementById('guide-provider').classList.toggle('hidden');this.querySelector('svg').style.transform=document.getElementById('guide-provider').classList.contains('hidden')?'':'rotate(90deg)'" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer">
-                    <div>
-                        <div class="card-head">AI Provider Integration</div>
-                        <div style="font-size:11px;color:var(--text-muted)">SSE — direct GOLD injection into your inference pipeline.</div>
-                    </div>
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0"><polyline points="9,18 15,12 9,6"/></svg>
-                </div>
-                <div id="guide-provider" class="hidden" style="margin-top:12px">
-                    <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px 16px;margin-bottom:12px">
-                        <div style="font-size:10px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">How it works</div>
-                        <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">
-                            Your inference server connects to ONTO SSE stream → receives full GOLD corpus in real-time → injects into system prompt before inference. ONTO is <span style="color:var(--accent);font-weight:600">not in the inference path</span> — zero latency impact.
-                        </div>
-                    </div>
-
-                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Step 1 — Connect to GOLD SSE stream</div>
-                    <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code><span style="color:var(--text-muted)"># Python — subscribe to GOLD corpus stream</span>
-import requests
-
-stream = requests.get(
-    <span style="color:#4ade80">"https://api.ontostandard.org/v1/gold/stream"</span>,
-    headers={<span style="color:#4ade80">"x-api-key"</span>: <span style="color:#4ade80">"YOUR_ONTO_API_KEY"</span>},
-    stream=True
-)
-
-<span style="color:var(--text-muted)"># GOLD corpus delivered as SSE events</span>
-for line in stream.iter_lines():
-    if line.startswith(b<span style="color:#4ade80">"data: "</span>):
-        gold_payload = json.loads(line[6:])
-        <span style="color:var(--text-muted)"># gold_payload contains full discipline layer</span>
-        update_system_prompt(gold_payload)</code></pre>
-
-                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Step 2 — Inject into inference pipeline</div>
-                    <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code><span style="color:var(--text-muted)"># Inject GOLD as system prompt prefix</span>
-def handle_inference(user_message, gold_corpus):
-    messages = [
-        {<span style="color:#4ade80">"role"</span>: <span style="color:#4ade80">"system"</span>, <span style="color:#4ade80">"content"</span>: gold_corpus[<span style="color:#4ade80">"discipline_layer"</span>]},
-        {<span style="color:#4ade80">"role"</span>: <span style="color:#4ade80">"user"</span>, <span style="color:#4ade80">"content"</span>: user_message}
-    ]
-    response = your_model.generate(messages)
-    return response</code></pre>
-
-                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Step 3 — Report scores for proof chain</div>
-                    <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code><span style="color:var(--text-muted)"># After inference, submit for scoring + proof</span>
-requests.post(
-    <span style="color:#4ade80">"https://api.ontostandard.org/v1/models/evaluate"</span>,
-    headers={<span style="color:#4ade80">"x-api-key"</span>: <span style="color:#4ade80">"YOUR_ONTO_API_KEY"</span>},
-    json={
-        <span style="color:#4ade80">"model_id"</span>: your_model_id,
-        <span style="color:#4ade80">"output"</span>: model_output,
-        <span style="color:#4ade80">"context"</span>: user_message,
-        <span style="color:#4ade80">"domain"</span>: <span style="color:#4ade80">"general"</span>
-    }
-)
-<span style="color:var(--text-muted)"># Returns: risk_score, compliance, evaluation_id, proof</span></code></pre>
-
-                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Architecture</div>
-                    <div style="background:#0c0f14;border-radius:6px;padding:14px 16px;margin-bottom:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#e2e8f0;line-height:1.8">
-                        <span style="color:var(--text-muted)">┌──────────────┐</span><br>
-                        <span style="color:var(--text-muted)">│</span> ONTO SSE     <span style="color:var(--text-muted)">│──→ GOLD corpus (real-time updates)</span><br>
-                        <span style="color:var(--text-muted)">└──────┬───────┘</span><br>
-                        <span style="color:var(--text-muted)">       ↓</span><br>
-                        <span style="color:var(--text-muted)">┌──────────────┐     ┌──────────────┐</span><br>
-                        <span style="color:var(--text-muted)">│</span> <span style="color:var(--accent)">Your Server</span>  <span style="color:var(--text-muted)">│────→│</span> Your Model   <span style="color:var(--text-muted)">│</span><br>
-                        <span style="color:var(--text-muted)">│</span> inject GOLD  <span style="color:var(--text-muted)">│     │</span> inference    <span style="color:var(--text-muted)">│</span><br>
-                        <span style="color:var(--text-muted)">└──────────────┘     └──────┬───────┘</span><br>
-                        <span style="color:var(--text-muted)">                            ↓</span><br>
-                        <span style="color:var(--text-muted)">                     ┌──────────────┐</span><br>
-                        <span style="color:var(--text-muted)">                     │</span> ONTO Scoring <span style="color:var(--text-muted)">│──→ proof chain</span><br>
-                        <span style="color:var(--text-muted)">                     └──────────────┘</span>
-                    </div>
-
-                    <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:11px;color:var(--text-secondary);line-height:1.5">
-                        <span style="color:var(--accent);font-weight:600">Includes:</span> GOLD Full Corpus via SSE · Unlimited scoring API · All production models · Ed25519 proof chain · Full audit trail · Priority 24/7 support
-                    </div>
-
-                    <div style="margin-top:12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px 16px">
-                        <div style="font-size:10px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Test Connection</div>
-                        <div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px">Test GOLD stream and scoring endpoint with your API key.</div>
-                        <div style="display:flex;gap:8px;align-items:center">
-                            <button class="btn-minimal" onclick="testProviderSSE()" id="test-prov-btn" style="font-size:11px;background:var(--accent);color:white;border-color:var(--accent)">Test GOLD Stream</button>
-                            <button class="btn-minimal" onclick="testProviderEval()" id="test-eval-btn" style="font-size:11px">Test Scoring API</button>
-                            <span id="test-prov-status" style="font-size:11px;color:var(--text-muted)"></span>
-                        </div>
-                        <div id="test-prov-result" class="hidden" style="margin-top:8px;background:#0c0f14;border-radius:6px;padding:10px 12px;font-size:11px;color:#e2e8f0;max-height:200px;overflow-y:auto;white-space:pre-wrap;font-family:'JetBrains Mono',monospace;line-height:1.5"></div>
-                    </div>
-
-                    <div style="margin-top:8px"><a href="/docs/" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Full API documentation →</a></div>
-                </div>
-            </div>
-
-            <!-- SIGNAL -->
+            <!-- SIGNAL (shared) -->
             <div class="signal-panel" id="user-signal-panel" style="padding:14px 18px">
                 <div class="signal-panel-grid"></div>
                 <div style="position:relative;z-index:1">
@@ -2712,6 +2684,23 @@ function showDashboard() {
         updateDashboardMetrics();
         resetSessionTimer();
         
+        // Switch dashboard view based on tier
+        const proxyView = document.getElementById('dash-proxy-view');
+        const providerView = document.getElementById('dash-provider-view');
+        if (proxyView && providerView) {
+            const isProvider = currentUser.plan === 'enterprise';
+            proxyView.classList.toggle('hidden', isProvider);
+            providerView.classList.toggle('hidden', !isProvider);
+            // Auto-load provider status
+            if (isProvider) { setTimeout(testProviderSSE, 500); }
+            // Restore saved provider key
+            const savedPK = localStorage.getItem('onto_provider_key');
+            if (savedPK) {
+                const pkInput = document.getElementById('test-std-provider-key');
+                if (pkInput) pkInput.value = savedPK;
+            }
+        }
+        
         // Init dashboard components
         const realApiKey = localStorage.getItem('onto_first_api_key');
         if (realApiKey) {
@@ -2956,6 +2945,7 @@ function openCompanyModal() {
 async function testStandardProxy() {
     const providerKey = document.getElementById('test-std-provider-key').value.trim();
     if (!providerKey) { showToast('Enter your provider API key', 'error'); return; }
+    localStorage.setItem('onto_provider_key', providerKey);
     
     const apiKey = localStorage.getItem('onto_first_api_key');
     if (!apiKey) { showToast('Please sign in first', 'error'); return; }
@@ -3038,38 +3028,42 @@ async function testProviderSSE() {
     if (!apiKey) { showToast('Please sign in first', 'error'); return; }
     
     const btn = document.getElementById('test-prov-btn');
-    const status = document.getElementById('test-prov-status');
-    const result = document.getElementById('test-prov-result');
     
     btn.disabled = true;
-    btn.textContent = 'Testing...';
-    status.textContent = 'Connecting to GOLD stream...';
-    result.classList.add('hidden');
+    btn.textContent = 'Checking...';
     
     try {
         const res = await fetch(`${API_BASE}/v1/proxy/status`, { headers: { 'x-api-key': apiKey } });
         const data = await res.json();
         
-        if (res.ok) {
-            status.innerHTML = `<span style="color:var(--accent)">✓ GOLD Stream Connected</span> · Layer: ${data.gold_layer || '?'} · Status: ${data.gold_status || '?'}`;
-            result.textContent = JSON.stringify(data, null, 2);
-            result.classList.remove('hidden');
+        const streamStatus = document.getElementById('prov-stream-status');
+        const layerEl = document.getElementById('prov-gold-layer');
+        const cacheEl = document.getElementById('prov-gold-cache');
+        const ageEl = document.getElementById('prov-gold-age');
+        
+        if (res.ok && data.gold_available) {
+            if (streamStatus) streamStatus.innerHTML = '<span style="color:var(--accent)">● CONNECTED</span>';
+            if (layerEl) layerEl.textContent = data.gold_tier?.replace('GOLD_','').replace('.md','') || '?';
+            if (cacheEl) cacheEl.textContent = data.gold_cached ? 'Active' : 'Loading';
+            if (ageEl) ageEl.textContent = data.gold_cache_age_seconds ? data.gold_cache_age_seconds + 's ago' : '—';
         } else {
-            status.textContent = `✗ Error: ${data.detail || res.status}`;
-            status.style.color = '#ef4444';
+            if (streamStatus) streamStatus.innerHTML = '<span style="color:#ef4444">● DISCONNECTED</span>';
         }
     } catch (e) {
-        status.textContent = `✗ ${e.message}`;
-        status.style.color = '#ef4444';
+        const streamStatus = document.getElementById('prov-stream-status');
+        if (streamStatus) streamStatus.innerHTML = '<span style="color:#ef4444">● ERROR</span>';
     }
     
     btn.disabled = false;
-    btn.textContent = 'Test GOLD Stream';
+    btn.textContent = 'Refresh Status';
 }
 
 async function testProviderEval() {
     const apiKey = localStorage.getItem('onto_first_api_key');
     if (!apiKey) { showToast('Please sign in first', 'error'); return; }
+    
+    const evalText = document.getElementById('test-eval-output')?.value?.trim();
+    if (!evalText) { showToast('Paste model output to evaluate', 'error'); return; }
     
     const btn = document.getElementById('test-eval-btn');
     const status = document.getElementById('test-prov-status');
@@ -3086,7 +3080,7 @@ async function testProviderEval() {
             headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
             body: JSON.stringify({
                 model_id: 'test-probe',
-                output: 'The boiling point of water is 100°C (212°F) at standard atmospheric pressure. Source: NIST. Confidence: 99%.',
+                output: evalText,
                 context: 'What is the boiling point of water?',
                 domain: 'general',
                 confidence: 0.99
