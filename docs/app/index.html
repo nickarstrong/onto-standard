@@ -3805,25 +3805,26 @@ async function loadOrgFromAPI() {
             currentUser.subscription.expires_at = data.tier_expires;
         }
         
-        // Restore company from profile_data
+        // Restore company from profile_data (merge with existing, don't overwrite)
         if (data.profile) {
             const p = data.profile;
-            if (p.company || p.company_name || data.name) {
+            const existing = currentUser.company || {};
+            if (p.company || p.company_name || data.name || existing.name) {
                 currentUser.company = {
-                    name: p.company || p.company_name || data.name || '',
-                    type: p.company_type || '',
-                    industry: p.industry || '',
-                    reg: p.company_reg || p.registration_number || '',
-                    vat: p.company_vat || '',
-                    address: p.address || '',
-                    city: p.city || '',
-                    state: p.state || '',
-                    postal: p.postal || p.zip_code || '',
-                    country: p.country || '',
-                    email: p.billing_email || p.email || '',
-                    phone: p.phone || '',
-                    signatory: p.signatory_name || p.contact_name || '',
-                    signatoryTitle: p.signatory_title || ''
+                    name: p.company || p.company_name || data.name || existing.name || '',
+                    type: p.company_type || existing.type || '',
+                    industry: p.industry || existing.industry || '',
+                    reg: p.company_reg || p.registration_number || existing.reg || '',
+                    vat: p.company_vat || existing.vat || '',
+                    address: p.address || existing.address || '',
+                    city: p.city || existing.city || '',
+                    state: p.state || existing.state || '',
+                    postal: p.postal || p.zip_code || existing.postal || '',
+                    country: p.country || existing.country || '',
+                    email: p.billing_email || p.email || existing.email || '',
+                    phone: p.phone || existing.phone || '',
+                    signatory: p.signatory_name || p.contact_name || existing.signatory || '',
+                    signatoryTitle: p.signatory_title || existing.signatoryTitle || ''
                 };
                 currentUser.can_invoice = true;
                 localStorage.setItem('onto_user', JSON.stringify(currentUser));
