@@ -2749,13 +2749,16 @@ function showDashboard() {
         
         // Init dashboard components
         const realApiKey = localStorage.getItem('onto_first_api_key');
-        if (realApiKey) {
-            document.getElementById('api-key-display').value = realApiKey;
-            const dashApiKey = document.getElementById('dash-api-key');
-            if (dashApiKey) dashApiKey.value = realApiKey;
-            const connectKey = document.getElementById('connect-api-key-display');
-            if (connectKey) connectKey.value = realApiKey;
+        function populateApiKeys() {
+            const k = localStorage.getItem('onto_first_api_key');
+            if (!k) return;
+            const els = ['api-key-display', 'dash-api-key', 'connect-api-key-display'];
+            els.forEach(id => { const el = document.getElementById(id); if (el) el.value = k; });
         }
+        populateApiKeys();
+        // Retry after view switch completes
+        setTimeout(populateApiKeys, 300);
+        setTimeout(populateApiKeys, 1000);
         loadUserSignal();
         loadOrgFromAPI();
         loadRealCertHash();
