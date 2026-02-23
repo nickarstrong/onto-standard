@@ -978,8 +978,8 @@ a.info-val:hover { color: var(--text); }
                 </div>
             </div>
 
-            <!-- ═══════════ PROXY DASHBOARD (Open + Standard) ═══════════ -->
-            <div id="dash-proxy-view">
+            <!-- ═══════════ SHARED DASHBOARD (all tiers) ═══════════ -->
+
                 <!-- USAGE METRICS -->
                 <div class="dash-card-clean" style="margin-bottom:16px">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
@@ -1009,81 +1009,8 @@ a.info-val:hover { color: var(--text); }
                     </div>
                 </div>
 
-                <!-- QUICK TEST — always visible -->
-                <div class="dash-card-clean" style="margin-bottom:16px">
-                    <div class="card-head" style="margin-bottom:4px">Connect your AI</div>
-                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Paste your provider key → test GOLD in one click. No code changes needed yet.</div>
-                    <div style="display:flex;gap:8px;margin-bottom:8px">
-                        <select id="test-std-provider" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 8px;font-size:12px;color:var(--text);width:130px">
-                            <option value="anthropic">Anthropic</option>
-                            <option value="openai">OpenAI</option>
-                            <option value="deepseek">DeepSeek</option>
-                            <option value="mistral">Mistral</option>
-                        </select>
-                        <input type="text" id="test-std-provider-key" placeholder="Provider API key (sk-...)" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--text)">
-                    </div>
-                    <div style="display:flex;gap:8px;align-items:center">
-                        <button class="btn-minimal" onclick="testStandardProxy()" id="test-std-btn" style="font-size:12px;padding:7px 20px;background:var(--accent);color:white;border-color:var(--accent)">Test Connection</button>
-                        <span id="test-std-status" style="font-size:11px;color:var(--text-muted)"></span>
-                    </div>
-                    <div id="test-std-result" class="hidden" style="margin-top:10px;background:#0c0f14;border-radius:6px;padding:10px 12px;font-size:11px;color:#e2e8f0;max-height:200px;overflow-y:auto;white-space:pre-wrap;font-family:'JetBrains Mono',monospace;line-height:1.5"></div>
-                </div>
-
-                <!-- INTEGRATION DETAILS (collapsible) -->
-                <div class="dash-card-clean" style="margin-bottom:16px">
-                    <div onclick="document.getElementById('guide-standard').classList.toggle('hidden');this.querySelector('svg').style.transform=document.getElementById('guide-standard').classList.contains('hidden')?'':'rotate(90deg)'" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer">
-                        <div>
-                            <div class="card-head">Integration guide</div>
-                            <div style="font-size:11px;color:var(--text-muted)">Python, cURL, proof chain — 3 lines of code</div>
-                        </div>
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0"><polyline points="9,18 15,12 9,6"/></svg>
-                    </div>
-                    <div id="guide-standard" class="hidden" style="margin-top:12px">
-                        <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px 16px;margin-bottom:12px">
-                            <div style="font-size:10px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">How it works</div>
-                            <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">
-                                Your app → <span style="color:var(--accent);font-weight:600">ONTO Proxy</span> → AI Provider (OpenAI, Anthropic, etc.)<br>
-                                ONTO injects GOLD discipline layer into every request. Your provider key never stored.
-                            </div>
-                        </div>
-                        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Python (OpenAI-compatible)</div>
-                        <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code><span style="color:var(--text-muted)"># Replace your OpenAI client with:</span>
-client = OpenAI(
-    api_key=<span style="color:#4ade80">"YOUR_ONTO_API_KEY"</span>,
-    base_url=<span style="color:#4ade80">"https://api.ontostandard.org/v1/proxy"</span>,
-    default_headers={
-        <span style="color:#4ade80">"X-Provider-Key"</span>: <span style="color:#4ade80">"sk-...your_openai_key"</span>
-    }
-)</code></pre>
-                        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">cURL</div>
-                        <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code>curl -X POST https://api.ontostandard.org/v1/proxy/chat/completions \
-  -H <span style="color:#4ade80">"x-api-key: YOUR_ONTO_API_KEY"</span> \
-  -H <span style="color:#4ade80">"X-Provider-Key: sk-...your_openai_key"</span> \
-  -H <span style="color:#4ade80">"Content-Type: application/json"</span> \
-  -d <span style="color:#4ade80">'{"model":"gpt-4o","messages":[{"role":"user","content":"Your question"}]}'</span></code></pre>
-                        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">What changes</div>
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
-                            <div style="background:#1a1a2e;border-radius:6px;padding:10px 12px">
-                                <div style="font-size:9px;color:#ef4444;font-weight:600;margin-bottom:4px">BEFORE</div>
-                                <code style="font-size:11px;color:#e2e8f0">base_url: api.openai.com</code><br>
-                                <code style="font-size:11px;color:#e2e8f0">api_key: sk-...</code>
-                            </div>
-                            <div style="background:#1a2e1a;border-radius:6px;padding:10px 12px">
-                                <div style="font-size:9px;color:var(--accent);font-weight:600;margin-bottom:4px">AFTER</div>
-                                <code style="font-size:11px;color:#e2e8f0">base_url: api.ontostandard.org</code><br>
-                                <code style="font-size:11px;color:#e2e8f0">api_key: onto_sk_...</code><br>
-                                <code style="font-size:11px;color:#e2e8f0">X-Provider-Key: sk-...</code>
-                            </div>
-                        </div>
-                        <div style="margin-top:4px"><a href="/docs/" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Full API documentation →</a></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ═══════════ PROVIDER DASHBOARD (AI Provider + White Label) ═══════════ -->
+            <!-- ═══════════ PROVIDER-ONLY: Models ═══════════ -->
             <div id="dash-provider-view" class="hidden">
-
-                <!-- ═══════════ PROVIDER DASHBOARD ═══════════ -->
 
                 <!-- MODELS: register + manage -->
                 <div class="dash-card-clean" style="margin-bottom:16px">
@@ -1121,19 +1048,38 @@ client = OpenAI(
                     </div>
                     <div id="add-model-row" class="hidden"></div>
                 </div>
+            </div>
 
-                <!-- QUICK TEST -->
+            <!-- ═══════════ SHARED: Quick Test ═══════════ -->
+
+                <!-- QUICK TEST — provider: per-model, standard: direct proxy -->
                 <div class="dash-card-clean" style="margin-bottom:16px">
                     <details>
                         <summary style="font-size:13px;font-weight:600;color:var(--text);cursor:pointer">Quick test — send a query through GOLD</summary>
                         <div style="margin-top:10px">
-                            <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">Select a registered model and ask a question. ONTO sends it through your model's API with GOLD injection.</div>
-                            <select id="test-model-select" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:11px;color:var(--text);margin-bottom:8px;width:100%">
-                                <option value="">Select model...</option>
-                            </select>
-                            <input type="text" id="prov-question" placeholder="Ask anything..." value="What is the boiling point of water?" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box;margin-bottom:8px" onkeydown="if(event.key==='Enter')runModelTest()">
-                            <button class="btn-minimal" onclick="runModelTest()" id="live-test-btn" style="font-size:12px;padding:8px 20px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Send</button>
-                            <span id="live-test-status" style="font-size:11px;color:var(--text-muted);margin-left:10px"></span>
+                            <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">Test GOLD injection via proxy. <span id="test-demo-note" class="hidden" style="color:#f59e0b">AI Provider: proxy is demo only (50/day). Production delivery via SSE.</span></div>
+                            <!-- Provider: model select -->
+                            <div id="test-model-row" class="hidden" style="margin-bottom:8px">
+                                <select id="test-model-select" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:11px;color:var(--text);width:100%">
+                                    <option value="">Select model...</option>
+                                </select>
+                            </div>
+                            <!-- Standard: provider + key -->
+                            <div id="test-std-row" style="display:flex;gap:8px;margin-bottom:8px">
+                                <select id="test-std-provider" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 8px;font-size:12px;color:var(--text);width:130px">
+                                    <option value="anthropic">Anthropic</option>
+                                    <option value="openai">OpenAI</option>
+                                    <option value="deepseek">DeepSeek</option>
+                                    <option value="mistral">Mistral</option>
+                                </select>
+                                <input type="text" id="test-std-provider-key" placeholder="Provider API key (sk-...)" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--text)">
+                            </div>
+                            <input type="text" id="prov-question" placeholder="Ask anything..." value="What is the boiling point of water?" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box;margin-bottom:8px" onkeydown="if(event.key==='Enter')runQuickTest()">
+                            <div style="display:flex;gap:8px;align-items:center">
+                                <button class="btn-minimal" onclick="runQuickTest()" id="live-test-btn" style="font-size:12px;padding:8px 20px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Send</button>
+                                <span id="live-test-status" style="font-size:11px;color:var(--text-muted)"></span>
+                                <span id="test-std-status" style="font-size:11px;color:var(--text-muted)"></span>
+                            </div>
                             <div id="live-test-result" class="hidden" style="margin-top:10px">
                                 <div style="display:flex;align-items:center;gap:16px;margin-bottom:8px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:6px">
                                     <div><div style="font-size:9px;color:var(--text-muted)">SCORE</div><div id="live-score" style="font-size:22px;font-weight:800;color:var(--accent)">—</div></div>
@@ -1144,19 +1090,43 @@ client = OpenAI(
                                 <div id="live-response" style="background:#0c0f14;border-radius:6px;padding:10px 12px;font-size:11px;color:#e2e8f0;line-height:1.6;max-height:200px;overflow-y:auto;white-space:pre-wrap"></div>
                                 <div id="live-markers" style="margin-top:6px;font-size:10px;color:var(--text-muted)"></div>
                             </div>
+                            <div id="test-std-result" class="hidden" style="margin-top:10px;background:#0c0f14;border-radius:6px;padding:10px 12px;font-size:11px;color:#e2e8f0;max-height:200px;overflow-y:auto;white-space:pre-wrap;font-family:'JetBrains Mono',monospace;line-height:1.5"></div>
                         </div>
                     </details>
                 </div>
 
-                <!-- INTEGRATION CODE -->
+            <!-- ═══════════ SHARED: Integration Guide ═══════════ -->
+
                 <div class="dash-card-clean" style="margin-bottom:16px">
                     <details onclick="fillIntegrationCode()">
-                        <summary style="font-size:13px;font-weight:600;color:var(--text);cursor:pointer">Integration code</summary>
-                        <div style="font-size:11px;color:var(--text-muted);margin:8px 0">Copy this into your server. Your ONTO API key is pre-filled.</div>
+                        <summary style="font-size:13px;font-weight:600;color:var(--text);cursor:pointer">Integration guide</summary>
+                        <div style="font-size:11px;color:var(--text-muted);margin:8px 0">Python, cURL, proof chain — 3 lines of code. Your ONTO API key is pre-filled.</div>
+                        <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px 16px;margin-bottom:12px">
+                            <div style="font-size:10px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">How it works</div>
+                            <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">
+                                Your app → <span style="color:var(--accent);font-weight:600">ONTO Proxy</span> → AI Provider (OpenAI, Anthropic, etc.)<br>
+                                ONTO injects GOLD discipline layer into every request. Your provider key never stored.
+                            </div>
+                        </div>
+                        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Python (OpenAI-compatible)</div>
                         <div style="position:relative">
                             <button onclick="event.stopPropagation();navigator.clipboard.writeText(document.getElementById('full-integration-code').textContent);showToast('Copied','success')" style="position:absolute;top:8px;right:8px;background:var(--border);border:none;color:var(--text);padding:4px 10px;border-radius:4px;font-size:10px;cursor:pointer;z-index:1">Copy</button>
-                            <pre id="full-integration-code" style="background:#0c0f14;color:#e2e8f0;padding:14px;border-radius:6px;font-size:11px;overflow-x:auto;line-height:1.5;white-space:pre-wrap">Loading...</pre>
+                            <pre id="full-integration-code" style="background:#0c0f14;color:#e2e8f0;padding:14px;border-radius:6px;font-size:11px;overflow-x:auto;line-height:1.5;white-space:pre-wrap"><code><span style="color:var(--text-muted)"># Replace your OpenAI client with:</span>
+client = OpenAI(
+    api_key=<span style="color:#4ade80">"YOUR_ONTO_API_KEY"</span>,
+    base_url=<span style="color:#4ade80">"https://api.ontostandard.org/v1/proxy"</span>,
+    default_headers={
+        <span style="color:#4ade80">"X-Provider-Key"</span>: <span style="color:#4ade80">"sk-...your_openai_key"</span>
+    }
+)</code></pre>
                         </div>
+                        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 6px">cURL</div>
+                        <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code>curl -X POST https://api.ontostandard.org/v1/proxy/chat/completions \
+  -H <span style="color:#4ade80">"x-api-key: YOUR_ONTO_API_KEY"</span> \
+  -H <span style="color:#4ade80">"X-Provider-Key: sk-...your_openai_key"</span> \
+  -H <span style="color:#4ade80">"Content-Type: application/json"</span> \
+  -d <span style="color:#4ade80">'{"model":"gpt-4o","messages":[{"role":"user","content":"Your question"}]}'</span></code></pre>
+                        <div style="margin-top:4px"><a href="/docs/" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Full API documentation →</a></div>
                     </details>
                 </div>
 
@@ -1176,7 +1146,6 @@ client = OpenAI(
                     <div id="dash-cert-status"></div>
                     <a id="dash-verify-link" href="#"></a>
                 </div>
-            </div>
 
 
 
@@ -2726,20 +2695,24 @@ function showDashboard() {
         resetSessionTimer();
         
         // Switch dashboard view based on tier
-        const proxyView = document.getElementById('dash-proxy-view');
         const providerView = document.getElementById('dash-provider-view');
-        if (proxyView && providerView) {
+        if (providerView) {
             const isProvider = currentUser.plan === 'enterprise';
-            proxyView.classList.toggle('hidden', isProvider);
             providerView.classList.toggle('hidden', !isProvider);
-            // Auto-load provider status
+            // Show/hide test input mode
+            const modelRow = document.getElementById('test-model-row');
+            const stdRow = document.getElementById('test-std-row');
+            const demoNote = document.getElementById('test-demo-note');
+            if (modelRow) modelRow.classList.toggle('hidden', !isProvider);
+            if (stdRow) stdRow.style.display = isProvider ? 'none' : 'flex';
+            if (demoNote) demoNote.classList.toggle('hidden', !isProvider);
+            // Auto-load
             if (isProvider) { 
                 setTimeout(loadModels, 500);
-                // Fill integration code with real ONTO key
                 fillIntegrationCode();
-            } else {
-                setTimeout(loadProxyUsage, 300);
             }
+            // Always load usage
+            setTimeout(loadProxyUsage, 300);
             // Restore saved provider key
             const savedPK = localStorage.getItem('onto_provider_key');
             if (savedPK) {
@@ -3021,21 +2994,38 @@ async function loadProxyUsage() {
         });
         if (!res.ok) return;
         const d = await res.json();
-        const used = d.usage_today || 0;
-        const limit = d.daily_limit || 0;
-        const remaining = limit < 0 ? '∞' : Math.max(limit - used, 0);
-        const limitDisplay = limit < 0 ? '∞' : limit;
-        const pct = limit > 0 ? Math.min((used / limit) * 100, 100) : 0;
+        const isProvider = d.layer === 'critical' || d.layer === 'enterprise' || d.layer === 'white_label';
 
-        document.getElementById('proxy-used-today').textContent = used;
-        document.getElementById('proxy-daily-limit').textContent = limitDisplay;
-        document.getElementById('proxy-remaining').textContent = remaining;
-        document.getElementById('proxy-usage-bar').style.width = pct + '%';
-        if (pct > 80) document.getElementById('proxy-usage-bar').style.background = '#ef4444';
-        else if (pct > 50) document.getElementById('proxy-usage-bar').style.background = '#f59e0b';
+        if (isProvider) {
+            // Provider: show SSE delivery mode
+            document.getElementById('proxy-used-today').textContent = 'SSE';
+            document.getElementById('proxy-daily-limit').textContent = '∞';
+            document.getElementById('proxy-remaining').textContent = '50';
+            document.querySelector('#proxy-used-today + div').textContent = 'Delivery';
+            document.querySelector('#proxy-daily-limit + div').textContent = 'Production';
+            document.querySelector('#proxy-remaining + div').textContent = 'Proxy (test)';
+            document.getElementById('proxy-usage-bar').style.width = '0%';
+            document.getElementById('proxy-tier-label').textContent = 'AI PROVIDER tier · Production via SSE';
+            document.getElementById('proxy-resets').textContent = 'Proxy limited to 50/day (demo only)';
+        } else {
+            // Standard/Open: show proxy usage
+            const used = d.usage_today || 0;
+            const limit = d.daily_limit || 0;
+            const remaining = limit < 0 ? '∞' : Math.max(limit - used, 0);
+            const limitDisplay = limit < 0 ? '∞' : limit;
+            const pct = limit > 0 ? Math.min((used / limit) * 100, 100) : 0;
 
-        const tierMap = { open: 'OPEN', business: 'STANDARD', standard: 'STANDARD', enterprise: 'PROVIDER', white_label: 'WHITE-LABEL' };
-        document.getElementById('proxy-tier-label').textContent = (tierMap[d.layer] || d.layer || '').toUpperCase() + ' tier';
+            document.getElementById('proxy-used-today').textContent = used;
+            document.getElementById('proxy-daily-limit').textContent = limitDisplay;
+            document.getElementById('proxy-remaining').textContent = remaining;
+            document.getElementById('proxy-usage-bar').style.width = pct + '%';
+            if (pct > 80) document.getElementById('proxy-usage-bar').style.background = '#ef4444';
+            else if (pct > 50) document.getElementById('proxy-usage-bar').style.background = '#f59e0b';
+
+            const tierMap = { open: 'OPEN', business: 'STANDARD', standard: 'STANDARD' };
+            document.getElementById('proxy-tier-label').textContent = (tierMap[d.layer] || d.layer || '').toUpperCase() + ' tier';
+            document.getElementById('proxy-resets').textContent = 'Resets at midnight UTC';
+        }
 
         const badge = document.getElementById('proxy-gold-badge');
         if (d.gold_available) {
@@ -3048,6 +3038,16 @@ async function loadProxyUsage() {
             badge.style.color = '#ef4444';
         }
     } catch(e) { /* silent */ }
+}
+
+async function runQuickTest() {
+    // Provider mode: use registered model
+    const modelSelect = document.getElementById('test-model-select');
+    if (modelSelect && modelSelect.value) {
+        return runModelTest();
+    }
+    // Standard mode: use direct proxy with provider key
+    return testStandardProxy();
 }
 
 async function testStandardProxy() {
