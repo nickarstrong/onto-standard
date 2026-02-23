@@ -4517,7 +4517,6 @@ function ermSuspendCert() {
     });
     const panel = document.getElementById('user-signal-panel');
     if (panel) { panel.style.borderColor = 'rgba(220,38,38,0.3)'; panel.style.background = 'linear-gradient(135deg, #1a0a0a 0%, #180d0d 50%, #1a0a0a 100%)'; }
-    showToast('Certificate SUSPENDED — proxy disconnected', 'error');
 }
 
 function ermRestoreCert() {
@@ -4707,6 +4706,52 @@ async function loadRealCertHash() {
     try {
         const apiKey = localStorage.getItem('onto_first_api_key');
         if (!apiKey) return;
+        
+        // Check proxy/GOLD status → update signal panel indicators
+        try {
+            const proxyRes = await fetch(`${API_BASE}/v1/proxy/status`, {
+                headers: { 'x-api-key': apiKey }
+            });
+            if (proxyRes.ok) {
+                const ps = await proxyRes.json();
+                const proxyOk = ps.proxy === 'active';
+                const goldOk = ps.gold_available === true;
+                
+                // Update PROXY/GOLD/SIG/CHAIN indicators
+                const checks = {
+                    proxy: proxyOk,
+                    gold: goldOk,
+                    sig: proxyOk && goldOk,
+                    chain: proxyOk && goldOk
+                };
+                Object.entries(checks).forEach(([k, ok]) => {
+                    const el = document.getElementById('erm-check-' + k);
+                    if (el) {
+                        const span = el.querySelector('span');
+                        if (span) {
+                            span.innerHTML = ok ? '✓' : '✕';
+                            span.style.color = ok ? 'var(--accent)' : '#ef4444';
+                        }
+                    }
+                });
+                
+                // Update panel border color
+                const panel = document.getElementById('user-signal-panel');
+                if (panel) {
+                    if (proxyOk && goldOk) {
+                        panel.style.borderColor = '';
+                        panel.style.background = '';
+                    } else {
+                        panel.style.borderColor = 'rgba(220,38,38,0.3)';
+                        panel.style.background = 'linear-gradient(135deg, #1a0a0a 0%, #180d0d 50%, #1a0a0a 100%)';
+                    }
+                }
+                
+                ermProxyActive = proxyOk && goldOk;
+            }
+        } catch(e) { /* proxy check failed — leave as-is */ }
+        
+        // Original cert hash logic (fallback)
         const resp = await fetch(`${API_BASE}/v1/certificates`, {
             headers: { 'x-api-key': apiKey }
         });
@@ -4734,11 +4779,6 @@ async function loadRealCertHash() {
                 // Update verify link
                 const verifyLink = document.getElementById('erm-verify-link');
                 if (verifyLink) verifyLink.href = `https://ontostandard.org/verify/?hash=${realHash}`;
-                
-                // Update status
-                if (!isActive) {
-                    ermSuspendCert();
-                }
             }
         }
     } catch(e) { console.warn('loadRealCertHash:', e); }
