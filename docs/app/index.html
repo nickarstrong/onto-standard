@@ -1054,43 +1054,66 @@ client = OpenAI(
             <!-- ═══════════ PROVIDER DASHBOARD (AI Provider + White Label) ═══════════ -->
             <div id="dash-provider-view" class="hidden">
 
-                <!-- ═══════════ PROVIDER WIZARD ═══════════ -->
+                <!-- ═══════════ PROVIDER: LIVE TEST ═══════════ -->
 
-                <!-- STEP 1: CONNECT -->
-                <div class="dash-card-clean" style="margin-bottom:16px" id="wizard-step-1">
-                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-                        <div id="step1-status" style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text-muted);flex-shrink:0">1</div>
-                        <div style="flex:1">
-                            <div class="card-head" style="margin-bottom:0">Connect GOLD Stream</div>
-                            <div style="font-size:11px;color:var(--text-muted)">Your server connects to ONTO SSE → receives the discipline layer → injects into system prompt. Zero latency — ONTO is not in the inference path.</div>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-                            <div id="prov-stream-dot" style="width:8px;height:8px;border-radius:50%;background:var(--text-muted)"></div>
-                            <span style="font-size:11px;color:var(--text-muted)" id="prov-stream-status">Not connected</span>
+                <!-- MAIN: TRY GOLD ON YOUR MODEL -->
+                <div class="dash-card-clean" style="margin-bottom:16px">
+                    <div class="card-head" style="margin-bottom:2px">Test GOLD on your model</div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:14px">Enter your provider API key and ask a question. ONTO injects GOLD into your model's system prompt and returns the enhanced response with an epistemic quality score.</div>
+
+                    <div style="display:grid;grid-template-columns:140px 1fr;gap:8px;margin-bottom:10px">
+                        <select id="prov-select" onchange="providerChanged()" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text)">
+                            <option value="anthropic">Anthropic</option>
+                            <option value="openai">OpenAI</option>
+                            <option value="deepseek">DeepSeek</option>
+                            <option value="mistral">Mistral</option>
+                        </select>
+                        <div style="display:flex;gap:6px">
+                            <input type="password" id="prov-key-input" placeholder="Your provider API key (sk-ant-... or sk-...)" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);font-family:'JetBrains Mono',monospace">
+                            <button class="btn-minimal" onclick="const e=document.getElementById('prov-key-input');e.type=e.type==='password'?'text':'password'" style="font-size:10px;padding:6px 8px">Show</button>
                         </div>
                     </div>
-                    <button class="btn-minimal" onclick="testProviderSSE()" id="test-prov-btn" style="font-size:12px;padding:8px 20px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Test Connection</button>
-                    <span id="prov-gold-layer" style="display:none"></span>
-                    <span id="prov-gold-age" style="display:none"></span>
-                    <div id="step1-result" class="hidden" style="background:#1a2e1a;border:1px solid #2d4a2d;border-radius:6px;padding:10px 12px;font-size:11px;line-height:1.6;margin-top:10px">
-                        <div style="color:var(--accent);font-weight:600;margin-bottom:2px">✓ GOLD Stream connected</div>
-                        <div style="color:var(--text-muted)" id="step1-details"></div>
+
+                    <input type="text" id="prov-question" placeholder="Ask anything — e.g. What is the boiling point of water?" value="What is the boiling point of water?" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box;margin-bottom:10px" onkeydown="if(event.key==='Enter')runLiveTest()">
+
+                    <button class="btn-minimal" onclick="runLiveTest()" id="live-test-btn" style="font-size:13px;padding:10px 28px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:700">Send through ONTO</button>
+                    <span id="live-test-status" style="font-size:11px;color:var(--text-muted);margin-left:10px"></span>
+
+                    <!-- RESULT -->
+                    <div id="live-test-result" class="hidden" style="margin-top:14px">
+                        <!-- Score bar -->
+                        <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px;padding:12px 16px;background:var(--bg);border:1px solid var(--border);border-radius:6px">
+                            <div>
+                                <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">Epistemic Score</div>
+                                <div id="live-score" style="font-size:28px;font-weight:800;color:var(--accent)">—</div>
+                            </div>
+                            <div>
+                                <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">Grade</div>
+                                <div id="live-grade" style="font-size:28px;font-weight:800;color:var(--text)">—</div>
+                            </div>
+                            <div style="flex:1">
+                                <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">Proof Hash</div>
+                                <code id="live-proof" style="font-size:11px;color:var(--accent);cursor:pointer" onclick="navigator.clipboard.writeText(this.dataset.full);showToast('Copied','success')">—</code>
+                            </div>
+                            <a id="live-verify-link" href="#" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;display:none">Verify ↗</a>
+                        </div>
+                        <!-- Response -->
+                        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Model response (with GOLD)</div>
+                        <div id="live-response" style="background:#0c0f14;border-radius:6px;padding:12px 14px;font-size:12px;color:#e2e8f0;line-height:1.7;max-height:300px;overflow-y:auto;white-space:pre-wrap"></div>
+                        <!-- GOLD markers detected -->
+                        <div id="live-markers" style="margin-top:8px;font-size:10px;color:var(--text-muted)"></div>
                     </div>
-                    <details style="margin-top:10px"><summary style="font-size:10px;color:var(--text-muted);cursor:pointer">Integration code</summary><pre id="step1-code" style="background:#0c0f14;color:#e2e8f0;padding:12px;border-radius:6px;font-size:11px;margin-top:6px;overflow-x:auto;line-height:1.5"></pre></details>
                 </div>
 
-                <!-- STEP 2: REGISTER MODELS -->
+                <!-- STEP: REGISTER MODEL -->
                 <div class="dash-card-clean" style="margin-bottom:16px" id="wizard-step-2">
                     <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-                        <div id="step2-status" style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text-muted);flex-shrink:0">2</div>
-                        <div style="flex:1">
-                            <div class="card-head" style="margin-bottom:0">Register Models</div>
-                            <div style="font-size:11px;color:var(--text-muted)">Name each model you want to certify. You'll get a unique model_id for API calls.</div>
-                        </div>
-                        <span id="step2-count" style="font-size:11px;color:var(--text-muted);flex-shrink:0">0 models</span>
+                        <div class="card-head" style="margin-bottom:0">Register Models</div>
+                        <span id="step2-count" style="font-size:11px;color:var(--text-muted);margin-left:auto">0 models</span>
                     </div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">Name each model to track scores over time and generate certificates.</div>
                     <div style="display:flex;gap:8px;margin-bottom:10px">
-                        <input type="text" id="new-model-name" placeholder="e.g. gpt-4o-production, claude-sonnet-medical-v3" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text)" onkeydown="if(event.key==='Enter')registerModel()">
+                        <input type="text" id="new-model-name" placeholder="e.g. gpt-4o-production" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text)" onkeydown="if(event.key==='Enter')registerModel()">
                         <button class="btn-minimal" onclick="registerModel()" style="font-size:12px;padding:8px 16px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Register</button>
                     </div>
                     <div id="model-registered-msg" class="hidden" style="background:#1a2e1a;border:1px solid #2d4a2d;border-radius:6px;padding:10px 12px;margin-bottom:10px">
@@ -1098,61 +1121,63 @@ client = OpenAI(
                         <div style="display:flex;align-items:center;gap:8px">
                             <span style="font-size:10px;color:var(--text-muted)">model_id:</span>
                             <code id="model-reg-id" style="font-size:11px;color:var(--text);font-family:'JetBrains Mono',monospace"></code>
-                            <button class="btn-minimal" onclick="navigator.clipboard.writeText(document.getElementById('model-reg-id').textContent);showToast('Copied','success')" style="font-size:9px;padding:2px 8px;color:var(--accent);border-color:var(--accent)">Copy</button>
+                            <button class="btn-minimal" onclick="navigator.clipboard.writeText(document.getElementById('model-reg-id').textContent);showToast('Copied','success')" style="font-size:9px;padding:2px 8px;color:var(--accent);border-color:var(--accent)">Copy ID</button>
                         </div>
                     </div>
                     <div id="models-list" style="font-size:12px"></div>
                     <div id="add-model-row" class="hidden"></div>
                 </div>
 
-                <!-- STEP 3: SCORE -->
-                <div class="dash-card-clean" style="margin-bottom:16px" id="wizard-step-3">
-                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-                        <div id="step3-status" style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text-muted);flex-shrink:0">3</div>
-                        <div style="flex:1">
-                            <div class="card-head" style="margin-bottom:0">Score & Verify</div>
-                            <div style="font-size:11px;color:var(--text-muted)">After inference, submit the output for scoring. Each response gets a cryptographic proof (Ed25519) your clients can verify publicly.</div>
-                        </div>
-                    </div>
-                    <textarea id="test-eval-output" placeholder="Paste any AI model response here to test scoring..." style="width:100%;min-height:60px;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);resize:vertical;font-family:inherit;box-sizing:border-box"></textarea>
-                    <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-                        <select id="eval-model-select" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:11px;color:var(--text)">
-                            <option value="">Select model...</option>
-                        </select>
-                        <button class="btn-minimal" onclick="testProviderEval()" id="test-eval-btn" style="font-size:12px;padding:8px 20px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Evaluate</button>
-                    </div>
-                    <div id="test-prov-result" class="hidden" style="margin-top:10px;background:#0c0f14;border-radius:6px;padding:12px;font-size:11px;line-height:1.6"></div>
-                    <span id="test-prov-status" style="display:none"></span>
-                    <details style="margin-top:10px"><summary style="font-size:10px;color:var(--text-muted);cursor:pointer">Integration code</summary><pre id="step3-code" style="background:#0c0f14;color:#e2e8f0;padding:12px;border-radius:6px;font-size:11px;margin-top:6px;overflow-x:auto;line-height:1.5"></pre></details>
-                </div>
-
                 <!-- FLEET OVERVIEW -->
                 <div class="dash-card-clean" style="margin-bottom:16px" id="fleet-overview">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-                        <div class="card-head" style="margin-bottom:0">Fleet Overview</div>
+                        <div class="card-head" style="margin-bottom:0">Fleet Scores</div>
                         <button class="btn-minimal" onclick="loadModels()" style="font-size:10px;padding:3px 8px">Refresh</button>
                     </div>
-                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">Epistemic quality scores across your registered models</div>
                     <div id="fleet-models-list" style="font-size:12px">
-                        <div style="color:var(--text-muted);font-size:11px;padding:12px 0;text-align:center">Register models in Step 2</div>
+                        <div style="color:var(--text-muted);font-size:11px;padding:12px 0;text-align:center">Register models to see scores</div>
                     </div>
                 </div>
 
-                <!-- KEY ROTATION -->
+                <!-- INTEGRATION CODE (collapsed) -->
                 <div class="dash-card-clean" style="margin-bottom:16px">
-                    <div onclick="document.getElementById('key-management').classList.toggle('hidden');this.querySelector('svg').style.transform=document.getElementById('key-management').classList.contains('hidden')?'':'rotate(90deg)'" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer">
-                        <div>
-                            <div class="card-head">Key Rotation</div>
-                            <div style="font-size:11px;color:var(--text-muted)">Regenerate API key — instantly invalidates the current one</div>
+                    <details>
+                        <summary style="font-size:13px;font-weight:600;color:var(--text);cursor:pointer">Full integration code</summary>
+                        <div style="font-size:11px;color:var(--text-muted);margin:8px 0">Copy this into your server. Your ONTO API key is pre-filled.</div>
+                        <pre id="full-integration-code" style="background:#0c0f14;color:#e2e8f0;padding:14px;border-radius:6px;font-size:11px;overflow-x:auto;line-height:1.5;white-space:pre-wrap"></pre>
+                    </details>
+                </div>
+
+                <!-- KEY ROTATION (collapsed) -->
+                <div class="dash-card-clean" style="margin-bottom:16px">
+                    <details>
+                        <summary style="font-size:13px;font-weight:600;color:var(--text);cursor:pointer">Key rotation</summary>
+                        <div style="margin-top:10px">
+                            <div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px">Regenerating invalidates the current key immediately.</div>
+                            <button class="btn-minimal" onclick="regenerateKey()" style="font-size:11px;color:#ef4444;border-color:#ef4444">Regenerate API Key</button>
                         </div>
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0"><polyline points="9,18 15,12 9,6"/></svg>
-                    </div>
-                    <div id="key-management" class="hidden" style="margin-top:12px">
-                        <div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px">All connected services will disconnect immediately.</div>
-                        <button class="btn-minimal" onclick="regenerateKey()" style="font-size:11px;color:#ef4444;border-color:#ef4444">Regenerate API Key</button>
-                    </div>
+                    </details>
+                </div>
+
+                <!-- Hidden elements needed by existing JS -->
+                <div style="display:none">
+                    <div id="prov-stream-dot"></div>
+                    <span id="prov-stream-status"></span>
+                    <span id="prov-gold-layer"></span>
+                    <span id="prov-gold-age"></span>
+                    <div id="step1-result"></div>
+                    <div id="step1-details"></div>
+                    <div id="step1-status"></div>
+                    <div id="step2-status"></div>
+                    <div id="step3-status"></div>
+                    <select id="eval-model-select"></select>
+                    <textarea id="test-eval-output"></textarea>
+                    <div id="test-prov-result"></div>
+                    <span id="test-prov-status"></span>
+                    <div id="key-management"></div>
                 </div>
             </div>
+
 
 
             <!-- CERTIFICATE (shared) -->
@@ -2728,50 +2753,14 @@ function showDashboard() {
             providerView.classList.toggle('hidden', !isProvider);
             // Auto-load provider status
             if (isProvider) { 
-                setTimeout(testProviderSSE, 500); 
-                setTimeout(loadModels, 600);
-                // Auto-fill code snippets with real API key
-                setTimeout(() => {
-                    const k = localStorage.getItem('onto_first_api_key') || 'YOUR_ONTO_KEY';
-                    const s1 = document.getElementById('step1-code');
-                    if (s1) s1.textContent = `import requests, json
-
-GOLD_PROMPT = ""
-
-def start_gold_stream():
-    resp = requests.get(
-        "https://api.ontostandard.org/v1/gold/stream",
-        headers={"x-api-key": "${k}"},
-        stream=True
-    )
-    for line in resp.iter_lines():
-        if line.startswith(b"data: "):
-            event = json.loads(line[6:])
-            if event["type"] == "gold_corpus":
-                global GOLD_PROMPT
-                GOLD_PROMPT = event["discipline_layer"]
-
-# In your inference pipeline:
-# system_prompt = GOLD_PROMPT + your_existing_system_prompt`;
-                    const s3 = document.getElementById('step3-code');
-                    if (s3) s3.textContent = `# After each inference — submit for scoring
-result = requests.post(
-    "https://api.ontostandard.org/v1/models/evaluate",
-    headers={"x-api-key": "${k}"},
-    json={
-        "model_id": "YOUR_MODEL_ID",  # from Step 2
-        "output": model_response,
-        "context": user_message
-    }
-).json()
-
-# result = {
-#   "risk_score": 7.4,
-#   "compliance": {"grade": "B+"},
-#   "proof_hash": "a3f29c...",  ← clients verify this
-#   "proof_timestamp": "2026-02-23T..."
-# }`;
-                }, 100);
+                setTimeout(loadModels, 500);
+                // Restore saved provider key
+                const savedProvKey = localStorage.getItem('onto_provider_key');
+                const savedProvType = localStorage.getItem('onto_provider_type');
+                if (savedProvKey) document.getElementById('prov-key-input').value = savedProvKey;
+                if (savedProvType) document.getElementById('prov-select').value = savedProvType;
+                // Fill integration code with real ONTO key
+                fillIntegrationCode();
             }
             // Restore saved provider key
             const savedPK = localStorage.getItem('onto_provider_key');
@@ -3460,6 +3449,207 @@ async function testProviderEval() {
     
     btn.disabled = false;
     btn.textContent = 'Evaluate';
+}
+
+function providerChanged() {
+    const sel = document.getElementById('prov-select');
+    if (sel) localStorage.setItem('onto_provider_type', sel.value);
+}
+
+function fillIntegrationCode() {
+    const k = localStorage.getItem('onto_first_api_key') || 'YOUR_ONTO_KEY';
+    const el = document.getElementById('full-integration-code');
+    if (!el) return;
+    el.textContent = `import requests, json, threading
+
+ONTO_KEY = "${k}"
+GOLD_PROMPT = ""
+
+# ━━━ Step 1: Connect to GOLD stream (run once at server start) ━━━
+def start_gold_stream():
+    global GOLD_PROMPT
+    resp = requests.get(
+        "https://api.ontostandard.org/v1/gold/stream",
+        headers={"x-api-key": ONTO_KEY},
+        stream=True
+    )
+    for line in resp.iter_lines():
+        if line.startswith(b"data: "):
+            event = json.loads(line[6:])
+            if event["type"] in ("gold_corpus", "gold_update"):
+                GOLD_PROMPT = event["discipline_layer"]
+                print(f"[ONTO] GOLD updated: {event.get('tokens_estimate', '?')} tokens")
+
+threading.Thread(target=start_gold_stream, daemon=True).start()
+
+# ━━━ Step 2: Your inference (add GOLD to system prompt) ━━━
+def inference(user_message, model_id):
+    response = your_model.generate(
+        system=GOLD_PROMPT,  # ← GOLD discipline layer
+        messages=[{"role": "user", "content": user_message}]
+    )
+    
+    # ━━━ Step 3: Score each response ━━━
+    score = requests.post(
+        "https://api.ontostandard.org/v1/models/evaluate",
+        headers={"x-api-key": ONTO_KEY},
+        json={
+            "model_id": model_id,  # from registration
+            "output": response,
+            "context": user_message
+        }
+    ).json()
+    # score = { risk_score: 7.4, compliance: {grade: "B+"}, proof_hash: "..." }
+    
+    return response, score`;
+}
+
+async function runLiveTest() {
+    const ontoKey = localStorage.getItem('onto_first_api_key');
+    if (!ontoKey) { showToast('Sign in first', 'error'); return; }
+    
+    const provType = document.getElementById('prov-select').value;
+    const provKey = document.getElementById('prov-key-input').value.trim();
+    const question = document.getElementById('prov-question').value.trim();
+    
+    if (!provKey) { showToast('Enter your provider API key', 'error'); document.getElementById('prov-key-input').focus(); return; }
+    if (!question) { showToast('Enter a question', 'error'); return; }
+    
+    // Save provider key for next session
+    localStorage.setItem('onto_provider_key', provKey);
+    localStorage.setItem('onto_provider_type', provType);
+    
+    const btn = document.getElementById('live-test-btn');
+    const status = document.getElementById('live-test-status');
+    const resultDiv = document.getElementById('live-test-result');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    status.textContent = 'Connecting to ' + provType + '...';
+    resultDiv.classList.add('hidden');
+    
+    try {
+        // Determine endpoint + body
+        let url, body, headers;
+        
+        if (provType === 'anthropic') {
+            url = `${API_BASE}/v1/proxy/anthropic/messages`;
+            body = {
+                model: 'claude-sonnet-4-20250514',
+                max_tokens: 1024,
+                messages: [{ role: 'user', content: question }]
+            };
+            headers = {
+                'Content-Type': 'application/json',
+                'x-api-key': ontoKey,
+                'X-Provider-Key': provKey
+            };
+        } else {
+            // OpenAI-compatible (openai, deepseek, mistral)
+            url = `${API_BASE}/v1/proxy/chat/completions`;
+            const models = { openai: 'gpt-4o', deepseek: 'deepseek-chat', mistral: 'mistral-large-latest' };
+            body = {
+                model: models[provType] || 'gpt-4o',
+                messages: [{ role: 'user', content: question }],
+                max_tokens: 1024
+            };
+            headers = {
+                'Content-Type': 'application/json',
+                'x-api-key': ontoKey,
+                'X-Provider-Key': provKey
+            };
+            // DeepSeek/Mistral need base URL header
+            if (provType === 'deepseek') headers['X-Provider-Base-URL'] = 'https://api.deepseek.com/v1';
+            if (provType === 'mistral') headers['X-Provider-Base-URL'] = 'https://api.mistral.ai/v1';
+        }
+        
+        status.textContent = 'GOLD injected → sending to ' + provType + '...';
+        
+        const res = await fetch(url, { method: 'POST', headers, body: JSON.stringify(body) });
+        
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.detail || err.error?.message || `HTTP ${res.status}`);
+        }
+        
+        const data = await res.json();
+        
+        // Extract response text
+        let responseText = '';
+        if (provType === 'anthropic') {
+            responseText = data.content?.[0]?.text || JSON.stringify(data);
+        } else {
+            responseText = data.choices?.[0]?.message?.content || JSON.stringify(data);
+        }
+        
+        // Show response
+        document.getElementById('live-response').textContent = responseText;
+        resultDiv.classList.remove('hidden');
+        
+        status.textContent = 'Scoring response...';
+        
+        // Score the response
+        const scoreRes = await fetch(`${API_BASE}/v1/models/evaluate`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-api-key': ontoKey },
+            body: JSON.stringify({
+                model_id: 'live-test',
+                output: responseText,
+                context: question,
+                domain: 'general'
+            })
+        });
+        
+        if (scoreRes.ok) {
+            const scoreData = await scoreRes.json();
+            const score = parseFloat(scoreData.risk_score || 0).toFixed(1);
+            const grade = scoreData.compliance?.grade || '?';
+            const proof = scoreData.proof_hash || '';
+            
+            const scoreEl = document.getElementById('live-score');
+            scoreEl.textContent = score;
+            scoreEl.style.color = score >= 7 ? 'var(--accent)' : score >= 5 ? '#f59e0b' : '#ef4444';
+            
+            document.getElementById('live-grade').textContent = grade;
+            
+            const proofEl = document.getElementById('live-proof');
+            proofEl.textContent = proof ? proof.slice(0, 16) + '...' : '—';
+            proofEl.dataset.full = proof;
+            
+            const verifyLink = document.getElementById('live-verify-link');
+            if (proof) {
+                verifyLink.href = `https://ontostandard.org/verify/?hash=${proof}`;
+                verifyLink.style.display = 'inline';
+            }
+            
+            // Detect GOLD markers in response
+            const markers = [];
+            if (/\d+\.?\d*\s*°?\s*[CF]|\d+\.\d{2,}|\±/.test(responseText)) markers.push('QD (quantified data)');
+            if (/source|according to|reference|cited|DOI|NIST|handbook/i.test(responseText)) markers.push('SS (source specification)');
+            if (/uncertain|I don.t know|not sure|caveat|limitation|however/i.test(responseText)) markers.push('UM (uncertainty marking)');
+            if (/confidence|probability|likely|≥?\d+%/i.test(responseText)) markers.push('CONF (confidence)');
+            
+            const markersEl = document.getElementById('live-markers');
+            if (markers.length > 0) {
+                markersEl.innerHTML = '<span style="color:var(--accent)">GOLD markers detected:</span> ' + markers.join(' · ');
+            } else {
+                markersEl.textContent = 'No explicit GOLD markers detected (model may integrate them subtly)';
+            }
+            
+            status.textContent = '';
+        } else {
+            status.textContent = 'Response received (scoring unavailable for unregistered model)';
+        }
+        
+    } catch (e) {
+        status.textContent = '';
+        resultDiv.classList.remove('hidden');
+        document.getElementById('live-response').textContent = 'Error: ' + e.message;
+        document.getElementById('live-score').textContent = '—';
+        document.getElementById('live-grade').textContent = '—';
+    }
+    
+    btn.disabled = false;
+    btn.textContent = 'Send through ONTO';
 }
 
 async function downloadInvoice() {
