@@ -1361,12 +1361,24 @@ client = OpenAI(
                         <span class="info-action" onclick="openCompanyModal()">Edit</span>
                     </div>
                     <div class="info-row">
+                        <span class="info-key">Entity Type</span>
+                        <span class="info-val" id="company-type">—</span>
+                    </div>
+                    <div class="info-row">
                         <span class="info-key">Industry</span>
                         <span class="info-val" id="company-industry">—</span>
                     </div>
                     <div class="info-row">
                         <span class="info-key">Registration</span>
                         <span class="info-val" id="company-reg">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-key">VAT</span>
+                        <span class="info-val" id="company-vat-display">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-key">Address</span>
+                        <span class="info-val" id="company-address-display">—</span>
                     </div>
                     <div class="info-row">
                         <span class="info-key">Status</span>
@@ -2335,26 +2347,30 @@ async function handleLogin(btn) {
             company: null,
             subscription: data.tier_expires ? { expires_at: data.tier_expires } : null
         };
-        // Restore company from backend profile (authoritative source)
-        if (data.profile) {
+        // Restore company from backend profile (merge with existing, don't overwrite)
+        if (data.profile && typeof data.profile === 'object') {
             const p = data.profile;
-            if (p.company || p.company_name) {
-                currentUser.company = {
-                    name: p.company || p.company_name || '',
-                    type: p.company_type || '',
-                    industry: p.industry || '',
-                    reg: p.company_reg || p.registration_number || '',
-                    vat: p.company_vat || '',
-                    address: p.address || '',
-                    city: p.city || '',
-                    state: p.state || '',
-                    postal: p.postal || p.zip_code || '',
-                    country: p.country || '',
-                    email: p.billing_email || '',
-                    phone: p.phone || '',
-                    signatory: p.signatory_name || '',
-                    signatoryTitle: p.signatory_title || ''
-                };
+            const existing = currentUser.company || {};
+            const pick = (...vals) => vals.find(v => v && v.trim && v.trim() !== '') || '';
+            const merged = {
+                name: pick(p.company, p.company_name, existing.name, data.organization_name),
+                type: pick(p.company_type, existing.type),
+                industry: pick(p.industry, existing.industry),
+                reg: pick(p.company_reg, p.registration_number, existing.reg),
+                vat: pick(p.company_vat, existing.vat),
+                address: pick(p.address, existing.address),
+                city: pick(p.city, existing.city),
+                state: pick(p.state, existing.state),
+                postal: pick(p.postal, p.zip_code, existing.postal),
+                country: pick(p.country, existing.country),
+                email: pick(p.billing_email, p.email, existing.email),
+                phone: pick(p.phone, existing.phone),
+                signatory: pick(p.signatory_name, p.contact_name, existing.signatory),
+                signatoryTitle: pick(p.signatory_title, existing.signatoryTitle)
+            };
+            if (merged.name) {
+                console.log('[ONTO] Login merge — server:', Object.keys(p).length, 'profile fields');
+                currentUser.company = merged;
                 currentUser.can_invoice = true;
             }
         }
@@ -2846,18 +2862,38 @@ function showPage(page, el) {
 
 // === COMPANY ===
 function updateCompanyUI() {
-    if (currentUser.company) {
+    if (currentUser.company && currentUser.company.name) {
         document.getElementById('company-not-registered').classList.add('hidden');
         document.getElementById('company-registered').classList.remove('hidden');
-        document.getElementById('company-name').textContent = currentUser.company.name;
-        document.getElementById('company-industry').textContent = formatIndustry(currentUser.company.industry);
-        document.getElementById('company-reg').textContent = currentUser.company.reg;
+        const c = currentUser.company;
+        document.getElementById('company-name').textContent = c.name || '—';
+        document.getElementById('company-type').textContent = formatEntityType(c.type) || '—';
+        document.getElementById('company-industry').textContent = formatIndustry(c.industry);
+        document.getElementById('company-reg').textContent = c.reg || '—';
+        document.getElementById('company-vat-display').textContent = c.vat || '—';
+        const addr = [c.address, c.city, c.postal, c.country].filter(Boolean).join(', ');
+        document.getElementById('company-address-display').textContent = addr || '—';
         document.getElementById('settings-account-type').textContent = 'Individual + Company';
     } else {
         document.getElementById('company-not-registered').classList.remove('hidden');
         document.getElementById('company-registered').classList.add('hidden');
         document.getElementById('settings-account-type').textContent = 'Individual';
     }
+}
+
+function formatEntityType(code) {
+    const types = {
+        'corporation': 'Corporation',
+        'llc': 'LLC',
+        'ltd': 'Ltd',
+        'gmbh': 'GmbH',
+        'partnership': 'Partnership',
+        'sole_proprietor': 'Sole Proprietor',
+        'nonprofit': 'Non-Profit',
+        'government': 'Government Entity',
+        'other': 'Other'
+    };
+    return types[code] || code || '—';
 }
 
 function formatIndustry(code) {
@@ -4359,27 +4395,34 @@ async function loadOrgFromAPI() {
             currentUser.subscription.expires_at = data.tier_expires;
         }
         
-        // Restore company from profile_data (merge with existing, don't overwrite)
-        if (data.profile) {
+        // Restore company from profile_data (merge: server wins if non-empty, else keep local)
+        if (data.profile && typeof data.profile === 'object') {
             const p = data.profile;
             const existing = currentUser.company || {};
-            if (p.company || p.company_name || data.name || existing.name) {
-                currentUser.company = {
-                    name: p.company || p.company_name || data.name || existing.name || '',
-                    type: p.company_type || existing.type || '',
-                    industry: p.industry || existing.industry || '',
-                    reg: p.company_reg || p.registration_number || existing.reg || '',
-                    vat: p.company_vat || existing.vat || '',
-                    address: p.address || existing.address || '',
-                    city: p.city || existing.city || '',
-                    state: p.state || existing.state || '',
-                    postal: p.postal || p.zip_code || existing.postal || '',
-                    country: p.country || existing.country || '',
-                    email: p.billing_email || p.email || existing.email || '',
-                    phone: p.phone || existing.phone || '',
-                    signatory: p.signatory_name || p.contact_name || existing.signatory || '',
-                    signatoryTitle: p.signatory_title || existing.signatoryTitle || ''
-                };
+            
+            // Helper: pick first non-empty value
+            const pick = (...vals) => vals.find(v => v && v.trim && v.trim() !== '') || '';
+            
+            const merged = {
+                name: pick(p.company, p.company_name, existing.name, data.name),
+                type: pick(p.company_type, existing.type),
+                industry: pick(p.industry, existing.industry),
+                reg: pick(p.company_reg, p.registration_number, existing.reg),
+                vat: pick(p.company_vat, existing.vat),
+                address: pick(p.address, existing.address),
+                city: pick(p.city, existing.city),
+                state: pick(p.state, existing.state),
+                postal: pick(p.postal, p.zip_code, existing.postal),
+                country: pick(p.country, existing.country),
+                email: pick(p.billing_email, p.email, existing.email),
+                phone: pick(p.phone, existing.phone),
+                signatory: pick(p.signatory_name, p.contact_name, existing.signatory),
+                signatoryTitle: pick(p.signatory_title, existing.signatoryTitle)
+            };
+            
+            if (merged.name) {
+                console.log('[ONTO] Org merge — server:', Object.keys(p).length, 'fields, local:', Object.keys(existing).length, 'fields');
+                currentUser.company = merged;
                 currentUser.can_invoice = true;
                 localStorage.setItem('onto_user', JSON.stringify(currentUser));
                 updateCompanyUI();
