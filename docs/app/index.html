@@ -1054,88 +1054,67 @@ client = OpenAI(
             <!-- ═══════════ PROVIDER DASHBOARD (AI Provider + White Label) ═══════════ -->
             <div id="dash-provider-view" class="hidden">
 
-                <!-- STEP 1: GOLD STREAM CONNECTION -->
+                <!-- ═══════════ PROVIDER WIZARD ═══════════ -->
+
+                <!-- STEP 1: CONNECT -->
                 <div class="dash-card-clean" style="margin-bottom:16px" id="wizard-step-1">
-                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
                         <div id="step1-status" style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text-muted);flex-shrink:0">1</div>
                         <div style="flex:1">
                             <div class="card-head" style="margin-bottom:0">Connect GOLD Stream</div>
-                            <div style="font-size:11px;color:var(--text-muted)">Your server connects to ONTO SSE, receives the GOLD discipline layer, and injects it into your model's system prompt. ONTO is never in the inference path.</div>
+                            <div style="font-size:11px;color:var(--text-muted)">Your server connects to ONTO SSE → receives the discipline layer → injects into system prompt. Zero latency — ONTO is not in the inference path.</div>
                         </div>
                         <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
                             <div id="prov-stream-dot" style="width:8px;height:8px;border-radius:50%;background:var(--text-muted)"></div>
                             <span style="font-size:11px;color:var(--text-muted)" id="prov-stream-status">Not connected</span>
                         </div>
                     </div>
-                    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
-                        <button class="btn-minimal" onclick="testProviderSSE()" id="test-prov-btn" style="font-size:12px;padding:8px 20px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Test Connection</button>
-                        <span id="prov-gold-layer" style="display:none"></span>
-                        <span id="prov-gold-age" style="display:none"></span>
-                    </div>
-                    <div id="step1-result" class="hidden" style="background:#1a2e1a;border:1px solid #2d4a2d;border-radius:6px;padding:10px 12px;font-size:11px;line-height:1.6;margin-bottom:10px">
-                        <div style="color:var(--accent);font-weight:600;margin-bottom:4px">✓ GOLD Stream connected</div>
+                    <button class="btn-minimal" onclick="testProviderSSE()" id="test-prov-btn" style="font-size:12px;padding:8px 20px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Test Connection</button>
+                    <span id="prov-gold-layer" style="display:none"></span>
+                    <span id="prov-gold-age" style="display:none"></span>
+                    <div id="step1-result" class="hidden" style="background:#1a2e1a;border:1px solid #2d4a2d;border-radius:6px;padding:10px 12px;font-size:11px;line-height:1.6;margin-top:10px">
+                        <div style="color:var(--accent);font-weight:600;margin-bottom:2px">✓ GOLD Stream connected</div>
                         <div style="color:var(--text-muted)" id="step1-details"></div>
                     </div>
-                    <details style="margin-top:4px"><summary style="font-size:10px;color:var(--text-muted);cursor:pointer">Integration code (Python)</summary><pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:11px;margin-top:8px;overflow-x:auto;line-height:1.6"><code>import requests, json
-
-def start_gold_stream(onto_key):
-    resp = requests.get(
-        "https://api.ontostandard.org/v1/gold/stream",
-        headers={"x-api-key": onto_key}, stream=True
-    )
-    for line in resp.iter_lines():
-        if line.startswith(b"data: "):
-            event = json.loads(line[6:])
-            if event["type"] == "gold_corpus":
-                GOLD_PROMPT = event["discipline_layer"]
-
-# Inject into inference:
-your_model.generate(system=GOLD_PROMPT, messages=[...])</code></pre></details>
+                    <details style="margin-top:10px"><summary style="font-size:10px;color:var(--text-muted);cursor:pointer">Integration code</summary><pre id="step1-code" style="background:#0c0f14;color:#e2e8f0;padding:12px;border-radius:6px;font-size:11px;margin-top:6px;overflow-x:auto;line-height:1.5"></pre></details>
                 </div>
+
                 <!-- STEP 2: REGISTER MODELS -->
                 <div class="dash-card-clean" style="margin-bottom:16px" id="wizard-step-2">
-                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
                         <div id="step2-status" style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text-muted);flex-shrink:0">2</div>
-                        <div>
+                        <div style="flex:1">
                             <div class="card-head" style="margin-bottom:0">Register Models</div>
-                            <div style="font-size:11px;color:var(--text-muted)">Which AI models do you want to certify under ONTO?</div>
+                            <div style="font-size:11px;color:var(--text-muted)">Name each model you want to certify. You'll get a unique model_id for API calls.</div>
                         </div>
-                        <span id="step2-count" style="margin-left:auto;font-size:11px;color:var(--text-muted)">0 models</span>
+                        <span id="step2-count" style="font-size:11px;color:var(--text-muted);flex-shrink:0">0 models</span>
                     </div>
-
-                    <div style="display:flex;gap:8px;margin-bottom:12px">
-                        <input type="text" id="new-model-name" placeholder="Model name (e.g. gpt-4o-production, claude-sonnet-medical-v3)" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text)" onkeydown="if(event.key==='Enter')registerModel()">
+                    <div style="display:flex;gap:8px;margin-bottom:10px">
+                        <input type="text" id="new-model-name" placeholder="e.g. gpt-4o-production, claude-sonnet-medical-v3" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text)" onkeydown="if(event.key==='Enter')registerModel()">
                         <button class="btn-minimal" onclick="registerModel()" style="font-size:12px;padding:8px 16px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Register</button>
                     </div>
-
-                    <!-- Registered model success message -->
-                    <div id="model-registered-msg" class="hidden" style="background:#1a2e1a;border:1px solid #2d4a2d;border-radius:6px;padding:10px 12px;margin-bottom:12px">
+                    <div id="model-registered-msg" class="hidden" style="background:#1a2e1a;border:1px solid #2d4a2d;border-radius:6px;padding:10px 12px;margin-bottom:10px">
                         <div style="color:var(--accent);font-size:12px;font-weight:600;margin-bottom:4px" id="model-reg-title"></div>
-                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                        <div style="display:flex;align-items:center;gap:8px">
                             <span style="font-size:10px;color:var(--text-muted)">model_id:</span>
                             <code id="model-reg-id" style="font-size:11px;color:var(--text);font-family:'JetBrains Mono',monospace"></code>
-                            <button class="btn-minimal" onclick="navigator.clipboard.writeText(document.getElementById('model-reg-id').textContent);showToast('Model ID copied','success')" style="font-size:9px;padding:2px 8px;color:var(--accent);border-color:var(--accent)">Copy</button>
+                            <button class="btn-minimal" onclick="navigator.clipboard.writeText(document.getElementById('model-reg-id').textContent);showToast('Copied','success')" style="font-size:9px;padding:2px 8px;color:var(--accent);border-color:var(--accent)">Copy</button>
                         </div>
-                        <div style="font-size:10px;color:var(--text-muted)">Use this ID when calling /v1/models/evaluate</div>
                     </div>
-
-                    <!-- Models list -->
                     <div id="models-list" style="font-size:12px"></div>
                     <div id="add-model-row" class="hidden"></div>
                 </div>
 
-                <!-- STEP 3: INTEGRATE SCORING -->
+                <!-- STEP 3: SCORE -->
                 <div class="dash-card-clean" style="margin-bottom:16px" id="wizard-step-3">
-                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
                         <div id="step3-status" style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text-muted);flex-shrink:0">3</div>
                         <div style="flex:1">
                             <div class="card-head" style="margin-bottom:0">Score & Verify</div>
-                            <div style="font-size:11px;color:var(--text-muted)">After each inference, submit the output for epistemic scoring. Each score gets a cryptographic proof chain (Ed25519).</div>
+                            <div style="font-size:11px;color:var(--text-muted)">After inference, submit the output for scoring. Each response gets a cryptographic proof (Ed25519) your clients can verify publicly.</div>
                         </div>
                     </div>
-
-                    <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">Test — paste any AI output below</div>
-                    <textarea id="test-eval-output" placeholder="Paste a model response here..." style="width:100%;min-height:70px;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);resize:vertical;font-family:inherit;box-sizing:border-box"></textarea>
+                    <textarea id="test-eval-output" placeholder="Paste any AI model response here to test scoring..." style="width:100%;min-height:60px;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);resize:vertical;font-family:inherit;box-sizing:border-box"></textarea>
                     <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
                         <select id="eval-model-select" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:11px;color:var(--text)">
                             <option value="">Select model...</option>
@@ -1144,66 +1123,37 @@ your_model.generate(system=GOLD_PROMPT, messages=[...])</code></pre></details>
                     </div>
                     <div id="test-prov-result" class="hidden" style="margin-top:10px;background:#0c0f14;border-radius:6px;padding:12px;font-size:11px;line-height:1.6"></div>
                     <span id="test-prov-status" style="display:none"></span>
-
-                    <details style="margin-top:10px"><summary style="font-size:10px;color:var(--text-muted);cursor:pointer">Integration code (Python)</summary><pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:11px;margin-top:8px;overflow-x:auto;line-height:1.6"><code># After each inference — score + proof chain
-result = requests.post(
-    "https://api.ontostandard.org/v1/models/evaluate",
-    headers={"x-api-key": onto_key},
-    json={
-        "model_id": model_id,
-        "output": model_output,
-        "context": user_message
-    }
-).json()
-# → { risk_score: 7.4, proof_hash: "a3f2...", ... }</code></pre></details>
-                </div>
-                <!-- STEP 4: VERIFY & BADGE -->
-                <div class="dash-card-clean" style="margin-bottom:16px" id="wizard-step-4">
-                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-                        <div id="step4-status" style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text-muted);flex-shrink:0">4</div>
-                        <div>
-                            <div class="card-head" style="margin-bottom:0">Public Verification</div>
-                            <div style="font-size:11px;color:var(--text-muted)">Your clients verify AI output authenticity via ONTO proof chain</div>
-                        </div>
-                    </div>
-                    <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:14px 16px">
-                        <div style="font-size:11px;color:var(--text-secondary);line-height:1.6;margin-bottom:10px">
-                            Each scored output returns a <code style="color:var(--accent)">proof_hash</code>. Anyone can verify it:
-                        </div>
-                        <pre style="background:#0c0f14;color:#e2e8f0;padding:10px 12px;border-radius:4px;font-size:11px;overflow-x:auto;line-height:1.5;margin-bottom:10px"><code>https://ontostandard.org/verify/?hash=<span style="color:var(--accent)">{proof_hash}</span></code></pre>
-                        <div style="font-size:11px;color:var(--text-secondary);line-height:1.6">
-                            Show your clients: <span style="color:var(--accent);font-weight:600">"ONTO Verified"</span> badge + certificate link. Every response is cryptographically signed (Ed25519) and independently verifiable.
-                        </div>
-                    </div>
+                    <details style="margin-top:10px"><summary style="font-size:10px;color:var(--text-muted);cursor:pointer">Integration code</summary><pre id="step3-code" style="background:#0c0f14;color:#e2e8f0;padding:12px;border-radius:6px;font-size:11px;margin-top:6px;overflow-x:auto;line-height:1.5"></pre></details>
                 </div>
 
-                <!-- FLEET OVERVIEW (after wizard completed) -->
+                <!-- FLEET OVERVIEW -->
                 <div class="dash-card-clean" style="margin-bottom:16px" id="fleet-overview">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
                         <div class="card-head" style="margin-bottom:0">Fleet Overview</div>
                         <button class="btn-minimal" onclick="loadModels()" style="font-size:10px;padding:3px 8px">Refresh</button>
                     </div>
-                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">Epistemic scores across your registered models</div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">Epistemic quality scores across your registered models</div>
                     <div id="fleet-models-list" style="font-size:12px">
-                        <div style="color:var(--text-muted);font-size:11px;padding:12px 0;text-align:center">Register models in Step 2 to see fleet scores</div>
+                        <div style="color:var(--text-muted);font-size:11px;padding:12px 0;text-align:center">Register models in Step 2</div>
                     </div>
                 </div>
 
-                <!-- API KEY MANAGEMENT -->
+                <!-- KEY ROTATION -->
                 <div class="dash-card-clean" style="margin-bottom:16px">
                     <div onclick="document.getElementById('key-management').classList.toggle('hidden');this.querySelector('svg').style.transform=document.getElementById('key-management').classList.contains('hidden')?'':'rotate(90deg)'" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer">
                         <div>
-                            <div class="card-head">API Key</div>
-                            <div style="font-size:11px;color:var(--text-muted)">Regenerate or rotate credentials</div>
+                            <div class="card-head">Key Rotation</div>
+                            <div style="font-size:11px;color:var(--text-muted)">Regenerate API key — instantly invalidates the current one</div>
                         </div>
                         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0"><polyline points="9,18 15,12 9,6"/></svg>
                     </div>
                     <div id="key-management" class="hidden" style="margin-top:12px">
-                        <div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px">Regenerating will immediately invalidate the current key. All connected services will disconnect.</div>
+                        <div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px">All connected services will disconnect immediately.</div>
                         <button class="btn-minimal" onclick="regenerateKey()" style="font-size:11px;color:#ef4444;border-color:#ef4444">Regenerate API Key</button>
                     </div>
                 </div>
             </div>
+
 
             <!-- CERTIFICATE (shared) -->
             <div class="dash-card-clean" style="margin-bottom:16px">
@@ -2779,7 +2729,49 @@ function showDashboard() {
             // Auto-load provider status
             if (isProvider) { 
                 setTimeout(testProviderSSE, 500); 
-                setTimeout(loadModels, 600); 
+                setTimeout(loadModels, 600);
+                // Auto-fill code snippets with real API key
+                setTimeout(() => {
+                    const k = localStorage.getItem('onto_first_api_key') || 'YOUR_ONTO_KEY';
+                    const s1 = document.getElementById('step1-code');
+                    if (s1) s1.textContent = `import requests, json
+
+GOLD_PROMPT = ""
+
+def start_gold_stream():
+    resp = requests.get(
+        "https://api.ontostandard.org/v1/gold/stream",
+        headers={"x-api-key": "${k}"},
+        stream=True
+    )
+    for line in resp.iter_lines():
+        if line.startswith(b"data: "):
+            event = json.loads(line[6:])
+            if event["type"] == "gold_corpus":
+                global GOLD_PROMPT
+                GOLD_PROMPT = event["discipline_layer"]
+
+# In your inference pipeline:
+# system_prompt = GOLD_PROMPT + your_existing_system_prompt`;
+                    const s3 = document.getElementById('step3-code');
+                    if (s3) s3.textContent = `# After each inference — submit for scoring
+result = requests.post(
+    "https://api.ontostandard.org/v1/models/evaluate",
+    headers={"x-api-key": "${k}"},
+    json={
+        "model_id": "YOUR_MODEL_ID",  # from Step 2
+        "output": model_response,
+        "context": user_message
+    }
+).json()
+
+# result = {
+#   "risk_score": 7.4,
+#   "compliance": {"grade": "B+"},
+#   "proof_hash": "a3f29c...",  ← clients verify this
+#   "proof_timestamp": "2026-02-23T..."
+# }`;
+                }, 100);
             }
             // Restore saved provider key
             const savedPK = localStorage.getItem('onto_provider_key');
@@ -5241,36 +5233,4 @@ function showSignal104b(action, endpoint) {
 }
 </script>
 </body>
-                <!-- STEP 3: INTEGRATE SCORING -->
-                <div class="dash-card-clean" style="margin-bottom:16px" id="wizard-step-3">
-                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-                        <div id="step3-status" style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text-muted);flex-shrink:0">3</div>
-                        <div style="flex:1">
-                            <div class="card-head" style="margin-bottom:0">Score & Verify</div>
-                            <div style="font-size:11px;color:var(--text-muted)">After each inference, submit the output for epistemic scoring. Each score gets a cryptographic proof chain (Ed25519).</div>
-                        </div>
-                    </div>
-
-                    <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">Test — paste any AI output below</div>
-                    <textarea id="test-eval-output" placeholder="Paste a model response here..." style="width:100%;min-height:70px;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);resize:vertical;font-family:inherit;box-sizing:border-box"></textarea>
-                    <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-                        <select id="eval-model-select" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:11px;color:var(--text)">
-                            <option value="">Select model...</option>
-                        </select>
-                        <button class="btn-minimal" onclick="testProviderEval()" id="test-eval-btn" style="font-size:12px;padding:8px 20px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Evaluate</button>
-                    </div>
-                    <div id="test-prov-result" class="hidden" style="margin-top:10px;background:#0c0f14;border-radius:6px;padding:12px;font-size:11px;line-height:1.6"></div>
-                    <span id="test-prov-status" style="display:none"></span>
-
-                    <details style="margin-top:10px"><summary style="font-size:10px;color:var(--text-muted);cursor:pointer">Integration code (Python)</summary><pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:11px;margin-top:8px;overflow-x:auto;line-height:1.6"><code># After each inference — score + proof chain
-result = requests.post(
-    "https://api.ontostandard.org/v1/models/evaluate",
-    headers={"x-api-key": onto_key},
-    json={
-        "model_id": model_id,
-        "output": model_output,
-        "context": user_message
-    }
-).json()
-# → { risk_score: 7.4, proof_hash: "a3f2...", ... }</code></pre></details>
-                </div>
+</html>
