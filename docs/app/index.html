@@ -3097,30 +3097,70 @@ async function testProviderSSE() {
     if (!apiKey) return;
     
     const btn = document.getElementById('test-prov-btn');
+    const dot = document.getElementById('prov-stream-dot');
+    const layerEl = document.getElementById('prov-gold-layer');
+    const ageEl = document.getElementById('prov-gold-age');
     if (btn) btn.disabled = true;
+    if (ageEl) ageEl.textContent = 'connecting...';
     
     try {
-        const res = await fetch(`${API_BASE}/v1/proxy/status`, { headers: { 'x-api-key': apiKey } });
-        const data = await res.json();
+        // Real SSE stream test — read first event then close
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000);
+        const res = await fetch(`${API_BASE}/v1/gold/stream`, {
+            headers: { 'x-api-key': apiKey },
+            signal: controller.signal
+        });
         
-        const dot = document.getElementById('prov-stream-dot');
-        const layerEl = document.getElementById('prov-gold-layer');
-        const ageEl = document.getElementById('prov-gold-age');
-        
-        if (res.ok && data.gold_available) {
-            if (dot) { dot.style.background = 'var(--accent)'; dot.style.boxShadow = '0 0 6px var(--accent)'; }
-            if (layerEl) layerEl.textContent = data.gold_tier?.replace('GOLD_','').replace('.md','') || '—';
-            if (ageEl) ageEl.textContent = data.gold_cache_age_seconds ? data.gold_cache_age_seconds + 's ago' : 'live';
+        if (res.ok) {
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
+                buffer += decoder.decode(value, { stream: true });
+                if (buffer.includes('data: ')) {
+                    const dataLine = buffer.split('data: ')[1]?.split('\n')[0];
+                    if (dataLine) {
+                        try {
+                            const sseData = JSON.parse(dataLine);
+                            if (dot) { dot.style.background = 'var(--accent)'; dot.style.boxShadow = '0 0 6px var(--accent)'; }
+                            if (layerEl) layerEl.textContent = sseData.tier?.replace('GOLD_','').replace('.md','') || sseData.layer || '—';
+                            if (ageEl) ageEl.textContent = `${sseData.tokens_estimate || '?'} tok · ${sseData.snippets_count || 0} modules`;
+                        } catch(e) {}
+                        break;
+                    }
+                }
+            }
+            reader.cancel();
+            clearTimeout(timeout);
+        } else if (res.status === 403) {
+            if (dot) { dot.style.background = '#f59e0b'; dot.style.boxShadow = '0 0 6px #f59e0b'; }
+            if (layerEl) layerEl.textContent = 'TIER REQUIRED';
+            if (ageEl) ageEl.textContent = 'upgrade to AI Provider';
         } else {
-            if (dot) { dot.style.background = '#ef4444'; dot.style.boxShadow = '0 0 6px #ef4444'; }
-            if (layerEl) layerEl.textContent = 'DISCONNECTED';
+            throw new Error(`HTTP ${res.status}`);
         }
     } catch (e) {
-        const dot = document.getElementById('prov-stream-dot');
-        if (dot) { dot.style.background = '#ef4444'; dot.style.boxShadow = '0 0 6px #ef4444'; }
+        // Fallback to proxy/status
+        try {
+            const res2 = await fetch(`${API_BASE}/v1/proxy/status`, { headers: { 'x-api-key': apiKey } });
+            const d = await res2.json();
+            if (res2.ok && d.gold_available) {
+                if (dot) { dot.style.background = 'var(--accent)'; dot.style.boxShadow = '0 0 6px var(--accent)'; }
+                if (layerEl) layerEl.textContent = d.gold_tier?.replace('GOLD_','').replace('.md','') || '—';
+                if (ageEl) ageEl.textContent = d.gold_cache_age_seconds ? d.gold_cache_age_seconds + 's ago' : 'cached';
+            } else {
+                if (dot) { dot.style.background = '#ef4444'; dot.style.boxShadow = '0 0 6px #ef4444'; }
+                if (layerEl) layerEl.textContent = 'DISCONNECTED';
+            }
+        } catch(e2) {
+            if (dot) { dot.style.background = '#ef4444'; dot.style.boxShadow = '0 0 6px #ef4444'; }
+            if (layerEl) layerEl.textContent = 'ERROR';
+        }
     }
-    
-    if (btn) { btn.disabled = false; }
+    if (btn) btn.disabled = false;
 }
 
 async function loadModels() {
