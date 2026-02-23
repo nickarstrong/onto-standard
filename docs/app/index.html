@@ -3157,6 +3157,7 @@ async function loadModels() {
                     <div>
                         <div style="font-size:13px;font-weight:600;color:var(--text)">${m.name}</div>
                         <div style="font-size:10px;color:var(--text-muted)">${evalText}</div>
+                        <div style="font-size:9px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;cursor:pointer;margin-top:2px" onclick="navigator.clipboard.writeText('${m.id}');showToast('Model ID copied','success')" title="Click to copy">${m.id.slice(0,8)}... <span style="color:var(--accent);font-size:8px">COPY</span></div>
                     </div>
                 </div>
                 <div style="display:flex;align-items:center;gap:16px">
@@ -3195,10 +3196,17 @@ async function registerModel() {
         const data = await res.json();
         
         if (res.ok) {
-            showToast(`Model "${name}" registered`, 'success');
             document.getElementById('new-model-name').value = '';
             document.getElementById('add-model-row').classList.add('hidden');
             loadModels();
+            // Show model_id with copy snippet
+            const snippet = `# Use this model_id in scoring calls:\nrequests.post(\n  "https://api.ontostandard.org/v1/models/evaluate",\n  headers={"x-api-key": "YOUR_ONTO_KEY"},\n  json={\n    "model_id": "${data.id}",\n    "output": model_output,\n    "context": user_message,\n    "domain": "general"\n  }\n)`;
+            const resultDiv = document.getElementById('test-prov-result');
+            if (resultDiv) {
+                resultDiv.textContent = snippet;
+                resultDiv.classList.remove('hidden');
+            }
+            showToast(`Model "${name}" registered · ID: ${data.id.slice(0,8)}...`, 'success');
         } else {
             showToast(data.detail || 'Failed to register', 'error');
         }
