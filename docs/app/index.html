@@ -3157,12 +3157,13 @@ async function connectSSE() {
                     sseLastHeartbeat = Date.now();
 
                     if (data.type === 'gold_corpus' || data.type === 'gold_update') {
-                        const content = data.discipline_layer || '';
-                        document.getElementById('sse-chars').textContent = content.length.toLocaleString();
+                        const chars = data.gold_chars || 0;
+                        const encrypted = data.encrypted ? '🔒' : '';
+                        document.getElementById('sse-chars').textContent = chars.toLocaleString();
                         document.getElementById('sse-snippets').textContent = data.snippets_count || '—';
                         document.getElementById('sse-hash').textContent = 'hash: ' + (data.content_hash || '—');
                         document.getElementById('sse-heartbeat').textContent = 'now';
-                        log.innerHTML += `<div style="color:var(--accent)">✓ GOLD ${data.type === 'gold_update' ? 'updated' : 'delivered'}: ${content.length.toLocaleString()} chars</div>`;
+                        log.innerHTML += `<div style="color:var(--accent)">✓ ${encrypted} GOLD ${data.type === 'gold_update' ? 'updated' : 'delivered'}: ${chars.toLocaleString()} chars (encrypted, v${data.version || '?'})</div>`;
                         log.scrollTop = log.scrollHeight;
                     } else if (data.type === 'heartbeat') {
                         document.getElementById('sse-heartbeat').textContent = 'now';
