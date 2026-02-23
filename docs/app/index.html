@@ -1100,18 +1100,85 @@ a.info-val:hover { color: var(--text); }
                 <div class="dash-card-clean" style="margin-bottom:16px">
                     <details onclick="fillIntegrationCode()">
                         <summary style="font-size:13px;font-weight:600;color:var(--text);cursor:pointer">Integration guide</summary>
-                        <div style="font-size:11px;color:var(--text-muted);margin:8px 0">Python, cURL, proof chain — 3 lines of code. Your ONTO API key is pre-filled.</div>
-                        <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px 16px;margin-bottom:12px">
-                            <div style="font-size:10px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">How it works</div>
-                            <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">
-                                Your app → <span style="color:var(--accent);font-weight:600">ONTO Proxy</span> → AI Provider (OpenAI, Anthropic, etc.)<br>
-                                ONTO injects GOLD discipline layer into every request. Your provider key never stored.
+
+                        <!-- PROVIDER: SSE Integration -->
+                        <div id="guide-sse" class="hidden" style="margin-top:8px">
+                            <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Connect via SSE, receive GOLD, inject into your models. Zero latency overhead.</div>
+                            <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px 16px;margin-bottom:12px">
+                                <div style="font-size:10px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">How it works</div>
+                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.8">
+                                    <strong style="color:var(--text)">1.</strong> Connect to SSE → receive GOLD discipline layer<br>
+                                    <strong style="color:var(--text)">2.</strong> Cache GOLD locally → inject into system prompt<br>
+                                    <strong style="color:var(--text)">3.</strong> Your models serve requests directly — <span style="color:var(--accent);font-weight:600">ONTO is not in the request path</span><br>
+                                    <strong style="color:var(--text)">4.</strong> SSE heartbeat every 30s. GOLD updates pushed automatically.
+                                </div>
                             </div>
+
+                            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Step 1 — Connect to SSE</div>
+                            <div style="position:relative">
+                                <button onclick="event.stopPropagation();navigator.clipboard.writeText(document.getElementById('sse-code-1').textContent);showToast('Copied','success')" style="position:absolute;top:8px;right:8px;background:var(--border);border:none;color:var(--text);padding:4px 10px;border-radius:4px;font-size:10px;cursor:pointer;z-index:1">Copy</button>
+                                <pre id="sse-code-1" style="background:#0c0f14;color:#e2e8f0;padding:14px;border-radius:6px;font-size:11px;overflow-x:auto;line-height:1.6;white-space:pre-wrap"><code><span style="color:var(--text-muted)"># Connect to ONTO SSE — receive GOLD discipline layer</span>
+import requests, json, threading
+
+ONTO_KEY = <span style="color:#4ade80">"YOUR_ONTO_API_KEY"</span>
+GOLD = <span style="color:#4ade80">""</span>  <span style="color:var(--text-muted)"># Updated by SSE listener</span>
+
+def sse_listener():
+    global GOLD
+    r = requests.get(
+        <span style="color:#4ade80">"https://api.ontostandard.org/v1/gold/stream"</span>,
+        headers={<span style="color:#4ade80">"x-api-key"</span>: ONTO_KEY},
+        stream=True
+    )
+    for line in r.iter_lines():
+        if not line: continue
+        data = json.loads(line.decode().removeprefix(<span style="color:#4ade80">"data: "</span>))
+        if data[<span style="color:#4ade80">"type"</span>] in (<span style="color:#4ade80">"gold_corpus"</span>, <span style="color:#4ade80">"gold_update"</span>):
+            GOLD = data[<span style="color:#4ade80">"discipline_layer"</span>]
+            print(f<span style="color:#4ade80">"GOLD received: {len(GOLD)} chars"</span>)
+
+threading.Thread(target=sse_listener, daemon=True).start()</code></pre>
+                            </div>
+
+                            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 6px">Step 2 — Inject into your models</div>
+                            <div style="position:relative">
+                                <button onclick="event.stopPropagation();navigator.clipboard.writeText(document.getElementById('sse-code-2').textContent);showToast('Copied','success')" style="position:absolute;top:8px;right:8px;background:var(--border);border:none;color:var(--text);padding:4px 10px;border-radius:4px;font-size:10px;cursor:pointer;z-index:1">Copy</button>
+                                <pre id="sse-code-2" style="background:#0c0f14;color:#e2e8f0;padding:14px;border-radius:6px;font-size:11px;overflow-x:auto;line-height:1.6;white-space:pre-wrap"><code><span style="color:var(--text-muted)"># Inject GOLD into every request — your existing code</span>
+from openai import OpenAI
+client = OpenAI()  <span style="color:var(--text-muted)"># Your own API key, your own infra</span>
+
+def chat(user_message):
+    return client.chat.completions.create(
+        model=<span style="color:#4ade80">"gpt-4o"</span>,
+        messages=[
+            {<span style="color:#4ade80">"role"</span>: <span style="color:#4ade80">"system"</span>, <span style="color:#4ade80">"content"</span>: GOLD},  <span style="color:var(--text-muted)"># ← from SSE</span>
+            {<span style="color:#4ade80">"role"</span>: <span style="color:#4ade80">"user"</span>, <span style="color:#4ade80">"content"</span>: user_message}
+        ]
+    )</code></pre>
+                            </div>
+
+                            <div style="background:rgba(46,194,126,0.06);border:1px solid rgba(46,194,126,0.15);border-radius:6px;padding:10px 14px;margin-top:12px">
+                                <div style="font-size:11px;color:var(--text-secondary);line-height:1.6">
+                                    <strong style="color:var(--accent)">Zero overhead.</strong> ONTO is not in your inference path. Your models serve millions of requests directly. GOLD updates arrive via SSE — no polling, no proxy, no latency.
+                                </div>
+                            </div>
+                            <div style="margin-top:10px"><a href="/docs/" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Full API documentation →</a></div>
                         </div>
-                        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Python (OpenAI-compatible)</div>
-                        <div style="position:relative">
-                            <button onclick="event.stopPropagation();navigator.clipboard.writeText(document.getElementById('full-integration-code').textContent);showToast('Copied','success')" style="position:absolute;top:8px;right:8px;background:var(--border);border:none;color:var(--text);padding:4px 10px;border-radius:4px;font-size:10px;cursor:pointer;z-index:1">Copy</button>
-                            <pre id="full-integration-code" style="background:#0c0f14;color:#e2e8f0;padding:14px;border-radius:6px;font-size:11px;overflow-x:auto;line-height:1.5;white-space:pre-wrap"><code><span style="color:var(--text-muted)"># Replace your OpenAI client with:</span>
+
+                        <!-- STANDARD/OPEN: Proxy Integration -->
+                        <div id="guide-proxy" style="margin-top:8px">
+                            <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Python, cURL — 3 lines of code. Your ONTO API key is pre-filled.</div>
+                            <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px 16px;margin-bottom:12px">
+                                <div style="font-size:10px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">How it works</div>
+                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">
+                                    Your app → <span style="color:var(--accent);font-weight:600">ONTO Proxy</span> → AI Provider (OpenAI, Anthropic, etc.)<br>
+                                    ONTO injects GOLD discipline layer into every request. Your provider key never stored.
+                                </div>
+                            </div>
+                            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Python (OpenAI-compatible)</div>
+                            <div style="position:relative">
+                                <button onclick="event.stopPropagation();navigator.clipboard.writeText(document.getElementById('full-integration-code').textContent);showToast('Copied','success')" style="position:absolute;top:8px;right:8px;background:var(--border);border:none;color:var(--text);padding:4px 10px;border-radius:4px;font-size:10px;cursor:pointer;z-index:1">Copy</button>
+                                <pre id="full-integration-code" style="background:#0c0f14;color:#e2e8f0;padding:14px;border-radius:6px;font-size:11px;overflow-x:auto;line-height:1.5;white-space:pre-wrap"><code><span style="color:var(--text-muted)"># Replace your OpenAI client with:</span>
 client = OpenAI(
     api_key=<span style="color:#4ade80">"YOUR_ONTO_API_KEY"</span>,
     base_url=<span style="color:#4ade80">"https://api.ontostandard.org/v1/proxy"</span>,
@@ -1119,14 +1186,15 @@ client = OpenAI(
         <span style="color:#4ade80">"X-Provider-Key"</span>: <span style="color:#4ade80">"sk-...your_openai_key"</span>
     }
 )</code></pre>
-                        </div>
-                        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 6px">cURL</div>
-                        <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code>curl -X POST https://api.ontostandard.org/v1/proxy/chat/completions \
+                            </div>
+                            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 6px">cURL</div>
+                            <pre style="background:#0c0f14;color:#e2e8f0;padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:12px;overflow-x:auto;line-height:1.6"><code>curl -X POST https://api.ontostandard.org/v1/proxy/chat/completions \
   -H <span style="color:#4ade80">"x-api-key: YOUR_ONTO_API_KEY"</span> \
   -H <span style="color:#4ade80">"X-Provider-Key: sk-...your_openai_key"</span> \
   -H <span style="color:#4ade80">"Content-Type: application/json"</span> \
   -d <span style="color:#4ade80">'{"model":"gpt-4o","messages":[{"role":"user","content":"Your question"}]}'</span></code></pre>
-                        <div style="margin-top:4px"><a href="/docs/" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Full API documentation →</a></div>
+                            <div style="margin-top:4px"><a href="/docs/" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Full API documentation →</a></div>
+                        </div>
                     </details>
                 </div>
 
@@ -2703,9 +2771,13 @@ function showDashboard() {
             const modelRow = document.getElementById('test-model-row');
             const stdRow = document.getElementById('test-std-row');
             const demoNote = document.getElementById('test-demo-note');
+            const guideSse = document.getElementById('guide-sse');
+            const guideProxy = document.getElementById('guide-proxy');
             if (modelRow) modelRow.classList.toggle('hidden', !isProvider);
             if (stdRow) stdRow.style.display = isProvider ? 'none' : 'flex';
             if (demoNote) demoNote.classList.toggle('hidden', !isProvider);
+            if (guideSse) guideSse.classList.toggle('hidden', !isProvider);
+            if (guideProxy) guideProxy.style.display = isProvider ? 'none' : 'block';
             // Auto-load
             if (isProvider) { 
                 setTimeout(loadModels, 500);
