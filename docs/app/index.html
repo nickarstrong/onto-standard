@@ -3268,49 +3268,55 @@ async function runModelTest() {
     const question = document.getElementById('prov-question')?.value?.trim();
     if (!question) { showToast('Enter a question', 'error'); return; }
     
-    const provType = sel.selectedOptions[0]?.dataset?.ptype || 'openai';
     const btn = document.getElementById('live-test-btn');
     const status = document.getElementById('live-test-status');
-    btn.disabled = true; btn.textContent = 'Sending...';
-    status.textContent = 'Routing through ONTO proxy...';
+    btn.disabled = true; btn.textContent = 'Testing...';
+    status.textContent = 'Sending through GOLD proxy → provider → scoring...';
     document.getElementById('live-test-result').classList.add('hidden');
     
     try {
-        let url, body;
-        if (provType === 'anthropic') {
-            url = `${API_BASE}/v1/proxy/anthropic/messages`;
-            body = { model: 'claude-sonnet-4-20250514', max_tokens: 1024, messages: [{ role: 'user', content: question }] };
-        } else {
-            url = `${API_BASE}/v1/proxy/chat/completions`;
-            const models = { openai: 'gpt-4o', deepseek: 'deepseek-chat', mistral: 'mistral-large-latest' };
-            body = { model: models[provType] || 'gpt-4o', messages: [{ role: 'user', content: question }], max_tokens: 1024 };
-        }
-        
-        // Note: proxy uses org's stored provider key from model registration
-        // For now, we need the provider key — but it's stored server-side
-        // TODO: backend endpoint that uses stored key
-        status.textContent = 'This test requires provider key — use integration code for production testing';
-        
-        // Score the question as-is for demo
-        const scoreRes = await fetch(`${API_BASE}/v1/models/evaluate`, {
+        const res = await fetch(`${API_BASE}/v1/models/${modelId}/test`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'x-api-key': ontoKey },
-            body: JSON.stringify({ model_id: modelId, output: question, context: 'test', domain: 'general' })
+            body: JSON.stringify({ question })
         });
-        if (scoreRes.ok) {
-            const sd = await scoreRes.json();
-            document.getElementById('live-score').textContent = parseFloat(sd.risk_score || 0).toFixed(1);
-            document.getElementById('live-grade').textContent = sd.compliance?.grade || '?';
-            const p = sd.proof_hash || '';
-            const pe = document.getElementById('live-proof');
-            pe.textContent = p ? p.slice(0,16)+'...' : '—';
-            pe.dataset.full = p;
-            if (p) { const vl = document.getElementById('live-verify-link'); vl.href = `https://ontostandard.org/verify/?hash=${p}`; vl.style.display = 'inline'; }
-            document.getElementById('live-response').textContent = `Evaluation recorded for model ${modelId}.\nScore: ${sd.risk_score} | Grade: ${sd.compliance?.grade}`;
-            document.getElementById('live-test-result').classList.remove('hidden');
-            status.textContent = '';
-            setTimeout(loadModels, 500);
+        const data = await res.json();
+        
+        if (!res.ok) {
+            status.textContent = data.detail || data.error || 'Test failed';
+            btn.disabled = false; btn.textContent = 'Send';
+            return;
         }
+        
+        // Display results
+        document.getElementById('live-score').textContent = (data.score || 0).toFixed(1);
+        document.getElementById('live-grade').textContent = data.grade || '?';
+        
+        const p = data.proof_hash || '';
+        const pe = document.getElementById('live-proof');
+        pe.textContent = p ? p.slice(0,16)+'...' : '—';
+        pe.dataset.full = p;
+        if (p) {
+            const vl = document.getElementById('live-verify-link');
+            vl.href = `https://ontostandard.org/verify/?hash=${p}`;
+            vl.style.display = 'inline';
+        }
+        
+        document.getElementById('live-response').textContent = data.response || 'No response';
+        
+        // Show GOLD markers
+        const markers = data.markers || {};
+        const markerNames = {QD: 'Qualification', SS: 'Source Signals', UM: 'Uncertainty Markers', CONF: 'Confidence'};
+        let markerHtml = `GOLD: ${data.gold_active ? '● Active' : '○ Inactive'} | Mode: ${data.gold_mode || '?'} | `;
+        for (const [k,v] of Object.entries(markers)) {
+            if (markerNames[k]) markerHtml += `${markerNames[k]}: ${v} `;
+        }
+        document.getElementById('live-markers').innerHTML = markerHtml;
+        
+        document.getElementById('live-test-result').classList.remove('hidden');
+        status.textContent = '';
+        setTimeout(loadModels, 1000);
+        
     } catch (e) {
         status.textContent = 'Error: ' + e.message;
     }
