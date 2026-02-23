@@ -2706,11 +2706,6 @@ function showDashboard() {
             // Auto-load provider status
             if (isProvider) { 
                 setTimeout(loadModels, 500);
-                // Restore saved provider key
-                const savedProvKey = localStorage.getItem('onto_provider_key');
-                const savedProvType = localStorage.getItem('onto_provider_type');
-                if (savedProvKey) document.getElementById('prov-key-input').value = savedProvKey;
-                if (savedProvType) document.getElementById('prov-select').value = savedProvType;
                 // Fill integration code with real ONTO key
                 fillIntegrationCode();
             }
