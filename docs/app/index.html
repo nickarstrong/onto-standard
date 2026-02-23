@@ -1121,20 +1121,12 @@ client = OpenAI(
 
                 <!-- INTEGRATION CODE -->
                 <div class="dash-card-clean" style="margin-bottom:16px">
-                    <details>
+                    <details onclick="fillIntegrationCode()">
                         <summary style="font-size:13px;font-weight:600;color:var(--text);cursor:pointer">Integration code</summary>
-                        <div style="font-size:11px;color:var(--text-muted);margin:8px 0">Your ONTO API key is pre-filled. Copy into your server.</div>
-                        <pre id="full-integration-code" style="background:#0c0f14;color:#e2e8f0;padding:14px;border-radius:6px;font-size:11px;overflow-x:auto;line-height:1.5;white-space:pre-wrap"></pre>
-                    </details>
-                </div>
-
-                <!-- KEY ROTATION -->
-                <div class="dash-card-clean" style="margin-bottom:16px">
-                    <details>
-                        <summary style="font-size:13px;font-weight:600;color:var(--text);cursor:pointer">Key rotation</summary>
-                        <div style="margin-top:10px">
-                            <div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px">Invalidates current key immediately. All connected services disconnect.</div>
-                            <button class="btn-minimal" onclick="regenerateKey()" style="font-size:11px;color:#ef4444;border-color:#ef4444">Regenerate API Key</button>
+                        <div style="font-size:11px;color:var(--text-muted);margin:8px 0">Copy this into your server. Your ONTO API key is pre-filled.</div>
+                        <div style="position:relative">
+                            <button onclick="event.stopPropagation();navigator.clipboard.writeText(document.getElementById('full-integration-code').textContent);showToast('Copied','success')" style="position:absolute;top:8px;right:8px;background:var(--border);border:none;color:var(--text);padding:4px 10px;border-radius:4px;font-size:10px;cursor:pointer;z-index:1">Copy</button>
+                            <pre id="full-integration-code" style="background:#0c0f14;color:#e2e8f0;padding:14px;border-radius:6px;font-size:11px;overflow-x:auto;line-height:1.5;white-space:pre-wrap">Loading...</pre>
                         </div>
                     </details>
                 </div>
@@ -1151,30 +1143,13 @@ client = OpenAI(
                     <div id="test-prov-result"></div><span id="test-prov-status"></span>
                     <div id="key-management"></div>
                     <div id="fleet-models-list"></div><div id="fleet-overview"></div>
+                    <code id="erm-cert-hash">—</code>
+                    <div id="dash-cert-status"></div>
+                    <a id="dash-verify-link" href="#"></a>
                 </div>
             </div>
 
 
-
-
-            <!-- CERTIFICATE (shared) -->
-            <div class="dash-card-clean" style="margin-bottom:16px">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-                    <div class="card-head">Certificate</div>
-                    <div id="dash-cert-status" style="font-size:10px;font-weight:600;color:var(--accent)">● ACTIVE</div>
-                </div>
-                <div style="margin-bottom:8px">
-                    <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px">Verification Hash</div>
-                    <div style="display:flex;align-items:center;gap:8px">
-                        <code style="font-size:11px;color:var(--text);font-family:'JetBrains Mono',monospace;word-break:break-all;flex:1" id="erm-cert-hash">—</code>
-                        <button class="btn-minimal" onclick="ermCopyHash()" style="flex-shrink:0">Copy</button>
-                    </div>
-                </div>
-                <div style="display:flex;gap:8px;margin-top:10px">
-                    <a id="dash-verify-link" href="/verify/" target="_blank" class="btn-minimal" style="text-decoration:none;text-align:center;flex:1">Verify ↗</a>
-                    <button class="btn-minimal" onclick="ermDownloadCert()" style="flex:1">Download JSON</button>
-                </div>
-            </div>
 
             <!-- SIGNAL (shared) -->
             <div class="signal-panel" id="user-signal-panel" style="padding:14px 18px">
