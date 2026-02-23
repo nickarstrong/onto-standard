@@ -1012,6 +1012,42 @@ a.info-val:hover { color: var(--text); }
             <!-- ═══════════ PROVIDER-ONLY: Models ═══════════ -->
             <div id="dash-provider-view" class="hidden">
 
+                <!-- SSE CONNECTION -->
+                <div class="dash-card-clean" style="margin-bottom:16px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                        <div class="card-head" style="margin-bottom:0">GOLD Delivery (SSE)</div>
+                        <div id="sse-status-badge" style="font-size:10px;padding:3px 8px;border-radius:10px;background:rgba(239,68,68,0.15);color:#ef4444;font-weight:600">○ Disconnected</div>
+                    </div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Live SSE connection delivers GOLD discipline layer to your infrastructure. Connect once — inject into every request.</div>
+
+                    <div id="sse-disconnected">
+                        <button class="btn-minimal" onclick="connectSSE()" id="sse-connect-btn" style="font-size:12px;padding:8px 24px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Connect SSE</button>
+                    </div>
+
+                    <div id="sse-connected" class="hidden">
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px">
+                            <div style="background:var(--bg);border-radius:6px;padding:10px 12px;text-align:center">
+                                <div style="font-size:16px;font-weight:700;color:var(--accent)" id="sse-chars">—</div>
+                                <div style="font-size:9px;color:var(--text-muted);margin-top:2px">GOLD chars</div>
+                            </div>
+                            <div style="background:var(--bg);border-radius:6px;padding:10px 12px;text-align:center">
+                                <div style="font-size:16px;font-weight:700;color:var(--text)" id="sse-snippets">—</div>
+                                <div style="font-size:9px;color:var(--text-muted);margin-top:2px">Snippets</div>
+                            </div>
+                            <div style="background:var(--bg);border-radius:6px;padding:10px 12px;text-align:center">
+                                <div style="font-size:16px;font-weight:700;color:var(--text)" id="sse-heartbeat">—</div>
+                                <div style="font-size:9px;color:var(--text-muted);margin-top:2px">Last heartbeat</div>
+                            </div>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center">
+                            <div style="font-size:10px;color:var(--text-muted)"><span id="sse-hash" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-secondary)">—</span></div>
+                            <button class="btn-minimal" onclick="disconnectSSE()" style="font-size:10px;padding:4px 12px;color:#ef4444;border-color:rgba(239,68,68,0.3)">Disconnect</button>
+                        </div>
+                    </div>
+
+                    <div id="sse-log" class="hidden" style="margin-top:10px;background:#0c0f14;border-radius:6px;padding:8px 12px;font-size:10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;max-height:100px;overflow-y:auto;line-height:1.6"></div>
+                </div>
+
                 <!-- MODELS: register + manage -->
                 <div class="dash-card-clean" style="margin-bottom:16px">
                     <div class="card-head" style="margin-bottom:2px">Your AI Models</div>
@@ -3056,6 +3092,120 @@ function openCompanyModal() {
 }
 
 // ============ INTEGRATION TESTS ============
+
+// === SSE CONNECTION ===
+let sseController = null;
+let sseHeartbeatInterval = null;
+let sseLastHeartbeat = 0;
+
+async function connectSSE() {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) { showToast('Sign in first', 'error'); return; }
+
+    const btn = document.getElementById('sse-connect-btn');
+    btn.disabled = true;
+    btn.textContent = 'Connecting...';
+
+    const badge = document.getElementById('sse-status-badge');
+    const log = document.getElementById('sse-log');
+    log.classList.remove('hidden');
+    log.innerHTML = '<div>Connecting to SSE...</div>';
+
+    try {
+        sseController = new AbortController();
+        const res = await fetch(`${API_BASE}/v1/gold/stream`, {
+            headers: { 'x-api-key': apiKey },
+            signal: sseController.signal
+        });
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({ detail: res.statusText }));
+            throw new Error(err.detail || 'Connection failed');
+        }
+
+        // Switch to connected state
+        document.getElementById('sse-disconnected').classList.add('hidden');
+        document.getElementById('sse-connected').classList.remove('hidden');
+        badge.textContent = '● Connected';
+        badge.style.background = 'rgba(46,194,126,0.15)';
+        badge.style.color = 'var(--accent)';
+
+        // Read SSE stream
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        sseHeartbeatInterval = setInterval(() => {
+            if (sseLastHeartbeat > 0) {
+                const ago = Math.floor((Date.now() - sseLastHeartbeat) / 1000);
+                document.getElementById('sse-heartbeat').textContent = ago + 's ago';
+            }
+        }, 1000);
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+
+            for (const line of lines) {
+                if (!line.startsWith('data: ')) continue;
+                try {
+                    const data = JSON.parse(line.slice(6));
+                    sseLastHeartbeat = Date.now();
+
+                    if (data.type === 'gold_corpus' || data.type === 'gold_update') {
+                        const content = data.discipline_layer || '';
+                        document.getElementById('sse-chars').textContent = content.length.toLocaleString();
+                        document.getElementById('sse-snippets').textContent = data.snippets_count || '—';
+                        document.getElementById('sse-hash').textContent = 'hash: ' + (data.content_hash || '—');
+                        document.getElementById('sse-heartbeat').textContent = 'now';
+                        log.innerHTML += `<div style="color:var(--accent)">✓ GOLD ${data.type === 'gold_update' ? 'updated' : 'delivered'}: ${content.length.toLocaleString()} chars</div>`;
+                        log.scrollTop = log.scrollHeight;
+                    } else if (data.type === 'heartbeat') {
+                        document.getElementById('sse-heartbeat').textContent = 'now';
+                        log.innerHTML += `<div>♡ heartbeat</div>`;
+                        if (log.children.length > 20) log.removeChild(log.firstChild);
+                        log.scrollTop = log.scrollHeight;
+                    } else if (data.type === 'error') {
+                        log.innerHTML += `<div style="color:#ef4444">✗ ${data.message}</div>`;
+                        log.scrollTop = log.scrollHeight;
+                    }
+                } catch (e) { /* skip malformed */ }
+            }
+        }
+    } catch (e) {
+        if (e.name === 'AbortError') return; // manual disconnect
+        log.innerHTML += `<div style="color:#ef4444">✗ ${e.message}</div>`;
+        btn.disabled = false;
+        btn.textContent = 'Reconnect';
+        badge.textContent = '○ Disconnected';
+        badge.style.background = 'rgba(239,68,68,0.15)';
+        badge.style.color = '#ef4444';
+        document.getElementById('sse-disconnected').classList.remove('hidden');
+        document.getElementById('sse-connected').classList.add('hidden');
+    }
+}
+
+function disconnectSSE() {
+    if (sseController) { sseController.abort(); sseController = null; }
+    if (sseHeartbeatInterval) { clearInterval(sseHeartbeatInterval); sseHeartbeatInterval = null; }
+
+    document.getElementById('sse-disconnected').classList.remove('hidden');
+    document.getElementById('sse-connected').classList.add('hidden');
+    document.getElementById('sse-connect-btn').disabled = false;
+    document.getElementById('sse-connect-btn').textContent = 'Connect SSE';
+
+    const badge = document.getElementById('sse-status-badge');
+    badge.textContent = '○ Disconnected';
+    badge.style.background = 'rgba(239,68,68,0.15)';
+    badge.style.color = '#ef4444';
+
+    const log = document.getElementById('sse-log');
+    log.innerHTML += '<div style="color:#f59e0b">⏏ Disconnected</div>';
+}
 
 async function loadProxyUsage() {
     const apiKey = localStorage.getItem('onto_first_api_key');
