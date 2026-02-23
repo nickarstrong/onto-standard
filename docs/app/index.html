@@ -980,6 +980,35 @@ a.info-val:hover { color: var(--text); }
 
             <!-- ═══════════ PROXY DASHBOARD (Open + Standard) ═══════════ -->
             <div id="dash-proxy-view">
+                <!-- USAGE METRICS -->
+                <div class="dash-card-clean" style="margin-bottom:16px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                        <div class="card-head" style="margin-bottom:0">Usage today</div>
+                        <span id="proxy-gold-badge" style="font-size:10px;padding:3px 8px;border-radius:10px;background:rgba(46,194,126,0.15);color:var(--accent);font-weight:600">● GOLD Active</span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+                        <div style="background:var(--bg);border-radius:6px;padding:10px 12px;text-align:center">
+                            <div style="font-size:20px;font-weight:700;color:var(--text)" id="proxy-used-today">—</div>
+                            <div style="font-size:10px;color:var(--text-muted);margin-top:2px">Requests</div>
+                        </div>
+                        <div style="background:var(--bg);border-radius:6px;padding:10px 12px;text-align:center">
+                            <div style="font-size:20px;font-weight:700;color:var(--text)" id="proxy-daily-limit">—</div>
+                            <div style="font-size:10px;color:var(--text-muted);margin-top:2px">Daily limit</div>
+                        </div>
+                        <div style="background:var(--bg);border-radius:6px;padding:10px 12px;text-align:center">
+                            <div style="font-size:20px;font-weight:700;color:var(--text)" id="proxy-remaining">—</div>
+                            <div style="font-size:10px;color:var(--text-muted);margin-top:2px">Remaining</div>
+                        </div>
+                    </div>
+                    <div style="background:var(--border);border-radius:3px;height:6px;overflow:hidden">
+                        <div id="proxy-usage-bar" style="height:100%;background:var(--accent);border-radius:3px;width:0%;transition:width 0.5s ease"></div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;margin-top:6px">
+                        <span style="font-size:10px;color:var(--text-muted)" id="proxy-tier-label">—</span>
+                        <span style="font-size:10px;color:var(--text-muted)" id="proxy-resets">Resets at midnight UTC</span>
+                    </div>
+                </div>
+
                 <!-- QUICK TEST — always visible -->
                 <div class="dash-card-clean" style="margin-bottom:16px">
                     <div class="card-head" style="margin-bottom:4px">Connect your AI</div>
@@ -2708,6 +2737,8 @@ function showDashboard() {
                 setTimeout(loadModels, 500);
                 // Fill integration code with real ONTO key
                 fillIntegrationCode();
+            } else {
+                setTimeout(loadProxyUsage, 300);
             }
             // Restore saved provider key
             const savedPK = localStorage.getItem('onto_provider_key');
@@ -2981,6 +3012,44 @@ function openCompanyModal() {
 
 // ============ INTEGRATION TESTS ============
 
+async function loadProxyUsage() {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) return;
+    try {
+        const res = await fetch(`${API_BASE}/v1/proxy/status`, {
+            headers: { 'x-api-key': apiKey }
+        });
+        if (!res.ok) return;
+        const d = await res.json();
+        const used = d.usage_today || 0;
+        const limit = d.daily_limit || 0;
+        const remaining = limit < 0 ? '∞' : Math.max(limit - used, 0);
+        const limitDisplay = limit < 0 ? '∞' : limit;
+        const pct = limit > 0 ? Math.min((used / limit) * 100, 100) : 0;
+
+        document.getElementById('proxy-used-today').textContent = used;
+        document.getElementById('proxy-daily-limit').textContent = limitDisplay;
+        document.getElementById('proxy-remaining').textContent = remaining;
+        document.getElementById('proxy-usage-bar').style.width = pct + '%';
+        if (pct > 80) document.getElementById('proxy-usage-bar').style.background = '#ef4444';
+        else if (pct > 50) document.getElementById('proxy-usage-bar').style.background = '#f59e0b';
+
+        const tierMap = { open: 'OPEN', business: 'STANDARD', standard: 'STANDARD', enterprise: 'PROVIDER', white_label: 'WHITE-LABEL' };
+        document.getElementById('proxy-tier-label').textContent = (tierMap[d.layer] || d.layer || '').toUpperCase() + ' tier';
+
+        const badge = document.getElementById('proxy-gold-badge');
+        if (d.gold_available) {
+            badge.textContent = '● GOLD Active';
+            badge.style.background = 'rgba(46,194,126,0.15)';
+            badge.style.color = 'var(--accent)';
+        } else {
+            badge.textContent = '○ GOLD Unavailable';
+            badge.style.background = 'rgba(239,68,68,0.15)';
+            badge.style.color = '#ef4444';
+        }
+    } catch(e) { /* silent */ }
+}
+
 async function testStandardProxy() {
     const providerKey = document.getElementById('test-std-provider-key').value.trim();
     if (!providerKey) { showToast('Enter your provider API key', 'error'); return; }
@@ -3165,8 +3234,8 @@ async function loadModels() {
         for (const m of data.models) {
             const isOn = m.is_enabled !== false;
             const cert = m.cert_status || 'inactive';
-            const certColor = cert === 'active' ? 'var(--accent)' : cert === 'pending' ? '#f59e0b' : '#ef4444';
-            const certLabel = cert === 'active' ? 'CERTIFIED' : cert === 'pending' ? 'PENDING' : cert === 'stale' ? 'STALE' : 'INACTIVE';
+            const certColor = cert === 'active' ? 'var(--accent)' : '#ef4444';
+            const certLabel = cert === 'active' ? 'CERTIFIED' : 'INACTIVE';
             const certUrl = m.cert_url || '';
             const lastEval = m.last_eval_ago || 'never';
             const scoreText = m.avg_score !== null && m.avg_score !== undefined ? m.avg_score.toFixed(1) : '—';
