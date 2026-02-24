@@ -1046,9 +1046,6 @@ a.info-val:hover { color: var(--text); }
                                 <button class="btn-minimal" onclick="document.getElementById('proxy-register-form').classList.toggle('hidden')" style="font-size:10px;padding:3px 10px">+ Add</button>
                             </div>
 
-                            <div style="font-size:10px;color:var(--text-muted);margin-bottom:10px">Registered models available in Quick Test dropdown.</div>
-
-                            <!-- Proxy register form (collapsed) -->
                             <div id="proxy-register-form" class="hidden" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:10px">
                                 <div style="display:flex;gap:6px;margin-bottom:6px">
                                     <input type="text" id="proxy-new-model-name" placeholder="Model name" style="flex:1;background:#0c0f14;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:11px;color:var(--text)">
@@ -1071,12 +1068,12 @@ a.info-val:hover { color: var(--text); }
                             </div>
 
                             <div style="border-top:1px solid var(--border);margin-top:10px;padding-top:8px;display:flex;justify-content:space-between;align-items:center">
-                                <span style="font-size:10px;color:var(--text-muted)"><span id="prov-proxy-used">0</span> / <span id="prov-proxy-limit">10</span> requests today</span>
-                                <span style="font-size:10px;color:var(--text-muted)">Resets midnight UTC</span>
+                                <span style="font-size:10px;color:var(--text-muted)"><span id="prov-proxy-used">0</span> / <span id="prov-proxy-limit">10</span> req/day</span>
+                                <span style="font-size:10px;color:var(--text-muted)">Sampled verification</span>
                             </div>
                         </div>
 
-                        <!-- RIGHT: SSE Models -->
+                        <!-- RIGHT: SSE Models (per-model connection) -->
                         <div class="dash-card-clean" style="margin-bottom:0;border:1px solid var(--border)">
                             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)">
                                 <div style="display:flex;align-items:center;gap:8px">
@@ -1084,73 +1081,50 @@ a.info-val:hover { color: var(--text); }
                                     <span style="font-size:12px;font-weight:600">SSE</span>
                                     <span style="font-size:9px;color:#0a0a0a;background:var(--accent);padding:1px 6px;border-radius:3px;font-weight:600">Production</span>
                                 </div>
-                                <div id="sse-status-badge" style="font-size:9px;padding:2px 8px;border-radius:10px;background:rgba(239,68,68,0.15);color:#ef4444;font-weight:600">○ Disconnected</div>
+                                <button class="btn-minimal" onclick="document.getElementById('sse-register-form').classList.toggle('hidden')" style="font-size:10px;padding:3px 10px">+ Add</button>
                             </div>
 
-                            <!-- SSE Connection -->
-                            <div id="sse-disconnected" style="margin-bottom:12px">
-                                <button class="btn-minimal" onclick="connectSSE()" id="sse-connect-btn" style="font-size:11px;padding:6px 18px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Connect SSE</button>
-                            </div>
-                            <div id="sse-connected" class="hidden" style="margin-bottom:12px">
-                                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px">
-                                    <div style="background:var(--bg);border-radius:4px;padding:6px 8px;text-align:center">
-                                        <div style="font-size:13px;font-weight:700;color:var(--accent)" id="sse-chars">—</div>
-                                        <div style="font-size:8px;color:var(--text-muted)">GOLD chars</div>
-                                    </div>
-                                    <div style="background:var(--bg);border-radius:4px;padding:6px 8px;text-align:center">
-                                        <div style="font-size:13px;font-weight:700;color:var(--text)" id="sse-snippets">—</div>
-                                        <div style="font-size:8px;color:var(--text-muted)">Snippets</div>
-                                    </div>
-                                    <div style="background:var(--bg);border-radius:4px;padding:6px 8px;text-align:center">
-                                        <div style="font-size:13px;font-weight:700;color:var(--text)" id="sse-heartbeat">—</div>
-                                        <div style="font-size:8px;color:var(--text-muted)">Heartbeat</div>
-                                    </div>
+                            <div id="sse-register-form" class="hidden" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:10px">
+                                <div style="display:flex;gap:6px;margin-bottom:6px">
+                                    <input type="text" id="new-model-name" placeholder="Model name" style="flex:1;background:#0c0f14;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:11px;color:var(--text)" onkeydown="if(event.key==='Enter')registerModel()">
+                                    <select id="new-model-provider" style="background:#0c0f14;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:10px;color:var(--text);width:110px">
+                                        <option value="anthropic">Anthropic</option>
+                                        <option value="openai">OpenAI</option>
+                                        <option value="deepseek">DeepSeek</option>
+                                        <option value="mistral">Mistral</option>
+                                        <option value="custom">Custom</option>
+                                    </select>
                                 </div>
-                                <div style="display:flex;justify-content:space-between;align-items:center">
-                                    <span id="sse-hash" style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text-muted)">—</span>
-                                    <button class="btn-minimal" onclick="disconnectSSE()" style="font-size:9px;padding:2px 8px;color:#ef4444;border-color:rgba(239,68,68,0.3)">Disconnect</button>
+                                <div style="display:flex;gap:6px">
+                                    <input type="password" id="new-model-key" placeholder="Provider API key" style="flex:1;background:#0c0f14;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:11px;color:var(--text);font-family:'JetBrains Mono',monospace">
+                                    <button class="btn-minimal" onclick="registerModel()" style="font-size:11px;padding:6px 14px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Register</button>
                                 </div>
                             </div>
-                            <div id="sse-log" class="hidden" style="background:#0c0f14;border-radius:4px;padding:4px 8px;font-size:8px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;max-height:40px;overflow-y:auto;line-height:1.4;margin-bottom:8px"></div>
 
-                            <!-- SSE Models -->
-                            <div style="border-top:1px solid var(--border);padding-top:8px">
-                                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-                                    <span style="font-size:11px;font-weight:600;color:var(--text)">Models</span>
-                                    <button class="btn-minimal" onclick="document.getElementById('sse-register-form').classList.toggle('hidden')" style="font-size:10px;padding:3px 10px">+ Add</button>
-                                </div>
+                            <div id="model-registered-msg" class="hidden" style="background:#1a2e1a;border:1px solid #2d4a2d;border-radius:6px;padding:8px 10px;margin-bottom:8px">
+                                <div style="color:var(--accent);font-size:11px;font-weight:600" id="model-reg-title"></div>
+                                <div style="font-size:9px;color:var(--text-muted)" id="model-reg-id"></div>
+                            </div>
 
-                                <div id="sse-register-form" class="hidden" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:10px">
-                                    <div style="display:flex;gap:6px;margin-bottom:6px">
-                                        <input type="text" id="new-model-name" placeholder="Model name" style="flex:1;background:#0c0f14;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:11px;color:var(--text)" onkeydown="if(event.key==='Enter')registerModel()">
-                                        <select id="new-model-provider" style="background:#0c0f14;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:10px;color:var(--text);width:110px">
-                                            <option value="anthropic">Anthropic</option>
-                                            <option value="openai">OpenAI</option>
-                                            <option value="deepseek">DeepSeek</option>
-                                            <option value="mistral">Mistral</option>
-                                            <option value="custom">Custom</option>
-                                        </select>
-                                    </div>
-                                    <div style="display:flex;gap:6px">
-                                        <input type="password" id="new-model-key" placeholder="Provider API key" style="flex:1;background:#0c0f14;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:11px;color:var(--text);font-family:'JetBrains Mono',monospace">
-                                        <button class="btn-minimal" onclick="registerModel()" style="font-size:11px;padding:6px 14px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Register</button>
-                                    </div>
-                                </div>
+                            <div id="models-list" style="font-size:12px">
+                                <div style="color:var(--text-muted);font-size:11px;padding:8px 0;text-align:center">No SSE models yet</div>
+                            </div>
+                            <div id="add-model-row" class="hidden"></div>
 
-                                <div id="model-registered-msg" class="hidden" style="background:#1a2e1a;border:1px solid #2d4a2d;border-radius:6px;padding:8px 10px;margin-bottom:8px">
-                                    <div style="color:var(--accent);font-size:11px;font-weight:600" id="model-reg-title"></div>
-                                    <div style="font-size:9px;color:var(--text-muted)" id="model-reg-id"></div>
-                                </div>
-
-                                <div id="models-list" style="font-size:12px">
-                                    <div style="color:var(--text-muted);font-size:11px;padding:8px 0;text-align:center">No SSE models yet. Register to enable production delivery.</div>
-                                </div>
-                                <div id="add-model-row" class="hidden"></div>
+                            <!-- Hidden compat for SSE global (legacy JS) -->
+                            <div style="display:none">
+                                <div id="sse-disconnected"></div>
+                                <div id="sse-connected"></div>
+                                <div id="sse-chars"></div><div id="sse-snippets"></div><div id="sse-heartbeat"></div>
+                                <span id="sse-hash"></span>
+                                <div id="sse-log"></div>
+                                <button id="sse-connect-btn"></button>
+                                <div id="sse-status-badge"></div>
                             </div>
 
                             <div style="border-top:1px solid var(--border);margin-top:10px;padding-top:8px;display:flex;justify-content:space-between;align-items:center">
-                                <span style="font-size:10px;color:var(--text-muted)">∞ Unlimited requests</span>
-                                <span style="font-size:10px;color:var(--text-muted)">GOLD via SSE</span>
+                                <span style="font-size:10px;color:var(--text-muted)">∞ Unlimited</span>
+                                <span style="font-size:10px;color:var(--text-muted)">Continuous verification</span>
                             </div>
                         </div>
 
@@ -2931,7 +2905,7 @@ function showDashboard() {
         if (guideSse) guideSse.classList.toggle('hidden', !isProvider);
         if (guideProxy) guideProxy.style.display = isProvider ? 'none' : 'block';
         if (isProvider) {
-            setTimeout(loadModels, 500);
+            setTimeout(loadModelsToProxy, 500);
             renderProxyModels();
         }
         fillIntegrationCode();
@@ -3214,24 +3188,26 @@ let sseController = null;
 let sseHeartbeatInterval = null;
 let sseLastHeartbeat = 0;
 
-async function connectSSE() {
+// Per-model SSE state tracking
+window._sseModelStates = window._sseModelStates || {};
+window._sseModelControllers = window._sseModelControllers || {};
+window._sseModelHeartbeats = window._sseModelHeartbeats || {};
+window._sseModelIntervals = window._sseModelIntervals || {};
+
+async function connectSSEModel(modelId) {
     const apiKey = localStorage.getItem('onto_first_api_key');
     if (!apiKey) { showToast('Sign in first', 'error'); return; }
 
-    const btn = document.getElementById('sse-connect-btn');
-    btn.disabled = true;
-    btn.textContent = 'Connecting...';
-
-    const badge = document.getElementById('sse-status-badge');
-    const log = document.getElementById('sse-log');
-    log.classList.remove('hidden');
-    log.innerHTML = '<div>Connecting to SSE...</div>';
+    window._sseModelStates[modelId] = 'connecting';
+    loadModels(); // re-render
 
     try {
-        sseController = new AbortController();
+        const ctrl = new AbortController();
+        window._sseModelControllers[modelId] = ctrl;
+        
         const res = await fetch(`${API_BASE}/v1/gold/stream`, {
-            headers: { 'x-api-key': apiKey },
-            signal: sseController.signal
+            headers: { 'x-api-key': apiKey, 'x-model-id': modelId },
+            signal: ctrl.signal
         });
 
         if (!res.ok) {
@@ -3239,89 +3215,89 @@ async function connectSSE() {
             throw new Error(err.detail || 'Connection failed');
         }
 
-        // Switch to connected state
-        document.getElementById('sse-disconnected').classList.add('hidden');
-        document.getElementById('sse-connected').classList.remove('hidden');
-        badge.textContent = '● Connected';
-        badge.style.background = 'rgba(46,194,126,0.15)';
-        badge.style.color = 'var(--accent)';
+        window._sseModelStates[modelId] = 'connected';
+        window._sseModelHeartbeats[modelId] = 'now';
+        loadModels();
+        showToast('SSE connected', 'success');
 
-        // Read SSE stream
+        // Heartbeat timer
+        let lastHb = Date.now();
+        window._sseModelIntervals[modelId] = setInterval(() => {
+            const ago = Math.floor((Date.now() - lastHb) / 1000);
+            window._sseModelHeartbeats[modelId] = ago + 's ago';
+            // Update inline without full re-render
+            const row = document.getElementById('sse-model-row-' + modelId);
+            if (row) {
+                const sub = row.querySelector('div[style*="font-size:9px"]');
+                if (sub) {
+                    const base = sub.textContent.split(' · heartbeat')[0];
+                    sub.textContent = base + ' · heartbeat: ' + ago + 's ago';
+                }
+            }
+        }, 1000);
+
+        // Read stream
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
         let buffer = '';
 
-        sseHeartbeatInterval = setInterval(() => {
-            if (sseLastHeartbeat > 0) {
-                const ago = Math.floor((Date.now() - sseLastHeartbeat) / 1000);
-                document.getElementById('sse-heartbeat').textContent = ago + 's ago';
-            }
-        }, 1000);
-
         while (true) {
             const { done, value } = await reader.read();
             if (done) break;
-
             buffer += decoder.decode(value, { stream: true });
             const lines = buffer.split('\n');
             buffer = lines.pop() || '';
-
             for (const line of lines) {
                 if (!line.startsWith('data: ')) continue;
                 try {
                     const data = JSON.parse(line.slice(6));
-                    sseLastHeartbeat = Date.now();
-
-                    if (data.type === 'gold_corpus' || data.type === 'gold_update') {
-                        const chars = data.gold_chars || 0;
-                        const encrypted = data.encrypted ? '🔒' : '';
-                        document.getElementById('sse-chars').textContent = chars.toLocaleString();
-                        document.getElementById('sse-snippets').textContent = data.snippets_count || '—';
-                        document.getElementById('sse-hash').textContent = 'hash: ' + (data.content_hash || '—');
-                        document.getElementById('sse-heartbeat').textContent = 'now';
-                        log.innerHTML += `<div style="color:var(--accent)">✓ ${encrypted} GOLD ${data.type === 'gold_update' ? 'updated' : 'delivered'}: ${chars.toLocaleString()} chars (encrypted, v${data.version || '?'})</div>`;
-                        log.scrollTop = log.scrollHeight;
-                    } else if (data.type === 'heartbeat') {
-                        document.getElementById('sse-heartbeat').textContent = 'now';
-                        log.innerHTML += `<div>♡ heartbeat</div>`;
-                        if (log.children.length > 20) log.removeChild(log.firstChild);
-                        log.scrollTop = log.scrollHeight;
-                    } else if (data.type === 'error') {
-                        log.innerHTML += `<div style="color:#ef4444">✗ ${data.message}</div>`;
-                        log.scrollTop = log.scrollHeight;
+                    lastHb = Date.now();
+                    window._sseModelHeartbeats[modelId] = 'now';
+                    // Update legacy compat elements if present
+                    const charsEl = document.getElementById('sse-chars');
+                    if (charsEl && (data.type === 'gold_corpus' || data.type === 'gold_update')) {
+                        charsEl.textContent = (data.gold_chars || 0).toLocaleString();
                     }
-                } catch (e) { /* skip malformed */ }
+                } catch (e) { /* skip */ }
             }
         }
     } catch (e) {
-        if (e.name === 'AbortError') return; // manual disconnect
-        log.innerHTML += `<div style="color:#ef4444">✗ ${e.message}</div>`;
-        btn.disabled = false;
-        btn.textContent = 'Reconnect';
-        badge.textContent = '○ Disconnected';
-        badge.style.background = 'rgba(239,68,68,0.15)';
-        badge.style.color = '#ef4444';
-        document.getElementById('sse-disconnected').classList.remove('hidden');
-        document.getElementById('sse-connected').classList.add('hidden');
+        if (e.name === 'AbortError') return;
+        window._sseModelStates[modelId] = 'disconnected';
+        delete window._sseModelHeartbeats[modelId];
+        loadModels();
+        showToast('SSE error: ' + e.message, 'error');
     }
 }
 
+function disconnectSSEModel(modelId) {
+    if (window._sseModelControllers[modelId]) {
+        window._sseModelControllers[modelId].abort();
+        delete window._sseModelControllers[modelId];
+    }
+    if (window._sseModelIntervals[modelId]) {
+        clearInterval(window._sseModelIntervals[modelId]);
+        delete window._sseModelIntervals[modelId];
+    }
+    window._sseModelStates[modelId] = 'disconnected';
+    delete window._sseModelHeartbeats[modelId];
+    loadModels();
+    showToast('SSE disconnected', 'success');
+}
+
+// Legacy compat wrappers
+async function connectSSE() {
+    // Try to connect first available model
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) return;
+    try {
+        const res = await fetch(`${API_BASE}/v1/models`, { headers: { 'x-api-key': apiKey } });
+        const data = await res.json();
+        if (data.models?.length) connectSSEModel(data.models[0].id);
+    } catch (e) {}
+}
 function disconnectSSE() {
-    if (sseController) { sseController.abort(); sseController = null; }
-    if (sseHeartbeatInterval) { clearInterval(sseHeartbeatInterval); sseHeartbeatInterval = null; }
-
-    document.getElementById('sse-disconnected').classList.remove('hidden');
-    document.getElementById('sse-connected').classList.add('hidden');
-    document.getElementById('sse-connect-btn').disabled = false;
-    document.getElementById('sse-connect-btn').textContent = 'Connect SSE';
-
-    const badge = document.getElementById('sse-status-badge');
-    badge.textContent = '○ Disconnected';
-    badge.style.background = 'rgba(239,68,68,0.15)';
-    badge.style.color = '#ef4444';
-
-    const log = document.getElementById('sse-log');
-    log.innerHTML += '<div style="color:#f59e0b">⏏ Disconnected</div>';
+    Object.keys(window._sseModelControllers).forEach(id => disconnectSSEModel(id));
 }
 
 async function loadProxyUsage() {
@@ -3429,25 +3405,88 @@ function removeProxyModel(id) {
     saveProxyModels(models);
     renderProxyModels();
 }
+// Load API-registered models into Proxy panel
+async function loadModelsToProxy() {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) return;
+    try {
+        const res = await fetch(`${API_BASE}/v1/models`, { headers: { 'x-api-key': apiKey } });
+        const data = await res.json();
+        window._apiProxyModels = data.models || [];
+    } catch (e) {
+        window._apiProxyModels = [];
+    }
+    renderProxyModels();
+}
+
 function renderProxyModels() {
-    const models = getProxyModels();
+    const localModels = getProxyModels();
+    const apiModels = window._apiProxyModels || [];
     const list = document.getElementById('proxy-models-list');
     const dropdown = document.getElementById('prov-test-model-select');
     if (!list) return;
-    if (models.length === 0) {
+
+    let html = '';
+
+    // API models (from /v1/models) — with toggle, score, cert
+    for (const m of apiModels) {
+        const isOn = m.is_enabled !== false;
+        const cert = m.cert_status || 'inactive';
+        const certColor = cert === 'active' ? 'var(--accent)' : 'var(--text-muted)';
+        const certLabel = cert === 'active' ? 'ACTIVE' : 'INACTIVE';
+        const lastEval = m.last_eval_ago || 'never';
+
+        html += `<div style="padding:8px 0;border-bottom:1px solid var(--border);${!isOn ? 'opacity:0.5' : ''}">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+                <div style="display:flex;align-items:center;gap:8px;min-width:0">
+                    <div onclick="toggleModel('${m.id}')" style="width:32px;height:18px;border-radius:9px;background:${isOn ? 'var(--accent)' : '#4a5568'};cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0" title="${isOn ? 'Enabled' : 'Disabled'}">
+                        <div style="width:14px;height:14px;border-radius:50%;background:white;position:absolute;top:2px;${isOn ? 'right:2px' : 'left:2px'};transition:all 0.2s"></div>
+                    </div>
+                    <div style="min-width:0">
+                        <div style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</div>
+                        <div style="font-size:9px;color:var(--text-muted)">${m.provider_type || ''} · last eval: ${lastEval}</div>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+                    <span style="font-size:8px;padding:2px 6px;border-radius:3px;border:1px solid ${certColor};color:${certColor};font-weight:600">${certLabel}</span>
+                    <button onclick="removeModel('${m.id}','${m.name}')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;padding:2px" title="Remove">×</button>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    // Local-only models (localStorage, no API)
+    for (const m of localModels) {
+        html += `<div style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:8px;min-width:0">
+                <div style="width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0"></div>
+                <div style="min-width:0">
+                    <div style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</div>
+                    <div style="font-size:9px;color:var(--text-muted)">${m.provider} · local</div>
+                </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+                <span style="font-size:8px;padding:2px 6px;border-radius:3px;border:1px solid var(--accent);color:var(--accent);font-weight:600">ACTIVE</span>
+                <button onclick="removeProxyModel('${m.id}')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;padding:2px" title="Remove">×</button>
+            </div>
+        </div>`;
+    }
+
+    if (!html) {
         list.innerHTML = '<div style="color:var(--text-muted);font-size:11px;padding:8px 0;text-align:center">No proxy models yet</div>';
     } else {
-        list.innerHTML = models.map(m => `<div style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-            <div><div style="font-size:12px;font-weight:600;color:var(--text)">${m.name}</div><div style="font-size:10px;color:var(--text-muted)">${m.provider}</div></div>
-            <button onclick="removeProxyModel('${m.id}')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;padding:2px" title="Remove">×</button>
-        </div>`).join('');
+        list.innerHTML = html;
     }
+
     // Update Quick Test dropdown
     if (dropdown) {
         const currentVal = dropdown.value;
         dropdown.innerHTML = '<option value="__manual__">Enter provider + API key manually</option>';
-        models.forEach(m => {
-            dropdown.innerHTML += `<option value="${m.id}">${m.name} (${m.provider})</option>`;
+        apiModels.forEach(m => {
+            if (m.is_enabled !== false) dropdown.innerHTML += `<option value="${m.id}" data-source="api" data-ptype="${m.provider_type}">${m.name} (${m.provider_type})</option>`;
+        });
+        localModels.forEach(m => {
+            dropdown.innerHTML += `<option value="${m.id}" data-source="local">${m.name} (${m.provider})</option>`;
         });
         if (currentVal && [...dropdown.options].some(o => o.value === currentVal)) dropdown.value = currentVal;
         toggleProvManualInput();
@@ -3694,70 +3733,11 @@ async function testProviderSSE() {
 }
 
 async function loadModels() {
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    if (!apiKey) return;
-    
-    try {
-        const res = await fetch(`${API_BASE}/v1/models`, { headers: { 'x-api-key': apiKey } });
-        const data = await res.json();
-        const list = document.getElementById('models-list');
-        const testSelect = document.getElementById('test-model-select');
-        
-        if (!data.models || data.models.length === 0) {
-            if (list) list.innerHTML = '<div style="color:var(--text-muted);font-size:11px;padding:12px 0;text-align:center">No models registered yet</div>';
-            return;
-        }
-        
-        let listHtml = '';
-        let testSelectHtml = '<option value="">Select model...</option>';
-        
-        for (const m of data.models) {
-            const isOn = m.is_enabled !== false;
-            const cert = m.cert_status || 'inactive';
-            const certColor = cert === 'active' ? 'var(--accent)' : '#ef4444';
-            const certLabel = cert === 'active' ? 'CERTIFIED' : 'INACTIVE';
-            const certUrl = m.cert_url || '';
-            const lastEval = m.last_eval_ago || 'never';
-            const scoreText = m.avg_score !== null && m.avg_score !== undefined ? m.avg_score.toFixed(1) : '—';
-            const gradeText = m.grade || '';
-            const scoreColor = m.avg_score >= 7 ? 'var(--accent)' : m.avg_score >= 5 ? '#f59e0b' : m.avg_score > 0 ? '#ef4444' : 'var(--text-muted)';
-            
-            listHtml += `<div style="padding:10px 0;border-bottom:1px solid var(--border);${!isOn ? 'opacity:0.5' : ''}">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-                    <div style="display:flex;align-items:center;gap:10px;flex:1">
-                        <!-- ON/OFF Toggle -->
-                        <div onclick="toggleModel('${m.id}')" style="width:36px;height:20px;border-radius:10px;background:${isOn ? 'var(--accent)' : '#4a5568'};cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0" title="${isOn ? 'Enabled — click to disable' : 'Disabled — click to enable'}">
-                            <div style="width:16px;height:16px;border-radius:50%;background:white;position:absolute;top:2px;${isOn ? 'right:2px' : 'left:2px'};transition:all 0.2s"></div>
-                        </div>
-                        <div style="min-width:0">
-                            <div style="font-size:13px;font-weight:600;color:var(--text)">${m.name}</div>
-                            <div style="font-size:10px;color:var(--text-muted)">${m.provider_type || ''} · last eval: ${lastEval}</div>
-                        </div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
-                        <!-- Score -->
-                        <div style="text-align:right">
-                            <div style="font-size:16px;font-weight:700;color:${scoreColor}">${scoreText}</div>
-                            <div style="font-size:9px;color:var(--text-muted)">${gradeText}</div>
-                        </div>
-                        <!-- Cert badge -->
-                        <div style="display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:4px;border:1px solid ${certColor};cursor:pointer" onclick="navigator.clipboard.writeText('${certUrl}');showToast('Certificate URL copied','success')" title="Copy certificate link">
-                            <div style="width:6px;height:6px;border-radius:50%;background:${certColor}"></div>
-                            <span style="font-size:9px;font-weight:600;color:${certColor}">${certLabel}</span>
-                        </div>
-                        <button onclick="removeModel('${m.id}','${m.name}')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;padding:2px" title="Remove">×</button>
-                    </div>
-                </div>
-            </div>`;
-            
-            if (isOn) testSelectHtml += `<option value="${m.id}" data-ptype="${m.provider_type}">${m.name}</option>`;
-        }
-        
-        if (list) list.innerHTML = listHtml;
-        if (testSelect) testSelect.innerHTML = testSelectHtml;
-        
-    } catch (e) {
-        console.error('loadModels:', e);
+    // SSE models — no backend yet, panel stays empty
+    // This function will call /v1/sse/models when backend is ready
+    const list = document.getElementById('models-list');
+    if (list && !list.querySelector('[id^="sse-model-row"]')) {
+        list.innerHTML = '<div style="color:var(--text-muted);font-size:11px;padding:8px 0;text-align:center">No SSE models yet</div>';
     }
 }
 
@@ -3772,7 +3752,7 @@ async function toggleModel(modelId) {
         const data = await res.json();
         if (res.ok) {
             showToast(`${data.name}: ${data.is_enabled ? 'enabled' : 'disabled'}`, 'success');
-            loadModels();
+            loadModelsToProxy();
         } else {
             showToast(data.detail || 'Toggle failed', 'error');
         }
@@ -3837,7 +3817,7 @@ async function runModelTest() {
         
         document.getElementById('live-test-result').classList.remove('hidden');
         status.textContent = '';
-        setTimeout(loadModels, 1000);
+        setTimeout(loadModelsToProxy, 1000);
         
     } catch (e) {
         status.textContent = 'Error: ' + e.message;
@@ -3878,7 +3858,7 @@ async function registerModel() {
                 setTimeout(() => msgEl.classList.add('hidden'), 15000);
             }
             
-            loadModels();
+            loadModelsToProxy();
             showToast(`Model "${name}" registered`, 'success');
         } else {
             showToast(data.detail || 'Failed to register', 'error');
@@ -3899,7 +3879,7 @@ async function removeModel(id, name) {
         });
         if (res.ok) {
             showToast(`Model "${name}" removed`, 'success');
-            loadModels();
+            loadModelsToProxy();
         } else {
             const data = await res.json();
             showToast(data.detail || 'Failed', 'error');
@@ -3985,7 +3965,7 @@ async function testProviderEval() {
             result.classList.remove('hidden');
             
             // Refresh models to show updated scores
-            setTimeout(loadModels, 500);
+            setTimeout(loadModelsToProxy, 500);
             showToast(`Scored: ${parseFloat(score).toFixed(1)} (${grade})`, 'success');
         } else {
             result.innerHTML = `<div style="color:#ef4444">Error ${res.status}: ${data.detail || JSON.stringify(data)}</div>`;
