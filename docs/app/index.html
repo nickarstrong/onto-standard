@@ -3421,7 +3421,7 @@ function toggleProvManualInput() {
     const select = document.getElementById('prov-test-model-select');
     const manual = document.getElementById('prov-test-manual-row');
     if (!select || !manual) return;
-    manual.style.display = (select.value === '__manual__' || select.value === '') ? 'flex' : 'none';
+    manual.style.display = (select.value === '__manual__' || select.value === '') ? 'block' : 'none';
 }
 
 async function runProvProxyTest() {
@@ -3433,12 +3433,47 @@ async function runProvProxyTest() {
     let provider, providerKey;
     
     if (modelSelect && modelSelect.value && modelSelect.value !== '__manual__') {
-        // Use registered proxy model
-        const models = getProxyModels();
-        const selected = models.find(m => m.id === modelSelect.value);
-        if (!selected) { showToast('Model not found', 'error'); return; }
-        provider = selected.provider;
-        providerKey = selected.key;
+        // Use registered model — try localStorage first, then API test endpoint
+        const localModels = getProxyModels();
+        const local = localModels.find(m => m.id === modelSelect.value);
+        if (local) {
+            provider = local.provider;
+            providerKey = local.key;
+        } else {
+            // API model — use /v1/models/{id}/test endpoint
+            const selectedOption = modelSelect.selectedOptions[0];
+            const ptype = selectedOption?.dataset?.ptype || 'anthropic';
+            const modelId = modelSelect.value;
+            const question = document.getElementById('prov-proxy-question').value.trim() || 'What is the boiling point of water?';
+            const btn = document.getElementById('prov-proxy-btn');
+            const status = document.getElementById('prov-proxy-status');
+            const result = document.getElementById('prov-proxy-result');
+            btn.disabled = true; btn.textContent = 'Sending...';
+            status.textContent = 'Testing via registered model...';
+            result.classList.add('hidden');
+            try {
+                const res = await fetch(`${API_BASE}/v1/models/${modelId}/test`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+                    body: JSON.stringify({ question })
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    status.textContent = `Error ${res.status}: ${data.detail || 'Request failed'}`;
+                    status.style.color = '#ef4444';
+                } else {
+                    status.innerHTML = `<span style="color:var(--accent)">✓</span> Score: ${(data.score||0).toFixed(1)} · Grade: ${data.grade||'?'}`;
+                    result.textContent = (data.response || '').substring(0, 1200);
+                    result.classList.remove('hidden');
+                    setTimeout(loadModels, 1000);
+                }
+            } catch(e) {
+                status.textContent = `Error: ${e.message}`;
+                status.style.color = '#ef4444';
+            }
+            btn.disabled = false; btn.textContent = 'Send';
+            return;
+        }
     } else {
         // Manual input
         providerKey = document.getElementById('prov-proxy-key').value.trim();
@@ -3722,6 +3757,21 @@ async function loadModels() {
         
         if (list) list.innerHTML = listHtml;
         if (testSelect) testSelect.innerHTML = testSelectHtml;
+        
+        // Also populate Provider Quick Test dropdown
+        const provTestSelect = document.getElementById('prov-test-model-select');
+        if (provTestSelect) {
+            const currentVal = provTestSelect.value;
+            let provHtml = '<option value="__manual__">↳ Enter API key manually</option>';
+            for (const m of data.models) {
+                if (m.is_enabled !== false) {
+                    provHtml += `<option value="${m.id}" data-ptype="${m.provider_type}">${m.name} (${m.provider_type})</option>`;
+                }
+            }
+            provTestSelect.innerHTML = provHtml;
+            if (currentVal && [...provTestSelect.options].some(o => o.value === currentVal)) provTestSelect.value = currentVal;
+            toggleProvManualInput();
+        }
         
     } catch (e) {
         console.error('loadModels:', e);
