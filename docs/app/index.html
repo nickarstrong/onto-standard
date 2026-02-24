@@ -1083,22 +1083,16 @@ a.info-val:hover { color: var(--text); }
                 </div>
 
                 <div class="dash-card-clean" style="margin-bottom:0">
-                            <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">Test GOLD injection via proxy. <span id="test-demo-note" class="hidden" style="color:#f59e0b">AI Provider: proxy is demo only. Production delivery via SSE.</span></div>
-                            <!-- Provider: model select -->
-                            <div id="test-model-row" class="hidden" style="margin-bottom:8px">
-                                <select id="test-model-select" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:11px;color:var(--text);width:100%">
-                                    <option value="">Select model...</option>
+                            <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">Test GOLD injection via proxy.</div>
+                            <!-- Dropdown: proxy models + manual -->
+                            <div style="margin-bottom:8px">
+                                <select id="test-model-select" onchange="toggleQuickTestManual()" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--text);width:100%">
+                                    <option value="__manual__">Enter API key manually</option>
                                 </select>
                             </div>
-                            <!-- Standard: provider + key -->
-                            <div id="test-std-row" style="display:flex;gap:8px;margin-bottom:8px">
-                                <select id="test-std-provider" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 8px;font-size:12px;color:var(--text);width:130px">
-                                    <option value="anthropic">Anthropic</option>
-                                    <option value="openai">OpenAI</option>
-                                    <option value="deepseek">DeepSeek</option>
-                                    <option value="mistral">Mistral</option>
-                                </select>
-                                <input type="password" id="test-std-provider-key" placeholder="Provider API key (sk-...)" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--text)">
+                            <!-- Manual: API key only (no provider select) -->
+                            <div id="test-manual-row" style="margin-bottom:8px">
+                                <input type="password" id="test-std-provider-key" placeholder="Provider API key (sk-...)" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--text);box-sizing:border-box">
                             </div>
                             <input type="text" id="prov-question" placeholder="Ask anything..." value="What is the boiling point of water?" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box;margin-bottom:8px" onkeydown="if(event.key==='Enter')runQuickTest()">
                             <div style="display:flex;gap:8px;align-items:center">
@@ -2835,9 +2829,6 @@ function showDashboard() {
             providerView.classList.toggle('hidden', !isProvider);
         }
         // Models: always visible (shared for all tiers)
-        // Show/hide test input mode
-        const modelRow = document.getElementById('test-model-row');
-        const stdRow = document.getElementById('test-std-row');
         const demoNote = document.getElementById('test-demo-note');
         const guideSse = document.getElementById('guide-sse');
         const guideProxy = document.getElementById('guide-proxy');
@@ -2848,8 +2839,6 @@ function showDashboard() {
         if (modelsDivider && modelsDivider.classList.contains('dash-section-divider')) {
             modelsDivider.classList.toggle('hidden', !isProvider);
         }
-        if (modelRow) modelRow.classList.toggle('hidden', !isProvider);
-        if (stdRow) stdRow.style.display = isProvider ? 'none' : 'flex';
         if (demoNote) demoNote.classList.toggle('hidden', !isProvider);
         if (guideSse) guideSse.classList.toggle('hidden', !isProvider);
         if (guideProxy) guideProxy.style.display = isProvider ? 'none' : 'block';
@@ -3310,17 +3299,26 @@ async function loadProxyUsage() {
     } catch(e) { /* silent */ }
 }
 
-async function runQuickTest() {
-    // Provider mode: use registered model
-    const modelSelect = document.getElementById('test-model-select');
-    if (modelSelect && modelSelect.value) {
-        return runModelTest();
-    }
-    // Standard mode: use direct proxy with provider key
-    return testStandardProxy();
+function toggleQuickTestManual() {
+    const sel = document.getElementById('test-model-select');
+    const manual = document.getElementById('test-manual-row');
+    if (!sel || !manual) return;
+    manual.style.display = sel.value === '__manual__' ? 'block' : 'none';
 }
 
-async function testStandardProxy() {
+async function runQuickTest() {
+    const modelSelect = document.getElementById('test-model-select');
+    const val = modelSelect?.value;
+    
+    if (val && val !== '__manual__') {
+        // Use registered proxy model
+        return runModelTest();
+    }
+    // Manual: detect provider from API key
+    return testManualProxy();
+}
+
+async function testManualProxy() {
     const providerKey = document.getElementById('test-std-provider-key').value.trim();
     if (!providerKey) { showToast('Enter your provider API key', 'error'); return; }
     localStorage.setItem('onto_provider_key', providerKey);
@@ -3328,18 +3326,21 @@ async function testStandardProxy() {
     const apiKey = localStorage.getItem('onto_first_api_key');
     if (!apiKey) { showToast('Please sign in first', 'error'); return; }
     
-    const provider = document.getElementById('test-std-provider').value;
-    const btn = document.getElementById('test-std-btn');
-    const status = document.getElementById('test-std-status');
-    const result = document.getElementById('test-std-result');
+    // Auto-detect provider from key format
+    let provider = 'openai';
+    if (providerKey.startsWith('sk-ant-')) provider = 'anthropic';
+    else if (providerKey.startsWith('sk-') && !providerKey.startsWith('sk-ant-')) provider = 'openai';
+    else if (providerKey.startsWith('dsk-') || providerKey.startsWith('deepseek')) provider = 'deepseek';
+    
+    const btn = document.getElementById('live-test-btn');
+    const status = document.getElementById('live-test-status');
     
     btn.disabled = true;
     btn.textContent = 'Testing...';
-    status.textContent = 'Sending request through ONTO proxy...';
+    status.textContent = `Sending via ${provider} proxy...`;
     status.style.color = 'var(--text-muted)';
-    result.classList.add('hidden');
     
-    const testPrompt = 'What is the boiling point of water? Give specific numbers and cite sources.';
+    const question = document.getElementById('prov-question')?.value?.trim() || 'What is the boiling point of water?';
     
     try {
         let url, body, headers;
@@ -3347,13 +3348,13 @@ async function testStandardProxy() {
         if (provider === 'anthropic') {
             url = `${API_BASE}/v1/proxy/anthropic/messages`;
             headers = { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'X-Provider-Key': providerKey };
-            body = JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 512, messages: [{ role: 'user', content: testPrompt }] });
+            body = JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 512, messages: [{ role: 'user', content: question }] });
         } else {
             url = `${API_BASE}/v1/proxy/chat/completions`;
             headers = { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'X-Provider-Key': providerKey };
             const models = { openai: 'gpt-4o', deepseek: 'deepseek-chat', mistral: 'mistral-large-latest' };
             const model = models[provider] || 'gpt-4o';
-            body = JSON.stringify({ model, max_tokens: 512, messages: [{ role: 'user', content: testPrompt }] });
+            body = JSON.stringify({ model, max_tokens: 512, messages: [{ role: 'user', content: question }] });
             if (provider === 'deepseek') headers['X-Provider-Base-URL'] = 'https://api.deepseek.com/v1';
             if (provider === 'mistral') headers['X-Provider-Base-URL'] = 'https://api.mistral.ai/v1';
         }
@@ -3366,12 +3367,10 @@ async function testStandardProxy() {
         if (!res.ok) {
             status.textContent = `✗ Error ${res.status}: ${data.detail || JSON.stringify(data)}`;
             status.style.color = '#ef4444';
-            btn.disabled = false;
-            btn.textContent = 'Run Test';
+            btn.disabled = false; btn.textContent = 'Send';
             return;
         }
         
-        // Extract response text
         let responseText = '';
         if (provider === 'anthropic') {
             responseText = (data.content || []).map(c => c.text || '').join('');
@@ -3379,7 +3378,6 @@ async function testStandardProxy() {
             responseText = data.choices?.[0]?.message?.content || '';
         }
         
-        // Check for GOLD markers
         const goldMarkers = ['[QD:', '[SS:', '[UM:', '[CP:', '[CONF:', 'CONFIDENCE:', 'SOURCE:', 'UNCERTAINTY:', '±', 'CI:', 'p-value', 'citation'];
         const foundMarkers = goldMarkers.filter(m => responseText.toLowerCase().includes(m.toLowerCase()));
         
@@ -3388,21 +3386,26 @@ async function testStandardProxy() {
         const outputTok = tokens.output_tokens || tokens.completion_tokens || '?';
         
         if (foundMarkers.length >= 2) {
-            status.innerHTML = `<span style="color:var(--accent)">✓ GOLD Active</span> · ${elapsed}ms · ${inputTok}+${outputTok} tokens · ${foundMarkers.length} epistemic markers detected`;
+            status.innerHTML = `<span style="color:var(--accent)">✓ GOLD Active</span> · ${provider} · ${elapsed}ms · ${inputTok}+${outputTok} tokens`;
         } else {
-            status.innerHTML = `<span style="color:#f59e0b">⚠ Response received</span> · ${elapsed}ms · ${inputTok}+${outputTok} tokens · GOLD markers may be subtle`;
+            status.innerHTML = `<span style="color:#f59e0b">⚠ Response received</span> · ${provider} · ${elapsed}ms · ${inputTok}+${outputTok} tokens`;
         }
         
-        result.textContent = responseText.substring(0, 1500) + (responseText.length > 1500 ? '...' : '');
-        result.classList.remove('hidden');
+        // Show in live-test-result
+        const resultEl = document.getElementById('live-test-result');
+        if (resultEl) {
+            document.getElementById('live-score').textContent = data.onto_score ? parseFloat(data.onto_score).toFixed(1) : '—';
+            document.getElementById('live-grade').textContent = data.onto_grade || '—';
+            document.getElementById('live-response').textContent = responseText.substring(0, 1500);
+            resultEl.classList.remove('hidden');
+        }
         
     } catch (e) {
         status.textContent = `✗ ${e.message}`;
         status.style.color = '#ef4444';
     }
     
-    btn.disabled = false;
-    btn.textContent = 'Run Test';
+    btn.disabled = false; btn.textContent = 'Send';
 }
 
 async function testProviderSSE() {
@@ -3499,7 +3502,7 @@ async function loadModels() {
         }
         
         let listHtml = '';
-        let testSelectHtml = '<option value="">Select model...</option>';
+        let testSelectHtml = '<option value="__manual__">Enter API key manually</option>';
         
         for (const m of data.models) {
             const isOn = m.is_enabled !== false;
@@ -3544,7 +3547,10 @@ async function loadModels() {
         }
         
         if (list) list.innerHTML = listHtml;
-        if (testSelect) testSelect.innerHTML = testSelectHtml;
+        if (testSelect) {
+            testSelect.innerHTML = testSelectHtml;
+            toggleQuickTestManual();
+        }
         
     } catch (e) {
         console.error('loadModels:', e);
