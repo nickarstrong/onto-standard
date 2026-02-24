@@ -1010,8 +1010,8 @@ a.info-val:hover { color: var(--text); }
                         <!-- Model selection: dropdown from proxy models or manual -->
                         <div id="prov-test-model-select-row" style="margin-bottom:8px">
                             <select id="prov-test-model-select" onchange="toggleProvManualInput()" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--text)">
-                                <option value="">Select registered model or enter manually...</option>
-                                <option value="__manual__">↳ Enter provider + API key manually</option>
+                                <option value="">Select from Proxy models...</option>
+                                <option value="__manual__">↳ Enter API key manually</option>
                             </select>
                         </div>
                         <!-- Manual input (shown when manual chosen) -->
@@ -3762,12 +3762,13 @@ async function loadModels() {
         const provTestSelect = document.getElementById('prov-test-model-select');
         if (provTestSelect) {
             const currentVal = provTestSelect.value;
-            let provHtml = '<option value="__manual__">↳ Enter API key manually</option>';
+            let provHtml = '';
             for (const m of data.models) {
                 if (m.is_enabled !== false) {
                     provHtml += `<option value="${m.id}" data-ptype="${m.provider_type}">${m.name} (${m.provider_type})</option>`;
                 }
             }
+            provHtml += '<option value="__manual__">↳ Enter API key manually</option>';
             provTestSelect.innerHTML = provHtml;
             if (currentVal && [...provTestSelect.options].some(o => o.value === currentVal)) provTestSelect.value = currentVal;
             toggleProvManualInput();
