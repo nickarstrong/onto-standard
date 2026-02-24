@@ -48,6 +48,8 @@
     background-color: #ffffff;
     color: #111827;
 }
+#page-monitor .dash-card-clean { margin-bottom: 20px; }
+#page-monitor > .dash-card-clean + .dash-card-clean { border-top: none; }
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6; color: var(--text); background: var(--bg-secondary); }
 
@@ -2881,17 +2883,15 @@ function updateDashboardMetrics() {
     const plan = currentUser.plan || 'free';
     
     const planNames = { free: 'Open', business: 'Standard', enterprise: 'AI Provider' };
-    const rateLimits = { free: '10/day', business: '1K/day', enterprise: 'Unlimited' };
+    const rateLimits = { free: '10 requests/day', business: '1,000 requests/day', enterprise: '10 requests/day (test) + SSE' };
     
     // Plan card
-    const nameEl = document.getElementById('dash-plan-name');
     const rateEl = document.getElementById('dash-plan-rate');
     const callsEl = document.getElementById('dash-plan-calls');
     const expiresEl = document.getElementById('dash-plan-expires');
     const upgradeBtn = document.getElementById('dash-upgrade-btn');
     
-    if (nameEl) nameEl.textContent = planNames[plan] || 'Open';
-    if (rateEl) rateEl.textContent = rateLimits[plan] || '10 evals / day';
+    if (rateEl) rateEl.textContent = rateLimits[plan] || '10 requests/day';
     
     // Hide upgrade for paid plans
     if (upgradeBtn) upgradeBtn.style.display = plan === 'free' ? 'block' : 'none';
@@ -3245,16 +3245,19 @@ async function loadProxyUsage() {
         const isProvider = d.layer === 'critical' || d.layer === 'enterprise' || d.layer === 'white_label';
 
         if (isProvider) {
-            // Provider: show SSE delivery mode
-            document.getElementById('proxy-used-today').textContent = 'SSE';
-            document.getElementById('proxy-daily-limit').textContent = '∞';
-            document.getElementById('proxy-remaining').textContent = '50';
-            document.querySelector('#proxy-used-today + div').textContent = 'Delivery';
-            document.querySelector('#proxy-daily-limit + div').textContent = 'Production';
-            document.querySelector('#proxy-remaining + div').textContent = 'Proxy (test)';
-            document.getElementById('proxy-usage-bar').style.width = '0%';
-            document.getElementById('proxy-tier-label').textContent = 'AI PROVIDER tier · Production via SSE';
-            document.getElementById('proxy-resets').textContent = 'Proxy limited to 50/day (demo only)';
+            // Provider: show real proxy test usage
+            const used = d.usage_today || 0;
+            const limit = d.daily_limit || 10;
+            const remaining = limit < 0 ? '∞' : Math.max(limit - used, 0);
+            const limitDisplay = limit < 0 ? '∞' : limit;
+            const pct = limit > 0 ? Math.min((used / limit) * 100, 100) : 0;
+
+            document.getElementById('proxy-used-today').textContent = used;
+            document.getElementById('proxy-daily-limit').textContent = limitDisplay;
+            document.getElementById('proxy-remaining').textContent = remaining;
+            document.getElementById('proxy-usage-bar').style.width = pct + '%';
+            document.getElementById('proxy-tier-label').textContent = 'PROVIDER tier · Proxy for testing only';
+            document.getElementById('proxy-resets').textContent = 'Production delivery via SSE above';
         } else {
             // Standard/Open: show proxy usage
             const used = d.usage_today || 0;
