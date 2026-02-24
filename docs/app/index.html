@@ -987,12 +987,12 @@ a.info-val:hover { color: var(--text); }
 
             <div class="dash-section-divider"></div>
 
-            <!-- ══════════ SECTION: YOUR AI MODELS ══════════ -->
-            <div class="dash-section">
+            <!-- ══════════ SECTION: YOUR AI MODELS (Provider only) ══════════ -->
+            <div id="dash-models-section" class="dash-section hidden">
                 <div class="dash-section-header">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
                     <div class="dash-section-title">Your AI Models</div>
-                    <span class="dash-section-subtitle">Register models and manage GOLD</span>
+                    <span class="dash-section-subtitle">Register models for SSE delivery</span>
                 </div>
 
             <!-- ═══════════ PROVIDER-ONLY: SSE ═══════════ -->
@@ -1098,7 +1098,7 @@ a.info-val:hover { color: var(--text); }
                                     <option value="deepseek">DeepSeek</option>
                                     <option value="mistral">Mistral</option>
                                 </select>
-                                <input type="text" id="test-std-provider-key" placeholder="Provider API key (sk-...)" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--text)">
+                                <input type="password" id="test-std-provider-key" placeholder="Provider API key (sk-...)" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--text)">
                             </div>
                             <input type="text" id="prov-question" placeholder="Ask anything..." value="What is the boiling point of water?" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box;margin-bottom:8px" onkeydown="if(event.key==='Enter')runQuickTest()">
                             <div style="display:flex;gap:8px;align-items:center">
@@ -2841,13 +2841,22 @@ function showDashboard() {
         const demoNote = document.getElementById('test-demo-note');
         const guideSse = document.getElementById('guide-sse');
         const guideProxy = document.getElementById('guide-proxy');
+        // Models section: provider-only
+        const modelsSection = document.getElementById('dash-models-section');
+        const modelsDivider = modelsSection ? modelsSection.previousElementSibling : null;
+        if (modelsSection) modelsSection.classList.toggle('hidden', !isProvider);
+        if (modelsDivider && modelsDivider.classList.contains('dash-section-divider')) {
+            modelsDivider.classList.toggle('hidden', !isProvider);
+        }
         if (modelRow) modelRow.classList.toggle('hidden', !isProvider);
         if (stdRow) stdRow.style.display = isProvider ? 'none' : 'flex';
         if (demoNote) demoNote.classList.toggle('hidden', !isProvider);
         if (guideSse) guideSse.classList.toggle('hidden', !isProvider);
         if (guideProxy) guideProxy.style.display = isProvider ? 'none' : 'block';
-        // Always load models and usage for all tiers
-        setTimeout(loadModels, 500);
+        // Load models only for provider
+        if (isProvider) {
+            setTimeout(loadModels, 500);
+        }
         fillIntegrationCode();
         setTimeout(loadProxyUsage, 300);
 
