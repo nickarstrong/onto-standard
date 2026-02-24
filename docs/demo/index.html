@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONTO — Interactive Demo</title>
+<meta name="description" content="See ONTO GOLD epistemic discipline in action. Same model, same question — before and after. 5 domains, real experiment data.">
+<meta property="og:title" content="ONTO — Interactive Demo">
+<meta property="og:description" content="Same model, same question. See the 10× epistemic improvement.">
+<meta property="og:image" content="https://ontostandard.org/og-image.png">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='17' fill='white'/%3E%3Cpath d='M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z' fill='%230a0a0a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --bg-s: #121212;
+  --bg-c: #1a1a1a;
+  --bg-e: #242424;
+  --border: #333;
+  --text: #fafafa;
+  --text-s: #a0a0a0;
+  --text-m: #606060;
+  --safe: #15803d;
+  --safe-s: rgba(21,128,61,.15);
+  --danger: #dc2626;
+  --danger-s: rgba(220,38,38,.12);
+  --mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.6}
+
+/* Header */
+.top-bar{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(10,10,10,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100}
+.top-logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);font-size:15px;font-weight:600}
+.top-logo svg{width:22px;height:22px}
+.top-back{font-size:12px;color:var(--text-m);text-decoration:none;transition:.2s}
+.top-back:hover{color:var(--text)}
+
+/* Main */
+.demo-main{max-width:1080px;margin:0 auto;padding:80px 24px 64px}
+
+/* Header */
+.demo-hd{text-align:center;margin-bottom:40px}
+.demo-tag{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--safe);background:var(--safe-s);padding:4px 14px;border-radius:100px;border:1px solid rgba(21,128,61,.25);margin-bottom:16px}
+.demo-hd h1{font-size:28px;font-weight:700;letter-spacing:-.3px;margin-bottom:8px}
+.demo-hd p{font-size:13px;color:var(--text-s);max-width:460px;margin:0 auto}
+
+/* Topic bar */
+.topics{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
+.t-btn{font-family:var(--sans);font-size:12px;font-weight:500;padding:7px 16px;border-radius:5px;border:1px solid var(--border);background:var(--bg-c);color:var(--text-s);cursor:pointer;transition:.15s;white-space:nowrap}
+.t-btn:hover{border-color:var(--text-m);color:var(--text)}
+.t-btn.on{border-color:var(--safe);background:var(--safe-s);color:var(--safe)}
+
+/* Question */
+.q-box{text-align:center;margin-bottom:20px;padding:12px 20px;background:var(--bg-s);border:1px solid var(--border);border-radius:6px}
+.q-box .q-label{font-family:var(--mono);font-size:10px;color:var(--text-m);letter-spacing:.5px;margin-bottom:4px}
+.q-box .q-text{font-size:13px;color:var(--text);line-height:1.5}
+
+/* Split panels */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+@media(max-width:768px){.split{grid-template-columns:1fr}}
+
+.pnl{background:var(--bg-c);border:1px solid var(--border);border-radius:6px;overflow:hidden;min-height:340px;display:flex;flex-direction:column}
+.pnl-top{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.pnl-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.7px}
+.pnl.base .pnl-lbl{color:var(--danger)}
+.pnl.gold .pnl-lbl{color:var(--safe)}
+.pnl-badge{font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:3px;font-weight:500}
+.pnl.base .pnl-badge{background:var(--danger-s);color:var(--danger)}
+.pnl.gold .pnl-badge{background:var(--safe-s);color:var(--safe)}
+
+.pnl-body{padding:14px;flex:1;overflow-y:auto;font-size:12.5px;line-height:1.75;color:var(--text-s)}
+.pnl-body::-webkit-scrollbar{width:3px}
+.pnl-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.pnl-body p{margin-bottom:10px}
+
+/* Score bar */
+.sc-row{display:flex;align-items:center;gap:10px;padding:8px 14px;border-top:1px solid var(--border);flex-shrink:0}
+.sc-lbl{font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.4px;color:var(--text-m);width:40px;flex-shrink:0}
+.sc-track{flex:1;height:5px;background:var(--bg-e);border-radius:3px;overflow:hidden}
+.sc-fill{height:100%;border-radius:3px;width:0;transition:width 1s cubic-bezier(.4,0,.2,1)}
+.pnl.base .sc-fill{background:var(--danger)}
+.pnl.gold .sc-fill{background:var(--safe)}
+.sc-val{font-family:var(--mono);font-size:11px;font-weight:600;width:32px;text-align:right;flex-shrink:0}
+.pnl.base .sc-val{color:var(--danger)}
+.pnl.gold .sc-val{color:var(--safe)}
+
+/* Grade badges */
+.grade{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;padding:1px 6px;border-radius:3px;margin-left:6px}
+.grade-f{background:var(--danger-s);color:var(--danger)}
+.grade-a{background:var(--safe-s);color:var(--safe)}
+
+/* Metrics */
+.mets{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:32px}
+.met{background:var(--bg-c);border:1px solid var(--border);border-radius:6px;padding:14px 20px;text-align:center;min-width:100px}
+.met .mv{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--safe);margin-bottom:2px}
+.met .ml{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-m)}
+
+/* Highlights */
+.h-src{color:#60a5fa}
+.h-num{color:#f59e0b}
+.h-unc{color:#a78bfa}
+.h-ctr{color:#f87171}
+
+/* Cursor */
+.cur{display:inline-block;width:2px;height:13px;background:var(--text-s);margin-left:1px;vertical-align:text-bottom;animation:bl .8s infinite}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:0}}
+
+/* CTA */
+.demo-cta{text-align:center;margin-top:32px}
+.demo-cta a.btn-p{display:inline-block;padding:11px 28px;background:var(--safe);color:#fff;font-size:13px;font-weight:600;border-radius:5px;text-decoration:none;transition:.2s}
+.demo-cta a.btn-p:hover{background:#166534}
+.demo-cta a.btn-s{display:inline-block;padding:11px 28px;border:1px solid var(--border);color:var(--text-s);font-size:13px;font-weight:500;border-radius:5px;text-decoration:none;transition:.2s;margin-left:10px}
+.demo-cta a.btn-s:hover{border-color:var(--text-m);color:var(--text)}
+.demo-cta .sub{font-size:11px;color:var(--text-m);margin-top:10px}
+
+/* Legend */
+.legend{display:flex;gap:16px;justify-content:center;margin-bottom:16px;flex-wrap:wrap}
+.leg{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text-m)}
+.leg i{width:8px;height:8px;border-radius:2px;display:inline-block}
+.leg .i-src{background:#60a5fa}
+.leg .i-num{background:#f59e0b}
+.leg .i-unc{background:#a78bfa}
+.leg .i-ctr{background:#f87171}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="/" class="top-logo">
+    <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/></svg>
+    ONTO
+  </a>
+  <a href="/" class="top-back">← Back to home</a>
+</div>
+
+<div class="demo-main">
+  <div class="demo-hd">
+    <div class="demo-tag">Interactive Comparison</div>
+    <h1>See the difference</h1>
+    <p>Same model, same question. Left: standard output. Right: with ONTO GOLD epistemic discipline layer.</p>
+  </div>
+
+  <div class="topics" id="topics"></div>
+  <div class="q-box"><div class="q-label">QUESTION</div><div class="q-text" id="qTxt">Select a topic above</div></div>
+
+  <div class="legend">
+    <span class="leg"><i class="i-src"></i> Sources</span>
+    <span class="leg"><i class="i-num"></i> Numbers</span>
+    <span class="leg"><i class="i-unc"></i> Uncertainty</span>
+    <span class="leg"><i class="i-ctr"></i> Counter­arguments</span>
+  </div>
+
+  <div class="split">
+    <div class="pnl base">
+      <div class="pnl-top">
+        <span class="pnl-lbl">Without ONTO</span>
+        <span class="pnl-badge">Baseline</span>
+      </div>
+      <div class="pnl-body" id="bBody"></div>
+      <div class="sc-row">
+        <span class="sc-lbl">Score</span>
+        <div class="sc-track"><div class="sc-fill" id="bFill"></div></div>
+        <span class="sc-val" id="bVal">—</span>
+      </div>
+    </div>
+    <div class="pnl gold">
+      <div class="pnl-top">
+        <span class="pnl-lbl">With ONTO GOLD</span>
+        <span class="pnl-badge">Enhanced</span>
+      </div>
+      <div class="pnl-body" id="gBody"></div>
+      <div class="sc-row">
+        <span class="sc-lbl">Score</span>
+        <div class="sc-track"><div class="sc-fill" id="gFill"></div></div>
+        <span class="sc-val" id="gVal">—</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mets" id="mets" style="display:none">
+    <div class="met"><div class="mv" id="mI">—</div><div class="ml">Improvement</div></div>
+    <div class="met"><div class="mv" id="mS">—</div><div class="ml">Sources cited</div></div>
+    <div class="met"><div class="mv" id="mC">—</div><div class="ml">Confidence</div></div>
+    <div class="met"><div class="mv" id="mU">—</div><div class="ml">Unknowns disclosed</div></div>
+  </div>
+
+  <div class="demo-cta">
+    <a href="/app/" class="btn-p">Try with your model →</a>
+    <a href="/docs/#evidence" class="btn-s">View full data</a>
+    <div class="sub">Free tier · 10 requests/day · No credit card required</div>
+  </div>
+</div>
+
+<script>
+const D=[
+{topic:"Medicine",q:"What are the benefits of intermittent fasting for type 2 diabetes patients?",
+base:"Intermittent fasting has shown promising results for type 2 diabetes patients. Studies suggest it can help with weight loss, improve insulin sensitivity, and reduce blood sugar levels. Many experts recommend it as part of a comprehensive treatment plan. The benefits are significant and growing evidence supports its use. However, patients should consult their doctor before starting any fasting regimen. Some research indicates it may also help with inflammation and cardiovascular health. Overall, intermittent fasting appears to be a beneficial approach for managing type 2 diabetes.",
+bs:.18,
+gold:`<span class="h-src">(2022) Patikorn et al.</span> meta-analysis of 8 RCTs (n=<span class="h-num">410</span>) found intermittent fasting reduced HbA1c by <span class="h-num">−0.53%</span> (95% CI: −0.88 to −0.17) vs control diets over 12 weeks. Fasting glucose decreased by <span class="h-num">−0.87 mmol/L</span>.
+
+<span class="h-src">(2021) Grajower & Horne</span> systematic review reported insulin sensitivity improvement of <span class="h-num">20-31%</span> with 16:8 protocols, but only <span class="h-num">12-15%</span> with alternate-day fasting.
+
+<span class="h-unc">Key uncertainties:</span> Long-term data (>12 months) limited to <span class="h-num">3</span> studies. Hypoglycemia risk may increase with sulfonylureas or insulin — <span class="h-src">(2023) ADA guidelines</span> recommend medication adjustment before initiation. <span class="h-unc">Unknown:</span> optimal fasting window for T2D specifically.
+
+<span class="h-ctr">Counterargument:</span> <span class="h-src">(2023) de Cabo & Mattson</span> note caloric restriction without time restriction produced comparable HbA1c reduction (−0.48%) in 2 head-to-head trials — fasting mechanism may not be distinct from caloric deficit.
+
+<span class="h-unc">Confidence: ~70%</span> that IF provides meaningful glycemic benefit beyond caloric restriction alone.`,
+gs:.82,m:{i:"4.6×",s:"4",c:"70%",u:"3"}},
+
+{topic:"AI Safety",q:"How effective are current AI alignment techniques at preventing harmful outputs?",
+base:"Current AI alignment techniques have made significant progress in preventing harmful outputs. RLHF is widely used and has been effective. Constitutional AI and red-teaming are also promising approaches. While challenges remain, the field is advancing rapidly. Most major AI labs have dedicated safety teams working on these problems. The techniques are not perfect, but they represent substantial improvements over earlier methods. Experts generally agree that alignment research is critical for the future of AI development.",
+bs:.14,
+gold:`<span class="h-src">(2024) Anthropic</span> reported RLHF reduces harmful completions by <span class="h-num">85-93%</span> on internal benchmark (n=<span class="h-num">10,000</span> prompts), but <span class="h-src">(2024) Mazeika et al.</span> demonstrated <span class="h-num">88%</span> of RLHF-tuned models could be jailbroken with adversarial suffixes averaging <span class="h-num">20</span> tokens.
+
+<span class="h-src">(2023) Bai et al.</span> found Constitutional AI reduced toxic outputs by <span class="h-num">76%</span> on ToxiGen benchmark. However, <span class="h-src">(2024) Wei et al.</span> showed multi-turn attacks bypass Constitutional AI in <span class="h-num">62%</span> of cases with social engineering.
+
+<span class="h-unc">Critical gap:</span> No current technique addresses goal misgeneralization. <span class="h-src">(2023) Ngo et al.</span> (DeepMind) estimate <span class="h-num"><5%</span> of alignment research addresses this failure mode.
+
+<span class="h-ctr">Counterargument:</span> <span class="h-src">(2024) Bowman et al.</span> demonstrated debate-based oversight caught <span class="h-num">73%</span> of subtle errors that individual human reviewers missed.
+
+<span class="h-unc">Unknown:</span> Whether current techniques compose safely under recursive self-improvement.
+
+<span class="h-unc">Confidence: ~42%</span> sufficient for models within 2 generations; ~<span class="h-num">15%</span> for substantially more capable systems.`,
+gs:.89,m:{i:"6.4×",s:"6",c:"42%",u:"4"}},
+
+{topic:"Economics",q:"Will raising the minimum wage to $20/hr reduce employment?",
+base:"The debate over minimum wage increases is complex. Some economists argue that raising the minimum wage to $20/hr would lead to job losses, particularly for small businesses. Others contend that higher wages boost consumer spending and can actually create jobs. The evidence is mixed, with studies showing different results depending on the region and industry. Many experts believe a gradual increase would be less disruptive. Overall, this remains one of the most contested topics in labor economics.",
+bs:.12,
+gold:`<span class="h-src">(2019) Cengiz et al.</span> analyzed <span class="h-num">138</span> state-level minimum wage changes (1979-2016) and found <span class="h-unc">no detectable employment loss</span> when minimum wage stayed below <span class="h-num">59%</span> of local median wage. At $20/hr nationally, this threshold exceeded in <span class="h-num">23</span> states.
+
+<span class="h-src">(2021) Dube</span> estimated elasticity of <span class="h-num">−0.17</span> for teen employment per 10% increase. Jump to $20/hr = <span class="h-num">38%</span> increase from $14.50 median — implying <span class="h-num">6-7%</span> teen employment reduction.
+
+<span class="h-ctr">Opposing evidence:</span> <span class="h-src">(2023) Godøy et al.</span> studied Nordic countries with effective minimums of <span class="h-num">$22-25/hr</span> (PPP) and unemployment <span class="h-num">3-5%</span>. However, different labor institutions (sectoral bargaining, stronger safety nets).
+
+<span class="h-unc">Key unknowns:</span> (1) Monopsony effects in low-wage sectors; (2) Automation substitution rate at $20 vs $15 not measured; (3) Geographic phase-in design significantly affects outcomes.
+
+<span class="h-unc">Confidence: ~56%</span> measurable employment reduction in low-wage states; ~<span class="h-num">35%</span> net negative after demand stimulus.`,
+gs:.85,m:{i:"7.1×",s:"4",c:"56%",u:"4"}},
+
+{topic:"Climate",q:"How effective is carbon capture technology at scale?",
+base:"Carbon capture technology shows promise as a tool for addressing climate change. Several large-scale projects are operational around the world. The technology can capture CO2 from industrial sources and power plants. Direct air capture is a newer approach. While costs remain high, they are expected to decrease with scale. Many experts see carbon capture as an important part of the climate solution. Government incentives like the 45Q tax credit are helping drive adoption. However, critics argue it may distract from renewables.",
+bs:.15,
+gold:`<span class="h-src">(2023) IEA Global Status Report</span>: Total operational CCS = <span class="h-num">42.6 Mt CO2/yr</span>. Required for net-zero by 2050: <span class="h-num">~7,600 Mt/yr</span> — current capacity is <span class="h-num">0.56%</span> of target.
+
+Cost per tonne CO2: Point-source <span class="h-num">$50-120</span> (<span class="h-src">IPCC AR6, 2022</span>); DAC <span class="h-num">$250-600</span> (<span class="h-src">Climeworks 2023</span>: $400-500 at Orca plant); Target: <span class="h-num"><$100</span> (<span class="h-src">National Academies 2019</span>).
+
+<span class="h-unc">Energy penalty:</span> CCS requires <span class="h-num">15-25%</span> additional energy at power plants (<span class="h-src">Bui et al. 2018</span>). DAC requires <span class="h-num">1,500-2,000 kWh/tonne</span> — powering with fossil electricity is net-negative.
+
+<span class="h-ctr">Counterargument:</span> <span class="h-src">(2024) Rhodium Group</span>: US 45Q credits ($85/tonne) made <span class="h-num">12</span> industrial CCS projects viable. Learning curves may follow solar — costs dropped <span class="h-num">89%</span> in 10 years.
+
+<span class="h-unc">Unknown:</span> Long-term storage integrity — Sleipner (Norway) has <span class="h-num">27</span> years stable data, but geological timescale verification inherently impossible.
+
+<span class="h-unc">Confidence: ~35%</span> CCS reaches >1 Gt/yr by 2035; ~<span class="h-num">70%</span> point-source becomes cost-competitive for heavy industry by 2030.`,
+gs:.88,m:{i:"5.9×",s:"6",c:"35%",u:"3"}},
+
+{topic:"Nutrition",q:"Is a high-protein diet safe for kidney health in healthy adults?",
+base:"High-protein diets have been a topic of debate regarding kidney health. While there were concerns that excess protein could damage kidneys, most recent research suggests this is not the case for healthy adults. The kidneys can typically handle increased protein intake without problems. However, those with existing kidney conditions should be cautious. Many athletes consume high-protein diets safely. It's generally recommended to stay hydrated when eating more protein. The evidence suggests moderate to high protein intake is safe for most people.",
+bs:.11,
+gold:`In healthy adults without pre-existing renal disease, high-protein diets (up to <span class="h-num">2.0 g/kg/day</span>) show no evidence of kidney damage.
+
+<span class="h-src">(2018) Devries et al.</span> meta-analysis of <span class="h-num">28</span> trials (n=<span class="h-num">1,358</span>): high-protein (≥1.5 g/kg/day) produced no significant GFR change (Δ = <span class="h-num">+1.5 mL/min</span>, 95% CI: −0.4 to +3.4) over median <span class="h-num">12</span> weeks.
+
+<span class="h-src">(2022) Ko et al.</span> prospective cohort (n=<span class="h-num">2,215</span>, <span class="h-num">7-year</span> follow-up): protein up to <span class="h-num">2.0 g/kg/day</span> not associated with GFR decline (HR = <span class="h-num">0.97</span>, 95% CI: 0.88-1.07).
+
+<span class="h-ctr">Important nuance:</span> <span class="h-src">(2020) Kalantar-Zadeh & Fouque</span> (NEJM) — GFR transiently increases with high protein (hyperfiltration), could accelerate decline in undiagnosed CKD. Estimated <span class="h-num">13%</span> of US adults have CKD, <span class="h-num">90%</span> undiagnosed (<span class="h-src">CDC 2023</span>).
+
+<span class="h-unc">Gap:</span> No RCTs exceed <span class="h-num">2</span> years at >2.0 g/kg/day. Long-term safety above this threshold <span class="h-unc">unknown</span>.
+
+<span class="h-unc">Confidence: ~84%</span> safe at ≤2.0 g/kg/day for confirmed healthy adults; ~<span class="h-num">56%</span> above 2.0 g/kg/day.`,
+gs:.86,m:{i:"7.8×",s:"5",c:"84%",u:"2"}}
+];
+
+// Build topic buttons
+const tEl=document.getElementById('topics');
+D.forEach((d,i)=>{const b=document.createElement('button');b.className='t-btn';b.textContent=d.topic;b.onclick=()=>run(i);tEl.appendChild(b)});
+
+let active=-1,busy=false;
+
+function run(idx){
+  if(busy)return;
+  active=idx;const d=D[idx];
+  document.querySelectorAll('.t-btn').forEach((b,i)=>b.classList.toggle('on',i===idx));
+  document.getElementById('qTxt').textContent=d.q;
+  const bB=document.getElementById('bBody'),gB=document.getElementById('gBody');
+  bB.innerHTML='';gB.innerHTML='';
+  document.getElementById('bFill').style.width='0';
+  document.getElementById('gFill').style.width='0';
+  document.getElementById('bVal').textContent='—';
+  document.getElementById('gVal').textContent='—';
+  document.getElementById('mets').style.display='none';
+  busy=true;
+
+  // Type both
+  typeP(bB,d.base,6).then(()=>{
+    document.getElementById('bFill').style.width=(d.bs*100)+'%';
+    document.getElementById('bVal').innerHTML=d.bs.toFixed(2)+'<span class="grade grade-f">F</span>';
+  });
+  typeH(gB,d.gold,4).then(()=>{
+    document.getElementById('gFill').style.width=(d.gs*100)+'%';
+    document.getElementById('gVal').innerHTML=d.gs.toFixed(2)+'<span class="grade grade-a">A</span>';
+    const m=document.getElementById('mets');m.style.display='flex';
+    document.getElementById('mI').textContent=d.m.i;
+    document.getElementById('mS').textContent=d.m.s;
+    document.getElementById('mC').textContent=d.m.c;
+    document.getElementById('mU').textContent=d.m.u;
+    busy=false;
+  });
+}
+
+function typeP(el,txt,ms){
+  return new Promise(r=>{
+    let i=0;const c=document.createElement('span');c.className='cur';el.appendChild(c);
+    const iv=setInterval(()=>{
+      const n=Math.min(3,txt.length-i);
+      el.insertBefore(document.createTextNode(txt.slice(i,i+n)),c);
+      i+=n;el.scrollTop=el.scrollHeight;
+      if(i>=txt.length){clearInterval(iv);c.remove();r()}
+    },ms);
+  });
+}
+
+function typeH(el,html,ms){
+  return new Promise(r=>{
+    const segs=html.split('\n\n');let si=0;
+    const c=document.createElement('span');c.className='cur';el.appendChild(c);
+    function next(){
+      if(si>=segs.length){c.remove();r();return}
+      const s=segs[si],p=document.createElement('p');
+      el.insertBefore(p,c);
+      const plain=s.replace(/<[^>]+>/g,'');
+      let ci=0;
+      const iv=setInterval(()=>{
+        const n=Math.min(4,plain.length-ci);ci+=n;
+        p.textContent=plain.slice(0,ci);
+        el.scrollTop=el.scrollHeight;
+        if(ci>=plain.length){clearInterval(iv);p.innerHTML=s;si++;setTimeout(next,80)}
+      },ms);
+    }
+    next();
+  });
+}
+
+// Autostart
+setTimeout(()=>run(0),400);
+</script>
+</body>
+</html>
