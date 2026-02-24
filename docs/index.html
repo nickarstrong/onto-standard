@@ -9,7 +9,7 @@
 <meta name="keywords" content="AI epistemic risk, AI calibration, ECE, U-Recall, unknown detection, AI compliance, EU AI Act, NIST AI RMF, AI certification, model confidence, onto-standard">
 <meta name="author" content="ONTO Standards Council">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
-<meta name="date" content="2026-02-11">
+<meta name="date" content="2026-02-24">
 <link rel="canonical" href="https://ontostandard.org/">
 <link rel="sitemap" type="application/xml" href="https://ontostandard.org/sitemap.xml">
 
@@ -69,7 +69,7 @@
     "name": "ONTO Standards Council"
   },
   "datePublished": "2024-06-01",
-  "dateModified": "2026-02-11",
+  "dateModified": "2026-02-24",
   "inLanguage": "en"
 }
 </script>
@@ -81,6 +81,7 @@
   "@type": "BreadcrumbList",
   "itemListElement": [
     {"@type": "ListItem", "position": 1, "name": "ONTO Standard", "item": "https://ontostandard.org"},
+    {"@type": "ListItem", "position": 2, "name": "Interactive Demo", "item": "https://ontostandard.org/demo/"},
     {"@type": "ListItem", "position": 3, "name": "Documentation", "item": "https://ontostandard.org/docs/"},
     {"@type": "ListItem", "position": 4, "name": "Portal", "item": "https://ontostandard.org/app/"}
   ]
@@ -163,7 +164,7 @@
   "url": "https://ontostandard.org",
   "mainEntityOfPage": "https://ontostandard.org",
   "datePublished": "2024-06-01",
-  "dateModified": "2026-02-11",
+  "dateModified": "2026-02-24",
   "author": {
     "@type": "Organization",
     "name": "ONTO Standards Council"
@@ -2090,6 +2091,7 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
 <!-- SCREEN 1: ORB -->
 <div class="screen" id="screen1">
     <div class="hero-above">
+        <h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0">ONTO — Epistemic Risk Measurement and Grounding for AI Systems</h1>
     </div>
     <div class="orb-container" id="orbContainer" onclick="toggleOrb()" role="button" aria-label="AI Calibration Interface - Click to toggle calibration state" tabindex="0">
         <div class="orb-core" id="orbCore"></div>
@@ -2109,35 +2111,36 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
 <!-- SCREEN 2: WHY -->
 <div id="calculate"></div>
 <div class="screen screen-why hidden" id="screen2" data-anchor="why">
-    <h1>AI is confident.<br>Not calibrated.</h1>
-    <div class="formula">Epistemic Risk = Confidence − Grounding</div>
+    <h2 style="font-size:32px;font-weight:700;text-align:center;margin-bottom:8px">AI is confident.<br>Not calibrated.</h2>
     
     <div class="why-grid">
         <div class="why-block">
-            <div class="why-label">Problem</div>
-            <p>AI systems generate confident output with no internal signal for epistemic integrity. Enterprises deploy into regulated domains without knowing when output is fabricated.</p>
+            <div class="why-label">What AI says</div>
+            <p style="font-style:italic;color:rgba(220,38,38,0.7)">"Studies show significant benefits for high-risk patients. Experts generally recommend this approach as part of a comprehensive treatment plan."</p>
+            <p style="font-size:11px;color:var(--text-m);margin-top:8px">Zero sources. Zero numbers. Zero uncertainty. Reads like authority — backed by nothing.</p>
         </div>
-        <div class="why-block">
-            <div class="why-label">Protocol</div>
-            <p>ONTO applies deterministic marker taxonomy (EM1–EM5) and three metrics — REP, EpCE, DLA — calibrated against GOLD v4.5. Every evaluation: versioned, reproducible, signed.</p>
+        <div class="why-block" style="border-color:rgba(34,197,94,0.15)">
+            <div class="why-label" style="color:rgba(34,197,94,0.6)">With ONTO</div>
+            <p style="color:rgba(34,197,94,0.7)">"(2022) Patikorn et al. meta-analysis (n=410): HbA1c reduced by −0.53% (95% CI: −0.88 to −0.17). <span style="color:rgba(167,139,250,0.8)">Confidence: ~70%.</span> <span style="color:rgba(167,139,250,0.8)">Unknown:</span> optimal protocol duration."</p>
+            <p style="font-size:11px;color:var(--text-m);margin-top:8px">Named source. Sample size. Confidence interval. Stated uncertainty. Verifiable.</p>
         </div>
     </div>
 
     <div class="evidence-strip">
-        <span><strong>11</strong> Models</span>
+        <span><strong>11</strong> Models tested</span>
         <span class="ev-sep">·</span>
         <span><strong>100</strong> Questions</span>
         <span class="ev-sep">·</span>
         <span style="color:#22c55e"><strong>10×</strong> Improvement</span>
         <span class="ev-sep">·</span>
-        <span><strong>0</strong> AI in evaluation</span>
+        <span><strong>0</strong> AI in scoring</span>
     </div>
 
     <div style="display:flex;justify-content:center;gap:20px;margin-top:16px;font-size:11px">
+        <a href="/demo/" style="color:rgba(34,197,94,0.6);text-decoration:none">Live demo →</a>
         <a href="https://github.com/nickarstrong/onto-research" target="_blank" style="color:rgba(34,197,94,0.6);text-decoration:none">GitHub →</a>
         <a href="/docs/#evidence" style="color:rgba(34,197,94,0.6);text-decoration:none">Full data →</a>
         <a href="/docs/" style="color:rgba(34,197,94,0.6);text-decoration:none">Specification →</a>
-        <a href="/reports/" style="color:rgba(34,197,94,0.6);text-decoration:none">Reports →</a>
     </div>
 </div>
 
@@ -2262,11 +2265,12 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
         <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:20px;text-align:center">Deterministic scoring · No AI judge · Reproducible · Signed verification</div>
 
         <div class="final-buttons">
-            <a href="mailto:council@ontostandard.org" class="btn-primary">Request Evaluation →</a>
-            <a href="/docs/" class="btn-secondary">View Methodology</a>
+            <a href="/app/" class="btn-primary">Try free →</a>
+            <a href="/demo/" class="btn-secondary">See live comparison</a>
         </div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.25);margin-top:12px;text-align:center">10 requests/day · No credit card · No SDK required</div>
         <div class="final-research">
-            11 models · 100 questions · 10× measured · <a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a> · <a href="/docs/#evidence">Methodology & validation data</a> · <a href="/reports/">Reports</a>
+            <a href="https://github.com/nickarstrong/onto-research" target="_blank">onto-research</a> · <a href="/docs/#evidence">Methodology & validation data</a> · <a href="/docs/">Specification</a>
         </div>
         <div class="final-footer">
             <div class="footer-socials">
