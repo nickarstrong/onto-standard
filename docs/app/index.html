@@ -3432,27 +3432,34 @@ function renderProxyModels() {
     for (const m of apiModels) {
         const isOn = m.is_enabled !== false;
         const cert = m.cert_status || 'inactive';
-        const certColor = cert === 'active' ? 'var(--accent)' : 'var(--text-muted)';
-        const certLabel = cert === 'active' ? 'ACTIVE' : 'INACTIVE';
+        const certColor = cert === 'active' ? 'var(--accent)' : '#ef4444';
+        const certLabel = cert === 'active' ? 'CERTIFIED' : 'INACTIVE';
+        const certUrl = m.cert_url || '';
         const lastEval = m.last_eval_ago || 'never';
+        const scoreText = m.avg_score !== null && m.avg_score !== undefined ? m.avg_score.toFixed(1) : '—';
+        const scoreColor = m.avg_score >= 7 ? 'var(--accent)' : m.avg_score >= 5 ? '#f59e0b' : m.avg_score > 0 ? '#ef4444' : 'var(--text-muted)';
 
-        html += `<div style="padding:8px 0;border-bottom:1px solid var(--border);${!isOn ? 'opacity:0.5' : ''}">
-            <div style="display:flex;align-items:center;justify-content:space-between">
-                <div style="display:flex;align-items:center;gap:8px;min-width:0">
-                    <div onclick="toggleModel('${m.id}')" style="width:32px;height:18px;border-radius:9px;background:${isOn ? 'var(--accent)' : '#4a5568'};cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0" title="${isOn ? 'Enabled' : 'Disabled'}">
-                        <div style="width:14px;height:14px;border-radius:50%;background:white;position:absolute;top:2px;${isOn ? 'right:2px' : 'left:2px'};transition:all 0.2s"></div>
+        html += `<div style="padding:10px 0;border-bottom:1px solid var(--border);${!isOn ? 'opacity:0.5' : ''}">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                    <div style="display:flex;align-items:center;gap:10px;flex:1">
+                        <div onclick="toggleModel('${m.id}')" style="width:36px;height:20px;border-radius:10px;background:${isOn ? 'var(--accent)' : '#4a5568'};cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0" title="${isOn ? 'Enabled — click to disable' : 'Disabled — click to enable'}">
+                            <div style="width:16px;height:16px;border-radius:50%;background:white;position:absolute;top:2px;${isOn ? 'right:2px' : 'left:2px'};transition:all 0.2s"></div>
+                        </div>
+                        <div style="min-width:0">
+                            <div style="font-size:13px;font-weight:600;color:var(--text)">${m.name}</div>
+                            <div style="font-size:10px;color:var(--text-muted)">${m.provider_type || ''} · last eval: ${lastEval}</div>
+                        </div>
                     </div>
-                    <div style="min-width:0">
-                        <div style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</div>
-                        <div style="font-size:9px;color:var(--text-muted)">${m.provider_type || ''} · last eval: ${lastEval}</div>
+                    <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
+                        <div style="font-size:16px;font-weight:700;color:${scoreColor}">${scoreText}</div>
+                        <div style="display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:4px;border:1px solid ${certColor};cursor:pointer" onclick="navigator.clipboard.writeText('${certUrl}');showToast('Certificate URL copied','success')" title="Copy certificate link">
+                            <div style="width:6px;height:6px;border-radius:50%;background:${certColor}"></div>
+                            <span style="font-size:9px;font-weight:600;color:${certColor}">${certLabel}</span>
+                        </div>
+                        <button onclick="removeModel('${m.id}','${m.name}')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;padding:2px" title="Remove">×</button>
                     </div>
                 </div>
-                <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
-                    <span style="font-size:8px;padding:2px 6px;border-radius:3px;border:1px solid ${certColor};color:${certColor};font-weight:600">${certLabel}</span>
-                    <button onclick="removeModel('${m.id}','${m.name}')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;padding:2px" title="Remove">×</button>
-                </div>
-            </div>
-        </div>`;
+            </div>`;
     }
 
     // Local-only models (localStorage, no API)
