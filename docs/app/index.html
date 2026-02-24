@@ -1653,7 +1653,7 @@ client = OpenAI(
                         <select id="invoice-tier-select" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:4px;font-size:12px">
                             <option value="standard_monthly">Standard — $2,500/mo</option>
                             <option value="standard">Standard — $30,000/yr</option>
-                            <option value="critical">AI Provider — $250,000/yr</option>
+                            <option value="provider">AI Provider — $114,000/yr</option>
                             <option value="white_label">White Label — $500,000/yr</option>
                         </select>
                         <button class="btn-minimal hidden" id="invoice-download" onclick="downloadInvoice()" style="font-size:12px">Download PDF</button>
@@ -2073,12 +2073,12 @@ client = OpenAI(
                         <div class="tier-option-desc">1K proxy/day, GOLD Extended, Ed25519 proof</div>
                     </div>
                 </label>
-                <label class="tier-option" data-tier="critical">
-                    <input type="radio" name="tier-select" value="critical">
+                <label class="tier-option" data-tier="provider">
+                    <input type="radio" name="tier-select" value="provider">
                     <div class="tier-option-content">
                         <div class="tier-option-header">
                             <span class="tier-badge tier-critical">AI PROVIDER</span>
-                            <span class="tier-option-price">$250K/yr</span>
+                            <span class="tier-option-price">$114K/yr</span>
                         </div>
                         <div class="tier-option-desc">Unlimited proxy, certificate + badge, priority support</div>
                     </div>
@@ -2196,7 +2196,7 @@ const STRINGS = {
 };
 const PLANS = {
     business: { monthly: 2500, annual: 30000, monthlyEquiv: 2500 },
-    enterprise: { annual: 250000 },
+    enterprise: { annual: 114000 },
     white_label: { annual: 500000 }
 };
 let selectedPlan = 'business';
@@ -2286,7 +2286,7 @@ function toggleTheme() {
 
 // === UTILITIES ===
 function escapeHtml(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
-function layerToPlan(layer) { return { open: 'free', standard: 'business', critical: 'enterprise' }[layer] || 'free'; }
+function layerToPlan(layer) { return { open: 'free', standard: 'business', provider: 'enterprise' }[layer] || 'free'; }
 
 function updatePlanBadges(layer) {
     const container = document.getElementById('dash-plan-badges');
@@ -2299,7 +2299,7 @@ function updatePlanBadges(layer) {
         : 'background:var(--bg-elevated);color:var(--text-secondary);font-weight:600;border:1px solid var(--border)';
     badges.push(`<span style="font-size:10px;padding:2px 8px;border-radius:3px;${proxyStyle}">${proxyTier}</span>`);
     
-    if (layer === 'critical') {
+    if (layer === 'provider') {
         badges.push('<span style="font-size:10px;padding:2px 8px;border-radius:3px;background:rgba(21,128,61,0.15);color:var(--accent);font-weight:600;border:1px solid rgba(21,128,61,0.3)">PROVIDER</span>');
     }
     if (layer === 'white_label') {
@@ -2311,7 +2311,7 @@ function updatePlanBadges(layer) {
     // Update rate label
     const rateEl = document.getElementById('dash-plan-rate');
     if (rateEl) {
-        const rates = { open: '10 requests/day', standard: '1,000 requests/day', critical: '10 requests/day (test) + SSE', white_label: '10 requests/day (test) + SSE' };
+        const rates = { open: '10 requests/day', standard: '1,000 requests/day', provider: '10 requests/day (test) + SSE', white_label: '10 requests/day (test) + SSE' };
         rateEl.textContent = rates[layer] || '10 requests/day';
     }
 }
@@ -2861,13 +2861,13 @@ function showDashboard() {
     if (currentUser) {
         document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
         document.getElementById('user-name').textContent = currentUser.name;
-        document.getElementById('user-plan').textContent = currentUser.plan === 'enterprise' ? 'PROVIDER' : currentUser.plan === 'business' ? 'STANDARD' : 'OPEN';
+        document.getElementById('user-plan').textContent = currentUser.layer === 'provider' ? 'PROVIDER' : currentUser.layer === 'standard' ? 'STANDARD' : 'OPEN';
         // Add expiry to sidebar
         if (currentUser.subscription && currentUser.subscription.expires_at) {
             const exp = new Date(currentUser.subscription.expires_at);
             const dateStr = exp.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
             const planEl = document.getElementById('user-plan');
-            const planName = currentUser.plan === 'enterprise' ? 'PROVIDER' : currentUser.plan === 'business' ? 'STANDARD' : 'OPEN';
+            const planName = currentUser.layer === 'provider' ? 'PROVIDER' : currentUser.layer === 'standard' ? 'STANDARD' : 'OPEN';
             planEl.textContent = `${planName} · до ${dateStr}`;
         }
         document.getElementById('settings-name').textContent = currentUser.name;
@@ -2879,7 +2879,7 @@ function showDashboard() {
         resetSessionTimer();
         
         // Switch dashboard view based on tier
-        const isProvider = currentUser.plan === 'enterprise';
+        const isProvider = currentUser.layer === 'provider' || currentUser.layer === 'white_label';
         
         // Provider two-pane vs Open/Standard Quick Test
         const providerPanes = document.getElementById('dash-provider-panes');
@@ -3297,7 +3297,7 @@ async function loadProxyUsage() {
         });
         if (!res.ok) return;
         const d = await res.json();
-        const isProvider = d.layer === 'critical' || d.layer === 'enterprise' || d.layer === 'white_label';
+        const isProvider = d.layer === 'provider' || d.layer === 'white_label';
 
         if (isProvider) {
             // Provider: show real proxy test usage
@@ -4098,7 +4098,8 @@ async function downloadInvoice() {
         const tierMap = {
             standard_monthly: { layer: 'standard', layer_name: 'Standard', price_annual: 2500, is_monthly: true },
             standard: { layer: 'standard', layer_name: 'Standard', price_annual: 30000 },
-            critical: { layer: 'critical', layer_name: 'AI Provider', price_annual: 250000 },
+            critical: { layer: 'provider', layer_name: 'AI Provider', price_annual: 114000 },
+            provider: { layer: 'provider', layer_name: 'AI Provider', price_annual: 114000 },
             white_label: { layer: 'white_label', layer_name: 'White-Label', price_annual: 500000 }
         };
         const t = tierMap[selectedTier];
@@ -4243,8 +4244,8 @@ tbody td:last-child{text-align:right;font-weight:600}
             Period: ${fmtDate(startedAt)} — ${fmtDate(expiresAt)}
         </div>
         <div>
-            Rate limit: ${sub.layer === 'critical' ? 'Unlimited' : '1,000/day'}<br>
-            Support: ${sub.layer === 'critical' ? 'Priority 24/7' : 'Business hours'}
+            Rate limit: ${sub.layer === 'provider' ? 'Unlimited' : '1,000/day'}<br>
+            Support: ${sub.layer === 'provider' ? 'Priority 24/7' : 'Business hours'}
         </div>
     </div>
 </div>
@@ -4461,7 +4462,7 @@ async function refreshBillingFromBackend() {
         if (!res.ok) return;
         const data = await res.json();
         // Update currentUser with real tier from backend
-        const tierToPlan = { open: 'free', standard: 'business', critical: 'enterprise', white_label: 'enterprise' };
+        const tierToPlan = { open: 'free', standard: 'business', provider: 'enterprise', white_label: 'enterprise' };
         currentUser.plan = tierToPlan[data.layer] || 'free';
         currentUser.layer = data.layer;
         localStorage.setItem('onto_layer', data.layer);
@@ -4474,7 +4475,7 @@ async function refreshBillingFromBackend() {
             currentUser.subscription.expires_at = data.tier_expires;
         }
         localStorage.setItem('onto_user', JSON.stringify(currentUser));
-        document.getElementById('user-plan').textContent = currentUser.plan === 'enterprise' ? 'PROVIDER' : (currentUser.plan === 'business' ? 'STANDARD' : 'OPEN');
+        document.getElementById('user-plan').textContent = currentUser.layer === 'provider' ? 'PROVIDER' : (currentUser.layer === 'standard' ? 'STANDARD' : 'OPEN');
         updateBillingUI();
         updateDashboardMetrics();
     } catch(e) {}
@@ -4528,7 +4529,7 @@ function updateBillingUI() {
             // Auto-select tier in invoice dropdown
             const tierSelect = document.getElementById('invoice-tier-select');
             if (tierSelect) {
-                const planToTier = { business: 'standard', enterprise: 'critical' };
+                const planToTier = { business: 'standard', enterprise: 'provider' };
                 tierSelect.value = planToTier[currentUser.plan] || 'standard';
             }
         } else {
@@ -4653,7 +4654,7 @@ async function processPayment() {
     if (!apiKey) { showToast('Please sign in first', 'error'); return; }
     
     // Map portal plan names to backend tier names
-    const planToTier = { business: 'standard', enterprise: 'critical' };
+    const planToTier = { business: 'standard', enterprise: 'provider' };
     let tier = planToTier[selectedPlan];
     // White Label override
     if (selectedPlan === 'enterprise' && selectedCycle === 'white_label') {
