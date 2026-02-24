@@ -164,7 +164,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <div class="ng"><h4>Governance</h4><a class="nl" href="#charter" data-doc="charter">Foundation Charter</a><a class="nl" href="#council" data-doc="council">Standards Council</a></div>
 <div class="ng"><h4>Resources</h4><a class="nl" href="#articles" data-doc="articles">Articles</a><a class="nl" href="#faq" data-doc="faq">FAQ</a><a class="nl" href="#changelog" data-doc="changelog">Changelog</a></div>
 <div class="ng"><h4>Community</h4><a class="nl" href="#reviews" data-doc="reviews">Reviews</a><a class="nl" href="#feedback" data-doc="feedback">Feedback</a></div>
-<div class="ng"><h4>Legal</h4><a class="nl" href="#license" data-doc="license">License</a><a class="nl" href="#terms" data-doc="terms">Terms of Service</a><a class="nl" href="#privacy" data-doc="privacy">Privacy Policy</a><a class="nl" href="#refund" data-doc="refund">Refund Policy</a></div>
+<div class="ng"><h4>Legal</h4><a class="nl" href="#license" data-doc="license">License</a><a class="nl" href="#terms" data-doc="terms">Terms of Service</a><a class="nl" href="#privacy" data-doc="privacy">Privacy Policy</a><a class="nl" href="#dpa" data-doc="dpa">Data Processing</a><a class="nl" href="#ip-protection" data-doc="ip-protection">IP Protection</a><a class="nl" href="#refund" data-doc="refund">Refund Policy</a></div>
 <div class="ng"><h4>Pages</h4><a class="nl" href="/reports/">Reports ↗</a><a class="nl" href="/paper/">Research Paper ↗</a><a class="nl" href="/encounter/">Field Observation ↗</a><a class="nl" href="/verify/">Verify ↗</a><a class="nl" href="https://api.ontostandard.org/health" target="_blank">Status ↗</a></div>
 </nav>
 <div class="sb-f"><div class="sb-fa">
@@ -209,9 +209,9 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <h3>5. RAG Clause</h3><p>Use in RAG systems, vector databases, semantic search, or real-time retrieval constitutes deployment and requires a license.</p>
 <h3>6. Termination</h3><p>Use outside Safe Harbor without a license automatically terminates all permissions.</p>
 <h3>Privacy Policy</h3><p>We collect minimal data necessary to provide the service. Data is processed in accordance with GDPR. We never sell your data.</p>
-<p style="margin-top:12px"><strong>Full license:</strong> <a href="https://ontostandard.org" target="_blank">ontostandard.org</a></p>
+<p style="margin-top:12px"><strong>Full license:</strong> <a href="/docs/#license" target="_blank">ontostandard.org/docs/#license</a></p>
 </div>
-<div class="af-check"><input type="checkbox" id="af-terms"><label for="af-terms">I agree to the <a href="/docs/#terms" target="_blank">Terms of Service</a> and <a href="/docs/#privacy" target="_blank">Privacy Policy</a></label></div>
+<div class="af-check"><input type="checkbox" id="af-terms"><label for="af-terms">I agree to the <a href="/docs/#terms" target="_blank">Terms of Service</a>, <a href="/docs/#privacy" target="_blank">Privacy Policy</a>, and <a href="/docs/#dpa" target="_blank">Data Processing Agreement</a></label></div>
 <button class="af-btn" id="af-reg-btn" onclick="afRegister(this)" disabled>Create Account</button>
 <p class="af-switch">Already have an account? <a onclick="afShow('login')">Sign in</a></p>
 </div>
@@ -307,7 +307,7 @@ print(response.choices[0].message.content)
 # → Response now includes citations, confidence levels, uncertainty markers</code></pre>
 
 <h2>3. Get API Key</h2>
-<p>Create a free account at <a href="/app/">ontostandard.org/app</a>. Open tier: 10 requests/day, no credit card. Upgrade to Standard ($2,500/mo) for 1,000 requests/day.</p>
+<p>Create a free account at <a href="/app/">ontostandard.org/app</a>. Open tier: 10 requests/day, no credit card. Upgrade to Standard ($30K/yr) for 1,000 requests/day.</p>
 
 <h2>4. Verify a Proof</h2>
 <pre><code>curl https://api.ontostandard.org/v1/verify/σ_1708123456_ed25519_a3f8...</code></pre>
@@ -387,7 +387,7 @@ print(response.choices[0].message.content)
 <!-- ABOUT ONTO -->
 <div class="ds da" id="doc-about" data-nav="about">
 <h1>About ONTO</h1>
-<div class="dm"><span class="db-g bg-g">Phase 2 — Experimental</span><span class="db-g bg-b">Public Research Release</span><span>ONTO-ERS v10.0</span><span>Scoring Engine v3.0</span><span>GOLD v4.5</span></div>
+<div class="dm"><span class="db-g bg-g">Phase 2 — Experimental</span><span class="db-g bg-b">Public Research Release</span><span>ONTO-ERS v10.0</span><span>Scoring Engine v3.1</span><span>GOLD v4.5</span></div>
 
 <h2>What Is ONTO</h2>
 <p>ONTO is a deterministic measurement and grounding standard for epistemic risk in AI systems. It provides a reproducible computational framework that quantifies the gap between what AI claims to know and what it actually knows — and grounds every output against verified epistemic reference standards.</p>
@@ -400,7 +400,7 @@ print(response.choices[0].message.content)
 
 <h2>How It Works</h2>
 <h3>Dual-Engine Architecture</h3>
-<p><strong>Python Scoring Engine (v3.0)</strong> — analyzes model output text against EM1–EM5 epistemic marker taxonomy (92+ patterns). Computes three deterministic metrics:</p>
+<p><strong>Python Scoring Engine (v3.1)</strong> — analyzes model output text against EM1–EM5 epistemic marker taxonomy (92+ patterns). Computes three deterministic metrics:</p>
 <ul>
 <li><strong>REP</strong> (Response Epistemic Profile) — distribution of markers across EM1–EM5 levels</li>
 <li><strong>EpCE</strong> (Epistemic Calibration Error) — deviation between expressed confidence and epistemic grounding</li>
@@ -627,7 +627,7 @@ print(response.choices[0].message.content)
     <div class="arch-diagram"><span class="layer-name">LAYER 1: LINGUISTIC ANALYSIS</span>  ←  what the model <span class="component">SAYS</span>
 │
 │  Input: raw model output text
-│  Engine: scoring_engine v3.0
+│  Engine: scoring_engine v3.1
 │  Method: EM1-EM5 classification (92 epistemic markers)
 │  Output: REP score [0,1]
 │
@@ -769,7 +769,7 @@ print(response.choices[0].message.content)
         </div>
         <div class="proof-step">
             <div class="step-num">2</div>
-            <span>Scoring engine v3.0 computes EM1-EM5 + REP + EpCE + DLA</span>
+            <span>Scoring engine v3.1 computes EM1-EM5 + REP + EpCE + DLA</span>
         </div>
         <div class="proof-step">
             <div class="step-num">3</div>
@@ -900,7 +900,7 @@ print(response.choices[0].message.content)
         </tbody>
     </table>
 
-<p style="font-size:12px;color:var(--text-m);margin-top:32px;">Methodology continuously refined. GOLD reference standard and scoring engine versioned independently. Current: GOLD v4.5, Scoring Engine v3.0.</p>
+<p style="font-size:12px;color:var(--text-m);margin-top:32px;">Methodology continuously refined. GOLD reference standard and scoring engine versioned independently. Current: GOLD v4.5, Scoring Engine v3.1.</p>
 </div>
 
 
@@ -1050,7 +1050,7 @@ print(response.choices[0].message.content)
 
 <div class="note-block"><strong>Note:</strong> Projected impacts are structural consequences of proven capabilities. Specific dollar amounts, percentage reductions, and timeline estimates depend on your deployment context, scale, and industry. This matrix maps <em>what</em> changes — your team calculates <em>how much</em>.</div>
 
-<p style="font-size:13px;color:var(--text-m);margin-top:32px;">Contact: <a href="mailto:contact@ontostandard.org">contact@ontostandard.org</a> · <a href="https://ontostandard.org/app/">Start with Free Tier →</a></p>
+<p style="font-size:13px;color:var(--text-m);margin-top:32px;">Contact: <a href="mailto:council@ontostandard.org">council@ontostandard.org</a> · <a href="https://ontostandard.org/docs/">Start with Free Tier →</a></p>
 </div>
 
 
@@ -1250,7 +1250,7 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is the signed proof?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Every evaluation produces a cryptographically signed proof — timestamped, versioned, and tamper-proof using Ed25519 signatures. This is your audit trail: verifiable evidence that an evaluation was conducted at a specific time with specific results.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I try before committing?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Yes. Create a free account for OPEN tier access. 10 proxy requests/day with GOLD Core injection. See the difference on the <a href="/app/">portal dashboard</a>, then upgrade when ready.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is the GOLD proxy?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">ONTO Proxy injects the GOLD epistemic discipline corpus into every AI request server-side. You change one line of code (base_url) — your model's outputs gain measurable epistemic discipline. GOLD never leaves the server. You get the effect, not the document. Compatible with OpenAI, Anthropic, Google, Mistral, Meta, Groq.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is the Founding Cohort?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">First 10 clients get 2× subscription duration (buy 12 months → get 24 months). Includes case study rights, quarterly calls, and roadmap influence. Contact <a href="mailto:council@ontostandard.org">council@ontostandard.org</a>.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is the Founding Cohort?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">First 10 enterprise clients receive founding terms: extended subscription duration, case study rights, quarterly calls with Standards Council, and roadmap influence. Terms negotiated per client. Contact <a href="mailto:council@ontostandard.org">council@ontostandard.org</a>.</div></div>
 </div><div class="sd"></div>
 
 <!-- REVIEWS -->
@@ -1292,6 +1292,16 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <h1>Changelog</h1>
 <div class="dm"><span class="db-g bg-g">Latest updates</span></div>
 
+<h2>2026-02-24</h2>
+<ul>
+<li>Scoring engine v3.1: GOLD-aware citation patterns, gap disclosure, medical floor bypass, refusal weight calibration</li>
+<li>GOLD_CORE: anti-fabrication rule added to rule_0 — models prohibited from fabricating citations</li>
+<li>Demo: CS-2026-001 context label, Feb 2026 date, 11-model average disclaimer</li>
+<li>Landing: Feb 2026 dates, composite scale 0–6, "Real AI output under GOLD" label</li>
+<li>Legal: DPA (10 sections, GDPR Art. 28), License v5.1 with RAG clause and Safe Harbor, ToS liability cap and indemnification, Privacy strengthening</li>
+<li>Sales one-pager PDF published: <code>ontostandard.org/ONTO_One_Pager.pdf</code></li>
+</ul>
+
 <h2>2026-02-20</h2>
 <ul>
 <li>Pricing: AI Provider tier ($250,000/yr) and White-Label ($500,000/yr) added</li>
@@ -1331,17 +1341,20 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <!-- LICENSE -->
 <div class="ds da" id="doc-license" data-nav="license">
 <h1>ONTO Gold Asymmetric AI License</h1>
-<div class="dm"><span class="db-g bg-b">Published</span><span>ONTO-LEGAL-001</span></div>
+<div class="dm"><span class="db-g bg-b">Published</span><span>ONTO-LEGAL-001 · v5.1 · February 2026</span></div>
 <h2 id="lic-scope">1. Scope</h2>
-<p>This license governs the use of ONTO specifications, methodology, and evaluation outputs.</p>
-<h2 id="lic-open">2.1 Open Grants (No Fee)</h2>
-<ul><li>Use specifications for internal evaluation</li><li>Implement metrics in research</li><li>Reference in publications</li><li>Build computation tools</li><li>Access OPEN tier evaluations</li></ul>
+<p>This license governs the use of ONTO specifications, methodology, evaluation outputs, and GOLD protocol materials.</p>
+<h2 id="lic-open">2.1 Open Grants — Safe Harbor (No Fee)</h2>
+<ul><li>Use specifications for internal evaluation</li><li>Implement metrics in research</li><li>Reference in publications with attribution</li><li>Build computation tools</li><li>Access OPEN tier evaluations (10 req/day)</li></ul>
+<p>Safe Harbor: activities listed above do not require a commercial license and are permanently free.</p>
 <h2 id="lic-commercial">2.2 Commercial Grants</h2>
-<ul><li>Issue ONTO certification marks</li><li>Operate as accredited evaluator</li><li>Access STANDARD/CERTIFIED tier evaluations and proofs</li><li>Use certification in marketing</li></ul>
-<h2 id="lic-restrict">3. Restrictions</h2>
-<ul><li>No certification without evaluation</li><li>No modified metrics as ONTO-compliant</li><li>No unaccredited certification services</li><li>No ONTO mark for quality endorsement</li></ul>
-<h2 id="lic-discl">4. Disclaimer</h2>
-<p>Provided "as is" without warranty. No liability assumed for evaluated AI systems.</p>
+<ul><li>Issue ONTO certification marks</li><li>Operate as accredited evaluator</li><li>Access STANDARD/CERTIFIED tier evaluations and proofs</li><li>Use certification in marketing materials</li></ul>
+<h2 id="lic-rag">3. RAG &amp; Retrieval Clause</h2>
+<p>Use of ONTO GOLD protocol materials in RAG systems, vector databases, semantic search, embedding pipelines, or real-time retrieval constitutes deployment and requires a commercial license. Unauthorized deployment automatically terminates all permissions.</p>
+<h2 id="lic-restrict">4. Restrictions</h2>
+<ul><li>No certification without evaluation</li><li>No modified metrics presented as ONTO-compliant</li><li>No unaccredited certification services</li><li>No ONTO mark without valid certification</li></ul>
+<h2 id="lic-discl">5. Disclaimer</h2>
+<p>Provided "as is" without warranty of any kind. ONTO assumes no liability for evaluated AI systems or decisions made based on evaluation outputs.</p>
 </div><div class="sd"></div>
 
 <!-- TERMS -->
@@ -1356,14 +1369,20 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <h2 id="t-5">5. Rate Limits</h2><p>Each plan has specific limits. Exceeding may cause suspension.</p>
 <h2 id="t-6">6. Payment</h2><p>Billed in advance. Non-refundable except per Refund Policy. 30 days pricing change notice.</p>
 <h2 id="t-7">7. Service Availability</h2>
-<p>ONTO targets high availability but does not guarantee specific uptime percentages during the current experimental phase. Service availability terms will be defined as the platform matures.</p>
-<h2 id="t-8">8. IP</h2><p>ONTO retains rights to Services. You retain ownership of your data.</p>
-<h2 id="t-9">9. Privacy</h2><p>See <a href="#privacy">Privacy Policy</a>.</p>
-<h2 id="t-10">10. Warranties</h2><p>SERVICES PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND.</p>
-<h2 id="t-11">11. Liability</h2><p>ONTO SHALL NOT BE LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL DAMAGES.</p>
+<p>ONTO targets 99.5% uptime for STANDARD and above tiers. During the current experimental phase, formal SLA credits are not yet available. ONTO will notify customers of planned maintenance 48 hours in advance.</p>
+<h2 id="t-8">8. Intellectual Property</h2>
+<p>ONTO retains all rights to the Services, GOLD protocol, scoring algorithms, and proof chain infrastructure. You retain full ownership of your data, prompts, and AI responses. Evaluation scores and certificates are jointly owned: you may display them, ONTO may reference them in anonymized aggregate form.</p>
+<h2 id="t-8a">8a. Data Processing</h2>
+<p>When using proxy services, your prompts and AI responses transit through ONTO infrastructure for scoring. <strong>ONTO does not store, log, or retain the content of prompts or responses.</strong> Only metadata is processed: token counts, score values, timestamps, and cryptographic hashes. See <a href="#dpa">Data Processing Agreement</a> for full details.</p>
+<h2 id="t-9">9. Privacy</h2><p>See <a href="#privacy">Privacy Policy</a> and <a href="#dpa">Data Processing Agreement</a>.</p>
+<h2 id="t-10">10. Warranties</h2><p>SERVICES PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.</p>
+<h2 id="t-11">11. Limitation of Liability</h2>
+<p>ONTO SHALL NOT BE LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES. ONTO'S TOTAL LIABILITY SHALL NOT EXCEED THE FEES PAID BY YOU IN THE TWELVE (12) MONTHS PRECEDING THE CLAIM.</p>
+<h2 id="t-11a">11a. Indemnification</h2>
+<p>You agree to indemnify and hold harmless ONTO from claims arising from your use of the Services, your AI systems' outputs, or your violation of these Terms.</p>
 <h2 id="t-12">12. Termination</h2><p>We may terminate for violations. You may cancel anytime.</p>
 <h2 id="t-13">13. Changes</h2><p>We may modify terms. Continued use = acceptance.</p>
-<h2 id="t-14">14. Law</h2><p>Governing law and jurisdiction to be determined upon formal legal entity establishment.</p>
+<h2 id="t-14">14. Governing Law</h2><p>These Terms shall be governed by the laws of the jurisdiction in which the ONTO legal entity is established. Until formal incorporation, disputes shall be resolved through good-faith negotiation, followed by binding arbitration under ICC rules.</p>
 <h2 id="t-15">15. Contact</h2><p><a href="mailto:council@ontostandard.org">council@ontostandard.org</a></p>
 </div><div class="sd"></div>
 
@@ -1375,7 +1394,7 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <h2 id="p-2">2. Information Collected</h2>
 <h3>Account</h3><ul><li>Email, organization name, billing info</li></ul>
 <h3>Usage</h3><ul><li>API logs, rate limit stats, IP, browser info</li></ul>
-<h3>Verification</h3><ul><li>Signal hashes/metadata processed</li><li>Original content NOT stored</li><li>Records kept for audit</li></ul>
+<h3>Verification</h3><ul><li>Signal hashes and metadata processed for scoring</li><li><strong>Original prompts and AI responses are NEVER stored, logged, or retained</strong></li><li>Only cryptographic hashes, scores, and timestamps are kept for audit</li><li>Content passes through memory only and is discarded after scoring</li></ul>
 <h2 id="p-3">3. Use</h2><ul><li>Provide services</li><li>Billing</li><li>Rate limiting</li><li>Fraud prevention</li><li>Service improvement</li><li>Legal compliance</li></ul>
 <h2 id="p-4">4. Retention</h2><p>Active: retained. Deleted: 30 days. Aggregated: indefinite. Billing: as required by law.</p>
 <h2 id="p-5">5. Sharing</h2><p>No selling. Shared with: service providers, payment processors, law enforcement (required), successors.</p>
@@ -1383,20 +1402,133 @@ print(f"Compliance: {results.compliance_level.value}")</code></pre>
 <h2 id="p-7">7. Your Rights</h2><p>Access, correct, delete, export, object, withdraw consent. Contact: <a href="mailto:council@ontostandard.org">council@ontostandard.org</a></p>
 <h2 id="p-8">8. Cookies</h2><p>Essential only. No advertising trackers.</p>
 <h2 id="p-9">9. Children</h2><p>Not intended for under 18. No data collected from children.</p>
+<h2 id="p-10">10. Data Processing Agreement</h2><p>Enterprise customers processing personal data through ONTO services are covered by our <a href="#dpa">Data Processing Agreement</a>, which governs ONTO's role as data processor under GDPR Article 28.</p>
+</div><div class="sd"></div>
+
+<!-- DPA -->
+<div class="ds da" id="doc-dpa" data-nav="dpa">
+<h1>Data Processing Agreement</h1>
+<div class="dm"><span class="db-g bg-b">Published</span><span>February 2026 · GDPR Article 28</span></div>
+<h2 id="dpa-1">1. Roles</h2>
+<p>You (the "Controller") determine the purpose and means of processing. ONTO (the "Processor") processes data solely to provide the Services.</p>
+<h2 id="dpa-2">2. Scope of Processing</h2>
+<p>ONTO processes the following data categories through its proxy infrastructure:</p>
+<ul><li><strong>Transit data:</strong> Prompts and AI responses pass through ONTO proxy for real-time scoring</li><li><strong>Metadata retained:</strong> Token counts, risk scores, timestamps, cryptographic hashes, API key identifiers</li><li><strong>Content NOT retained:</strong> Prompts, responses, and any personal data within them are processed in-memory only and discarded immediately after scoring</li></ul>
+<h2 id="dpa-3">3. Processing Instructions</h2>
+<p>ONTO processes data only on your documented instructions. ONTO will not process data for any purpose other than providing the Services, unless required by law.</p>
+<h2 id="dpa-4">4. Security Measures</h2>
+<ul><li>TLS 1.3 encryption for all data in transit</li><li>AES-256-GCM encryption for data at rest (metadata only)</li><li>Ed25519 cryptographic signatures for proof chain integrity</li><li>No persistent storage of transit data</li><li>Access restricted to authorized personnel with audit logging</li><li>Regular security assessments</li></ul>
+<h2 id="dpa-5">5. Sub-processors</h2>
+<p>ONTO uses the following sub-processors:</p>
+<ul><li><strong>Infrastructure:</strong> Cloud hosting provider (data center location disclosed on request)</li><li><strong>Payment:</strong> Stripe (billing data only)</li></ul>
+<p>ONTO will notify you 30 days before adding new sub-processors. You may object within 14 days.</p>
+<h2 id="dpa-6">6. Data Subject Rights</h2>
+<p>ONTO will assist you in responding to data subject requests (access, rectification, erasure, portability) within 10 business days. Since ONTO does not store content data, most requests are satisfied by confirming no content is retained.</p>
+<h2 id="dpa-7">7. Breach Notification</h2>
+<p>ONTO will notify you of any personal data breach without undue delay and no later than 48 hours after becoming aware. Notification includes: nature of breach, categories affected, likely consequences, and measures taken.</p>
+<h2 id="dpa-8">8. Audit Rights</h2>
+<p>You may audit ONTO's compliance with this DPA once per year with 30 days notice. ONTO will provide access to relevant documentation and facilities. ENTERPRISE tier customers may request third-party audits.</p>
+<h2 id="dpa-9">9. Data Deletion</h2>
+<p>Upon termination: metadata deleted within 30 days, billing records retained as required by law, cryptographic proofs retained for certificate validity (anonymized). No content data exists to delete.</p>
+<h2 id="dpa-10">10. International Transfers</h2>
+<p>If data is transferred outside the EEA, ONTO ensures adequate protection through Standard Contractual Clauses (SCCs) or equivalent mechanisms.</p>
+</div><div class="sd"></div>
+
+<!-- IP PROTECTION -->
+<div class="ds da" id="doc-ip-protection" data-nav="ip-protection">
+<h1>Intellectual Property Protection</h1>
+<div class="dm"><span class="db-g bg-b">Active</span><span>February 2026</span></div>
+<p>ONTO Standard's proprietary technology is protected through multiple overlapping legal and technical mechanisms. Unauthorized use is detectable and prosecutable.</p>
+
+<div class="dd"><strong>ONTO maintains active forensic monitoring</strong> of all certified and non-certified AI deployments. Unauthorized use of ONTO's proprietary epistemic design, scoring calibration, or certification marks is subject to legal action under applicable trade secret, copyright, and trademark law.</div>
+
+<h2 id="ip-framework">1. Protection Framework</h2>
+<table><thead><tr><th>Layer</th><th>Mechanism</th><th>Coverage</th></tr></thead><tbody>
+<tr><td><strong>Trade Secret</strong></td><td>US DTSA &amp; EU Trade Secrets Directive (2016/943)</td><td>GOLD corpus, scoring calibration weights, detection methodology</td></tr>
+<tr><td><strong>Copyright</strong></td><td>US Copyright Act, Berne Convention</td><td>Text, structure, and taxonomy of epistemic framework (EM1–EM5)</td></tr>
+<tr><td><strong>Trademark</strong></td><td>Registration pending</td><td>"ONTO Verified", "ONTO Standard", associated certification marks</td></tr>
+<tr><td><strong>Technical</strong></td><td>Proprietary forensic methods</td><td>Statistical analysis of AI model outputs detects unauthorized use externally</td></tr>
+</tbody></table>
+
+<h2 id="ip-detection">2. Forensic Detection</h2>
+<p>ONTO's proprietary epistemic design embeds multiple independent forensic signatures that are:</p>
+<ul>
+<li><strong>Detectable</strong> — unauthorized use produces statistically measurable behavioral patterns in AI model outputs. Detection operates externally, without access to the model's configuration or system prompt.</li>
+<li><strong>Provable</strong> — detection methodology produces court-admissible evidence meeting the Daubert standard for scientific validity. Statistical significance exceeds p&nbsp;&lt;&nbsp;0.001 across multiple independent tests.</li>
+<li><strong>Entangled</strong> — forensic signatures are architecturally coupled with epistemic quality improvement. Removing signatures degrades core functionality, making evasion self-defeating.</li>
+</ul>
+
+<h2 id="ip-jurisdiction">3. Legal Jurisdiction</h2>
+<table><thead><tr><th>Jurisdiction</th><th>Legal Basis</th><th>Status</th></tr></thead><tbody>
+<tr><td>United States</td><td>Defend Trade Secrets Act (DTSA)</td><td>Active</td></tr>
+<tr><td>European Union</td><td>EU Trade Secrets Directive (2016/943)</td><td>Active</td></tr>
+<tr><td>United States</td><td>US Copyright Act</td><td>Active</td></tr>
+<tr><td>International</td><td>TRIPS Agreement (WTO)</td><td>Active</td></tr>
+</tbody></table>
+
+<h2 id="ip-enforcement">4. Enforcement Policy</h2>
+<p>ONTO follows a graduated enforcement process:</p>
+<ol>
+<li><strong>Detection</strong> — automated forensic monitoring identifies statistical anomalies consistent with unauthorized use</li>
+<li><strong>Verification</strong> — independent expert review confirms results across multiple tests (composite significance exceeding six standard deviations)</li>
+<li><strong>Notification</strong> — formal cease-and-desist with documented evidence</li>
+<li><strong>Resolution</strong> — good-faith negotiation period for licensing or cessation</li>
+<li><strong>Litigation</strong> — trade secret misappropriation claims seeking injunctive relief, damages, unjust enrichment, and attorney fees</li>
+</ol>
+
+<h2 id="ip-permitted">5. Permitted vs Prohibited Use</h2>
+<table><thead><tr><th>Activity</th><th>Status</th></tr></thead><tbody>
+<tr><td>Use ONTO via provided proxy/SDK with active subscription</td><td>Permitted</td></tr>
+<tr><td>Display "ONTO Verified" badge with active certificate</td><td>Permitted</td></tr>
+<tr><td>Reference ONTO scoring results with attribution</td><td>Permitted</td></tr>
+<tr><td>Copy, store, or redistribute GOLD design text</td><td>Prohibited</td></tr>
+<tr><td>Reverse-engineer or decompile epistemic design</td><td>Prohibited</td></tr>
+<tr><td>Continue use after subscription termination</td><td>Prohibited</td></tr>
+<tr><td>Display certification marks without active certificate</td><td>Prohibited</td></tr>
+<tr><td>Sub-license to third parties without authorization</td><td>Prohibited</td></tr>
+</tbody></table>
+
+<div class="dd" style="border-left:3px solid #dc2626;background:rgba(220,38,38,.06)"><strong>Notice to potential infringers:</strong> Copying, paraphrasing, reverse-engineering, or otherwise reproducing ONTO's proprietary epistemic design — in whole or in part — constitutes misappropriation of trade secrets. ONTO actively monitors for unauthorized use and will pursue all available legal remedies, including injunctive relief, damages, and attorney fees.</div>
+
+<p style="margin-top:24px">Legal inquiries: <a href="mailto:council@ontostandard.org">council@ontostandard.org</a></p>
 </div><div class="sd"></div>
 
 <!-- REFUND -->
 <div class="ds da" id="doc-refund" data-nav="refund">
 <h1>Refund Policy</h1>
-<div class="dm"><span class="db-g bg-b">Published</span><span>February 4, 2026</span></div>
-<div class="dd"><strong>Summary:</strong> 14-day money-back for monthly. 30-day for annual. Pro-rata after.</div>
-<h2 id="r-1">1. Monthly</h2><ul><li>14-day full refund</li><li>No partial month refunds after</li><li>Cancel anytime, service continues to period end</li></ul>
-<h2 id="r-2">2. Annual</h2><ul><li>30-day full refund</li><li>Pro-rata after (minus 15% termination fee)</li><li>No refunds after 6 months</li></ul>
-<h2 id="r-3">3. Certified</h2><p>Custom terms per contract.</p>
-<h2 id="r-4">4. Service Credits</h2>
-<p>Service credit terms will be defined upon formal SLA establishment. During the experimental phase, ONTO addresses service disruptions on a case-by-case basis.</p>
-<h2 id="r-5">5. Non-Refundable</h2><ul><li>ToS violation terminations</li><li>Unused credits</li><li>Setup fees</li><li>Third-party fees</li></ul>
-<h2 id="r-6">6. How To</h2><p>Email <a href="mailto:council@ontostandard.org">council@ontostandard.org</a>. Response 2 days, processing 5-10 days.</p>
+<div class="dm"><span class="db-g bg-b">Published</span><span>February 2026</span></div>
+
+<h2 id="r-1">1. Nature of Service</h2>
+<p>ONTO provides access to proprietary epistemic infrastructure — including the GOLD calibration corpus, scoring engine, and cryptographic proof chain. Upon activation, the service delivers immediate, irreversible value: GOLD is injected server-side into every proxied request from the moment of first API call. This is not a trial of features — it is delivery of proprietary intellectual property.</p>
+
+<h2 id="r-2">2. Pre-Activation Period</h2>
+<p>If you have created an account but have <strong>not yet made any API calls</strong> (proxy or scoring), you may request a full refund within 7 days of payment. Once the first API call is made, the service is considered fully delivered.</p>
+
+<h2 id="r-3">3. Post-Activation</h2>
+<p><strong>No refunds after first API call.</strong> The GOLD corpus is delivered in real-time through every proxied request. Each successful API call constitutes delivery of proprietary content. Requesting a refund after receiving GOLD-enhanced responses is equivalent to requesting return of payment after consuming the product.</p>
+
+<h2 id="r-4">4. Annual Subscriptions</h2>
+<p>Annual commitments are non-refundable after activation. You may cancel renewal at any time — service continues until the end of the paid period. No pro-rata refunds.</p>
+
+<h2 id="r-5">5. Service Disruption</h2>
+<p>If ONTO services are unavailable for more than 72 consecutive hours due to ONTO infrastructure failure (not provider outage, not client-side issues), affected subscribers receive service credit equal to the downtime period, applied to the next billing cycle. Service credits are the sole remedy for service disruption.</p>
+
+<h2 id="r-6">6. Tier-Specific Terms</h2>
+<table><thead><tr><th>Tier</th><th>Refund</th><th>Cancellation</th></tr></thead><tbody>
+<tr><td>Open ($0)</td><td>N/A</td><td>Anytime</td></tr>
+<tr><td>Standard ($30K/yr)</td><td>7-day pre-activation only</td><td>End of period, no pro-rata</td></tr>
+<tr><td>AI Provider ($250K/yr)</td><td>Per contract terms</td><td>Per contract terms</td></tr>
+<tr><td>White-Label ($500K/yr)</td><td>Per contract terms</td><td>Per contract terms</td></tr>
+</tbody></table>
+
+<h2 id="r-7">7. Non-Refundable</h2>
+<ul><li>Any subscription after first API call</li><li>ToS violation terminations</li><li>Unused API quota</li><li>Setup or onboarding fees</li><li>Third-party provider fees passed through ONTO proxy</li></ul>
+
+<h2 id="r-8">8. Post-Termination Obligations</h2>
+<p>Upon subscription termination — whether by cancellation, non-renewal, or refund — all rights to use ONTO services, GOLD-enhanced outputs, and certification marks cease immediately. Continued use of ONTO-derived epistemic patterns after termination constitutes unauthorized use and is subject to enforcement under our <a href="#ip-protection">IP Protection</a> policy.</p>
+
+<h2 id="r-9">9. Contact</h2>
+<p>Refund requests: <a href="mailto:council@ontostandard.org">council@ontostandard.org</a>. Response within 2 business days.</p>
 </div>
 
 </div></main>
