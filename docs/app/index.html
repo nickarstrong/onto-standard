@@ -58,6 +58,13 @@
 .dash-section-title { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -0.2px; }
 .dash-section-subtitle { font-size: 11px; color: var(--text-muted); margin-left: auto; }
 .dash-section-divider { height: 1px; background: var(--border); margin: 28px 0; opacity: 0.5; }
+
+/* Provider two-pane responsive */
+@media (max-width: 900px) {
+    #dash-provider-panes .dash-section > div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+    }
+}
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6; color: var(--text); background: var(--bg-secondary); }
 
@@ -975,11 +982,12 @@ a.info-val:hover { color: var(--text); }
                 <div class="dash-card-clean" style="padding:12px 16px;margin-bottom:0">
                     <div style="display:flex;align-items:center;gap:12px">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted);flex-shrink:0"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-                        <span style="font-size:11px;color:var(--text-muted);white-space:nowrap">API Key</span>
+                        <span style="font-size:11px;color:var(--text-muted);white-space:nowrap">ONTO API Key</span>
                         <input type="password" class="key-input" id="dash-api-key" value="" readonly placeholder="Loading..." style="flex:1;padding:6px 10px;font-size:11px;margin:0;border:none;background:transparent">
-                        <div style="display:flex;gap:6px;flex-shrink:0">
+                        <div style="display:flex;gap:4px;flex-shrink:0">
                             <button class="btn-minimal" onclick="toggleDashKeyVis()" id="dash-toggle-key" style="padding:4px 10px;font-size:10px">Show</button>
                             <button class="btn-minimal" onclick="copyDashKey(this)" style="padding:4px 10px;font-size:10px">Copy</button>
+                            <button class="btn-minimal" onclick="regenerateApiKey()" style="padding:4px 10px;font-size:10px;color:var(--text-muted)" title="Generate new API key">Regenerate</button>
                         </div>
                     </div>
                 </div>
@@ -987,94 +995,130 @@ a.info-val:hover { color: var(--text); }
 
             <div class="dash-section-divider"></div>
 
-            <!-- ══════════ SECTION: YOUR AI MODELS (Provider only) ══════════ -->
-            <div id="dash-models-section" class="dash-section hidden">
-                <div class="dash-section-header">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
-                    <div class="dash-section-title">Your AI Models</div>
-                    <span class="dash-section-subtitle">Register models for SSE delivery</span>
-                </div>
+            <!-- ══════════ PROVIDER: TWO-PANE LAYOUT ══════════ -->
+            <div id="dash-provider-panes" class="hidden">
+                <div class="dash-section">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
 
-            <!-- ═══════════ PROVIDER-ONLY: SSE ═══════════ -->
-            <div id="dash-provider-view" class="hidden">
-                <div class="dash-card-clean" style="margin-bottom:16px">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-                        <div style="display:flex;align-items:center;gap:8px">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M2 12h5l2-9 4 18 2-9h5"/><circle cx="19" cy="12" r="2"/></svg>
-                            <div class="card-head" style="margin-bottom:0">GOLD Delivery — SSE</div>
-                        </div>
-                        <div id="sse-status-badge" style="font-size:10px;padding:3px 8px;border-radius:10px;background:rgba(239,68,68,0.15);color:#ef4444;font-weight:600">○ Disconnected</div>
-                    </div>
-                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px;padding-left:24px">Production delivery. Connect once — inject GOLD into every request on your infrastructure.</div>
-
-                    <div id="sse-disconnected">
-                        <button class="btn-minimal" onclick="connectSSE()" id="sse-connect-btn" style="font-size:12px;padding:8px 24px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Connect SSE</button>
-                    </div>
-
-                    <div id="sse-connected" class="hidden">
-                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px">
-                            <div style="background:var(--bg);border-radius:6px;padding:10px 12px;text-align:center">
-                                <div style="font-size:16px;font-weight:700;color:var(--accent)" id="sse-chars">—</div>
-                                <div style="font-size:9px;color:var(--text-muted);margin-top:2px">GOLD chars</div>
+                        <!-- LEFT PANE: Proxy (Testing) -->
+                        <div class="dash-card-clean" style="margin-bottom:0;border:1px solid var(--border)">
+                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)">
+                                <div style="display:flex;align-items:center;gap:8px">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                                    <span style="font-size:13px;font-weight:600">Proxy</span>
+                                    <span style="font-size:10px;color:var(--text-muted);background:var(--bg-elevated);padding:1px 6px;border-radius:3px">Testing</span>
+                                </div>
+                                <span id="prov-proxy-gold-badge" style="font-size:9px;padding:2px 8px;border-radius:10px;background:rgba(46,194,126,0.15);color:var(--accent);font-weight:600">● GOLD</span>
                             </div>
-                            <div style="background:var(--bg);border-radius:6px;padding:10px 12px;text-align:center">
-                                <div style="font-size:16px;font-weight:700;color:var(--text)" id="sse-snippets">—</div>
-                                <div style="font-size:9px;color:var(--text-muted);margin-top:2px">Snippets</div>
+                            <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">Test new models via proxy before SSE integration.</div>
+                            <div style="display:flex;gap:8px;margin-bottom:8px">
+                                <select id="prov-proxy-provider" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 8px;font-size:12px;color:var(--text);width:130px">
+                                    <option value="anthropic">Anthropic</option>
+                                    <option value="openai">OpenAI</option>
+                                    <option value="deepseek">DeepSeek</option>
+                                    <option value="mistral">Mistral</option>
+                                </select>
+                                <input type="password" id="prov-proxy-key" placeholder="Provider API key (sk-...)" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--text)">
                             </div>
-                            <div style="background:var(--bg);border-radius:6px;padding:10px 12px;text-align:center">
-                                <div style="font-size:16px;font-weight:700;color:var(--text)" id="sse-heartbeat">—</div>
-                                <div style="font-size:9px;color:var(--text-muted);margin-top:2px">Last heartbeat</div>
+                            <input type="text" id="prov-proxy-question" placeholder="Ask anything..." value="What is the boiling point of water?" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box;margin-bottom:8px" onkeydown="if(event.key==='Enter')runProvProxyTest()">
+                            <div style="display:flex;gap:8px;align-items:center">
+                                <button class="btn-minimal" onclick="runProvProxyTest()" id="prov-proxy-btn" style="font-size:12px;padding:8px 20px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Send</button>
+                                <span id="prov-proxy-status" style="font-size:11px;color:var(--text-muted)"></span>
+                            </div>
+                            <div id="prov-proxy-result" class="hidden" style="margin-top:10px;background:#0c0f14;border-radius:6px;padding:10px 12px;font-size:11px;color:#e2e8f0;max-height:180px;overflow-y:auto;white-space:pre-wrap;line-height:1.6"></div>
+                            <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center">
+                                <span style="font-size:10px;color:var(--text-muted)" id="prov-proxy-usage"><span id="prov-proxy-used">0</span> / <span id="prov-proxy-limit">10</span> requests today</span>
+                                <span style="font-size:10px;color:var(--text-muted)">Resets at midnight UTC</span>
                             </div>
                         </div>
-                        <div style="display:flex;justify-content:space-between;align-items:center">
-                            <div style="font-size:10px;color:var(--text-muted)"><span id="sse-hash" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-secondary)">—</span></div>
-                            <button class="btn-minimal" onclick="disconnectSSE()" style="font-size:10px;padding:4px 12px;color:#ef4444;border-color:rgba(239,68,68,0.3)">Disconnect</button>
-                        </div>
-                    </div>
 
-                    <div id="sse-log" class="hidden" style="margin-top:10px;background:#0c0f14;border-radius:6px;padding:8px 12px;font-size:10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;max-height:100px;overflow-y:auto;line-height:1.6"></div>
+                        <!-- RIGHT PANE: SSE (Production) -->
+                        <div class="dash-card-clean" style="margin-bottom:0;border:1px solid var(--border)">
+                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)">
+                                <div style="display:flex;align-items:center;gap:8px">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M2 12h5l2-9 4 18 2-9h5"/><circle cx="19" cy="12" r="2"/></svg>
+                                    <span style="font-size:13px;font-weight:600">SSE</span>
+                                    <span style="font-size:10px;color:#0a0a0a;background:var(--accent);padding:1px 6px;border-radius:3px;font-weight:600">Production</span>
+                                </div>
+                                <div id="sse-status-badge" style="font-size:9px;padding:2px 8px;border-radius:10px;background:rgba(239,68,68,0.15);color:#ef4444;font-weight:600">○ Disconnected</div>
+                            </div>
+
+                            <!-- SSE Connection -->
+                            <div id="sse-disconnected">
+                                <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">Connect once — GOLD is delivered to your infrastructure via SSE.</div>
+                                <button class="btn-minimal" onclick="connectSSE()" id="sse-connect-btn" style="font-size:12px;padding:8px 24px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Connect SSE</button>
+                            </div>
+                            <div id="sse-connected" class="hidden">
+                                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
+                                    <div style="background:var(--bg);border-radius:6px;padding:8px 10px;text-align:center">
+                                        <div style="font-size:14px;font-weight:700;color:var(--accent)" id="sse-chars">—</div>
+                                        <div style="font-size:9px;color:var(--text-muted);margin-top:2px">GOLD chars</div>
+                                    </div>
+                                    <div style="background:var(--bg);border-radius:6px;padding:8px 10px;text-align:center">
+                                        <div style="font-size:14px;font-weight:700;color:var(--text)" id="sse-snippets">—</div>
+                                        <div style="font-size:9px;color:var(--text-muted);margin-top:2px">Snippets</div>
+                                    </div>
+                                    <div style="background:var(--bg);border-radius:6px;padding:8px 10px;text-align:center">
+                                        <div style="font-size:14px;font-weight:700;color:var(--text)" id="sse-heartbeat">—</div>
+                                        <div style="font-size:9px;color:var(--text-muted);margin-top:2px">Heartbeat</div>
+                                    </div>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                                    <span id="sse-hash" style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-muted)">—</span>
+                                    <button class="btn-minimal" onclick="disconnectSSE()" style="font-size:10px;padding:3px 10px;color:#ef4444;border-color:rgba(239,68,68,0.3)">Disconnect</button>
+                                </div>
+                            </div>
+                            <div id="sse-log" class="hidden" style="margin-top:8px;background:#0c0f14;border-radius:6px;padding:6px 10px;font-size:9px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;max-height:60px;overflow-y:auto;line-height:1.5"></div>
+
+                            <!-- SSE Models list -->
+                            <div style="border-top:1px solid var(--border);margin-top:12px;padding-top:12px">
+                                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                                    <span style="font-size:11px;font-weight:600;color:var(--text)">Models</span>
+                                    <button class="btn-minimal" onclick="document.getElementById('sse-register-form').classList.toggle('hidden')" style="font-size:10px;padding:3px 10px">+ Add</button>
+                                </div>
+
+                                <!-- Register form (collapsed) -->
+                                <div id="sse-register-form" class="hidden" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:10px">
+                                    <div style="display:flex;gap:6px;margin-bottom:6px">
+                                        <input type="text" id="new-model-name" placeholder="Model name" style="flex:1;background:#0c0f14;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:11px;color:var(--text)" onkeydown="if(event.key==='Enter')registerModel()">
+                                        <select id="new-model-provider" style="background:#0c0f14;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:10px;color:var(--text);width:110px">
+                                            <option value="anthropic">Anthropic</option>
+                                            <option value="openai">OpenAI</option>
+                                            <option value="deepseek">DeepSeek</option>
+                                            <option value="mistral">Mistral</option>
+                                            <option value="custom">Custom</option>
+                                        </select>
+                                    </div>
+                                    <div style="display:flex;gap:6px">
+                                        <input type="password" id="new-model-key" placeholder="Provider API key" style="flex:1;background:#0c0f14;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:11px;color:var(--text);font-family:'JetBrains Mono',monospace">
+                                        <button class="btn-minimal" onclick="registerModel()" style="font-size:11px;padding:6px 14px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Register</button>
+                                    </div>
+                                </div>
+
+                                <div id="model-registered-msg" class="hidden" style="background:#1a2e1a;border:1px solid #2d4a2d;border-radius:6px;padding:8px 10px;margin-bottom:8px">
+                                    <div style="color:var(--accent);font-size:11px;font-weight:600" id="model-reg-title"></div>
+                                    <div style="font-size:9px;color:var(--text-muted)" id="model-reg-id"></div>
+                                </div>
+
+                                <div id="models-list" style="font-size:12px">
+                                    <div style="color:var(--text-muted);font-size:11px;padding:8px 0;text-align:center">No models registered</div>
+                                </div>
+                                <div id="add-model-row" class="hidden"></div>
+                            </div>
+                            <div style="border-top:1px solid var(--border);margin-top:12px;padding-top:8px;display:flex;justify-content:space-between;align-items:center">
+                                <span style="font-size:10px;color:var(--text-muted)">∞ Unlimited requests</span>
+                                <span style="font-size:10px;color:var(--text-muted)">GOLD delivered via SSE</span>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
 
-            <!-- ═══════════ SHARED: AI Models ═══════════ -->
-            <div class="dash-card-clean" style="margin-bottom:0">
-                <!-- Register form -->
-                <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px 14px;margin-bottom:14px">
-                    <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Register new model</div>
-                    <div style="display:flex;gap:8px;margin-bottom:8px">
-                        <input type="text" id="new-model-name" placeholder="Model name (e.g. gpt-4o-production)" style="flex:1;background:#0c0f14;border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text)" onkeydown="if(event.key==='Enter')registerModel()">
-                        <select id="new-model-provider" style="background:#0c0f14;border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:11px;color:var(--text);width:130px">
-                            <option value="anthropic">Anthropic</option>
-                            <option value="openai">OpenAI</option>
-                            <option value="deepseek">DeepSeek</option>
-                            <option value="mistral">Mistral</option>
-                            <option value="custom">Custom</option>
-                        </select>
-                    </div>
-                    <div style="display:flex;gap:8px">
-                        <input type="password" id="new-model-key" placeholder="Provider API key (sk-ant-... or sk-...)" style="flex:1;background:#0c0f14;border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);font-family:'JetBrains Mono',monospace">
-                        <button class="btn-minimal" onclick="registerModel()" style="font-size:12px;padding:8px 18px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Register</button>
-                    </div>
-                </div>
+            <div id="dash-provider-divider" class="dash-section-divider hidden"></div>
 
-                <!-- Success message -->
-                <div id="model-registered-msg" class="hidden" style="background:#1a2e1a;border:1px solid #2d4a2d;border-radius:6px;padding:10px 12px;margin-bottom:12px">
-                    <div style="color:var(--accent);font-size:12px;font-weight:600;margin-bottom:2px" id="model-reg-title"></div>
-                    <div style="font-size:10px;color:var(--text-muted)" id="model-reg-id"></div>
-                </div>
-
-                <!-- Models list with ON/OFF + cert -->
-                <div id="models-list" style="font-size:12px">
-                    <div style="color:var(--text-muted);font-size:11px;padding:12px 0;text-align:center">No models registered yet</div>
-                </div>
-                <div id="add-model-row" class="hidden"></div>
-            </div>
-            </div>
-
-            <div class="dash-section-divider"></div>
-
-            <!-- ══════════ SECTION: QUICK TEST ══════════ -->
-            <div class="dash-section">
+            <!-- ══════════ SECTION: QUICK TEST (Open/Standard only) ══════════ -->
+            <div id="dash-quicktest-section" class="dash-section">
                 <div class="dash-section-header">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
                     <div class="dash-section-title">Quick Test</div>
@@ -2828,32 +2872,21 @@ function showDashboard() {
         resetSessionTimer();
         
         // Switch dashboard view based on tier
-        const providerView = document.getElementById('dash-provider-view');
         const isProvider = currentUser.plan === 'enterprise';
-        if (providerView) {
-            // SSE section: provider-only
-            providerView.classList.toggle('hidden', !isProvider);
-        }
-        // Models: always visible (shared for all tiers)
-        // Show/hide test input mode
-        const modelRow = document.getElementById('test-model-row');
-        const stdRow = document.getElementById('test-std-row');
-        const demoNote = document.getElementById('test-demo-note');
+        
+        // Provider two-pane vs Open/Standard Quick Test
+        const providerPanes = document.getElementById('dash-provider-panes');
+        const providerDivider = document.getElementById('dash-provider-divider');
+        const quickTestSection = document.getElementById('dash-quicktest-section');
+        
+        if (providerPanes) providerPanes.classList.toggle('hidden', !isProvider);
+        if (providerDivider) providerDivider.classList.toggle('hidden', !isProvider);
+        if (quickTestSection) quickTestSection.classList.toggle('hidden', isProvider);
+
         const guideSse = document.getElementById('guide-sse');
         const guideProxy = document.getElementById('guide-proxy');
-        // Models section: provider-only
-        const modelsSection = document.getElementById('dash-models-section');
-        const modelsDivider = modelsSection ? modelsSection.previousElementSibling : null;
-        if (modelsSection) modelsSection.classList.toggle('hidden', !isProvider);
-        if (modelsDivider && modelsDivider.classList.contains('dash-section-divider')) {
-            modelsDivider.classList.toggle('hidden', !isProvider);
-        }
-        if (modelRow) modelRow.classList.toggle('hidden', !isProvider);
-        if (stdRow) stdRow.style.display = isProvider ? 'none' : 'flex';
-        if (demoNote) demoNote.classList.toggle('hidden', !isProvider);
         if (guideSse) guideSse.classList.toggle('hidden', !isProvider);
         if (guideProxy) guideProxy.style.display = isProvider ? 'none' : 'block';
-        // Load models only for provider
         if (isProvider) {
             setTimeout(loadModels, 500);
         }
@@ -3272,6 +3305,11 @@ async function loadProxyUsage() {
             if (miniCalls) miniCalls.textContent = used;
             if (miniLimit) miniLimit.textContent = limit;
             if (miniBar) miniBar.style.width = pct + '%';
+            // Update provider proxy pane counter
+            const provUsed = document.getElementById('prov-proxy-used');
+            const provLimit = document.getElementById('prov-proxy-limit');
+            if (provUsed) provUsed.textContent = used;
+            if (provLimit) provLimit.textContent = limit;
         } else {
             // Standard/Open: show proxy usage
             const used = d.usage_today || 0;
@@ -3318,6 +3356,63 @@ async function runQuickTest() {
     }
     // Standard mode: use direct proxy with provider key
     return testStandardProxy();
+}
+
+async function runProvProxyTest() {
+    const providerKey = document.getElementById('prov-proxy-key').value.trim();
+    if (!providerKey) { showToast('Enter your provider API key', 'error'); return; }
+    
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) { showToast('Please sign in first', 'error'); return; }
+    
+    const provider = document.getElementById('prov-proxy-provider').value;
+    const btn = document.getElementById('prov-proxy-btn');
+    const status = document.getElementById('prov-proxy-status');
+    const result = document.getElementById('prov-proxy-result');
+    const question = document.getElementById('prov-proxy-question').value.trim() || 'What is the boiling point of water?';
+    
+    btn.disabled = true; btn.textContent = 'Sending...';
+    status.textContent = 'Sending through ONTO proxy...';
+    result.classList.add('hidden');
+    
+    try {
+        let url, body, headers;
+        if (provider === 'anthropic') {
+            url = `${API_BASE}/v1/proxy/anthropic/messages`;
+            headers = { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'X-Provider-Key': providerKey };
+            body = JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 512, messages: [{ role: 'user', content: question }] });
+        } else {
+            url = `${API_BASE}/v1/proxy/chat/completions`;
+            headers = { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'X-Provider-Key': providerKey };
+            const models = { openai: 'gpt-4o', deepseek: 'deepseek-chat', mistral: 'mistral-large-latest' };
+            body = JSON.stringify({ model: models[provider] || 'gpt-4o', max_tokens: 512, messages: [{ role: 'user', content: question }] });
+            if (provider === 'deepseek') headers['X-Provider-Base-URL'] = 'https://api.deepseek.com/v1';
+            if (provider === 'mistral') headers['X-Provider-Base-URL'] = 'https://api.mistral.ai/v1';
+        }
+        
+        const startTime = Date.now();
+        const res = await fetch(url, { method: 'POST', headers, body });
+        const elapsed = Date.now() - startTime;
+        const data = await res.json();
+        
+        if (!res.ok) {
+            status.textContent = `Error ${res.status}: ${data.detail || 'Request failed'}`;
+            status.style.color = '#ef4444';
+            btn.disabled = false; btn.textContent = 'Send'; return;
+        }
+        
+        let responseText = provider === 'anthropic' 
+            ? (data.content || []).map(c => c.text || '').join('') 
+            : (data.choices?.[0]?.message?.content || '');
+        
+        status.innerHTML = `<span style="color:var(--accent)">✓</span> ${elapsed}ms`;
+        result.textContent = responseText.substring(0, 1200) + (responseText.length > 1200 ? '...' : '');
+        result.classList.remove('hidden');
+    } catch(e) {
+        status.textContent = `Error: ${e.message}`;
+        status.style.color = '#ef4444';
+    }
+    btn.disabled = false; btn.textContent = 'Send';
 }
 
 async function testStandardProxy() {
@@ -4888,6 +4983,27 @@ function copyDashKey(btn) {
         btn.textContent = 'Copied!';
         setTimeout(() => btn.textContent = orig, 1500);
     });
+}
+
+async function regenerateApiKey() {
+    if (!confirm('Generate a new API key? Your current key will stop working immediately.')) return;
+    try {
+        const apiKey = localStorage.getItem('onto_first_api_key');
+        if (!apiKey) return;
+        const res = await fetch(`${API_BASE}/v1/auth/regenerate-key`, {
+            method: 'POST',
+            headers: { 'x-api-key': apiKey }
+        });
+        if (!res.ok) { showToast('Failed to regenerate key', 'error'); return; }
+        const data = await res.json();
+        if (data.api_key) {
+            localStorage.setItem('onto_first_api_key', data.api_key);
+            document.getElementById('dash-api-key').value = data.api_key;
+            document.getElementById('dash-api-key').type = 'text';
+            document.getElementById('dash-toggle-key').textContent = 'Hide';
+            showToast('New API key generated', 'success');
+        }
+    } catch(e) { showToast('Error regenerating key', 'error'); }
 }
 
 // === INIT ===
