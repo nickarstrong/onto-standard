@@ -3432,7 +3432,9 @@ async function runProvProxyTest() {
     const modelSelect = document.getElementById('prov-test-model-select');
     let provider, providerKey;
     
-    if (modelSelect && modelSelect.value && modelSelect.value !== '__manual__') {
+    if (modelSelect && modelSelect.value && modelSelect.value !== '__manual__' && modelSelect.value !== '') {
+        // Save last used model
+        localStorage.setItem('onto_last_quick_test_model', modelSelect.value);
         // Use registered model — try localStorage first, then API test endpoint
         const localModels = getProxyModels();
         const local = localModels.find(m => m.id === modelSelect.value);
@@ -3762,7 +3764,7 @@ async function loadModels() {
         const provTestSelect = document.getElementById('prov-test-model-select');
         if (provTestSelect) {
             const currentVal = provTestSelect.value;
-            let provHtml = '';
+            let provHtml = '<option value="" disabled selected>Select from Proxy models...</option>';
             for (const m of data.models) {
                 if (m.is_enabled !== false) {
                     provHtml += `<option value="${m.id}" data-ptype="${m.provider_type}">${m.name} (${m.provider_type})</option>`;
@@ -3770,7 +3772,13 @@ async function loadModels() {
             }
             provHtml += '<option value="__manual__">↳ Enter API key manually</option>';
             provTestSelect.innerHTML = provHtml;
-            if (currentVal && [...provTestSelect.options].some(o => o.value === currentVal)) provTestSelect.value = currentVal;
+            // Restore last selected model if still in list
+            const lastModel = localStorage.getItem('onto_last_quick_test_model');
+            if (lastModel && [...provTestSelect.options].some(o => o.value === lastModel)) {
+                provTestSelect.value = lastModel;
+            } else if (currentVal && [...provTestSelect.options].some(o => o.value === currentVal)) {
+                provTestSelect.value = currentVal;
+            }
             toggleProvManualInput();
         }
         
