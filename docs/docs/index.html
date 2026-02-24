@@ -158,7 +158,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 </div>
 <div class="sb-si" id="sb-si"><a class="btn-si" onclick="openAuth('login')">Sign In</a><a class="btn-ca" onclick="openAuth('register')">Create Account</a></div>
 <div class="ng"><h4>Getting Started</h4><a class="nl" href="#quickstart" data-doc="quickstart">Quick Start (5 min)</a><a class="nl" href="#api-ref" data-doc="api-ref">API Reference</a></div>
-<div class="ng"><h4>Overview</h4><a class="nl" href="#about" data-doc="about">About ONTO</a><a class="nl" href="#evidence" data-doc="evidence">Research Evidence</a><a class="nl" href="#methodology" data-doc="methodology">Methodology</a></div>
+<div class="ng"><h4>Overview</h4><a class="nl" href="#about" data-doc="about">About ONTO</a><a class="nl" href="#evidence" data-doc="evidence">Research Evidence</a><a class="nl" href="#methodology" data-doc="methodology">Methodology</a><a class="nl" href="#deployment-impact" data-doc="deployment-impact">Deployment Impact</a></div>
 <div class="ng"><h4>Standard</h4><a class="nl" href="#ers" data-doc="ers">ONTO-ERS</a></div>
 <div class="ng"><h4>Specifications</h4><a class="nl" href="#layer-spec" data-doc="layer-spec">Layer Specification</a><a class="nl" href="#regulatory" data-doc="regulatory">Regulatory Matrix</a></div>
 <div class="ng"><h4>Governance</h4><a class="nl" href="#charter" data-doc="charter">Foundation Charter</a><a class="nl" href="#council" data-doc="council">Standards Council</a></div>
@@ -546,9 +546,55 @@ print(response.choices[0].message.content)
 
 <div class="ds da" id="doc-methodology" data-nav="methodology">
 <h1>Methodology</h1>
-<div class="dm"><span class="db-g bg-g">The Science Behind ONTO</span><span>Shannon · Kolmogorov · Eigenvalue</span><span>GOLD v4.5</span></div>
+<div class="dm"><span class="db-g bg-g">The Science Behind ONTO</span><span>Shannon · Kolmogorov · Eigenvalue</span><span>Original Methods</span><span>GOLD v4.5</span></div>
 
-<p>ONTO provides continuous epistemic grounding for AI systems. This document describes the mathematical foundations, scoring architecture, and verification mechanisms.</p>
+<p>ONTO provides continuous epistemic grounding for AI systems. This document describes the theoretical foundations, original contributions, mathematical framework, scoring architecture, and verification mechanisms.</p>
+
+<h2>Theoretical Foundations</h2>
+
+<p>ONTO's scoring system integrates established information theory with original epistemic measurement methods. Understanding what is built on known science — and what is new — clarifies why the system produces results that existing approaches cannot.</p>
+
+<h3>What We Built On</h3>
+
+<p>ONTO incorporates principles from five established domains, each applied to a specific measurement challenge in AI epistemic evaluation:</p>
+
+<table><thead><tr><th>Foundation</th><th>Origin</th><th>Role in ONTO</th></tr></thead><tbody>
+<tr><td><strong>Shannon Entropy</strong></td><td>Information Theory (1948)</td><td>Measures information density and uncertainty distribution in model outputs</td></tr>
+<tr><td><strong>Kolmogorov Complexity</strong></td><td>Algorithmic Information Theory (1963)</td><td>Approximates response compressibility — separates formulaic hedging from structured knowledge</td></tr>
+<tr><td><strong>Brier Score</strong></td><td>Probabilistic Forecasting (1950)</td><td>Measures calibration accuracy of expressed confidence levels</td></tr>
+<tr><td><strong>Expected Calibration Error</strong></td><td>Machine Learning (Naeini et al., 2015)</td><td>Quantifies gap between stated confidence and actual accuracy across bins</td></tr>
+<tr><td><strong>Bayesian Uncertainty</strong></td><td>Statistical Inference</td><td>Frameworks for quantifying what is unknown given available evidence</td></tr>
+</tbody></table>
+
+<p>These are the building blocks. They measure information, confidence, and uncertainty. They do not, by themselves, measure <em>epistemic discipline</em> — whether an AI system cites sources, admits unknowns, quantifies its claims, or maintains rigor across domains.</p>
+
+<h3>What's Original</h3>
+
+<p>The following components were developed specifically for ONTO. No prior system implements these methods at this level of granularity for AI epistemic evaluation:</p>
+
+<div class="note-block"><strong>EM1–EM5 Epistemic Marker Taxonomy</strong> — A five-level classification of epistemic behavior with 92+ detection patterns across 7 evaluation domains. No prior taxonomy classifies AI epistemic markers at this granularity. Each level corresponds to a measurable behavioral signal, from vague qualifiers (EM1) to precise quantified claims with source attribution (EM5).</div>
+
+<div class="note-block"><strong>Cross-Domain Transfer Ratio</strong> — Standard AI benchmarks test in-domain performance. ONTO measures whether epistemic discipline holds when the model leaves its comfort zone. Result from CS-2026-001: 8 of 11 models lose &gt;50% of epistemic rigor when domain changes. This metric has no precedent in existing AI evaluation frameworks.</div>
+
+<div class="note-block"><strong>Dual-Layer Divergence Analysis (DLA)</strong> — Measures agreement between what the model <em>says</em> (linguistic layer) and how it <em>computes</em> (statistical layer). DLA = 1.0 means alignment. DLA near 0 means the model's language contradicts its computation — a hallucination risk signal. No existing framework measures this divergence.</div>
+
+<div class="note-block"><strong>Behavioral Proxy Injection (GOLD)</strong> — Server-side epistemic discipline delivered through system prompt injection. Not fine-tuning. Not RLHF. Not prompt engineering. The model receives behavioral calibration without weight modification — and produces measurably different output. Validated result: 10× composite improvement across 10 models.</div>
+
+<div class="note-block"><strong>104-byte Cryptographic Proof Chain</strong> — Every ONTO score is bound to a σ(t) entropy signal and signed with Ed25519. Timestamp + entropy + signature = 104 bytes. Verifiable without access to ONTO servers. No existing AI benchmark provides cryptographic proof of evaluation integrity.</div>
+
+<div class="note-block"><strong>Epistemic Covariance Analysis</strong> — Eigenvalue decomposition applied to the covariance matrix of model outputs across evaluation dimensions. Dominant eigenvalues reveal principal axes of epistemic variation — structured uncertainty versus random noise. Original application to LLM behavioral evaluation.</div>
+
+<h3>Why It Can't Be Replicated from Public Information</h3>
+
+<p>Three structural barriers protect the methodology:</p>
+
+<table><thead><tr><th>Barrier</th><th>What It Means</th></tr></thead><tbody>
+<tr><td><strong>GOLD Corpus</strong></td><td>50+ curated epistemic reference sources with domain-crossing calibration probes. Server-side only — never transmitted to clients. Not reconstructible from public data.</td></tr>
+<tr><td><strong>Scoring Engine</strong></td><td>993 lines, 92+ empirically derived patterns across 7 domains. Pattern taxonomy is built from experimental observation, not theoretical derivation. Knowing the theory does not reproduce the patterns.</td></tr>
+<tr><td><strong>Proof Chain</strong></td><td>σ(t) entropy rotation + Ed25519 signature covers scoring result + timestamp + entropy. Forgery requires the private signing key. Independent verification requires only the public key.</td></tr>
+</tbody></table>
+
+<p style="font-size:13px;color:var(--text-m);margin-top:24px;">The mathematical foundations below show what is computable. They do not show how GOLD is constructed, how patterns are selected, or how the scoring engine weighs across domains. That is the mass beneath the surface.</p>
 
 <h2>Mathematical Foundations</h2>
 
@@ -855,6 +901,156 @@ print(response.choices[0].message.content)
     </table>
 
 <p style="font-size:12px;color:var(--text-m);margin-top:32px;">Methodology continuously refined. GOLD reference standard and scoring engine versioned independently. Current: GOLD v4.5, Scoring Engine v3.0.</p>
+</div>
+
+
+<div class="ds da" id="doc-deployment-impact" data-nav="deployment-impact">
+<h1>Deployment Impact</h1>
+<div class="dm"><span class="db-g bg-g">Competitive Analysis</span><span>43 Impact Zones · 9 Categories</span><span>Proven + Projected</span></div>
+
+<p style="font-size:17px;line-height:1.6;color:var(--text);margin-bottom:24px;"><strong>What happens when your competitor deploys ONTO and you don't.</strong><br/>They sell verified epistemic infrastructure. You sell a statistical lottery.</p>
+
+<p>In 12 months, markets will expect an ONTO signature on AI output the same way they expect an SSL certificate on a website today. The question is not whether epistemic standards become required — it's whether you adopt them before or after your competitors.</p>
+
+<h2>Competitive Divergence: Four Scenarios</h2>
+
+<h3>1. The Margin Gap</h3>
+<table><thead><tr><th></th><th>Competitor with ONTO</th><th>You without ONTO</th></tr></thead><tbody>
+<tr><td><strong>Model</strong></td><td>Compact model + ONTO discipline layer</td><td>Larger model to compensate for lack of epistemic control</td></tr>
+<tr><td><strong>Compute</strong></td><td>Lower inference cost at equal epistemic quality</td><td>Higher cost, same hallucination rate</td></tr>
+<tr><td><strong>Result</strong></td><td>Structural margin advantage — can price competitively while profitable</td><td>Margin pressure: paying more for less reliable output</td></tr>
+</tbody></table>
+
+<h3>2. The Regulatory Wall</h3>
+<table><thead><tr><th></th><th>Competitor with ONTO</th><th>You without ONTO</th></tr></thead><tbody>
+<tr><td><strong>Evidence</strong></td><td>Ed25519 proof chain — every response scored, signed, verifiable</td><td>Manual documentation, ad-hoc safety reports</td></tr>
+<tr><td><strong>Cycle</strong></td><td>Compliance-ready from day one of deployment</td><td>Months of audit preparation per jurisdiction</td></tr>
+<tr><td><strong>Result</strong></td><td>Access to regulated markets: FinTech, MedTech, Gov, Defense</td><td>Blocked from high-value contracts requiring conformity assessment</td></tr>
+</tbody></table>
+
+<h3>3. The Innovation Ceiling</h3>
+<table><thead><tr><th></th><th>Competitor with ONTO</th><th>You without ONTO</th></tr></thead><tbody>
+<tr><td><strong>Engineering</strong></td><td>Safety solved at API layer — team builds product features</td><td>Best engineers consumed by RLHF, prompt patches, QA cycles</td></tr>
+<tr><td><strong>Velocity</strong></td><td>Ship weekly — epistemic quality is guaranteed by infrastructure</td><td>Ship quarterly — each release requires safety re-verification</td></tr>
+<tr><td><strong>Result</strong></td><td>Product evolves continuously</td><td>Product stalls while competitors accelerate</td></tr>
+</tbody></table>
+
+<h3>4. The Trust Lock-in</h3>
+<table><thead><tr><th></th><th>Competitor with ONTO</th><th>You without ONTO</th></tr></thead><tbody>
+<tr><td><strong>Client integration</strong></td><td>Proof chain embeds into client compliance systems</td><td>Raw API — substitutable by any cheaper provider</td></tr>
+<tr><td><strong>Switching cost</strong></td><td>High — removing ONTO means losing audit trail</td><td>Zero — client leaves for 5% price reduction</td></tr>
+<tr><td><strong>Result</strong></td><td>Ecosystem with long-term retention</td><td>Commodity service with high churn</td></tr>
+</tbody></table>
+
+<h2>Full Impact Matrix: 43 Zones, 9 Categories</h2>
+
+<p>This matrix maps every organizational function affected by ONTO deployment. Each zone represents a measurable operational difference. Specific numbers depend on your deployment context — the structural effects do not.</p>
+
+<h3>I. Operational</h3>
+<table><thead><tr><th>Zone</th><th>Competitor with ONTO</th><th>You without ONTO</th></tr></thead><tbody>
+<tr><td>AI Safety / QA</td><td>Automated epistemic audit via scoring engine</td><td>Manual RLHF, regex filters, prompt engineering</td></tr>
+<tr><td>Legal / Compliance</td><td>Ed25519 proof chain, continuous audit trail</td><td>"We are not responsible for AI output" + liability reserves</td></tr>
+<tr><td>Risk Management</td><td>Deterministic risk score (0–1) per response</td><td>Actuarial estimates, incident reserves</td></tr>
+<tr><td>Sales Cycle</td><td>Certificate shortens compliance review</td><td>Months proving safety to each prospect</td></tr>
+<tr><td>Team Allocation</td><td>Engineers reallocated from QA to product development</td><td>Senior engineers maintaining safety workarounds</td></tr>
+</tbody></table>
+
+<h3>II. Infrastructure</h3>
+<table><thead><tr><th>Zone</th><th>Competitor with ONTO</th><th>You without ONTO</th></tr></thead><tbody>
+<tr><td>Compute / GPU</td><td>Epistemic quality without scaling parameters — proven on 10 models (CS-2026-001)</td><td>Larger models to chase accuracy, diminishing returns</td></tr>
+<tr><td>Electricity</td><td>Lower compute = lower energy consumption</td><td>Megawatts on inference + safety layers</td></tr>
+<tr><td>Cooling (PUE)</td><td>Proportional reduction with compute</td><td>Proportional to compute load</td></tr>
+<tr><td>Bandwidth / Tokens</td><td>VQ↓ reduces verbose filler in model output</td><td>Vague qualifiers inflate token count per response</td></tr>
+<tr><td>Latency</td><td>Compact model + discipline layer = faster response</td><td>Larger model = slower inference</td></tr>
+</tbody></table>
+
+<h3>III. Economic</h3>
+<table><thead><tr><th>Zone</th><th>Competitor with ONTO</th><th>You without ONTO</th></tr></thead><tbody>
+<tr><td>Token Cost</td><td>Compact model economics</td><td>Premium model pricing to compensate quality gap</td></tr>
+<tr><td>Time-to-Production</td><td>Pre-certified epistemic quality — deploy in weeks</td><td>Months of safety testing per release</td></tr>
+<tr><td>Insurance / Liability</td><td>Proof of epistemic control = insurable risk</td><td>High premiums or self-insurance for AI liability</td></tr>
+<tr><td>Pricing Power</td><td>Premium for verified output — clients pay for trust</td><td>Price competition on $/token — race to bottom</td></tr>
+<tr><td>Customer Retention</td><td>Proof chain integration creates switching cost</td><td>Commodity API — replaceable at any discount</td></tr>
+</tbody></table>
+
+<h3>IV. Environmental (ESG)</h3>
+<table><thead><tr><th>Zone</th><th>Competitor with ONTO</th><th>You without ONTO</th></tr></thead><tbody>
+<tr><td>CO₂ Footprint</td><td>Reduced with compute requirements</td><td>Directly proportional to compute</td></tr>
+<tr><td>Water Consumption</td><td>Lower cooling demand</td><td>Datacenter cooling at scale = millions of liters</td></tr>
+<tr><td>E-waste / Hardware</td><td>Longer hardware lifecycle — less GPU churn</td><td>Annual GPU upgrade cycle to remain competitive</td></tr>
+<tr><td>ESG Reporting</td><td>Measurable reduction in AI-related footprint</td><td>"We are committed to sustainability" — no metrics</td></tr>
+<tr><td>Green Investment</td><td>Carbon-efficient AI infrastructure = eligible for ESG funds</td><td>High-compute AI may not pass ESG screening</td></tr>
+</tbody></table>
+
+<h3>V. Regulatory</h3>
+<table><thead><tr><th>Zone</th><th>Competitor with ONTO</th><th>You without ONTO</th></tr></thead><tbody>
+<tr><td>EU AI Act</td><td>Built-in conformity evidence (Art. 9, 13, 15, 43)</td><td>Years of preparation and documentation</td></tr>
+<tr><td>Audit Readiness</td><td>Continuous signed proof chain — always audit-ready</td><td>Ad-hoc documentation assembled per audit</td></tr>
+<tr><td>Cross-border Deployment</td><td>Universal standard — one proof chain, all jurisdictions</td><td>Per-jurisdiction approval process</td></tr>
+</tbody></table>
+
+<h3>VI. Product</h3>
+<table><thead><tr><th>Zone</th><th>Competitor with ONTO</th><th>You without ONTO</th></tr></thead><tbody>
+<tr><td>QA / Testing</td><td>Deterministic scoring — automated, reproducible</td><td>Manual testing cycles per release</td></tr>
+<tr><td>Model Collapse</td><td>GOLD provides stable epistemic anchor — not affected by synthetic data degradation</td><td>Model quality degrades over time on synthetic training data</td></tr>
+<tr><td>Data Poisoning</td><td>External reference standard not in training pipeline — cannot be poisoned</td><td>Vulnerable to training data contamination</td></tr>
+<tr><td>Retraining Cycles</td><td>Epistemic discipline without retraining — behavioral layer</td><td>Periodic retraining to maintain quality</td></tr>
+<tr><td>Multi-model Flexibility</td><td>ONTO is model-agnostic — works with any provider</td><td>Locked to one model/provider stack</td></tr>
+<tr><td>Output Consistency</td><td>Deterministic epistemic floor — minimum quality guaranteed</td><td>Stochastic — same prompt may produce different quality</td></tr>
+</tbody></table>
+
+<h3>VII. Revenue</h3>
+<table><thead><tr><th>Zone</th><th>Competitor with ONTO</th><th>You without ONTO</th></tr></thead><tbody>
+<tr><td>TAM Expansion</td><td>Access to Medical, Legal, Gov, Finance, Defense</td><td>Limited to chatbot / assistant market</td></tr>
+<tr><td>LTV (Lifetime Value)</td><td>Proof chain integrates into client systems — high switching cost</td><td>Low switching cost — churn at any price reduction</td></tr>
+<tr><td>CAC (Acquisition Cost)</td><td>Certificate accelerates trust — shorter sales cycle</td><td>Long POC cycles, manual compliance proof</td></tr>
+<tr><td>Network Effect</td><td>Clients require ONTO from their partners — standard propagates</td><td>No propagation mechanism</td></tr>
+<tr><td>Valuation</td><td>Infrastructure positioning — valued as standard, not SaaS</td><td>Commodity positioning — valued on revenue multiple</td></tr>
+<tr><td>Upsell</td><td>Certification + audit + compliance = layered revenue</td><td>Volume pricing only</td></tr>
+</tbody></table>
+
+<h3>VIII. Support &amp; Operations</h3>
+<table><thead><tr><th>Zone</th><th>Competitor with ONTO</th><th>You without ONTO</th></tr></thead><tbody>
+<tr><td>Engineering Escalations</td><td>Fewer hallucination-related incidents reaching engineering</td><td>Support escalates AI errors to engineering regularly</td></tr>
+<tr><td>Incident Response</td><td>Proof chain provides instant root cause — signed audit trail</td><td>Ad-hoc investigation per incident</td></tr>
+<tr><td>Training Data Costs</td><td>Reduced dependency on RLHF data pipeline</td><td>Continuous investment in human feedback data</td></tr>
+<tr><td>Storage / Model Weights</td><td>Compact model = smaller footprint</td><td>Large model weights = storage at scale</td></tr>
+<tr><td>Vendor Dependency</td><td>Model-agnostic layer — switch providers without losing discipline</td><td>Locked to one provider's safety stack</td></tr>
+</tbody></table>
+
+<h3>IX. Strategic</h3>
+<table><thead><tr><th>Zone</th><th>Competitor with ONTO</th><th>You without ONTO</th></tr></thead><tbody>
+<tr><td>Due Diligence (M&amp;A / Investment)</td><td>Continuous proof chain — safety posture verifiable in days</td><td>"Prove your AI is safe" — months of documentation</td></tr>
+<tr><td>IP Position</td><td>Methodology + proof chain = defensible technical moat</td><td>No differentiation in safety approach</td></tr>
+<tr><td>Insurance Premiums</td><td>Measurable, deterministic risk = insurable at standard rates</td><td>Unmeasured AI risk = high premiums or unavailable</td></tr>
+<tr><td>Reproducibility</td><td>Every score tied to σ(t) — fully reproducible</td><td>Same prompt → different output → cannot reproduce results</td></tr>
+</tbody></table>
+
+<h2>Evidence Classification</h2>
+
+<p>Every claim in this matrix is classified by evidence level:</p>
+
+<h3>✅ Proven — Experimental Data (CS-2026-001)</h3>
+<ul>
+<li>10× composite epistemic improvement across 10 models</li>
+<li>U-Recall: 0.009 → 0.964 (models admit unknowns 107× more often with GOLD)</li>
+<li>Cross-domain transfer ratio: 8 of 11 models lose &gt;50% rigor when domain changes</li>
+<li>Ed25519 proof chain: operational, verifiable via public API</li>
+<li>Deterministic scoring: same input → same score, every run</li>
+</ul>
+
+<h3>⚠️ Projected — Structural Consequences of Proven Capabilities</h3>
+<ul>
+<li>Compute reduction: follows from model-agnostic behavioral layer (no parameter scaling required)</li>
+<li>Team reallocation: follows from automated scoring replacing manual QA</li>
+<li>TAM expansion: follows from compliance readiness in regulated markets</li>
+<li>Premium pricing: follows from verified output vs unverified output</li>
+<li>Environmental impact: follows from reduced compute requirements</li>
+</ul>
+
+<div class="note-block"><strong>Note:</strong> Projected impacts are structural consequences of proven capabilities. Specific dollar amounts, percentage reductions, and timeline estimates depend on your deployment context, scale, and industry. This matrix maps <em>what</em> changes — your team calculates <em>how much</em>.</div>
+
+<p style="font-size:13px;color:var(--text-m);margin-top:32px;">Contact: <a href="mailto:contact@ontostandard.org">contact@ontostandard.org</a> · <a href="https://ontostandard.org/app/">Start with Free Tier →</a></p>
 </div>
 
 
