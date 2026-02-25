@@ -972,7 +972,8 @@ a.info-val:hover { color: var(--text); }
                         <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Requests today</div>
                         <div style="display:flex;align-items:baseline;gap:4px">
                             <span style="font-size:18px;font-weight:700" id="dash-plan-calls">0</span>
-                            <span style="font-size:12px;color:var(--text-muted)">/ <span id="dash-plan-limit">10</span></span>
+                            <span style="font-size:18px;font-weight:700;color:var(--text-muted)"> today</span>
+                            <span style="font-size:12px;color:var(--text-muted)">/ <span id="dash-plan-limit">—</span></span>
                         </div>
                         <div style="background:var(--border);border-radius:2px;height:4px;overflow:hidden;margin-top:6px">
                             <div id="dash-usage-bar-mini" style="height:100%;background:var(--accent);border-radius:2px;width:0%;transition:width 0.5s ease"></div>
@@ -1022,8 +1023,8 @@ a.info-val:hover { color: var(--text); }
                             <option value="deepseek">DeepSeek</option>
                             <option value="mistral">Mistral</option>
                         </select>
-                        <input type="password" id="test-std-provider-key" placeholder="Provider API key (sk-...)" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--text)">
-                        <button onclick="const i=document.getElementById('test-std-provider-key');i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'Show':'Hide'" style="background:none;border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:10px;color:var(--text-muted);cursor:pointer">Show</button>
+                        <input type="text" id="test-std-provider-key" placeholder="Provider API key (sk-...)" autocomplete="off" data-1p-ignore data-lpignore="true" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--text);-webkit-text-security:disc">
+                        <button onclick="const i=document.getElementById('test-std-provider-key');const m=i.style.webkitTextSecurity;i.style.webkitTextSecurity=m==='disc'?'none':'disc';this.textContent=m==='disc'?'Hide':'Show'" style="background:none;border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:10px;color:var(--text-muted);cursor:pointer">Show</button>
                         <button onclick="const v=document.getElementById('test-std-provider-key').value;if(v){navigator.clipboard.writeText(v);showToast('Copied','success')}" style="background:none;border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:10px;color:var(--text-muted);cursor:pointer">Copy</button>
                     </div>
                     <input type="text" id="prov-question" placeholder="Ask anything..." value="What is the boiling point of water?" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box;margin-bottom:8px" onkeydown="if(event.key==='Enter')runQuickTest()">
@@ -1078,7 +1079,7 @@ a.info-val:hover { color: var(--text); }
                                     </select>
                                 </div>
                                 <div style="display:flex;gap:6px">
-                                    <input type="password" id="new-model-key" placeholder="Provider API key" style="flex:1;background:#0c0f14;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:11px;color:var(--text);font-family:'JetBrains Mono',monospace">
+                                    <input type="text" id="new-model-key" placeholder="Provider API key" autocomplete="off" data-1p-ignore data-lpignore="true" style="flex:1;background:#0c0f14;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:11px;color:var(--text);font-family:'JetBrains Mono',monospace;-webkit-text-security:disc">
                                     <button class="btn-minimal" onclick="registerModel()" style="font-size:11px;padding:6px 14px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Register</button>
                                 </div>
                             </div>
@@ -1129,7 +1130,7 @@ a.info-val:hover { color: var(--text); }
                                     </select>
                                 </div>
                                 <div style="display:flex;gap:6px">
-                                    <input id="sse-model-key" type="password" placeholder="Provider API key" style="flex:1;background:#0c0f14;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:11px;color:var(--text);font-family:'JetBrains Mono',monospace">
+                                    <input id="sse-model-key" type="text" placeholder="Provider API key" autocomplete="off" data-1p-ignore data-lpignore="true" style="flex:1;background:#0c0f14;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:11px;color:var(--text);font-family:'JetBrains Mono',monospace;-webkit-text-security:disc">
                                     <button onclick="addSSEModel()" class="btn-minimal" style="font-size:11px;padding:6px 14px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Register</button>
                                 </div>
                             </div>
@@ -1584,6 +1585,7 @@ client = OpenAI(
                     <div class="tier-desc">Full GOLD access for AI model providers</div>
                     <ul class="tier-list">
                         <li>GOLD Full Corpus via SSE</li>
+                        <li>Unlimited SSE stream</li>
                         <li>Unlimited scoring API</li>
                         <li>All production models</li>
                         <li>Ed25519 proof chain</li>
@@ -1632,7 +1634,7 @@ client = OpenAI(
                         <select id="invoice-tier-select" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:4px;font-size:12px">
                             <option value="standard_monthly">Standard — $2,500/mo</option>
                             <option value="standard">Standard — $30,000/yr</option>
-                            <option value="provider">AI Provider — $114,000/yr</option>
+                            <option value="provider">AI Provider — $250,000/yr</option>
                             <option value="white_label">White Label — $500,000/yr</option>
                         </select>
                         <button class="btn-minimal hidden" id="invoice-download" onclick="downloadInvoice()" style="font-size:12px">Download PDF</button>
@@ -2057,7 +2059,7 @@ client = OpenAI(
                     <div class="tier-option-content">
                         <div class="tier-option-header">
                             <span class="tier-badge tier-critical">AI PROVIDER</span>
-                            <span class="tier-option-price">$114K/yr</span>
+                            <span class="tier-option-price">$250K/yr</span>
                         </div>
                         <div class="tier-option-desc">Unlimited proxy, certificate + badge, priority support</div>
                     </div>
@@ -2175,7 +2177,7 @@ const STRINGS = {
 };
 const PLANS = {
     business: { monthly: 2500, annual: 30000, monthlyEquiv: 2500 },
-    enterprise: { annual: 114000 },
+    enterprise: { annual: 250000 },
     white_label: { annual: 500000 }
 };
 let selectedPlan = 'business';
@@ -4114,8 +4116,8 @@ async function downloadInvoice() {
         const tierMap = {
             standard_monthly: { layer: 'standard', layer_name: 'Standard', price_annual: 2500, is_monthly: true },
             standard: { layer: 'standard', layer_name: 'Standard', price_annual: 30000 },
-            critical: { layer: 'provider', layer_name: 'AI Provider', price_annual: 114000 },
-            provider: { layer: 'provider', layer_name: 'AI Provider', price_annual: 114000 },
+            critical: { layer: 'provider', layer_name: 'AI Provider', price_annual: 250000 },
+            provider: { layer: 'provider', layer_name: 'AI Provider', price_annual: 250000 },
             white_label: { layer: 'white_label', layer_name: 'White-Label', price_annual: 500000 }
         };
         const t = tierMap[selectedTier];
