@@ -998,38 +998,58 @@ a.info-val:hover { color: var(--text); }
 
             <div class="dash-section-divider"></div>
 
-            <!-- ══════════ PROVIDER: 3-TIER LAYOUT ══════════ -->
-            <div id="dash-provider-panes" class="hidden">
-                <div class="dash-section">
+            <!-- ══════════ SECTION: QUICK TEST (ALL TIERS) ══════════ -->
+            <div class="dash-section">
+                <div class="dash-section-header">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                    <div class="dash-section-title">Quick Test</div>
+                    <span class="dash-section-subtitle">Send a query through GOLD</span>
+                    <span id="proxy-gold-badge" style="font-size:10px;padding:3px 8px;border-radius:10px;background:rgba(46,194,126,0.15);color:var(--accent);font-weight:600;margin-left:8px">● GOLD Active</span>
+                </div>
 
-                    <!-- TIER 1: Quick Test (Provider only) -->
-                    <div id="prov-quicktest-inline">
-                    <div class="dash-section-header">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                        <div class="dash-section-title">Quick Test</div>
-                        <span class="dash-section-subtitle">Test any model via Proxy</span>
-                        <span id="prov-proxy-gold-badge" style="font-size:9px;padding:2px 8px;border-radius:10px;background:rgba(46,194,126,0.15);color:var(--accent);font-weight:600;margin-left:auto">● GOLD Active</span>
+                <div class="dash-card-clean" style="margin-bottom:0">
+                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">Test GOLD injection via proxy. <span id="test-demo-note" class="hidden" style="color:#f59e0b">AI Provider: proxy is demo only. Production delivery via SSE.</span></div>
+                    <!-- Provider: model select from registered models -->
+                    <div id="test-model-row" class="hidden" style="margin-bottom:8px">
+                        <select id="test-model-select" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:11px;color:var(--text);width:100%">
+                            <option value="">Select model...</option>
+                        </select>
                     </div>
-                    <div class="dash-card-clean" style="margin-bottom:24px">
-                        <!-- Model selection: dropdown from proxy models or manual -->
-                        <div id="prov-test-model-select-row" style="margin-bottom:8px">
-                            <select id="prov-test-model-select" onchange="toggleProvManualInput()" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--text)">
-                                <option value="">Select from Proxy models...</option>
-                                <option value="__manual__">↳ Enter API key manually</option>
-                            </select>
-                        </div>
-                        <!-- Manual input (shown when manual chosen) -->
-                        <div id="prov-test-manual-row" style="margin-bottom:8px">
-                            <input type="password" id="prov-proxy-key" placeholder="Provider API key (sk-ant-... or sk-...)" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--text);box-sizing:border-box">
-                        </div>
-                        <input type="text" id="prov-proxy-question" placeholder="Ask anything..." value="What is the boiling point of water?" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box;margin-bottom:8px" onkeydown="if(event.key==='Enter')runProvProxyTest()">
-                        <div style="display:flex;gap:8px;align-items:center">
-                            <button class="btn-minimal" onclick="runProvProxyTest()" id="prov-proxy-btn" style="font-size:12px;padding:8px 20px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Send</button>
-                            <span id="prov-proxy-status" style="font-size:11px;color:var(--text-muted)"></span>
-                        </div>
-                        <div id="prov-proxy-result" class="hidden" style="margin-top:10px;background:#0c0f14;border-radius:6px;padding:10px 12px;font-size:11px;color:#e2e8f0;max-height:180px;overflow-y:auto;white-space:pre-wrap;line-height:1.6"></div>
+                    <!-- All tiers: provider + key -->
+                    <div id="test-std-row" style="display:flex;gap:8px;margin-bottom:8px">
+                        <select id="test-std-provider" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 8px;font-size:12px;color:var(--text);width:130px">
+                            <option value="anthropic">Anthropic</option>
+                            <option value="openai">OpenAI</option>
+                            <option value="deepseek">DeepSeek</option>
+                            <option value="mistral">Mistral</option>
+                        </select>
+                        <input type="password" id="test-std-provider-key" placeholder="Provider API key (sk-...)" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--text)">
                     </div>
+                    <input type="text" id="prov-question" placeholder="Ask anything..." value="What is the boiling point of water?" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box;margin-bottom:8px" onkeydown="if(event.key==='Enter')runQuickTest()">
+                    <div style="display:flex;gap:8px;align-items:center">
+                        <button class="btn-minimal" onclick="runQuickTest()" id="live-test-btn" style="font-size:12px;padding:8px 20px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Send</button>
+                        <span id="live-test-status" style="font-size:11px;color:var(--text-muted)"></span>
+                        <span id="test-std-status" style="font-size:11px;color:var(--text-muted)"></span>
                     </div>
+                    <div id="live-test-result" class="hidden" style="margin-top:10px">
+                        <div style="display:flex;align-items:center;gap:16px;margin-bottom:8px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:6px">
+                            <div><div style="font-size:9px;color:var(--text-muted)">SCORE</div><div id="live-score" style="font-size:22px;font-weight:800;color:var(--accent)">—</div></div>
+                            <div><div style="font-size:9px;color:var(--text-muted)">GRADE</div><div id="live-grade" style="font-size:22px;font-weight:800;color:var(--text)">—</div></div>
+                            <div style="flex:1"><div style="font-size:9px;color:var(--text-muted)">PROOF</div><code id="live-proof" style="font-size:10px;color:var(--accent);cursor:pointer" onclick="navigator.clipboard.writeText(this.dataset.full);showToast('Copied','success')">—</code></div>
+                            <a id="live-verify-link" href="#" target="_blank" style="font-size:10px;color:var(--accent);display:none">Verify ↗</a>
+                        </div>
+                        <div id="live-response" style="background:#0c0f14;border-radius:6px;padding:10px 12px;font-size:11px;color:#e2e8f0;line-height:1.6;max-height:200px;overflow-y:auto;white-space:pre-wrap"></div>
+                        <div id="live-markers" style="margin-top:6px;font-size:10px;color:var(--text-muted)"></div>
+                    </div>
+                    <div id="test-std-result" class="hidden" style="margin-top:10px;background:#0c0f14;border-radius:6px;padding:10px 12px;font-size:11px;color:#e2e8f0;max-height:200px;overflow-y:auto;white-space:pre-wrap;font-family:'JetBrains Mono',monospace;line-height:1.5"></div>
+                </div>
+            </div>
+
+            <div class="dash-section-divider"></div>
+
+            <!-- ══════════ PROVIDER: Proxy + SSE Panes ══════════ -->
+            <div id="dash-provider-panes">
+                <div class="dash-section">
 
                     <!-- TIER 2+3: Proxy Models | SSE Models side-by-side -->
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
@@ -1128,54 +1148,6 @@ a.info-val:hover { color: var(--text); }
                 </div>
             </div>
 
-            <div id="dash-provider-divider" class="dash-section-divider hidden"></div>
-
-            <!-- ══════════ SECTION: QUICK TEST (Open/Standard only) ══════════ -->
-            <div id="dash-quicktest-section" class="dash-section">
-                <div class="dash-section-header">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                    <div class="dash-section-title">Quick Test</div>
-                    <span class="dash-section-subtitle">Send a query through GOLD</span>
-                    <span id="proxy-gold-badge" style="font-size:10px;padding:3px 8px;border-radius:10px;background:rgba(46,194,126,0.15);color:var(--accent);font-weight:600;margin-left:8px">● GOLD Active</span>
-                </div>
-
-                <div class="dash-card-clean" style="margin-bottom:0">
-                            <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">Test GOLD injection via proxy. <span id="test-demo-note" class="hidden" style="color:#f59e0b">AI Provider: proxy is demo only. Production delivery via SSE.</span></div>
-                            <!-- Provider: model select -->
-                            <div id="test-model-row" class="hidden" style="margin-bottom:8px">
-                                <select id="test-model-select" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:11px;color:var(--text);width:100%">
-                                    <option value="">Select model...</option>
-                                </select>
-                            </div>
-                            <!-- Standard: provider + key -->
-                            <div id="test-std-row" style="display:flex;gap:8px;margin-bottom:8px">
-                                <select id="test-std-provider" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 8px;font-size:12px;color:var(--text);width:130px">
-                                    <option value="anthropic">Anthropic</option>
-                                    <option value="openai">OpenAI</option>
-                                    <option value="deepseek">DeepSeek</option>
-                                    <option value="mistral">Mistral</option>
-                                </select>
-                                <input type="password" id="test-std-provider-key" placeholder="Provider API key (sk-...)" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--text)">
-                            </div>
-                            <input type="text" id="prov-question" placeholder="Ask anything..." value="What is the boiling point of water?" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box;margin-bottom:8px" onkeydown="if(event.key==='Enter')runQuickTest()">
-                            <div style="display:flex;gap:8px;align-items:center">
-                                <button class="btn-minimal" onclick="runQuickTest()" id="live-test-btn" style="font-size:12px;padding:8px 20px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Send</button>
-                                <span id="live-test-status" style="font-size:11px;color:var(--text-muted)"></span>
-                                <span id="test-std-status" style="font-size:11px;color:var(--text-muted)"></span>
-                            </div>
-                            <div id="live-test-result" class="hidden" style="margin-top:10px">
-                                <div style="display:flex;align-items:center;gap:16px;margin-bottom:8px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:6px">
-                                    <div><div style="font-size:9px;color:var(--text-muted)">SCORE</div><div id="live-score" style="font-size:22px;font-weight:800;color:var(--accent)">—</div></div>
-                                    <div><div style="font-size:9px;color:var(--text-muted)">GRADE</div><div id="live-grade" style="font-size:22px;font-weight:800;color:var(--text)">—</div></div>
-                                    <div style="flex:1"><div style="font-size:9px;color:var(--text-muted)">PROOF</div><code id="live-proof" style="font-size:10px;color:var(--accent);cursor:pointer" onclick="navigator.clipboard.writeText(this.dataset.full);showToast('Copied','success')">—</code></div>
-                                    <a id="live-verify-link" href="#" target="_blank" style="font-size:10px;color:var(--accent);display:none">Verify ↗</a>
-                                </div>
-                                <div id="live-response" style="background:#0c0f14;border-radius:6px;padding:10px 12px;font-size:11px;color:#e2e8f0;line-height:1.6;max-height:200px;overflow-y:auto;white-space:pre-wrap"></div>
-                                <div id="live-markers" style="margin-top:6px;font-size:10px;color:var(--text-muted)"></div>
-                            </div>
-                            <div id="test-std-result" class="hidden" style="margin-top:10px;background:#0c0f14;border-radius:6px;padding:10px 12px;font-size:11px;color:#e2e8f0;max-height:200px;overflow-y:auto;white-space:pre-wrap;font-family:'JetBrains Mono',monospace;line-height:1.5"></div>
-                </div>
-            </div>
 
             <div class="dash-section-divider"></div>
 
@@ -2892,20 +2864,9 @@ function showDashboard() {
         // Switch dashboard view based on tier
         const isProvider = currentUser.layer === 'provider' || currentUser.layer === 'white_label';
         
-        // Provider two-pane: always visible. Quick Test section hidden for Provider (they have inline test)
-        const providerPanes = document.getElementById('dash-provider-panes');
-        const providerDivider = document.getElementById('dash-provider-divider');
-        const quickTestSection = document.getElementById('dash-quicktest-section');
-        
-        if (providerPanes) providerPanes.classList.remove('hidden');
-        if (providerDivider) providerDivider.classList.toggle('hidden', !isProvider);
-        if (quickTestSection) quickTestSection.classList.toggle('hidden', isProvider);
-
         // SSE panel: deactivate for non-provider
         const sseCard = document.getElementById('sse-panel-card');
         const sseOverlay = document.getElementById('sse-disabled-overlay');
-        const provQuickTestInline = document.getElementById('prov-quicktest-inline');
-        if (provQuickTestInline) provQuickTestInline.classList.toggle('hidden', !isProvider);
         if (sseCard && sseOverlay) {
             if (!isProvider) {
                 sseCard.style.opacity = '0.5';
@@ -2922,7 +2883,7 @@ function showDashboard() {
         const guideProxy = document.getElementById('guide-proxy');
         if (guideSse) guideSse.classList.toggle('hidden', !isProvider);
         if (guideProxy) guideProxy.style.display = isProvider ? 'none' : 'block';
-        // Load models for all tiers (proxy models always needed)
+        // Load models for all tiers
         setTimeout(loadModels, 500);
         renderProxyModels();
         if (isProvider) {
@@ -2975,7 +2936,7 @@ function updateDashboardMetrics() {
     const expiresEl = document.getElementById('dash-plan-expires');
     const upgradeBtn = document.getElementById('dash-upgrade-btn');
     
-    if (rateEl) rateEl.textContent = rateLimits[plan] || '10 requests/day';
+    if (rateEl) rateEl.textContent = '...';
     
     // Hide upgrade for paid plans
     if (upgradeBtn) upgradeBtn.style.display = plan === 'free' ? 'block' : 'none';
