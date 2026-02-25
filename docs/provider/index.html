@@ -127,7 +127,7 @@ a{color:var(--safe-l);text-decoration:none}
 .tc p{font-size:11px;color:var(--text-s);line-height:1.6}
 .tc code{font-family:var(--mono);font-size:10px;background:var(--bg-s);padding:1px 4px;border-radius:2px;color:var(--safe-l)}
 .cblk{background:var(--bg-s);border:1px solid var(--border-s);border-radius:6px;padding:16px;font-family:var(--mono);font-size:11px;line-height:1.8;color:var(--text-s);overflow-x:auto;white-space:pre;margin:16px 0}
-.cm{color:#6a9955}.st{color:#ce9178}.vl{color:#b5cea8}
+.cm{color:#6a9955}.st{color:#ce9178}.vl{color:#b5cea8}.kw{color:#c586c0}.fn{color:#dcdcaa}.nb{color:#9cdcfe}.fl{color:#569cd6}.ur{color:#3794ff}
 .eptbl{width:100%;border-collapse:collapse;margin-top:16px}
 .eptbl th{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-m);text-align:left;padding:8px 10px;border-bottom:1px solid var(--border)}
 .eptbl td{font-family:var(--mono);font-size:11px;padding:8px 10px;border-bottom:1px solid var(--border-s);color:var(--text-s)}
@@ -260,7 +260,7 @@ a{color:var(--safe-l);text-decoration:none}
   </table>
   <div class="scen-grid" style="margin-top:32px">
     <div class="scen"><div class="scen-n">SCENARIO 01</div><div class="scen-t">The Margin Gap</div><div class="scen-g">With ONTO: Compact model + discipline = lower cost, equal quality</div><div class="scen-b">Without: Larger models, higher cost, same hallucination rate</div></div>
-    <div class="scen"><div class="scen-n">SCENARIO 02</div><div class="scen-t">The Regulatory Wall</div><div class="scen-g">With ONTO: Ed25519 proof chain. Compliance from day one.</div><div class="scen-b">Without: Months per jurisdiction. Blocked from contracts.</div></div>
+    <div class="scen"><div class="scen-n">SCENARIO 02</div><div class="scen-t">The Regulatory Wall</div><div class="scen-g">With ONTO: Ed25519 proof chain. Compliance from day one. <a href="/docs/#regulatory" style="font-size:10px">Regulatory matrix &rarr;</a></div><div class="scen-b">Without: Months per jurisdiction. Blocked from contracts.</div></div>
     <div class="scen"><div class="scen-n">SCENARIO 03</div><div class="scen-t">The Innovation Ceiling</div><div class="scen-g">With ONTO: Safety at API layer. Engineers build product.</div><div class="scen-b">Without: Best engineers in RLHF and QA. Ship quarterly.</div></div>
     <div class="scen"><div class="scen-n">SCENARIO 04</div><div class="scen-t">The Trust Lock-in</div><div class="scen-g">With ONTO: Proof chain in client systems. High switching cost.</div><div class="scen-b">Without: Raw API. 5% discount = customer gone.</div></div>
   </div>
@@ -296,6 +296,19 @@ a{color:var(--safe-l);text-decoration:none}
     <p style="font-size:11px;color:var(--text-m);margin-top:10px"><a href="/docs/#layer-spec">Full tier specification &rarr;</a></p>
   </div>
   <div style="text-align:center;margin-top:20px"><a href="/docs/#deployment-impact" style="font-family:var(--mono);font-size:11px;color:var(--text-m)">Full competitive analysis: 43 zones, 9 categories &rarr;</a></div>
+
+  <div class="hbox" style="margin-top:12px;border-color:var(--border)"><div class="hbox-title">From the 43-zone impact matrix &mdash; what hits hardest</div>
+    <table class="etbl" style="margin-top:8px">
+      <thead><tr><th>Zone</th><th>With ONTO</th><th>Without</th></tr></thead>
+      <tbody>
+        <tr><td class="p">Sales cycle</td><td class="good">Certificate shortens compliance review</td><td class="bad">Months proving safety to each prospect</td></tr>
+        <tr><td class="p">Insurance / Liability</td><td class="good">Proof of epistemic control = insurable risk</td><td class="bad">High premiums or self-insurance for AI liability</td></tr>
+        <tr><td class="p">Pricing power</td><td class="good">Premium for verified output &mdash; clients pay for trust</td><td class="bad">Price competition on $/token &mdash; race to bottom</td></tr>
+        <tr><td class="p">EU AI Act</td><td class="good">Built-in conformity evidence (Art. 9, 13, 15, 43)</td><td class="bad">Years of preparation and documentation</td></tr>
+        <tr class="hl"><td class="p">Model collapse</td><td class="good">GOLD = stable epistemic anchor, immune to synthetic data degradation</td><td class="bad">Quality degrades over time on synthetic training data</td></tr>
+      </tbody>
+    </table>
+  </div>
 </section>
 <hr class="sec-line">
 
@@ -304,15 +317,16 @@ a{color:var(--safe-l);text-decoration:none}
   <div class="sec-title">For the engineer who receives this link</div>
   <div class="sec-desc">Full documentation: <a href="/docs/#provider-guide">Provider Integration Guide</a></div>
   <div class="cblk"><span class="cm"># Connect to GOLD stream</span>
-curl -N <span class="st">https://api.ontostandard.org/v1/gold/stream</span> \
-  -H <span class="st">"X-Api-Key: onto_sk_..."</span>
+<span class="fn">curl</span> <span class="fl">-N</span> <span class="ur">https://api.ontostandard.org/v1/gold/stream</span> \
+  <span class="fl">-H</span> <span class="st">"X-Api-Key: onto_sk_..."</span>
 
 <span class="cm"># SSE event</span>
 {
-  <span class="st">"type"</span>: <span class="st">"gold_corpus"</span>,
-  <span class="st">"version"</span>: <span class="st">"2.4.1"</span>,
-  <span class="st">"tokens_estimate"</span>: <span class="vl">4200</span>,
-  <span class="st">"discipline_layer"</span>: <span class="st">"### ONTO GOLD v2.4.1\n..."</span>
+  <span class="nb">"type"</span>: <span class="st">"gold_corpus"</span>,
+  <span class="nb">"version"</span>: <span class="st">"2.4.1"</span>,
+  <span class="nb">"tokens_estimate"</span>: <span class="vl">4200</span>,
+  <span class="nb">"discipline_layer"</span>: <span class="st">"### ONTO GOLD v2.4.1\n..."</span>,
+  <span class="nb">"content_hash"</span>: <span class="st">"sha256:a1b2c3..."</span>
 }</div>
   <div class="tg">
     <div class="tc"><div class="tc-t">SSE Events</div><p><code>gold_corpus</code> on connect. <code>heartbeat</code> 30s. <code>gold_update</code> on change. Full corpus on reconnect.</p></div>
