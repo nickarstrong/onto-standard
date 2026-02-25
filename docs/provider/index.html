@@ -211,9 +211,17 @@ a{color:var(--safe-l);text-decoration:none}
 
   <div class="hbox" style="margin-top:12px"><div class="hbox-title">What GOLD actually is</div><p>GOLD is not a prompt template. It is a <strong>curated scientific knowledge architecture</strong> &mdash; structured epistemic data from peer-reviewed research, clinical guidelines, regulatory frameworks, and domain-specific methodologies. Optimized for LLM consumption: compressed, cross-referenced, and designed to activate citation, quantification, and uncertainty disclosure behaviors across any model architecture.</p><p>The result: your model doesn&rsquo;t guess. It references. It doesn&rsquo;t assert. It quantifies. It doesn&rsquo;t hide gaps. It discloses them.</p></div>
 
+  <div class="split" style="margin-top:12px;grid-template-columns:1fr 1fr 1fr;gap:2px">
+    <div class="pnl"><div class="pnl-top"><span class="pnl-lbl good">Medical</span></div><div class="pnl-body"><p><span class="h-src">(2022) Patikorn et al.</span> meta-analysis (n=<span class="h-num">410</span>): HbA1c &minus;<span class="h-num">0.53%</span>. <span class="h-unc">Confidence: ~70%.</span> Long-term data limited.</p><p style="font-size:10px;color:var(--text-m)">Model cites source, quantifies effect size, discloses data gaps</p></div></div>
+    <div class="pnl"><div class="pnl-top"><span class="pnl-lbl good">Financial</span></div><div class="pnl-body"><p>Basel III tier-1 capital ratio minimum: <span class="h-num">6%</span>. <span class="h-unc">Unknown:</span> jurisdiction-specific surcharges vary <span class="h-num">1&ndash;3.5%</span>. <span class="h-ctr">Note:</span> post-2023 reforms may alter thresholds.</p><p style="font-size:10px;color:var(--text-m)">Model quantifies regulation, flags jurisdictional uncertainty</p></div></div>
+    <div class="pnl"><div class="pnl-top"><span class="pnl-lbl good">Legal</span></div><div class="pnl-body"><p><span class="h-src">Daubert v. Merrell Dow (1993)</span> established <span class="h-num">4</span>-factor test. <span class="h-unc">Confidence: high</span> (Supreme Court precedent). <span class="h-ctr">But:</span> state courts vary in adoption.</p><p style="font-size:10px;color:var(--text-m)">Model cites precedent, notes jurisdictional variance</p></div></div>
+  </div>
+  <div style="text-align:center;margin-top:10px"><a href="/demo/" style="font-family:var(--mono);font-size:11px;color:var(--text-m)">See live before/after across all domains &rarr;</a></div>
+
   <div class="hbox" style="margin-top:12px;border-color:var(--border)"><div class="hbox-title">Provider-native SSE &mdash; architectural efficiency</div><p><strong>Direct event-stream integration. No proxy replication. No traffic amplification.</strong></p><p>Evaluation load scales with your throughput. No persistent polling or duplicated proxy traffic. Single SSE connection delivers GOLD corpus once &mdash; you cache locally and distribute internally. Designed to minimize bandwidth and intermediary routing costs.</p><p style="font-size:11px;color:var(--text-m);margin-top:8px">For infrastructure teams: no egress amplification, no compute overhead per request, no burst risk. Predictable, linear, auditable.</p></div>
 
   <div class="hbox" style="margin-top:12px;border-color:var(--border)"><div class="hbox-title">Fleet-wide coverage</div><p>One integration covers <strong>every model in your fleet</strong>. GPT, Claude, Gemini, Llama, Mistral, your fine-tunes, your custom models. No per-model licensing. No per-model training. Deploy a new model &mdash; GOLD works on it within the hour.</p><p><strong>Pre-deployment calibration:</strong> Score any model through ONTO before production launch. Know the exact epistemic quality <em>before</em> your customers see it. Not &ldquo;launch and hope&rdquo; &mdash; measure, verify, then ship.</p></div>
+  <div style="text-align:center;margin-top:16px"><a href="/docs/#provider-guide" style="font-family:var(--mono);font-size:11px;color:var(--text-m)">Deep dive: SSE events, cache strategy, scoring protocol &rarr;</a></div>
 </section>
 <hr class="sec-line">
 
@@ -231,6 +239,7 @@ a{color:var(--safe-l);text-decoration:none}
   </div>
   <div class="ev" style="justify-content:flex-start"><span>Scored by regex, not AI</span><span>&middot;</span><span><a href="/docs/#evidence">Full data &rarr;</a></span><span>&middot;</span><span><a href="/demo/" style="color:var(--text-m)">Live demo &rarr;</a></span></div>
   <div class="hbox" style="margin-top:20px;border-color:var(--border)"><div class="hbox-title">What these numbers mean for your business</div><p><strong>27&times; more citations</strong> = lower liability risk, defensible outputs in regulated environments. <strong>Confidence quantification from zero</strong> = your customers know when to trust and when to verify. <strong>5&times; uncertainty disclosure</strong> = fewer silent failures, fewer support tickets, fewer &ldquo;your AI told me wrong&rdquo; escalations.</p></div>
+  <div style="text-align:center;margin-top:16px"><a href="/docs/#methodology" style="font-family:var(--mono);font-size:11px;color:var(--text-m)">Deep dive: scoring methodology, EM1-EM5 taxonomy, 92+ markers &rarr;</a></div>
 </section>
 <hr class="sec-line">
 
@@ -272,6 +281,20 @@ a{color:var(--safe-l);text-decoration:none}
     <p>Additional savings cascade: model downshift (cheaper inference), reduced QA headcount, accelerated compliance (months &rarr; days), lower support costs from fewer hallucination-driven escalations.</p>
     <p style="font-size:11px;color:var(--text-m);margin-top:8px">Request a custom ROI projection for your fleet: council@ontostandard.org</p>
   </div>
+  <div class="hbox" style="margin-top:12px;border-color:var(--border)"><div class="hbox-title">Why Provider tier, not Standard?</div>
+    <table class="etbl" style="margin-top:10px">
+      <thead><tr><th>Capability</th><th>Standard &middot; $30K/yr</th><th>Provider &middot; $250K/yr</th></tr></thead>
+      <tbody>
+        <tr><td class="p">GOLD delivery</td><td class="bad">Proxy API (per-request)</td><td class="good">Direct SSE stream (cache locally)</td></tr>
+        <tr><td class="p">Models</td><td class="bad">Your models via our proxy</td><td class="good">Any model, your infrastructure</td></tr>
+        <tr><td class="p">Request volume</td><td class="bad">1,000/day</td><td class="good">Your throughput, no ONTO limits</td></tr>
+        <tr><td class="p">Certification</td><td class="bad">Per-account scoring</td><td class="good">Per-model public verification + Ed25519</td></tr>
+        <tr><td class="p">Architecture</td><td class="bad">ONTO in inference path</td><td class="good">ONTO never in inference path</td></tr>
+        <tr class="hl"><td class="p">For whom</td><td class="bad">Companies using AI</td><td class="good">Companies building AI products</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:11px;color:var(--text-m);margin-top:10px"><a href="/docs/#layer-spec">Full tier specification &rarr;</a></p>
+  </div>
   <div style="text-align:center;margin-top:20px"><a href="/docs/#deployment-impact" style="font-family:var(--mono);font-size:11px;color:var(--text-m)">Full competitive analysis: 43 zones, 9 categories &rarr;</a></div>
 </section>
 <hr class="sec-line">
@@ -310,6 +333,7 @@ curl -N <span class="st">https://api.ontostandard.org/v1/gold/stream</span> \
     </tbody>
   </table>
   <div class="hbox" style="margin-top:24px"><div class="hbox-title">ONTO CERTIFIED &mdash; your marketing asset</div><p>Each scored model receives a public verification page: <code>/verify/model/{id}</code>. Ed25519 signed. Independently reproducible. Your sales team uses this in enterprise deals: <strong>&ldquo;Our models are independently certified for epistemic quality by ONTO Standards Council.&rdquo;</strong></p><p>For regulated industries (MedTech, FinTech, GovTech, Defense) &mdash; this is the difference between &ldquo;trust us&rdquo; and &ldquo;verify it yourself.&rdquo;</p></div>
+  <div style="text-align:center;margin-top:16px"><a href="/docs/#api-ref" style="font-family:var(--mono);font-size:11px;color:var(--text-m)">Deep dive: full API reference, authentication, error codes &rarr;</a></div>
 </section>
 
 <section class="cta">
