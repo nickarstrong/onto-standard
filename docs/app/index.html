@@ -1670,7 +1670,8 @@ client = OpenAI(
                         <option value="">All Plans</option>
                         <option value="open">Open</option>
                         <option value="standard">Standard</option>
-                        <option value="enterprise">AI Provider</option>
+                        <option value="provider">AI Provider</option>
+                        <option value="white_label">White-Label</option>
                     </select>
                 </div>
                 <div id="accounts-list" style="font-size:12px"></div>
@@ -5687,18 +5688,54 @@ async function refreshProofStats() {
 }
 
 // === ACCOUNTS FUNCTIONS ===
+let filterDebounce = null;
 function filterAccounts() {
-    loadAccountsData();
+    clearTimeout(filterDebounce);
+    filterDebounce = setTimeout(() => {
+        const search = (document.getElementById('account-search')?.value || '').toLowerCase().trim();
+        const typeFilter = document.getElementById('filter-type')?.value || '';
+        const statusFilter = document.getElementById('filter-status')?.value || '';
+        const planFilter = document.getElementById('filter-plan')?.value || '';
+        
+        if (!accountsData || !accountsData.length) {
+            loadAccountsData();
+            return;
+        }
+        
+        let filtered = accountsData;
+        
+        // Client-side search by email, name, org
+        if (search) {
+            filtered = filtered.filter(u => 
+                (u.email || '').toLowerCase().includes(search) ||
+                (u.name || '').toLowerCase().includes(search) ||
+                (u.org_name || '').toLowerCase().includes(search) ||
+                (u.profile?.company_name || '').toLowerCase().includes(search)
+            );
+        }
+        if (typeFilter) {
+            filtered = filtered.filter(u => {
+                const hasCompany = u.profile?.company_name;
+                return typeFilter === 'company' ? hasCompany : !hasCompany;
+            });
+        }
+        if (statusFilter) {
+            filtered = filtered.filter(u => {
+                const isActive = !u.suspended && u.is_active;
+                return statusFilter === 'active' ? isActive : !isActive;
+            });
+        }
+        if (planFilter) {
+            filtered = filtered.filter(u => u.tier === planFilter);
+        }
+        
+        renderAccounts(filtered);
+    }, 200);
 }
 
 async function loadAccountsData() {
     const apiKey = localStorage.getItem('onto_first_api_key');
     if (!apiKey) return;
-    
-    const search = document.getElementById('accounts-search')?.value || '';
-    const typeFilter = document.getElementById('filter-type')?.value || '';
-    const statusFilter = document.getElementById('filter-status')?.value || '';
-    const planFilter = document.getElementById('filter-plan')?.value || '';
     
     const container = document.getElementById('accounts-list');
     if (container) container.innerHTML = `
@@ -5706,41 +5743,15 @@ async function loadAccountsData() {
             <div class="skeleton skeleton-text" style="width: 200px; margin-bottom: 8px;"></div>
             <div class="skeleton skeleton-text-sm" style="width: 120px;"></div>
         </div>
-        <div class="account-row" style="padding: 16px;">
-            <div class="skeleton skeleton-text" style="width: 180px; margin-bottom: 8px;"></div>
-            <div class="skeleton skeleton-text-sm" style="width: 100px;"></div>
-        </div>
     `;
     
     try {
-        let url = `${API_BASE}/v1/docs/admin/users?limit=50`;
-        if (search) url += `&search=${encodeURIComponent(search)}`;
-        
-        const res = await fetch(url, { headers: { 'x-api-key': apiKey } });
+        const res = await fetch(`${API_BASE}/v1/docs/admin/users?limit=50`, { headers: { 'x-api-key': apiKey } });
         
         if (res.ok) {
             const data = await res.json();
             accountsData = data.users || [];
-            
-            // Client-side filtering
-            let filtered = accountsData;
-            if (typeFilter) {
-                filtered = filtered.filter(u => {
-                    const hasCompany = u.profile?.company_name;
-                    return typeFilter === 'company' ? hasCompany : !hasCompany;
-                });
-            }
-            if (statusFilter) {
-                filtered = filtered.filter(u => {
-                    const isActive = !u.suspended && u.is_active;
-                    return statusFilter === 'active' ? isActive : !isActive;
-                });
-            }
-            if (planFilter) {
-                filtered = filtered.filter(u => u.tier === planFilter);
-            }
-            
-            renderAccounts(filtered);
+            filterAccounts();
         }
     } catch (e) {
         console.error('Accounts load error');
