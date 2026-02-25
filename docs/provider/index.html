@@ -150,7 +150,7 @@ a{color:var(--safe-l);text-decoration:none}
 <body>
 <nav class="nav">
   <a href="/" class="nav-logo"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/></svg>ONTO <span>/ provider</span></a>
-  <div class="nav-r"><a href="#how">How It Works</a><a href="#proof">Proof</a><a href="#economics">Economics</a><a href="#tech">Technical</a><a href="/docs/#provider-guide">Docs</a><a href="/cdn-cgi/l/email-protection#dab9b5afb4b9b3b69ab5b4aeb5a9aebbb4bebba8bef4b5a8bd" class="nav-cta">Contact</a></div>
+  <div class="nav-r"><a href="#how">How It Works</a><a href="#proof">Proof</a><a href="#economics">Economics</a><a href="#tech">Technical</a><a href="/docs/#provider-guide">Docs</a><a href="mailto:council@ontostandard.org" class="nav-cta">Contact</a></div>
 </nav>
 
 <section class="hero">
@@ -163,7 +163,7 @@ a{color:var(--safe-l);text-decoration:none}
     <div class="hm"><div class="v">~4K</div><div class="l">Tokens</div></div>
     <div class="hm"><div class="v">&infin;</div><div class="l">Models</div></div>
   </div>
-  <div class="hero-ctas"><a href="/cdn-cgi/l/email-protection#89eae6fce7eae0e5c9e6e7fde6fafde8e7ede8fbeda7e6fbeeb6fafcebe3eceafdb4d9fbe6ffe0edecfbacbbb9ccffe8e5fce8fde0e6e7" class="btn-p">Start evaluation &rarr;</a><a href="#how" class="btn-s">How it works</a></div>
+  <div class="hero-ctas"><a href="mailto:council@ontostandard.org?subject=Provider%20Evaluation" class="btn-p">Start evaluation &rarr;</a><a href="#how" class="btn-s">How it works</a></div>
 </section>
 <hr class="sec-line">
 
@@ -299,13 +299,13 @@ curl -N <span class="st">https://api.ontostandard.org/v1/gold/stream</span> \
 <section class="cta">
   <h2>Ready to certify your models?</h2>
   <p>We connect your SSE, run GOLD on one model, show you scores. No commitment.</p>
-  <div class="cta-btns"><a href="/cdn-cgi/l/email-protection#5f3c302a313c36331f30312b302c2b3e313b3e2d3b71302d38602c2a3d353a3c2b620f2d3029363b3a2d7a6d6f1a293e332a3e2b3630317a6d6f0d3a2e2a3a2c2b" class="btn-p">Start evaluation &rarr;</a><a href="/docs/#provider-guide" class="btn-s">Full documentation</a></div>
-  <div class="cta-note"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="aecdc1dbc0cdc7c2eec1c0dac1dddacfc0cacfdcca80c1dcc9">[email&#160;protected]</a> &middot; 24h response</div>
+  <div class="cta-btns"><a href="mailto:council@ontostandard.org?subject=Provider%20Evaluation%20Request" class="btn-p">Start evaluation &rarr;</a><a href="/docs/#provider-guide" class="btn-s">Full documentation</a></div>
+  <div class="cta-note">council@ontostandard.org &middot; 24h response</div>
 </section>
 
 <footer class="foot"><div>&copy; 2026 ONTO Standards Council</div><div><a href="/">Home</a><a href="/docs/">Docs</a><a href="/demo/">Demo</a><a href="/docs/#terms">Terms</a><a href="https://github.com/nickarstrong/onto-research">GitHub</a></div></footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 var io=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('vis')})},{threshold:.08});
 document.querySelectorAll('.fi').forEach(function(el){io.observe(el)});
 
@@ -321,4 +321,12 @@ var ma=false;
 new IntersectionObserver(function(e){if(ma)return;e.forEach(function(x){if(x.isIntersecting){ma=true;
   document.querySelectorAll('.mc-new[data-to]').forEach(function(el){
     var target=parseFloat(el.getAttribute('data-to')),t0=null;
-    function tick(ts){if(!t0)t0=ts;var p=Math.min((ts-t0)/1200,1);p=1-Math.pow(1-
+    function tick(ts){if(!t0)t0=ts;var p=Math.min((ts-t0)/1200,1);p=1-Math.pow(1-p,3);
+      el.textContent=(target*p).toFixed(2);if(p<1)requestAnimationFrame(tick)}
+    requestAnimationFrame(tick)});
+}})},{threshold:.2}).observe(document.getElementById('mgrid'));
+
+document.querySelectorAll('a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'})})});
+</script>
+</body>
+</html>
