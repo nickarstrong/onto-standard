@@ -1002,7 +1002,8 @@ a.info-val:hover { color: var(--text); }
             <div id="dash-provider-panes" class="hidden">
                 <div class="dash-section">
 
-                    <!-- TIER 1: Quick Test -->
+                    <!-- TIER 1: Quick Test (Provider only) -->
+                    <div id="prov-quicktest-inline">
                     <div class="dash-section-header">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
                         <div class="dash-section-title">Quick Test</div>
@@ -1027,6 +1028,7 @@ a.info-val:hover { color: var(--text); }
                             <span id="prov-proxy-status" style="font-size:11px;color:var(--text-muted)"></span>
                         </div>
                         <div id="prov-proxy-result" class="hidden" style="margin-top:10px;background:#0c0f14;border-radius:6px;padding:10px 12px;font-size:11px;color:#e2e8f0;max-height:180px;overflow-y:auto;white-space:pre-wrap;line-height:1.6"></div>
+                    </div>
                     </div>
 
                     <!-- TIER 2+3: Proxy Models | SSE Models side-by-side -->
@@ -1077,7 +1079,13 @@ a.info-val:hover { color: var(--text); }
                         </div>
 
                         <!-- RIGHT: SSE Models (per-model) -->
-                        <div class="dash-card-clean" style="margin-bottom:0;border:1px solid var(--border)">
+                        <div id="sse-panel-card" class="dash-card-clean" style="margin-bottom:0;border:1px solid var(--border);position:relative">
+                            <div id="sse-disabled-overlay" class="hidden" style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(12,15,20,0.7);border-radius:8px;display:flex;align-items:center;justify-content:center;z-index:10">
+                                <div style="text-align:center">
+                                    <div style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:4px">SSE Requires Provider Tier</div>
+                                    <div style="font-size:10px;color:var(--text-muted)">Upgrade to enable continuous verification</div>
+                                </div>
+                            </div>
                             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)">
                                 <div style="display:flex;align-items:center;gap:8px">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M2 12h5l2-9 4 18 2-9h5"/><circle cx="19" cy="12" r="2"/></svg>
@@ -1097,7 +1105,7 @@ a.info-val:hover { color: var(--text); }
                                         <option value="deepseek">DeepSeek</option>
                                         <option value="mistral">Mistral</option>
                                         <option value="google">Google</option>
-                                    </select>
+                                        <option value="custom">Custom</option>
                                 </div>
                                 <div style="display:flex;gap:6px">
                                     <input id="sse-model-key" type="password" placeholder="Provider API key" style="flex:1;background:#0c0f14;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:11px;color:var(--text);font-family:'JetBrains Mono',monospace">
@@ -2884,23 +2892,41 @@ function showDashboard() {
         // Switch dashboard view based on tier
         const isProvider = currentUser.layer === 'provider' || currentUser.layer === 'white_label';
         
-        // Provider two-pane vs Open/Standard Quick Test
+        // Provider two-pane: always visible. Quick Test section hidden for Provider (they have inline test)
         const providerPanes = document.getElementById('dash-provider-panes');
         const providerDivider = document.getElementById('dash-provider-divider');
         const quickTestSection = document.getElementById('dash-quicktest-section');
         
-        if (providerPanes) providerPanes.classList.toggle('hidden', !isProvider);
+        if (providerPanes) providerPanes.classList.remove('hidden');
         if (providerDivider) providerDivider.classList.toggle('hidden', !isProvider);
         if (quickTestSection) quickTestSection.classList.toggle('hidden', isProvider);
+
+        // SSE panel: deactivate for non-provider
+        const sseCard = document.getElementById('sse-panel-card');
+        const sseOverlay = document.getElementById('sse-disabled-overlay');
+        const provQuickTestInline = document.getElementById('prov-quicktest-inline');
+        if (provQuickTestInline) provQuickTestInline.classList.toggle('hidden', !isProvider);
+        if (sseCard && sseOverlay) {
+            if (!isProvider) {
+                sseCard.style.opacity = '0.5';
+                sseCard.style.pointerEvents = 'none';
+                sseOverlay.classList.remove('hidden');
+            } else {
+                sseCard.style.opacity = '1';
+                sseCard.style.pointerEvents = 'auto';
+                sseOverlay.classList.add('hidden');
+            }
+        }
 
         const guideSse = document.getElementById('guide-sse');
         const guideProxy = document.getElementById('guide-proxy');
         if (guideSse) guideSse.classList.toggle('hidden', !isProvider);
         if (guideProxy) guideProxy.style.display = isProvider ? 'none' : 'block';
+        // Load models for all tiers (proxy models always needed)
+        setTimeout(loadModels, 500);
+        renderProxyModels();
         if (isProvider) {
-            setTimeout(loadModels, 500);
             setTimeout(loadSSEModels, 600);
-            renderProxyModels();
         }
         fillIntegrationCode();
         setTimeout(loadProxyUsage, 300);
