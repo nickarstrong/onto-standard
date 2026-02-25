@@ -940,7 +940,6 @@ a.info-val:hover { color: var(--text); }
                 <div class="user-avatar" id="user-avatar">J</div>
                 <div class="user-info">
                     <div class="user-name" id="user-name">John Doe</div>
-                    <div class="user-tier" id="user-plan">Open</div>
                 </div>
             </div>
         </div>
@@ -1024,6 +1023,8 @@ a.info-val:hover { color: var(--text); }
                             <option value="mistral">Mistral</option>
                         </select>
                         <input type="password" id="test-std-provider-key" placeholder="Provider API key (sk-...)" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--text)">
+                        <button onclick="const i=document.getElementById('test-std-provider-key');i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'Show':'Hide'" style="background:none;border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:10px;color:var(--text-muted);cursor:pointer">Show</button>
+                        <button onclick="const v=document.getElementById('test-std-provider-key').value;if(v){navigator.clipboard.writeText(v);showToast('Copied','success')}" style="background:none;border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:10px;color:var(--text-muted);cursor:pointer">Copy</button>
                     </div>
                     <input type="text" id="prov-question" placeholder="Ask anything..." value="What is the boiling point of water?" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box;margin-bottom:8px" onkeydown="if(event.key==='Enter')runQuickTest()">
                     <div style="display:flex;gap:8px;align-items:center">
