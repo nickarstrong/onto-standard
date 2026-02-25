@@ -38,6 +38,7 @@ a{color:var(--safe-l);text-decoration:none}
 .nav-r{display:flex;gap:20px;align-items:center}
 .nav-r a{font-size:11px;color:var(--text-m);text-decoration:none;transition:.2s}
 .nav-r a:hover{color:var(--text)}
+.nav-active{color:var(--text)!important;border-bottom:1px solid var(--safe-l);padding-bottom:2px}
 .nav-cta{color:var(--safe-l)!important;border:1px solid var(--safe-b);padding:5px 14px;border-radius:4px}
 .nav-cta:hover{background:var(--safe);color:#fff!important}
 .sec{max-width:1080px;margin:0 auto;padding:80px 24px}
@@ -150,7 +151,7 @@ a{color:var(--safe-l);text-decoration:none}
 <body>
 <nav class="nav">
   <a href="/" class="nav-logo"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/></svg>ONTO <span>/ provider</span></a>
-  <div class="nav-r"><a href="#how">How It Works</a><a href="#proof">Proof</a><a href="#economics">Economics</a><a href="#tech">Technical</a><a href="/docs/#provider-guide">Docs</a><a href="mailto:council@ontostandard.org" class="nav-cta">Contact</a></div>
+  <div class="nav-r"><a href="/">Home</a><a href="/provider/" class="nav-active">Provider</a><a href="/demo/">Demo</a><a href="/docs/">Docs</a><a href="mailto:council@ontostandard.org?subject=Provider%20Evaluation" class="nav-cta">Contact</a></div>
 </nav>
 
 <section class="hero">
@@ -326,7 +327,7 @@ new IntersectionObserver(function(e){if(ma)return;e.forEach(function(x){if(x.isI
     requestAnimationFrame(tick)});
 }})},{threshold:.2}).observe(document.getElementById('mgrid'));
 
-document.querySelectorAll('a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'})})});
+
 </script>
 </body>
 </html>
