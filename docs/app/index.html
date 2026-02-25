@@ -2288,21 +2288,27 @@ function toggleTheme() {
 function escapeHtml(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 function layerToPlan(layer) { return { open: 'free', standard: 'business', provider: 'enterprise' }[layer] || 'free'; }
 
-function updatePlanBadges(layer) {
+function updatePlanBadges(layer, activeTiers) {
     const container = document.getElementById('dash-plan-badges');
     if (!container) return;
     
+    // Determine proxy tier from active subscriptions
+    const tiers = activeTiers || [];
+    const hasStandard = tiers.includes('standard') || layer === 'standard';
+    const hasProvider = tiers.includes('provider') || layer === 'provider';
+    const hasWhiteLabel = tiers.includes('white_label') || layer === 'white_label';
+    
     const badges = [];
-    const proxyTier = (layer === 'standard') ? 'STANDARD' : 'OPEN';
-    const proxyStyle = (layer === 'standard') 
+    const proxyTier = hasStandard ? 'STANDARD' : 'OPEN';
+    const proxyStyle = hasStandard 
         ? 'background:var(--bg-elevated);color:var(--text);font-weight:600;border:1px solid var(--border)' 
         : 'background:var(--bg-elevated);color:var(--text-secondary);font-weight:600;border:1px solid var(--border)';
     badges.push(`<span style="font-size:10px;padding:2px 8px;border-radius:3px;${proxyStyle}">${proxyTier}</span>`);
     
-    if (layer === 'provider') {
+    if (hasProvider) {
         badges.push('<span style="font-size:10px;padding:2px 8px;border-radius:3px;background:rgba(21,128,61,0.15);color:var(--accent);font-weight:600;border:1px solid rgba(21,128,61,0.3)">PROVIDER</span>');
     }
-    if (layer === 'white_label') {
+    if (hasWhiteLabel) {
         badges.push('<span style="font-size:10px;padding:2px 8px;border-radius:3px;background:var(--accent);color:#0a0a0a;font-weight:700">WHITE-LABEL</span>');
     }
     
@@ -2311,8 +2317,12 @@ function updatePlanBadges(layer) {
     // Update rate label
     const rateEl = document.getElementById('dash-plan-rate');
     if (rateEl) {
-        const rates = { open: '10 requests/day', standard: '1,000 requests/day', provider: '10 requests/day (test) + SSE', white_label: '10 requests/day (test) + SSE' };
-        rateEl.textContent = rates[layer] || '10 requests/day';
+        let rateText = '10 requests/day';
+        if (hasWhiteLabel) rateText = 'Unlimited + SSE';
+        else if (hasProvider && hasStandard) rateText = '1,000 requests/day + SSE';
+        else if (hasProvider) rateText = '10 requests/day (test) + SSE';
+        else if (hasStandard) rateText = '1,000 requests/day';
+        rateEl.textContent = rateText;
     }
 }
 function showToast(message, type = 'info') {
@@ -3353,6 +3363,13 @@ async function loadProxyUsage() {
             badge.style.background = 'rgba(239,68,68,0.15)';
             badge.style.color = '#ef4444';
         }
+
+        // Derive active tiers from proxy/status and update badges
+        const activeTiers = [];
+        if (d.daily_limit >= 1000) activeTiers.push('standard');
+        if (d.sse_enabled) activeTiers.push('provider');
+        if (d.layer === 'white_label') activeTiers.push('white_label');
+        updatePlanBadges(d.layer, activeTiers);
     } catch(e) { /* silent */ }
 }
 
