@@ -3443,7 +3443,7 @@ async function testStandardProxy() {
     if (!apiKey) { showToast('Please sign in first', 'error'); return; }
     
     const provider = document.getElementById('test-std-provider').value;
-    const btn = document.getElementById('test-std-btn');
+    const btn = document.getElementById('live-test-btn');
     const status = document.getElementById('test-std-status');
     const result = document.getElementById('test-std-result');
     
@@ -3453,7 +3453,7 @@ async function testStandardProxy() {
     status.style.color = 'var(--text-muted)';
     result.classList.add('hidden');
     
-    const testPrompt = 'What is the boiling point of water? Give specific numbers and cite sources.';
+    const testPrompt = (document.getElementById('prov-question')?.value || '').trim() || 'What is the boiling point of water?';
     
     try {
         let url, body, headers;
@@ -5634,7 +5634,8 @@ function startSignalCountdown() {
         } else {
             const mins = Math.floor(remaining / 60);
             const secs = remaining % 60;
-            document.getElementById('signal-countdown').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+            const cdEl = document.getElementById('signal-countdown');
+            if (cdEl) cdEl.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
         }
     }, 1000);
 }
