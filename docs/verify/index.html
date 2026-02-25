@@ -271,8 +271,12 @@ function renderCert(d) {
         hour: '2-digit', minute: '2-digit'
     });
 
+    const channelExplain = d.channel === 'sse'
+        ? 'Every request through this model is verified in real-time via continuous SSE connection. 100% coverage — not sampled.'
+        : 'Requests through this model are sampled and verified via proxy. Source citation, calibrated confidence, uncertainty disclosure, and knowledge gap identification.';
+
     const explainText = isActive
-        ? 'This model is <strong>actively connected</strong> to the ONTO GOLD discipline layer. Every request through this model is enriched with epistemic structure: source citation, calibrated confidence, uncertainty disclosure, and knowledge gap identification.'
+        ? `This model is <strong>actively connected</strong> to the ONTO GOLD discipline layer. ${channelExplain}`
         : isSuspended
         ? 'This model was previously connected to ONTO but the connection is currently <strong>suspended</strong>. The GOLD discipline layer is not active. Contact the organization for details.'
         : 'This model is <strong>not connected</strong> to the ONTO discipline layer.';
@@ -298,6 +302,14 @@ function renderCert(d) {
             <div class="cert-row">
                 <span class="cert-label">Connected since</span>
                 <span class="cert-value">${since || '—'}</span>
+            </div>
+            <div class="cert-row">
+                <span class="cert-label">Channel</span>
+                <span class="cert-value">${d.channel === 'sse' ? 'SSE (Continuous)' : 'Proxy'}</span>
+            </div>
+            <div class="cert-row">
+                <span class="cert-label">Verification</span>
+                <span class="cert-value">${esc(d.verification_scope || '—')}</span>
             </div>
             <div class="cert-row">
                 <span class="cert-label">Status</span>
