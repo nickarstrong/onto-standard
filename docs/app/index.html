@@ -1076,7 +1076,7 @@ a.info-val:hover { color: var(--text); }
                             </div>
                         </div>
 
-                        <!-- RIGHT: SSE Models (no backend yet) -->
+                        <!-- RIGHT: SSE Models (per-model) -->
                         <div class="dash-card-clean" style="margin-bottom:0;border:1px solid var(--border)">
                             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)">
                                 <div style="display:flex;align-items:center;gap:8px">
@@ -1084,36 +1084,31 @@ a.info-val:hover { color: var(--text); }
                                     <span style="font-size:12px;font-weight:600">SSE</span>
                                     <span style="font-size:9px;color:#0a0a0a;background:var(--accent);padding:1px 6px;border-radius:3px;font-weight:600">Production</span>
                                 </div>
-                                <div id="sse-status-badge" style="font-size:9px;padding:2px 8px;border-radius:10px;background:rgba(239,68,68,0.15);color:#ef4444;font-weight:600">○ Disconnected</div>
+                                <button class="btn-minimal" onclick="showAddSSEModel()" style="font-size:10px;padding:3px 10px">+ Add</button>
                             </div>
 
-                            <!-- SSE Connection -->
-                            <div id="sse-disconnected" style="margin-bottom:12px">
-                                <button class="btn-minimal" onclick="connectSSE()" id="sse-connect-btn" style="font-size:11px;padding:6px 18px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Connect SSE</button>
-                            </div>
-                            <div id="sse-connected" class="hidden" style="margin-bottom:12px">
-                                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px">
-                                    <div style="background:var(--bg);border-radius:4px;padding:6px 8px;text-align:center">
-                                        <div style="font-size:13px;font-weight:700;color:var(--accent)" id="sse-chars">—</div>
-                                        <div style="font-size:8px;color:var(--text-muted)">GOLD chars</div>
-                                    </div>
-                                    <div style="background:var(--bg);border-radius:4px;padding:6px 8px;text-align:center">
-                                        <div style="font-size:13px;font-weight:700;color:var(--text)" id="sse-snippets">—</div>
-                                        <div style="font-size:8px;color:var(--text-muted)">Snippets</div>
-                                    </div>
-                                    <div style="background:var(--bg);border-radius:4px;padding:6px 8px;text-align:center">
-                                        <div style="font-size:13px;font-weight:700;color:var(--text)" id="sse-heartbeat">—</div>
-                                        <div style="font-size:8px;color:var(--text-muted)">Heartbeat</div>
-                                    </div>
-                                </div>
-                                <div style="display:flex;justify-content:space-between;align-items:center">
-                                    <span id="sse-hash" style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text-muted)">—</span>
-                                    <button class="btn-minimal" onclick="disconnectSSE()" style="font-size:9px;padding:2px 8px;color:#ef4444;border-color:rgba(239,68,68,0.3)">Disconnect</button>
+                            <!-- Add SSE Model Form (hidden) -->
+                            <div id="sse-add-form" class="hidden" style="margin-bottom:12px;padding:10px;background:var(--bg);border-radius:6px;border:1px solid var(--border)">
+                                <div style="font-size:10px;font-weight:600;margin-bottom:8px;color:var(--text-secondary)">Register SSE Model</div>
+                                <input id="sse-model-name" type="text" placeholder="Model name (e.g. GPT-4o production)" style="width:100%;background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--text);outline:none;margin-bottom:6px">
+                                <select id="sse-model-provider" style="width:100%;background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--text);outline:none;margin-bottom:6px">
+                                    <option value="anthropic">Anthropic</option>
+                                    <option value="openai">OpenAI</option>
+                                    <option value="deepseek">DeepSeek</option>
+                                    <option value="mistral">Mistral</option>
+                                    <option value="google">Google</option>
+                                </select>
+                                <input id="sse-model-key" type="password" placeholder="Provider API key" style="width:100%;background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--text);outline:none;margin-bottom:8px">
+                                <div style="display:flex;gap:6px">
+                                    <button onclick="addSSEModel()" style="flex:1;background:var(--accent);color:#0c0f14;border:none;border-radius:4px;padding:6px;font-size:11px;font-weight:600;cursor:pointer">Add Model</button>
+                                    <button onclick="document.getElementById('sse-add-form').classList.add('hidden')" style="background:none;border:1px solid var(--border);border-radius:4px;padding:6px 12px;font-size:11px;color:var(--text-muted);cursor:pointer">Cancel</button>
                                 </div>
                             </div>
-                            <div id="sse-log" class="hidden" style="background:#0c0f14;border-radius:4px;padding:4px 8px;font-size:8px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;max-height:40px;overflow-y:auto;line-height:1.4;margin-bottom:8px"></div>
 
-                            <div style="color:var(--text-muted);font-size:11px;padding:8px 0;text-align:center">No SSE models yet</div>
+                            <!-- SSE Models List -->
+                            <div id="sse-models-list">
+                                <div style="color:var(--text-muted);font-size:11px;padding:8px 0;text-align:center">No SSE models yet</div>
+                            </div>
 
                             <div style="border-top:1px solid var(--border);margin-top:10px;padding-top:8px;display:flex;justify-content:space-between;align-items:center">
                                 <span style="font-size:10px;color:var(--text-muted)">∞ Unlimited</span>
@@ -2904,6 +2899,7 @@ function showDashboard() {
         if (guideProxy) guideProxy.style.display = isProvider ? 'none' : 'block';
         if (isProvider) {
             setTimeout(loadModels, 500);
+            setTimeout(loadSSEModels, 600);
             renderProxyModels();
         }
         fillIntegrationCode();
@@ -3814,6 +3810,142 @@ async function loadModels() {
     } catch (e) {
         console.error('loadModels:', e);
     }
+}
+
+// === SSE MODEL MANAGEMENT ===
+
+function showAddSSEModel() {
+    document.getElementById('sse-add-form').classList.remove('hidden');
+    document.getElementById('sse-model-name').focus();
+}
+
+async function addSSEModel() {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) return;
+    
+    const name = document.getElementById('sse-model-name').value.trim();
+    const provider = document.getElementById('sse-model-provider').value;
+    const key = document.getElementById('sse-model-key').value.trim();
+    
+    if (!name) { showToast('Model name required', 'error'); return; }
+    if (!key) { showToast('Provider API key required', 'error'); return; }
+    
+    try {
+        const res = await fetch(`${API_BASE}/v1/models`, {
+            method: 'POST',
+            headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, provider_type: provider, provider_key: key, channel: 'sse' })
+        });
+        const data = await res.json();
+        if (!res.ok) { showToast(data.detail || 'Failed', 'error'); return; }
+        
+        showToast(`SSE model "${name}" registered`, 'success');
+        document.getElementById('sse-add-form').classList.add('hidden');
+        document.getElementById('sse-model-name').value = '';
+        document.getElementById('sse-model-key').value = '';
+        loadSSEModels();
+    } catch (e) {
+        showToast('Error adding SSE model', 'error');
+    }
+}
+
+async function loadSSEModels() {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) return;
+    
+    try {
+        const res = await fetch(`${API_BASE}/v1/models?channel=sse`, {
+            headers: { 'x-api-key': apiKey }
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        const list = document.getElementById('sse-models-list');
+        if (!list) return;
+        
+        if (!data.models || data.models.length === 0) {
+            list.innerHTML = '<div style="color:var(--text-muted);font-size:11px;padding:8px 0;text-align:center">No SSE models yet</div>';
+            return;
+        }
+        
+        let html = '';
+        for (const m of data.models) {
+            const isConnected = m.connection_status === 'connected';
+            const certStatus = m.cert_status || 'inactive';
+            const certLabel = certStatus === 'verified' ? 'VERIFIED' : certStatus === 'suspended' ? 'SUSPENDED' : certStatus === 'active' ? 'ACTIVE' : 'INACTIVE';
+            const certColor = certStatus === 'verified' ? 'var(--accent)' : certStatus === 'suspended' ? '#f59e0b' : certStatus === 'active' ? 'var(--accent)' : '#ef4444';
+            const connColor = isConnected ? 'var(--accent)' : '#ef4444';
+            const connLabel = isConnected ? '● Connected' : '○ Disconnected';
+            const connBtnLabel = isConnected ? 'Disconnect' : 'Connect';
+            const connBtnColor = isConnected ? '#ef4444' : 'var(--accent)';
+            const connAction = isConnected ? `disconnectModel('${m.id}')` : `connectModel('${m.id}')`;
+            const hbText = m.last_heartbeat ? `heartbeat: ${m.last_heartbeat}` : 'no heartbeat';
+            const certUrl = m.cert_url || '';
+            
+            html += `<div style="padding:10px 0;border-bottom:1px solid var(--border)">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                    <div style="display:flex;align-items:center;gap:10px;flex:1">
+                        <div onclick="toggleModel('${m.id}')" style="width:36px;height:20px;border-radius:10px;background:${m.is_enabled ? 'var(--accent)' : '#4a5568'};cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0" title="${m.is_enabled ? 'Enabled' : 'Disabled'}">
+                            <div style="width:16px;height:16px;border-radius:50%;background:white;position:absolute;top:2px;${m.is_enabled ? 'right:2px' : 'left:2px'};transition:all 0.2s"></div>
+                        </div>
+                        <div style="min-width:0">
+                            <div style="font-size:13px;font-weight:600;color:var(--text)">${m.name}</div>
+                            <div style="font-size:10px;color:var(--text-muted)">${m.provider_type || ''} · ${hbText}</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+                        <span style="font-size:9px;color:${connColor};font-weight:600">${connLabel}</span>
+                        <div style="display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:4px;border:1px solid ${certColor};cursor:pointer" onclick="navigator.clipboard.writeText('${certUrl}');showToast('Certificate URL copied','success')" title="Copy certificate link">
+                            <div style="width:6px;height:6px;border-radius:50%;background:${certColor}"></div>
+                            <span style="font-size:9px;font-weight:600;color:${certColor}">${certLabel}</span>
+                        </div>
+                        <button onclick="${connAction}" style="background:none;border:1px solid ${connBtnColor};border-radius:4px;padding:2px 8px;font-size:9px;color:${connBtnColor};cursor:pointer;font-weight:500">${connBtnLabel}</button>
+                        <button onclick="removeModel('${m.id}','${m.name}')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;padding:2px" title="Remove">×</button>
+                    </div>
+                </div>
+            </div>`;
+        }
+        
+        list.innerHTML = html;
+    } catch (e) {
+        console.error('loadSSEModels:', e);
+    }
+}
+
+async function connectModel(modelId) {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) return;
+    try {
+        const res = await fetch(`${API_BASE}/v1/models/${modelId}/connect`, {
+            method: 'POST',
+            headers: { 'x-api-key': apiKey }
+        });
+        const data = await res.json();
+        if (res.ok) {
+            showToast(`${data.name}: connected`, 'success');
+            loadSSEModels();
+        } else {
+            showToast(data.detail || 'Failed', 'error');
+        }
+    } catch (e) { showToast('Connection error', 'error'); }
+}
+
+async function disconnectModel(modelId) {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) return;
+    try {
+        const res = await fetch(`${API_BASE}/v1/models/${modelId}/disconnect`, {
+            method: 'POST',
+            headers: { 'x-api-key': apiKey }
+        });
+        const data = await res.json();
+        if (res.ok) {
+            showToast(`${data.name}: disconnected`, 'success');
+            loadSSEModels();
+        } else {
+            showToast(data.detail || 'Failed', 'error');
+        }
+    } catch (e) { showToast('Connection error', 'error'); }
 }
 
 async function toggleModel(modelId) {
