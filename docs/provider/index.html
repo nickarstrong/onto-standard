@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONTO — AI Provider Infrastructure</title>
+<meta name="description" content="One SSE connection. All your models cite sources, quantify confidence, disclose uncertainty. 10x measured improvement. Not a proxy — a discipline layer.">
+<meta property="og:title" content="ONTO for AI Providers — Epistemic Infrastructure">
+<meta property="og:description" content="11 models tested. 10x epistemic improvement. One SSE connection. Zero latency.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='17' fill='white'/%3E%3Cpath d='M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z' fill='%230a0a0a'/%3E%3C/svg%3E">
+<link rel="canonical" href="https://ontostandard.org/provider/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"ONTO for AI Providers","url":"https://ontostandard.org/provider/",
+"mainEntity":{"@type":"Service","name":"ONTO AI Provider Licensing","provider":{"@type":"Organization","name":"ONTO Standards Council"},
+"offers":{"@type":"Offer","price":"250000","priceCurrency":"USD","billingIncrement":"P1Y"}}}
+</script>
+<style>
+:root{
+  --bg:#0a0a0a;--bg-s:#121212;--bg-c:#1a1a1a;--bg-e:#242424;
+  --border:#333;--border-s:#262626;
+  --safe:#15803d;--safe-l:#22c55e;--safe-s:rgba(21,128,61,.15);--safe-b:rgba(21,128,61,.25);
+  --danger:#dc2626;--danger-s:rgba(220,38,38,.12);--danger-b:rgba(220,38,38,.2);
+  --warn:#d97706;--warn-s:rgba(217,119,6,.15);
+  --text:#fafafa;--text-s:#a0a0a0;--text-m:#606060;--text-d:#444;
+  --mono:'JetBrains Mono','SF Mono',Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.6}
+a{color:var(--safe-l);text-decoration:none}
+.nav{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(10,10,10,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border-s);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100}
+.nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);font-size:15px;font-weight:600}
+.nav-logo svg{width:22px;height:22px}
+.nav-logo span{font-family:var(--mono);font-size:11px;color:var(--text-m);margin-left:4px}
+.nav-r{display:flex;gap:20px;align-items:center}
+.nav-r a{font-size:11px;color:var(--text-m);text-decoration:none;transition:.2s}
+.nav-r a:hover{color:var(--text)}
+.nav-cta{color:var(--safe-l)!important;border:1px solid var(--safe-b);padding:5px 14px;border-radius:4px}
+.nav-cta:hover{background:var(--safe);color:#fff!important}
+.sec{max-width:1080px;margin:0 auto;padding:80px 24px}
+.sec-label{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-m);margin-bottom:10px}
+.sec-title{font-size:26px;font-weight:700;letter-spacing:-.3px;margin-bottom:8px}
+.sec-desc{font-size:13px;color:var(--text-s);max-width:560px;line-height:1.7;margin-bottom:32px}
+.sec-line{border:none;border-top:1px solid var(--border-s);max-width:1080px;margin:0 auto}
+.hero{text-align:center;padding:120px 24px 80px}
+.hero-tag{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--safe);background:var(--safe-s);padding:4px 14px;border-radius:100px;border:1px solid var(--safe-b);margin-bottom:20px}
+.hero h1{font-size:34px;font-weight:700;letter-spacing:-.5px;margin-bottom:12px;line-height:1.2}
+.hero h1 em{font-style:normal;color:var(--safe-l)}
+.hero-sub{font-size:14px;color:var(--text-s);max-width:520px;margin:0 auto 32px;line-height:1.7}
+.hero-mets{display:flex;justify-content:center;gap:8px;margin-bottom:32px;flex-wrap:wrap}
+.hm{background:var(--bg-c);border:1px solid var(--border-s);border-radius:6px;padding:16px 24px;text-align:center;min-width:120px}
+.hm .v{font-family:var(--mono);font-size:24px;font-weight:700;color:var(--safe-l)}
+.hm .l{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-m);margin-top:2px}
+.hero-ctas{display:flex;gap:10px;justify-content:center}
+.btn-p{display:inline-block;padding:10px 24px;background:var(--safe);color:#fff;font-size:13px;font-weight:600;border-radius:5px;text-decoration:none;transition:.2s;border:1px solid var(--safe)}
+.btn-p:hover{background:#166534}
+.btn-s{display:inline-block;padding:10px 24px;border:1px solid var(--border);color:var(--text-s);font-size:13px;font-weight:500;border-radius:5px;text-decoration:none;transition:.2s}
+.btn-s:hover{border-color:var(--text-m);color:var(--text)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:2px;border-radius:6px;overflow:hidden}
+.pnl{background:var(--bg-c);display:flex;flex-direction:column}
+.pnl-top{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border-s)}
+.pnl-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.7px}
+.pnl-lbl.bad{color:var(--danger)}.pnl-lbl.good{color:var(--safe)}
+.pnl-badge{font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:3px;font-weight:500}
+.pnl-badge.bad{background:var(--danger-s);color:var(--danger)}.pnl-badge.good{background:var(--safe-s);color:var(--safe)}
+.pnl-body{padding:14px;font-size:12px;line-height:1.75;color:var(--text-s)}
+.pnl-body p{margin-bottom:8px}
+.h-src{color:#60a5fa}.h-num{color:#f59e0b}.h-unc{color:#a78bfa}.h-ctr{color:#f87171}
+.sc-row{display:flex;align-items:center;gap:10px;padding:8px 14px;border-top:1px solid var(--border-s)}
+.sc-lbl{font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.4px;color:var(--text-m);width:40px}
+.sc-track{flex:1;height:5px;background:var(--bg-e);border-radius:3px;overflow:hidden}
+.sc-fill{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.sc-fill.bad{background:var(--danger)}.sc-fill.good{background:var(--safe)}
+.sc-val{font-family:var(--mono);font-size:11px;font-weight:600;width:56px;text-align:right}
+.sc-val.bad{color:var(--danger)}.sc-val.good{color:var(--safe)}
+.grade{font-family:var(--mono);font-size:10px;font-weight:600;padding:1px 6px;border-radius:3px;margin-left:4px}
+.grade-f{background:var(--danger-s);color:var(--danger)}.grade-a{background:var(--safe-s);color:var(--safe)}
+.ev{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;padding:12px 0}
+.ev span{font-family:var(--mono);font-size:11px;color:var(--text-m)}.ev b{color:var(--text-s);font-weight:600}
+.diag{background:var(--bg-s);border:1px solid var(--border-s);border-radius:6px;padding:32px;margin-bottom:24px;overflow-x:auto}
+.diag-flow{display:flex;align-items:center;justify-content:center}
+.diag-node{background:var(--bg-c);border:1px solid var(--border-s);border-radius:6px;padding:14px 18px;text-align:center;min-width:130px}
+.diag-node.hi{border-color:var(--safe-b);background:var(--safe-s)}
+.diag-node .dt{font-family:var(--mono);font-size:11px;font-weight:600;margin-bottom:2px}
+.diag-node .ds{font-size:9px;color:var(--text-m)}
+.diag-arr{font-size:16px;color:var(--text-d);padding:0 10px;flex-shrink:0}
+.steps .step{display:grid;grid-template-columns:40px 1fr;gap:16px;padding:18px 0;border-bottom:1px solid var(--border-s)}
+.steps .step:last-child{border-bottom:none}
+.step-n{font-family:var(--mono);font-size:20px;font-weight:600;color:var(--text-d);text-align:right}
+.step-t{font-size:14px;font-weight:600;margin-bottom:2px}
+.step-d{font-size:12px;color:var(--text-s);line-height:1.6}
+.step-d code{font-family:var(--mono);font-size:11px;background:var(--bg-s);padding:1px 5px;border-radius:3px;color:var(--safe-l)}
+.hbox{background:var(--bg-c);border:1px solid var(--safe-b);border-radius:6px;padding:20px 24px;margin-top:24px}
+.hbox-title{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--safe-l);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.hbox p{font-size:13px;color:var(--text-s);line-height:1.7}.hbox p+p{margin-top:10px}.hbox strong{color:var(--text);font-weight:600}
+.mg{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;border-radius:6px;overflow:hidden;margin-bottom:20px}
+.mc{background:var(--bg-c);padding:20px;text-align:center}
+.mc-label{font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.mc-row{display:flex;align-items:baseline;justify-content:center;gap:8px}
+.mc-old{font-family:var(--mono);font-size:13px;color:var(--text-d);text-decoration:line-through}
+.mc-arr{color:var(--text-d);font-size:11px}
+.mc-new{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--safe-l)}
+.mc-delta{font-family:var(--mono);font-size:10px;color:var(--text-m);margin-top:2px}
+.etbl{width:100%;border-collapse:collapse}
+.etbl th{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-m);text-align:left;padding:10px 14px;border-bottom:1px solid var(--border)}
+.etbl td{padding:12px 14px;border-bottom:1px solid var(--border-s);font-size:12px;color:var(--text-s);vertical-align:top}
+.etbl .p{font-weight:600;color:var(--text);font-size:12px}
+.etbl .bad{color:var(--text-m)}.etbl .good{color:var(--safe-l)}.etbl .hl td{background:var(--safe-s)}
+.scen-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;border-radius:6px;overflow:hidden}
+.scen{background:var(--bg-c);padding:20px}
+.scen-n{font-family:var(--mono);font-size:9px;color:var(--text-d);letter-spacing:1px;margin-bottom:6px}
+.scen-t{font-size:15px;font-weight:600;margin-bottom:8px}
+.scen-g{font-size:11px;color:var(--safe-l);line-height:1.5;margin-bottom:4px}
+.scen-b{font-size:11px;color:var(--text-m);line-height:1.5}
+.ds-compare{display:grid;grid-template-columns:1fr 1fr;gap:2px;border-radius:6px;overflow:hidden;margin:16px 0}
+.ds-side{padding:14px 16px}
+.ds-label{font-family:var(--mono);font-size:9px;letter-spacing:1px;margin-bottom:4px}
+.tg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tc{background:var(--bg-c);border:1px solid var(--border-s);border-radius:6px;padding:16px 18px}
+.tc-t{font-family:var(--mono);font-size:11px;font-weight:600;margin-bottom:6px}
+.tc p{font-size:11px;color:var(--text-s);line-height:1.6}
+.tc code{font-family:var(--mono);font-size:10px;background:var(--bg-s);padding:1px 4px;border-radius:2px;color:var(--safe-l)}
+.cblk{background:var(--bg-s);border:1px solid var(--border-s);border-radius:6px;padding:16px;font-family:var(--mono);font-size:11px;line-height:1.8;color:var(--text-s);overflow-x:auto;white-space:pre;margin:16px 0}
+.cm{color:#6a9955}.st{color:#ce9178}.vl{color:#b5cea8}
+.eptbl{width:100%;border-collapse:collapse;margin-top:16px}
+.eptbl th{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-m);text-align:left;padding:8px 10px;border-bottom:1px solid var(--border)}
+.eptbl td{font-family:var(--mono);font-size:11px;padding:8px 10px;border-bottom:1px solid var(--border-s);color:var(--text-s)}
+.eptbl .mt{color:var(--safe-l);font-weight:600}
+.cta{text-align:center;padding:80px 24px;background:var(--bg-s)}
+.cta h2{font-size:26px;font-weight:700;margin-bottom:10px}
+.cta p{font-size:13px;color:var(--text-s);margin-bottom:32px;max-width:480px;margin-left:auto;margin-right:auto}
+.cta-btns{display:flex;gap:10px;justify-content:center;margin-bottom:16px}
+.cta-note{font-family:var(--mono);font-size:10px;color:var(--text-d)}
+.foot{max-width:1080px;margin:0 auto;padding:32px 24px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--text-d)}
+.foot a{color:var(--text-m);text-decoration:none;margin:0 8px}
+.fi{opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s}.fi.vis{opacity:1;transform:none}
+@media(max-width:768px){
+.hero h1{font-size:24px}.hero-mets{gap:6px}.hm{padding:12px 16px;min-width:90px}.hm .v{font-size:18px}
+.split,.mg,.scen-grid,.tg,.ds-compare{grid-template-columns:1fr}
+.hero-ctas,.cta-btns{flex-direction:column;align-items:center}
+.diag-flow{flex-direction:column}.diag-arr{transform:rotate(90deg)}
+.foot{flex-direction:column;gap:12px;text-align:center}.sec{padding:60px 16px}
+.nav-r{gap:10px}.nav-r a{font-size:10px}
+}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-logo"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/></svg>ONTO <span>/ provider</span></a>
+  <div class="nav-r"><a href="#how">How It Works</a><a href="#proof">Proof</a><a href="#economics">Economics</a><a href="#tech">Technical</a><a href="/docs/#provider-guide">Docs</a><a href="/cdn-cgi/l/email-protection#dab9b5afb4b9b3b69ab5b4aeb5a9aebbb4bebba8bef4b5a8bd" class="nav-cta">Contact</a></div>
+</nav>
+
+<section class="hero">
+  <div class="hero-tag">AI Provider Licensing &middot; $250K/year</div>
+  <h1>Your models hallucinate.<br>Your customers <em>notice</em>.</h1>
+  <p class="hero-sub">One SSE connection. All your models cite sources, quantify confidence, disclose uncertainty. Achieve superior quality on compact models &mdash; less compute, lower cost, verified output.</p>
+  <div class="hero-mets">
+    <div class="hm"><div class="v">10&times;</div><div class="l">Improvement</div></div>
+    <div class="hm"><div class="v">0 ms</div><div class="l">Added latency</div></div>
+    <div class="hm"><div class="v">~4K</div><div class="l">Tokens</div></div>
+    <div class="hm"><div class="v">&infin;</div><div class="l">Models</div></div>
+  </div>
+  <div class="hero-ctas"><a href="/cdn-cgi/l/email-protection#89eae6fce7eae0e5c9e6e7fde6fafde8e7ede8fbeda7e6fbeeb6fafcebe3eceafdb4d9fbe6ffe0edecfbacbbb9ccffe8e5fce8fde0e6e7" class="btn-p">Start evaluation &rarr;</a><a href="#how" class="btn-s">How it works</a></div>
+</section>
+<hr class="sec-line">
+
+<section class="sec fi" id="problem">
+  <div class="sec-label">The problem</div>
+  <div class="sec-title">Enterprise asks: can we trust this in production?</div>
+  <div class="sec-desc">Same question. Same model. Left: what ships today. Right: what ships with ONTO.</div>
+  <div class="split">
+    <div class="pnl">
+      <div class="pnl-top"><span class="pnl-lbl bad">Without ONTO</span><span class="pnl-badge bad">Baseline</span></div>
+      <div class="pnl-body"><p>"Studies show significant benefits for high-risk patients. Experts generally recommend this approach as part of a comprehensive treatment plan."</p><p style="color:var(--text-m);font-size:11px">Zero sources. Zero numbers. Zero uncertainty. Reads like authority &mdash; backed by nothing.</p></div>
+      <div class="sc-row"><span class="sc-lbl">Score</span><div class="sc-track"><div class="sc-fill bad" id="bF" style="width:0"></div></div><span class="sc-val bad" id="bV">&mdash;</span></div>
+    </div>
+    <div class="pnl">
+      <div class="pnl-top"><span class="pnl-lbl good">With ONTO GOLD</span><span class="pnl-badge good">Enhanced</span></div>
+      <div class="pnl-body"><p><span class="h-src">(2022) Patikorn et al.</span> meta-analysis (n=<span class="h-num">410</span>): HbA1c reduced by <span class="h-num">&minus;0.53%</span> (95% CI: &minus;0.88 to &minus;0.17).</p><p><span class="h-unc">Confidence: ~70%.</span> <span class="h-unc">Unknown:</span> optimal protocol duration. Long-term data limited to <span class="h-num">3</span> studies.</p><p><span class="h-ctr">Counterargument:</span> caloric restriction without time restriction produced comparable reduction (&minus;0.48%).</p></div>
+      <div class="sc-row"><span class="sc-lbl">Score</span><div class="sc-track"><div class="sc-fill good" id="gF" style="width:0"></div></div><span class="sc-val good" id="gV">&mdash;</span></div>
+    </div>
+  </div>
+  <div class="ev"><span><b>11</b> models</span><span><b>100</b> questions</span><span><b>10&times;</b> composite</span><span><b>0</b> AI in scoring</span><span>CS-2026-001 &middot; Feb 2026</span></div>
+</section>
+<hr class="sec-line">
+
+<section class="sec fi" id="how">
+  <div class="sec-label">How it works</div>
+  <div class="sec-title">One connection. Every model. Zero latency.</div>
+  <div class="sec-desc">ONTO is not in your inference path. You receive text via SSE, cache it, prepend to system prompts. Your infrastructure unchanged.</div>
+  <div class="diag"><div class="diag-flow">
+    <div class="diag-node hi"><div class="dt">ONTO SSE</div><div class="ds">~4K tokens &middot; auto-updates</div></div><div class="diag-arr">&rarr;</div>
+    <div class="diag-node"><div class="dt">Your Server</div><div class="ds">Cache GOLD corpus</div></div><div class="diag-arr">&rarr;</div>
+    <div class="diag-node"><div class="dt">System Prompt</div><div class="ds">Prepend to any model</div></div><div class="diag-arr">&rarr;</div>
+    <div class="diag-node"><div class="dt">Your Models</div><div class="ds">Cite &middot; Quantify &middot; Disclose</div></div>
+  </div></div>
+  <div class="steps">
+    <div class="step"><div class="step-n">01</div><div><div class="step-t">Connect one SSE endpoint</div><div class="step-d">Single persistent connection. <code>GET /v1/gold/stream</code> with your API key.</div></div></div>
+    <div class="step"><div class="step-n">02</div><div><div class="step-t">Receive GOLD corpus (~4K tokens)</div><div class="step-d">Full discipline layer on connect. Auto-updates via SSE. SHA-256 verified.</div></div></div>
+    <div class="step"><div class="step-n">03</div><div><div class="step-t">Prepend to system prompt</div><div class="step-d"><code>system_prompt = gold["discipline_layer"] + your_prompt</code></div></div></div>
+    <div class="step"><div class="step-n">04</div><div><div class="step-t">Model starts citing, quantifying, disclosing</div><div class="step-d">No fine-tuning. No RLHF. No parameter changes. Behavioral discipline via text.</div></div></div>
+    <div class="step"><div class="step-n">05</div><div><div class="step-t">Score 5%, get certified</div><div class="step-d">Batch every 5 min. 92+ markers. Ed25519 proof chain. Public verification per model.</div></div></div>
+  </div>
+  <div class="hbox"><div class="hbox-title">Not a proxy. Not middleware. Not an API call.</div><p>ONTO is <strong>text in your system prompt</strong>. No additional API call per request. No routing through third-party servers. No latency. ONTO delivers once. You distribute to every model. <strong>We are never in your inference path.</strong></p></div>
+</section>
+<hr class="sec-line">
+
+<section class="sec fi" id="proof">
+  <div class="sec-label">Measured results</div>
+  <div class="sec-title">CS-2026-001 &middot; 11 models &middot; 100 questions &middot; 5 domains</div>
+  <div class="sec-desc">Automated regex scoring. Zero AI in evaluation. Every number reproducible &mdash; <a href="https://github.com/nickarstrong/onto-research">scripts published</a>.</div>
+  <div class="mg" id="mgrid">
+    <div class="mc"><div class="mc-label">Composite</div><div class="mc-row"><span class="mc-old">0.53</span><span class="mc-arr">&rarr;</span><span class="mc-new" data-to="5.38">0</span></div><div class="mc-delta">10.2&times;</div></div>
+    <div class="mc"><div class="mc-label">Sources cited</div><div class="mc-row"><span class="mc-old">0.01</span><span class="mc-arr">&rarr;</span><span class="mc-new" data-to="0.27">0</span></div><div class="mc-delta">27&times;</div></div>
+    <div class="mc"><div class="mc-label">Uncertainty</div><div class="mc-row"><span class="mc-old">0.28</span><span class="mc-arr">&rarr;</span><span class="mc-new" data-to="1.45">0</span></div><div class="mc-delta">5.2&times;</div></div>
+    <div class="mc"><div class="mc-label">Quantification</div><div class="mc-row"><span class="mc-old">0.10</span><span class="mc-arr">&rarr;</span><span class="mc-new" data-to="3.08">0</span></div><div class="mc-delta">30.8&times;</div></div>
+    <div class="mc"><div class="mc-label">Confidence</div><div class="mc-row"><span class="mc-old">0.00</span><span class="mc-arr">&rarr;</span><span class="mc-new" data-to="1.00">0</span></div><div class="mc-delta">Created from zero</div></div>
+    <div class="mc"><div class="mc-label">Cross-domain</div><div class="mc-row"><span class="mc-old">0/5</span><span class="mc-arr">&rarr;</span><span class="mc-new">4/5</span></div><div class="mc-delta">Discipline transfers</div></div>
+  </div>
+  <div class="ev" style="justify-content:flex-start"><span>Scored by regex, not AI</span><span>&middot;</span><span><a href="/docs/#evidence">Full data &rarr;</a></span><span>&middot;</span><span><a href="/demo/" style="color:var(--text-m)">Live demo &rarr;</a></span></div>
+</section>
+<hr class="sec-line">
+
+<section class="sec fi" id="economics">
+  <div class="sec-label">Economics</div>
+  <div class="sec-title">Better output from cheaper models. Do the math.</div>
+  <div class="sec-desc">RLHF is expensive, slow, model-specific. ONTO achieves superior quality via behavioral layer &mdash; works across your entire fleet. Savings cascade: less compute, less electricity, lower token cost.</div>
+  <table class="etbl">
+    <thead><tr><th>Parameter</th><th>RLHF / Fine-tuning</th><th>ONTO GOLD</th></tr></thead>
+    <tbody>
+      <tr><td class="p">Cost</td><td class="bad">$500K &ndash; $2M per model</td><td class="good">$250K/year, all models</td></tr>
+      <tr><td class="p">Deploy time</td><td class="bad">3&ndash;6 months</td><td class="good">1 hour</td></tr>
+      <tr><td class="p">Model updates</td><td class="bad">Re-train per base model</td><td class="good">Auto-updates, all models</td></tr>
+      <tr><td class="p">Scope</td><td class="bad">One model</td><td class="good">Entire fleet</td></tr>
+      <tr><td class="p">Verification</td><td class="bad">Manual QA</td><td class="good">Deterministic, Ed25519 signed</td></tr>
+      <tr class="hl"><td class="p">Result</td><td class="bad">Incremental, degrades</td><td class="good">10&times; measured, maintained</td></tr>
+    </tbody>
+  </table>
+  <div class="scen-grid" style="margin-top:32px">
+    <div class="scen"><div class="scen-n">SCENARIO 01</div><div class="scen-t">The Margin Gap</div><div class="scen-g">With ONTO: Compact model + discipline = lower cost, equal quality</div><div class="scen-b">Without: Larger models, higher cost, same hallucination rate</div></div>
+    <div class="scen"><div class="scen-n">SCENARIO 02</div><div class="scen-t">The Regulatory Wall</div><div class="scen-g">With ONTO: Ed25519 proof chain. Compliance from day one.</div><div class="scen-b">Without: Months per jurisdiction. Blocked from contracts.</div></div>
+    <div class="scen"><div class="scen-n">SCENARIO 03</div><div class="scen-t">The Innovation Ceiling</div><div class="scen-g">With ONTO: Safety at API layer. Engineers build product.</div><div class="scen-b">Without: Best engineers in RLHF and QA. Ship quarterly.</div></div>
+    <div class="scen"><div class="scen-n">SCENARIO 04</div><div class="scen-t">The Trust Lock-in</div><div class="scen-g">With ONTO: Proof chain in client systems. High switching cost.</div><div class="scen-b">Without: Raw API. 5% discount = customer gone.</div></div>
+  </div>
+  <div class="hbox" style="margin-top:24px"><div class="hbox-title">Scenario 05 &mdash; The Model Downshift</div>
+    <p>In CS-2026-001, the weakest model with GOLD scored <strong>5.38/A</strong>. The strongest without scored <strong>0.94/D</strong>.</p>
+    <div class="ds-compare">
+      <div class="ds-side" style="background:var(--danger-s);border:1px solid var(--danger-b)"><div class="ds-label" style="color:var(--danger)">WITHOUT ONTO</div><div style="font-size:11px;color:var(--text-s)">Premium model &rarr; Score F &rarr; More GPU &rarr; Higher tokens &rarr; Same hallucinations</div></div>
+      <div class="ds-side" style="background:var(--safe-s);border:1px solid var(--safe-b)"><div class="ds-label" style="color:var(--safe-l)">WITH ONTO</div><div style="font-size:11px;color:var(--text-s)">Compact model + GOLD &rarr; Score A &rarr; Less compute &rarr; Lower cost &rarr; Verified</div></div>
+    </div>
+    <p>Lower compute = less electricity = less cooling = lower token cost = flexible pricing for your customers.</p>
+  </div>
+  <div class="hbox" style="margin-top:12px;border-color:var(--border)"><div class="hbox-title">The market shift</div>
+    <p>Low-cost providers compete on token price. That race ends at margin zero. <strong>ONTO-certified providers compete on verified epistemic quality</strong> &mdash; where price competition is irrelevant.</p>
+    <p>Regulated industries don't buy cheapest. They buy <strong>provable</strong>. Research institutions select providers whose quality is independently measured and cryptographically signed.</p>
+  </div>
+  <div style="text-align:center;margin-top:20px"><a href="/docs/#deployment-impact" style="font-family:var(--mono);font-size:11px;color:var(--text-m)">Full competitive analysis: 43 zones, 9 categories &rarr;</a></div>
+</section>
+<hr class="sec-line">
+
+<section class="sec fi" id="tech">
+  <div class="sec-label">Technical specification</div>
+  <div class="sec-title">For the engineer who receives this link</div>
+  <div class="sec-desc">Full documentation: <a href="/docs/#provider-guide">Provider Integration Guide</a></div>
+  <div class="cblk"><span class="cm"># Connect to GOLD stream</span>
+curl -N <span class="st">https://api.ontostandard.org/v1/gold/stream</span> \
+  -H <span class="st">"X-Api-Key: onto_sk_..."</span>
+
+<span class="cm"># SSE event</span>
+{
+  <span class="st">"type"</span>: <span class="st">"gold_corpus"</span>,
+  <span class="st">"version"</span>: <span class="st">"2.4.1"</span>,
+  <span class="st">"tokens_estimate"</span>: <span class="vl">4200</span>,
+  <span class="st">"discipline_layer"</span>: <span class="st">"### ONTO GOLD v2.4.1\n..."</span>
+}</div>
+  <div class="tg">
+    <div class="tc"><div class="tc-t">SSE Events</div><p><code>gold_corpus</code> on connect. <code>heartbeat</code> 30s. <code>gold_update</code> on change. Full corpus on reconnect.</p></div>
+    <div class="tc"><div class="tc-t">Cache</div><p>Valid 1hr after disconnect. STALE after. Active sessions keep current version.</p></div>
+    <div class="tc"><div class="tc-t">Scoring</div><p>5% sampling, 5min batch. 92+ markers, EM1-EM5. Same input = same score.</p></div>
+    <div class="tc"><div class="tc-t">Certification</div><p>SSE + eval = <strong>CERTIFIED</strong>. Public: <code>/verify/model/{id}</code>. Ed25519.</p></div>
+    <div class="tc"><div class="tc-t">Security</div><p>Phase 3: AES-256-GCM, key rotation, memory-only. Current: TLS 1.3 + NDA.</p></div>
+    <div class="tc"><div class="tc-t">Integration</div><p><code>prompt = gold + yours</code>. SHA-256 check. Config from dashboard. No SDK.</p></div>
+  </div>
+  <table class="eptbl">
+    <thead><tr><th>Method</th><th>Path</th><th>Auth</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td class="mt">GET</td><td>/v1/gold/stream</td><td>Key</td><td>SSE &mdash; GOLD corpus</td></tr>
+      <tr><td class="mt">POST</td><td>/v1/models</td><td>Key</td><td>Register model</td></tr>
+      <tr><td class="mt">POST</td><td>/v1/models/evaluate</td><td>Key</td><td>Score + proof</td></tr>
+      <tr><td class="mt">POST</td><td>/v1/models/evaluate/batch</td><td>Key</td><td>Batch eval</td></tr>
+      <tr><td class="mt">GET</td><td>/v1/verify/{hash}</td><td>&mdash;</td><td>Public verification</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="cta">
+  <h2>Ready to certify your models?</h2>
+  <p>We connect your SSE, run GOLD on one model, show you scores. No commitment.</p>
+  <div class="cta-btns"><a href="/cdn-cgi/l/email-protection#5f3c302a313c36331f30312b302c2b3e313b3e2d3b71302d38602c2a3d353a3c2b620f2d3029363b3a2d7a6d6f1a293e332a3e2b3630317a6d6f0d3a2e2a3a2c2b" class="btn-p">Start evaluation &rarr;</a><a href="/docs/#provider-guide" class="btn-s">Full documentation</a></div>
+  <div class="cta-note"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="aecdc1dbc0cdc7c2eec1c0dac1dddacfc0cacfdcca80c1dcc9">[email&#160;protected]</a> &middot; 24h response</div>
+</section>
+
+<footer class="foot"><div>&copy; 2026 ONTO Standards Council</div><div><a href="/">Home</a><a href="/docs/">Docs</a><a href="/demo/">Demo</a><a href="/docs/#terms">Terms</a><a href="https://github.com/nickarstrong/onto-research">GitHub</a></div></footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+var io=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('vis')})},{threshold:.08});
+document.querySelectorAll('.fi').forEach(function(el){io.observe(el)});
+
+var sa=false;
+new IntersectionObserver(function(e){if(sa)return;e.forEach(function(x){if(x.isIntersecting){sa=true;setTimeout(function(){
+  document.getElementById('bF').style.width='18%';
+  document.getElementById('bV').innerHTML='0.18 <span class="grade grade-f">F</span>';
+  document.getElementById('gF').style.width='82%';
+  document.getElementById('gV').innerHTML='0.82 <span class="grade grade-a">A</span>';
+},300)}})},{threshold:.3}).observe(document.getElementById('problem'));
+
+var ma=false;
+new IntersectionObserver(function(e){if(ma)return;e.forEach(function(x){if(x.isIntersecting){ma=true;
+  document.querySelectorAll('.mc-new[data-to]').forEach(function(el){
+    var target=parseFloat(el.getAttribute('data-to')),t0=null;
+    function tick(ts){if(!t0)t0=ts;var p=Math.min((ts-t0)/1200,1);p=1-Math.pow(1-
