@@ -1547,14 +1547,14 @@ client = OpenAI(
             </div>
             
             <div class="tiers-grid">
-                <!-- OPEN (TIER 3) -->
+                <!-- OPEN -->
                 <div class="tier-card" id="card-free">
                     <div class="tier-name">Open</div>
                     <div class="tier-price">Free</div>
                     <div class="tier-desc">Evaluate ONTO on your AI before you commit</div>
                     <ul class="tier-list">
                         <li>10 proxy requests/day</li>
-                        <li>GOLD discipline layer</li>
+                        <li>GOLD epistemic discipline layer</li>
                         <li>Scoring API</li>
                     </ul>
                     <button class="btn-tier current" id="btn-free" disabled>Current</button>
@@ -1568,7 +1568,7 @@ client = OpenAI(
                     <div class="tier-desc">Production GOLD discipline for companies using AI</div>
                     <ul class="tier-list">
                         <li>1,000 proxy requests/day</li>
-                        <li>GOLD discipline layer</li>
+                        <li>GOLD epistemic discipline layer</li>
                         <li>Scoring API</li>
                     </ul>
                     <button class="btn-tier" id="btn-business" onclick="openSubscribeModal('business')">Select</button>
@@ -1578,11 +1578,12 @@ client = OpenAI(
                 <div class="tier-card" id="card-enterprise">
                     <div class="tier-name">AI Provider</div>
                     <div class="tier-price">$250,000<span>/year</span></div>
-                    <div class="tier-desc">GOLD integration for AI model providers</div>
+                    <div class="tier-desc">Provider-native SSE evaluation interface</div>
                     <ul class="tier-list">
-                        <li>Unlimited proxy requests</li>
-                        <li>SSE real-time stream</li>
-                        <li>GOLD discipline layer</li>
+                        <li>Direct event-stream integration</li>
+                        <li>No proxy replication layer</li>
+                        <li>No traffic amplification</li>
+                        <li>GOLD epistemic discipline layer</li>
                         <li>Scoring API</li>
                     </ul>
                     <button class="btn-tier" id="btn-enterprise" onclick="openSubscribeModal('enterprise')">Select</button>
@@ -4670,8 +4671,8 @@ function updateOrderSummary() {
     selectedCycle = cycleVal;
     
     const planFeatures = {
-        business: ['1,000 proxy requests/day', 'GOLD Extended — Extended Corpus', 'Ed25519 signed proof chain', 'Public verification badge'],
-        enterprise: ['GOLD Full Corpus via SSE', 'Unlimited proxy requests', 'Ed25519 proof chain', 'Full audit trail', 'Priority support']
+        business: ['1,000 proxy requests/day', 'GOLD epistemic discipline layer', 'Scoring API'],
+        enterprise: ['Direct event-stream integration', 'No proxy replication layer', 'No traffic amplification', 'GOLD epistemic discipline layer', 'Scoring API']
     };
     const featuresEl = document.getElementById('order-features');
     
@@ -4681,7 +4682,7 @@ function updateOrderSummary() {
         if (cycleVal === 'white_label') {
             planLabel = 'White Label — Annual';
             price = 500000;
-            featuresEl.innerHTML = ['Everything in AI Provider', 'White-label integration', 'Your brand · unlimited scale', 'Dedicated support'].map(f => '<div class="order-feature">'+f+'</div>').join('');
+            featuresEl.innerHTML = ['Everything in AI Provider', 'Custom branding integration', 'Dedicated infrastructure'].map(f => '<div class="order-feature">'+f+'</div>').join('');
         } else {
             planLabel = 'AI Provider — Annual';
             price = 250000;
