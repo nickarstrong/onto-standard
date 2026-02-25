@@ -2911,8 +2911,7 @@ function showDashboard() {
         fillIntegrationCode();
         setTimeout(loadProxyUsage, 300);
 
-        // Update plan badges
-        updatePlanBadges(currentUser.layer || 'open');
+        // Plan badges rendered by loadProxyUsage with real data
 
         // Restore saved provider key
         const savedPK = localStorage.getItem('onto_provider_key');
@@ -3370,6 +3369,13 @@ async function loadProxyUsage() {
         if (d.sse_enabled) activeTiers.push('provider');
         if (d.layer === 'white_label') activeTiers.push('white_label');
         updatePlanBadges(d.layer, activeTiers);
+
+        // Update sidebar plan from real data
+        const hasProvider = activeTiers.includes('provider') || activeTiers.includes('white_label');
+        const hasStandard = activeTiers.includes('standard');
+        const sidebarPlan = hasProvider ? 'PROVIDER' : hasStandard ? 'STANDARD' : 'OPEN';
+        const planEl = document.getElementById('user-plan');
+        if (planEl) planEl.textContent = sidebarPlan;
     } catch(e) { /* silent */ }
 }
 
