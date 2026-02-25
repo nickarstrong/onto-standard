@@ -2851,7 +2851,6 @@ function showDashboard() {
     if (currentUser) {
         document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
         document.getElementById('user-name').textContent = currentUser.name;
-        document.getElementById('user-plan').textContent = '...';
         // Plan name updated by loadProxyUsage with real data
         // Expiry updated by loadProxyUsage / checkBillingStatus
         document.getElementById('settings-name').textContent = currentUser.name;
@@ -3166,114 +3165,8 @@ function openCompanyModal() {
 
 // === SSE CONNECTION ===
 let sseController = null;
-let sseHeartbeatInterval = null;
-let sseLastHeartbeat = 0;
+// SSE now per-model (connectModel/disconnectModel)
 
-async function connectSSE() {
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    if (!apiKey) { showToast('Sign in first', 'error'); return; }
-
-    const btn = document.getElementById('sse-connect-btn');
-    btn.disabled = true;
-    btn.textContent = 'Connecting...';
-
-    const badge = document.getElementById('sse-status-badge');
-    const log = document.getElementById('sse-log');
-    log.classList.remove('hidden');
-    log.innerHTML = '<div>Connecting to SSE...</div>';
-
-    try {
-        sseController = new AbortController();
-        const res = await fetch(`${API_BASE}/v1/gold/stream`, {
-            headers: { 'x-api-key': apiKey },
-            signal: sseController.signal
-        });
-
-        if (!res.ok) {
-            const err = await res.json().catch(() => ({ detail: res.statusText }));
-            throw new Error(err.detail || 'Connection failed');
-        }
-
-        // Switch to connected state
-        document.getElementById('sse-disconnected').classList.add('hidden');
-        document.getElementById('sse-connected').classList.remove('hidden');
-        badge.textContent = '● Connected';
-        badge.style.background = 'rgba(46,194,126,0.15)';
-        badge.style.color = 'var(--accent)';
-
-        // Read SSE stream
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = '';
-
-        sseHeartbeatInterval = setInterval(() => {
-            if (sseLastHeartbeat > 0) {
-                const ago = Math.floor((Date.now() - sseLastHeartbeat) / 1000);
-                document.getElementById('sse-heartbeat').textContent = ago + 's ago';
-            }
-        }, 1000);
-
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split('\n');
-            buffer = lines.pop() || '';
-
-            for (const line of lines) {
-                if (!line.startsWith('data: ')) continue;
-                try {
-                    const data = JSON.parse(line.slice(6));
-                    sseLastHeartbeat = Date.now();
-
-                    if (data.type === 'gold_corpus' || data.type === 'gold_update') {
-                        const chars = data.gold_chars || 0;
-                        const encrypted = data.encrypted ? '🔒' : '';
-                        document.getElementById('sse-chars').textContent = chars.toLocaleString();
-                        document.getElementById('sse-snippets').textContent = data.snippets_count || '—';
-                        document.getElementById('sse-hash').textContent = 'hash: ' + (data.content_hash || '—');
-                        document.getElementById('sse-heartbeat').textContent = 'now';
-                        log.innerHTML += `<div style="color:var(--accent)">✓ ${encrypted} GOLD ${data.type === 'gold_update' ? 'updated' : 'delivered'}: ${chars.toLocaleString()} chars (encrypted, v${data.version || '?'})</div>`;
-                        log.scrollTop = log.scrollHeight;
-                    } else if (data.type === 'heartbeat') {
-                        document.getElementById('sse-heartbeat').textContent = 'now';
-                        log.innerHTML += `<div>♡ heartbeat</div>`;
-                        if (log.children.length > 20) log.removeChild(log.firstChild);
-                        log.scrollTop = log.scrollHeight;
-                    } else if (data.type === 'error') {
-                        log.innerHTML += `<div style="color:#ef4444">✗ ${data.message}</div>`;
-                        log.scrollTop = log.scrollHeight;
-                    }
-                } catch (e) { /* skip malformed */ }
-            }
-        }
-    } catch (e) {
-        if (e.name === 'AbortError') return; // manual disconnect
-        log.innerHTML += `<div style="color:#ef4444">✗ ${e.message}</div>`;
-        btn.disabled = false;
-        btn.textContent = 'Reconnect';
-        badge.textContent = '○ Disconnected';
-        badge.style.background = 'rgba(239,68,68,0.15)';
-        badge.style.color = '#ef4444';
-        document.getElementById('sse-disconnected').classList.remove('hidden');
-        document.getElementById('sse-connected').classList.add('hidden');
-    }
-}
-
-function disconnectSSE() {
-    if (sseController) { sseController.abort(); sseController = null; }
-    if (sseHeartbeatInterval) { clearInterval(sseHeartbeatInterval); sseHeartbeatInterval = null; }
-
-    document.getElementById('sse-disconnected').classList.remove('hidden');
-    document.getElementById('sse-connected').classList.add('hidden');
-    document.getElementById('sse-connect-btn').disabled = false;
-    document.getElementById('sse-connect-btn').textContent = 'Connect SSE';
-
-    const badge = document.getElementById('sse-status-badge');
-    badge.textContent = '○ Disconnected';
-    badge.style.background = 'rgba(239,68,68,0.15)';
-    badge.style.color = '#ef4444';
 
     const log = document.getElementById('sse-log');
     log.innerHTML += '<div style="color:#f59e0b">⏏ Disconnected</div>';
@@ -4624,7 +4517,8 @@ async function refreshBillingFromBackend() {
             currentUser.subscription.expires_at = data.tier_expires;
         }
         localStorage.setItem('onto_user', JSON.stringify(currentUser));
-        document.getElementById('user-plan').textContent = currentUser.layer === 'provider' ? 'PROVIDER' : (currentUser.layer === 'standard' ? 'STANDARD' : 'OPEN');
+        const planElBilling = document.getElementById('user-plan');
+        if (planElBilling) planElBilling.textContent = currentUser.layer === 'provider' ? 'PROVIDER' : (currentUser.layer === 'standard' ? 'STANDARD' : 'OPEN');
         updateBillingUI();
         updateDashboardMetrics();
     } catch(e) {}
@@ -5317,7 +5211,8 @@ async function loadOrgFromAPI() {
                 localStorage.setItem('onto_layer', data.layer);
                 localStorage.setItem('onto_user', JSON.stringify(currentUser));
                 // Re-render plan UI
-                document.getElementById('user-plan').textContent = serverPlan === 'enterprise' ? 'PROVIDER' : serverPlan === 'business' ? 'STANDARD' : 'OPEN';
+                const planElSync = document.getElementById('user-plan');
+                if (planElSync) planElSync.textContent = serverPlan === 'enterprise' ? 'PROVIDER' : serverPlan === 'business' ? 'STANDARD' : 'OPEN';
             }
         }
         
