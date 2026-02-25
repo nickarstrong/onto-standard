@@ -5775,19 +5775,37 @@ function renderAccounts(accounts) {
         const date = u.created_at ? new Date(u.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '—';
         const safeEmail = escapeHtml(u.email || '');
         const safeName = escapeHtml(u.name || '—');
-        const safeOrgName = escapeHtml(u.org_name || '—');
-        const safeTier = escapeHtml(u.tier || '');
+        const safeOrgName = escapeHtml(u.org_name || '');
+        const safeTier = escapeHtml(u.tier || 'open');
         const safeCompany = hasCompany ? escapeHtml(u.profile.company_name) : '';
         const safeIndustry = hasCompany ? escapeHtml(u.profile.industry || '—') : '';
         const safeId = escapeHtml(u.id || '');
+        const orgDisplay = safeOrgName && safeOrgName !== '—' && safeOrgName !== safeEmail.split('@')[0] ? safeOrgName : (safeCompany || 'Individual');
+        
+        // Subscription badges
+        const subs = u.subscriptions || [];
+        const subBadges = subs.length > 0 
+            ? subs.map(s => {
+                const sc = s.tier === 'provider' ? '#f59e0b' : s.tier === 'standard' ? 'var(--accent)' : 'var(--text-muted)';
+                const exp = s.current_period_end ? new Date(s.current_period_end).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'}) : '—';
+                return `<span style="display:inline-flex;align-items:center;gap:3px;padding:1px 6px;border:1px solid ${sc};border-radius:3px;font-size:9px;color:${sc}">${s.tier} → ${exp}</span>`;
+            }).join(' ')
+            : '';
         
         return `
             <div class="account-row" onclick="toggleAccountDetails('${safeId}')">
-                <div class="account-email">${safeEmail}${isSelf ? ' <span style="color: var(--accent); font-size: 9px;">(you)</span>' : ''}</div>
-                <div class="account-type">${hasCompany ? 'Company' : 'Individual'}</div>
-                <div class="account-plan"><span class="tier-badge tier-${safeTier}">${safeTier}</span>${u.tier_expires ? '<span style="font-size:10px;color:var(--text-muted);margin-left:6px;">→ ' + new Date(u.tier_expires).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'}) + '</span>' : ''}</div>
-                <div class="account-status ${isActive ? 'active' : 'paused'}">${isActive ? 'Active' : 'Paused'}</div>
-                <div class="account-date">${date}</div>
+                <div style="flex:1;min-width:0">
+                    <div class="account-email">${safeEmail}${isSelf ? ' <span style="color:var(--accent);font-size:9px">(you)</span>' : ''}</div>
+                    <div style="font-size:10px;color:var(--text-muted);margin-top:1px">${orgDisplay}${safeName !== '—' ? ' · ' + safeName : ''}</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+                    <div style="text-align:right">
+                        <div><span class="tier-badge tier-${safeTier}">${safeTier}</span></div>
+                        ${subBadges ? '<div style="margin-top:2px">' + subBadges + '</div>' : ''}
+                    </div>
+                    <div class="account-status ${isActive ? 'active' : 'paused'}" style="width:50px;text-align:center">${isActive ? 'Active' : 'Paused'}</div>
+                    <div class="account-date" style="width:45px;text-align:right">${date}</div>
+                </div>
             </div>
             <div class="account-details" id="details-${safeId}">
                 <div class="account-details-grid">
@@ -5805,7 +5823,7 @@ function renderAccounts(accounts) {
                     </div>
                     <div class="account-detail-item">
                         <div class="account-detail-label">Organization</div>
-                        <div class="account-detail-value">${safeOrgName}</div>
+                        <div class="account-detail-value">${safeOrgName || '—'}</div>
                     </div>
                     <div class="account-detail-item">
                         <div class="account-detail-label">Tier Expires</div>
