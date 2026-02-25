@@ -3175,51 +3175,30 @@ async function loadProxyUsage() {
         });
         if (!res.ok) return;
         const d = await res.json();
-        const isProvider = d.layer === 'provider' || d.layer === 'white_label';
 
-        if (isProvider) {
-            // Provider: show real proxy test usage
-            const used = d.usage_today || 0;
-            const limit = d.daily_limit || 10;
-            const remaining = limit < 0 ? '∞' : Math.max(limit - used, 0);
-            const pct = limit > 0 ? Math.min((used / limit) * 100, 100) : 0;
+        // Usage counters — same for all tiers
+        const used = d.usage_today || 0;
+        const limit = d.daily_limit || 10;
+        const pct = limit > 0 ? Math.min((used / limit) * 100, 100) : 0;
 
-            // Update mini status bar
-            const miniCalls = document.getElementById('dash-plan-calls');
-            const miniLimit = document.getElementById('dash-plan-limit');
-            const miniBar = document.getElementById('dash-usage-bar-mini');
-            if (miniCalls) miniCalls.textContent = used;
-            if (miniLimit) miniLimit.textContent = limit;
-            if (miniBar) miniBar.style.width = pct + '%';
-            // Update provider proxy pane counter
-            const provUsed = document.getElementById('prov-proxy-used');
-            const provLimit = document.getElementById('prov-proxy-limit');
-            if (provUsed) provUsed.textContent = used;
-            if (provLimit) provLimit.textContent = limit;
-        } else {
-            // Standard/Open: show proxy usage
-            const used = d.usage_today || 0;
-            const limit = d.daily_limit || 10;
-            const remaining = limit < 0 ? '∞' : Math.max(limit - used, 0);
-            const pct = limit > 0 ? Math.min((used / limit) * 100, 100) : 0;
-
-            // Update mini status bar
-            const miniCalls = document.getElementById('dash-plan-calls');
-            const miniLimit = document.getElementById('dash-plan-limit');
-            const miniBar = document.getElementById('dash-usage-bar-mini');
-            if (miniCalls) miniCalls.textContent = used;
-            if (miniLimit) miniLimit.textContent = limit;
-            if (miniBar) {
-                miniBar.style.width = pct + '%';
-                if (pct > 80) miniBar.style.background = '#ef4444';
-                else if (pct > 50) miniBar.style.background = '#f59e0b';
-                else miniBar.style.background = 'var(--accent)';
-            }
-
-            const tierMap = { open: 'OPEN', business: 'STANDARD', standard: 'STANDARD' };
-            document.getElementById('proxy-tier-label').textContent = (tierMap[d.layer] || d.layer || '').toUpperCase() + ' tier';
-            document.getElementById('proxy-resets').textContent = 'Resets at midnight UTC';
+        // Header counter
+        const miniCalls = document.getElementById('dash-plan-calls');
+        const miniLimit = document.getElementById('dash-plan-limit');
+        const miniBar = document.getElementById('dash-usage-bar-mini');
+        if (miniCalls) miniCalls.textContent = used;
+        if (miniLimit) miniLimit.textContent = limit;
+        if (miniBar) {
+            miniBar.style.width = pct + '%';
+            if (pct > 80) miniBar.style.background = '#ef4444';
+            else if (pct > 50) miniBar.style.background = '#f59e0b';
+            else miniBar.style.background = 'var(--accent)';
         }
+
+        // Proxy pane counter
+        const provUsed = document.getElementById('prov-proxy-used');
+        const provLimit = document.getElementById('prov-proxy-limit');
+        if (provUsed) provUsed.textContent = used;
+        if (provLimit) provLimit.textContent = limit;
 
         const badge = document.getElementById('proxy-gold-badge');
         if (d.gold_available) {
@@ -3481,7 +3460,7 @@ async function testStandardProxy() {
             status.textContent = `✗ Error ${res.status}: ${data.detail || JSON.stringify(data)}`;
             status.style.color = '#ef4444';
             btn.disabled = false;
-            btn.textContent = 'Run Test';
+            btn.textContent = 'Send';
             return;
         }
         
@@ -3516,7 +3495,8 @@ async function testStandardProxy() {
     }
     
     btn.disabled = false;
-    btn.textContent = 'Run Test';
+    btn.textContent = 'Send';
+    setTimeout(loadProxyUsage, 500);
 }
 
 async function testProviderSSE() {
