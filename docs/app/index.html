@@ -2503,6 +2503,7 @@ async function handleLogin(btn) {
             email: email,
             role: data.role || 'admin',
             plan: layerToPlan(data.layer || 'open'),
+            layer: data.layer || 'open',
             organization_id: data.organization_id,
             organization_name: data.organization_name,
             can_invoice: false,
@@ -5374,6 +5375,20 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         authToken = savedToken || savedApiKey;
         showDashboard();
+        // Refresh session from backend to avoid stale localStorage data
+        fetch(`${API_BASE}/v1/auth/me`, { headers: { 'x-api-key': savedApiKey } })
+            .then(r => r.ok ? r.json() : null)
+            .then(d => {
+                if (!d) return;
+                currentUser.layer = d.layer || currentUser.layer;
+                currentUser.plan = layerToPlan(d.layer || 'open');
+                currentUser.active_tiers = d.active_tiers;
+                currentUser.proxy_per_day = d.proxy_per_day;
+                currentUser.sse_enabled = d.sse_enabled;
+                if (d.subscriptions) currentUser.subscriptions = d.subscriptions;
+                localStorage.setItem('onto_user', JSON.stringify(currentUser));
+                localStorage.setItem('onto_layer', d.layer || 'open');
+            }).catch(() => {});
     }
     else if (savedUser && savedToken) {
         try {
