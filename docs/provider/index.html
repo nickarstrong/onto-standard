@@ -38,7 +38,9 @@ a{color:var(--safe-l);text-decoration:none}
 .nav-r{display:flex;gap:20px;align-items:center}
 .nav-r a{font-size:11px;color:var(--text-m);text-decoration:none;transition:.2s}
 .nav-r a:hover{color:var(--text)}
-.nav-active{color:var(--text)!important;border-bottom:1px solid var(--safe-l);padding-bottom:2px}
+.nav-tab{position:relative;padding-bottom:4px}
+.nav-tab.active{color:var(--safe-l)!important}
+.nav-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:var(--safe-l);border-radius:1px}
 .nav-cta{color:var(--safe-l)!important;border:1px solid var(--safe-b);padding:5px 14px;border-radius:4px}
 .nav-cta:hover{background:var(--safe);color:#fff!important}
 .sec{max-width:1080px;margin:0 auto;padding:80px 24px}
@@ -151,10 +153,10 @@ a{color:var(--safe-l);text-decoration:none}
 <body>
 <nav class="nav">
   <a href="/" class="nav-logo"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/></svg>ONTO <span>/ provider</span></a>
-  <div class="nav-r"><a href="/">Home</a><a href="/provider/" class="nav-active">Provider</a><a href="/demo/">Demo</a><a href="/docs/">Docs</a><a href="mailto:council@ontostandard.org?subject=Provider%20Evaluation" class="nav-cta">Contact</a></div>
+  <div class="nav-r"><a href="#hero" class="nav-tab active" data-sec="hero">Overview</a><a href="#problem" class="nav-tab" data-sec="problem">Problem</a><a href="#how" class="nav-tab" data-sec="how">How It Works</a><a href="#proof" class="nav-tab" data-sec="proof">Proof</a><a href="#economics" class="nav-tab" data-sec="economics">Economics</a><a href="#tech" class="nav-tab" data-sec="tech">Technical</a><a href="mailto:council@ontostandard.org?subject=Provider%20Evaluation" class="nav-cta">Contact</a></div>
 </nav>
 
-<section class="hero">
+<section class="hero" id="hero">
   <div class="hero-tag">AI Provider Licensing &middot; $250K/year</div>
   <h1>Your models hallucinate.<br>Your customers <em>notice</em>.</h1>
   <p class="hero-sub">One SSE connection. All your models cite sources, quantify confidence, disclose uncertainty. Achieve superior quality on compact models &mdash; less compute, lower cost, verified output.</p>
@@ -327,7 +329,21 @@ new IntersectionObserver(function(e){if(ma)return;e.forEach(function(x){if(x.isI
     requestAnimationFrame(tick)});
 }})},{threshold:.2}).observe(document.getElementById('mgrid'));
 
+document.querySelectorAll('.nav-tab, a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'})})});
 
+var sections=document.querySelectorAll('[id]');
+var tabs=document.querySelectorAll('.nav-tab');
+var tabMap={};
+tabs.forEach(function(t){tabMap[t.getAttribute('data-sec')]=t});
+
+var scrollTimer;
+window.addEventListener('scroll',function(){clearTimeout(scrollTimer);scrollTimer=setTimeout(function(){
+var scrollPos=window.scrollY+80;
+var current='hero';
+sections.forEach(function(s){if(s.offsetTop<=scrollPos)current=s.id});
+tabs.forEach(function(t){t.classList.remove('active')});
+if(tabMap[current])tabMap[current].classList.add('active');
+},50)});
 </script>
 </body>
 </html>
