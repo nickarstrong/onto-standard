@@ -1011,7 +1011,7 @@ a.info-val:hover { color: var(--text); }
                     <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">Test GOLD injection via proxy. <span id="test-demo-note" class="hidden" style="color:#f59e0b">AI Provider: proxy is demo only. Production delivery via SSE.</span></div>
                     <!-- Provider: model select from registered models -->
                     <div id="test-model-row" class="hidden" style="margin-bottom:8px">
-                        <select id="test-model-select" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:11px;color:var(--text);width:100%">
+                        <select id="test-model-select" onchange="toggleQuickTestMode(this)" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:11px;color:var(--text);width:100%">
                             <option value="">Select model...</option>
                         </select>
                     </div>
@@ -3237,6 +3237,16 @@ async function loadProxyUsage() {
     } catch(e) { /* silent */ }
 }
 
+function toggleQuickTestMode(sel) {
+    const testStdRow = document.getElementById('test-std-row');
+    if (sel.value === '__manual__') {
+        if (testStdRow) testStdRow.style.display = 'flex';
+        sel.value = '';
+    } else if (sel.value) {
+        if (testStdRow) testStdRow.style.display = 'none';
+    }
+}
+
 async function runQuickTest() {
     // Provider mode: use registered model
     const modelSelect = document.getElementById('test-model-select');
@@ -3636,11 +3646,28 @@ async function loadModels() {
                 </div>
             </div>`;
             
-            if (isOn) testSelectHtml += `<option value="${m.id}" data-ptype="${m.provider_type}">${m.name}</option>`;
+            if (isOn) testSelectHtml += `<option value="${m.id}" data-ptype="${m.provider_type}">${m.name} (${m.provider_type})</option>`;
         }
+        testSelectHtml += '<option value="__manual__">↳ Enter API key manually</option>';
         
         if (list) list.innerHTML = listHtml;
         if (testSelect) testSelect.innerHTML = testSelectHtml;
+        
+        // Show/hide Quick Test model dropdown vs manual input
+        const hasEnabledModels = data.models.some(m => m.is_enabled !== false);
+        const testModelRow = document.getElementById('test-model-row');
+        const testStdRow = document.getElementById('test-std-row');
+        const testDemoNote = document.getElementById('test-demo-note');
+        if (testModelRow) {
+            if (hasEnabledModels) {
+                testModelRow.classList.remove('hidden');
+                if (testStdRow) testStdRow.style.display = 'none';
+                if (testDemoNote) testDemoNote.classList.remove('hidden');
+            } else {
+                testModelRow.classList.add('hidden');
+                if (testStdRow) testStdRow.style.display = 'flex';
+            }
+        }
         
         // Also populate Provider Quick Test dropdown
         const provTestSelect = document.getElementById('prov-test-model-select');
