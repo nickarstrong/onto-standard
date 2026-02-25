@@ -2033,6 +2033,14 @@ client = OpenAI(
             <div class="tier-user-info" id="tier-user-info">
                 <div class="tier-user-email">support@ontostandard.org</div>
             </div>
+            <!-- Active Subscriptions -->
+            <div id="tier-active-subs" style="margin-bottom:16px">
+                <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;font-weight:600">Active Subscriptions</div>
+                <div id="tier-subs-list" style="font-size:11px;color:var(--text-muted)">Loading...</div>
+            </div>
+            <div style="border-top:1px solid var(--border);margin-bottom:12px;padding-top:12px">
+                <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;font-weight:600">Add / Change Tier</div>
+            </div>
             <div class="tier-options">
                 <label class="tier-option" data-tier="open">
                     <input type="radio" name="tier-select" value="open">
@@ -5843,8 +5851,74 @@ function editPlan(userId, currentTier, userEmail) {
     // Reset days
     document.getElementById('tier-days').value = 30;
     
+    // Load active subscriptions
+    loadUserSubscriptions(userId);
+    
     // Show modal
     document.getElementById('tier-modal').classList.add('active');
+}
+
+async function loadUserSubscriptions(userId) {
+    const listEl = document.getElementById('tier-subs-list');
+    if (!listEl) return;
+    listEl.innerHTML = '<span style="color:var(--text-muted)">Loading...</span>';
+    
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    try {
+        const res = await fetch(`${API_BASE}/v1/docs/admin/users/${userId}/subscriptions`, {
+            headers: { 'x-api-key': apiKey }
+        });
+        if (!res.ok) {
+            listEl.innerHTML = '<span style="color:#ef4444">Failed to load</span>';
+            return;
+        }
+        const data = await res.json();
+        const subs = data.subscriptions || [];
+        
+        if (subs.length === 0) {
+            listEl.innerHTML = '<span style="color:var(--text-muted)">No active subscriptions</span>';
+            return;
+        }
+        
+        let html = '';
+        for (const s of subs) {
+            const expires = s.current_period_end ? new Date(s.current_period_end).toLocaleDateString() : '—';
+            const tierColor = s.tier === 'provider' ? '#f59e0b' : s.tier === 'standard' ? 'var(--accent)' : 'var(--text-muted)';
+            html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;margin-bottom:4px;background:var(--bg);border:1px solid var(--border);border-radius:4px">
+                <div>
+                    <span style="font-weight:600;color:${tierColor};text-transform:uppercase">${s.tier}</span>
+                    <span style="color:var(--text-muted);margin-left:8px">${s.status}</span>
+                    <span style="color:var(--text-muted);margin-left:8px">expires ${expires}</span>
+                </div>
+                <button onclick="deleteSubscription('${userId}','${s.id}','${s.tier}')" style="background:none;border:1px solid #ef4444;border-radius:3px;color:#ef4444;font-size:10px;padding:2px 8px;cursor:pointer" title="Remove subscription">✕ Remove</button>
+            </div>`;
+        }
+        listEl.innerHTML = html;
+    } catch (e) {
+        listEl.innerHTML = '<span style="color:#ef4444">Error loading subscriptions</span>';
+    }
+}
+
+async function deleteSubscription(userId, subId, tierName) {
+    if (!confirm('Remove ' + tierName.toUpperCase() + ' subscription?')) return;
+    
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    try {
+        const res = await fetch(`${API_BASE}/v1/docs/admin/users/${userId}/subscriptions/${subId}`, {
+            method: 'DELETE',
+            headers: { 'x-api-key': apiKey }
+        });
+        if (res.ok) {
+            showToast(tierName.toUpperCase() + ' subscription removed', 'success');
+            loadUserSubscriptions(userId);
+            loadAccountsData();
+        } else {
+            const err = await res.json();
+            showToast(err.detail || 'Delete failed', 'error');
+        }
+    } catch (e) {
+        showToast('Network error', 'error');
+    }
 }
 
 async function saveTierChange() {
