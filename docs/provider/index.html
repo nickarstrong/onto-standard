@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.ontostandard.org; frame-ancestors 'none'">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()">
 <title>ONTO — AI Provider Infrastructure</title>
 <meta name="description" content="One SSE connection. All your models cite sources, quantify confidence, disclose uncertainty. 10x measured improvement. Not a proxy — a discipline layer.">
 <meta property="og:title" content="ONTO for AI Providers — Epistemic Infrastructure">
@@ -29,7 +34,8 @@
   --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.6}
+html,body{overflow-x:hidden;width:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.6;word-wrap:break-word;overflow-wrap:break-word}
 a{color:var(--safe-l);text-decoration:none}
 .nav{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(10,10,10,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border-s);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100}
 .nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);font-size:15px;font-weight:600}
@@ -43,14 +49,14 @@ a{color:var(--safe-l);text-decoration:none}
 .nav-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:var(--safe-l);border-radius:1px}
 .nav-cta{color:var(--safe-l)!important;border:1px solid var(--safe-b);padding:5px 14px;border-radius:4px}
 .nav-cta:hover{background:var(--safe);color:#fff!important}
-.sec{max-width:1080px;margin:0 auto;padding:80px 24px}
+.sec{max-width:1080px;margin:0 auto;padding:80px 24px;overflow:hidden}
 .sec-label{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-m);margin-bottom:10px}
 .sec-title{font-size:26px;font-weight:700;letter-spacing:-.3px;margin-bottom:8px}
 .sec-desc{font-size:13px;color:var(--text-s);max-width:560px;line-height:1.7;margin-bottom:32px}
 .sec-line{border:none;border-top:1px solid var(--border-s);max-width:1080px;margin:0 auto}
-.hero{text-align:center;padding:120px 24px 80px}
+.hero{text-align:center;padding:120px 24px 80px;max-width:100%;overflow:hidden}
 .hero-tag{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--safe);background:var(--safe-s);padding:4px 14px;border-radius:100px;border:1px solid var(--safe-b);margin-bottom:20px}
-.hero h1{font-size:34px;font-weight:700;letter-spacing:-.5px;margin-bottom:12px;line-height:1.2}
+.hero h1{font-size:34px;font-weight:700;letter-spacing:-.5px;margin-bottom:12px;line-height:1.2;word-wrap:break-word;overflow-wrap:break-word}
 .hero h1 em{font-style:normal;color:var(--safe-l)}
 .hero-sub{font-size:14px;color:var(--text-s);max-width:520px;margin:0 auto 32px;line-height:1.7}
 .hero-mets{display:flex;justify-content:center;gap:8px;margin-bottom:32px;flex-wrap:wrap}
@@ -96,7 +102,7 @@ a{color:var(--safe-l);text-decoration:none}
 .step-t{font-size:14px;font-weight:600;margin-bottom:2px}
 .step-d{font-size:12px;color:var(--text-s);line-height:1.6}
 .step-d code{font-family:var(--mono);font-size:11px;background:var(--bg-s);padding:1px 5px;border-radius:3px;color:var(--safe-l)}
-.hbox{background:var(--bg-c);border:1px solid var(--safe-b);border-radius:6px;padding:20px 24px;margin-top:24px}
+.hbox{background:var(--bg-c);border:1px solid var(--safe-b);border-radius:6px;padding:20px 24px;margin-top:24px;overflow:hidden;word-wrap:break-word;overflow-wrap:break-word}
 .hbox-title{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--safe-l);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
 .hbox p{font-size:13px;color:var(--text-s);line-height:1.7}.hbox p+p{margin-top:10px}.hbox strong{color:var(--text);font-weight:600}
 .mg{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;border-radius:6px;overflow:hidden;margin-bottom:20px}
@@ -132,7 +138,7 @@ a{color:var(--safe-l);text-decoration:none}
 .eptbl th{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-m);text-align:left;padding:8px 10px;border-bottom:1px solid var(--border)}
 .eptbl td{font-family:var(--mono);font-size:11px;padding:8px 10px;border-bottom:1px solid var(--border-s);color:var(--text-s)}
 .eptbl .mt{color:var(--safe-l);font-weight:600}
-.cta{text-align:center;padding:80px 24px;background:var(--bg-s)}
+.cta{text-align:center;padding:80px 24px;background:var(--bg-s);overflow:hidden}
 .cta h2{font-size:26px;font-weight:700;margin-bottom:10px}
 .cta p{font-size:13px;color:var(--text-s);margin-bottom:32px;max-width:480px;margin-left:auto;margin-right:auto}
 .cta-btns{display:flex;gap:10px;justify-content:center;margin-bottom:16px}
@@ -140,19 +146,44 @@ a{color:var(--safe-l);text-decoration:none}
 .foot{max-width:1080px;margin:0 auto;padding:32px 24px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--text-d)}
 .foot a{color:var(--text-m);text-decoration:none;margin:0 8px}
 .fi{opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s}.fi.vis{opacity:1;transform:none}
+.nav-hb{display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:4px}
 @media(max-width:768px){
+.nav-hb{display:block}
+.nav-r{display:none;position:absolute;top:48px;left:0;right:0;background:var(--bg-c);border-bottom:1px solid var(--border-s);flex-direction:column;padding:12px 24px;gap:0}
+.nav-r.open{display:flex}
+.nav-r a{padding:10px 0;font-size:13px;border-bottom:1px solid var(--border-s)}
+.nav-r a:last-child{border-bottom:none}
+.nav-tab.active::after{display:none}
+.nav-cta{text-align:center;margin-top:8px;border:1px solid var(--safe-b);border-radius:4px;padding:8px}
 .hero h1{font-size:24px}.hero-mets{gap:6px}.hm{padding:12px 16px;min-width:90px}.hm .v{font-size:18px}
 .split,.mg,.scen-grid,.tg,.ds-compare{grid-template-columns:1fr}
 .hero-ctas,.cta-btns{flex-direction:column;align-items:center}
 .diag-flow{flex-direction:column}.diag-arr{transform:rotate(90deg)}
 .foot{flex-direction:column;gap:12px;text-align:center}.sec{padding:60px 16px}
-.nav-r{gap:10px}.nav-r a{font-size:10px}
+.etbl{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.etbl th{white-space:nowrap;padding:8px 10px;font-size:10px}
+.etbl td{padding:8px 10px;font-size:11px}
+.hbox{padding:16px}
+.cta{padding:48px 16px}.cta h2{font-size:20px}
+.hero{padding:80px 16px 48px}
+.hero-sub{font-size:13px}
+.hero-mets{flex-wrap:wrap;justify-content:center;gap:6px}
+.hm{min-width:0;flex:1 1 calc(50% - 6px);max-width:calc(50% - 3px)}.hm .v{font-size:18px}
+.cblk{font-size:11px;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.steps .step{grid-template-columns:32px 1fr;gap:10px;padding:14px 0}
+}
+@media(max-width:400px){
+.hero h1{font-size:20px}
+.hm{min-width:100%}
+.sec-title{font-size:20px}
+.cta h2{font-size:18px}
 }
 </style>
 </head>
 <body>
 <nav class="nav">
   <a href="/" class="nav-logo"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/></svg>ONTO <span>/ provider</span></a>
+  <button class="nav-hb" onclick="document.querySelector('.nav-r').classList.toggle('open')" aria-label="Menu"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/></svg></button>
   <div class="nav-r"><a href="#hero" class="nav-tab active" data-sec="hero">Overview</a><a href="#problem" class="nav-tab" data-sec="problem">Problem</a><a href="#how" class="nav-tab" data-sec="how">How It Works</a><a href="#proof" class="nav-tab" data-sec="proof">Proof</a><a href="#economics" class="nav-tab" data-sec="economics">Economics</a><a href="#tech" class="nav-tab" data-sec="tech">Technical</a><a href="mailto:council@ontostandard.org?subject=Provider%20Evaluation" class="nav-cta">Contact</a></div>
 </nav>
 
@@ -164,8 +195,8 @@ a{color:var(--safe-l);text-decoration:none}
   <div class="hero-mets">
     <div class="hm"><div class="v">10&times;</div><div class="l">Improvement</div></div>
     <div class="hm"><div class="v">0 ms</div><div class="l">Added latency</div></div>
-    <div class="hm"><div class="v">~4K</div><div class="l">Tokens</div></div>
-    <div class="hm"><div class="v">&infin;</div><div class="l">Models</div></div>
+    <div class="hm"><div class="v">10</div><div class="l">Models tested</div></div>
+    <div class="hm"><div class="v">100</div><div class="l">Questions scored</div></div>
   </div>
   <div class="hero-ctas"><a href="mailto:council@ontostandard.org?subject=Provider%20Pilot%20Request" class="btn-p">Start free pilot &rarr;</a><a href="#how" class="btn-s">How it works</a></div>
 </section>
@@ -324,6 +355,17 @@ a{color:var(--safe-l);text-decoration:none}
 </section>
 <hr class="sec-line">
 
+<section style="text-align:center;padding:48px 24px;max-width:1080px;margin:0 auto">
+  <div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--warn);margin-bottom:12px">Founding Partner Period</div>
+  <div style="font-size:22px;font-weight:700;margin-bottom:8px">First 5 provider pilots are active</div>
+  <p style="font-size:13px;color:var(--text-s);max-width:440px;margin:0 auto 24px;line-height:1.7">Founding partners receive priority SSE integration, direct engineering support, and 24-month rate lock at current pricing.</p>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+    <a href="mailto:council@ontostandard.org?subject=Provider%20Pilot%20Request" class="btn-p">Start free pilot &rarr;</a>
+    <a href="#tech" class="btn-s">See technical spec</a>
+  </div>
+</section>
+<hr class="sec-line">
+
 <section class="sec fi" id="tech">
   <div class="sec-label">Technical specification</div>
   <div class="sec-title">For the engineer who receives this link</div>
@@ -363,6 +405,7 @@ a{color:var(--safe-l);text-decoration:none}
 </section>
 
 <section class="cta">
+  <div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--warn);margin-bottom:12px">Founding Partner Period &middot; Limited Availability</div>
   <h2>We&rsquo;ll prove it on your model. Free.</h2>
   <p>14-day pilot through ONTO proxy. Your model, your questions, our discipline layer.<br>No SSE access. No commitment. No risk. You pay only after you&rsquo;ve seen the data.</p>
   <div class="steps" style="max-width:520px;margin:0 auto 32px;text-align:left">
@@ -400,7 +443,7 @@ new IntersectionObserver(function(e){if(ma)return;e.forEach(function(x){if(x.isI
     requestAnimationFrame(tick)});
 }})},{threshold:.2}).observe(document.getElementById('mgrid'));
 
-document.querySelectorAll('.nav-tab, a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'})})});
+document.querySelectorAll('.nav-tab, a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});document.querySelector('.nav-r').classList.remove('open')})});
 
 var secs=['hero','problem','how','proof','economics','tech'];
 var tabs=document.querySelectorAll('.nav-tab');
