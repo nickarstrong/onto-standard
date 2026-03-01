@@ -872,7 +872,13 @@ body.show-portal { overflow: auto; }
     .orb-container { margin-bottom: 20px; }
 }
 
-/* === SCREEN 2: WHY === */
+/* === SCREEN 2: HOW ONTO WORKS === */
+.screen-cycle {
+    padding: 60px 16px 24px;
+    justify-content: center;
+}
+
+/* === SCREEN 3: WHY === */
 .screen-why h1 {
     font-size: clamp(20px, 3vw, 28px);
     font-weight: 600;
@@ -2104,10 +2110,11 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
     <div class="nav-dot" data-screen="2"></div>
     <div class="nav-dot" data-screen="3"></div>
     <div class="nav-dot" data-screen="4"></div>
+    <div class="nav-dot" data-screen="5"></div>
 </div>
 
 <!-- SCROLL INDICATOR -->
-<div class="scroll-indicator" id="scrollIndicator" onclick="if(currentScreen < 4) goToScreen(currentScreen + 1)">
+<div class="scroll-indicator" id="scrollIndicator" onclick="if(currentScreen < 5) goToScreen(currentScreen + 1)">
     <span>scroll</span>
     <div class="scroll-arrow"></div>
 </div>
@@ -2134,9 +2141,88 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
     </div>
 </div>
 
-<!-- SCREEN 2: WHY -->
+<!-- SCREEN 2: HOW ONTO WORKS — PIPELINE -->
+<div class="screen screen-cycle hidden" id="screen2">
+    <h2 style="font-size:26px;font-weight:700;text-align:center;margin-bottom:24px;letter-spacing:-0.5px">How ONTO Works</h2>
+
+    <div style="max-width:480px;margin:0 auto;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:20px 24px">
+        <div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(46,194,126,0.7);margin-bottom:16px;font-weight:600">FULL PRODUCTION CYCLE</div>
+
+        <div style="display:flex;flex-direction:column;gap:12px">
+
+            <div style="display:flex;gap:10px;align-items:baseline">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,0.25);min-width:14px">①</span>
+                <span style="font-size:13px;color:rgba(255,255,255,0.5)">Client sends request</span>
+                <span style="font-size:10px;color:rgba(255,255,255,0.2);margin-left:auto">one-line change</span>
+            </div>
+
+            <div style="display:flex;gap:10px;align-items:baseline">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,0.25);min-width:14px">②</span>
+                <span style="font-size:13px;color:rgba(255,255,255,0.5)">Auth + tier resolved</span>
+                <span style="font-size:10px;color:rgba(255,255,255,0.2);margin-left:auto">API key → tier</span>
+            </div>
+
+            <div style="display:flex;gap:10px;align-items:baseline">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(46,194,126,0.7);min-width:14px">③</span>
+                <span style="font-size:13px;color:rgba(46,194,126,0.7);font-weight:600">GOLD injected via SSE</span>
+                <span style="font-size:10px;color:rgba(255,255,255,0.2);margin-left:auto">ephemeral · never on client</span>
+            </div>
+
+            <div style="display:flex;gap:10px;align-items:baseline">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,0.25);min-width:14px">④</span>
+                <span style="font-size:13px;color:rgba(255,255,255,0.5)">Forwarded to provider</span>
+                <span style="font-size:10px;color:rgba(255,255,255,0.2);margin-left:auto">zero awareness</span>
+            </div>
+
+            <div style="display:flex;gap:10px;align-items:baseline">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,0.25);min-width:14px">⑤</span>
+                <span style="font-size:13px;color:rgba(255,255,255,0.5)">Response captured</span>
+                <span style="font-size:10px;color:rgba(255,255,255,0.2);margin-left:auto">no modification</span>
+            </div>
+
+            <div style="display:flex;gap:10px;align-items:baseline">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(46,194,126,0.7);min-width:14px">⑥</span>
+                <span style="font-size:13px;color:rgba(46,194,126,0.7);font-weight:600">Deterministic scoring</span>
+                <span style="font-size:10px;color:rgba(255,255,255,0.2);margin-left:auto">993 lines · Var = 0</span>
+            </div>
+
+            <div style="display:flex;gap:10px;align-items:baseline">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(46,194,126,0.7);min-width:14px">⑦</span>
+                <span style="font-size:13px;color:rgba(46,194,126,0.7);font-weight:600">104-byte proof chain</span>
+                <span style="font-size:10px;color:rgba(255,255,255,0.2);margin-left:auto">Ed25519 · SHA-256</span>
+            </div>
+
+            <div style="display:flex;gap:10px;align-items:baseline">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,0.25);min-width:14px">⑧</span>
+                <span style="font-size:13px;color:rgba(255,255,255,0.5)">Certificate updated</span>
+                <span style="font-size:10px;color:rgba(255,255,255,0.2);margin-left:auto">valid · warning · critical</span>
+            </div>
+
+            <div style="display:flex;gap:10px;align-items:baseline">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,0.25);min-width:14px">⑨</span>
+                <span style="font-size:13px;color:rgba(255,255,255,0.5)">Response + ONTO headers</span>
+                <span style="font-size:10px;color:rgba(255,255,255,0.2);margin-left:auto">score · grade · proof</span>
+            </div>
+
+            <div style="display:flex;gap:10px;align-items:baseline">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(46,194,126,0.7);min-width:14px">⑩</span>
+                <span style="font-size:13px;color:rgba(46,194,126,0.7);font-weight:600">Public verification</span>
+                <span style="font-size:10px;color:rgba(255,255,255,0.2);margin-left:auto">offline · auditor-ready</span>
+            </div>
+
+        </div>
+
+        <div style="margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06);font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(255,255,255,0.4);text-align:center">
+            <span style="text-decoration:line-through;color:rgba(255,255,255,0.2)">api.openai.com</span> <span style="color:rgba(46,194,126,0.6)">→</span> <span style="color:rgba(46,194,126,0.7)">api.ontostandard.org</span>
+        </div>
+    </div>
+
+    <p style="text-align:center;color:rgba(255,255,255,0.2);font-size:10px;margin-top:12px">Model-agnostic · Zero retraining · <50ms latency · Metadata only</p>
+</div>
+
+<!-- SCREEN 3: WHY -->
 <div id="calculate"></div>
-<div class="screen screen-why hidden" id="screen2" data-anchor="why">
+<div class="screen screen-why hidden" id="screen3" data-anchor="why">
     <h2 style="font-size:32px;font-weight:700;text-align:center;margin-bottom:8px">AI is confident.<br>Not calibrated.</h2>
     
     <div class="why-grid">
@@ -2175,8 +2261,8 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
     </div>
 </div>
 
-<!-- SCREEN 3: BEFORE & AFTER -->
-<div class="screen screen-industries hidden" id="screen3">
+<!-- SCREEN 4: BEFORE & AFTER -->
+<div class="screen screen-industries hidden" id="screen4">
     <h2>Before & After</h2>
     <p style="text-align:center;color:rgba(255,255,255,0.35);font-size:12px;margin:4px 0 18px">CS-2026-001 · Feb 2026 · 11 models · 100 questions · 5 domains · scored by regex, not AI</p>
 
@@ -2279,8 +2365,8 @@ API: api.ontostandard.org. Portal: ontostandard.org/app/.
     </div>
 </div>
 
-<!-- SCREEN 4: INSTITUTIONAL CLOSE -->
-<div class="screen screen-final hidden" id="screen4">
+<!-- SCREEN 5: INSTITUTIONAL CLOSE -->
+<div class="screen screen-final hidden" id="screen5">
     <div class="final-content">
         <p class="governed-text">Your AI, grounded.</p>
 
@@ -2418,9 +2504,9 @@ setInterval(updateSignalHash, 3000);
 
 // === HASH NAVIGATION ===
 if (window.location.hash === '#calculator') {
-    // Сразу показываем screen2 с калькулятором
+    // Сразу показываем screen3 с калькулятором
     setTimeout(() => {
-        goToScreen(2);
+        goToScreen(3);
     }, 100);
 }
 
@@ -2504,7 +2590,7 @@ function goToScreen(num) {
     
     currentScreen = num;
     
-    // Progressive reveal: header from screen 2, dots from screen 3
+    // Progressive reveal: header from screen 2, dots from screen 2
     const header = document.querySelector('.header');
     const navDots = document.querySelector('.nav-dots');
     
@@ -2514,7 +2600,7 @@ function goToScreen(num) {
         header.classList.add('hidden');
     }
     
-    if (num >= 3) {
+    if (num >= 2) {
         navDots.classList.remove('hidden');
     } else {
         navDots.classList.add('hidden');
@@ -2523,7 +2609,7 @@ function goToScreen(num) {
     // Hide scroll indicator on last screen
     const scrollIndicator = document.getElementById('scrollIndicator');
     if (scrollIndicator) {
-        scrollIndicator.classList.toggle('hidden', num === 4);
+        scrollIndicator.classList.toggle('hidden', num === 5);
     }
 }
 
@@ -2568,7 +2654,7 @@ document.addEventListener('keydown', (e) => {
     if (document.body.classList.contains('show-portal')) return;
     
     if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
-        if (currentScreen < 4) goToScreen(currentScreen + 1);
+        if (currentScreen < 5) goToScreen(currentScreen + 1);
     } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
         if (currentScreen > 1) goToScreen(currentScreen - 1);
     } else if (e.key === ' ' || e.key === 'Enter') {
@@ -2585,7 +2671,7 @@ document.addEventListener('wheel', (e) => {
     if (isNavigating) return;
     
     const d = e.deltaY;
-    if (d > 2 && currentScreen < 4) {
+    if (d > 2 && currentScreen < 5) {
         isNavigating = true;
         goToScreen(currentScreen + 1);
         setTimeout(() => isNavigating = false, 500);
@@ -2634,7 +2720,7 @@ document.addEventListener('touchend', (e) => {
     if (Math.abs(diff) > 50) {
         if (diff > 0) {
             // Swipe up = next
-            if (currentScreen < 4) { isNavigating = true; goToScreen(currentScreen + 1); setTimeout(() => isNavigating = false, 1200); }
+            if (currentScreen < 5) { isNavigating = true; goToScreen(currentScreen + 1); setTimeout(() => isNavigating = false, 1200); }
         } else {
             // Swipe down = prev
             if (currentScreen > 1) { isNavigating = true; goToScreen(currentScreen - 1); setTimeout(() => isNavigating = false, 1200); }
