@@ -717,6 +717,89 @@ Each architectural component in ONTO protects the others, creating a system wher
 └──────────────────────────────────────────────────────┘
 ```
 
+#### 5.7.1 Full Production Cycle
+
+The complete request-response cycle through ONTO infrastructure:
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    ONTO FULL PRODUCTION CYCLE                       │
+│                                                                     │
+│  ① CLIENT REQUEST                                                  │
+│  │  Client sends request to ONTO proxy                             │
+│  │  (one-line change: base_url → api.ontostandard.org)             │
+│  │                                                                 │
+│  ▼                                                                 │
+│  ② AUTH + TIER RESOLUTION                                          │
+│  │  Proxy validates API key → resolves tier (Open/Standard/        │
+│  │  Provider/White-Label) → determines GOLD level + rate limit     │
+│  │                                                                 │
+│  ▼                                                                 │
+│  ③ GOLD INJECTION                                                  │
+│  │  Proxy fetches GOLD from private server (tier-appropriate)      │
+│  │  SSE delivery → ephemeral, never stored on client               │
+│  │  GOLD injected into system prompt before forwarding             │
+│  │  Forensic watermark embedded (unique per client+session)        │
+│  │                                                                 │
+│  ▼                                                                 │
+│  ④ PROVIDER FORWARD                                                │
+│  │  Request forwarded to original provider (OpenAI, Anthropic,     │
+│  │  etc.) with GOLD-enhanced system prompt                         │
+│  │  Provider processes as normal — zero awareness of ONTO          │
+│  │                                                                 │
+│  ▼                                                                 │
+│  ⑤ RESPONSE CAPTURE                                                │
+│  │  Provider response intercepted by proxy on return path          │
+│  │  Original response preserved — no modification                  │
+│  │                                                                 │
+│  ▼                                                                 │
+│  ⑥ SCORING (Engine 1 — Python)                                     │
+│  │  Deterministic scoring: EM1-EM5 taxonomy, 92+ patterns          │
+│  │  Metrics computed: REP, EpCE, DLA, CONF, QD, VQ, CA, SRC       │
+│  │  Compliance grade: A-F                                          │
+│  │  Domain classification: ED1-ED7                                 │
+│  │  Var(Score) = 0 — identical input always produces identical     │
+│  │  output                                                         │
+│  │                                                                 │
+│  ▼                                                                 │
+│  ⑦ PROOF CHAIN GENERATION                                          │
+│  │  104-byte Ed25519 proof chain created:                          │
+│  │    [8B timestamp | 32B SHA-256 hash | 64B signature]            │
+│  │  Chain-linked to previous proof                                 │
+│  │  Stored in ONTO database                                        │
+│  │                                                                 │
+│  ▼                                                                 │
+│  ⑧ CERTIFICATE UPDATE                                              │
+│  │  Model's running certificate updated with latest scores         │
+│  │  Composite score recalculated                                   │
+│  │  Certificate status: valid/warning/critical                     │
+│  │                                                                 │
+│  ▼                                                                 │
+│  ⑨ RESPONSE DELIVERY                                               │
+│  │  Original provider response returned to client                  │
+│  │  ONTO headers attached:                                         │
+│  │    x-onto-score, x-onto-grade, x-onto-proof                    │
+│  │  Client receives enhanced response + attestation                │
+│  │                                                                 │
+│  ▼                                                                 │
+│  ⑩ PUBLIC VERIFICATION                                             │
+│     Certificate verifiable at ontostandard.org/verify/             │
+│     Proof chain verifiable offline with Ed25519 public key         │
+│     Auditors, regulators, clients can verify independently         │
+│     No ONTO access required for verification                       │
+│                                                                    │
+└─────────────────────────────────────────────────────────────────────┘
+
+Cycle properties:
+  - Latency added: <50ms total
+  - Client code change: 1 line (base_url)
+  - Provider awareness: zero
+  - Model modification: zero
+  - Retraining: zero
+  - Data stored by ONTO: metadata only (no request/response content)
+  - Every step is deterministic and reproducible
+```
+
 This interlocking architecture means that copying any single component (e.g., reverse-engineering the scoring engine) does not reproduce the system. The scoring engine without GOLD produces no improvement. GOLD without the proof chain produces no attestation. The proof chain without forensic produces no IP protection. The system's value emerges from the interaction between components, not from any individual piece.
 
 ---
