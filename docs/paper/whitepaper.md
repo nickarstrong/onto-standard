@@ -576,6 +576,47 @@ It certifies: "This system has ONTO discipline layer active."
 It does NOT certify: "This system's outputs are correct."
 ```
 
+#### 5.3.1 104-Byte Proof Chain
+
+Each attestation produces a compact 104-byte cryptographic proof:
+
+```
+┌───────────────────────────────────────────────────────┐
+│  ONTO Proof Chain — 104 bytes                         │
+├───────────────────────────────────────────────────────┤
+│  Bytes 0-7:    Timestamp (uint64, Unix epoch)         │
+│  Bytes 8-39:   Content hash (SHA-256, 32 bytes)       │
+│  Bytes 40-103: Ed25519 signature (64 bytes)           │
+└───────────────────────────────────────────────────────┘
+
+Properties:
+  - Deterministic: same content → same hash → verifiable
+  - Tamper-evident: any modification invalidates signature
+  - Compact: 104 bytes per response, negligible overhead
+  - Chain-linked: each proof references previous hash
+  - Independently verifiable: public key published at
+    ontostandard.org/verify/
+```
+
+The 104-byte proof chain is a structural moat. It is not a feature — it is an architectural decision that makes ONTO attestations independently auditable without requiring access to ONTO infrastructure. Any third party with the public key can verify any proof chain offline.
+
+#### 5.3.2 Public Verification
+
+```
+GET /v1/certificates/model/{model_id}
+
+Returns:
+  - Certificate status (valid/expired/revoked)
+  - GOLD tier active
+  - Proof chain sample
+  - Composite score at time of certification
+  - Ed25519 public key for independent verification
+
+Public verification page: ontostandard.org/verify/
+```
+
+Verification is designed for compliance teams, auditors, and regulators who need to confirm ONTO certification without contacting ONTO directly.
+
 ### 5.4 Dual Engine Architecture
 
 ```
@@ -587,6 +628,96 @@ Engine 1 — Python (scoring_engine_v3.py)     Engine 2 — Rust (onto_core)
 
   Divergence between layers = additional risk signal
 ```
+
+The dual-engine architecture provides defense in depth. Engine 1 (Python) evaluates surface-level epistemic markers — source citations, confidence expressions, hedging language, quantification density. Engine 2 (Rust, planned) evaluates structural reasoning patterns — calibration curves, uncertainty coherence, knowledge boundary consistency. When both engines agree, confidence is high. When they diverge, the divergence itself becomes a risk signal — the model may be producing well-formatted responses that mask poor reasoning.
+
+### 5.5 GOLD Injection: SSE Delivery
+
+GOLD is not a prompt template that clients download. It is delivered in real-time via Server-Sent Events (SSE) through the ONTO proxy:
+
+```
+┌──────────┐    ┌──────────────────┐    ┌──────────────┐
+│  Client   │───▶│   ONTO Proxy     │───▶│   Provider   │
+│           │    │                  │    │              │
+│           │    │  1. Auth + tier  │    │              │
+│           │    │  2. SSE: fetch   │    │              │
+│           │    │     GOLD from    │    │              │
+│           │    │     private      │    │              │
+│           │    │     server       │    │              │
+│           │    │  3. Inject into  │    │              │
+│           │    │     system prompt│    │              │
+│           │    │  4. Forward      │    │              │
+│           │◀───│  5. Score + sign │◀───│              │
+└──────────┘    └──────────────────┘    └──────────────┘
+
+Key properties:
+  - GOLD never reaches client device
+  - GOLD never enters client codebase
+  - GOLD content is tier-dependent (Core/Extended/Full)
+  - Client receives the EFFECT, not the DOCUMENT
+  - SSE stream is ephemeral — no persistent storage
+```
+
+Current Phase 2 implementation: SSE plaintext, protected by NDA and digital watermarking. Phase 3 (planned): AES-256-GCM encrypted SSE with `onto-gold` SDK — key rotation, memory-only decryption, zero-disk exposure.
+
+### 5.6 Forensic Detection System
+
+ONTO implements a multi-layer forensic detection system to protect intellectual property and identify unauthorized use:
+
+```
+Layer 1 — Digital Watermark
+  - Invisible markers embedded in GOLD content
+  - Unique per-client, per-tier, per-session
+  - Survives paraphrasing, reformatting, partial extraction
+  - Identifies source if GOLD content is leaked
+
+Layer 2 — Behavioral Fingerprint
+  - GOLD-enhanced responses exhibit measurable patterns
+  - Pattern signature is detectable in model outputs
+  - Unauthorized use of leaked GOLD leaves forensic traces
+  - Scoring engine can identify GOLD-derived behavior
+
+Layer 3 — Automated Detection
+  - Continuous monitoring for GOLD patterns in public systems
+  - Alert system for unauthorized behavioral signatures
+  - Database of client-specific watermark mappings
+  - Legal evidence chain for IP enforcement
+```
+
+The forensic system is not punitive — it is protective. ONTO's value depends on GOLD remaining server-side. The forensic system ensures that if GOLD is compromised, the source is identifiable and the evidence is legally admissible.
+
+### 5.7 Integrated Self-Protection Architecture
+
+Each architectural component in ONTO protects the others, creating a system where no single component can be extracted or replicated independently:
+
+```
+┌──────────────────────────────────────────────────────┐
+│              ONTO Self-Protection Matrix              │
+├──────────────────────────────────────────────────────┤
+│                                                      │
+│  GOLD ──protects──▶ Output Quality                   │
+│    ▲                    │                            │
+│    │                    ▼                            │
+│  SSE ──protects──▶ GOLD (never on client)            │
+│    ▲                    │                            │
+│    │                    ▼                            │
+│  Forensic ──protects──▶ SSE (watermark per session)  │
+│    ▲                    │                            │
+│    │                    ▼                            │
+│  Proof Chain ──protects──▶ Forensic (signed evidence)│
+│    ▲                    │                            │
+│    │                    ▼                            │
+│  Scoring ──protects──▶ Proof Chain (deterministic)   │
+│    ▲                    │                            │
+│    │                    ▼                            │
+│  Tiers ──protects──▶ Scoring (access-controlled)     │
+│                                                      │
+│  Circular dependency: removing any layer              │
+│  degrades all other layers                           │
+└──────────────────────────────────────────────────────┘
+```
+
+This interlocking architecture means that copying any single component (e.g., reverse-engineering the scoring engine) does not reproduce the system. The scoring engine without GOLD produces no improvement. GOLD without the proof chain produces no attestation. The proof chain without forensic produces no IP protection. The system's value emerges from the interaction between components, not from any individual piece.
 
 ---
 
@@ -685,9 +816,85 @@ GOLD Extended   + calculations + modules              Production deployment
 GOLD Full       Full corpus                           Provider integration
 ```
 
-### 8.2 Licensing
+### 8.2 Tier Architecture with Cascading Access
+
+ONTO operates a four-tier commercial model with cascading capabilities:
+
+```
+Tier        Price           Rate Limit      GOLD Access    SSE    Proof Chain
+──────────────────────────────────────────────────────────────────────────────
+OPEN        $0/mo           10 proxy/day    Core           No     Basic
+STANDARD    $2,500/mo       1,000/day       Extended       No     Full
+PROVIDER    $250K/yr        Unlimited       Full           Yes    Full + API
+WHITE-LABEL $500K/yr        Unlimited       Full           Yes    Full + Custom
+```
+
+Cascading properties:
+- Each higher tier inherits all capabilities of lower tiers
+- STANDARD includes all OPEN features + Extended GOLD + full proof chain
+- PROVIDER includes all STANDARD features + SSE delivery + direct API integration
+- WHITE-LABEL includes all PROVIDER features + custom branding + private deployment
+
+14-day free trial provides full STANDARD access. Founding Partner pricing: 2× duration (purchase 12 months, receive 24 months).
+
+### 8.3 Provider Dashboard
+
+ONTO provides a production-grade provider dashboard for AI companies integrating the discipline layer:
+
+```
+Provider Dashboard capabilities:
+  - Real API key registration and management
+  - Per-model GOLD toggle (enable/disable per model)
+  - Live scoring metrics and trend visualization
+  - Composite score history per model
+  - Certificate status and renewal management
+  - Usage analytics (requests, tokens, latency)
+  - Public certificate verification link
+  - Webhook configuration for score alerts
+```
+
+The dashboard is not a demo — it processes real API keys and real model outputs. Providers connect their existing infrastructure and see Before/After metrics on their actual production traffic.
+
+### 8.4 Licensing
 
 ONTO operates on a tiered licensing model scaling from free evaluation access (Open tier, rate-limited) through production deployment to provider-level integration and white-label licensing. Academic and grant-funded research qualifies for free access. Current pricing and tier details are published at ontostandard.org/pricing.
+
+### 8.5 Deployment Impact Assessment
+
+ONTO has mapped 43 organizational impact zones across 9 categories affected by epistemic discipline deployment:
+
+```
+Category              Zones   Key Impact
+─────────────────────────────────────────────────────────────────
+I.   Operational       5      Automated QA, Ed25519 audit trail,
+                              deterministic risk scoring
+II.  Infrastructure    5      Lower compute via behavioral layer,
+                              reduced latency with compact models
+III. Economic          5      Token cost reduction, premium pricing
+                              for verified output, client retention
+IV.  Environmental     5      Reduced CO₂ proportional to compute,
+                              longer hardware lifecycle
+V.   Regulatory        3      EU AI Act conformity evidence,
+                              continuous audit readiness
+VI.  Product           6      Deterministic QA, model collapse
+                              protection, multi-model flexibility
+VII. Revenue           6      TAM expansion into regulated markets,
+                              network effect, infrastructure valuation
+VIII.Support           5      Fewer hallucination escalations,
+                              instant root cause via proof chain
+IX.  Strategic         4      Due diligence readiness, IP position,
+                              reproducibility guarantee
+
+Total: 43 zones
+```
+
+Each zone represents a measurable operational difference between systems with and without epistemic discipline infrastructure. The full Deployment Impact Assessment is published at ontostandard.org/docs/deployment-impact/.
+
+Evidence classification for impact claims:
+- **Proven** (CS-2026-001 experimental data): 10× epistemic improvement, U-Recall 0.009→0.964, deterministic scoring, Ed25519 proof chain
+- **Projected** (structural consequences of proven capabilities): compute reduction, team reallocation, TAM expansion, premium pricing, environmental impact
+
+Projected impacts are structural consequences of proven capabilities. Specific dollar amounts depend on deployment context.
 
 ---
 
