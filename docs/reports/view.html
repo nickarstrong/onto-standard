@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ONTO — Report</title>
+<title>ONTO вЂ” Report</title>
 <meta name="robots" content="index, follow">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='17' fill='white'/%3E%3Cpath d='M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z' fill='%230a0a0a'/%3E%3C/svg%3E">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
@@ -78,8 +78,9 @@ ONTO
 </div>
 
 <script>
-// Report registry — add new reports here, MD file goes in same folder
+// Report registry вЂ” add new reports here, MD file goes in same folder
 const REPORT_REGISTRY = {
+    "F-001": { title: "Grok vs Grok+GOLD: AGI within 10 years?", type: "Efficiency Report", date: "2026-03-03", file: "F-001_Grok_AGI.md" },
     "FO-2026-003": { title: "Spontaneous Ontological Demand", type: "Field Observation", date: "2026-02-19", file: "FO-2026-003.md" },
     "IR-2026-001": { title: "Independent Review: ONTO Standard Validation", type: "Independent Review", date: "2026-03-03", file: "IR-2026-001.md" }
 };
@@ -92,13 +93,13 @@ const REPORT_REGISTRY = {
     const tocEl = document.getElementById('toc');
 
     if (!id || !REPORT_REGISTRY[id]) {
-        target.innerHTML = '<p style="color:var(--text-m)">Report not found. <a href="/reports/">← Back to reports</a></p>';
-        document.title = 'ONTO — Report Not Found';
+        target.innerHTML = '<p style="color:var(--text-m)">Report not found. <a href="/reports/">в†ђ Back to reports</a></p>';
+        document.title = 'ONTO вЂ” Report Not Found';
         return;
     }
 
     const report = REPORT_REGISTRY[id];
-    document.title = `${id} — ${report.title}`;
+    document.title = `${id} вЂ” ${report.title}`;
 
     // Update meta description
     const metaDesc = document.querySelector('meta[name="description"]');
@@ -109,7 +110,7 @@ const REPORT_REGISTRY = {
         <div class="report-meta">
             <span class="report-tag">${report.type}</span>
             <span>${id}</span>
-            <span>·</span>
+            <span>В·</span>
             <span>${report.date}</span>
         </div>
     `;
@@ -157,9 +158,10 @@ const REPORT_REGISTRY = {
         headings.forEach(h => { if (h.id) observer.observe(h); });
 
     } catch (err) {
-        target.innerHTML = `<p style="color:var(--text-m)">Failed to load report. <a href="/reports/">← Back to reports</a></p>`;
+        target.innerHTML = `<p style="color:var(--text-m)">Failed to load report. <a href="/reports/">в†ђ Back to reports</a></p>`;
     }
 })();
 </script>
 </body>
 </html>
+
