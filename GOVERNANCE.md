@@ -181,7 +181,7 @@ ONTO-Bench measures epistemic calibration on curated scientific questions. Resul
 
 ### 7.3 Responsible Disclosure
 
-Security vulnerabilities in evaluation code: security@onto-bench.org
+Security vulnerabilities in evaluation code: security@ontostandard.org
 
 ---
 
@@ -215,8 +215,8 @@ When citations > 50 or submissions > 100:
 ## 10. Contact
 
 - Issues: GitHub Issues
-- Email: governance@onto-bench.org
-- Security: security@onto-bench.org
+- Email: governance@ontostandard.org
+- Security: security@ontostandard.org
 
 ---
 
