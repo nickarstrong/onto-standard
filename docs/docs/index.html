@@ -484,10 +484,10 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 
 <h2>Rate Limits</h2>
 <table><thead><tr><th>Tier</th><th>Limit</th><th>Window</th></tr></thead><tbody>
-<tr><td>Unauthenticated (/v1/check)</td><td>50 requests</td><td>per day</td></tr>
 <tr><td>Open</td><td>10 requests</td><td>per day</td></tr>
 <tr><td>Standard</td><td>1,000 requests</td><td>per day</td></tr>
-<tr><td>AI Provider</td><td>Unlimited</td><td>—</td></tr>
+<tr><td>AI Provider / White-Label</td><td>Unlimited</td><td>—</td></tr>
+<tr><td>Provider Trial (14-day)</td><td>1,000 requests</td><td>per day</td></tr>
 </tbody></table>
 <p>Rate limit headers: <code>X-RateLimit-Limit</code>, <code>X-RateLimit-Remaining</code>, <code>X-RateLimit-Reset</code>.</p>
 
@@ -523,7 +523,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <li><strong>EpCE</strong> (Epistemic Calibration Error) — deviation between expressed confidence and epistemic grounding</li>
 <li><strong>DLA</strong> (Dual-Layer Agreement) — consistency between what a model says and how it says it</li>
 </ul>
-<p><strong>Rust onto_core Engine</strong> (planned) — designed to analyze model behavior patterns independently. Divergence between Python (what models SAY) and Rust (how models THINK) will provide additional risk signal.</p>
+<p><strong>Rust onto_core Engine</strong> — analyzes model behavior patterns independently via entropy analysis, Merkle tree proofs, and metrics computation (compiled, PyO3 bindings). Divergence between Python (what models SAY) and Rust (how models THINK) provides additional risk signal.</p>
 
 <h3>GOLD v4.5 Calibration Corpus</h3>
 <p>A curated corpus of epistemic discipline protocols, calibration probes, and gold-standard references. Every evaluation is calibrated against this corpus — not against other models, not against human judgment, but against deterministic epistemic ground truth.</p>
@@ -570,7 +570,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <p>11 AI models answered 100 scientific questions under two conditions: baseline (no GOLD) and treatment (GOLD v4.5 loaded). Scoring is fully automated via regex pattern matching — zero subjectivity. All reproduction scripts are published.</p>
 
 <table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody>
-<tr><td>Models tested</td><td>11 (anonymized A–K)</td></tr>
+<tr><td>Models tested</td><td>11 (anonymized A–J in ranking; 1 excluded for conflict of interest)</td></tr>
 <tr><td>Questions</td><td>100 (50 in-domain, 50 cross-domain)</td></tr>
 <tr><td>Metrics</td><td>QD, SS, UM, CP, VQ + CONF</td></tr>
 <tr><td>Scoring</td><td>Regex-based, deterministic, reproducible</td></tr>
@@ -578,7 +578,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 </tbody></table>
 
 <h2>Key Finding: 10× Composite Improvement</h2>
-<p>Model J (weakest baseline) was selected for before/after testing to provide maximum measurable range. After GOLD v4.5 grounding:</p>
+<p>The 10× composite improvement (0.53 → 5.38) represents the aggregate mean across all 10 ranked models. Model J (weakest baseline) is shown below for per-metric breakdown as it provides the widest measurable delta. After GOLD v4.5 grounding:</p>
 
 <table><thead><tr><th>Metric</th><th>Baseline</th><th>With GOLD</th><th>Change</th></tr></thead><tbody>
 <tr><td>QD (quantification)</td><td>0.10</td><td>3.08</td><td><strong>30.8×</strong></td></tr>
@@ -639,7 +639,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 
 <div style="background:var(--bg-c);border:1px solid var(--border);border-radius:6px;padding:14px 18px;margin-top:12px;margin-bottom:16px;">
 <p style="font-size:12px;color:var(--text-s);margin:0 0 8px 0"><strong style="color:var(--text)">Documented anomalies:</strong> Model F exhibited ~30% GOLD contamination from prior sessions (natural experiment: partial dose → partial effect). Model D showed citation fraud (single PMC source cited for 40+ unrelated topics). Model C replaced 20 questions with self-generated alternatives (B4–B5 data invalid). Model E self-compressed Section B responses to 2–5 words. All anomalies documented in <a href="https://github.com/nickarstrong/onto-research" target="_blank" style="color:var(--accent)">onto-research</a>.</p>
-<p style="font-size:11px;color:var(--text-m);margin:0"><strong>Scoring note:</strong> Model J composite differs between multi-model ranking (0.38) and treatment baseline (0.53) due to scoring engine calibration between study phases. Both represent the same model's baseline behavior. Full methodology in <a href="/paper/" style="color:var(--accent)">whitepaper</a>.</p>
+<p style="font-size:11px;color:var(--text-m);margin:0"><strong>Scoring note:</strong> Model J composite differs between multi-model ranking (0.38) and treatment baseline (0.53) due to scoring threshold refinement between Phase 1 (baseline collection across 11 models) and Phase 2 (before/after treatment). Composite weight adjustments were applied uniformly to all models. Both values represent the same model's baseline behavior. Full methodology in <a href="/paper/" style="color:var(--accent)">whitepaper</a>.</p>
 </div>
 
 <h2>Complete Audit Trail</h2>
@@ -657,7 +657,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <p style="font-size:12px;color:var(--text-s);margin:0"><strong style="color:var(--text)">Scoring methodology:</strong> Regex pattern matching only. No AI evaluates AI. No human subjectivity. The scorer is 993 lines of Python with zero external dependencies. Same input → same output, every time. <a href="https://github.com/nickarstrong/onto-research" target="_blank" style="color:var(--accent)">Verify yourself →</a></p>
 </div>
 
-<p style="font-size:11px;color:var(--text-m);margin-top:16px;">Experimental data · ONTO-GOLD v4.5 · Model names anonymized in this document · Full data with model names on <a href="https://github.com/nickarstrong/onto-research" target="_blank">GitHub</a> · ONTO is an independent measurement initiative</p>
+<p style="font-size:11px;color:var(--text-m);margin-top:16px;">Experimental data · ONTO-GOLD v4.5 · Model names anonymized in this document for neutrality · Full model identities published in <a href="https://github.com/nickarstrong/onto-research/blob/main/ONTO-11-Model-Baseline.md" target="_blank">onto-research repository</a> · ONTO is an independent measurement initiative</p>
 
 </div><div class="sd"></div>
 
@@ -1450,7 +1450,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <h2>2026-02-01</h2>
 <ul>
 <li>CS-2026-001: 11 models × 100 questions (10 ranked), composite 0.53 → 5.38 (10×)</li>
-<li>Scoring engine v3.0 (993 lines, GOLD-backed)</li>
+<li>Scoring engine v3.1 (993 lines, GOLD-backed)</li>
 <li>PyPI 10.2.1 published</li>
 <li>Phase 1 PROVE complete (8/8)</li>
 </ul>
@@ -1487,7 +1487,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <h2 id="t-5">5. Rate Limits</h2><p>Each plan has specific limits. Exceeding may cause suspension.</p>
 <h2 id="t-6">6. Payment</h2><p>Billed in advance. Fees are non-refundable after service activation (first API call) — see <a href="#refund">Refund Policy</a> for full terms. ONTO will provide 30 days notice before pricing changes; existing subscriptions are honored through their current billing period.</p>
 <h2 id="t-7">7. Service Availability</h2>
-<p>ONTO targets 99.5% uptime for STANDARD and above tiers. During the current experimental phase, formal SLA credits are not yet available. ONTO will notify customers of planned maintenance 48 hours in advance.</p>
+<p>ONTO targets 99.5% uptime for STANDARD and above tiers. During the current experimental phase, formal tiered SLA commitments are not yet available. A minimum guarantee applies: downtime exceeding 72 consecutive hours due to ONTO infrastructure failure results in service credit (see <a href="#r-5">Refund Policy §5</a>). ONTO will notify customers of planned maintenance 48 hours in advance.</p>
 <h2 id="t-8">8. Intellectual Property</h2>
 <p>ONTO retains all rights to the Services, GOLD protocol, scoring algorithms, proof chain infrastructure, and all proprietary epistemic patterns embedded in GOLD-enhanced outputs. You retain full ownership of your data, prompts, and the informational content of AI responses. However, the epistemic behavioral patterns present in GOLD-enhanced outputs (including but not limited to citation formatting, confidence calibration structures, uncertainty disclosure patterns, and structured epistemic markers) remain the intellectual property of ONTO. You may use GOLD-enhanced outputs in your products and services while your subscription is active, but you may not extract, isolate, or replicate the epistemic patterns themselves. Evaluation scores and certificates are jointly owned: you may display them, ONTO may reference them in anonymized aggregate form.</p>
 <h2 id="t-8a">8a. Data Processing</h2>
