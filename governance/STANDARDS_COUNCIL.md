@@ -171,8 +171,8 @@ Commitment: ~4 hours/quarter
 Compensation: $[X]/year + equity
 Impact: Shape how AI reliability is measured and regulated
 
-Our benchmark shows GPT-4 detects genuinely unanswerable 
-questions only 9% of the time. We're building the standard 
+Our benchmark shows the weakest baseline model detects genuinely unanswerable 
+questions less than 10% of the time. We're building the standard 
 that addresses this gap.
 
 Would you be open to a 20-minute call to discuss?
@@ -215,11 +215,11 @@ a framework for measuring AI calibration that maps to
 EU AI Act and NIST AI RMF requirements.
 
 Organizations interested in certification can contact:
-enterprise@onto-bench.org
+enterprise@ontostandard.org
 
 About ONTO Project:
 ONTO develops benchmarks and standards for AI epistemic 
-calibration. onto-bench.org
+calibration. ontostandard.org
 ```
 
 ---
@@ -229,8 +229,8 @@ calibration. onto-bench.org
 ### Why Council Matters
 
 1. **Enterprise Trust**
-   - "Independent advisory board" → not one-person company
-   - Named experts → borrowed credibility
+   - Independent advisory board → institutional credibility
+   - Named experts → domain authority
    - Governance structure → institutional permanence
 
 2. **Regulatory Weight**

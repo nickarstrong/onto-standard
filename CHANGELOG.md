@@ -45,8 +45,8 @@ This release fully implements:
 
 ### Documentation
 
-- Full API documentation at https://onto-bench.org/standard/api
-- Standard document at https://onto-bench.org/standard/v1.0
+- Full API documentation at https://ontostandard.org/docs/
+- Standard document at https://ontostandard.org/docs/
 
 ---
 
@@ -66,4 +66,4 @@ This release fully implements:
 
 ---
 
-[1.0.0]: https://github.com/onto-project/onto-standard/releases/tag/v1.0.0
+[1.0.0]: https://github.com/nickarstrong/onto-standard/releases/tag/v1.0.0
