@@ -132,6 +132,7 @@ body {
 .tag-fo { color: #a78bfa; background: rgba(167, 139, 250, 0.1); }
 .tag-cs { color: #60a5fa; background: rgba(96, 165, 250, 0.1); }
 .tag-er { color: #34d399; background: rgba(52, 211, 153, 0.1); }
+.tag-ir { color: #f472b6; background: rgba(244, 114, 182, 0.1); }
 .tag-mb { color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
 
 .report-date { font-size: 12px; color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -171,7 +172,7 @@ body {
 
     <!-- Stats -->
     <div class="stats" id="stats">
-        <div class="stat"><strong id="stat-total">5</strong> reports</div>
+        <div class="stat"><strong id="stat-total">6</strong> reports</div>
         <div class="stat"><strong id="stat-models">11</strong> models tested</div>
         <div class="stat"><strong id="stat-questions">100</strong> questions scored</div>
     </div>
@@ -182,6 +183,7 @@ body {
         <button class="filter-btn" onclick="filterReports('fo')">Field Observations</button>
         <button class="filter-btn" onclick="filterReports('cs')">Comparative Studies</button>
         <button class="filter-btn" onclick="filterReports('er')">Efficiency Reports</button>
+        <button class="filter-btn" onclick="filterReports('ir')">Independent Reviews</button>
         <button class="filter-btn" onclick="filterReports('mb')">Model Baselines</button>
     </div>
 
@@ -197,6 +199,16 @@ body {
 
 <script>
 const REPORTS = [
+    {
+        id: "IR-2026-001",
+        type: "ir",
+        title: "Independent Review: ONTO Standard Validation",
+        subtitle: "3 questions, 3 models, 21-29x per-question improvement, mean 25x",
+        model: "GPT 5.2 · Claude Sonnet 4.5 · Perplexity",
+        date: "2026-03-03",
+        domain: "Medicine · AI/ML · Nutrition",
+        url: "/reports/IR-2026-001.html"
+    },
     {
         id: "FO-2026-003",
         type: "fo",
@@ -249,8 +261,8 @@ const REPORTS = [
     }
 ];
 
-const TYPE_LABELS = { fo: 'FO', cs: 'CS', er: 'ER', mb: 'MB' };
-const TYPE_TAGS = { fo: 'tag-fo', cs: 'tag-cs', er: 'tag-er', mb: 'tag-mb' };
+const TYPE_LABELS = { fo: 'FO', cs: 'CS', er: 'ER', ir: 'IR', mb: 'MB' };
+const TYPE_TAGS = { fo: 'tag-fo', cs: 'tag-cs', er: 'tag-er', ir: 'tag-ir', mb: 'tag-mb' };
 
 function renderReports(filter) {
     const list = document.getElementById('reports-list');
