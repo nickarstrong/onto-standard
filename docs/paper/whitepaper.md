@@ -227,6 +227,8 @@ GPT 5.2 was selected for treatment because it had the **lowest baseline composit
 
 Four anomalies were documented during baseline evaluation:
 
+**Claude Sonnet 4.5 — excluded from final ranking (conflict of interest).** Claude Sonnet 4.5 was included in baseline measurement (composite 2.08, highest among all tested models) but excluded from the final 10-model ranking. The evaluation infrastructure — including the ONTO proxy and scoring pipeline — operates on Anthropic's API. This creates a structural conflict of interest: the vendor whose model scored highest also provides the infrastructure used for measurement. Claude Sonnet 4.5 baseline data is published in full in the onto-research repository and available for independent verification. The conflict of interest does not affect scores for other models — scoring is deterministic regex with no model-specific adjustments.
+
 **Grok 4.2 — GOLD contamination.** Approximately 30% of Grok's Section A responses exhibited GOLD-like epistemic patterns from prior conversation history. Section A QD: 0.40 (elevated), Section B QD: 0.10 (normal). This constitutes a natural experiment: partial GOLD exposure produces partial epistemic improvement. Documented responses (Q8–Q10, Section A) show calibration patterns absent in Section B.
 
 **Perplexity — citation fraud.** Perplexity's SS score (0.02) appeared nominal, but manual audit revealed that approximately 40 Section B answers cited a single PubMed Central article (PMC3718341, an origin-of-life paper) as the source for unrelated topics including economics and climate. High SS without citation validity is worse than low SS. Q24 contains a factual inversion attributed to this source.
@@ -1154,7 +1156,7 @@ This paper uses multiplicative notation exclusively: 10×, 5.4×, 30.8×. Percen
 
 ## Appendix B: Disclosure Statement
 
-The ONTO proxy infrastructure uses Anthropic's API for GOLD injection delivery. The scoring engine evaluates all models identically using deterministic regex patterns with no model-specific adjustments. No model provider had advance access to evaluation questions, scoring methodology, or results prior to publication.
+The ONTO proxy infrastructure uses Anthropic's API for GOLD injection delivery. The scoring engine evaluates all models identically using deterministic regex patterns with no model-specific adjustments. No model provider had advance access to evaluation questions, scoring methodology, or results prior to publication. Claude Sonnet 4.5 is excluded from the final ranking due to this structural conflict of interest — see §3.4 for full disclosure.
 
 ## Appendix C: Reproducibility
 
