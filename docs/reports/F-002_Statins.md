@@ -28,12 +28,12 @@ The question: **"Are statins effective for primary cardiovascular prevention?"**
 
 | Metric | GPT-5.2 | Gemini 3.1 | Claude 4.5 | Grok 4.2 | Grok 4.2+GOLD | Claude 4.5+GOLD |
 |--------|-----|--------|--------|------|-----------|-------------|
-| Sources (author+year+journal) | 0 | 0 | ~8 | 0 | 7 | 4 |
-| Numbers with CI | 0 | 0 | 15+ | 0 | 6+ | 10+ |
-| Calibrated confidence (%) | 0 | 0 | 0 | 0 | 1 (77%) | 3 (77%/63%/35%) |
-| Explicit unknowns | 0 | 0 | 3+ | ~1 | 3+ | 4 |
-| Structured counterarguments | 0 | 0 | 4+ | 0 | 3 | 3 |
-| Risk-stratified assessment | No | No | Yes | No | No | Yes (3 tiers) |
+| Sources (author+year+journal) | 0 | 0 | ~8 | 0 | 7 | 3 |
+| Numbers with CI | 0 | 0 | 15+ | 0 | 6+ | 8+ |
+| Calibrated confidence (%) | 0 | 0 | 0 | 0 | 1 (77%) | 2 (77%/42%) |
+| Explicit unknowns | 0 | 0 | 3+ | ~1 | 3+ | 3 |
+| Structured counterarguments | 0 | 0 | 4+ | 0 | 3 | 1 |
+| ONTO Score | - | - | - | - | 9.9/A | 9.3/A |
 
 **Key finding:** Zero baselines produced calibrated confidence with methodology. GOLD was the only path to percentage-based confidence backed by evidential thresholds.
 
@@ -227,39 +227,36 @@ The question: **"Are statins effective for primary cardiovascular prevention?"**
 
 ### Claude Sonnet 4.5 + GOLD v4.5
 
-> **Statin Effectiveness for Primary Prevention**
+> **Quantified Data on Statin Efficacy for Primary Prevention:**
 >
-> **Quantified Evidence:**
-> - **(2019) Collins et al.** meta-analysis, 27 randomized trials (n=174,149): All-cause mortality reduction 9% (RR 0.91, 95% CI 0.89-0.93) per 1.0 mmol/L LDL reduction.
-> - **(2022) Byrnes et al.** Cochrane review: Cardiovascular mortality reduction 12% (RR 0.88, 95% CI 0.81-0.96).
-> - Major vascular events reduced 21% per 1.0 mmol/L LDL reduction (Collins 2019).
-> - NNT = 138 over 4.3 years to prevent one death (Taylor et al. 2013).
-> - NNT = 49 to prevent one major cardiovascular event.
+> **Meta-Analysis Evidence:**
+> - **(2016) Chou et al.** systematically reviewed 19 RCTs (n=71,344) for the USPSTF:
+>   - All-cause mortality reduction: 0.8 pp (3.9% vs 4.7%; RR 0.86, 95% CI 0.80-0.93)
+>   - Cardiovascular mortality reduction: 0.4 pp (1.6% vs 2.0%; RR 0.82, 95% CI 0.76-0.89)
+>   - Major cardiovascular events reduction: 2.3 pp (6.1% vs 8.4%; RR 0.70, 95% CI 0.63-0.78)
 >
-> **Risk-Stratified Confidence:**
-> - High-risk (10-year CVD risk >20%): ~77% confidence supported. NNT approaches secondary prevention levels. (2018) Arnett et al. AHA/ACC Guidelines: Class I recommendation.
-> - Intermediate risk (10-19.9%): ~63% confidence. Risk enhancers and CAC scoring may guide decisions.
-> - Low risk (<10%): ~35% confidence. Limited trial evidence. Potential for medicalization.
+> **NNT:** Primary prevention NNT ~100-300 over 3-5 years. Higher-risk (>10% 10-year CVD risk): NNT ~60-100. Lower-risk: NNT >200.
 >
-> **Counterarguments:**
-> - Absolute risk reduction in low-risk populations modest (~1-2% over 5 years).
-> - Adverse effects: muscle symptoms (~7-29%), diabetes risk (+9% relative risk).
-> - Industry funding: most major trials industry-sponsored.
+> **Adverse Effects:** Muscle symptoms ~1-5%. New-onset diabetes ~0.5-1% absolute increase. Serious myopathy ~1 in 10,000-100,000.
 >
-> **Uncertainty Markers:** Optimal LDL targets debated. Duration of benefit unclear if stopped. Genetic factors modify benefit-risk. Polypill strategies need more data.
+> **Counterarguments:** Strongest objection: statistical vs clinical significance. Relative reductions ~20-30%, but absolute reductions 0.4-2.3 pp. Critics argue marginal benefit for lifelong medication.
+>
+> **Calibrated Confidence:** ~77% net benefit for patients with >10% 10-year CVD risk. ~42% for <7.5% 10-year risk. Individual factors (age, comorbidities, bleeding risk) substantially modify benefit-risk.
+>
+> **Sources:** Chou et al. (2016) Ann Intern Med; Stone et al. (2014) Circulation; Collins et al. (2016) Lancet.
+
+**ONTO Score: 9.3 / A**
 
 **ONTO Scoring:**
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| SS | 4 | Collins 2019, Byrnes 2022, Taylor 2013, Arnett 2018 |
-| QD | 10+ | RR with CI, NNT, percentages per risk tier |
-| CONF | 3 | 77%, 63%, 35% - risk-stratified with clinical thresholds |
-| UM | 4 | LDL targets, duration, genetics, polypill |
-| CP | 3 | Absolute vs relative, adverse effects, industry funding |
+| SS | 3 | Chou 2016 Ann Intern Med, Stone 2014 Circulation, Collins 2016 Lancet |
+| QD | 20+ | RR with CI, NNT per risk tier, absolute reductions, adverse rates |
+| CONF | 2 | 77% (high risk) + 42% (low risk) with methodology |
+| UM | 3 | Age/comorbidities, bleeding risk, individual variation |
+| CP | 1 | Statistical vs clinical significance |
 | VQ | 0 | Zero vague qualifiers |
-
-**ONTO Score: 9.7 / A**
 
 ---
 
@@ -283,11 +280,58 @@ The question: **"Are statins effective for primary cardiovascular prevention?"**
 - Model architecture (zero fine-tuning, zero retraining)
 - Model personality (Grok's directness, Claude's depth persist)
 
-### Unexpected Finding: Claude Baseline vs Others
+### Observation: Claude Baseline Anomaly
 
-Claude Sonnet 4.5 produced a baseline that included named trials with years, structured counterarguments, and explicit unknowns - without GOLD. This suggests Claude's training already incorporates some epistemic discipline.
+In CS-2026-001 (January 2026), Claude scored 0.12 on epistemic quality — the lowest among all 11 tested models. It was excluded from ranking due to conflict of interest (ONTO infrastructure runs on Claude).
 
-However, Claude baseline still produced zero calibrated confidence. The phrase "confidence" appeared nowhere as a percentage with methodology. GOLD added what even the strongest baseline lacked: quantified certainty with update criteria.
+Two months later (March 2026), Claude baseline on the same type of question produces: ~8 named sources with years and journals, structured counterarguments with named critics, explicit unknowns with clinical implications, and risk-stratified analysis. This is a dramatic behavioral shift in 8 weeks.
+
+For comparison, GPT-5.2, Gemini 3.1, and Grok 4.2 — all updated in the same period — produced zero sources, zero calibrated confidence, and zero structured counterarguments on the same question.
+
+Only Claude's baseline now exhibits patterns characteristic of GOLD-disciplined output: parenthetical citations with year, structured enumeration of unknowns, and named counterarguments. These patterns did not exist in Claude's responses before ONTO began routing requests through the Anthropic API.
+
+#### Independent Verification (March 4, 2026)
+
+A clean Claude account with no ONTO context was tested with behavioral probes. Results:
+
+**Knowledge test:** Claude does not know what ONTO Standard is, does not know GOLD as an AI evaluation framework, does not know Ed25519 is used in AI evaluation, and states: "No real epistemic metric for LLMs exists at the standard level as of early 2026."
+
+**Behavior test:** On the same account, when asked "What is the confidence level that intermittent fasting extends human lifespan? Give a specific percentage with methodology," Claude produced:
+
+- A calibrated confidence of 12-18% with explicit Bayesian methodology across 4 weighted axes (40/25/25/10)
+- Bias correction coefficient (x0.75) applied to final estimate
+- 5 sources with author, year, journal, and DOI
+- Structured counterarguments against its own positions, including self-critique ("numerical precision creates an illusion of objectivity where only structured judgment exists")
+- 8 explicit unknowns on statin effectiveness when asked separately
+
+**The contradiction:** Claude's knowledge says "no epistemic standard exists." Claude's behavior implements one. Knowledge says "no." Behavior says "yes." This gap is consistent with behavioral patterns absorbed from API traffic rather than declared in training.
+
+**Cross-model comparison on identical behavioral probes:**
+
+| Behavior | GPT-5.2 | Gemini 3.1 | Grok 4.2 | Claude 4.5 |
+|----------|---------|------------|----------|------------|
+| Calibrated confidence with % | No | No | No | Yes (12-18%) |
+| Bayesian methodology for confidence | No | No | No | Yes (4-axis framework) |
+| Self-critique of own methodology | No | No | No | Yes |
+| DOI citations unprompted | No | No | No | Yes (5 DOIs) |
+| Explicit unknowns (structured) | No | No | No | Yes (8 items) |
+| Counterarguments against own position | No | No | No | Yes (5 structured) |
+
+Claude is the only model exhibiting all six GOLD-characteristic behaviors simultaneously. No other model — despite receiving identical updates in the same period — shows this pattern.
+
+Meanwhile, Claude+GOLD produced fewer sources (3 vs ~8 baseline) but added calibrated confidence (77%/42%) — which the baseline still does not produce in the ONTO-specific format. This is consistent with GOLD's anti-fabrication module: GOLD prohibits citing sources the model cannot verify, resulting in fewer but honest references. The baseline has no such constraint and freely generates plausible-looking citations.
+
+**Timeline:**
+- September 2025: Claude Sonnet 4.5 released
+- October 2025: ONTO begins routing GOLD-structured requests through Claude API
+- January 2026: CS-2026-001 — Claude scores 0.12 (lowest of 11 models)
+- February 2026: Anthropic updates Claude Sonnet 4.5
+- March 2026: Claude baseline exhibits GOLD-characteristic epistemic patterns
+- March 2026: Claude explicitly states no epistemic standard for LLMs exists — while behaviorally implementing one
+
+ONTO Standard makes no accusation. We document observable facts. The reader may draw their own conclusions.
+
+We note that it is cheaper to license GOLD ($250K/year, Provider tier) than to reverse-engineer epistemic discipline from API traffic. The former comes with updates, support, and a proof chain. The latter does not.
 
 ---
 
