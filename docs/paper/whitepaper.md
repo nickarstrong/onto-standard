@@ -19,9 +19,11 @@ Large language models in production environments exhibit systematic epistemic fa
 
 ONTO Standard addresses this through deterministic discipline enforcement via server-side context injection (GOLD) and auditable regex-based scoring. In a controlled study across 10 commercial LLM systems (n=100 questions per model, 1,000 total evaluations), baseline epistemic quality averaged M=0.92 (SD=0.58) on a composite discipline score. Following GOLD injection on the weakest-performing model (GPT 5.2, OpenAI), composite score improved from 0.53 to 5.38 — a 10× improvement — with cross-domain transfer confirmed in 4 of 5 metric categories.
 
-The scoring methodology uses zero AI in evaluation: five regex-based counters produce deterministic, reproducible scores with Var(Score)=0 for identical inputs. No model produced calibrated numeric confidence at baseline; GOLD created this behavior from zero in 100% of treatment responses.
+The scoring methodology uses zero AI in evaluation: five regex-based counters produce deterministic, reproducible scores with Var(Score)=0 for identical inputs. GOLD operates as pre-injection into the system prompt — the model generates structured output, not ONTO formatting it post-hoc. No model produced calibrated numeric confidence at baseline; GOLD created this behavior from zero in 100% of treatment responses.
 
 This paper presents the measurement protocol, experimental methodology, comparative baseline results, treatment outcomes, field observations, and architectural design of the ONTO Standard system.
+
+ONTO is an exoskeleton for AI. The same model, measurably better.
 
 ---
 
@@ -64,6 +66,10 @@ The analogy: a well-structured scientific paper can be wrong, but its structure 
 
 ONTO enforces the structure.
 
+**Relationship to prior work.** The concept of epistemic calibration in ML systems is not new. Guo et al. (2017) demonstrated systematic overconfidence in deep neural networks and proposed temperature scaling as a post-hoc fix. Epistemic uncertainty decomposition has been an active research area since Kendall & Gal (2017). Hallucination detection benchmarks — HaluEval (Li et al., 2023), FActScorer (Min et al., 2023) — measure whether specific factual claims are grounded. This prior work established the problem domain.
+
+What ONTO introduces is not a new concept — it is a new category of solution. Prior work produces research findings. ONTO produces enforcement infrastructure. The distinction is operational: calibration research tells you a model is overconfident; ONTO prevents overconfident output from reaching the client on every request, deterministically, with a cryptographic proof chain. ONTO does not replace accuracy benchmarks. It is orthogonal to them — a second measurement axis that existing evaluation infrastructure does not address.
+
 ### 2.2 GOLD: Epistemic Context Injection
 
 GOLD (Grounded Ontological Language Discipline) is a curated corpus of epistemic discipline protocols incorporating calibration probes and gold-standard references. GOLD is injected server-side into the LLM's context via system prompt, requiring zero model modification and zero retraining.
@@ -77,6 +83,9 @@ Architecture:
 GOLD never leaves the server.
 Client receives the EFFECT, not the DOCUMENT.
 Analogy: Netflix — you watch the film, you don't download the file.
+```
+
+**Critical distinction:** GOLD is pre-injection, not post-processing. The model generates a structured response — ONTO does not reformat a completed answer. This is why behavioral change occurs: the model *thinks* within the epistemic structure, it does not get formatted into it after the fact.
 ```
 
 GOLD teaches HOW to think, not WHAT to think. When GOLD modules are loaded, the model is constrained to produce epistemically disciplined output through proprietary behavioral protocols. These protocols enforce structured reasoning practices that are measurable by the ONTO scoring engine. The constraint specifications are formalized in the ONTO AI Protocol (v1.0, published at github.com/nickarstrong/onto-protocol).
@@ -873,7 +882,42 @@ Both K(E) and H_max(S) require explicit estimation methods. The ONTO protocol (v
 
 **H_max(S) estimation (model epistemic ceiling):** the maximum epistemic quality a model can produce without external context. Estimated empirically from baseline evaluation across standardized question sets. Our baseline study establishes H_max across 10 models: composite range 0.38–2.06, with CONF=0.00 universally — defining the current ceiling for unaided LLM epistemic output.
 
-### 7.4 Falsifiability Conditions
+### 7.5 Two-Axis Evaluation Framework
+
+Current AI evaluation operates on a single axis: correctness. MMLU, GSM8K, SWE-bench, and their successors ask one question: is the answer right?
+
+ONTO introduces a second, orthogonal axis: epistemic discipline. These axes are independent. A model can occupy any quadrant:
+
+```
+                    HIGH epistemic discipline
+                             |
+              Q2             |              Q1
+     correct output,         |    correct output,
+     no evidence structure   |    evidence structure
+                             |    ← target quadrant
+  low ───────────────────────┼─────────────────────── high
+  correctness                |                    correctness
+              Q3             |              Q4
+     incorrect output,       |    incorrect output,
+     no evidence structure   |    evidence structure
+                             |    (disciplined error —
+                             |     discoverable)
+                    LOW epistemic discipline
+```
+
+**Q1 (high correctness, high discipline):** Ideal output. Claims are right and verifiable. The model shows its work.
+
+**Q2 (high correctness, low discipline):** The dominant mode today. Output happens to be correct but provides no mechanism to verify this. Trust requires faith, not evidence.
+
+**Q3 (low correctness, low discipline):** Hallucination in the classical sense. Wrong and unverifiable.
+
+**Q4 (low correctness, high discipline):** Disciplined error. The model is wrong but shows its sources and uncertainty — making the error *discoverable*. This quadrant is paradoxically valuable: a Q4 response enables correction; a Q2 response does not.
+
+The key insight: accuracy benchmarks cannot distinguish Q1 from Q2, or Q3 from Q4. They see only the horizontal axis. ONTO measures the vertical. A system that moves responses from Q2 → Q1 and Q3 → Q4 creates measurable value regardless of whether it improves accuracy scores.
+
+The practical implication: ONTO is not a replacement for MMLU, BIG-Bench, or SWE-bench. It is a complementary measurement layer. The question "is the model right?" remains important. ONTO adds: "can you tell when it might be wrong?"
+
+
 
 The ONTO framework is explicitly open to refutation by empirical evidence. ONTO's claims are falsified if any of the following is demonstrated:
 
@@ -991,6 +1035,8 @@ Projected impacts are structural consequences of proven capabilities. Specific d
 - **Behavioral transfer duration.** The persistence of GOLD-induced epistemic patterns across conversation sessions has not been controlled for.
 - **Anomaly impact.** Four models exhibited anomalous baseline behavior (§3.4). While documented and accounted for, these reduce the effective clean baseline sample to 6 models.
 - **No human expert validation.** Response accuracy was not verified by domain experts. ONTO measures discipline, not correctness.
+- **Partial signal coverage.** When a provider does not return log probabilities, metrics dependent on logprob data (`logprob_entropy`, `confidence_calibration`) return null. In these cases the composite score is computed from the available signal subset — typically 2–4 of 6 metrics. The system is deterministic over available signals, but signal availability varies by provider and API configuration. Scores computed from partial signal sets are not directly comparable to full-signal scores. This boundary condition is not currently surfaced in the public scoring output and will be addressed in v3.3.
+- **Source verification scope.** DOI verification (introduced in v3.2) validates cited DOIs against the International DOI Foundation registry. However, many legitimate sources lack DOIs: institutional guidelines, WHO and government reports, preprints without assigned DOIs, textbooks, and conference proceedings. These sources are currently scored by format (author + year + journal/institution) without existence verification. The `ss_v` (Source Score Verified) metric applies only to DOI-bearing citations. In F-002, 6 of 7 Grok+GOLD sources were scored by format; only 1 DOI was registry-verified. The distinction between `ss` (format-based) and `ss_v` (registry-verified) must be applied consistently when interpreting source scores.
 
 ---
 
@@ -1034,9 +1080,14 @@ ONTO is an exoskeleton for AI. The same model, measurably better.
 6. Cover TM, Thomas JA (2006) *Elements of Information Theory*, 2nd ed. Wiley-Interscience. ISBN:978-0471241959
 7. Popper KR (1959) *The Logic of Scientific Discovery*. Hutchinson. ISBN:978-0415278447
 
----
+**Prior work on epistemic calibration and hallucination (cited in §2.1):**
 
-## Appendix A: Notation Convention
+8. Guo C, Pleiss G, Sun Y, Weinberger KQ (2017) On calibration of modern neural networks. *ICML*. arXiv:1706.04599
+9. Kendall A, Gal Y (2017) What uncertainties do we need in Bayesian deep learning for computer vision? *NeurIPS*. arXiv:1703.04977
+10. Li J et al. (2023) HaluEval: A large-scale hallucination evaluation benchmark for large language models. *EMNLP*. arXiv:2305.11747
+11. Min S et al. (2023) FActScorer: Fine-grained atomic evaluation of factual precision in long form text generation. *EMNLP*. arXiv:2305.14251
+
+ Notation Convention
 
 This paper uses multiplicative notation exclusively: 10×, 5.4×, 30.8×. Percentage notation (+915%, +2,980%) appears in raw data tables for completeness but is not used in narrative text. Multiplicative notation better represents the magnitude of behavioral change and avoids conflation with accuracy metrics.
 
