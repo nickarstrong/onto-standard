@@ -1058,7 +1058,7 @@ ONTO is an exoskeleton for AI. The same model, measurably better.
 
 **CS-2026-001** — Comparative Study: Epistemic Quality Across 10 Commercial LLM Systems. ONTO Standards Council, February 2026. n=1,000 evaluations (10 models × 100 questions). Treatment: GPT 5.2 + GOLD DIGEST v1.0. Published: github.com/nickarstrong/onto-research
 
-**IR-2026-001** — Independent Technical Review: ONTO Standard Measurement Protocol. Independent observer, March 2026. Three questions (Q51, Q52, Q61) tested across baseline and GOLD treatment conditions. Composite improvement: 21–29× per question (mean 25×), F→A across all three tests. Full methodology: ontostandard.org/docs/reports/IR-2026-001
+**IR-2026-001** — Independent Technical Review: ONTO Standard Measurement Protocol. Independent observer, March 2026. Three questions (Q51, Q52, Q61) tested across baseline and GOLD treatment conditions. Composite improvement: 21–29× per question (mean 25×), F→A across all three tests. Note: higher per-question improvement vs CS-2026-001 mean (10×) reflects question selection — Q51/Q52/Q61 had weaker baselines (composite 0.15–0.22) than the CS-2026-001 mean (0.53). Full methodology: ontostandard.org/reports/view.html?id=IR-2026-001
 
 **FO-2026-003** — Field Observation: Spontaneous Ontological Demand — AI Requests Epistemic Framework Unprompted. ONTO Standards Council, February 2026. Model: Qwen3.5-Plus (Alibaba). Domain: Macroeconomics. Published: ontostandard.org/docs/encounter/
 
