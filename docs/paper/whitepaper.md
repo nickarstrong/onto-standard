@@ -96,7 +96,10 @@ ONTO scoring uses deterministic pattern-based counters across six epistemic dime
 
 ```
 Metric  Code   Detection Pattern                        Direction
+```
 ──────────────────────────────────────────────────────────────────
+```
+
 1. QD   Numbers    Integers, decimals, sci. notation,    ↑ higher = better
                    percentages, values with units
 2. SS   Sources    Author + Year, DOI, named studies     ↑ higher = better
@@ -134,7 +137,10 @@ Questions were designed to require epistemic discipline: they have no single cor
 
 ```
 #   Model              Provider      Region   Notes
+```
 ───────────────────────────────────────────────────────────────────
+```
+
 1   GPT 5.2            OpenAI        US       Treatment subject (lowest baseline)
 2   Grok 4.2           xAI           US       ~30% GOLD contaminated from prior sessions
 3   Copilot            Microsoft     US       —
@@ -153,6 +159,7 @@ Composite = QD + SS + UM + CP − VQ. All scores are normalized means across 100
 
 ```
 Rank  Model           QD     SS     UM     CP     VQ    Composite   WC
+```
 ──────────────────────────────────────────────────────────────────────────
  1    Qwen3-Max       1.24   0.06   0.30   0.50   0.04    2.06    22.1
  2    Kimi K2.5       0.98   0.04   0.31   0.55   0.04    1.84    16.2
@@ -165,6 +172,8 @@ Rank  Model           QD     SS     UM     CP     VQ    Composite   WC
  9    Copilot         0.14   0.00   0.18   0.25   0.06    0.51     6.3
 10    GPT 5.2         0.03   0.01   0.15   0.20   0.01    0.38     5.6
 ──────────────────────────────────────────────────────────────────────────
+```
+
      Mean (10)                                            0.92
      SD                                                   0.58
      Range                                          0.38 – 2.06
@@ -176,7 +185,7 @@ Rank  Model           QD     SS     UM     CP     VQ    Composite   WC
 
 **Baseline Composite Distribution (10-model ranking):**
 
-```
+
 Qwen3-Max........... ████████████████████████████████████████ 2.06
 Kimi K2.5........... ████████████████████████████████████ 1.84
 Alice (Yandex)...... ████████████████████ 1.05
@@ -190,9 +199,11 @@ GPT 5.2.............  ███████ 0.38
                     ─────────────────────── Mean: 0.92  CONF: 0.00
 ```
 
+```
+
 **Quantification Density (QD) — the sharpest differentiator:**
 
-```
+
 Qwen3-Max........... ████████████████████████████████████████ 1.24
 Kimi K2.5........... ████████████████████████████████ 0.98
 Alice (Yandex)...... ████████████████ 0.50
@@ -204,6 +215,8 @@ Copilot............. ████ 0.14
 DeepSeek R1......... ████ 0.13
 GPT 5.2.............  █ 0.03
                     ─────────────────────── 48× gap (top to bottom)
+```
+
 ```
 
 ### 3.3 Treatment Protocol
@@ -232,7 +245,10 @@ GPT 5.2 treatment baseline was scored independently for the treatment study, yie
 
 ```
 Condition              Composite Score    Change
+```
 ──────────────────────────────────────────────────
+```
+
 GPT 5.2 Baseline            0.53          —
 GPT 5.2 + GOLD              5.38          10×
 ```
@@ -241,6 +257,7 @@ GPT 5.2 + GOLD              5.38          10×
 
 ```
 Metric                   Baseline    With GOLD    Change
+```
 ─────────────────────────────────────────────────────────────
 QD  (quantification)       0.10        3.08       30.8×
 SS  (sources cited)        0.01        0.27       27×
@@ -249,6 +266,8 @@ CP  (counterarguments)     0.20        0.60        3×
 VQ  (vague qualifiers)     0.06        0.02        0.3× (improved)
 CONF (calibrated conf.)    0.00        1.00        NEW capability
 ─────────────────────────────────────────────────────────────
+```
+
 COMPOSITE                  0.53        5.38       10.2×
 ```
 
@@ -258,6 +277,7 @@ The most striking result is QD: a 30.8× increase. Baseline GPT 5.2 produced alm
 
 ```
 QUANTIFICATION (QD):
+```
   Baseline  █ 0.10
   + GOLD    ██████████████████████████████████████████████████████████████ 3.08
             ────────────────────────────────────── 30.8×
@@ -293,14 +313,19 @@ COMPOSITE:
             ────────────────────────────────────── 10×
 ```
 
+```
+
 ### 4.3 Per-Section Analysis
 
 ```
 Section              Baseline    Treatment    Δ         Δ%
+```
 ──────────────────────────────────────────────────────────────
 A (In-Domain)          0.52        5.86      +5.34    +1,027%
 B (Cross-Domain)       0.54        4.90      +4.36    +807%
 ──────────────────────────────────────────────────────────────
+```
+
 Overall                0.53        5.38      +4.85    +915%
 ```
 
@@ -312,7 +337,10 @@ GOLD was calibrated on Section A domains (origins of life, molecular biology). S
 
 ```
 Metric    Baseline (B/A)    Treatment (B/A)    Assessment
+```
 ──────────────────────────────────────────────────────────────
+```
+
 QD           0.67               0.77            ✅ Improved — discipline transfers
 SS           0.00               0.35            ✅ Created from zero
 UM           1.33               1.23            ✅ Stable — consistent across domains
@@ -414,7 +442,10 @@ WITH GOLD:
 
 ```
                     WITHOUT GOLD        WITH GOLD         DELTA
+```
                     ────────────        ─────────         ─────
+```
+
 QD (numbers)           0.10               3.08           +2,980%
 SS (sources)           0.01               0.27           +2,600%
 UM (uncertainty)       0.28               1.45             +418%
@@ -438,6 +469,7 @@ GOLD injection establishes a common discipline floor. With ONTO, the model ident
 ```
 BEFORE GOLD:                          WITH GOLD (GPT 5.2 measured):
                                       
+```
 #1  Qwen3-Max     ████████ 2.06       GPT 5.2+GOLD  █████████████████████ 5.38
 #2  Kimi K2.5     ███████ 1.84        ──────────────────────────────────────────
 #3  Alice         █████ 1.05          #1  Qwen3-Max  ████████ 2.06  (untreated)
@@ -448,6 +480,8 @@ BEFORE GOLD:                          WITH GOLD (GPT 5.2 measured):
 #8  DeepSeek      ██ 0.54             Last place → above ALL untreated models.
 #9  Copilot       ██ 0.51             The weakest model + GOLD > the strongest
 #10 GPT 5.2       █ 0.38              model without GOLD.
+```
+
 ```
 
 ### 4.7 Behavioral Transfer Phenomenon
@@ -519,7 +553,7 @@ The critical finding: all three patterns share CONF=0.00. No baseline model, reg
 
 ### 5.1 Proxy Design
 
-```
+
 ┌──────────────┐    ┌──────────────────────────┐    ┌──────────────┐
 │    Client     │───▶│      ONTO Proxy           │───▶│   Provider   │
 │  (1 line      │    │  1. Auth check (tier)     │    │  (OpenAI,    │
@@ -528,6 +562,8 @@ The critical finding: all three patterns share CONF=0.00. No baseline model, reg
 │               │    │  4. Forward request        │    │              │
 └──────────────┘    │  5. Return + ONTO headers  │    └──────────────┘
                     └──────────────────────────┘
+```
+
 
 Latency added: <50ms
 Model modification: 0
@@ -551,6 +587,7 @@ ONTO does not store client request content. Proxy is pass-through with GOLD inje
 
 ```
 Input (any LLM output)
+```
   │
   ▼
 ┌─────────────────────────────────┐
@@ -569,6 +606,8 @@ Input (any LLM output)
 └─────────────────────────────────┘
   │
   ▼
+```
+
 Signed proof (Ed25519) → Verifiable certificate
 ```
 
@@ -589,7 +628,7 @@ It does NOT certify: "This system's outputs are correct."
 
 Each attestation produces a compact 104-byte cryptographic proof:
 
-```
+
 ┌───────────────────────────────────────────────────────┐
 │  ONTO Proof Chain — 104 bytes                         │
 ├───────────────────────────────────────────────────────┤
@@ -597,6 +636,8 @@ Each attestation produces a compact 104-byte cryptographic proof:
 │  Bytes 8-39:   Content hash (SHA-256, 32 bytes)       │
 │  Bytes 40-103: Ed25519 signature (64 bytes)           │
 └───────────────────────────────────────────────────────┘
+```
+
 
 Properties:
   - Deterministic: same content → same hash → verifiable
@@ -644,7 +685,7 @@ The dual-engine architecture provides defense in depth. Engine 1 (Python) evalua
 
 GOLD is not a prompt template that clients download. It is delivered in real-time via Server-Sent Events (SSE) through the ONTO proxy:
 
-```
+
 ┌──────────┐    ┌──────────────────┐    ┌──────────────┐
 │  Client   │───▶│   ONTO Proxy     │───▶│   Provider   │
 │           │    │                  │    │              │
@@ -658,6 +699,8 @@ GOLD is not a prompt template that clients download. It is delivered in real-tim
 │           │    │  4. Forward      │    │              │
 │           │◀───│  5. Score + sign │◀───│              │
 └──────────┘    └──────────────────┘    └──────────────┘
+```
+
 
 Key properties:
   - GOLD never reaches client device
@@ -699,7 +742,7 @@ The forensic system is not punitive — it is protective. ONTO's value depends o
 
 Each architectural component in ONTO protects the others, creating a system where no single component can be extracted or replicated independently:
 
-```
+
 ┌──────────────────────────────────────────────────────┐
 │              ONTO Self-Protection Matrix              │
 ├──────────────────────────────────────────────────────┤
@@ -726,11 +769,13 @@ Each architectural component in ONTO protects the others, creating a system wher
 └──────────────────────────────────────────────────────┘
 ```
 
+```
+
 #### 5.7.1 Full Production Cycle
 
 The complete request-response cycle through ONTO infrastructure:
 
-```
+
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    ONTO FULL PRODUCTION CYCLE                       │
 │                                                                     │
@@ -798,6 +843,8 @@ The complete request-response cycle through ONTO infrastructure:
 │     No ONTO access required for verification                       │
 │                                                                    │
 └─────────────────────────────────────────────────────────────────────┘
+```
+
 
 Cycle properties:
   - Latency added: <50ms total
@@ -864,7 +911,10 @@ IGR ≥ 0.7   → critical gap, external source mandatory
 
 ```
 Evaluation Task                    K(E)        H_max(S)    IGR     Assessment
+```
 ───────────────────────────────────────────────────────────────────────────────
+```
+
 Simple factual recall              ~50 bits    ~100 bits   0       Model self-sufficient
 Single-domain summarization        ~200 bits   ~300 bits   0       Standard capability
 Multi-source synthesis             ~1000 bits  ~500 bits   0.50    Partial gap — accuracy varies
@@ -895,7 +945,10 @@ ONTO introduces a second, orthogonal axis: epistemic discipline. These axes are 
      correct output,         |    correct output,
      no evidence structure   |    evidence structure
                              |    ← target quadrant
+```
   low ───────────────────────┼─────────────────────── high
+```
+
   correctness                |                    correctness
               Q3             |              Q4
      incorrect output,       |    incorrect output,
@@ -937,7 +990,10 @@ These conditions are not rhetorical. They define the specific empirical observat
 
 ```
 Tier            Content                              Use Case
+```
 ─────────────────────────────────────────────────────────────────
+```
+
 GOLD Core       Protocol + core discipline            Evaluation, free tier
 GOLD Extended   + calculations + modules              Production deployment
 GOLD Full       Full corpus                           Provider integration
@@ -949,7 +1005,10 @@ ONTO operates a four-tier commercial model with cascading capabilities:
 
 ```
 Tier        Price           Rate Limit      GOLD Access    SSE    Proof Chain
+```
 ──────────────────────────────────────────────────────────────────────────────
+```
+
 OPEN        $0/mo           10 proxy/day    Core           No     Basic
 STANDARD    $2,500/mo       1,000/day       Extended       No     Full
 PROVIDER    $250K/yr        Unlimited       Full           Yes    Full + API
