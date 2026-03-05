@@ -452,7 +452,7 @@ BEFORE GOLD:                          WITH GOLD (GPT 5.2 measured):
 
 ### 4.7 Behavioral Transfer Phenomenon
 
-An unexpected finding from a separate live proxy study (CS-2026-002, uncontrolled observation): after exposure to GOLD context, some models maintain elevated epistemic discipline scores in subsequent requests without GOLD present. This observation is preliminary and uncontrolled; it suggests residual behavioral transfer but requires controlled experimental verification.
+An unexpected finding from a separate independent review (IR-2026-001): after exposure to GOLD context, some models maintain elevated epistemic discipline scores in subsequent requests without GOLD present. This observation is preliminary and uncontrolled; it suggests residual behavioral transfer but requires controlled experimental verification.
 
 The Grok contamination finding (§3.4) provides independent corroboration: approximately 30% of Grok's responses exhibited GOLD-like patterns from prior conversation history, demonstrating that GOLD exposure produces measurable residual effects.
 
@@ -1058,7 +1058,7 @@ ONTO is an exoskeleton for AI. The same model, measurably better.
 
 **CS-2026-001** — Comparative Study: Epistemic Quality Across 10 Commercial LLM Systems. ONTO Standards Council, February 2026. n=1,000 evaluations (10 models × 100 questions). Treatment: GPT 5.2 + GOLD DIGEST v1.0. Published: github.com/nickarstrong/onto-research
 
-**CS-2026-002** — Live Quality Assurance: ONTO GOLD Proxy Injection Across 9 Baseline Models. ONTO Standards Council, February 2026. Anthropic proxy pipeline, GOLD Core tier. 4–12× improvement over all baselines.
+**IR-2026-001** — Independent Technical Review: ONTO Standard Measurement Protocol. Independent observer, March 2026. Three questions (Q51, Q52, Q61) tested across baseline and GOLD treatment conditions. Composite improvement: 21–29× per question (mean 25×), F→A across all three tests. Full methodology: ontostandard.org/docs/reports/IR-2026-001
 
 **FO-2026-003** — Field Observation: Spontaneous Ontological Demand — AI Requests Epistemic Framework Unprompted. ONTO Standards Council, February 2026. Model: Qwen3.5-Plus (Alibaba). Domain: Macroeconomics. Published: ontostandard.org/docs/encounter/
 
