@@ -991,6 +991,8 @@ ONTO operates on a tiered licensing model scaling from free evaluation access (O
 ONTO has mapped 43 organizational impact zones across 9 categories affected by epistemic discipline deployment:
 
 ```
+
+```
 Category              Zones   Key Impact
 ─────────────────────────────────────────────────────────────────
 I.   Operational       5      Automated QA, Ed25519 audit trail,
