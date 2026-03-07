@@ -1153,6 +1153,58 @@ a.info-val:hover { color: var(--text); }
 
             <div class="dash-section-divider"></div>
 
+            <!-- ══════════ SECTION: SCORE ANY TEXT ══════════ -->
+            <div class="dash-section">
+                <div class="dash-section-header">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                    <div class="dash-section-title">Score Any Text</div>
+                    <span class="dash-section-subtitle">Paste any AI response — get epistemic score</span>
+                </div>
+
+                <div class="dash-card-clean">
+                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">
+                        Paste a baseline AI response (from any model, any interface). The scoring engine measures epistemic discipline: quantification, sources, uncertainty, counterarguments.
+                    </div>
+                    <input type="text" id="score-context" placeholder="Original question (optional — improves accuracy)" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box;margin-bottom:8px">
+                    <textarea id="score-text-input" placeholder="Paste AI response here..." style="width:100%;min-height:140px;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:10px;font-size:11px;color:var(--text);line-height:1.6;resize:vertical;box-sizing:border-box;font-family:var(--mono)"></textarea>
+                    <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
+                        <button class="btn-minimal" onclick="scoreAnyText()" id="score-text-btn" style="font-size:12px;padding:8px 20px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Score</button>
+                        <span id="score-text-status" style="font-size:11px;color:var(--text-muted)"></span>
+                    </div>
+
+                    <div id="score-text-result" class="hidden" style="margin-top:14px">
+                        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px">
+                            <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 16px;text-align:center;min-width:70px">
+                                <div style="font-size:9px;color:var(--text-muted)">SCORE</div>
+                                <div id="sat-score" style="font-size:22px;font-weight:800;color:var(--accent)">—</div>
+                            </div>
+                            <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 16px;text-align:center;min-width:70px">
+                                <div style="font-size:9px;color:var(--text-muted)">GRADE</div>
+                                <div id="sat-grade" style="font-size:22px;font-weight:800;color:var(--text)">—</div>
+                            </div>
+                            <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 16px;text-align:center;min-width:70px">
+                                <div style="font-size:9px;color:var(--text-muted)">RISK</div>
+                                <div id="sat-risk" style="font-size:22px;font-weight:800;color:#ef4444">—</div>
+                            </div>
+                        </div>
+                        <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px;font-family:var(--mono)">METRIC BREAKDOWN</div>
+                        <div id="sat-metrics" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"></div>
+                        <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;font-family:var(--mono)">COMPLIANCE</div>
+                        <div id="sat-compliance" style="font-size:11px;color:var(--text-secondary)"></div>
+                        <div id="sat-doi-section" class="hidden" style="margin-top:10px">
+                            <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;font-family:var(--mono)">DOI VERIFICATION</div>
+                            <div id="sat-doi" style="font-size:11px;color:var(--text-secondary);line-height:1.8"></div>
+                        </div>
+                        <div id="sat-sources-section" class="hidden" style="margin-top:10px">
+                            <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;font-family:var(--mono)">SOURCE CITATIONS</div>
+                            <div id="sat-sources" style="font-size:11px;color:var(--text-secondary)"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dash-section-divider"></div>
+
             <!-- ══════════ SECTION: INTEGRATION & TOOLS ══════════ -->
             <div class="dash-section">
                 <div class="dash-section-header">
@@ -3432,6 +3484,23 @@ async function runProvProxyTest() {
         status.innerHTML = `<span style="color:var(--accent)">✓</span> ${elapsed}ms`;
         result.textContent = responseText.substring(0, 1200) + (responseText.length > 1200 ? '...' : '');
         result.classList.remove('hidden');
+        
+        // Score the response
+        try {
+            const evalRes = await fetch(`${API_BASE}/v1/evaluate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+                body: JSON.stringify({ output: responseText, context: question, domain: 'general' })
+            });
+            if (evalRes.ok) {
+                const evalData = await evalRes.json();
+                const risk = evalData.risk_score ?? 0.5;
+                const quality = ((1.0 - risk) * 10).toFixed(1);
+                const grade = evalData.compliance_class || '?';
+                status.innerHTML += ` · Score: <b style="color:var(--accent)">${quality}</b> · Grade: <b>${grade}</b>`;
+            }
+        } catch(scoreErr) { console.log('Score failed:', scoreErr); }
+        
     } catch(e) {
         status.textContent = `Error: ${e.message}`;
         status.style.color = '#ef4444';
@@ -3514,6 +3583,29 @@ async function testStandardProxy() {
         
         result.textContent = responseText.substring(0, 1500) + (responseText.length > 1500 ? '...' : '');
         result.classList.remove('hidden');
+        
+        // Score the response via /v1/evaluate
+        try {
+            const evalRes = await fetch(`${API_BASE}/v1/evaluate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+                body: JSON.stringify({ output: responseText, context: testPrompt, domain: 'general' })
+            });
+            if (evalRes.ok) {
+                const evalData = await evalRes.json();
+                const risk = evalData.risk_score ?? 0.5;
+                const quality = ((1.0 - risk) * 10).toFixed(1);
+                const grade = evalData.compliance_class || evalData.grade || '?';
+                document.getElementById('live-score').textContent = quality;
+                document.getElementById('live-grade').textContent = grade;
+                document.getElementById('live-response').textContent = responseText.substring(0, 1500) + (responseText.length > 1500 ? '...' : '');
+                const proofEl = document.getElementById('live-proof');
+                if (proofEl) { proofEl.textContent = evalData.proof_hash ? evalData.proof_hash.slice(0,16)+'...' : '—'; }
+                document.getElementById('live-test-result').classList.remove('hidden');
+            }
+        } catch(scoreErr) {
+            console.log('Score call failed:', scoreErr);
+        }
         
     } catch (e) {
         status.textContent = `✗ ${e.message}`;
@@ -3929,6 +4021,118 @@ async function runModelTest() {
     }
     btn.disabled = false; btn.textContent = 'Send';
 }
+
+async function scoreAnyText() {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) { showToast('Please sign in first', 'error'); return; }
+    const text = document.getElementById('score-text-input').value.trim();
+    if (!text) { showToast('Paste a response to score', 'error'); return; }
+    const context = document.getElementById('score-context').value.trim() || '';
+    const btn = document.getElementById('score-text-btn');
+    const status = document.getElementById('score-text-status');
+    btn.disabled = true; btn.textContent = 'Scoring...';
+    status.textContent = 'Running scoring engine...';
+    document.getElementById('score-text-result').classList.add('hidden');
+    try {
+        const res = await fetch(`${API_BASE}/v1/evaluate`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+            body: JSON.stringify({ output: text, context: context, domain: 'general' })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+            status.textContent = data.detail || 'Scoring failed';
+            status.style.color = '#ef4444';
+            btn.disabled = false; btn.textContent = 'Score'; return;
+        }
+        const risk = data.risk_score ?? 0.5;
+        const quality = ((1.0 - risk) * 10).toFixed(1);
+        const grade = data.compliance_class || data.grade || '?';
+        document.getElementById('sat-score').textContent = quality;
+        document.getElementById('sat-score').style.color = risk < 0.3 ? 'var(--accent)' : risk < 0.6 ? '#f59e0b' : '#ef4444';
+        document.getElementById('sat-grade').textContent = grade;
+        document.getElementById('sat-risk').textContent = risk.toFixed(3);
+        // Metric breakdown — check multiple response paths
+        const factors = data.factors || {};
+        const gm = factors.gold_markers || {};
+        const metrics = data.metrics || data.metric_scores || {};
+        const metricEl = document.getElementById('sat-metrics');
+        // Try gold_markers first (direct from scoring engine), fallback to top-level metrics
+        const metricValues = {
+            'QD': gm.quantification_density ?? gm.qd ?? metrics.qd ?? metrics.quantification_density,
+            'SS': gm.source_specificity ?? gm.ss ?? metrics.ss ?? metrics.source_specificity,
+            'UM': gm.uncertainty_marking ?? gm.um ?? metrics.um ?? metrics.uncertainty_marking,
+            'CP': gm.counterargument_presence ?? gm.cp ?? metrics.cp ?? metrics.counterargument_presence,
+            'VQ': gm.vague_qualifiers ?? gm.vq ?? metrics.vq ?? metrics.vague_qualifiers,
+            'CONF': gm.confidence_calibration ?? gm.conf ?? metrics.conf
+        };
+        let mHtml = '';
+        for (const [label, v] of Object.entries(metricValues)) {
+            if (v !== undefined && v !== null) {
+                const val = typeof v === 'number' ? v.toFixed(2) : v;
+                const isGood = label !== 'VQ' ? v > 0.3 : v < 0.1;
+                mHtml += `<div style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:6px 12px;text-align:center;min-width:55px">
+                    <div style="font-size:8px;color:var(--text-muted);letter-spacing:0.5px">${label}</div>
+                    <div style="font-size:16px;font-weight:700;color:${isGood?'var(--accent)':'#ef4444'};font-family:var(--mono)">${val}</div>
+                </div>`;
+            }
+        }
+        // Also show source_citations count if available
+        const srcCount = gm.source_citations;
+        if (srcCount !== undefined) {
+            mHtml += `<div style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:6px 12px;text-align:center;min-width:55px">
+                <div style="font-size:8px;color:var(--text-muted);letter-spacing:0.5px">SRCS</div>
+                <div style="font-size:16px;font-weight:700;color:${srcCount>0?'var(--accent)':'#ef4444'};font-family:var(--mono)">${srcCount}</div>
+            </div>`;
+        }
+        metricEl.innerHTML = mHtml || '<span style="font-size:10px;color:var(--text-muted)">Detailed metrics not returned</span>';
+        // DOI Verification
+        const doiData = gm.doi_verification || {};
+        const doiSection = document.getElementById('sat-doi-section');
+        const doiEl = document.getElementById('sat-doi');
+        if (doiData.dois_found !== undefined) {
+            const found = doiData.dois_found || 0;
+            const verified = doiData.verified || 0;
+            const unverified = doiData.unverified || 0;
+            const errors = doiData.errors || 0;
+            const ssv = doiData.ss_v;
+            let doiHtml = `<span style="font-family:var(--mono)">DOIs found: <b>${found}</b>`;
+            if (found > 0) {
+                doiHtml += ` · Verified: <b style="color:var(--accent)">${verified}</b>`;
+                if (unverified > 0) doiHtml += ` · Unverified: <b style="color:#ef4444">${unverified}</b>`;
+                if (errors > 0) doiHtml += ` · Errors: <b style="color:#f59e0b">${errors}</b>`;
+            }
+            if (ssv !== null && ssv !== undefined) doiHtml += ` · SS(v): <b>${ssv}</b>`;
+            doiHtml += '</span>';
+            // Show individual DOIs if details available
+            const details = doiData.details || {};
+            if (details.dois_found && details.dois_found.length > 0) {
+                doiHtml += '<div style="margin-top:6px;font-size:10px;color:var(--text-muted);font-family:var(--mono)">';
+                details.dois_found.forEach(d => {
+                    const isV = (details.verified || []).includes(d);
+                    doiHtml += `<div>${isV ? '✓' : '✗'} ${d}</div>`;
+                });
+                doiHtml += '</div>';
+            }
+            doiEl.innerHTML = doiHtml;
+            doiSection.classList.remove('hidden');
+        } else {
+            doiSection.classList.add('hidden');
+        }
+        // Compliance
+        const compEl = document.getElementById('sat-compliance');
+        const comp = data.compliance_label || data.compliance || '';
+        const layer = data.layer || '';
+        compEl.textContent = [comp, layer ? `Layer: ${layer}` : ''].filter(Boolean).join(' · ') || '—';
+        document.getElementById('score-text-result').classList.remove('hidden');
+        status.textContent = `Scored ${text.length} chars`;
+    } catch(e) {
+        status.textContent = 'Error: ' + e.message;
+        status.style.color = '#ef4444';
+    }
+    btn.disabled = false; btn.textContent = 'Score';
+}
+
 async function registerModel() {
     const nameInput = document.getElementById('new-model-name');
     const name = nameInput?.value?.trim();
