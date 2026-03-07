@@ -1,7 +1,8 @@
 # ONTO Field Observation FO-2026-003
 
 **Title:** Spontaneous Ontological Demand — AI Requests Epistemic Framework Unprompted  
-**Date:** 2026-02-19  
+**Date:** 2026-02-19
+**Category:** Macroeconomics  
 **Observer:** Tommy Lee  
 **Model:** Qwen3.5-Plus (Alibaba), no GOLD injection  
 **Domain:** Macroeconomics (Quantitative Easing)  

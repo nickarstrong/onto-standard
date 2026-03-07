@@ -1,6 +1,7 @@
 # ONTO-GOLD BASELINE ANALYSIS REPORT
 
 **Date:** 2026-02-14
+**Category:** Comparative Study
 **Models tested:** 11
 **Questions:** 100 (50 in-domain, 50 cross-domain)
 **Condition:** Baseline (no GOLD context)

@@ -1,6 +1,7 @@
 # ONTO-GOLD VALIDATION REPORT: BEFORE → AFTER
 
-**Date:** 2026-02-14  
+**Date:** 2026-02-14
+**Category:** Efficiency Report  
 **Subject Model:** GPT 5.2 (OpenAI)  
 **Treatment:** ONTO-GOLD DIGEST v1.0  
 **Design:** Same 100 questions, same model, ± GOLD context  
