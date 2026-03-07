@@ -1,4 +1,7 @@
-# I Tested ONTO Standard. Here's What I Found.
+﻿# I Tested ONTO Standard. Here's What I Found.
+
+**Date:** 2026-03-03
+**Category:** Independent Review
 
 *An independent technical review of an emerging AI measurement protocol. I ran the tests myself, compared before and after, and scored the results. Full breakdown below.*
 
