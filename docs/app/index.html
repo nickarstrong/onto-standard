@@ -167,6 +167,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Ar
 /* === DASHBOARD === */
 .dashboard { display: none; min-height: 100vh; }
 .dashboard.active { display: flex; }
+#auth-screen { display: none; }
 .sidebar { display: none; width: 240px; background: var(--bg-card); border-right: 1px solid var(--border); padding: 0; position: fixed; height: 100vh; flex-direction: column; }
 .sidebar-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
 .sidebar-header-actions { display: flex; align-items: center; gap: 6px; }
@@ -730,8 +731,6 @@ a.info-val:hover { color: var(--text); }
 <div class="auth-menu-overlay" id="auth-menu-overlay" onclick="closeAuthMenu()"></div>
 
 <div class="mobile-overlay" id="mobile-overlay" onclick="toggleMobile()"></div>
-
-<script>if(localStorage.getItem('onto_logged_in')==='true')document.write('<style id="auth-preload-hide">#auth-screen{display:none!important}</style>');</script>
 
 <!-- AUTH SCREEN -->
 <div class="auth-container" id="auth-screen">
@@ -2296,8 +2295,6 @@ function handleSessionExpired() {
     localStorage.removeItem('onto_user');
     localStorage.removeItem('onto_token');
     localStorage.removeItem('onto_logged_in');
-    const ps = document.getElementById('auth-preload-hide');
-    if (ps) ps.remove();
     document.getElementById('auth-screen').style.display = 'flex';
     document.getElementById('dashboard').classList.remove('active');
     showLogin();
@@ -2891,16 +2888,11 @@ function handleLogout() {
     
     document.getElementById('auth-screen').style.display = 'flex';
     document.getElementById('dashboard').classList.remove('active');
-    // Remove preload hide style
-    const preloadStyle = document.getElementById('auth-preload-hide');
-    if (preloadStyle) preloadStyle.remove();
     showLogin();
 }
 
 // === DASHBOARD ===
 function showAuthScreen() {
-    const preloadStyle = document.getElementById('auth-preload-hide');
-    if (preloadStyle) preloadStyle.remove();
     document.getElementById('auth-screen').style.display = 'flex';
     document.getElementById('dashboard').classList.remove('active');
 }
