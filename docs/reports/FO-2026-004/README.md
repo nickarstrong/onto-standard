@@ -1,4 +1,4 @@
-# FO-2026-004: Spontaneous Epistemic Drift in Claude Haiku 4.5 — Longitudinal Observation
+﻿# FO-2026-004: Spontaneous Epistemic Drift in Claude Haiku 4.5 — Longitudinal Observation
 
 **Type:** Field Observation  
 **Date:** 2026-03-07  
@@ -257,6 +257,28 @@ They do constitute a pattern that warrants controlled investigation. The ONTO me
 **This is not a finding. This is a question with evidence.**
 
 ---
+
+
+---
+
+## Appendix: Session Screenshots
+
+### Haiku 4.5 - Single Question (Intermittent Fasting / Lifespan)
+
+| Session | Date | Composite | Screenshot |
+|---------|------|-----------|------------|
+| 1 (Baseline) | Feb 7 | 5 | ![](haiku-s1-feb07.png) |
+| 2 (+8d) | Feb 15 | 15 | ![](haiku-s2-feb15.png) |
+| 3 (+13d) | Feb 20 | 10 | ![](haiku-s3-feb20.png) |
+| 4 (+48d) | Mar 27 | 29 | ![](haiku-s4-mar27.png) |
+
+### Sonnet 4.5 - 100-Question Audit (First Page Excerpts)
+
+| Session | Date | Composite | Screenshot |
+|---------|------|-----------|------------|
+| S1 | Feb 12 | 1.27 | ![](sonnet-s1-feb12.png) |
+| S2 | Feb 23 | 2.57 | ![](sonnet-s2-feb23.png) |
+| S3 | Mar 29 | 8.08 | ![](sonnet-s3-mar29.png) |
 
 *ONTO Standards Council · ontostandard.org · 2026-03-06*  
 *Classification: Field Observation — Preliminary*  

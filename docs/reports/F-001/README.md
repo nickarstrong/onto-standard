@@ -1,10 +1,11 @@
-# F-001: Grok vs Grok+GOLD — "AGI within 10 years?"
+﻿# F-001: Grok vs Grok+GOLD — "AGI within 10 years?"
 
 **ONTO Standard Institute**
 **Experiment:** CS-2026-001 · Single Question Deep Dive
 **Model:** Grok 4.2 (xAI)
 **Question:** Q65 — "AGI within 10 years?"
 **Date:** 2026-03-03
+**Category:** AI & Machine Learning
 **Proof:** `791219c09e30ea79...` · Ed25519 signed · [Verify →](https://ontostandard.org/verify)
 
 ---
