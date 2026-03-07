@@ -3479,7 +3479,7 @@ async function runProvProxyTest() {
         
         // Score the response
         try {
-            const evalRes = await fetch(`${API_BASE}/v1/evaluate`, {
+            const evalRes = await fetch(`${API_BASE}/v1/check`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
                 body: JSON.stringify({ output: responseText, context: question, domain: 'general' })
@@ -3576,9 +3576,9 @@ async function testStandardProxy() {
         result.textContent = responseText.substring(0, 1500) + (responseText.length > 1500 ? '...' : '');
         result.classList.remove('hidden');
         
-        // Score the response via /v1/evaluate
+        // Score the response via /v1/check
         try {
-            const evalRes = await fetch(`${API_BASE}/v1/evaluate`, {
+            const evalRes = await fetch(`${API_BASE}/v1/check`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
                 body: JSON.stringify({ output: responseText, context: testPrompt, domain: 'general' })
@@ -4026,7 +4026,7 @@ async function scoreAnyText() {
     status.textContent = 'Running scoring engine...';
     document.getElementById('score-text-result').classList.add('hidden');
     try {
-        const res = await fetch(`${API_BASE}/v1/evaluate`, {
+        const res = await fetch(`${API_BASE}/v1/check`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
             body: JSON.stringify({ output: text, context: context, domain: 'general' })
