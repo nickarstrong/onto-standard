@@ -1,336 +1,405 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ONTO тАФ Reports</title>
-<meta name="description" content="ONTO field observations, comparative studies, and efficiency reports. Verified epistemic measurement data across production AI models.">
-<meta name="robots" content="index, follow">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='17' fill='white'/%3E%3Cpath d='M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z' fill='%230a0a0a'/%3E%3C/svg%3E">
-
-<!-- Schema.org -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  "name": "ONTO Reports",
-  "description": "Field observations, comparative studies, and efficiency reports from ONTO Standards Council",
-  "url": "https://ontostandard.org/reports/",
-  "publisher": {
-    "@type": "Organization",
-    "name": "ONTO Standards Council",
-    "url": "https://ontostandard.org"
-  }
-}
-</script>
-
+<title>Reports - ONTO Standard</title>
+<meta name="description" content="Field observations, comparative studies, and efficiency measurements across production AI models. All data reproducible.">
 <style>
-:root {
-    color-scheme: dark;
-    --bg: #0a0a0a;
-    --bg-card: #1a1a1a;
-    --bg-elevated: #242424;
-    --border: #333333;
-    --border-hover: #444444;
-    --text: #fafafa;
-    --text-secondary: #a0a0a0;
-    --text-muted: #606060;
-    --accent: #15803d;
-    --accent-hover: #166534;
-    --accent-subtle: rgba(21, 128, 61, 0.08);
-}
-[data-theme="light"] {
-    color-scheme: light;
-    --bg: #ffffff;
-    --bg-card: #ffffff;
-    --bg-elevated: #f5f5f5;
-    --border: #e5e7eb;
-    --border-hover: #d1d5db;
-    --text: #111827;
-    --text-secondary: #6b7280;
-    --text-muted: #9ca3af;
-    --accent-subtle: rgba(21, 128, 61, 0.05);
-}
+  :root {
+    --bg: #0c0f14;
+    --panel: #121722;
+    --border: #1d2330;
+    --accent: #2ec27e;
+    --text: #e0e0e0;
+    --dim: #7a7a7a;
+    --mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
     background: var(--bg);
     color: var(--text);
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-}
+    font-family: var(--sans);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
 
-/* Layout */
-.container { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
 
-/* Header */
-.header { margin-bottom: 40px; }
-.header-nav { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; font-size: 13px; color: var(--text-muted); }
-.header-nav a { color: var(--text-muted); text-decoration: none; }
-.header-nav a:hover { color: var(--text); }
-.header-nav .sep { opacity: 0.4; }
-.header-nav .current { color: var(--text-secondary); }
+  /* ── Nav ── */
+  .nav {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--dim);
+    margin-bottom: 32px;
+  }
+  .nav a {
+    color: var(--dim);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .nav a:hover { color: var(--accent); }
+  .nav span { color: var(--dim); margin: 0 6px; }
 
-.header h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px; }
-.header p { font-size: 14px; color: var(--text-secondary); max-width: 560px; }
+  /* ── Header ── */
+  h1 {
+    font-family: var(--mono);
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
 
-/* Stats bar */
-.stats { display: flex; gap: 32px; margin-bottom: 32px; padding: 12px 0; border-bottom: 1px solid var(--border); }
-.stat { font-size: 12px; color: var(--text-muted); letter-spacing: 0.04em; text-transform: uppercase; }
-.stat strong { color: var(--accent); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .subtitle {
+    color: var(--dim);
+    font-size: 15px;
+    margin-bottom: 32px;
+    max-width: 600px;
+  }
 
-/* Filters */
-.filters { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
-.filter-btn {
-    font-size: 12px; padding: 5px 12px; border: 1px solid var(--border); border-radius: 4px;
-    background: transparent; color: var(--text-secondary); cursor: pointer;
-    transition: all 0.15s; font-family: inherit;
-}
-.filter-btn:hover { border-color: var(--border-hover); color: var(--text); }
-.filter-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-subtle); }
+  /* ── Stats ── */
+  .stats {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 32px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .stats strong {
+    color: var(--text);
+    font-weight: 600;
+  }
 
-/* Report cards */
-.reports { display: flex; flex-direction: column; gap: 1px; }
+  /* ── Reports list ── */
+  .reports {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
 
-.report {
-    display: grid;
-    grid-template-columns: 72px 1fr auto;
-    gap: 12px;
+  .report-card {
+    display: flex;
     align-items: center;
-    padding: 14px 16px;
+    gap: 20px;
+    padding: 20px 24px;
+    background: var(--panel);
     border: 1px solid var(--border);
     border-radius: 6px;
-    margin-bottom: 6px;
-    cursor: pointer;
-    transition: all 0.15s;
     text-decoration: none;
-    color: inherit;
-}
-.report:hover { border-color: var(--border-hover); background: var(--bg-card); }
+    color: var(--text);
+    transition: border-color 0.15s, background 0.15s;
+    cursor: pointer;
+  }
+  .report-card:hover {
+    border-color: var(--accent);
+    background: #151c28;
+  }
 
-.report-id {
-    font-size: 11px; font-weight: 600; font-family: 'SF Mono', 'Fira Code', monospace;
-    color: var(--accent); letter-spacing: 0.02em; white-space: nowrap;
-}
+  .badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-align: center;
+    min-width: 36px;
+    line-height: 1;
+  }
+  .badge-id {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--dim);
+    display: block;
+    margin-top: 3px;
+    text-align: center;
+  }
 
-.report-body { min-width: 0; }
-.report-title {
-    font-size: 14px; font-weight: 500; color: var(--text);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.report-meta {
-    font-size: 12px; color: var(--text-muted); margin-top: 2px;
-    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
-}
-.report-meta .sep { opacity: 0.3; }
+  /* Badge colors by type */
+  .type-F   .badge { background: #1e3a5f; color: #6db3f2; }
+  .type-FO  .badge { background: #3d2e0a; color: #e8a838; }
+  .type-IR  .badge { background: #0e3324; color: #2ec27e; }
+  .type-CS  .badge { background: #1a2d1a; color: #4caf50; }
+  .type-ER  .badge { background: #3a1a1a; color: #e06060; }
+  .type-DS  .badge { background: #2a1a3a; color: #b080d0; }
+  .type-MB  .badge { background: #2a1a3a; color: #b080d0; }
 
-.report-tag {
-    font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
-    padding: 2px 8px; border-radius: 3px; white-space: nowrap;
-}
-.tag-fo { color: #a78bfa; background: rgba(167, 139, 250, 0.1); }
-.tag-cs { color: #60a5fa; background: rgba(96, 165, 250, 0.1); }
-.tag-er { color: #34d399; background: rgba(52, 211, 153, 0.1); }
-.tag-ir { color: #f472b6; background: rgba(244, 114, 182, 0.1); }
-.tag-mb { color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
+  .report-info { flex: 1; min-width: 0; }
 
-.report-date { font-size: 12px; color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .report-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
 
-/* Empty state */
-.empty { text-align: center; padding: 48px 0; color: var(--text-muted); font-size: 14px; }
+  .report-meta {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--dim);
+  }
 
-/* Footer */
-.footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); }
-.footer a { color: var(--text-secondary); text-decoration: none; }
-.footer a:hover { color: var(--text); }
+  .report-date {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--dim);
+    white-space: nowrap;
+  }
 
-/* Mobile */
-@media (max-width: 640px) {
-    .container { padding: 24px 16px 64px; }
-    .report { grid-template-columns: 1fr; gap: 4px; }
-    .report-id { font-size: 10px; }
-    .report-date { display: none; }
+  /* ── Loading / Error ── */
+  .loading {
+    text-align: center;
+    padding: 60px 0;
+    color: var(--dim);
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+  .loading .spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error {
+    text-align: center;
+    padding: 40px;
+    color: #e06060;
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+
+  /* ── Footer ── */
+  footer {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--dim);
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  footer a {
+    color: var(--dim);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  footer a:hover { color: var(--accent); }
+  footer .sep { color: #333; }
+
+  @media (max-width: 600px) {
+    .container { padding: 24px 16px 60px; }
+    h1 { font-size: 24px; }
     .stats { gap: 16px; flex-wrap: wrap; }
-}
+    .report-card { padding: 16px; gap: 14px; }
+    .report-date { display: none; }
+  }
 </style>
 </head>
 <body>
 
 <div class="container">
+  <nav class="nav">
+    <a href="/">ONTO</a>
+    <span>/</span>
+    <span>Reports</span>
+  </nav>
 
-    <!-- Header -->
-    <div class="header">
-        <div class="header-nav">
-            <a href="/">ONTO</a>
-            <span class="sep">/</span>
-            <span class="current">Reports</span>
-        </div>
-        <h1>Reports</h1>
-        <p>Field observations, comparative studies, and efficiency measurements across production AI models. All data reproducible.</p>
+  <h1>Reports</h1>
+  <p class="subtitle">Field observations, comparative studies, and efficiency measurements across production AI models. All data reproducible.</p>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="reports" id="reports">
+    <div class="loading">
+      <div class="spinner"></div>
+      <div>Loading reports...</div>
     </div>
+  </div>
 
-    <!-- Stats -->
-    <div class="stats" id="stats">
-        <div class="stat"><strong id="stat-total">7</strong> reports</div>
-        <div class="stat"><strong id="stat-models">11</strong> models tested</div>
-        <div class="stat"><strong id="stat-questions">100</strong> questions scored</div>
-    </div>
-
-    <!-- Filters -->
-    <div class="filters">
-        <button class="filter-btn active" onclick="filterReports('all')">All</button>
-        <button class="filter-btn" onclick="filterReports('fo')">Field Observations</button>
-        <button class="filter-btn" onclick="filterReports('cs')">Comparative Studies</button>
-        <button class="filter-btn" onclick="filterReports('er')">Efficiency Reports</button>
-        <button class="filter-btn" onclick="filterReports('ir')">Independent Reviews</button>
-        <button class="filter-btn" onclick="filterReports('mb')">Model Baselines</button>
-    </div>
-
-    <!-- Reports list -->
-    <div class="reports" id="reports-list"></div>
-
-    <!-- Footer -->
-    <div class="footer">
-        <a href="/">ontostandard.org</a> ┬╖ <a href="/docs/">Documentation</a> ┬╖ <a href="https://github.com/nickarstrong/onto-research">GitHub</a> ┬╖ Cite as: ONTO Standard, {report_id}
-    </div>
-
+  <footer>
+    <a href="/">ontostandard.org</a>
+    <span class="sep">|</span>
+    <a href="/paper/">Documentation</a>
+    <span class="sep">|</span>
+    <a href="https://github.com/nickarstrong/onto-standard" target="_blank">GitHub</a>
+    <span class="sep">|</span>
+    <span>Cite as: ONTO Standard, {report_id}</span>
+  </footer>
 </div>
 
 <script>
-const REPORTS = [
-    {
-        id: "F-002",
-        type: "cs",
-        title: "Are Statins Effective for Primary Prevention?",
-        subtitle: "4 models baseline + Grok+GOLD + Claude+GOLD. ss_v DOI verification: 5/6 verified",
-        model: "GPT 5.2 · Gemini 3.1 · Claude 4.5 · Grok 4.2",
-        date: "2026-03-04",
-        domain: "Medicine · Cardiology",
-        url: "/reports/view.html?id=F-002"
-    },
-    {
-        id: "F-001",
-        type: "er",
-        title: "Grok vs Grok+GOLD: AGI within 10 years?",
-        subtitle: "Single question deep dive. Sources 0→8, CONF 0→3, Score 9.9/A",
-        model: "Grok 4.2 (xAI)",
-        date: "2026-03-03",
-        domain: "AI & Machine Learning · Q65",
-        url: "/reports/view.html?id=F-001"
-    },
-    {
-        id: "IR-2026-001",
-        type: "ir",
-        title: "Independent Review: ONTO Standard Validation",
-        subtitle: "3 questions, 3 models, 21-29x per-question improvement, mean 25x",
-        model: "GPT 5.2 ┬╖ Claude Sonnet 4.5 ┬╖ Perplexity",
-        date: "2026-03-03",
-        domain: "Medicine ┬╖ AI/ML ┬╖ Nutrition",
-        url: "/reports/view.html?id=IR-2026-001"
-    },
-    {
-        id: "FO-2026-003",
-        type: "fo",
-        title: "Spontaneous Ontological Demand",
-        subtitle: "AI requests epistemic framework unprompted",
-        model: "Qwen3.5-Plus",
-        date: "2026-02-19",
-        domain: "Macroeconomics",
-        url: "/reports/view.html?id=FO-2026-003"
-    },
-    {
-        id: "CS-2026-001",
-        type: "cs",
-        title: "11-Model Comparative Baseline",
-        subtitle: "100 questions, 50 in-domain + 50 cross-domain",
-        model: "GPT ┬╖ Claude ┬╖ Gemini ┬╖ DeepSeek ┬╖ Grok ┬╖ Mistral ┬╖ Kimi ┬╖ Qwen ┬╖ +3",
-        date: "2026-02-14",
-        domain: "5 domains ┬╖ 100 questions",
-        url: "https://github.com/nickarstrong/onto-research/blob/main/ONTO-11-Model-Baseline.md"
-    },
-    {
-        id: "ER-2026-001",
-        type: "er",
-        title: "Before тЖТ After: Full Report",
-        subtitle: "GPT 5.2 + ONTO-GOLD DIGEST v1.0 validation",
-        model: "GPT 5.2",
-        date: "2026-02-14",
-        domain: "Cross-domain",
-        url: "https://github.com/nickarstrong/onto-research/blob/main/ONTO-Full-Report.md"
-    },
-    {
-        id: "ER-2026-002",
-        type: "er",
-        title: "Before тЖТ After: 100Q Full Text",
-        subtitle: "Composite +915% (0.53 тЖТ 5.38), raw responses",
-        model: "GPT 5.2",
-        date: "2026-02-14",
-        domain: "100 questions ┬╖ full text",
-        url: "https://github.com/nickarstrong/onto-research/blob/main/ONTO-Before-After-100Q.md"
-    },
-    {
-        id: "DS-2026-001",
-        type: "mb",
-        title: "GOLD Experiment Questions v1.0",
-        subtitle: "Validation protocol, metrics, blind evaluation design",
-        model: "Protocol",
-        date: "2026-02-14",
-        domain: "Methodology",
-        url: "https://github.com/nickarstrong/onto-research/blob/main/gold_experiment_questions.md"
-    }
-];
+const CONFIG = {
+  owner: 'nickarstrong',
+  repo: 'onto-standard',
+  path: 'docs/reports',
+  branch: 'main'
+};
 
-const TYPE_LABELS = { fo: 'FO', cs: 'CS', er: 'ER', ir: 'IR', mb: 'MB' };
-const TYPE_TAGS = { fo: 'tag-fo', cs: 'tag-cs', er: 'tag-er', ir: 'tag-ir', mb: 'tag-mb' };
+const TYPE_LABELS = {
+  'F':  'Finding',
+  'FO': 'Field Observation',
+  'IR': 'Independent Review',
+  'CS': 'Comparative Study',
+  'ER': 'Efficiency Report',
+  'DS': 'Dataset',
+  'MB': 'Model Baseline'
+};
 
-function renderReports(filter) {
-    const list = document.getElementById('reports-list');
-    const filtered = filter === 'all' ? REPORTS : REPORTS.filter(r => r.type === filter);
+function parseReportType(folderName) {
+  // F-001, FO-2026-003, IR-2026-001, CS-2026-001, etc.
+  const m = folderName.match(/^([A-Z]+)-/);
+  return m ? m[1] : 'F';
+}
 
-    if (!filtered.length) {
-        list.innerHTML = '<div class="empty">No reports in this category yet.</div>';
-        return;
+function parseTypeLabel(type) {
+  return TYPE_LABELS[type] || type;
+}
+
+function githubFolderUrl(folderName) {
+  return `https://github.com/${CONFIG.owner}/${CONFIG.repo}/tree/${CONFIG.branch}/${CONFIG.path}/${folderName}`;
+}
+
+function rawUrl(folderName, file) {
+  return `https://raw.githubusercontent.com/${CONFIG.owner}/${CONFIG.repo}/${CONFIG.branch}/${CONFIG.path}/${folderName}/${file}`;
+}
+
+async function fetchReadmeHeader(folderName) {
+  try {
+    const res = await fetch(rawUrl(folderName, 'README.md'));
+    if (!res.ok) return { title: folderName, date: '' };
+    const text = await res.text();
+    const lines = text.split('\n').slice(0, 10);
+
+    // Title: first # heading
+    let title = folderName;
+    for (const line of lines) {
+      const m = line.match(/^#\s+(.+)/);
+      if (m) { title = m[1].trim(); break; }
     }
 
-    list.innerHTML = filtered.map(r => `
-        <a class="report" href="${r.url}" data-type="${r.type}">
-            <div>
-                <span class="report-tag ${TYPE_TAGS[r.type]}">${TYPE_LABELS[r.type]}</span>
-                <div class="report-id">${r.id}</div>
-            </div>
-            <div class="report-body">
-                <div class="report-title">${r.title}</div>
-                <div class="report-meta">
-                    <span>${r.model}</span>
-                    <span class="sep">┬╖</span>
-                    <span>${r.domain}</span>
-                </div>
-            </div>
-            <div class="report-date">${formatDate(r.date)}</div>
+    // Date: **Date:** YYYY-MM-DD or similar
+    let date = '';
+    for (const line of lines) {
+      const m = line.match(/\*\*Date:\*\*\s*(\d{4}-\d{2}-\d{2})/);
+      if (m) { date = m[1]; break; }
+    }
+
+    // Category/models from meta lines
+    let meta = '';
+    for (const line of lines) {
+      const m = line.match(/\*\*Category:\*\*\s*(.+)/);
+      if (m) { meta = m[1].trim(); break; }
+    }
+
+    return { title, date, meta };
+  } catch {
+    return { title: folderName, date: '' };
+  }
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function renderCard(folderName, info) {
+  const type = parseReportType(folderName);
+  const card = document.createElement('a');
+  card.className = `report-card type-${type}`;
+  card.href = githubFolderUrl(folderName);
+  card.target = '_blank';
+  card.rel = 'noopener';
+
+  card.innerHTML = `
+    <div>
+      <div class="badge">${type}</div>
+      <div class="badge-id">${folderName}</div>
+    </div>
+    <div class="report-info">
+      <div class="report-title">${info.title}</div>
+      ${info.meta ? `<div class="report-meta">${info.meta}</div>` : ''}
+    </div>
+    <div class="report-date">${formatDate(info.date)}</div>
+  `;
+
+  return card;
+}
+
+async function loadReports() {
+  const container = document.getElementById('reports');
+  const statsEl = document.getElementById('stats');
+
+  try {
+    const apiUrl = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`;
+    const res = await fetch(apiUrl);
+
+    if (!res.ok) throw new Error(`GitHub API: ${res.status}`);
+
+    const items = await res.json();
+    const folders = items
+      .filter(item => item.type === 'dir')
+      .map(item => item.name)
+      .sort((a, b) => {
+        // Sort by date in name if present, otherwise alphabetically
+        return a.localeCompare(b);
+      });
+
+    if (folders.length === 0) {
+      container.innerHTML = '<div class="loading">No reports found.</div>';
+      return;
+    }
+
+    // Fetch all README headers in parallel
+    const infos = await Promise.all(
+      folders.map(f => fetchReadmeHeader(f))
+    );
+
+    // Sort by date descending (newest first)
+    const paired = folders.map((f, i) => ({ folder: f, info: infos[i] }));
+    paired.sort((a, b) => (b.info.date || '').localeCompare(a.info.date || ''));
+
+    // Stats
+    statsEl.innerHTML = `<span><strong>${paired.length}</strong> reports</span>`;
+
+    // Render
+    container.innerHTML = '';
+    for (const { folder, info } of paired) {
+      container.appendChild(renderCard(folder, info));
+    }
+
+  } catch (err) {
+    container.innerHTML = `
+      <div class="error">
+        Failed to load reports: ${err.message}<br>
+        <a href="https://github.com/${CONFIG.owner}/${CONFIG.repo}/tree/${CONFIG.branch}/${CONFIG.path}" 
+           target="_blank" style="color: var(--accent);">
+          View on GitHub directly
         </a>
-    `).join('');
+      </div>`;
+  }
 }
 
-function filterReports(type) {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
-    renderReports(type);
-}
-
-function formatDate(d) {
-    const [y, m, day] = d.split('-');
-    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    return `${months[+m-1]} ${+day}`;
-}
-
-// Theme detection
-if (window.matchMedia('(prefers-color-scheme: light)').matches) {
-    document.documentElement.setAttribute('data-theme', 'light');
-}
-
-// Init
-renderReports('all');
+loadReports();
 </script>
 
 </body>
