@@ -679,10 +679,6 @@ a.info-val:hover { color: var(--text); }
 
 /* Risk badges */
 
-
-/* Metric tooltips */
-.metric-chip{position:relative;cursor:help;}
-.metric-chip:hover::after{content:attr(data-tooltip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1a1a1a;border:1px solid var(--border);color:var(--text-secondary);font-size:10px;white-space:nowrap;padding:4px 8px;border-radius:4px;pointer-events:none;z-index:100;}
 </style>
 
 </head>
@@ -3263,9 +3259,9 @@ function toggleQuickTestMode(sel) {
 }
 
 async function runQuickTest() {
-    // Provider mode: use registered model
-    const modelSelect = document.getElementById('test-model-select');
-    if (modelSelect && modelSelect.value) {
+    // Provider mode: use registered model from Proxy section
+    const modelSelect = document.getElementById('prov-test-model-select');
+    if (modelSelect && modelSelect.value && modelSelect.value !== '__manual__') {
         return runModelTest();
     }
     // Standard mode: use direct proxy with provider key
