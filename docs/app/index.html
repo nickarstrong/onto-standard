@@ -679,6 +679,24 @@ a.info-val:hover { color: var(--text); }
 
 /* Risk badges */
 
+
+/* Metric tooltips */
+.metric-chip { position:relative; cursor:help; }
+.metric-chip:hover::after {
+    content: attr(data-tooltip);
+    position: absolute; bottom: calc(100% + 6px); left: 50%;
+    transform: translateX(-50%);
+    background: #1a1f2e; border: 1px solid var(--border);
+    color: var(--text-secondary); font-size: 10px;
+    white-space: nowrap; padding: 4px 8px; border-radius: 4px;
+    pointer-events: none; z-index: 100; font-family: var(--mono);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+/* Section description style */
+.section-desc {
+    font-size: 11px; color: var(--text-muted);
+    margin-top: 2px; line-height: 1.5;
+}
 </style>
 
 </head>
@@ -929,6 +947,10 @@ a.info-val:hover { color: var(--text); }
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                 Docs ↗
             </a>
+            <div class="nav-item" onclick="toggleTheme()" style="color: var(--text-muted);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
+                Theme
+            </div>
             <div class="nav-item" onclick="handleLogout()" style="color: var(--text-muted);">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                 Sign Out
@@ -950,6 +972,10 @@ a.info-val:hover { color: var(--text); }
 
             <!-- ══════════ SECTION: ACCOUNT ══════════ -->
             <div class="dash-section">
+                <div style="margin-bottom:12px">
+                    <div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:2px">Dashboard</div>
+                    <div style="font-size:12px;color:var(--text-muted)">Monitor your AI models · GOLD epistemic layer · cryptographic proof chain</div>
+                </div>
                 <!-- PLAN STATUS -->
                 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
                     <div class="dash-card-clean" style="padding:14px 16px;margin-bottom:0">
@@ -1002,12 +1028,16 @@ a.info-val:hover { color: var(--text); }
                 <div class="dash-section-header">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
                     <div class="dash-section-title">Quick Test</div>
-                    <span class="dash-section-subtitle">Send a query through GOLD</span>
+                    <span style="font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(21,128,61,0.12);color:var(--accent);border:1px solid rgba(21,128,61,0.25);font-weight:500;margin-left:6px">All tiers</span>
+                    <span class="dash-section-subtitle" style="margin-left:auto">Send a query through GOLD</span>
                     <span id="proxy-gold-badge" style="font-size:10px;padding:3px 8px;border-radius:10px;background:rgba(46,194,126,0.15);color:var(--accent);font-weight:600;margin-left:8px">● GOLD Active</span>
                 </div>
 
                 <div class="dash-card-clean" style="margin-bottom:0">
-                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">Test GOLD injection via proxy. <span id="test-demo-note" class="hidden" style="color:#f59e0b">AI Provider: proxy is demo only. Production delivery via SSE.</span></div>
+                    <div style="margin-bottom:12px">
+                        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px">Select a connected model → ask a question → GOLD discipline layer is injected automatically → response is scored and cryptographically signed.</div>
+                        <div id="test-demo-note" class="hidden" style="font-size:11px;color:#f59e0b;margin-top:4px">⚠ AI Provider: proxy is demo only. Production delivery via SSE with zero latency.</div>
+                    </div>
                     <!-- Provider: model select from registered models -->
                     <div id="test-model-row" class="hidden" style="margin-bottom:8px">
                         <select id="test-model-select" onchange="toggleQuickTestMode(this)" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:11px;color:var(--text);width:100%">
@@ -1040,6 +1070,16 @@ a.info-val:hover { color: var(--text); }
                             <a id="live-verify-link" href="#" target="_blank" style="font-size:10px;color:var(--accent);display:none">Verify ↗</a>
                         </div>
                         <div id="live-response" style="background:#0c0f14;border-radius:6px;padding:10px 12px;font-size:11px;color:#e2e8f0;line-height:1.6;max-height:200px;overflow-y:auto;white-space:pre-wrap"></div>
+                    <div style="margin-top:8px;padding:8px 10px;background:rgba(255,255,255,0.02);border-radius:4px;border:1px solid var(--border)">
+                        <div style="font-size:9px;color:var(--text-muted);letter-spacing:0.5px;margin-bottom:4px">SCORE GUIDE</div>
+                        <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:10px;color:var(--text-muted)">
+                            <span title="Quantification Density — numbers, measurements, percentages"><b style="color:var(--text-secondary)">QD</b> Quantification</span>
+                            <span title="Source Specificity — named citations and references"><b style="color:var(--text-secondary)">SS</b> Sources</span>
+                            <span title="Uncertainty Marking — honest hedging: may, likely, unclear"><b style="color:var(--text-secondary)">UM</b> Uncertainty</span>
+                            <span title="Counterargument Presence — acknowledges opposing views"><b style="color:var(--text-secondary)">CP</b> Counterargs</span>
+                            <span title="Epistemic Confidence Error — deviation from warranted confidence (GOLD)"><b style="color:#f59e0b">EpCE</b> GOLD deviation</span>
+                        </div>
+                    </div>
                         <div id="live-markers" style="margin-top:6px;font-size:10px;color:var(--text-muted)"></div>
                     </div>
                     <div id="test-std-result" class="hidden" style="margin-top:10px;background:#0c0f14;border-radius:6px;padding:10px 12px;font-size:11px;color:#e2e8f0;max-height:200px;overflow-y:auto;white-space:pre-wrap;font-family:'JetBrains Mono',monospace;line-height:1.5"></div>
@@ -1061,6 +1101,7 @@ a.info-val:hover { color: var(--text); }
                                 <div style="display:flex;align-items:center;gap:8px">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
                                     <span style="font-size:12px;font-weight:600">Proxy</span>
+                                    <span style="font-size:10px;color:var(--text-muted);margin-left:2px">— your app routes through ONTO, GOLD injected per request</span>
                                     <span style="font-size:9px;color:var(--text-muted);background:var(--bg-elevated);padding:1px 6px;border-radius:3px">Testing</span>
                                 </div>
                                 <button class="btn-minimal" onclick="document.getElementById('sse-register-form').classList.toggle('hidden')" style="font-size:10px;padding:3px 10px">+ Add</button>
@@ -1111,6 +1152,7 @@ a.info-val:hover { color: var(--text); }
                                 <div style="display:flex;align-items:center;gap:8px">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M2 12h5l2-9 4 18 2-9h5"/><circle cx="19" cy="12" r="2"/></svg>
                                     <span style="font-size:12px;font-weight:600">SSE</span>
+                                    <span style="font-size:10px;color:var(--text-muted);margin-left:2px">— GOLD cached on your server, zero latency, continuous push</span>
                                     <span style="font-size:9px;color:#0a0a0a;background:var(--accent);padding:1px 6px;border-radius:3px;font-weight:600">Production</span>
                                 </div>
                                 <button class="btn-minimal" onclick="showAddSSEModel()" style="font-size:10px;padding:3px 10px">+ Add</button>
@@ -1150,57 +1192,6 @@ a.info-val:hover { color: var(--text); }
             </div>
 
 
-            <div class="dash-section-divider"></div>
-
-            <!-- ══════════ SECTION: SCORE ANY TEXT ══════════ -->
-            <div class="dash-section">
-                <div class="dash-section-header">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-                    <div class="dash-section-title">Score Any Text</div>
-                    <span class="dash-section-subtitle">Paste any AI response — get epistemic score</span>
-                </div>
-
-                <div class="dash-card-clean">
-                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">
-                        Paste a baseline AI response (from any model, any interface). The scoring engine measures epistemic discipline: quantification, sources, uncertainty, counterarguments.
-                    </div>
-                    <input type="text" id="score-context" placeholder="Original question (optional — improves accuracy)" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box;margin-bottom:8px">
-                    <textarea id="score-text-input" placeholder="Paste AI response here..." style="width:100%;min-height:140px;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:10px;font-size:11px;color:var(--text);line-height:1.6;resize:vertical;box-sizing:border-box;font-family:var(--mono)"></textarea>
-                    <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
-                        <button class="btn-minimal" onclick="scoreAnyText()" id="score-text-btn" style="font-size:12px;padding:8px 20px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Score</button>
-                        <span id="score-text-status" style="font-size:11px;color:var(--text-muted)"></span>
-                    </div>
-
-                    <div id="score-text-result" class="hidden" style="margin-top:14px">
-                        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px">
-                            <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 16px;text-align:center;min-width:70px">
-                                <div style="font-size:9px;color:var(--text-muted)">SCORE</div>
-                                <div id="sat-score" style="font-size:22px;font-weight:800;color:var(--accent)">—</div>
-                            </div>
-                            <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 16px;text-align:center;min-width:70px">
-                                <div style="font-size:9px;color:var(--text-muted)">GRADE</div>
-                                <div id="sat-grade" style="font-size:22px;font-weight:800;color:var(--text)">—</div>
-                            </div>
-                            <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 16px;text-align:center;min-width:70px">
-                                <div style="font-size:9px;color:var(--text-muted)">RISK</div>
-                                <div id="sat-risk" style="font-size:22px;font-weight:800;color:#ef4444">—</div>
-                            </div>
-                        </div>
-                        <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px;font-family:var(--mono)">METRIC BREAKDOWN</div>
-                        <div id="sat-metrics" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"></div>
-                        <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;font-family:var(--mono)">COMPLIANCE</div>
-                        <div id="sat-compliance" style="font-size:11px;color:var(--text-secondary)"></div>
-                        <div id="sat-doi-section" class="hidden" style="margin-top:10px">
-                            <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;font-family:var(--mono)">DOI VERIFICATION</div>
-                            <div id="sat-doi" style="font-size:11px;color:var(--text-secondary);line-height:1.8"></div>
-                        </div>
-                        <div id="sat-sources-section" class="hidden" style="margin-top:10px">
-                            <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;font-family:var(--mono)">SOURCE CITATIONS</div>
-                            <div id="sat-sources" style="font-size:11px;color:var(--text-secondary)"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <div class="dash-section-divider"></div>
 
@@ -1209,7 +1200,7 @@ a.info-val:hover { color: var(--text); }
                 <div class="dash-section-header">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6"/><path d="M8 6l-6 6 6 6"/></svg>
                     <div class="dash-section-title">Integration</div>
-                    <span class="dash-section-subtitle">Connect your application</span>
+                    <span class="dash-section-subtitle">3 lines to connect your app — add x-api-key header, GOLD does the rest</span>
                 </div>
 
                 <div class="dash-card-clean" style="margin-bottom:16px">
