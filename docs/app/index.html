@@ -681,14 +681,8 @@ a.info-val:hover { color: var(--text); }
 
 
 /* Metric tooltips */
-.metric-chip { position:relative; cursor:help; }
-.metric-chip:hover::after {
-    content: attr(data-tooltip);
-    position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%);
-    background:#1a1a1a; border:1px solid var(--border); color:var(--text-secondary);
-    font-size:10px; white-space:nowrap; padding:4px 8px; border-radius:4px;
-    pointer-events:none; z-index:100; font-family:var(--mono);
-}
+.metric-chip{position:relative;cursor:help;}
+.metric-chip:hover::after{content:attr(data-tooltip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1a1a1a;border:1px solid var(--border);color:var(--text-secondary);font-size:10px;white-space:nowrap;padding:4px 8px;border-radius:4px;pointer-events:none;z-index:100;}
 </style>
 
 </head>
@@ -940,7 +934,7 @@ a.info-val:hover { color: var(--text); }
                 Docs ↗
             </a>
             <div class="nav-item" onclick="toggleTheme()" style="color: var(--text-muted);">
-                <svg id="theme-icon-sidebar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
                 Theme
             </div>
             <div class="nav-item" onclick="handleLogout()" style="color: var(--text-muted);">
@@ -1016,17 +1010,12 @@ a.info-val:hover { color: var(--text); }
                 <div class="dash-section-header">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
                     <div class="dash-section-title">Quick Test</div>
-                    <span style="font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(21,128,61,0.12);color:var(--accent);border:1px solid rgba(21,128,61,0.25);font-weight:500">All tiers</span>
-                    <span class="dash-section-subtitle" title="Send a question through the GOLD proxy. Response is scored in real-time. AI Provider tier uses SSE — no proxy, zero latency.">Send a query through GOLD ⓘ</span>
+                    <span class="dash-section-subtitle">Send a query through GOLD</span>
                     <span id="proxy-gold-badge" style="font-size:10px;padding:3px 8px;border-radius:10px;background:rgba(46,194,126,0.15);color:var(--accent);font-weight:600;margin-left:8px">● GOLD Active</span>
                 </div>
 
                 <div class="dash-card-clean" style="margin-bottom:0">
-                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">
-                        Select a connected model. Your question passes through the GOLD discipline layer, then to the AI. Response is scored and signed.
-                        <span id="test-demo-note" class="hidden" style="color:#f59e0b;margin-left:4px">AI Provider: proxy is demo only. Production delivery via SSE.</span>
-                    </div>
-                    <input type="text" id="prov-question" placeholder="e.g. What is the boiling point of water?" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box;margin-bottom:8px" onkeydown="if(event.key==='Enter')runQuickTest()">
+                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">Test GOLD injection via proxy. <span id="test-demo-note" class="hidden" style="color:#f59e0b">AI Provider: proxy is demo only. Production delivery via SSE.</span></div>
                     <!-- Provider: model select from registered models -->
                     <div id="test-model-row" class="hidden" style="margin-bottom:8px">
                         <select id="test-model-select" onchange="toggleQuickTestMode(this)" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:11px;color:var(--text);width:100%">
@@ -1045,6 +1034,7 @@ a.info-val:hover { color: var(--text); }
                         <button onclick="const i=document.getElementById('test-std-provider-key');const m=i.style.webkitTextSecurity;i.style.webkitTextSecurity=m==='disc'?'none':'disc';this.textContent=m==='disc'?'Hide':'Show'" style="background:none;border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:10px;color:var(--text-muted);cursor:pointer">Show</button>
                         <button onclick="const v=document.getElementById('test-std-provider-key').value;if(v){navigator.clipboard.writeText(v);showToast('Copied','success')}" style="background:none;border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:10px;color:var(--text-muted);cursor:pointer">Copy</button>
                     </div>
+                    <input type="text" id="prov-question" placeholder="Ask anything..." value="What is the boiling point of water?" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box;margin-bottom:8px" onkeydown="if(event.key==='Enter')runQuickTest()">
                     <div style="display:flex;gap:8px;align-items:center">
                         <button class="btn-minimal" onclick="runQuickTest()" id="live-test-btn" style="font-size:12px;padding:8px 20px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Send</button>
                         <span id="live-test-status" style="font-size:11px;color:var(--text-muted)"></span>
@@ -1079,8 +1069,6 @@ a.info-val:hover { color: var(--text); }
                                 <div style="display:flex;align-items:center;gap:8px">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
                                     <span style="font-size:12px;font-weight:600">Proxy</span>
-                                    <span style="font-size:9px;padding:1px 6px;border-radius:3px;background:var(--bg-elevated);color:var(--text-muted);border:1px solid var(--border)" title="OPEN: 10 req/day · STANDARD: 1,000 req/day · PROVIDER: 10 req/day (use SSE instead)">OPEN · STANDARD</span>
-                                    <span style="font-size:10px;color:var(--text-muted);margin-left:4px">Your app → GOLD → AI Provider → scored response</span>
                                     <span style="font-size:9px;color:var(--text-muted);background:var(--bg-elevated);padding:1px 6px;border-radius:3px">Testing</span>
                                 </div>
                                 <button class="btn-minimal" onclick="document.getElementById('sse-register-form').classList.toggle('hidden')" style="font-size:10px;padding:3px 10px">+ Add</button>
@@ -1121,22 +1109,16 @@ a.info-val:hover { color: var(--text); }
 
                         <!-- RIGHT: SSE Models (per-model) -->
                         <div id="sse-panel-card" class="dash-card-clean" style="margin-bottom:0;border:1px solid var(--border);position:relative">
-                            <div id="sse-disabled-overlay" class="hidden" style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(10,10,10,0.82);border-radius:8px;display:flex;align-items:center;justify-content:center;z-index:10;backdrop-filter:blur(2px)">
-                                <div style="text-align:center;padding:16px">
-                                    <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:0.3px">🔒 AI PROVIDER TIER</div>
-                                    <div style="font-size:10px;color:var(--text-muted);line-height:1.7;max-width:180px">
-                                        GOLD cached locally on your server.<br>
-                                        Zero latency · No proxy · Unlimited scale.<br>
-                                        <span style="color:var(--accent)">Auto-calibration via SSE push.</span>
-                                    </div>
-                                    <div style="margin-top:10px"><a href="#page-billing" onclick="showPage('page-billing')" style="font-size:10px;color:var(--accent);font-weight:600;text-decoration:none;border:1px solid rgba(21,128,61,0.4);padding:4px 12px;border-radius:4px">Upgrade →</a></div>
+                            <div id="sse-disabled-overlay" class="hidden" style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(12,15,20,0.7);border-radius:8px;display:flex;align-items:center;justify-content:center;z-index:10">
+                                <div style="text-align:center">
+                                    <div style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:4px">SSE Requires Provider Tier</div>
+                                    <div style="font-size:10px;color:var(--text-muted)">Upgrade to enable continuous verification</div>
                                 </div>
                             </div>
                             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)">
                                 <div style="display:flex;align-items:center;gap:8px">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M2 12h5l2-9 4 18 2-9h5"/><circle cx="19" cy="12" r="2"/></svg>
                                     <span style="font-size:12px;font-weight:600">SSE</span>
-                                    <span style="font-size:9px;padding:1px 6px;border-radius:3px;background:rgba(21,128,61,0.12);color:var(--accent);border:1px solid rgba(21,128,61,0.25)" title="GOLD cached locally. Zero latency. Auto-calibration push. $250K/year.">PROVIDER ONLY</span>
                                     <span style="font-size:9px;color:#0a0a0a;background:var(--accent);padding:1px 6px;border-radius:3px;font-weight:600">Production</span>
                                 </div>
                                 <button class="btn-minimal" onclick="showAddSSEModel()" style="font-size:10px;padding:3px 10px">+ Add</button>
@@ -1467,7 +1449,7 @@ client = OpenAI(
                 </div>
                 <div class="info-row">
                     <span class="info-key">Email</span>
-                    <span class="info-val" id="settings-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8ffcfaffffe0fdfbcfe0e1fbe0fcfbeee1ebeefdeba1e0fde8">[email&#160;protected]</a></span>
+                    <span class="info-val" id="settings-email">support@ontostandard.org</span>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Type</span>
@@ -1553,15 +1535,15 @@ client = OpenAI(
                 <div class="section-label">Support</div>
                 <div class="info-row">
                     <span class="info-key">General</span>
-                    <a class="info-val" href="/cdn-cgi/l/email-protection#54272124243b2620143b3a203b2720353a303526307a3b2633"><span class="__cf_email__" data-cfemail="a6d5d3d6d6c9d4d2e6c9c8d2c9d5d2c7c8c2c7d4c288c9d4c1">[email&#160;protected]</span></a>
+                    <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Sales</span>
-                    <a class="info-val" href="/cdn-cgi/l/email-protection#81f2f4f1f1eef3f5c1eeeff5eef2f5e0efe5e0f3e5afeef3e6"><span class="__cf_email__" data-cfemail="8dfef8fdfde2fff9cde2e3f9e2fef9ece3e9ecffe9a3e2ffea">[email&#160;protected]</span></a>
+                    <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Billing</span>
-                    <a class="info-val" href="/cdn-cgi/l/email-protection#90e3e5e0e0ffe2e4d0fffee4ffe3e4f1fef4f1e2f4beffe2f7"><span class="__cf_email__" data-cfemail="a9dadcd9d9c6dbdde9c6c7ddc6daddc8c7cdc8dbcd87c6dbce">[email&#160;protected]</span></a>
+                    <a class="info-val" href="mailto:support@ontostandard.org">support@ontostandard.org</a>
                 </div>
             </div>
         </div>
@@ -1636,7 +1618,7 @@ client = OpenAI(
                     Free Standard access for independent researchers, early-stage startups, and nonprofit organizations whose work benefits society. Grant recipients receive the same infrastructure as paid Standard customers: 1,000 proxy requests/day, GOLD Extended, signed proof chain. No restrictions, no watermarks.
                 </div>
                 <div style="display:flex;align-items:center;gap:12px">
-                    <a href="/cdn-cgi/l/email-protection#aecdc1dbc0cdc7c2eec1c0dac1dddacfc0cacfdcca80c1dcc9" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Apply → <span class="__cf_email__" data-cfemail="9cfff3e9f2fff5f0dcf3f2e8f3efe8fdf2f8fdeef8b2f3eefb">[email&#160;protected]</span></a>
+                    <a href="mailto:council@ontostandard.org" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Apply → council@ontostandard.org</a>
                 </div>
             </div>
             
@@ -2053,7 +2035,7 @@ client = OpenAI(
         </div>
         <div class="modal-body">
             <div class="tier-user-info" id="tier-user-info">
-                <div class="tier-user-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1c6f696c6c736e685c737268736f687d72787d6e7832736e7b">[email&#160;protected]</a></div>
+                <div class="tier-user-email">support@ontostandard.org</div>
             </div>
             <!-- Active Subscriptions -->
             <div id="tier-active-subs" style="margin-bottom:16px">
@@ -2157,7 +2139,7 @@ client = OpenAI(
     </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // === API CONFIG ===
 const API_BASE = 'https://api.ontostandard.org';
 let authToken = null;
@@ -3931,7 +3913,7 @@ async function runModelTest() {
     const sel = document.getElementById('test-model-select');
     const modelId = sel?.value;
     if (!modelId) { showToast('Select a model', 'error'); return; }
-    const question = document.getElementById('prov-question')?.value?.trim() || 'What is the boiling point of water?';
+    const question = document.getElementById('prov-question')?.value?.trim();
     if (!question) { showToast('Enter a question', 'error'); return; }
     
     const btn = document.getElementById('live-test-btn');
@@ -4038,8 +4020,7 @@ async function scoreAnyText() {
             if (v !== undefined && v !== null) {
                 const val = typeof v === 'number' ? v.toFixed(2) : v;
                 const isGood = label !== 'VQ' ? v > 0.3 : v < 0.1;
-                const tipMap = {QD:'Quantification Density — numbers & measurements',SS:'Source Specificity — named citations & references',UM:'Uncertainty Marking — honest hedging (may/likely/unclear)',CP:'Counterargument Presence — acknowledges opposing views',VQ:'Vague Qualifiers — "very/quite/some" — lower is better',CONF:'Confidence Calibration — self-reported vs warranted'};
-            mHtml += `<div class="metric-chip" data-tooltip="${tipMap[label]||label}" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:6px 12px;text-align:center;min-width:55px">
+                mHtml += `<div style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:6px 12px;text-align:center;min-width:55px">
                     <div style="font-size:8px;color:var(--text-muted);letter-spacing:0.5px">${label}</div>
                     <div style="font-size:16px;font-weight:700;color:${isGood?'var(--accent)':'#ef4444'};font-family:var(--mono)">${val}</div>
                 </div>`;
@@ -4092,28 +4073,6 @@ async function scoreAnyText() {
         const comp = data.compliance_label || data.compliance || '';
         const layer = data.layer || '';
         compEl.textContent = [comp, layer ? `Layer: ${layer}` : ''].filter(Boolean).join(' · ') || '—';
-        // GOLD Router display
-        const grSection = document.getElementById('sat-gold-router-section');
-        const gr = data.gold_router;
-        if (gr && (gr.domain_classified || gr.igr_gt !== undefined)) {
-            document.getElementById('sat-gr-domain').textContent = gr.domain_classified || '—';
-            document.getElementById('sat-gr-igr').textContent = gr.igr_gt !== null && gr.igr_gt !== undefined ? gr.igr_gt.toFixed(3) : '—';
-            document.getElementById('sat-gr-epce').textContent = data.epce !== null && data.epce !== undefined ? parseFloat(data.epce).toFixed(3) : '—';
-            // direction from dce
-            const dce = data.dce;
-            let dir = '—';
-            if (dce !== null && dce !== undefined) {
-                const d = parseFloat(dce);
-                dir = d > 0.05 ? '↑ overconf' : d < -0.05 ? '↓ underconf' : '✓ calibrated';
-                document.getElementById('sat-gr-epce').style.color = d > 0.1 ? '#ef4444' : d > 0.05 ? '#f59e0b' : 'var(--accent)';
-            }
-            document.getElementById('sat-gr-dir').textContent = dir;
-            document.getElementById('sat-gr-src').textContent = gr.igr_gt_source === 'gold_l1' ? 'GOLD L1 ✓' : 'linguistic proxy';
-            document.getElementById('sat-gr-src').style.color = gr.igr_gt_source === 'gold_l1' ? 'var(--accent)' : 'var(--text-muted)';
-            grSection.classList.remove('hidden');
-        } else {
-            grSection.classList.add('hidden');
-        }
         document.getElementById('score-text-result').classList.remove('hidden');
         status.textContent = `Scored ${text.length} chars`;
     } catch(e) {
@@ -6236,4 +6195,33 @@ async function deleteAccount(userId, email) {
         } else {
             const data = await res.json();
             showToast(data.detail || 'Delete failed', 'error');
-      
+        }
+    } catch (e) {
+        showToast('Delete failed', 'error');
+    }
+}
+
+// === SIGNAL 104b ===
+function showSignal104b(action, endpoint) {
+    showToast('Action rejected. Signal: 104b', 'error');
+    
+    // Show log panel
+    const panel = document.getElementById('signal-log-panel');
+    if (panel) panel.style.display = 'block';
+    
+    const list = document.getElementById('signal-log-list');
+    if (list) {
+        const item = document.createElement('div');
+        item.className = 'signal-log-item';
+        item.innerHTML = `
+            <span class="signal-log-code">104b</span>
+            <span class="signal-log-endpoint">${endpoint}</span>
+            <span class="signal-log-time">${new Date().toLocaleTimeString()}</span>
+            <div style="margin-top: 4px; color: var(--text-muted);">${action.replace(/_/g, ' ')}</div>
+        `;
+        list.insertBefore(item, list.firstChild);
+    }
+}
+</script>
+</body>
+</html>
