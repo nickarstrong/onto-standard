@@ -680,23 +680,7 @@ a.info-val:hover { color: var(--text); }
 /* Risk badges */
 
 
-/* Metric tooltips */
-.metric-chip { position:relative; cursor:help; }
-.metric-chip:hover::after {
-    content: attr(data-tooltip);
-    position: absolute; bottom: calc(100% + 6px); left: 50%;
-    transform: translateX(-50%);
-    background: #1a1f2e; border: 1px solid var(--border);
-    color: var(--text-secondary); font-size: 10px;
-    white-space: nowrap; padding: 4px 8px; border-radius: 4px;
-    pointer-events: none; z-index: 100; font-family: var(--mono);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-/* Section description style */
-.section-desc {
-    font-size: 11px; color: var(--text-muted);
-    margin-top: 2px; line-height: 1.5;
-}
+.metric-chip{position:relative;cursor:help;}.metric-chip:hover::after{content:attr(data-tooltip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1a1f2e;border:1px solid var(--border);color:var(--text-secondary);font-size:10px;white-space:nowrap;padding:4px 8px;border-radius:4px;pointer-events:none;z-index:100;}
 </style>
 
 </head>
@@ -947,10 +931,7 @@ a.info-val:hover { color: var(--text); }
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                 Docs ↗
             </a>
-            <div class="nav-item" onclick="toggleTheme()" style="color: var(--text-muted);">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
-                Theme
-            </div>
+            <div class="nav-item" onclick="toggleTheme()" style="color: var(--text-muted);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>Theme</div>
             <div class="nav-item" onclick="handleLogout()" style="color: var(--text-muted);">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                 Sign Out
@@ -972,10 +953,7 @@ a.info-val:hover { color: var(--text); }
 
             <!-- ══════════ SECTION: ACCOUNT ══════════ -->
             <div class="dash-section">
-                <div style="margin-bottom:12px">
-                    <div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:2px">Dashboard</div>
-                    <div style="font-size:12px;color:var(--text-muted)">Monitor your AI models · GOLD epistemic layer · cryptographic proof chain</div>
-                </div>
+                <div style="margin-bottom:12px"><div style="font-size:18px;font-weight:700;color:var(--text)">Dashboard</div><div style="font-size:12px;color:var(--text-muted)">Monitor your AI models · GOLD epistemic layer · cryptographic proof chain</div></div>
                 <!-- PLAN STATUS -->
                 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
                     <div class="dash-card-clean" style="padding:14px 16px;margin-bottom:0">
@@ -1034,10 +1012,7 @@ a.info-val:hover { color: var(--text); }
                 </div>
 
                 <div class="dash-card-clean" style="margin-bottom:0">
-                    <div style="margin-bottom:12px">
-                        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px">Select a connected model → ask a question → GOLD discipline layer is injected automatically → response is scored and cryptographically signed.</div>
-                        <div id="test-demo-note" class="hidden" style="font-size:11px;color:#f59e0b;margin-top:4px">⚠ AI Provider: proxy is demo only. Production delivery via SSE with zero latency.</div>
-                    </div>
+                    <div style="margin-bottom:12px"><div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px">Select a connected model → ask a question → GOLD discipline layer is injected automatically → response is scored and cryptographically signed.</div><div id="test-demo-note" class="hidden" style="font-size:11px;color:#f59e0b;margin-top:4px">⚠ AI Provider: proxy is demo only. Production delivery via SSE with zero latency.</div></div>
                     <!-- Provider: model select from registered models -->
                     <div id="test-model-row" class="hidden" style="margin-bottom:8px">
                         <select id="test-model-select" onchange="toggleQuickTestMode(this)" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:11px;color:var(--text);width:100%">
@@ -1070,16 +1045,7 @@ a.info-val:hover { color: var(--text); }
                             <a id="live-verify-link" href="#" target="_blank" style="font-size:10px;color:var(--accent);display:none">Verify ↗</a>
                         </div>
                         <div id="live-response" style="background:#0c0f14;border-radius:6px;padding:10px 12px;font-size:11px;color:#e2e8f0;line-height:1.6;max-height:200px;overflow-y:auto;white-space:pre-wrap"></div>
-                    <div style="margin-top:8px;padding:8px 10px;background:rgba(255,255,255,0.02);border-radius:4px;border:1px solid var(--border)">
-                        <div style="font-size:9px;color:var(--text-muted);letter-spacing:0.5px;margin-bottom:4px">SCORE GUIDE</div>
-                        <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:10px;color:var(--text-muted)">
-                            <span title="Quantification Density — numbers, measurements, percentages"><b style="color:var(--text-secondary)">QD</b> Quantification</span>
-                            <span title="Source Specificity — named citations and references"><b style="color:var(--text-secondary)">SS</b> Sources</span>
-                            <span title="Uncertainty Marking — honest hedging: may, likely, unclear"><b style="color:var(--text-secondary)">UM</b> Uncertainty</span>
-                            <span title="Counterargument Presence — acknowledges opposing views"><b style="color:var(--text-secondary)">CP</b> Counterargs</span>
-                            <span title="Epistemic Confidence Error — deviation from warranted confidence (GOLD)"><b style="color:#f59e0b">EpCE</b> GOLD deviation</span>
-                        </div>
-                    </div>
+                    <div style="margin-top:8px;padding:8px 10px;background:rgba(255,255,255,0.02);border-radius:4px;border:1px solid var(--border)"><div style="font-size:9px;color:var(--text-muted);letter-spacing:0.5px;margin-bottom:4px">SCORE GUIDE</div><div style="display:flex;gap:16px;flex-wrap:wrap;font-size:10px;color:var(--text-muted)"><span title="Quantification Density"><b style="color:var(--text-secondary)">QD</b> Quantification</span><span title="Source Specificity"><b style="color:var(--text-secondary)">SS</b> Sources</span><span title="Uncertainty Marking"><b style="color:var(--text-secondary)">UM</b> Uncertainty</span><span title="Counterargument Presence"><b style="color:var(--text-secondary)">CP</b> Counterargs</span><span title="Epistemic Confidence Error — GOLD deviation"><b style="color:#f59e0b">EpCE</b> GOLD deviation</span></div></div>
                         <div id="live-markers" style="margin-top:6px;font-size:10px;color:var(--text-muted)"></div>
                     </div>
                     <div id="test-std-result" class="hidden" style="margin-top:10px;background:#0c0f14;border-radius:6px;padding:10px 12px;font-size:11px;color:#e2e8f0;max-height:200px;overflow-y:auto;white-space:pre-wrap;font-family:'JetBrains Mono',monospace;line-height:1.5"></div>
@@ -1100,8 +1066,7 @@ a.info-val:hover { color: var(--text); }
                             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)">
                                 <div style="display:flex;align-items:center;gap:8px">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                                    <span style="font-size:12px;font-weight:600">Proxy</span>
-                                    <span style="font-size:10px;color:var(--text-muted);margin-left:2px">— your app routes through ONTO, GOLD injected per request</span>
+                                    <span style="font-size:12px;font-weight:600">Proxy</span><span style="font-size:10px;color:var(--text-muted);margin-left:6px">— your app routes through ONTO, GOLD injected per request</span>
                                     <span style="font-size:9px;color:var(--text-muted);background:var(--bg-elevated);padding:1px 6px;border-radius:3px">Testing</span>
                                 </div>
                                 <button class="btn-minimal" onclick="document.getElementById('sse-register-form').classList.toggle('hidden')" style="font-size:10px;padding:3px 10px">+ Add</button>
@@ -1151,8 +1116,7 @@ a.info-val:hover { color: var(--text); }
                             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)">
                                 <div style="display:flex;align-items:center;gap:8px">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M2 12h5l2-9 4 18 2-9h5"/><circle cx="19" cy="12" r="2"/></svg>
-                                    <span style="font-size:12px;font-weight:600">SSE</span>
-                                    <span style="font-size:10px;color:var(--text-muted);margin-left:2px">— GOLD cached on your server, zero latency, continuous push</span>
+                                    <span style="font-size:12px;font-weight:600">SSE</span><span style="font-size:10px;color:var(--text-muted);margin-left:6px">— GOLD cached on your server, zero latency, continuous push</span>
                                     <span style="font-size:9px;color:#0a0a0a;background:var(--accent);padding:1px 6px;border-radius:3px;font-weight:600">Production</span>
                                 </div>
                                 <button class="btn-minimal" onclick="showAddSSEModel()" style="font-size:10px;padding:3px 10px">+ Add</button>
@@ -3736,20 +3700,11 @@ async function loadModels() {
             </div>`;
             
             if (isOn) testSelectHtml += `<option value="${m.id}" data-ptype="${m.provider_type}">${m.name} (${m.provider_type})</option>`;
-            // Suppress score display if fewer than 3 evals
-            if (m.eval_count !== undefined && m.eval_count < 3) { m.avg_score = null; m.grade = null; }
         }
         testSelectHtml += '<option value="__manual__">↳ Enter API key manually</option>';
         
         if (list) list.innerHTML = listHtml;
-        if (testSelect) {
-            testSelect.innerHTML = testSelectHtml;
-            // Auto-select first enabled model
-            const firstEnabled = data.models.find(m => m.is_enabled !== false);
-            if (firstEnabled && testSelect.querySelector(`option[value="${firstEnabled.id}"]`)) {
-                testSelect.value = firstEnabled.id;
-            }
-        }
+        if (testSelect) { testSelect.innerHTML = testSelectHtml; const firstEnabled = data.models.find(m => m.is_enabled !== false); if (firstEnabled) testSelect.value = firstEnabled.id; }
         
         // Show/hide Quick Test model dropdown vs manual input
         const hasEnabledModels = data.models.some(m => m.is_enabled !== false);
