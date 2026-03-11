@@ -1087,6 +1087,7 @@ a.info-val:hover { color: var(--text); }
                     <div id="test-model-row" class="hidden" style="margin-bottom:8px">
                         <select id="test-model-select" onchange="toggleQuickTestMode(this)" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:11px;color:var(--text);width:100%">
                             <option value="">Select model...</option>
+                            <option value="__score_text__">↳ Score text directly (no AI)</option>
                         </select>
                     </div>
                     <!-- All tiers: provider + key -->
@@ -1102,6 +1103,7 @@ a.info-val:hover { color: var(--text); }
                         <button onclick="const v=document.getElementById('test-std-provider-key').value;if(v){navigator.clipboard.writeText(v);showToast('Copied','success')}" style="background:none;border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:10px;color:var(--text-muted);cursor:pointer">Copy</button>
                     </div>
                     <input type="text" id="prov-question" placeholder="e.g. What is the boiling point of water?" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box;margin-bottom:8px" onkeydown="if(event.key==='Enter')runQuickTest()">
+                    <textarea id="score-text-direct" placeholder="Paste AI response text here to score it through GOLD..." style="display:none;width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box;margin-bottom:8px;height:120px;resize:vertical;font-family:inherit"></textarea>
                     <div style="display:flex;gap:8px;align-items:center">
                         <button class="btn-minimal" onclick="runQuickTest()" id="live-test-btn" style="font-size:12px;padding:8px 20px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Send</button>
                         <span id="live-test-status" style="font-size:11px;color:var(--text-muted)"></span>
@@ -3396,6 +3398,17 @@ function toggleProvManualInput() {
     const manual = document.getElementById('prov-test-manual-row');
     if (!select || !manual) return;
     manual.style.display = (select.value === '__manual__' || select.value === '') ? 'block' : 'none';
+    const scoreTextArea = document.getElementById('score-text-direct');
+    const questionInput = document.getElementById('prov-question');
+    if (scoreTextArea && questionInput) {
+        if (select.value === '__score_text__') {
+            scoreTextArea.style.display = 'block';
+            questionInput.style.display = 'none';
+        } else {
+            scoreTextArea.style.display = 'none';
+            questionInput.style.display = 'block';
+        }
+    }
 }
 
 async function runProvProxyTest() {
@@ -3406,6 +3419,38 @@ async function runProvProxyTest() {
     const modelSelect = document.getElementById('prov-test-model-select');
     let provider, providerKey;
     
+    // Score text directly mode
+    if (modelSelect && modelSelect.value === '__score_text__') {
+        const text = document.getElementById('score-text-direct')?.value?.trim();
+        if (!text) { showToast('Paste text to score', 'error'); return; }
+        const status = document.getElementById('live-test-status');
+        const btn = document.getElementById('live-test-btn');
+        btn.disabled = true; btn.textContent = 'Scoring...';
+        if (status) status.textContent = 'Running GOLD scoring engine...';
+        try {
+            const res = await fetch(`${API_BASE}/v1/check`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+                body: JSON.stringify({ output: text, domain: 'general' })
+            });
+            const data = await res.json();
+            if (!res.ok) { if (status) status.textContent = data.detail || 'Error'; btn.disabled = false; btn.textContent = 'Send'; return; }
+            const risk = data.risk_score ?? 0.5;
+            const quality = ((1.0 - risk) * 10).toFixed(1);
+            document.getElementById('live-score').textContent = quality;
+            document.getElementById('live-score').style.color = risk < 0.3 ? 'var(--accent)' : risk < 0.6 ? '#f59e0b' : '#ef4444';
+            document.getElementById('live-grade').textContent = data.compliance_class || data.grade || '?';
+            const proof = document.getElementById('live-proof');
+            if (proof) { proof.textContent = '—'; proof.dataset.full = ''; }
+            document.getElementById('live-response').textContent = '[Text scored directly — no AI response]';
+            document.getElementById('live-test-result').classList.remove('hidden');
+            if (status) status.textContent = '';
+            // Update metrics
+            updateMetricsFromData(data);
+        } catch(e) { if (status) status.textContent = 'Error: ' + e.message; }
+        btn.disabled = false; btn.textContent = 'Send';
+        return;
+    }
     if (modelSelect && modelSelect.value && modelSelect.value !== '__manual__' && modelSelect.value !== '') {
         // Save last used model
         localStorage.setItem('onto_last_quick_test_model', modelSelect.value);
@@ -3795,6 +3840,43 @@ function showMetricTooltip(key) {
     <div style="color:var(--accent);font-size:10px">${info.howto}</div>`;
 }
 
+
+function updateMetricsFromData(data) {
+    const risk = data.risk_score ?? 0.5;
+    const quality = ((1.0 - risk) * 10).toFixed(1);
+    const factors = data.factors || {};
+    const gm = factors.gold_markers || {};
+    const metrics = data.metrics || data.metric_scores || {};
+    const metricDefs = [
+        { key: 'QD', paths: [gm.numeric_confidence, gm.quantification_density, gm.qd, metrics.qd] },
+        { key: 'SS', paths: [gm.source_citations, gm.source_specificity, gm.ss, metrics.ss] },
+        { key: 'UM', paths: [gm.gap_disclosures, gm.uncertainty_marking, gm.um, metrics.um] },
+        { key: 'CP', paths: [gm.counterarguments, gm.counterargument_presence, gm.cp, metrics.cp] },
+        { key: 'EpCE', paths: [data.epce, gm.epce, gm.confidence_calibration, metrics.epce] },
+    ];
+    const metricMap = {
+        'metric-qd': metricDefs.find(m=>m.key==='QD'),
+        'metric-ss': metricDefs.find(m=>m.key==='SS'),
+        'metric-um': metricDefs.find(m=>m.key==='UM'),
+        'metric-cp': metricDefs.find(m=>m.key==='CP'),
+        'metric-epce': metricDefs.find(m=>m.key==='EpCE'),
+    };
+    for (const [id, def] of Object.entries(metricMap)) {
+        const el = document.getElementById(id);
+        if (!el || !def) continue;
+        const val = def.paths.find(v => v !== undefined && v !== null);
+        const display = val !== undefined ? (typeof val === 'number' ? val.toFixed(2) : val) : '—';
+        el.textContent = display;
+        const key = id.replace('metric-','');
+        const numVal = typeof val === 'number' ? val : parseFloat(val);
+        el.style.color = isNaN(numVal) ? 'var(--text-muted)' : getMetricColor(key, numVal);
+        const card = document.getElementById('card-'+key);
+        if (card && !isNaN(numVal)) card.style.borderColor = getMetricColor(key, numVal) + '66';
+    }
+    const goldLine = document.getElementById('gold-status-line');
+    if (goldLine) goldLine.innerHTML = `<span style="color:var(--accent)">● GOLD Active</span>`;
+}
+
 async function loadModelHistory(modelId) {
     const apiKey = localStorage.getItem('onto_first_api_key');
     if (!apiKey) return;
@@ -4162,11 +4244,11 @@ async function runModelTest() {
         const factors = data.factors || {};
         const gm = factors.gold_markers || {};
         const metricDefs = [
-            { key: 'QD', label: 'QD', desc: 'Quantification', paths: [gm.quantification_density, gm.qd, markers.QD] },
-            { key: 'SS', label: 'SS', desc: 'Source Signals',  paths: [gm.source_specificity, gm.ss, markers.SS] },
-            { key: 'UM', label: 'UM', desc: 'Uncertainty',     paths: [gm.uncertainty_marking, gm.um, markers.UM] },
-            { key: 'CP', label: 'CP', desc: 'Counterargs',     paths: [gm.counterargument_presence, gm.cp, markers.CP] },
-            { key: 'EpCE', label: 'EpCE', desc: 'GOLD deviation', paths: [gm.epce, gm.confidence_calibration, markers.EpCE], amber: true },
+            { key: 'QD', label: 'QD', desc: 'Quantification', paths: [gm.numeric_confidence, gm.quantification_density, gm.qd, markers.QD] },
+            { key: 'SS', label: 'SS', desc: 'Source Signals',  paths: [gm.source_citations, gm.source_specificity, gm.ss, markers.SS] },
+            { key: 'UM', label: 'UM', desc: 'Uncertainty',     paths: [gm.gap_disclosures, gm.uncertainty_marking, gm.um, markers.UM] },
+            { key: 'CP', label: 'CP', desc: 'Counterargs',     paths: [gm.counterarguments, gm.counterargument_presence, gm.cp, markers.CP] },
+            { key: 'EpCE', label: 'EpCE', desc: 'GOLD deviation', paths: [data.epce, gm.epce, gm.confidence_calibration, markers.EpCE], amber: true },
         ];
         const goldActive = data.gold_active ? '<span style="color:var(--accent)">● GOLD Active</span>' : '<span style="color:#606060">○ GOLD Inactive</span>';
         const mode = data.gold_mode ? ` · ${data.gold_mode}` : '';
