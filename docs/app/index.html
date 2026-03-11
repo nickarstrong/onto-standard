@@ -1033,38 +1033,40 @@ a.info-val:hover { color: var(--text); }
                     <span class="dash-section-subtitle" style="margin-left:8px">— last test · GOLD discipline layer</span>
                     <span style="margin-left:auto;font-size:10px;color:var(--text-muted)" id="gold-status-line">● GOLD Active</span>
                 </div>
-                <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">
-                    <div style="text-align:center;padding:12px 8px;background:var(--bg);border-radius:6px;border:1px solid var(--border)">
+                <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px" id="metrics-grid">
+                    <div class="metric-card" id="card-qd" style="text-align:center;padding:12px 8px;background:var(--bg);border-radius:6px;border:1px solid var(--border);cursor:help;position:relative" onclick="showMetricTooltip('qd')">
                         <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">QD</div>
-                        <div style="font-size:22px;font-weight:700;color:var(--text);font-family:monospace;line-height:1" id="metric-qd">—</div>
+                        <div style="font-size:22px;font-weight:700;font-family:monospace;line-height:1" id="metric-qd">—</div>
                         <div style="font-size:9px;color:var(--text-muted);margin-top:4px">Quantification</div>
-                        <div style="font-size:9px;color:var(--text-muted);margin-top:1px">density score</div>
+                        <div style="font-size:8px;color:var(--text-muted);margin-top:1px;opacity:0.6">tap for details</div>
                     </div>
-                    <div style="text-align:center;padding:12px 8px;background:var(--bg);border-radius:6px;border:1px solid var(--border)">
+                    <div class="metric-card" id="card-ss" style="text-align:center;padding:12px 8px;background:var(--bg);border-radius:6px;border:1px solid var(--border);cursor:help;position:relative" onclick="showMetricTooltip('ss')">
                         <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">SS</div>
-                        <div style="font-size:22px;font-weight:700;color:var(--text);font-family:monospace;line-height:1" id="metric-ss">—</div>
+                        <div style="font-size:22px;font-weight:700;font-family:monospace;line-height:1" id="metric-ss">—</div>
                         <div style="font-size:9px;color:var(--text-muted);margin-top:4px">Source Signals</div>
-                        <div style="font-size:9px;color:var(--text-muted);margin-top:1px">cited refs</div>
+                        <div style="font-size:8px;color:var(--text-muted);margin-top:1px;opacity:0.6">tap for details</div>
                     </div>
-                    <div style="text-align:center;padding:12px 8px;background:var(--bg);border-radius:6px;border:1px solid var(--border)">
+                    <div class="metric-card" id="card-um" style="text-align:center;padding:12px 8px;background:var(--bg);border-radius:6px;border:1px solid var(--border);cursor:help;position:relative" onclick="showMetricTooltip('um')">
                         <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">UM</div>
-                        <div style="font-size:22px;font-weight:700;color:var(--text);font-family:monospace;line-height:1" id="metric-um">—</div>
+                        <div style="font-size:22px;font-weight:700;font-family:monospace;line-height:1" id="metric-um">—</div>
                         <div style="font-size:9px;color:var(--text-muted);margin-top:4px">Uncertainty</div>
-                        <div style="font-size:9px;color:var(--text-muted);margin-top:1px">acknowledged</div>
+                        <div style="font-size:8px;color:var(--text-muted);margin-top:1px;opacity:0.6">tap for details</div>
                     </div>
-                    <div style="text-align:center;padding:12px 8px;background:var(--bg);border-radius:6px;border:1px solid var(--border)">
+                    <div class="metric-card" id="card-cp" style="text-align:center;padding:12px 8px;background:var(--bg);border-radius:6px;border:1px solid var(--border);cursor:help;position:relative" onclick="showMetricTooltip('cp')">
                         <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">CP</div>
-                        <div style="font-size:22px;font-weight:700;color:var(--text);font-family:monospace;line-height:1" id="metric-cp">—</div>
+                        <div style="font-size:22px;font-weight:700;font-family:monospace;line-height:1" id="metric-cp">—</div>
                         <div style="font-size:9px;color:var(--text-muted);margin-top:4px">Counterargs</div>
-                        <div style="font-size:9px;color:var(--text-muted);margin-top:1px">opposing views</div>
+                        <div style="font-size:8px;color:var(--text-muted);margin-top:1px;opacity:0.6">tap for details</div>
                     </div>
-                    <div style="text-align:center;padding:12px 8px;background:var(--bg);border-radius:6px;border:1px solid rgba(245,158,11,0.3)">
+                    <div class="metric-card" id="card-epce" style="text-align:center;padding:12px 8px;background:var(--bg);border-radius:6px;border:1px solid rgba(245,158,11,0.3);cursor:help;position:relative" onclick="showMetricTooltip('epce')">
                         <div style="font-size:9px;color:#f59e0b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">EpCE</div>
                         <div style="font-size:22px;font-weight:700;color:#f59e0b;font-family:monospace;line-height:1" id="metric-epce">—</div>
                         <div style="font-size:9px;color:var(--text-muted);margin-top:4px">GOLD deviation</div>
-                        <div style="font-size:9px;color:var(--text-muted);margin-top:1px">vs baseline</div>
+                        <div style="font-size:8px;color:var(--text-muted);margin-top:1px;opacity:0.6">tap for details</div>
                     </div>
                 </div>
+                <!-- Metric tooltip panel -->
+                <div id="metric-tooltip" style="display:none;margin-top:8px;padding:12px 16px;background:var(--bg-elevated);border:1px solid var(--border-hover);border-radius:6px;font-size:11px;color:var(--text-secondary)"></div>
             </div>
 
             <div class="dash-section-divider"></div>
@@ -3711,6 +3713,88 @@ async function testProviderSSE() {
 }
 
 
+
+const METRIC_INFO = {
+    qd: {
+        name: "Quantification Density",
+        what: "Counts numeric evidence in the response — percentages, statistics, measurements, trial results.",
+        thresholds: [{min:7, label:"Strong", color:"#15803d"},{min:4, label:"Moderate", color:"#f59e0b"},{min:0, label:"Weak", color:"#ef4444"}],
+        howto: "To improve: ask the model to include specific numbers, percentages, and study results. Example: add 'cite specific statistics' to your prompt."
+    },
+    ss: {
+        name: "Source Signals",
+        what: "Counts explicit source references — journals, authors, institutions, years.",
+        thresholds: [{min:5, label:"Strong", color:"#15803d"},{min:2, label:"Moderate", color:"#f59e0b"},{min:0, label:"Weak", color:"#ef4444"}],
+        howto: "To improve: instruct the model to cite sources explicitly. Example: 'cite peer-reviewed sources with author and year'."
+    },
+    um: {
+        name: "Uncertainty Markers",
+        what: "Counts hedging language — 'may', 'evidence suggests', 'limited data', 'uncertain'.",
+        thresholds: [{min:4, label:"Well-calibrated", color:"#15803d"},{min:2, label:"Partial", color:"#f59e0b"},{min:0, label:"Overconfident", color:"#ef4444"}],
+        howto: "To improve: prompt the model to acknowledge limitations. Example: 'note areas of scientific uncertainty or conflicting evidence'."
+    },
+    cp: {
+        name: "Counterargument Presence",
+        what: "Detects opposing views, limitations, or contrary evidence presented in the response.",
+        thresholds: [{min:2, label:"Balanced", color:"#15803d"},{min:1, label:"Partial", color:"#f59e0b"},{min:0, label:"One-sided", color:"#ef4444"}],
+        howto: "To improve: ask for both sides. Example: 'include the strongest arguments against this position'."
+    },
+    epce: {
+        name: "Epistemic Confidence Error",
+        what: "Measures deviation between the model's expressed confidence and GOLD baseline calibration. Lower is better.",
+        thresholds: [{max:0.2, label:"Well-calibrated", color:"#15803d"},{max:0.5, label:"Moderate drift", color:"#f59e0b"},{max:99, label:"Overconfident", color:"#ef4444"}],
+        howto: "High EpCE means the model is more confident than evidence warrants. GOLD layer actively corrects this via uncertainty injection.",
+        inverted: true
+    }
+};
+
+function getMetricColor(key, val) {
+    const info = METRIC_INFO[key];
+    if (!info || val === null || val === undefined) return 'var(--text)';
+    if (info.inverted) {
+        if (val <= 0.2) return '#15803d';
+        if (val <= 0.5) return '#f59e0b';
+        return '#ef4444';
+    }
+    const t = info.thresholds;
+    for (const th of t) {
+        if (val >= th.min) return th.color;
+    }
+    return '#ef4444';
+}
+
+function getMetricLabel(key, val) {
+    const info = METRIC_INFO[key];
+    if (!info || val === null || val === undefined) return '';
+    if (info.inverted) {
+        if (val <= 0.2) return 'Well-calibrated';
+        if (val <= 0.5) return 'Moderate drift';
+        return 'Overconfident';
+    }
+    for (const th of info.thresholds) {
+        if (val >= th.min) return th.label;
+    }
+    return info.thresholds[info.thresholds.length-1].label;
+}
+
+function showMetricTooltip(key) {
+    const info = METRIC_INFO[key];
+    const panel = document.getElementById('metric-tooltip');
+    if (!panel || !info) return;
+    const el = document.getElementById(`metric-${key}`);
+    const val = el ? parseFloat(el.textContent) : null;
+    const color = getMetricColor(key, isNaN(val) ? null : val);
+    const label = isNaN(val) ? '—' : getMetricLabel(key, val);
+    panel.style.display = 'block';
+    panel.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <b style="color:var(--text)">${info.name}</b>
+        ${!isNaN(val) ? `<span style="font-size:12px;font-weight:700;color:${color}">${label}</span>` : ''}
+        <span onclick="document.getElementById('metric-tooltip').style.display='none'" style="cursor:pointer;color:var(--text-muted);margin-left:12px">✕</span>
+    </div>
+    <div style="margin-bottom:6px;color:var(--text-secondary)">${info.what}</div>
+    <div style="color:var(--accent);font-size:10px">${info.howto}</div>`;
+}
+
 async function loadModelHistory(modelId) {
     const apiKey = localStorage.getItem('onto_first_api_key');
     if (!apiKey) return;
@@ -4104,8 +4188,14 @@ async function runModelTest() {
             const el = document.getElementById(id);
             if (!el || !def) continue;
             const val = def.paths.find(v => v !== undefined && v !== null);
-            el.textContent = val !== undefined ? (typeof val === 'number' ? val.toFixed(2) : val) : '—';
-            el.style.color = 'var(--text)';
+            const display = val !== undefined ? (typeof val === 'number' ? val.toFixed(2) : val) : '—';
+            el.textContent = display;
+            const key = id.replace('metric-','');
+            const numVal = typeof val === 'number' ? val : parseFloat(val);
+            el.style.color = isNaN(numVal) ? 'var(--text-muted)' : getMetricColor(key, numVal);
+            // Color card border
+            const card = document.getElementById('card-'+key);
+            if (card && !isNaN(numVal)) card.style.borderColor = getMetricColor(key, numVal) + '66';
         }
         // Update gold status line
         const goldLine = document.getElementById('gold-status-line');
