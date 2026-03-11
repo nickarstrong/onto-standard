@@ -681,6 +681,30 @@ a.info-val:hover { color: var(--text); }
 
 
 .metric-chip{position:relative;cursor:help;}.metric-chip:hover::after{content:attr(data-tooltip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1a1f2e;border:1px solid var(--border);color:var(--text-secondary);font-size:10px;white-space:nowrap;padding:4px 8px;border-radius:4px;pointer-events:none;z-index:100;}
+
+/* ── SCORE HISTORY CHART ── */
+.chart-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-bottom: 0;
+}
+.chart-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+}
+.chart-title {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 600; color: var(--text);
+}
+.chart-meta { font-size: 10px; color: var(--text-muted); }
+#score-history-canvas { width: 100%; height: 80px; display: block; }
+.chart-empty {
+    height: 80px; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: var(--text-muted);
+    border: 1px dashed var(--border); border-radius: 6px;
+}
 </style>
 
 </head>
@@ -996,6 +1020,24 @@ a.info-val:hover { color: var(--text); }
                             <button class="btn-minimal" onclick="regenerateApiKey()" style="padding:4px 10px;font-size:10px;color:var(--text-muted)" title="Generate new API key">Regenerate</button>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <div class="dash-section-divider"></div>
+
+            <!-- ══════════ SCORE HISTORY CHART ══════════ -->
+            <div class="dash-section">
+                <div class="chart-section">
+                    <div class="chart-header">
+                        <div class="chart-title">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                            Score History
+                            <span style="font-size:9px;padding:2px 6px;background:var(--accent-subtle);color:var(--accent);border:1px solid var(--accent);border-radius:3px;font-weight:600">LOCAL</span>
+                        </div>
+                        <div class="chart-meta" id="chart-meta-label">—</div>
+                    </div>
+                    <canvas id="score-history-canvas"></canvas>
+                    <div class="chart-empty hidden" id="chart-empty">Run Quick Test to see score history</div>
                 </div>
             </div>
 
@@ -6220,6 +6262,109 @@ function showSignal104b(action, endpoint) {
         list.insertBefore(item, list.firstChild);
     }
 }
+
+// ══ SCORE HISTORY CHART ══
+const HISTORY_KEY = 'onto_score_history';
+const MAX_HISTORY = 30;
+
+function saveScoreToHistory(modelName, score, grade) {
+    try {
+        const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+        history.push({ ts: Date.now(), model: modelName, score: parseFloat(score), grade: grade });
+        if (history.length > MAX_HISTORY) history.splice(0, history.length - MAX_HISTORY);
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+        renderScoreChart();
+    } catch(e) {}
+}
+
+function renderScoreChart() {
+    const canvas = document.getElementById('score-history-canvas');
+    const empty = document.getElementById('chart-empty');
+    const meta = document.getElementById('chart-meta-label');
+    if (!canvas) return;
+    let history = [];
+    try { history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch(e) {}
+    if (!history.length) {
+        canvas.style.display = 'none';
+        if (empty) empty.classList.remove('hidden');
+        return;
+    }
+    canvas.style.display = 'block';
+    if (empty) empty.classList.add('hidden');
+    const dpr = window.devicePixelRatio || 1;
+    const W = canvas.offsetWidth || 600;
+    const H = 80;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    canvas.style.height = H + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, W, H);
+    const pad = { top: 6, right: 8, bottom: 18, left: 28 };
+    const gW = W - pad.left - pad.right;
+    const gH = H - pad.top - pad.bottom;
+    // Grid
+    ctx.strokeStyle = '#333333'; ctx.lineWidth = 1;
+    [0, 5, 10].forEach(v => {
+        const y = pad.top + gH - (v / 10) * gH;
+        ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + gW, y); ctx.stroke();
+        ctx.fillStyle = '#606060'; ctx.font = '8px monospace'; ctx.textAlign = 'right';
+        ctx.fillText(v, pad.left - 4, y + 3);
+    });
+    const accent = '#15803d';
+    if (history.length === 1) {
+        const x = pad.left + gW / 2;
+        const y = pad.top + gH - (history[0].score / 10) * gH;
+        ctx.fillStyle = accent; ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI*2); ctx.fill();
+    } else {
+        const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + gH);
+        grad.addColorStop(0, 'rgba(21,128,61,0.2)');
+        grad.addColorStop(1, 'rgba(21,128,61,0)');
+        ctx.beginPath();
+        history.forEach((p, i) => {
+            const x = pad.left + (i / (history.length-1)) * gW;
+            const y = pad.top + gH - (Math.max(0,Math.min(10,p.score))/10)*gH;
+            i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+        });
+        ctx.lineTo(pad.left+gW, pad.top+gH); ctx.lineTo(pad.left, pad.top+gH);
+        ctx.closePath(); ctx.fillStyle = grad; ctx.fill();
+        ctx.beginPath();
+        history.forEach((p, i) => {
+            const x = pad.left + (i / (history.length-1)) * gW;
+            const y = pad.top + gH - (Math.max(0,Math.min(10,p.score))/10)*gH;
+            i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+        });
+        ctx.strokeStyle = accent; ctx.lineWidth = 1.5; ctx.lineJoin = 'round'; ctx.stroke();
+        history.forEach((p, i) => {
+            const x = pad.left + (i / (history.length-1)) * gW;
+            const y = pad.top + gH - (Math.max(0,Math.min(10,p.score))/10)*gH;
+            ctx.fillStyle = accent; ctx.beginPath(); ctx.arc(x,y,2.5,0,Math.PI*2); ctx.fill();
+        });
+    }
+    if (meta) {
+        const avg = (history.reduce((s,h)=>s+h.score,0)/history.length).toFixed(1);
+        const last = history[history.length-1];
+        meta.textContent = `avg ${avg}  ·  last ${last.score}  ·  ${history.length} tests`;
+    }
+}
+
+// Observe live-score changes to save history
+const _chartObsInterval = setInterval(() => {
+    const scoreEl = document.getElementById('live-score');
+    if (scoreEl) {
+        clearInterval(_chartObsInterval);
+        new MutationObserver(() => {
+            const score = parseFloat(scoreEl.textContent);
+            const grade = (document.getElementById('live-grade')||{}).textContent || '';
+            const sel = document.getElementById('test-model-select');
+            const model = sel ? (sel.options[sel.selectedIndex]||{}).text||'unknown' : 'unknown';
+            if (!isNaN(score) && score > 0) saveScoreToHistory(model, score, grade);
+        }).observe(scoreEl, { childList:true, characterData:true, subtree:true });
+    }
+}, 300);
+
+document.addEventListener('DOMContentLoaded', () => setTimeout(renderScoreChart, 500));
+window.addEventListener('resize', renderScoreChart);
+
 </script>
 </body>
 </html>
