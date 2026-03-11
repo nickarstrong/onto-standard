@@ -977,33 +977,41 @@ a.info-val:hover { color: var(--text); }
 
             <!-- ══════════ SECTION: ACCOUNT ══════════ -->
             <div class="dash-section">
-                <div style="margin-bottom:12px"><div style="font-size:18px;font-weight:700;color:var(--text)">Dashboard</div><div style="font-size:12px;color:var(--text-muted)">Monitor your AI models · GOLD epistemic layer · cryptographic proof chain</div></div>
-                <!-- PLAN STATUS -->
-                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
-                    <div class="dash-card-clean" style="padding:14px 16px;margin-bottom:0">
-                        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Plan</div>
-                        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap" id="dash-plan-badges">
-                            <span id="dash-badge-proxy" style="font-size:10px;padding:2px 8px;border-radius:3px;background:var(--bg-elevated);color:var(--text-secondary);font-weight:600;border:1px solid var(--border)">OPEN</span>
+                <!-- HERO: Epistemic Score -->
+                <div style="display:grid;grid-template-columns:auto 1fr;gap:16px;margin-bottom:16px;padding:20px 24px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;align-items:center">
+                    <div>
+                        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Epistemic Score</div>
+                        <div style="display:flex;align-items:baseline;gap:12px">
+                            <span id="hero-score" style="font-size:52px;font-weight:800;color:var(--accent);line-height:1;font-variant-numeric:tabular-nums">—</span>
+                            <span id="hero-grade" style="font-size:32px;font-weight:700;color:var(--text);line-height:1">—</span>
                         </div>
-                        <div style="font-size:11px;color:var(--text-muted);margin-top:4px" id="dash-plan-rate">10/day</div>
+                        <div style="font-size:11px;color:var(--text-muted);margin-top:8px" id="hero-meta">Run a test to see your AI reliability score</div>
                     </div>
-                    <div class="dash-card-clean" style="padding:14px 16px;margin-bottom:0">
-                        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Status</div>
-                        <div style="display:flex;align-items:center;gap:6px">
-                            <div id="dash-status-dot" style="width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent)"></div>
-                            <span style="font-size:18px;font-weight:700" id="dash-status-text">Active</span>
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-left:auto;min-width:320px">
+                        <div style="padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px">
+                            <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Plan</div>
+                            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap" id="dash-plan-badges">
+                                <span id="dash-badge-proxy" style="font-size:10px;padding:2px 8px;border-radius:3px;background:var(--bg-elevated);color:var(--text-secondary);font-weight:600;border:1px solid var(--border)">OPEN</span>
+                            </div>
+                            <div style="font-size:10px;color:var(--text-muted);margin-top:3px" id="dash-plan-rate">10 req/day</div>
                         </div>
-                        <div style="font-size:11px;color:var(--text-muted);margin-top:2px" id="dash-plan-expires">—</div>
-                    </div>
-                    <div class="dash-card-clean" style="padding:14px 16px;margin-bottom:0">
-                        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Requests today</div>
-                        <div style="display:flex;align-items:baseline;gap:4px">
-                            <span style="font-size:18px;font-weight:700" id="dash-plan-calls">0</span>
-                            <span style="font-size:18px;font-weight:700;color:var(--text-muted)"> today</span>
-                            <span style="font-size:12px;color:var(--text-muted)">/ <span id="dash-plan-limit">—</span></span>
+                        <div style="padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px">
+                            <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Status</div>
+                            <div style="display:flex;align-items:center;gap:6px">
+                                <div id="dash-status-dot" style="width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent);flex-shrink:0"></div>
+                                <span style="font-size:13px;font-weight:600" id="dash-status-text">Active</span>
+                            </div>
+                            <div style="font-size:10px;color:var(--text-muted);margin-top:3px" id="dash-plan-expires">—</div>
                         </div>
-                        <div style="background:var(--border);border-radius:2px;height:4px;overflow:hidden;margin-top:6px">
-                            <div id="dash-usage-bar-mini" style="height:100%;background:var(--accent);border-radius:2px;width:0%;transition:width 0.5s ease"></div>
+                        <div style="padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px">
+                            <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Requests today</div>
+                            <div style="display:flex;align-items:baseline;gap:3px">
+                                <span style="font-size:18px;font-weight:700;font-variant-numeric:tabular-nums" id="dash-plan-calls">0</span>
+                                <span style="font-size:11px;color:var(--text-muted)">/ <span id="dash-plan-limit">—</span></span>
+                            </div>
+                            <div style="background:var(--border);border-radius:2px;height:3px;overflow:hidden;margin-top:6px">
+                                <div id="dash-usage-bar-mini" style="height:100%;background:var(--accent);border-radius:2px;width:0%;transition:width 0.5s ease"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -4055,6 +4063,17 @@ async function runModelTest() {
             const color = m.amber ? '#f59e0b' : 'var(--text)';
             return `<span style="margin-right:12px"><b style="color:${color}">${m.label}</b> <span style="color:var(--text-secondary)">${m.desc}</span> <b style="color:var(--text);font-family:monospace">${display}</b></span>`;
         }).join('');
+        // Update hero score
+        const heroScore = document.getElementById('hero-score');
+        const heroGrade = document.getElementById('hero-grade');
+        const heroMeta  = document.getElementById('hero-meta');
+        if (heroScore) {
+            heroScore.textContent = quality;
+            heroScore.style.color = data.risk_score < 0.3 ? 'var(--accent)' : data.risk_score < 0.6 ? '#f59e0b' : '#ef4444';
+        }
+        if (heroGrade) heroGrade.textContent = data.compliance_class || data.grade || '?';
+        if (heroMeta) heroMeta.innerHTML = `<span style="color:var(--accent)">● GOLD Active</span> · last test just now · ${data.model_name || 'proxy model'}`;
+
         // Fill individual metric spans
         const metricMap = {
             'metric-qd':   metricDefs.find(m=>m.key==='QD'),
