@@ -1092,11 +1092,12 @@ a.info-val:hover { color: var(--text); }
                     </div>
                     <!-- All tiers: provider + key -->
                     <div id="test-std-row" style="display:flex;gap:8px;margin-bottom:8px">
-                        <select id="test-std-provider" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 8px;font-size:12px;color:var(--text);width:130px">
+                        <select id="test-std-provider" onchange="toggleStdProviderMode(this)" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 8px;font-size:12px;color:var(--text);width:160px">
                             <option value="anthropic">Anthropic</option>
                             <option value="openai">OpenAI</option>
                             <option value="deepseek">DeepSeek</option>
                             <option value="mistral">Mistral</option>
+                            <option value="__score_text__">↳ Score text (no AI)</option>
                         </select>
                         <input type="text" id="test-std-provider-key" placeholder="Provider API key (sk-...)" autocomplete="off" data-1p-ignore data-lpignore="true" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--text);-webkit-text-security:disc">
                         <button onclick="const i=document.getElementById('test-std-provider-key');const m=i.style.webkitTextSecurity;i.style.webkitTextSecurity=m==='disc'?'none':'disc';this.textContent=m==='disc'?'Hide':'Show'" style="background:none;border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:10px;color:var(--text-muted);cursor:pointer">Show</button>
@@ -3322,6 +3323,16 @@ async function loadProxyUsage() {
     } catch(e) { /* silent */ }
 }
 
+function toggleStdProviderMode(select) {
+    const isScoreText = select.value === '__score_text__';
+    const keyInput = document.getElementById('test-std-provider-key');
+    const questionInput = document.getElementById('prov-question');
+    const scoreTextArea = document.getElementById('score-text-direct');
+    if (keyInput) { keyInput.parentNode.querySelectorAll('button').forEach(b => b.style.display = isScoreText ? 'none' : ''); keyInput.style.display = isScoreText ? 'none' : ''; }
+    if (questionInput) questionInput.style.display = isScoreText ? 'none' : '';
+    if (scoreTextArea) scoreTextArea.style.display = isScoreText ? 'block' : 'none';
+}
+
 function toggleQuickTestMode(sel) {
     const testStdRow = document.getElementById('test-std-row');
     if (sel.value === '__manual__') {
@@ -3571,6 +3582,35 @@ async function runProvProxyTest() {
 }
 
 async function testStandardProxy() {
+    const stdProvider = document.getElementById('test-std-provider')?.value;
+    if (stdProvider === '__score_text__') {
+        const text = document.getElementById('score-text-direct')?.value?.trim();
+        if (!text) { showToast('Paste text to score', 'error'); return; }
+        const btn = document.getElementById('live-test-btn');
+        const status = document.getElementById('live-test-status');
+        btn.disabled = true; btn.textContent = 'Scoring...';
+        if (status) status.textContent = 'Running GOLD scoring...';
+        try {
+            const res = await fetch(`${API_BASE}/v1/check`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+                body: JSON.stringify({ output: text, domain: 'general' })
+            });
+            const data = await res.json();
+            if (!res.ok) { if (status) status.textContent = data.detail || 'Error'; btn.disabled = false; btn.textContent = 'Send'; return; }
+            const risk = data.risk_score ?? 0.5;
+            const quality = ((1.0 - risk) * 10).toFixed(1);
+            document.getElementById('live-score').textContent = quality;
+            document.getElementById('live-score').style.color = risk < 0.3 ? 'var(--accent)' : risk < 0.6 ? '#f59e0b' : '#ef4444';
+            document.getElementById('live-grade').textContent = data.compliance_class || '?';
+            document.getElementById('live-response').textContent = '[Text scored directly — no AI call]';
+            document.getElementById('live-test-result').classList.remove('hidden');
+            if (status) status.textContent = '';
+            updateMetricsFromData(data);
+        } catch(e) { if (status) status.textContent = 'Error: ' + e.message; }
+        btn.disabled = false; btn.textContent = 'Send';
+        return;
+    }
     const providerKey = document.getElementById('test-std-provider-key').value.trim();
     if (!providerKey) { showToast('Enter your provider API key', 'error'); return; }
     localStorage.setItem('onto_provider_key', providerKey);
