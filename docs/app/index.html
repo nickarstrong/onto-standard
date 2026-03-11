@@ -3710,6 +3710,55 @@ async function testProviderSSE() {
     if (connected) updateWizardSteps();
 }
 
+
+async function loadModelHistory(modelId) {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) return;
+    try {
+        const res = await fetch(`${API_BASE}/v1/models/${modelId}/history?n=30`, {
+            headers: { 'x-api-key': apiKey }
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        const canvas = document.getElementById(`spark-${modelId}`);
+        const alertEl = document.getElementById(`alert-${modelId}`);
+        if (!canvas || !data.points || data.points.length < 2) return;
+
+        // Draw sparkline
+        const ctx = canvas.getContext('2d');
+        const W = canvas.offsetWidth || 300;
+        const H = 28;
+        canvas.width = W;
+        ctx.clearRect(0, 0, W, H);
+
+        const scores = data.points.map(p => p.score);
+        const min = Math.min(...scores) - 0.5;
+        const max = Math.max(...scores) + 0.5;
+        const xStep = W / (scores.length - 1);
+
+        ctx.beginPath();
+        ctx.strokeStyle = data.alert ? '#ef4444' : '#15803d';
+        ctx.lineWidth = 1.5;
+        scores.forEach((s, i) => {
+            const x = i * xStep;
+            const y = H - ((s - min) / (max - min)) * H;
+            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+
+        // Fill under line
+        ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
+        ctx.fillStyle = data.alert ? 'rgba(239,68,68,0.08)' : 'rgba(21,128,61,0.08)';
+        ctx.fill();
+
+        // Alert
+        if (alertEl && data.alert) {
+            alertEl.style.display = 'block';
+            alertEl.textContent = `⚠ Degradation: ${data.alert.prev5} → ${data.alert.last5} (${data.alert.delta})`;
+        }
+    } catch(e) {}
+}
+
 async function loadModels() {
     const apiKey = localStorage.getItem('onto_first_api_key');
     if (!apiKey) return;
@@ -3765,6 +3814,10 @@ async function loadModels() {
                         <button onclick="removeModel('${m.id}','${m.name}')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;padding:2px" title="Remove">×</button>
                     </div>
                 </div>
+                <div style="margin-top:6px">
+                    <canvas id="spark-${m.id}" height="28" style="width:100%;height:28px;display:block;opacity:0.9"></canvas>
+                    <div id="alert-${m.id}" style="display:none;font-size:10px;color:#ef4444;margin-top:3px"></div>
+                </div>
             </div>`;
             
             if (isOn) testSelectHtml += `<option value="${m.id}" data-ptype="${m.provider_type}">${m.name} (${m.provider_type})</option>`;
@@ -3773,6 +3826,8 @@ async function loadModels() {
         
         if (list) list.innerHTML = listHtml;
         if (testSelect) { testSelect.innerHTML = testSelectHtml; const firstEnabled = data.models.find(m => m.is_enabled !== false); if (firstEnabled) testSelect.value = firstEnabled.id; }
+        // Load sparklines for each model
+        for (const m of data.models) { loadModelHistory(m.id); }
         
         // Show/hide Quick Test model dropdown vs manual input
         const hasEnabledModels = data.models.some(m => m.is_enabled !== false);
