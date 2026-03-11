@@ -3782,13 +3782,13 @@ const METRIC_INFO = {
         name: "Counterargument Presence",
         what: "Detects opposing views, limitations, or contrary evidence presented in the response.",
         thresholds: [{min:2, label:"Balanced", color:"#15803d"},{min:1, label:"Partial", color:"#f59e0b"},{min:0, label:"One-sided", color:"#ef4444"}],
-        howto: "To improve: ask for both sides. Example: 'include the strongest arguments against this position'."
+        howto: "0 = no counterarguments detected. To improve: add 'include the strongest arguments against this position' to your prompt. — means the scoring engine did not return this metric."
     },
     epce: {
         name: "Epistemic Confidence Error",
-        what: "Measures deviation between the model's expressed confidence and GOLD baseline calibration. Lower is better.",
+        what: "Measures deviation between model confidence and GOLD baseline. Shows — when logprobs or ground_truth are not available — this is expected in Quick Test via proxy.",
         thresholds: [{max:0.2, label:"Well-calibrated", color:"#15803d"},{max:0.5, label:"Moderate drift", color:"#f59e0b"},{max:99, label:"Overconfident", color:"#ef4444"}],
-        howto: "High EpCE means the model is more confident than evidence warrants. GOLD layer actively corrects this via uncertainty injection.",
+        howto: "EpCE requires logprobs (SSE channel) or a ground_truth value in the API request. Proxy Quick Test does not have access to logprobs — this is by design, not a bug.",
         inverted: true
     }
 };
