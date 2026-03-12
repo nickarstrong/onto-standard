@@ -1133,6 +1133,8 @@ a.info-val:hover { color: var(--text); }
                         </div>
                         <!-- MODEL RESPONSE -->
                         <div id="live-response" style="background:#0c0f14;border-radius:6px;padding:10px 12px;font-size:11px;color:#e2e8f0;line-height:1.6;max-height:200px;overflow-y:auto;white-space:pre-wrap"></div>
+                        <!-- DOI INFO -->
+                        <div id="live-doi-info" class="hidden" style="margin-top:6px;padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:4px;font-size:11px;color:var(--text-secondary);font-family:monospace"></div>
                     </div>
                     <div id="test-std-result" class="hidden" style="margin-top:10px;background:#0c0f14;border-radius:6px;padding:10px 12px;font-size:11px;color:#e2e8f0;max-height:200px;overflow-y:auto;white-space:pre-wrap;font-family:'JetBrains Mono',monospace;line-height:1.5"></div>
                 </div>
@@ -3842,6 +3844,20 @@ async function runModelTest() {
         // Update gold status line
         const goldLine = document.getElementById('gold-status-line');
         if (goldLine) goldLine.innerHTML = `${goldActive}${mode}`;
+        
+        // DOI info (informational, no weight)
+        const doiInfo = document.getElementById('live-doi-info');
+        const doiData = gm.doi_verification || {};
+        if (doiData.dois_found !== undefined && doiData.dois_found > 0) {
+            const v = doiData.verified || 0;
+            const u = doiData.unverified || 0;
+            let txt = `DOIs found: ${doiData.dois_found} · Verified: <b style="color:var(--accent)">${v}</b>`;
+            if (u > 0) txt += ` · Unverified: <b style="color:#ef4444">${u}</b>`;
+            doiInfo.innerHTML = txt;
+            doiInfo.classList.remove('hidden');
+        } else {
+            doiInfo.classList.add('hidden');
+        }
         
         document.getElementById('live-test-result').classList.remove('hidden');
         status.textContent = '';
