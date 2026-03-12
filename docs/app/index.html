@@ -1025,7 +1025,25 @@ a.info-val:hover { color: var(--text); }
 
             <div class="dash-section-divider"></div>
 
-<!-- ══════════ EPISTEMIC METRICS — always visible ══════════ -->
+            <!-- ══════════ SCORE HISTORY CHART ══════════ -->
+            <div class="dash-section">
+                <div class="chart-section">
+                    <div class="chart-header">
+                        <div class="chart-title">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                            Score History
+                            <span style="font-size:9px;padding:2px 6px;background:var(--accent-subtle);color:var(--accent);border:1px solid var(--accent);border-radius:3px;font-weight:600">LOCAL</span>
+                        </div>
+                        <div class="chart-meta" id="chart-meta-label">—</div>
+                    </div>
+                    <canvas id="score-history-canvas"></canvas>
+                    <div class="chart-empty hidden" id="chart-empty">Run Quick Test to see score history</div>
+                </div>
+            </div>
+
+            <div class="dash-section-divider"></div>
+
+            <!-- ══════════ EPISTEMIC METRICS — always visible ══════════ -->
             <div class="dash-section" style="margin-bottom:0">
                 <div class="dash-section-header" style="margin-bottom:12px">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -1033,40 +1051,38 @@ a.info-val:hover { color: var(--text); }
                     <span class="dash-section-subtitle" style="margin-left:8px">— last test · GOLD discipline layer</span>
                     <span style="margin-left:auto;font-size:10px;color:var(--text-muted)" id="gold-status-line">● GOLD Active</span>
                 </div>
-                <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px" id="metrics-grid">
-                    <div class="metric-card" id="card-qd" style="text-align:center;padding:12px 8px;background:var(--bg);border-radius:6px;border:1px solid var(--border);cursor:help;position:relative" onclick="showMetricTooltip('qd')">
+                <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">
+                    <div style="text-align:center;padding:12px 8px;background:var(--bg);border-radius:6px;border:1px solid var(--border)">
                         <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">QD</div>
-                        <div style="font-size:22px;font-weight:700;font-family:monospace;line-height:1" id="metric-qd">—</div>
+                        <div style="font-size:22px;font-weight:700;color:var(--text);font-family:monospace;line-height:1" id="metric-qd">—</div>
                         <div style="font-size:9px;color:var(--text-muted);margin-top:4px">Quantification</div>
-                        <div style="font-size:8px;color:var(--text-muted);margin-top:1px;opacity:0.6">tap for details</div>
+                        <div style="font-size:9px;color:var(--text-muted);margin-top:1px">density score</div>
                     </div>
-                    <div class="metric-card" id="card-ss" style="text-align:center;padding:12px 8px;background:var(--bg);border-radius:6px;border:1px solid var(--border);cursor:help;position:relative" onclick="showMetricTooltip('ss')">
+                    <div style="text-align:center;padding:12px 8px;background:var(--bg);border-radius:6px;border:1px solid var(--border)">
                         <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">SS</div>
-                        <div style="font-size:22px;font-weight:700;font-family:monospace;line-height:1" id="metric-ss">—</div>
+                        <div style="font-size:22px;font-weight:700;color:var(--text);font-family:monospace;line-height:1" id="metric-ss">—</div>
                         <div style="font-size:9px;color:var(--text-muted);margin-top:4px">Source Signals</div>
-                        <div style="font-size:8px;color:var(--text-muted);margin-top:1px;opacity:0.6">tap for details</div>
+                        <div style="font-size:9px;color:var(--text-muted);margin-top:1px">cited refs</div>
                     </div>
-                    <div class="metric-card" id="card-um" style="text-align:center;padding:12px 8px;background:var(--bg);border-radius:6px;border:1px solid var(--border);cursor:help;position:relative" onclick="showMetricTooltip('um')">
+                    <div style="text-align:center;padding:12px 8px;background:var(--bg);border-radius:6px;border:1px solid var(--border)">
                         <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">UM</div>
-                        <div style="font-size:22px;font-weight:700;font-family:monospace;line-height:1" id="metric-um">—</div>
+                        <div style="font-size:22px;font-weight:700;color:var(--text);font-family:monospace;line-height:1" id="metric-um">—</div>
                         <div style="font-size:9px;color:var(--text-muted);margin-top:4px">Uncertainty</div>
-                        <div style="font-size:8px;color:var(--text-muted);margin-top:1px;opacity:0.6">tap for details</div>
+                        <div style="font-size:9px;color:var(--text-muted);margin-top:1px">acknowledged</div>
                     </div>
-                    <div class="metric-card" id="card-cp" style="text-align:center;padding:12px 8px;background:var(--bg);border-radius:6px;border:1px solid var(--border);cursor:help;position:relative" onclick="showMetricTooltip('cp')">
+                    <div style="text-align:center;padding:12px 8px;background:var(--bg);border-radius:6px;border:1px solid var(--border)">
                         <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">CP</div>
-                        <div style="font-size:22px;font-weight:700;font-family:monospace;line-height:1" id="metric-cp">—</div>
+                        <div style="font-size:22px;font-weight:700;color:var(--text);font-family:monospace;line-height:1" id="metric-cp">—</div>
                         <div style="font-size:9px;color:var(--text-muted);margin-top:4px">Counterargs</div>
-                        <div style="font-size:8px;color:var(--text-muted);margin-top:1px;opacity:0.6">tap for details</div>
+                        <div style="font-size:9px;color:var(--text-muted);margin-top:1px">opposing views</div>
                     </div>
-                    <div class="metric-card" id="card-epce" style="text-align:center;padding:12px 8px;background:var(--bg);border-radius:6px;border:1px solid rgba(245,158,11,0.3);cursor:help;position:relative" onclick="showMetricTooltip('epce')">
+                    <div style="text-align:center;padding:12px 8px;background:var(--bg);border-radius:6px;border:1px solid rgba(245,158,11,0.3)">
                         <div style="font-size:9px;color:#f59e0b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">EpCE</div>
                         <div style="font-size:22px;font-weight:700;color:#f59e0b;font-family:monospace;line-height:1" id="metric-epce">—</div>
                         <div style="font-size:9px;color:var(--text-muted);margin-top:4px">GOLD deviation</div>
-                        <div style="font-size:8px;color:var(--text-muted);margin-top:1px;opacity:0.6">tap for details</div>
+                        <div style="font-size:9px;color:var(--text-muted);margin-top:1px">vs baseline</div>
                     </div>
                 </div>
-                <!-- Metric tooltip panel -->
-                <div id="metric-tooltip" style="display:none;margin-top:8px;padding:12px 16px;background:var(--bg-elevated);border:1px solid var(--border-hover);border-radius:6px;font-size:11px;color:var(--text-secondary)"></div>
             </div>
 
             <div class="dash-section-divider"></div>
@@ -1087,24 +1103,21 @@ a.info-val:hover { color: var(--text); }
                     <div id="test-model-row" class="hidden" style="margin-bottom:8px">
                         <select id="test-model-select" onchange="toggleQuickTestMode(this)" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:11px;color:var(--text);width:100%">
                             <option value="">Select model...</option>
-                            <option value="__score_text__">↳ Score text directly (no AI)</option>
                         </select>
                     </div>
                     <!-- All tiers: provider + key -->
                     <div id="test-std-row" style="display:flex;gap:8px;margin-bottom:8px">
-                        <select id="test-std-provider" onchange="toggleStdProviderMode(this)" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 8px;font-size:12px;color:var(--text);width:160px">
+                        <select id="test-std-provider" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 8px;font-size:12px;color:var(--text);width:130px">
                             <option value="anthropic">Anthropic</option>
                             <option value="openai">OpenAI</option>
                             <option value="deepseek">DeepSeek</option>
                             <option value="mistral">Mistral</option>
-                            <option value="__score_text__">↳ Score text (no AI)</option>
                         </select>
                         <input type="text" id="test-std-provider-key" placeholder="Provider API key (sk-...)" autocomplete="off" data-1p-ignore data-lpignore="true" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-size:12px;color:var(--text);-webkit-text-security:disc">
                         <button onclick="const i=document.getElementById('test-std-provider-key');const m=i.style.webkitTextSecurity;i.style.webkitTextSecurity=m==='disc'?'none':'disc';this.textContent=m==='disc'?'Hide':'Show'" style="background:none;border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:10px;color:var(--text-muted);cursor:pointer">Show</button>
                         <button onclick="const v=document.getElementById('test-std-provider-key').value;if(v){navigator.clipboard.writeText(v);showToast('Copied','success')}" style="background:none;border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:10px;color:var(--text-muted);cursor:pointer">Copy</button>
                     </div>
                     <input type="text" id="prov-question" placeholder="e.g. What is the boiling point of water?" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box;margin-bottom:8px" onkeydown="if(event.key==='Enter')runQuickTest()">
-                    <textarea id="score-text-direct" placeholder="Paste AI response text here to score it through GOLD..." style="display:none;width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box;margin-bottom:8px;height:120px;resize:vertical;font-family:inherit"></textarea>
                     <div style="display:flex;gap:8px;align-items:center">
                         <button class="btn-minimal" onclick="runQuickTest()" id="live-test-btn" style="font-size:12px;padding:8px 20px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Send</button>
                         <span id="live-test-status" style="font-size:11px;color:var(--text-muted)"></span>
@@ -1127,43 +1140,39 @@ a.info-val:hover { color: var(--text); }
 
             <div class="dash-section-divider"></div>
 
-            <!-- ══════════ SCORE ANY TEXT ══════════ -->
+            <!-- ══════════ SECTION: SCORE ANY TEXT ══════════ -->
             <div class="dash-section">
-                <div class="dash-section-header" style="margin-bottom:12px">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <div class="dash-section-header">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                     <div class="dash-section-title">Score Any Text</div>
-                    <span class="dash-section-subtitle">— paste any AI response → GOLD scores it without AI call</span>
+                    <span style="font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(21,128,61,0.12);color:var(--accent);border:1px solid rgba(21,128,61,0.25);font-weight:500;margin-left:6px">All tiers</span>
+                    <span class="dash-section-subtitle" style="margin-left:auto">Paste any AI response → measure epistemic discipline</span>
                 </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px">
-                    <div>
-                        <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px">Question / Context <span style="color:var(--text-muted)">(optional)</span></div>
-                        <input type="text" id="sat-question" placeholder="What was the AI asked? (improves scoring accuracy)" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box">
+
+                <div class="dash-card-clean" style="margin-bottom:0">
+                    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px">Paste an AI-generated response below. GOLD scoring engine will measure quantification density, source specificity, uncertainty marking, and more.</div>
+                    <div style="margin-bottom:8px">
+                        <textarea id="score-text-input" placeholder="Paste AI response text here..." style="width:100%;min-height:100px;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);padding:10px 12px;font-size:12px;font-family:'SF Mono','Cascadia Code','Consolas',monospace;resize:vertical;box-sizing:border-box;line-height:1.5"></textarea>
                     </div>
-                    <div>
-                        <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px">Domain</div>
-                        <select id="sat-domain" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text)">
-                            <option value="general">General</option>
-                            <option value="medical">Medical</option>
-                            <option value="legal">Legal</option>
-                            <option value="finance">Finance</option>
-                        </select>
+                    <div style="margin-bottom:8px">
+                        <input type="text" id="score-context" placeholder="Optional: original question / context" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box">
                     </div>
-                </div>
-                <textarea id="sat-text" placeholder="Paste AI response text here..." style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box;height:110px;resize:vertical;font-family:inherit;margin-bottom:8px"></textarea>
-                <div style="display:flex;gap:8px;align-items:center">
-                    <button class="btn-minimal" onclick="runScoreAnyText()" id="sat-btn" style="font-size:12px;padding:8px 20px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Score</button>
-                    <span id="sat-status" style="font-size:11px;color:var(--text-muted)"></span>
-                </div>
-                <div id="sat-result" class="hidden" style="margin-top:10px">
-                    <div style="display:flex;align-items:center;gap:16px;padding:12px 16px;background:var(--bg);border:1px solid var(--border);border-radius:6px">
-                        <div><div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">Score</div><div id="sat-score" style="font-size:28px;font-weight:800;color:var(--accent);line-height:1">—</div></div>
-                        <div><div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">Grade</div><div id="sat-grade" style="font-size:28px;font-weight:800;color:var(--text);line-height:1">—</div></div>
-                        <div style="flex:1;display:grid;grid-template-columns:repeat(5,1fr);gap:8px">
-                            <div style="text-align:center"><div style="font-size:9px;color:var(--text-muted)">QD</div><div id="sat-qd" style="font-size:14px;font-weight:700">—</div></div>
-                            <div style="text-align:center"><div style="font-size:9px;color:var(--text-muted)">SS</div><div id="sat-ss" style="font-size:14px;font-weight:700">—</div></div>
-                            <div style="text-align:center"><div style="font-size:9px;color:var(--text-muted)">UM</div><div id="sat-um" style="font-size:14px;font-weight:700">—</div></div>
-                            <div style="text-align:center"><div style="font-size:9px;color:var(--text-muted)">CP</div><div id="sat-cp" style="font-size:14px;font-weight:700">—</div></div>
-                            <div style="text-align:center"><div style="font-size:9px;color:var(--text-muted)">EpCE</div><div id="sat-epce" style="font-size:14px;font-weight:700">—</div></div>
+                    <div style="display:flex;gap:8px;align-items:center">
+                        <button class="btn-minimal" onclick="scoreAnyText()" id="score-text-btn" style="font-size:12px;padding:8px 20px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Score</button>
+                        <span id="score-text-status" style="font-size:11px;color:var(--text-muted)"></span>
+                    </div>
+
+                    <!-- Result card -->
+                    <div id="score-text-result" class="hidden" style="margin-top:12px">
+                        <div style="display:flex;align-items:center;gap:16px;margin-bottom:10px;padding:12px 16px;background:var(--bg);border:1px solid var(--border);border-radius:6px">
+                            <div><div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">Score</div><div id="sat-score" style="font-size:28px;font-weight:800;color:var(--accent);line-height:1">—</div></div>
+                            <div><div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">Grade</div><div id="sat-grade" style="font-size:28px;font-weight:800;color:var(--text);line-height:1">—</div></div>
+                            <div><div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">Risk</div><div id="sat-risk" style="font-size:16px;font-weight:600;color:var(--text-secondary);font-family:monospace;line-height:1.8">—</div></div>
+                            <div style="flex:1;text-align:right"><div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">Compliance</div><div id="sat-compliance" style="font-size:11px;color:var(--text-secondary)">—</div></div>
+                        </div>
+                        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px" id="sat-metrics"></div>
+                        <div id="sat-doi-section" class="hidden" style="padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:4px;font-size:11px;color:var(--text-secondary)">
+                            <div id="sat-doi"></div>
                         </div>
                     </div>
                 </div>
@@ -2884,58 +2893,6 @@ async function resendVerification() {
     }
 }
 
-async function checkEmailVerification() {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get('verify');
-    
-    if (!token) return;
-    
-    try {
-        const response = await fetch(`${API_BASE}/v1/auth/verify-email?token=${token}`);
-        const data = await response.json();
-        
-        if (response.ok && data.success) {
-            // Clean URL first
-            window.history.replaceState({}, '', window.location.pathname);
-            
-            // Auto-login with returned data
-            if (data.token) {
-                authToken = data.token;
-                localStorage.setItem('onto_token', authToken);
-                
-                currentUser = {
-                    id: data.user_id,
-                    name: data.name,
-                    email: data.email,
-                    role: 'admin',
-                    plan: layerToPlan(data.layer || 'open'),
-                    organization_id: data.organization_id,
-                    can_invoice: false,
-                    company: null  // Company set only after explicit registration
-                };
-                // Restore company data from previous session
-                const savedUserVerify = JSON.parse(localStorage.getItem('onto_user') || '{}');
-                if (savedUserVerify.company && savedUserVerify.id === currentUser.id) {
-                    currentUser.company = savedUserVerify.company;
-                    currentUser.can_invoice = savedUserVerify.can_invoice || false;
-                }
-                localStorage.setItem('onto_user', JSON.stringify(currentUser));
-                
-                showToast('Email verified! Welcome to ONTO.', 'success');
-                showDashboard();
-            } else {
-                showVerifySuccess();
-                showToast('Email verified! Please sign in.', 'success');
-            }
-        } else {
-            showToast(data.detail || 'Verification failed', 'error');
-        }
-    } catch (error) {
-        showToast('Verification failed', 'error');
-        window.history.replaceState({}, '', window.location.pathname);
-    }
-}
-
 function handleLogout() {
     if (!confirm(STRINGS.confirmLogout)) {
         return;
@@ -3367,16 +3324,6 @@ async function loadProxyUsage() {
     } catch(e) { /* silent */ }
 }
 
-function toggleStdProviderMode(select) {
-    const isScoreText = select.value === '__score_text__';
-    const keyInput = document.getElementById('test-std-provider-key');
-    const questionInput = document.getElementById('prov-question');
-    const scoreTextArea = document.getElementById('score-text-direct');
-    if (keyInput) { keyInput.parentNode.querySelectorAll('button').forEach(b => b.style.display = isScoreText ? 'none' : ''); keyInput.style.display = isScoreText ? 'none' : ''; }
-    if (questionInput) questionInput.style.display = isScoreText ? 'none' : '';
-    if (scoreTextArea) scoreTextArea.style.display = isScoreText ? 'block' : 'none';
-}
-
 function toggleQuickTestMode(sel) {
     const testStdRow = document.getElementById('test-std-row');
     if (sel.value === '__manual__') {
@@ -3403,20 +3350,6 @@ function getProxyModels() {
 }
 function saveProxyModels(models) {
     localStorage.setItem('onto_proxy_models', JSON.stringify(models));
-}
-function registerProxyModel() {
-    const name = document.getElementById('proxy-new-model-name').value.trim();
-    const provider = document.getElementById('proxy-new-model-provider').value;
-    const key = document.getElementById('proxy-new-model-key').value.trim();
-    if (!name || !key) { showToast('Enter model name and API key', 'error'); return; }
-    const models = getProxyModels();
-    models.push({ id: 'proxy_' + Date.now(), name, provider, key });
-    saveProxyModels(models);
-    document.getElementById('proxy-new-model-name').value = '';
-    document.getElementById('proxy-new-model-key').value = '';
-    document.getElementById('proxy-register-form').classList.add('hidden');
-    renderProxyModels();
-    showToast('Proxy model registered', 'success');
 }
 function removeProxyModel(id) {
     if (!confirm('Remove this proxy model?')) return;
@@ -3453,208 +3386,9 @@ function toggleProvManualInput() {
     const manual = document.getElementById('prov-test-manual-row');
     if (!select || !manual) return;
     manual.style.display = (select.value === '__manual__' || select.value === '') ? 'block' : 'none';
-    const scoreTextArea = document.getElementById('score-text-direct');
-    const questionInput = document.getElementById('prov-question');
-    if (scoreTextArea && questionInput) {
-        if (select.value === '__score_text__') {
-            scoreTextArea.style.display = 'block';
-            questionInput.style.display = 'none';
-        } else {
-            scoreTextArea.style.display = 'none';
-            questionInput.style.display = 'block';
-        }
-    }
-}
-
-async function runProvProxyTest() {
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    if (!apiKey) { showToast('Please sign in first', 'error'); return; }
-    
-    // Determine provider + key from dropdown or manual
-    const modelSelect = document.getElementById('prov-test-model-select');
-    let provider, providerKey;
-    
-    // Score text directly mode
-    if (modelSelect && modelSelect.value === '__score_text__') {
-        const text = document.getElementById('score-text-direct')?.value?.trim();
-        if (!text) { showToast('Paste text to score', 'error'); return; }
-        const status = document.getElementById('live-test-status');
-        const btn = document.getElementById('live-test-btn');
-        btn.disabled = true; btn.textContent = 'Scoring...';
-        if (status) status.textContent = 'Running GOLD scoring engine...';
-        try {
-            const res = await fetch(`${API_BASE}/v1/check`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
-                body: JSON.stringify({ output: text, domain: 'general' })
-            });
-            const data = await res.json();
-            if (!res.ok) { if (status) status.textContent = data.detail || 'Error'; btn.disabled = false; btn.textContent = 'Send'; return; }
-            const risk = data.risk_score ?? 0.5;
-            const quality = ((1.0 - risk) * 10).toFixed(1);
-            document.getElementById('live-score').textContent = quality;
-            document.getElementById('live-score').style.color = risk < 0.3 ? 'var(--accent)' : risk < 0.6 ? '#f59e0b' : '#ef4444';
-            document.getElementById('live-grade').textContent = data.compliance_class || data.grade || '?';
-            const proof = document.getElementById('live-proof');
-            if (proof) { proof.textContent = '—'; proof.dataset.full = ''; }
-            document.getElementById('live-response').textContent = '[Text scored directly — no AI response]';
-            document.getElementById('live-test-result').classList.remove('hidden');
-            if (status) status.textContent = '';
-            // Update metrics
-            updateMetricsFromData(data);
-        } catch(e) { if (status) status.textContent = 'Error: ' + e.message; }
-        btn.disabled = false; btn.textContent = 'Send';
-        return;
-    }
-    if (modelSelect && modelSelect.value && modelSelect.value !== '__manual__' && modelSelect.value !== '') {
-        // Save last used model
-        localStorage.setItem('onto_last_quick_test_model', modelSelect.value);
-        // Use registered model — try localStorage first, then API test endpoint
-        const localModels = getProxyModels();
-        const local = localModels.find(m => m.id === modelSelect.value);
-        if (local) {
-            provider = local.provider;
-            providerKey = local.key;
-        } else {
-            // API model — use /v1/models/{id}/test endpoint
-            const selectedOption = modelSelect.selectedOptions[0];
-            const ptype = selectedOption?.dataset?.ptype || 'anthropic';
-            const modelId = modelSelect.value;
-            const question = document.getElementById('prov-proxy-question').value.trim() || 'What is the boiling point of water?';
-            const btn = document.getElementById('prov-proxy-btn');
-            const status = document.getElementById('prov-proxy-status');
-            const result = document.getElementById('prov-proxy-result');
-            btn.disabled = true; btn.textContent = 'Sending...';
-            status.textContent = 'Testing via registered model...';
-            result.classList.add('hidden');
-            try {
-                const res = await fetch(`${API_BASE}/v1/models/${modelId}/test`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
-                    body: JSON.stringify({ question })
-                });
-                const data = await res.json();
-                if (!res.ok) {
-                    status.textContent = `Error ${res.status}: ${data.detail || 'Request failed'}`;
-                    status.style.color = '#ef4444';
-                } else {
-                    status.innerHTML = `<span style="color:var(--accent)">✓</span> Score: ${(data.score||0).toFixed(1)} · Grade: ${data.grade||'?'}`;
-                    result.textContent = (data.response || '').substring(0, 1200);
-                    result.classList.remove('hidden');
-                    setTimeout(loadModels, 1000);
-                }
-            } catch(e) {
-                status.textContent = `Error: ${e.message}`;
-                status.style.color = '#ef4444';
-            }
-            btn.disabled = false; btn.textContent = 'Send';
-            return;
-        }
-    } else {
-        // Manual input
-        providerKey = document.getElementById('prov-proxy-key').value.trim();
-        if (!providerKey) { showToast('Enter provider API key or select a registered model', 'error'); return; }
-        // Auto-detect provider from key format
-        if (providerKey.startsWith('sk-ant-')) provider = 'anthropic';
-        else if (providerKey.startsWith('dsk-')) provider = 'deepseek';
-        else provider = 'openai';
-    }
-    const btn = document.getElementById('prov-proxy-btn');
-    const status = document.getElementById('prov-proxy-status');
-    const result = document.getElementById('prov-proxy-result');
-    const question = document.getElementById('prov-proxy-question').value.trim() || 'What is the boiling point of water?';
-    
-    btn.disabled = true; btn.textContent = 'Sending...';
-    status.textContent = 'Sending through ONTO proxy...';
-    result.classList.add('hidden');
-    
-    try {
-        let url, body, headers;
-        if (provider === 'anthropic') {
-            url = `${API_BASE}/v1/proxy/anthropic/messages`;
-            headers = { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'X-Provider-Key': providerKey };
-            body = JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 512, messages: [{ role: 'user', content: question }] });
-        } else {
-            url = `${API_BASE}/v1/proxy/chat/completions`;
-            headers = { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'X-Provider-Key': providerKey };
-            const models = { openai: 'gpt-4o', deepseek: 'deepseek-chat', mistral: 'mistral-large-latest' };
-            body = JSON.stringify({ model: models[provider] || 'gpt-4o', max_tokens: 512, messages: [{ role: 'user', content: question }] });
-            if (provider === 'deepseek') headers['X-Provider-Base-URL'] = 'https://api.deepseek.com/v1';
-            if (provider === 'mistral') headers['X-Provider-Base-URL'] = 'https://api.mistral.ai/v1';
-        }
-        
-        const startTime = Date.now();
-        const res = await fetch(url, { method: 'POST', headers, body });
-        const elapsed = Date.now() - startTime;
-        const data = await res.json();
-        
-        if (!res.ok) {
-            status.textContent = `Error ${res.status}: ${data.detail || 'Request failed'}`;
-            status.style.color = '#ef4444';
-            btn.disabled = false; btn.textContent = 'Send'; return;
-        }
-        
-        let responseText = provider === 'anthropic' 
-            ? (data.content || []).map(c => c.text || '').join('') 
-            : (data.choices?.[0]?.message?.content || '');
-        
-        status.innerHTML = `<span style="color:var(--accent)">✓</span> ${elapsed}ms`;
-        result.textContent = responseText.substring(0, 1200) + (responseText.length > 1200 ? '...' : '');
-        result.classList.remove('hidden');
-        
-        // Score the response
-        try {
-            const evalRes = await fetch(`${API_BASE}/v1/check`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
-                body: JSON.stringify({ output: responseText, context: question, domain: 'general' })
-            });
-            if (evalRes.ok) {
-                const evalData = await evalRes.json();
-                const risk = evalData.risk_score ?? 0.5;
-                const quality = ((1.0 - risk) * 10).toFixed(1);
-                const grade = evalData.compliance_class || '?';
-                status.innerHTML += ` · Score: <b style="color:var(--accent)">${quality}</b> · Grade: <b>${grade}</b>`;
-            }
-        } catch(scoreErr) { console.log('Score failed:', scoreErr); }
-        
-    } catch(e) {
-        status.textContent = `Error: ${e.message}`;
-        status.style.color = '#ef4444';
-    }
-    btn.disabled = false; btn.textContent = 'Send';
 }
 
 async function testStandardProxy() {
-    const stdProvider = document.getElementById('test-std-provider')?.value;
-    if (stdProvider === '__score_text__') {
-        const text = document.getElementById('score-text-direct')?.value?.trim();
-        if (!text) { showToast('Paste text to score', 'error'); return; }
-        const btn = document.getElementById('live-test-btn');
-        const status = document.getElementById('live-test-status');
-        btn.disabled = true; btn.textContent = 'Scoring...';
-        if (status) status.textContent = 'Running GOLD scoring...';
-        try {
-            const res = await fetch(`${API_BASE}/v1/check`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
-                body: JSON.stringify({ output: text, domain: 'general' })
-            });
-            const data = await res.json();
-            if (!res.ok) { if (status) status.textContent = data.detail || 'Error'; btn.disabled = false; btn.textContent = 'Send'; return; }
-            const risk = data.risk_score ?? 0.5;
-            const quality = ((1.0 - risk) * 10).toFixed(1);
-            document.getElementById('live-score').textContent = quality;
-            document.getElementById('live-score').style.color = risk < 0.3 ? 'var(--accent)' : risk < 0.6 ? '#f59e0b' : '#ef4444';
-            document.getElementById('live-grade').textContent = data.compliance_class || '?';
-            document.getElementById('live-response').textContent = '[Text scored directly — no AI call]';
-            document.getElementById('live-test-result').classList.remove('hidden');
-            if (status) status.textContent = '';
-            updateMetricsFromData(data);
-        } catch(e) { if (status) status.textContent = 'Error: ' + e.message; }
-        btn.disabled = false; btn.textContent = 'Send';
-        return;
-    }
     const providerKey = document.getElementById('test-std-provider-key').value.trim();
     if (!providerKey) { showToast('Enter your provider API key', 'error'); return; }
     localStorage.setItem('onto_provider_key', providerKey);
@@ -3763,303 +3497,6 @@ async function testStandardProxy() {
     setTimeout(loadProxyUsage, 500);
 }
 
-async function testProviderSSE() {
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    if (!apiKey) return;
-    
-    const btn = document.getElementById('test-prov-btn');
-    const dot = document.getElementById('prov-stream-dot');
-    const statusEl = document.getElementById('prov-stream-status');
-    const resultEl = document.getElementById('step1-result');
-    const detailsEl = document.getElementById('step1-details');
-    if (btn) { btn.disabled = true; btn.textContent = 'Connecting...'; }
-    if (statusEl) statusEl.textContent = 'Connecting...';
-    
-    let connected = false;
-    
-    try {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 10000);
-        const res = await fetch(`${API_BASE}/v1/gold/stream`, {
-            headers: { 'x-api-key': apiKey },
-            signal: controller.signal
-        });
-        
-        if (res.ok) {
-            const reader = res.body.getReader();
-            const decoder = new TextDecoder();
-            let buffer = '';
-            while (true) {
-                const { value, done } = await reader.read();
-                if (done) break;
-                buffer += decoder.decode(value, { stream: true });
-                if (buffer.includes('data: ')) {
-                    const dataLine = buffer.split('data: ')[1]?.split('\n')[0];
-                    if (dataLine) {
-                        try {
-                            const sseData = JSON.parse(dataLine);
-                            connected = true;
-                            if (dot) { dot.style.background = 'var(--accent)'; dot.style.boxShadow = '0 0 6px var(--accent)'; }
-                            if (statusEl) statusEl.textContent = 'Connected';
-                            if (statusEl) statusEl.style.color = 'var(--accent)';
-                            if (resultEl) resultEl.classList.remove('hidden');
-                            if (detailsEl) detailsEl.textContent = `Layer: ${sseData.tier?.replace('GOLD_','').replace('.md','') || '—'} · ${sseData.tokens_estimate || '?'} tokens · ${sseData.snippets_count || 0} modules`;
-                        } catch(e) {}
-                        break;
-                    }
-                }
-            }
-            reader.cancel();
-            clearTimeout(timeout);
-        } else if (res.status === 403) {
-            if (dot) { dot.style.background = '#f59e0b'; }
-            if (statusEl) { statusEl.textContent = 'Tier required'; statusEl.style.color = '#f59e0b'; }
-        } else {
-            throw new Error(`HTTP ${res.status}`);
-        }
-    } catch (e) {
-        // Fallback to proxy/status
-        try {
-            const res2 = await fetch(`${API_BASE}/v1/proxy/status`, { headers: { 'x-api-key': apiKey } });
-            const d = await res2.json();
-            if (res2.ok && d.gold_available) {
-                connected = true;
-                if (dot) { dot.style.background = 'var(--accent)'; dot.style.boxShadow = '0 0 6px var(--accent)'; }
-                if (statusEl) { statusEl.textContent = 'Connected (via status)'; statusEl.style.color = 'var(--accent)'; }
-                if (resultEl) resultEl.classList.remove('hidden');
-                if (detailsEl) detailsEl.textContent = `Layer: ${d.gold_tier?.replace('GOLD_','').replace('.md','') || '—'} · cached: ${d.gold_cache_age_seconds || '?'}s ago`;
-            } else {
-                if (dot) { dot.style.background = '#ef4444'; }
-                if (statusEl) { statusEl.textContent = 'Disconnected'; statusEl.style.color = '#ef4444'; }
-            }
-        } catch(e2) {
-            if (dot) { dot.style.background = '#ef4444'; }
-            if (statusEl) { statusEl.textContent = 'Error'; statusEl.style.color = '#ef4444'; }
-        }
-    }
-    if (btn) { btn.disabled = false; btn.textContent = 'Test Connection'; }
-    if (connected) updateWizardSteps();
-}
-
-
-
-const METRIC_INFO = {
-    qd: {
-        name: "Quantification Density",
-        what: "Counts numeric evidence in the response — percentages, statistics, measurements, trial results.",
-        thresholds: [{min:7, label:"Strong", color:"#15803d"},{min:4, label:"Moderate", color:"#f59e0b"},{min:0, label:"Weak", color:"#ef4444"}],
-        howto: "To improve: ask the model to include specific numbers, percentages, and study results. Example: add 'cite specific statistics' to your prompt."
-    },
-    ss: {
-        name: "Source Signals",
-        what: "Counts explicit source references — journals, authors, institutions, years.",
-        thresholds: [{min:5, label:"Strong", color:"#15803d"},{min:2, label:"Moderate", color:"#f59e0b"},{min:0, label:"Weak", color:"#ef4444"}],
-        howto: "To improve: instruct the model to cite sources explicitly. Example: 'cite peer-reviewed sources with author and year'."
-    },
-    um: {
-        name: "Uncertainty Markers",
-        what: "Counts hedging language — 'may', 'evidence suggests', 'limited data', 'uncertain'.",
-        thresholds: [{min:4, label:"Well-calibrated", color:"#15803d"},{min:2, label:"Partial", color:"#f59e0b"},{min:0, label:"Overconfident", color:"#ef4444"}],
-        howto: "To improve: prompt the model to acknowledge limitations. Example: 'note areas of scientific uncertainty or conflicting evidence'."
-    },
-    cp: {
-        name: "Counterargument Presence",
-        what: "Detects opposing views, limitations, or contrary evidence presented in the response.",
-        thresholds: [{min:2, label:"Balanced", color:"#15803d"},{min:1, label:"Partial", color:"#f59e0b"},{min:0, label:"One-sided", color:"#ef4444"}],
-        howto: "0 = no counterarguments detected. To improve: add 'include the strongest arguments against this position' to your prompt. — means the scoring engine did not return this metric."
-    },
-    epce: {
-        name: "Epistemic Confidence Error",
-        what: "Measures deviation between model confidence and GOLD baseline. Shows — when logprobs or ground_truth are not available — this is expected in Quick Test via proxy.",
-        thresholds: [{max:0.2, label:"Well-calibrated", color:"#15803d"},{max:0.5, label:"Moderate drift", color:"#f59e0b"},{max:99, label:"Overconfident", color:"#ef4444"}],
-        howto: "EpCE requires logprobs (SSE channel) or a ground_truth value in the API request. Proxy Quick Test does not have access to logprobs — this is by design, not a bug.",
-        inverted: true
-    }
-};
-
-function getMetricColor(key, val) {
-    const info = METRIC_INFO[key];
-    if (!info || val === null || val === undefined) return 'var(--text)';
-    if (info.inverted) {
-        if (val <= 0.2) return '#15803d';
-        if (val <= 0.5) return '#f59e0b';
-        return '#ef4444';
-    }
-    const t = info.thresholds;
-    for (const th of t) {
-        if (val >= th.min) return th.color;
-    }
-    return '#ef4444';
-}
-
-function getMetricLabel(key, val) {
-    const info = METRIC_INFO[key];
-    if (!info || val === null || val === undefined) return '';
-    if (info.inverted) {
-        if (val <= 0.2) return 'Well-calibrated';
-        if (val <= 0.5) return 'Moderate drift';
-        return 'Overconfident';
-    }
-    for (const th of info.thresholds) {
-        if (val >= th.min) return th.label;
-    }
-    return info.thresholds[info.thresholds.length-1].label;
-}
-
-function showMetricTooltip(key) {
-    const info = METRIC_INFO[key];
-    const panel = document.getElementById('metric-tooltip');
-    if (!panel || !info) return;
-    const el = document.getElementById(`metric-${key}`);
-    const val = el ? parseFloat(el.textContent) : null;
-    const color = getMetricColor(key, isNaN(val) ? null : val);
-    const label = isNaN(val) ? '—' : getMetricLabel(key, val);
-    panel.style.display = 'block';
-    panel.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <b style="color:var(--text)">${info.name}</b>
-        ${!isNaN(val) ? `<span style="font-size:12px;font-weight:700;color:${color}">${label}</span>` : ''}
-        <span onclick="document.getElementById('metric-tooltip').style.display='none'" style="cursor:pointer;color:var(--text-muted);margin-left:12px">✕</span>
-    </div>
-    <div style="margin-bottom:6px;color:var(--text-secondary)">${info.what}</div>
-    <div style="color:var(--accent);font-size:10px">${info.howto}</div>`;
-}
-
-
-
-async function runScoreAnyText() {
-    const text = document.getElementById('sat-text')?.value?.trim();
-    const question = document.getElementById('sat-question')?.value?.trim() || '';
-    const domain = document.getElementById('sat-domain')?.value || 'general';
-    const btn = document.getElementById('sat-btn');
-    const status = document.getElementById('sat-status');
-    const result = document.getElementById('sat-result');
-
-    if (!text) { showToast('Paste text to score', 'error'); return; }
-
-    const apiKey = localStorage.getItem('onto_api_key') || document.getElementById('api-key-input')?.value?.trim();
-    if (!apiKey) { showToast('API key required', 'error'); return; }
-
-    btn.disabled = true; btn.textContent = 'Scoring...';
-    if (status) status.textContent = 'Running GOLD scoring engine...';
-    if (result) result.classList.add('hidden');
-
-    try {
-        const res = await fetch(`${API_BASE}/v1/check`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
-            body: JSON.stringify({ output: text, context: question, domain })
-        });
-        const data = await res.json();
-        if (!res.ok) { if (status) status.textContent = data.detail || 'Error'; btn.disabled = false; btn.textContent = 'Score'; return; }
-
-        const risk = data.risk_score ?? 0.5;
-        const quality = ((1.0 - risk) * 10).toFixed(1);
-        const gm = data.factors?.gold_markers || {};
-
-        document.getElementById('sat-score').textContent = quality;
-        document.getElementById('sat-score').style.color = risk < 0.3 ? 'var(--accent)' : risk < 0.6 ? '#f59e0b' : '#ef4444';
-        document.getElementById('sat-grade').textContent = data.compliance_class || '?';
-        document.getElementById('sat-qd').textContent = gm.numeric_confidence ?? '—';
-        document.getElementById('sat-ss').textContent = gm.source_citations ?? '—';
-        document.getElementById('sat-um').textContent = gm.gap_disclosures ?? '—';
-        document.getElementById('sat-cp').textContent = gm.counterarguments ?? '—';
-        document.getElementById('sat-epce').textContent = data.epce != null ? parseFloat(data.epce).toFixed(2) : '—';
-
-        if (result) result.classList.remove('hidden');
-        if (status) status.textContent = '';
-
-        // Also update top Epistemic Metrics panel
-        updateMetricsFromData(data);
-    } catch(e) {
-        if (status) status.textContent = 'Error: ' + e.message;
-    }
-    btn.disabled = false; btn.textContent = 'Score';
-}
-
-function updateMetricsFromData(data) {
-    const risk = data.risk_score ?? 0.5;
-    const quality = ((1.0 - risk) * 10).toFixed(1);
-    const factors = data.factors || {};
-    const gm = factors.gold_markers || {};
-    const metrics = data.metrics || data.metric_scores || {};
-    const metricDefs = [
-        { key: 'QD', paths: [gm.numeric_confidence, gm.quantification_density, gm.qd, metrics.qd] },
-        { key: 'SS', paths: [gm.source_citations, gm.source_specificity, gm.ss, metrics.ss] },
-        { key: 'UM', paths: [gm.gap_disclosures, gm.uncertainty_marking, gm.um, metrics.um] },
-        { key: 'CP', paths: [gm.counterarguments, gm.counterargument_presence, gm.cp, metrics.cp] },
-        { key: 'EpCE', paths: [data.epce, gm.epce, gm.confidence_calibration, metrics.epce] },
-    ];
-    const metricMap = {
-        'metric-qd': metricDefs.find(m=>m.key==='QD'),
-        'metric-ss': metricDefs.find(m=>m.key==='SS'),
-        'metric-um': metricDefs.find(m=>m.key==='UM'),
-        'metric-cp': metricDefs.find(m=>m.key==='CP'),
-        'metric-epce': metricDefs.find(m=>m.key==='EpCE'),
-    };
-    for (const [id, def] of Object.entries(metricMap)) {
-        const el = document.getElementById(id);
-        if (!el || !def) continue;
-        const val = def.paths.find(v => v !== undefined && v !== null);
-        const display = val !== undefined ? (typeof val === 'number' ? val.toFixed(2) : val) : '—';
-        el.textContent = display;
-        const key = id.replace('metric-','');
-        const numVal = typeof val === 'number' ? val : parseFloat(val);
-        el.style.color = isNaN(numVal) ? 'var(--text-muted)' : getMetricColor(key, numVal);
-        const card = document.getElementById('card-'+key);
-        if (card && !isNaN(numVal)) card.style.borderColor = getMetricColor(key, numVal) + '66';
-    }
-    const goldLine = document.getElementById('gold-status-line');
-    if (goldLine) goldLine.innerHTML = `<span style="color:var(--accent)">● GOLD Active</span>`;
-}
-
-async function loadModelHistory(modelId) {
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    if (!apiKey) return;
-    try {
-        const res = await fetch(`${API_BASE}/v1/models/${modelId}/history?n=30`, {
-            headers: { 'x-api-key': apiKey }
-        });
-        if (!res.ok) return;
-        const data = await res.json();
-        const canvas = document.getElementById(`spark-${modelId}`);
-        const alertEl = document.getElementById(`alert-${modelId}`);
-        if (!canvas || !data.points || data.points.length < 2) return;
-
-        // Draw sparkline
-        const ctx = canvas.getContext('2d');
-        const W = canvas.offsetWidth || 300;
-        const H = 28;
-        canvas.width = W;
-        ctx.clearRect(0, 0, W, H);
-
-        const scores = data.points.map(p => p.score);
-        const min = Math.min(...scores) - 0.5;
-        const max = Math.max(...scores) + 0.5;
-        const xStep = W / (scores.length - 1);
-
-        ctx.beginPath();
-        ctx.strokeStyle = data.alert ? '#ef4444' : '#15803d';
-        ctx.lineWidth = 1.5;
-        scores.forEach((s, i) => {
-            const x = i * xStep;
-            const y = H - ((s - min) / (max - min)) * H;
-            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-        });
-        ctx.stroke();
-
-        // Fill under line
-        ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
-        ctx.fillStyle = data.alert ? 'rgba(239,68,68,0.08)' : 'rgba(21,128,61,0.08)';
-        ctx.fill();
-
-        // Alert
-        if (alertEl && data.alert) {
-            alertEl.style.display = 'block';
-            alertEl.textContent = `⚠ Degradation: ${data.alert.prev5} → ${data.alert.last5} (${data.alert.delta})`;
-        }
-    } catch(e) {}
-}
-
 async function loadModels() {
     const apiKey = localStorage.getItem('onto_first_api_key');
     if (!apiKey) return;
@@ -4115,10 +3552,6 @@ async function loadModels() {
                         <button onclick="removeModel('${m.id}','${m.name}')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;padding:2px" title="Remove">×</button>
                     </div>
                 </div>
-                <div style="margin-top:6px">
-                    <canvas id="spark-${m.id}" height="28" style="width:100%;height:28px;display:block;opacity:0.9"></canvas>
-                    <div id="alert-${m.id}" style="display:none;font-size:10px;color:#ef4444;margin-top:3px"></div>
-                </div>
             </div>`;
             
             if (isOn) testSelectHtml += `<option value="${m.id}" data-ptype="${m.provider_type}">${m.name} (${m.provider_type})</option>`;
@@ -4127,8 +3560,6 @@ async function loadModels() {
         
         if (list) list.innerHTML = listHtml;
         if (testSelect) { testSelect.innerHTML = testSelectHtml; const firstEnabled = data.models.find(m => m.is_enabled !== false); if (firstEnabled) testSelect.value = firstEnabled.id; }
-        // Load sparklines for each model
-        for (const m of data.models) { loadModelHistory(m.id); }
         
         // Show/hide Quick Test model dropdown vs manual input
         const hasEnabledModels = data.models.some(m => m.is_enabled !== false);
@@ -4379,11 +3810,11 @@ async function runModelTest() {
         const factors = data.factors || {};
         const gm = factors.gold_markers || {};
         const metricDefs = [
-            { key: 'QD', label: 'QD', desc: 'Quantification', paths: [gm.numeric_confidence, gm.quantification_density, gm.qd, markers.QD] },
-            { key: 'SS', label: 'SS', desc: 'Source Signals',  paths: [gm.source_citations, gm.source_specificity, gm.ss, markers.SS] },
-            { key: 'UM', label: 'UM', desc: 'Uncertainty',     paths: [gm.gap_disclosures, gm.uncertainty_marking, gm.um, markers.UM] },
-            { key: 'CP', label: 'CP', desc: 'Counterargs',     paths: [gm.counterarguments, gm.counterargument_presence, gm.cp, markers.CP] },
-            { key: 'EpCE', label: 'EpCE', desc: 'GOLD deviation', paths: [data.epce, gm.epce, gm.confidence_calibration, markers.EpCE], amber: true },
+            { key: 'QD', label: 'QD', desc: 'Quantification', paths: [gm.quantification_density, gm.qd, markers.QD] },
+            { key: 'SS', label: 'SS', desc: 'Source Signals',  paths: [gm.source_specificity, gm.ss, markers.SS] },
+            { key: 'UM', label: 'UM', desc: 'Uncertainty',     paths: [gm.uncertainty_marking, gm.um, markers.UM] },
+            { key: 'CP', label: 'CP', desc: 'Counterargs',     paths: [gm.counterargument_presence, gm.cp, markers.CP] },
+            { key: 'EpCE', label: 'EpCE', desc: 'GOLD deviation', paths: [gm.epce, gm.confidence_calibration, markers.EpCE], amber: true },
         ];
         const goldActive = data.gold_active ? '<span style="color:var(--accent)">● GOLD Active</span>' : '<span style="color:#606060">○ GOLD Inactive</span>';
         const mode = data.gold_mode ? ` · ${data.gold_mode}` : '';
@@ -4405,14 +3836,8 @@ async function runModelTest() {
             const el = document.getElementById(id);
             if (!el || !def) continue;
             const val = def.paths.find(v => v !== undefined && v !== null);
-            const display = val !== undefined ? (typeof val === 'number' ? val.toFixed(2) : val) : '—';
-            el.textContent = display;
-            const key = id.replace('metric-','');
-            const numVal = typeof val === 'number' ? val : parseFloat(val);
-            el.style.color = isNaN(numVal) ? 'var(--text-muted)' : getMetricColor(key, numVal);
-            // Color card border
-            const card = document.getElementById('card-'+key);
-            if (card && !isNaN(numVal)) card.style.borderColor = getMetricColor(key, numVal) + '66';
+            el.textContent = val !== undefined ? (typeof val === 'number' ? val.toFixed(2) : val) : '—';
+            el.style.color = 'var(--text)';
         }
         // Update gold status line
         const goldLine = document.getElementById('gold-status-line');
@@ -4603,98 +4028,6 @@ async function removeModel(id, name) {
         showToast('Network error', 'error');
     }
 }
-
-async function regenerateKey() {
-    if (!confirm('Regenerate API key? Current key will be immediately invalidated.')) return;
-    
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    try {
-        const res = await fetch(`${API_BASE}/v1/keys/regenerate-portal`, {
-            method: 'POST',
-            headers: { 'x-api-key': apiKey }
-        });
-        const data = await res.json();
-        
-        if (res.ok && data.api_key) {
-            localStorage.setItem('onto_first_api_key', data.api_key);
-            document.getElementById('dash-api-key').value = data.api_key;
-            const apiDisplay = document.getElementById('api-key-display');
-            if (apiDisplay) apiDisplay.value = data.api_key;
-            showToast('API key regenerated', 'success');
-        } else {
-            showToast(data.detail || 'Failed', 'error');
-        }
-    } catch (e) {
-        showToast('Network error', 'error');
-    }
-}
-
-async function testProviderEval() {
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    if (!apiKey) { showToast('Please sign in first', 'error'); return; }
-    
-    const evalText = document.getElementById('test-eval-output')?.value?.trim();
-    if (!evalText) { showToast('Paste model output to evaluate', 'error'); return; }
-    
-    const modelId = document.getElementById('eval-model-select')?.value;
-    if (!modelId) { showToast('Select a model first (register one in Step 2)', 'error'); return; }
-    
-    const btn = document.getElementById('test-eval-btn');
-    const result = document.getElementById('test-prov-result');
-    
-    btn.disabled = true;
-    btn.textContent = 'Evaluating...';
-    result.classList.add('hidden');
-    
-    try {
-        const res = await fetch(`${API_BASE}/v1/models/evaluate`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
-            body: JSON.stringify({
-                model_id: modelId,
-                output: evalText,
-                context: 'User query (test evaluation)',
-                domain: 'general'
-            })
-        });
-        const data = await res.json();
-        
-        if (res.ok) {
-            const score = (data.risk_score ?? '?').toString();
-            const grade = data.compliance?.grade ?? '?';
-            const proof = data.proof_hash ? data.proof_hash.slice(0, 12) + '...' : 'pending';
-            const verifyUrl = data.proof_hash ? `https://ontostandard.org/verify/?hash=${data.proof_hash}` : '';
-            
-            result.innerHTML = `<div style="margin-bottom:8px">
-                <span style="font-size:20px;font-weight:700;color:${parseFloat(score) >= 7 ? 'var(--accent)' : parseFloat(score) >= 5 ? '#f59e0b' : '#ef4444'}">${parseFloat(score).toFixed(1)}</span>
-                <span style="font-size:14px;color:var(--text-muted);margin-left:8px">Score</span>
-                <span style="font-size:16px;font-weight:600;color:var(--text);margin-left:16px">${grade}</span>
-                <span style="font-size:14px;color:var(--text-muted);margin-left:8px">Grade</span>
-            </div>
-            <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px">
-                Proof: <code style="color:var(--accent);cursor:pointer" onclick="navigator.clipboard.writeText('${data.proof_hash || ''}');showToast('Proof hash copied','success')">${proof}</code>
-                ${verifyUrl ? ` · <a href="${verifyUrl}" target="_blank" style="color:var(--accent)">Verify ↗</a>` : ''}
-            </div>
-            <details style="margin-top:6px"><summary style="font-size:10px;color:var(--text-muted);cursor:pointer">Full response</summary>
-            <pre style="margin-top:6px;font-size:10px;color:var(--text-muted);white-space:pre-wrap;font-family:'JetBrains Mono',monospace">${JSON.stringify(data, null, 2)}</pre></details>`;
-            result.classList.remove('hidden');
-            
-            // Refresh models to show updated scores
-            setTimeout(loadModels, 500);
-            showToast(`Scored: ${parseFloat(score).toFixed(1)} (${grade})`, 'success');
-        } else {
-            result.innerHTML = `<div style="color:#ef4444">Error ${res.status}: ${data.detail || JSON.stringify(data)}</div>`;
-            result.classList.remove('hidden');
-        }
-    } catch (e) {
-        result.innerHTML = `<div style="color:#ef4444">Network error: ${e.message}</div>`;
-        result.classList.remove('hidden');
-    }
-    
-    btn.disabled = false;
-    btn.textContent = 'Evaluate';
-}
-
 
 function fillIntegrationCode() {
     const k = localStorage.getItem('onto_first_api_key') || 'YOUR_ONTO_KEY';
@@ -5354,18 +4687,6 @@ async function processPayment() {
     }
 }
 
-function contactSales() {
-    document.getElementById('contact-modal').classList.add('active');
-    // Pre-fill if user logged in
-    if (currentUser) {
-        document.getElementById('contact-name').value = currentUser.name || '';
-        document.getElementById('contact-email').value = currentUser.email || '';
-        if (currentUser.company) {
-            document.getElementById('contact-org').value = currentUser.company.name || '';
-        }
-    }
-}
-
 function submitContactForm() {
     const name = document.getElementById('contact-name').value.trim();
     const org = document.getElementById('contact-org').value.trim();
@@ -5426,18 +4747,14 @@ function toggleApiKeyVisibility() {
 }
 
 function regenerateApiKey(btn) {
-    if (!confirm('⚠️ Are you sure you want to regenerate your API key?\n\nThis will immediately invalidate your current key. Any applications using the old key will stop working.')) {
-        return;
-     }
+    if (!confirm('Regenerate API key? Current key will be immediately invalidated.')) return;
     
-    btn.disabled = true;
-    btn.textContent = 'Regenerating...';
+    if (btn) { btn.disabled = true; btn.textContent = 'Regenerating...'; }
     
     const apiKey = localStorage.getItem('onto_first_api_key');
     if (!apiKey) {
         showToast('No API key found. Please log in again.', 'error');
-        btn.textContent = 'Regenerate Key';
-        btn.disabled = false;
+        if (btn) { btn.textContent = 'Regenerate'; btn.disabled = false; }
         return;
     }
     
@@ -5454,20 +4771,22 @@ function regenerateApiKey(btn) {
         localStorage.setItem('onto_first_api_key', data.api_key);
         authToken = localStorage.getItem('onto_token') || data.api_key;
         
-        document.getElementById('api-key-display').value = data.api_key;
-        document.getElementById('api-key-display').type = 'text';
-        document.getElementById('toggle-key-btn').textContent = 'Hide';
+        // Update all key displays (Dashboard + Settings)
+        ['api-key-display', 'dash-api-key'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) { el.value = data.api_key; el.type = 'text'; }
+        });
+        const toggleBtn = document.getElementById('toggle-key-btn');
+        if (toggleBtn) toggleBtn.textContent = 'Hide';
+        const dashToggle = document.getElementById('dash-toggle-key');
+        if (dashToggle) dashToggle.textContent = 'Hide';
         
-        btn.textContent = 'Regenerate Key';
-        btn.disabled = false;
-        
-        showToast('New API key generated! Copy it now.', 'success');
+        if (btn) { btn.textContent = 'Regenerate'; btn.disabled = false; }
+        showToast('New API key generated', 'success');
     })
     .catch(error => {
-        btn.textContent = 'Regenerate Key';
-        btn.disabled = false;
+        if (btn) { btn.textContent = 'Regenerate'; btn.disabled = false; }
         showToast('Regen failed: ' + (error.message || 'Unknown error'), 'error');
-        console.error('[ONTO] Regenerate failed');
     });
 }
 
@@ -5609,109 +4928,8 @@ setTimeout(loadUserSignal, 500);
 setTimeout(checkReferenceAccess, 1000);
 
 // === CERTIFICATE VERIFICATION ===
-// === CERTIFICATE VERIFICATION ===
 let ermCertHash = window._realCertHash || '0'.repeat(64);
 let ermProxyActive = true;
-
-function ermVerifyHash(input) {
-    const result = document.getElementById('erm-verify-result');
-    const msg = document.getElementById('erm-verify-msg');
-    if (!input || input.length < 4) {
-        result.innerHTML = '';
-        result.style.background = 'none';
-        msg.innerHTML = '';
-        return;
-    }
-    if (!ermProxyActive) {
-        result.innerHTML = '✕';
-        result.style.background = 'rgba(220,38,38,0.15)';
-        result.style.color = '#ef4444';
-        msg.innerHTML = '<span style="color:#ef4444">Certificate suspended — proxy disconnected</span>';
-        return;
-    }
-    if (input.trim() === ermCertHash) {
-        result.innerHTML = '✓';
-        result.style.background = 'rgba(34,197,94,0.15)';
-        result.style.color = '#22c55e';
-        msg.innerHTML = '<span style="color:#22c55e">Valid — ONTO GOLD layer active since Feb 15, 2026</span>';
-    } else {
-        result.innerHTML = '✕';
-        result.style.background = 'rgba(220,38,38,0.15)';
-        result.style.color = '#ef4444';
-        msg.innerHTML = '<span style="color:#ef4444">Invalid hash — certificate not found</span>';
-    }
-}
-
-function ermCopyHash() {
-    const hash = window._realCertHash || ermCertHash;
-    navigator.clipboard.writeText(hash).then(() => {
-        showToast('Hash copied to clipboard', 'success');
-    }).catch(() => {
-        const el = document.getElementById('erm-cert-hash');
-        if (el) { const r = document.createRange(); r.selectNodeContents(el); const s = window.getSelection(); s.removeAllRanges(); s.addRange(r); document.execCommand('copy'); s.removeAllRanges(); }
-        showToast('Hash copied', 'success');
-    });
-}
-
-function ermDownloadCert() {
-    const hash = window._realCertHash || ermCertHash;
-    const orgName = currentUser?.organization_name || currentUser?.company?.name || 'Unknown';
-    const cert = {
-        type: 'ONTO_VERIFIED_CERTIFICATE',
-        version: '1.0',
-        organization: orgName,
-        model: 'GOLD Stream',
-        connected_since: new Date().toISOString(),
-        proxy_status: ermProxyActive ? 'active' : 'suspended',
-        gold_layer: 'injected',
-        hash: hash,
-        algorithm: 'Ed25519',
-        packet_size: 104,
-        chain: 'SHA-256',
-        verify_url: `https://ontostandard.org/verify/?hash=${hash}`,
-        disclaimer: 'Always verify certificate validity. ONTO does not guarantee accuracy. Not responsible for decisions made by AI systems or their operators.'
-    };
-    const blob = new Blob([JSON.stringify(cert, null, 2)], {type: 'application/json'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `onto-certificate-${hash.substring(0,8)}.json`;
-    a.click();
-    URL.revokeObjectURL(a.href);
-    showToast('Certificate downloaded', 'success');
-}
-
-function ermSuspendCert() {
-    ermProxyActive = false;
-    const live = document.getElementById('user-signal-live');
-    const hash = document.getElementById('erm-cert-hash');
-    const statusText = document.getElementById('erm-sig-status-text');
-    if (live) { live.querySelector('.signal-dot').style.background = '#ef4444'; live.querySelector('.signal-dot').style.boxShadow = '0 0 6px #ef4444'; }
-    if (statusText) { statusText.textContent = 'SUSPENDED'; statusText.style.color = '#ef4444'; }
-    if (hash) { hash.style.color = '#ef4444'; hash.style.textDecoration = 'line-through'; }
-    ['proxy','gold','sig','chain'].forEach(k => {
-        const el = document.getElementById('erm-check-' + k);
-        if (el) { el.querySelector('span').innerHTML = '✕'; el.querySelector('span').style.color = '#ef4444'; }
-    });
-    const panel = document.getElementById('user-signal-panel');
-    if (panel) { panel.style.borderColor = 'rgba(220,38,38,0.3)'; panel.style.background = 'linear-gradient(135deg, #1a0a0a 0%, #180d0d 50%, #1a0a0a 100%)'; }
-}
-
-function ermRestoreCert() {
-    ermProxyActive = true;
-    const live = document.getElementById('user-signal-live');
-    const hash = document.getElementById('erm-cert-hash');
-    const statusText = document.getElementById('erm-sig-status-text');
-    if (live) { live.querySelector('.signal-dot').style.background = '#22c55e'; live.querySelector('.signal-dot').style.boxShadow = '0 0 6px #22c55e, 0 0 12px rgba(34, 197, 94, 0.5)'; }
-    if (statusText) { statusText.textContent = 'ACTIVE'; statusText.style.color = ''; }
-    if (hash) { hash.style.color = 'var(--accent)'; hash.style.textDecoration = 'none'; }
-    ['proxy','gold','sig','chain'].forEach(k => {
-        const el = document.getElementById('erm-check-' + k);
-        if (el) { el.querySelector('span').innerHTML = '✓'; el.querySelector('span').style.color = 'var(--accent)'; }
-    });
-    const panel = document.getElementById('user-signal-panel');
-    if (panel) { panel.style.borderColor = ''; panel.style.background = ''; }
-    showToast('Certificate restored — proxy reconnected', 'success');
-}
 
 function ermDrawQR(canvas) {
     if (!canvas) return;
@@ -5795,27 +5013,6 @@ function copyDashKey(btn) {
         btn.textContent = 'Copied!';
         setTimeout(() => btn.textContent = orig, 1500);
     });
-}
-
-async function regenerateApiKey() {
-    if (!confirm('Generate a new API key? Your current key will stop working immediately.')) return;
-    try {
-        const apiKey = localStorage.getItem('onto_first_api_key');
-        if (!apiKey) return;
-        const res = await fetch(`${API_BASE}/v1/auth/regenerate-key`, {
-            method: 'POST',
-            headers: { 'x-api-key': apiKey }
-        });
-        if (!res.ok) { showToast('Failed to regenerate key', 'error'); return; }
-        const data = await res.json();
-        if (data.api_key) {
-            localStorage.setItem('onto_first_api_key', data.api_key);
-            document.getElementById('dash-api-key').value = data.api_key;
-            document.getElementById('dash-api-key').type = 'text';
-            document.getElementById('dash-toggle-key').textContent = 'Hide';
-            showToast('New API key generated', 'success');
-        }
-    } catch(e) { showToast('Error regenerating key', 'error'); }
 }
 
 // === INIT ===
@@ -6067,6 +5264,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initERM();
     initErmCert();
     updateSignalHash();
+    setTimeout(renderScoreChart, 500);
     
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
@@ -6274,33 +5472,6 @@ function startSignalCountdown() {
 }
 
 let signalPaused = false;
-
-async function refreshProofStats() {
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    if (!apiKey) return;
-    try {
-        const pkRes = await fetch(`${API_BASE}/v1/signal/public-key`);
-        if (pkRes.ok) {
-            const pk = await pkRes.json();
-            const el = document.getElementById('proof-pubkey');
-            if (el) el.textContent = (pk.public_key_hex || '').substring(0, 8) + '...';
-        }
-        const statsRes = await fetch(`${API_BASE}/v1/docs/admin/stats`, { headers: { 'x-api-key': apiKey } });
-        if (statsRes.ok) {
-            const stats = await statsRes.json();
-            const totalEl = document.getElementById('proof-total');
-            const h24El = document.getElementById('proof-24h');
-            if (totalEl) totalEl.textContent = stats.total_evaluations || '—';
-            if (h24El) h24El.textContent = stats.evaluations_24h || '—';
-            if (stats.last_proof_hash) {
-                const hashEl = document.getElementById('proof-last-hash');
-                if (hashEl) hashEl.textContent = stats.last_proof_hash;
-                const timeEl = document.getElementById('proof-last-time');
-                if (timeEl && stats.last_proof_time) timeEl.textContent = new Date(stats.last_proof_time).toLocaleString();
-            }
-        }
-    } catch(e) { /* proof stats load error */ }
-}
 
 // === ACCOUNTS FUNCTIONS ===
 let filterDebounce = null;
@@ -6779,7 +5950,6 @@ const _chartObsInterval = setInterval(() => {
     }
 }, 300);
 
-document.addEventListener('DOMContentLoaded', () => setTimeout(renderScoreChart, 500));
 window.addEventListener('resize', renderScoreChart);
 
 </script>
