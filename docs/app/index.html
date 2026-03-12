@@ -3813,8 +3813,8 @@ async function runModelTest() {
             { key: 'QD', label: 'QD', desc: 'Quantification', paths: [gm.quantification_density, gm.qd, markers.QD] },
             { key: 'SS', label: 'SS', desc: 'Source Signals',  paths: [gm.source_specificity, gm.ss, markers.SS] },
             { key: 'UM', label: 'UM', desc: 'Uncertainty',     paths: [gm.uncertainty_marking, gm.um, markers.UM] },
-            { key: 'CP', label: 'CP', desc: 'Counterargs',     paths: [gm.counterargument_presence, gm.cp, markers.CP] },
-            { key: 'EpCE', label: 'EpCE', desc: 'GOLD deviation', paths: [gm.epce, gm.confidence_calibration, markers.EpCE], amber: true },
+            { key: 'CP', label: 'CP', desc: 'Counterargs',     paths: [gm.counterargument_presence, gm.cp, gm.counterarguments, markers.CP] },
+            { key: 'EpCE', label: 'EpCE', desc: 'GOLD deviation', paths: [gm.epce, factors.confidence_calibration, gm.confidence_calibration, markers.EpCE], amber: true },
         ];
         const goldActive = data.gold_active ? '<span style="color:var(--accent)">● GOLD Active</span>' : '<span style="color:#606060">○ GOLD Inactive</span>';
         const mode = data.gold_mode ? ` · ${data.gold_mode}` : '';
@@ -3893,9 +3893,9 @@ async function scoreAnyText() {
             'QD': gm.quantification_density ?? gm.qd ?? metrics.qd ?? metrics.quantification_density,
             'SS': gm.source_specificity ?? gm.ss ?? metrics.ss ?? metrics.source_specificity,
             'UM': gm.uncertainty_marking ?? gm.um ?? metrics.um ?? metrics.uncertainty_marking,
-            'CP': gm.counterargument_presence ?? gm.cp ?? metrics.cp ?? metrics.counterargument_presence,
+            'CP': gm.counterargument_presence ?? gm.cp ?? gm.counterarguments ?? metrics.cp ?? metrics.counterargument_presence,
             'VQ': gm.vague_qualifiers ?? gm.vq ?? metrics.vq ?? metrics.vague_qualifiers,
-            'CONF': gm.confidence_calibration ?? gm.conf ?? metrics.conf
+            'CONF': gm.confidence_calibration ?? factors.confidence_calibration ?? gm.conf ?? metrics.conf
         };
         let mHtml = '';
         for (const [label, v] of Object.entries(metricValues)) {
