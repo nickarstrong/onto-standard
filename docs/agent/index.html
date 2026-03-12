@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.ontostandard.org; frame-ancestors 'none'">
+<title>ONTO Agent — Epistemic Analysis</title>
+<meta name="description" content="ONTO AI Agent — epistemic discipline in action. Ask any question, get measured, scored, verified answers.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='17' fill='white'/%3E%3Cpath d='M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z' fill='%230a0a0a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --bg-s: #121212;
+  --bg-c: #1a1a1a;
+  --bg-e: #242424;
+  --border: #333;
+  --text: #fafafa;
+  --text-s: #a0a0a0;
+  --text-m: #606060;
+  --safe: #15803d;
+  --safe-s: rgba(21,128,61,.15);
+  --safe-l: #22c55e;
+  --danger: #dc2626;
+  --danger-s: rgba(220,38,38,.12);
+  --warn: #d97706;
+  --blue: #60a5fa;
+  --purple: #a78bfa;
+  --mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.6;display:flex;flex-direction:column}
+
+/* ── TOP BAR (identical to demo) ── */
+.top-bar{display:flex;align-items:center;justify-content:space-between;height:48px;background:rgba(10,10,10,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;flex-shrink:0;z-index:10}
+.top-left{display:flex;align-items:center;gap:14px}
+.top-logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);font-size:15px;font-weight:600}
+.top-logo svg{width:22px;height:22px}
+.top-logo span{color:var(--text-m);font-weight:400;font-size:13px;margin-left:2px}
+.live-pill{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:1px;color:var(--safe);background:var(--safe-s);padding:3px 10px;border-radius:100px;border:1px solid rgba(21,128,61,.25)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--safe-l);animation:pulse 2.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.top-right{display:flex;align-items:center;gap:10px}
+
+/* ── GOLD TOGGLE ── */
+.gold-sw{display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none;padding:4px 10px;border-radius:5px;transition:.15s}
+.gold-sw:hover{background:var(--bg-c)}
+.gold-lbl{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.8px}
+.gold-lbl.on{color:var(--safe-l)}
+.gold-lbl.off{color:var(--danger)}
+.sw-track{width:32px;height:17px;border-radius:9px;background:var(--bg-e);border:1px solid var(--border);position:relative;transition:.2s}
+.sw-track.on{background:var(--safe);border-color:var(--safe)}
+.sw-dot{width:13px;height:13px;border-radius:50%;background:#fff;position:absolute;top:1px;left:1px;transition:left .2s}
+.sw-track.on .sw-dot{left:16px}
+.cfg-btn{font-family:var(--sans);font-size:12px;font-weight:500;padding:5px 14px;border-radius:5px;border:1px solid var(--border);background:var(--bg-c);color:var(--text-s);cursor:pointer;transition:.15s}
+.cfg-btn:hover{border-color:var(--text-m);color:var(--text)}
+
+/* ── CONFIG PANEL ── */
+.cfg{display:none;padding:12px 24px;background:var(--bg-s);border-bottom:1px solid var(--border);flex-shrink:0}
+.cfg.open{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+.cfg-f{display:flex;flex-direction:column;gap:3px}
+.cfg-f label{font-family:var(--mono);font-size:9px;font-weight:500;color:var(--text-m);text-transform:uppercase;letter-spacing:.8px}
+.cfg-f input,.cfg-f select{background:var(--bg-c);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:4px;font-family:var(--mono);font-size:12px;outline:none;min-width:200px}
+.cfg-f input:focus,.cfg-f select:focus{border-color:var(--safe)}
+.cfg-f input::placeholder{color:var(--text-m)}
+
+/* ── MESSAGES ── */
+.msgs{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:16px}
+.msgs::-webkit-scrollbar{width:3px}
+.msgs::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+.msg{max-width:720px;width:100%}
+
+/* User */
+.msg-u{align-self:flex-end;background:var(--bg-e);border:1px solid var(--border);border-radius:6px 6px 2px 6px;padding:11px 16px;font-size:13.5px;color:var(--text);line-height:1.6}
+
+/* Agent */
+.msg-a{align-self:flex-start}
+.msg-body{background:var(--bg-c);border:1px solid var(--border);border-radius:2px 6px 6px 6px;padding:16px;overflow:hidden}
+.msg-body.gon{border-left:3px solid var(--safe)}
+.msg-body.goff{border-left:3px solid var(--danger)}
+
+.msg-tag{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:9px;font-weight:500;padding:2px 7px;border-radius:3px;margin-bottom:12px;letter-spacing:.5px}
+.msg-tag.on{background:var(--safe-s);color:var(--safe-l)}
+.msg-tag.off{background:var(--danger-s);color:var(--danger)}
+
+.msg-txt{font-size:13px;line-height:1.75;color:var(--text-s);word-wrap:break-word}
+.msg-txt p{margin-bottom:10px}
+.msg-txt p:last-child{margin-bottom:0}
+.msg-txt strong{color:var(--text);font-weight:600}
+.msg-txt a{color:var(--blue);text-decoration:none}
+.msg-txt a:hover{text-decoration:underline}
+
+/* ── SCORE CARD (same visual as demo panels) ── */
+.sc{margin-top:14px;background:var(--bg-s);border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.sc-head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;cursor:pointer;user-select:none;transition:.1s}
+.sc-head:hover{background:var(--bg-c)}
+.sc-left{display:flex;align-items:center;gap:10px}
+.sc-score{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:-1px}
+.grade{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;padding:1px 6px;border-radius:3px}
+.grade-a{background:var(--safe-s);color:var(--safe-l)}
+.grade-b{background:rgba(217,119,6,.12);color:#fbbf24}
+.grade-c{background:rgba(217,119,6,.15);color:var(--warn)}
+.grade-d{background:var(--danger-s);color:#f87171}
+.grade-f{background:var(--danger-s);color:var(--danger)}
+.sc-risk{font-family:var(--mono);font-size:11px;color:var(--text-m)}
+.sc-arrow{font-size:10px;color:var(--text-m);transition:.15s}
+.sc-head:hover .sc-arrow{color:var(--text-s)}
+
+.sc-detail{display:none;border-top:1px solid var(--border);padding:12px 14px}
+.sc-detail.open{display:block}
+
+/* Metrics — same sc-row pattern as demo */
+.sc-metrics{display:flex;flex-direction:column;gap:0}
+.sc-row{display:flex;align-items:center;gap:10px;padding:6px 0}
+.sc-lbl{font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.4px;color:var(--text-m);width:44px;flex-shrink:0}
+.sc-track{flex:1;height:5px;background:var(--bg-e);border-radius:3px;overflow:hidden}
+.sc-fill{height:100%;border-radius:3px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.sc-fill.green{background:var(--safe)}
+.sc-fill.yellow{background:var(--warn)}
+.sc-val{font-family:var(--mono);font-size:11px;font-weight:600;width:36px;text-align:right;flex-shrink:0;color:var(--text-s)}
+
+.sc-mods{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.sc-mod{font-family:var(--mono);font-size:9px;font-weight:500;padding:2px 7px;border-radius:3px;background:var(--bg-c);border:1px solid var(--border);color:var(--text-m)}
+.sc-foot{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;font-family:var(--mono);font-size:10px;color:var(--text-m)}
+.sc-foot a{color:var(--safe);text-decoration:none}
+.sc-foot a:hover{text-decoration:underline}
+
+/* ── INPUT ── */
+.inp-area{padding:14px 24px 16px;background:rgba(10,10,10,.92);backdrop-filter:blur(12px);border-top:1px solid var(--border);flex-shrink:0}
+.inp-row{display:flex;gap:10px;max-width:760px;margin:0 auto;align-items:flex-end}
+.inp-box{flex:1;background:var(--bg-c);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:6px;font-family:var(--sans);font-size:14px;outline:none;resize:none;line-height:1.5;min-height:42px;max-height:160px;transition:border-color .15s}
+.inp-box:focus{border-color:var(--safe)}
+.inp-box::placeholder{color:var(--text-m)}
+.btn-send{display:inline-block;padding:10px 22px;background:var(--safe);color:#fff;font-size:13px;font-weight:600;border-radius:5px;border:none;cursor:pointer;transition:.2s;white-space:nowrap}
+.btn-send:hover{background:#166534}
+.btn-send:disabled{background:var(--bg-e);color:var(--text-m);cursor:not-allowed}
+.inp-meta{display:flex;justify-content:space-between;max-width:760px;margin:5px auto 0;font-family:var(--mono);font-size:9px;color:var(--text-m)}
+
+/* ── WELCOME ── */
+.welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center}
+.w-tag{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--safe);background:var(--safe-s);padding:4px 14px;border-radius:100px;border:1px solid rgba(21,128,61,.25);margin-bottom:16px}
+.w-h{font-size:28px;font-weight:700;letter-spacing:-.3px;margin-bottom:8px}
+.w-p{font-size:13px;color:var(--text-s);max-width:460px;margin:0 auto 28px;line-height:1.6}
+.examples{display:flex;flex-direction:column;gap:6px;width:100%;max-width:460px}
+.ex{font-family:var(--sans);font-size:12px;font-weight:500;padding:10px 16px;border-radius:5px;border:1px solid var(--border);background:var(--bg-c);color:var(--text-s);cursor:pointer;transition:.15s;text-align:left;line-height:1.5}
+.ex:hover{border-color:var(--text-m);color:var(--text)}
+.w-hint{font-family:var(--mono);font-size:10px;color:var(--text-m);margin-top:20px}
+
+/* ── LOADING ── */
+.dots{display:inline-flex;gap:4px;padding:6px 0}
+.dots i{width:6px;height:6px;border-radius:50%;background:var(--safe);display:inline-block;animation:blink 1.2s ease-in-out infinite}
+.dots i:nth-child(2){animation-delay:.15s}
+.dots i:nth-child(3){animation-delay:.3s}
+@keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+
+/* ── ERROR ── */
+.msg-err{background:var(--danger-s);border:1px solid rgba(220,38,38,.2);border-radius:6px;padding:10px 14px;color:#f87171;font-family:var(--mono);font-size:12px}
+
+@media(max-width:640px){
+  .top-bar{padding:0 14px}
+  .msgs{padding:14px}
+  .inp-area{padding:10px 14px 14px}
+  .cfg.open{flex-direction:column}
+  .cfg-f input{min-width:100%}
+  .w-h{font-size:22px}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-left">
+    <a href="/" class="top-logo">
+      <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/></svg>
+      ONTO <span>Agent</span>
+    </a>
+    <div class="live-pill"><div class="live-dot"></div>LIVE</div>
+  </div>
+  <div class="top-right">
+    <div class="gold-sw" onclick="toggleGold()">
+      <span class="gold-lbl on" id="gLbl">GOLD ON</span>
+      <div class="sw-track on" id="gTrack"><div class="sw-dot"></div></div>
+    </div>
+    <button class="cfg-btn" onclick="toggleCfg()">Config</button>
+  </div>
+</div>
+
+<!-- CONFIG -->
+<div class="cfg" id="cfg">
+  <div class="cfg-f">
+    <label>API Key</label>
+    <input type="password" id="apiKey" placeholder="onto_...">
+  </div>
+  <div class="cfg-f">
+    <label>Model ID</label>
+    <input type="text" id="modelId" placeholder="uuid">
+  </div>
+  <div class="cfg-f">
+    <label>Language</label>
+    <select id="lang">
+      <option value="auto">Auto-detect</option>
+      <option value="en">English</option>
+      <option value="ru">Русский</option>
+    </select>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div class="msgs" id="msgs">
+  <div class="welcome" id="welcome">
+    <div class="w-tag">Epistemic Analysis Agent</div>
+    <h1 class="w-h">Ask anything. Get measured truth.</h1>
+    <p class="w-p">Every response is scored for epistemic discipline — quantification, sources, uncertainty, counterarguments. Toggle GOLD ON/OFF to see the difference.</p>
+    <div class="examples">
+      <button class="ex" onclick="useEx(this)">What is the replication crisis in science?</button>
+      <button class="ex" onclick="useEx(this)">Are GLP-1 receptor agonists effective for weight loss? Cite evidence.</button>
+      <button class="ex" onclick="useEx(this)">Is correlation between ice cream sales and drowning evidence of causation?</button>
+    </div>
+    <div class="w-hint">Toggle GOLD ON / OFF to compare</div>
+  </div>
+</div>
+
+<!-- INPUT -->
+<div class="inp-area">
+  <div class="inp-row">
+    <textarea class="inp-box" id="inp" placeholder="Ask ONTO anything..." rows="1"
+              onkeydown="onKey(event)" oninput="autoH(this)"></textarea>
+    <button class="btn-send" id="btnSend" onclick="send()">Send</button>
+  </div>
+  <div class="inp-meta">
+    <span id="remLbl"></span>
+    <span id="langLbl"></span>
+  </div>
+</div>
+
+<script>
+const API='https://api.ontostandard.org';
+let gold=true,hist=[],convId=null,busy=false;
+
+function toggleGold(){
+  gold=!gold;
+  const l=document.getElementById('gLbl'),t=document.getElementById('gTrack');
+  l.textContent=gold?'GOLD ON':'GOLD OFF';
+  l.className='gold-lbl '+(gold?'on':'off');
+  t.className='sw-track'+(gold?' on':'');
+}
+function toggleCfg(){document.getElementById('cfg').classList.toggle('open')}
+function autoH(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,160)+'px'}
+function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}}
+function useEx(b){document.getElementById('inp').value=b.textContent;send()}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function scroll(){const el=document.getElementById('msgs');requestAnimationFrame(()=>el.scrollTop=el.scrollHeight)}
+
+function fmt(t){
+  let h=esc(t);
+  h=h.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+  h=h.replace(/\n\n/g,'</p><p>');
+  h=h.replace(/\n/g,'<br>');
+  h=h.replace(/(DOI:\s*)(10\.\d{4,}\/\S+)/gi,'$1<a href="https://doi.org/$2" target="_blank">$2</a>');
+  return '<p>'+h+'</p>';
+}
+
+function addU(text){
+  const w=document.getElementById('welcome');if(w)w.remove();
+  const d=document.createElement('div');
+  d.className='msg msg-u';
+  d.textContent=text;
+  document.getElementById('msgs').appendChild(d);scroll();
+}
+
+function addLoader(){
+  const d=document.createElement('div');d.className='msg msg-a';d.id='ldr';
+  d.innerHTML=`<div class="msg-body ${gold?'gon':'goff'}">
+    <div class="msg-tag ${gold?'on':'off'}">${gold?'◆ GOLD':'◇ RAW'}</div>
+    <div class="dots"><i></i><i></i><i></i></div></div>`;
+  document.getElementById('msgs').appendChild(d);scroll();
+}
+function rmLoader(){const e=document.getElementById('ldr');if(e)e.remove()}
+
+function addA(data){
+  const s=data.score||{},m=s.metrics||{},gOn=data.gold_enabled!==false;
+  const gr=s.compliance_class||'?',num=s.grade!=null?s.grade:'?';
+  const risk=s.risk_score,mods=data.modules_loaded||[],proof=data.proof||{};
+  const gc='grade-'+(gr==='A'?'a':gr==='B'?'b':gr==='C'?'c':gr==='D'?'d':'f');
+  const uid='s'+Date.now();
+
+  const rows=[
+    {k:'QD',l:'Quant',v:m.QD,c:'green'},
+    {k:'SS',l:'Sources',v:m.SS,c:'green'},
+    {k:'UM',l:'Uncert',v:m.UM,c:'green'},
+    {k:'CP',l:'Counter',v:m.CP,c:'green'},
+    {k:'VQ',l:'Vague',v:m.VQ,c:'yellow'},
+    {k:'CONF',l:'Calib',v:m.CONF,c:'green'},
+  ];
+
+  const barsHtml=rows.map(r=>{
+    const v=r.v!=null?r.v:null;
+    const pct=v!=null?Math.round(v*100):0;
+    return `<div class="sc-row">
+      <span class="sc-lbl">${r.k}</span>
+      <div class="sc-track"><div class="sc-fill ${r.c}" style="width:${pct}%"></div></div>
+      <span class="sc-val">${v!=null?v.toFixed(2):'—'}</span>
+    </div>`;
+  }).join('');
+
+  const modsH=mods.length?`<div class="sc-mods">${mods.map(m=>`<span class="sc-mod">${esc(m)}</span>`).join('')}</div>`:'';
+  const proofH=proof.hash?`<span>${proof.hash.substring(0,12)}…</span><a href="${proof.verify_url}" target="_blank">Verify ↗</a>`:'';
+
+  const d=document.createElement('div');d.className='msg msg-a';
+  d.innerHTML=`<div class="msg-body ${gOn?'gon':'goff'}">
+    <div class="msg-tag ${gOn?'on':'off'}">${gOn?'◆ GOLD':'◇ RAW'}</div>
+    <div class="msg-txt">${fmt(data.response||'')}</div>
+    <div class="sc">
+      <div class="sc-head" onclick="document.getElementById('${uid}').classList.toggle('open');this.querySelector('.sc-arrow').textContent=document.getElementById('${uid}').classList.contains('open')?'▲':'▼'">
+        <div class="sc-left">
+          <div class="sc-score">${num}</div>
+          <span class="grade ${gc}">Grade ${gr}</span>
+          <span class="sc-risk">Risk ${typeof risk==='number'?risk.toFixed(3):risk}</span>
+        </div>
+        <span class="sc-arrow">▼</span>
+      </div>
+      <div class="sc-detail" id="${uid}">
+        <div class="sc-metrics">${barsHtml}</div>
+        ${modsH}
+        <div class="sc-foot">${proofH}
+          ${data.language?`<span>${data.language.toUpperCase()}</span>`:''}
+          ${data.remaining_today!=null?`<span>${data.remaining_today} left</span>`:''}
+        </div>
+      </div>
+    </div>
+  </div>`;
+  document.getElementById('msgs').appendChild(d);scroll();
+  if(data.remaining_today!=null)document.getElementById('remLbl').textContent=data.remaining_today+' left today';
+}
+
+function addErr(t){
+  const d=document.createElement('div');d.className='msg';
+  d.innerHTML=`<div class="msg-err">${esc(t)}</div>`;
+  document.getElementById('msgs').appendChild(d);scroll();
+}
+
+async function send(){
+  if(busy)return;
+  const inp=document.getElementById('inp'),msg=inp.value.trim();
+  if(!msg)return;
+  const key=document.getElementById('apiKey').value.trim();
+  const mid=document.getElementById('modelId').value.trim();
+  const lg=document.getElementById('lang').value;
+  if(!mid){addErr('Model ID required — open Config.');return}
+
+  inp.value='';autoH(inp);addU(msg);
+  busy=true;document.getElementById('btnSend').disabled=true;
+  addLoader();
+
+  const body={message:msg,model_id:mid,history:hist.slice(-20),language:lg,depth:'auto',gold_enabled:gold};
+  if(convId)body.conversation_id=convId;
+  const hdrs={'Content-Type':'application/json'};
+  if(key)hdrs['x-api-key']=key;
+
+  try{
+    const r=await fetch(`${API}/v1/agent/chat`,{method:'POST',headers:hdrs,body:JSON.stringify(body)});
+    rmLoader();
+    if(!r.ok){let e=`Error ${r.status}`;try{e=(await r.json()).detail||e}catch{}addErr(e);return}
+    const data=await r.json();
+    addA(data);
+    hist.push({role:'user',content:msg});
+    hist.push({role:'assistant',content:data.response||''});
+    if(data.conversation_id)convId=data.conversation_id;
+  }catch(e){rmLoader();addErr('Network: '+e.message)}
+  finally{busy=false;document.getElementById('btnSend').disabled=false;inp.focus()}
+}
+
+document.getElementById('inp').focus();
+</script>
+</body>
+</html>
