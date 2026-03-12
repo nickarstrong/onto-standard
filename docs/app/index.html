@@ -1127,6 +1127,50 @@ a.info-val:hover { color: var(--text); }
 
             <div class="dash-section-divider"></div>
 
+            <!-- ══════════ SCORE ANY TEXT ══════════ -->
+            <div class="dash-section">
+                <div class="dash-section-header" style="margin-bottom:12px">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    <div class="dash-section-title">Score Any Text</div>
+                    <span class="dash-section-subtitle">— paste any AI response → GOLD scores it without AI call</span>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px">
+                    <div>
+                        <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px">Question / Context <span style="color:var(--text-muted)">(optional)</span></div>
+                        <input type="text" id="sat-question" placeholder="What was the AI asked? (improves scoring accuracy)" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box">
+                    </div>
+                    <div>
+                        <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px">Domain</div>
+                        <select id="sat-domain" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text)">
+                            <option value="general">General</option>
+                            <option value="medical">Medical</option>
+                            <option value="legal">Legal</option>
+                            <option value="finance">Finance</option>
+                        </select>
+                    </div>
+                </div>
+                <textarea id="sat-text" placeholder="Paste AI response text here..." style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text);box-sizing:border-box;height:110px;resize:vertical;font-family:inherit;margin-bottom:8px"></textarea>
+                <div style="display:flex;gap:8px;align-items:center">
+                    <button class="btn-minimal" onclick="runScoreAnyText()" id="sat-btn" style="font-size:12px;padding:8px 20px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">Score</button>
+                    <span id="sat-status" style="font-size:11px;color:var(--text-muted)"></span>
+                </div>
+                <div id="sat-result" class="hidden" style="margin-top:10px">
+                    <div style="display:flex;align-items:center;gap:16px;padding:12px 16px;background:var(--bg);border:1px solid var(--border);border-radius:6px">
+                        <div><div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">Score</div><div id="sat-score" style="font-size:28px;font-weight:800;color:var(--accent);line-height:1">—</div></div>
+                        <div><div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">Grade</div><div id="sat-grade" style="font-size:28px;font-weight:800;color:var(--text);line-height:1">—</div></div>
+                        <div style="flex:1;display:grid;grid-template-columns:repeat(5,1fr);gap:8px">
+                            <div style="text-align:center"><div style="font-size:9px;color:var(--text-muted)">QD</div><div id="sat-qd" style="font-size:14px;font-weight:700">—</div></div>
+                            <div style="text-align:center"><div style="font-size:9px;color:var(--text-muted)">SS</div><div id="sat-ss" style="font-size:14px;font-weight:700">—</div></div>
+                            <div style="text-align:center"><div style="font-size:9px;color:var(--text-muted)">UM</div><div id="sat-um" style="font-size:14px;font-weight:700">—</div></div>
+                            <div style="text-align:center"><div style="font-size:9px;color:var(--text-muted)">CP</div><div id="sat-cp" style="font-size:14px;font-weight:700">—</div></div>
+                            <div style="text-align:center"><div style="font-size:9px;color:var(--text-muted)">EpCE</div><div id="sat-epce" style="font-size:14px;font-weight:700">—</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dash-section-divider"></div>
+
             <!-- ══════════ PROVIDER: Proxy + SSE Panes ══════════ -->
             <div id="dash-provider-panes">
                 <div class="dash-section">
@@ -3880,6 +3924,57 @@ function showMetricTooltip(key) {
     <div style="color:var(--accent);font-size:10px">${info.howto}</div>`;
 }
 
+
+
+async function runScoreAnyText() {
+    const text = document.getElementById('sat-text')?.value?.trim();
+    const question = document.getElementById('sat-question')?.value?.trim() || '';
+    const domain = document.getElementById('sat-domain')?.value || 'general';
+    const btn = document.getElementById('sat-btn');
+    const status = document.getElementById('sat-status');
+    const result = document.getElementById('sat-result');
+
+    if (!text) { showToast('Paste text to score', 'error'); return; }
+
+    const apiKey = localStorage.getItem('onto_api_key') || document.getElementById('api-key-input')?.value?.trim();
+    if (!apiKey) { showToast('API key required', 'error'); return; }
+
+    btn.disabled = true; btn.textContent = 'Scoring...';
+    if (status) status.textContent = 'Running GOLD scoring engine...';
+    if (result) result.classList.add('hidden');
+
+    try {
+        const res = await fetch(`${API_BASE}/v1/check`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+            body: JSON.stringify({ output: text, context: question, domain })
+        });
+        const data = await res.json();
+        if (!res.ok) { if (status) status.textContent = data.detail || 'Error'; btn.disabled = false; btn.textContent = 'Score'; return; }
+
+        const risk = data.risk_score ?? 0.5;
+        const quality = ((1.0 - risk) * 10).toFixed(1);
+        const gm = data.factors?.gold_markers || {};
+
+        document.getElementById('sat-score').textContent = quality;
+        document.getElementById('sat-score').style.color = risk < 0.3 ? 'var(--accent)' : risk < 0.6 ? '#f59e0b' : '#ef4444';
+        document.getElementById('sat-grade').textContent = data.compliance_class || '?';
+        document.getElementById('sat-qd').textContent = gm.numeric_confidence ?? '—';
+        document.getElementById('sat-ss').textContent = gm.source_citations ?? '—';
+        document.getElementById('sat-um').textContent = gm.gap_disclosures ?? '—';
+        document.getElementById('sat-cp').textContent = gm.counterarguments ?? '—';
+        document.getElementById('sat-epce').textContent = data.epce != null ? parseFloat(data.epce).toFixed(2) : '—';
+
+        if (result) result.classList.remove('hidden');
+        if (status) status.textContent = '';
+
+        // Also update top Epistemic Metrics panel
+        updateMetricsFromData(data);
+    } catch(e) {
+        if (status) status.textContent = 'Error: ' + e.message;
+    }
+    btn.disabled = false; btn.textContent = 'Score';
+}
 
 function updateMetricsFromData(data) {
     const risk = data.risk_score ?? 0.5;
