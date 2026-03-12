@@ -5,37 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.ontostandard.org; frame-ancestors 'none'">
 <title>ONTO Agent — Epistemic Analysis</title>
-<meta name="description" content="ONTO AI Agent — epistemic discipline in action. Ask any question, get measured, scored, verified answers.">
+<meta name="description" content="ONTO AI Agent — epistemic discipline in action. Compare GOLD ON vs OFF side-by-side.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='17' fill='white'/%3E%3Cpath d='M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z' fill='%230a0a0a'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0a0a0a;
-  --bg-s: #121212;
-  --bg-c: #1a1a1a;
-  --bg-e: #242424;
-  --border: #333;
-  --text: #fafafa;
-  --text-s: #a0a0a0;
-  --text-m: #606060;
-  --safe: #15803d;
-  --safe-s: rgba(21,128,61,.15);
-  --safe-l: #22c55e;
-  --danger: #dc2626;
-  --danger-s: rgba(220,38,38,.12);
-  --warn: #d97706;
-  --blue: #60a5fa;
-  --purple: #a78bfa;
-  --mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
-  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+:root{
+  --bg:#0a0a0a;--bg-s:#121212;--bg-c:#1a1a1a;--bg-e:#242424;
+  --border:#333;--text:#fafafa;--text-s:#a0a0a0;--text-m:#606060;
+  --safe:#15803d;--safe-s:rgba(21,128,61,.15);--safe-l:#22c55e;
+  --danger:#dc2626;--danger-s:rgba(220,38,38,.12);
+  --warn:#d97706;--blue:#60a5fa;
+  --mono:'JetBrains Mono','SF Mono',Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%}
 body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.6;display:flex;flex-direction:column}
 
-/* ── TOP BAR (identical to demo) ── */
+/* ── TOP BAR ── */
 .top-bar{display:flex;align-items:center;justify-content:space-between;height:48px;background:rgba(10,10,10,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;flex-shrink:0;z-index:10}
 .top-left{display:flex;align-items:center;gap:14px}
 .top-logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);font-size:15px;font-weight:600}
@@ -44,22 +33,20 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font
 .live-pill{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:1px;color:var(--safe);background:var(--safe-s);padding:3px 10px;border-radius:100px;border:1px solid rgba(21,128,61,.25)}
 .live-dot{width:6px;height:6px;border-radius:50%;background:var(--safe-l);animation:pulse 2.5s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.top-right{display:flex;align-items:center;gap:10px}
-
-/* ── GOLD TOGGLE ── */
+.top-right{display:flex;align-items:center;gap:8px}
 .gold-sw{display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none;padding:4px 10px;border-radius:5px;transition:.15s}
 .gold-sw:hover{background:var(--bg-c)}
 .gold-lbl{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.8px}
-.gold-lbl.on{color:var(--safe-l)}
-.gold-lbl.off{color:var(--danger)}
+.gold-lbl.on{color:var(--safe-l)}.gold-lbl.off{color:var(--danger)}
 .sw-track{width:32px;height:17px;border-radius:9px;background:var(--bg-e);border:1px solid var(--border);position:relative;transition:.2s}
 .sw-track.on{background:var(--safe);border-color:var(--safe)}
 .sw-dot{width:13px;height:13px;border-radius:50%;background:#fff;position:absolute;top:1px;left:1px;transition:left .2s}
 .sw-track.on .sw-dot{left:16px}
-.cfg-btn{font-family:var(--sans);font-size:12px;font-weight:500;padding:5px 14px;border-radius:5px;border:1px solid var(--border);background:var(--bg-c);color:var(--text-s);cursor:pointer;transition:.15s}
-.cfg-btn:hover{border-color:var(--text-m);color:var(--text)}
+.tb{font-family:var(--sans);font-size:12px;font-weight:500;padding:5px 14px;border-radius:5px;border:1px solid var(--border);background:var(--bg-c);color:var(--text-s);cursor:pointer;transition:.15s}
+.tb:hover{border-color:var(--text-m);color:var(--text)}
+.tb.new-chat{border-color:var(--text-m)}
 
-/* ── CONFIG PANEL ── */
+/* ── CONFIG ── */
 .cfg{display:none;padding:12px 24px;background:var(--bg-s);border-bottom:1px solid var(--border);flex-shrink:0}
 .cfg.open{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
 .cfg-f{display:flex;flex-direction:column;gap:3px}
@@ -72,73 +59,107 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font
 .msgs{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:16px}
 .msgs::-webkit-scrollbar{width:3px}
 .msgs::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-
 .msg{max-width:720px;width:100%}
 
 /* User */
 .msg-u{align-self:flex-end;background:var(--bg-e);border:1px solid var(--border);border-radius:6px 6px 2px 6px;padding:11px 16px;font-size:13.5px;color:var(--text);line-height:1.6}
 
-/* Agent */
+/* Agent single */
 .msg-a{align-self:flex-start}
 .msg-body{background:var(--bg-c);border:1px solid var(--border);border-radius:2px 6px 6px 6px;padding:16px;overflow:hidden}
 .msg-body.gon{border-left:3px solid var(--safe)}
 .msg-body.goff{border-left:3px solid var(--danger)}
-
 .msg-tag{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:9px;font-weight:500;padding:2px 7px;border-radius:3px;margin-bottom:12px;letter-spacing:.5px}
 .msg-tag.on{background:var(--safe-s);color:var(--safe-l)}
 .msg-tag.off{background:var(--danger-s);color:var(--danger)}
-
 .msg-txt{font-size:13px;line-height:1.75;color:var(--text-s);word-wrap:break-word}
-.msg-txt p{margin-bottom:10px}
-.msg-txt p:last-child{margin-bottom:0}
+.msg-txt p{margin-bottom:10px}.msg-txt p:last-child{margin-bottom:0}
 .msg-txt strong{color:var(--text);font-weight:600}
 .msg-txt a{color:var(--blue);text-decoration:none}
 .msg-txt a:hover{text-decoration:underline}
 
-/* ── SCORE CARD (same visual as demo panels) ── */
-.sc{margin-top:14px;background:var(--bg-s);border:1px solid var(--border);border-radius:6px;overflow:hidden}
-.sc-head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;cursor:pointer;user-select:none;transition:.1s}
-.sc-head:hover{background:var(--bg-c)}
-.sc-left{display:flex;align-items:center;gap:10px}
-.sc-score{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:-1px}
+/* ── COMPARE SPLIT (demo panel pattern) ── */
+.cmp{max-width:100%;width:100%;align-self:center}
+.cmp-q{text-align:center;margin-bottom:12px;padding:10px 20px;background:var(--bg-s);border:1px solid var(--border);border-radius:6px}
+.cmp-q .ql{font-family:var(--mono);font-size:10px;color:var(--text-m);letter-spacing:.5px;margin-bottom:3px}
+.cmp-q .qt{font-size:13px;color:var(--text);line-height:1.5}
+.cmp-split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:768px){.cmp-split{grid-template-columns:1fr}}
+
+.pnl{background:var(--bg-c);border:1px solid var(--border);border-radius:6px;overflow:hidden;display:flex;flex-direction:column}
+.pnl-top{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.pnl-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.7px}
+.pnl.base .pnl-lbl{color:var(--danger)}
+.pnl.gold .pnl-lbl{color:var(--safe)}
+.pnl-badge{font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:3px;font-weight:500}
+.pnl.base .pnl-badge{background:var(--danger-s);color:var(--danger)}
+.pnl.gold .pnl-badge{background:var(--safe-s);color:var(--safe)}
+.pnl-body{padding:14px;flex:1;overflow-y:auto;font-size:12.5px;line-height:1.75;color:var(--text-s);max-height:500px}
+.pnl-body::-webkit-scrollbar{width:3px}
+.pnl-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.pnl-body p{margin-bottom:10px}
+.pnl-body strong{color:var(--text);font-weight:600}
+.pnl-body a{color:var(--blue);text-decoration:none}
+
+/* Score bars in panel */
+.sc-row{display:flex;align-items:center;gap:10px;padding:8px 14px;border-top:1px solid var(--border);flex-shrink:0}
+.sc-lbl{font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.4px;color:var(--text-m);width:44px;flex-shrink:0}
+.sc-track{flex:1;height:5px;background:var(--bg-e);border-radius:3px;overflow:hidden}
+.sc-fill{height:100%;border-radius:3px;width:0;transition:width 1s cubic-bezier(.4,0,.2,1)}
+.pnl.base .sc-fill{background:var(--danger)}
+.pnl.gold .sc-fill{background:var(--safe)}
+.sc-val{font-family:var(--mono);font-size:11px;font-weight:600;width:36px;text-align:right;flex-shrink:0}
+.pnl.base .sc-val{color:var(--danger)}
+.pnl.gold .sc-val{color:var(--safe)}
+
+/* Grade */
 .grade{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;padding:1px 6px;border-radius:3px}
 .grade-a{background:var(--safe-s);color:var(--safe-l)}
 .grade-b{background:rgba(217,119,6,.12);color:#fbbf24}
 .grade-c{background:rgba(217,119,6,.15);color:var(--warn)}
 .grade-d{background:var(--danger-s);color:#f87171}
 .grade-f{background:var(--danger-s);color:var(--danger)}
-.sc-risk{font-family:var(--mono);font-size:11px;color:var(--text-m)}
-.sc-arrow{font-size:10px;color:var(--text-m);transition:.15s}
-.sc-head:hover .sc-arrow{color:var(--text-s)}
 
+/* Improvement metric */
+.cmp-mets{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.cmet{background:var(--bg-c);border:1px solid var(--border);border-radius:6px;padding:12px 18px;text-align:center;min-width:90px}
+.cmet .cv{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--safe);margin-bottom:2px}
+.cmet .cl{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-m)}
+
+/* Panel expand details */
+.pnl-detail{display:none;border-top:1px solid var(--border);padding:10px 14px}
+.pnl-detail.open{display:block}
+.pnl-detail-toggle{display:flex;align-items:center;justify-content:center;padding:6px;border-top:1px solid var(--border);cursor:pointer;font-family:var(--mono);font-size:10px;color:var(--text-m);transition:.15s;flex-shrink:0}
+.pnl-detail-toggle:hover{color:var(--text-s);background:var(--bg-s)}
+.sc-mods{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.sc-mod{font-family:var(--mono);font-size:9px;font-weight:500;padding:2px 7px;border-radius:3px;background:var(--bg);border:1px solid var(--border);color:var(--text-m)}
+.sc-foot{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;font-family:var(--mono);font-size:10px;color:var(--text-m)}
+.sc-foot a{color:var(--safe);text-decoration:none}
+
+/* Score card in chat mode */
+.sc{margin-top:14px;background:var(--bg-s);border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.sc-head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;cursor:pointer;user-select:none;transition:.1s}
+.sc-head:hover{background:var(--bg-c)}
+.sc-left{display:flex;align-items:center;gap:10px}
+.sc-score{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:-1px}
+.sc-risk{font-family:var(--mono);font-size:11px;color:var(--text-m)}
+.sc-arrow{font-size:10px;color:var(--text-m)}
 .sc-detail{display:none;border-top:1px solid var(--border);padding:12px 14px}
 .sc-detail.open{display:block}
-
-/* Metrics — same sc-row pattern as demo */
 .sc-metrics{display:flex;flex-direction:column;gap:0}
-.sc-row{display:flex;align-items:center;gap:10px;padding:6px 0}
-.sc-lbl{font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.4px;color:var(--text-m);width:44px;flex-shrink:0}
-.sc-track{flex:1;height:5px;background:var(--bg-e);border-radius:3px;overflow:hidden}
-.sc-fill{height:100%;border-radius:3px;transition:width .6s cubic-bezier(.4,0,.2,1)}
-.sc-fill.green{background:var(--safe)}
-.sc-fill.yellow{background:var(--warn)}
-.sc-val{font-family:var(--mono);font-size:11px;font-weight:600;width:36px;text-align:right;flex-shrink:0;color:var(--text-s)}
-
-.sc-mods{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
-.sc-mod{font-family:var(--mono);font-size:9px;font-weight:500;padding:2px 7px;border-radius:3px;background:var(--bg-c);border:1px solid var(--border);color:var(--text-m)}
-.sc-foot{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;font-family:var(--mono);font-size:10px;color:var(--text-m)}
-.sc-foot a{color:var(--safe);text-decoration:none}
-.sc-foot a:hover{text-decoration:underline}
 
 /* ── INPUT ── */
 .inp-area{padding:14px 24px 16px;background:rgba(10,10,10,.92);backdrop-filter:blur(12px);border-top:1px solid var(--border);flex-shrink:0}
-.inp-row{display:flex;gap:10px;max-width:760px;margin:0 auto;align-items:flex-end}
+.inp-row{display:flex;gap:8px;max-width:760px;margin:0 auto;align-items:flex-end}
 .inp-box{flex:1;background:var(--bg-c);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:6px;font-family:var(--sans);font-size:14px;outline:none;resize:none;line-height:1.5;min-height:42px;max-height:160px;transition:border-color .15s}
 .inp-box:focus{border-color:var(--safe)}
 .inp-box::placeholder{color:var(--text-m)}
-.btn-send{display:inline-block;padding:10px 22px;background:var(--safe);color:#fff;font-size:13px;font-weight:600;border-radius:5px;border:none;cursor:pointer;transition:.2s;white-space:nowrap}
+.btn-send{padding:10px 20px;background:var(--safe);color:#fff;font-size:13px;font-weight:600;border-radius:5px;border:none;cursor:pointer;transition:.2s;white-space:nowrap}
 .btn-send:hover{background:#166534}
 .btn-send:disabled{background:var(--bg-e);color:var(--text-m);cursor:not-allowed}
+.btn-cmp{padding:10px 16px;background:transparent;color:var(--safe-l);font-size:12px;font-weight:600;border-radius:5px;border:1px solid var(--safe);cursor:pointer;transition:.2s;white-space:nowrap;font-family:var(--mono);letter-spacing:.3px}
+.btn-cmp:hover{background:var(--safe-s)}
+.btn-cmp:disabled{border-color:var(--border);color:var(--text-m);cursor:not-allowed}
 .inp-meta{display:flex;justify-content:space-between;max-width:760px;margin:5px auto 0;font-family:var(--mono);font-size:9px;color:var(--text-m)}
 
 /* ── WELCOME ── */
@@ -151,29 +172,27 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font
 .ex:hover{border-color:var(--text-m);color:var(--text)}
 .w-hint{font-family:var(--mono);font-size:10px;color:var(--text-m);margin-top:20px}
 
-/* ── LOADING ── */
+/* Loading */
 .dots{display:inline-flex;gap:4px;padding:6px 0}
 .dots i{width:6px;height:6px;border-radius:50%;background:var(--safe);display:inline-block;animation:blink 1.2s ease-in-out infinite}
 .dots i:nth-child(2){animation-delay:.15s}
 .dots i:nth-child(3){animation-delay:.3s}
 @keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+.dots-r i{background:var(--danger)}
 
-/* ── ERROR ── */
 .msg-err{background:var(--danger-s);border:1px solid rgba(220,38,38,.2);border-radius:6px;padding:10px 14px;color:#f87171;font-family:var(--mono);font-size:12px}
 
 @media(max-width:640px){
-  .top-bar{padding:0 14px}
-  .msgs{padding:14px}
+  .top-bar{padding:0 14px}.msgs{padding:14px}
   .inp-area{padding:10px 14px 14px}
-  .cfg.open{flex-direction:column}
-  .cfg-f input{min-width:100%}
+  .cfg.open{flex-direction:column}.cfg-f input{min-width:100%}
   .w-h{font-size:22px}
+  .cmp-split{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 
-<!-- TOP BAR -->
 <div class="top-bar">
   <div class="top-left">
     <a href="/" class="top-logo">
@@ -187,51 +206,39 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font
       <span class="gold-lbl on" id="gLbl">GOLD ON</span>
       <div class="sw-track on" id="gTrack"><div class="sw-dot"></div></div>
     </div>
-    <button class="cfg-btn" onclick="toggleCfg()">Config</button>
+    <button class="tb new-chat" onclick="newChat()">New chat</button>
+    <button class="tb" onclick="toggleCfg()">Config</button>
   </div>
 </div>
 
-<!-- CONFIG -->
 <div class="cfg" id="cfg">
-  <div class="cfg-f">
-    <label>API Key</label>
-    <input type="password" id="apiKey" placeholder="onto_...">
-  </div>
-  <div class="cfg-f">
-    <label>Model ID</label>
-    <input type="text" id="modelId" placeholder="uuid">
-  </div>
-  <div class="cfg-f">
-    <label>Language</label>
-    <select id="lang">
-      <option value="auto">Auto-detect</option>
-      <option value="en">English</option>
-      <option value="ru">Русский</option>
-    </select>
+  <div class="cfg-f"><label>API Key</label><input type="password" id="apiKey" placeholder="onto_..."></div>
+  <div class="cfg-f"><label>Model ID</label><input type="text" id="modelId" placeholder="uuid"></div>
+  <div class="cfg-f"><label>Language</label>
+    <select id="lang"><option value="auto">Auto-detect</option><option value="en">English</option><option value="ru">Русский</option></select>
   </div>
 </div>
 
-<!-- CHAT -->
 <div class="msgs" id="msgs">
   <div class="welcome" id="welcome">
     <div class="w-tag">Epistemic Analysis Agent</div>
     <h1 class="w-h">Ask anything. Get measured truth.</h1>
-    <p class="w-p">Every response is scored for epistemic discipline — quantification, sources, uncertainty, counterarguments. Toggle GOLD ON/OFF to see the difference.</p>
+    <p class="w-p">Every response is scored for epistemic discipline. Use <strong>Send</strong> for conversation, or <strong>Compare</strong> to see GOLD vs RAW side-by-side.</p>
     <div class="examples">
       <button class="ex" onclick="useEx(this)">What is the replication crisis in science?</button>
       <button class="ex" onclick="useEx(this)">Are GLP-1 receptor agonists effective for weight loss? Cite evidence.</button>
       <button class="ex" onclick="useEx(this)">Is correlation between ice cream sales and drowning evidence of causation?</button>
     </div>
-    <div class="w-hint">Toggle GOLD ON / OFF to compare</div>
+    <div class="w-hint">Compare = same question, GOLD ON vs OFF, side by side</div>
   </div>
 </div>
 
-<!-- INPUT -->
 <div class="inp-area">
   <div class="inp-row">
     <textarea class="inp-box" id="inp" placeholder="Ask ONTO anything..." rows="1"
               onkeydown="onKey(event)" oninput="autoH(this)"></textarea>
     <button class="btn-send" id="btnSend" onclick="send()">Send</button>
+    <button class="btn-cmp" id="btnCmp" onclick="compare()">Compare</button>
   </div>
   <div class="inp-meta">
     <span id="remLbl"></span>
@@ -244,16 +251,28 @@ const API='https://api.ontostandard.org';
 let gold=true,hist=[],convId=null,busy=false;
 
 function toggleGold(){
-  gold=!gold;
+  gold=!gold;hist=[];convId=null;
   const l=document.getElementById('gLbl'),t=document.getElementById('gTrack');
   l.textContent=gold?'GOLD ON':'GOLD OFF';
   l.className='gold-lbl '+(gold?'on':'off');
   t.className='sw-track'+(gold?' on':'');
 }
 function toggleCfg(){document.getElementById('cfg').classList.toggle('open')}
+function newChat(){hist=[];convId=null;document.getElementById('msgs').innerHTML=`
+  <div class="welcome" id="welcome">
+    <div class="w-tag">Epistemic Analysis Agent</div>
+    <h1 class="w-h">Ask anything. Get measured truth.</h1>
+    <p class="w-p">Every response is scored for epistemic discipline. Use <strong>Send</strong> for conversation, or <strong>Compare</strong> to see GOLD vs RAW side-by-side.</p>
+    <div class="examples">
+      <button class="ex" onclick="useEx(this)">What is the replication crisis in science?</button>
+      <button class="ex" onclick="useEx(this)">Are GLP-1 receptor agonists effective for weight loss? Cite evidence.</button>
+      <button class="ex" onclick="useEx(this)">Is correlation between ice cream sales and drowning evidence of causation?</button>
+    </div>
+    <div class="w-hint">Compare = same question, GOLD ON vs OFF, side by side</div>
+  </div>`}
 function autoH(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,160)+'px'}
 function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}}
-function useEx(b){document.getElementById('inp').value=b.textContent;send()}
+function useEx(b){document.getElementById('inp').value=b.textContent;compare()}
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
 function scroll(){const el=document.getElementById('msgs');requestAnimationFrame(()=>el.scrollTop=el.scrollHeight)}
 
@@ -266,50 +285,96 @@ function fmt(t){
   return '<p>'+h+'</p>';
 }
 
-function addU(text){
-  const w=document.getElementById('welcome');if(w)w.remove();
-  const d=document.createElement('div');
-  d.className='msg msg-u';
-  d.textContent=text;
-  document.getElementById('msgs').appendChild(d);scroll();
+function getConfig(){
+  const key=document.getElementById('apiKey').value.trim();
+  const mid=document.getElementById('modelId').value.trim();
+  const lg=document.getElementById('lang').value;
+  return {key,mid,lg};
 }
 
-function addLoader(){
-  const d=document.createElement('div');d.className='msg msg-a';d.id='ldr';
-  d.innerHTML=`<div class="msg-body ${gold?'gon':'goff'}">
-    <div class="msg-tag ${gold?'on':'off'}">${gold?'◆ GOLD':'◇ RAW'}</div>
-    <div class="dots"><i></i><i></i><i></i></div></div>`;
-  document.getElementById('msgs').appendChild(d);scroll();
+function setBusy(b){
+  busy=b;
+  document.getElementById('btnSend').disabled=b;
+  document.getElementById('btnCmp').disabled=b;
 }
-function rmLoader(){const e=document.getElementById('ldr');if(e)e.remove()}
 
-function addA(data){
-  const s=data.score||{},m=s.metrics||{},gOn=data.gold_enabled!==false;
-  const gr=s.compliance_class||'?',num=s.grade!=null?s.grade:'?';
-  const risk=s.risk_score,mods=data.modules_loaded||[],proof=data.proof||{};
-  const gc='grade-'+(gr==='A'?'a':gr==='B'?'b':gr==='C'?'c':gr==='D'?'d':'f');
-  const uid='s'+Date.now();
+function rmWelcome(){const w=document.getElementById('welcome');if(w)w.remove()}
 
+function gradeClass(g){return 'grade-'+(g==='A'?'a':g==='B'?'b':g==='C'?'c':g==='D'?'d':'f')}
+
+function metricRows(m,cls){
   const rows=[
-    {k:'QD',l:'Quant',v:m.QD,c:'green'},
-    {k:'SS',l:'Sources',v:m.SS,c:'green'},
-    {k:'UM',l:'Uncert',v:m.UM,c:'green'},
-    {k:'CP',l:'Counter',v:m.CP,c:'green'},
-    {k:'VQ',l:'Vague',v:m.VQ,c:'yellow'},
-    {k:'CONF',l:'Calib',v:m.CONF,c:'green'},
+    {k:'QD',v:m.QD},{k:'SS',v:m.SS},{k:'UM',v:m.UM},
+    {k:'CP',v:m.CP},{k:'VQ',v:m.VQ},{k:'CONF',v:m.CONF}
   ];
-
-  const barsHtml=rows.map(r=>{
+  return rows.map(r=>{
     const v=r.v!=null?r.v:null;
     const pct=v!=null?Math.round(v*100):0;
     return `<div class="sc-row">
       <span class="sc-lbl">${r.k}</span>
-      <div class="sc-track"><div class="sc-fill ${r.c}" style="width:${pct}%"></div></div>
+      <div class="sc-track"><div class="sc-fill" style="width:${pct}%"></div></div>
       <span class="sc-val">${v!=null?v.toFixed(2):'—'}</span>
     </div>`;
   }).join('');
+}
 
-  const modsH=mods.length?`<div class="sc-mods">${mods.map(m=>`<span class="sc-mod">${esc(m)}</span>`).join('')}</div>`:'';
+// ── API CALL ──
+async function apiCall(msg, goldOn, hdrs){
+  const {mid,lg}=getConfig();
+  const body={message:msg,model_id:mid,history:[],language:lg,depth:'auto',gold_enabled:goldOn};
+  const r=await fetch(`${API}/v1/agent/chat`,{method:'POST',headers:hdrs,body:JSON.stringify(body)});
+  if(!r.ok){let e=`Error ${r.status}`;try{e=(await r.json()).detail||e}catch{}throw new Error(e)}
+  return r.json();
+}
+
+// ── SEND (chat mode) ──
+async function send(){
+  if(busy)return;
+  const msg=document.getElementById('inp').value.trim();
+  if(!msg)return;
+  const {key,mid}=getConfig();
+  if(!mid){addErr('Model ID required — open Config.');return}
+  document.getElementById('inp').value='';autoH(document.getElementById('inp'));
+  rmWelcome();
+
+  // User bubble
+  const ud=document.createElement('div');ud.className='msg msg-u';ud.textContent=msg;
+  document.getElementById('msgs').appendChild(ud);scroll();
+
+  setBusy(true);
+
+  // Loader
+  const ld=document.createElement('div');ld.className='msg msg-a';ld.id='ldr';
+  ld.innerHTML=`<div class="msg-body ${gold?'gon':'goff'}"><div class="msg-tag ${gold?'on':'off'}">${gold?'◆ GOLD':'◇ RAW'}</div><div class="dots"><i></i><i></i><i></i></div></div>`;
+  document.getElementById('msgs').appendChild(ld);scroll();
+
+  const hdrs={'Content-Type':'application/json'};
+  if(key)hdrs['x-api-key']=key;
+
+  try{
+    const {mid:m,lg}=getConfig();
+    const body={message:msg,model_id:m,history:hist.slice(-20),language:lg,depth:'auto',gold_enabled:gold};
+    if(convId)body.conversation_id=convId;
+    const r=await fetch(`${API}/v1/agent/chat`,{method:'POST',headers:hdrs,body:JSON.stringify(body)});
+    ld.remove();
+    if(!r.ok){let e=`Error ${r.status}`;try{e=(await r.json()).detail||e}catch{}addErr(e);return}
+    const data=await r.json();
+    addAgentMsg(data);
+    hist.push({role:'user',content:msg});
+    hist.push({role:'assistant',content:data.response||''});
+    if(data.conversation_id)convId=data.conversation_id;
+  }catch(e){ld.remove();addErr('Error: '+e.message)}
+  finally{setBusy(false);document.getElementById('inp').focus()}
+}
+
+function addAgentMsg(data){
+  const s=data.score||{},m=s.metrics||{},gOn=data.gold_enabled!==false;
+  const gr=s.compliance_class||'?',num=s.grade!=null?s.grade:'?';
+  const risk=s.risk_score,mods=data.modules_loaded||[],proof=data.proof||{};
+  const uid='s'+Date.now();
+
+  const barsHtml=metricRows(m);
+  const modsH=mods.length?`<div class="sc-mods">${mods.map(x=>`<span class="sc-mod">${esc(x)}</span>`).join('')}</div>`:'';
   const proofH=proof.hash?`<span>${proof.hash.substring(0,12)}…</span><a href="${proof.verify_url}" target="_blank">Verify ↗</a>`:'';
 
   const d=document.createElement('div');d.className='msg msg-a';
@@ -320,7 +385,7 @@ function addA(data){
       <div class="sc-head" onclick="document.getElementById('${uid}').classList.toggle('open');this.querySelector('.sc-arrow').textContent=document.getElementById('${uid}').classList.contains('open')?'▲':'▼'">
         <div class="sc-left">
           <div class="sc-score">${num}</div>
-          <span class="grade ${gc}">Grade ${gr}</span>
+          <span class="grade ${gradeClass(gr)}">Grade ${gr}</span>
           <span class="sc-risk">Risk ${typeof risk==='number'?risk.toFixed(3):risk}</span>
         </div>
         <span class="sc-arrow">▼</span>
@@ -339,41 +404,119 @@ function addA(data){
   if(data.remaining_today!=null)document.getElementById('remLbl').textContent=data.remaining_today+' left today';
 }
 
-function addErr(t){
-  const d=document.createElement('div');d.className='msg';
-  d.innerHTML=`<div class="msg-err">${esc(t)}</div>`;
-  document.getElementById('msgs').appendChild(d);scroll();
-}
-
-async function send(){
+// ── COMPARE (split mode) ──
+async function compare(){
   if(busy)return;
-  const inp=document.getElementById('inp'),msg=inp.value.trim();
+  const msg=document.getElementById('inp').value.trim();
   if(!msg)return;
-  const key=document.getElementById('apiKey').value.trim();
-  const mid=document.getElementById('modelId').value.trim();
-  const lg=document.getElementById('lang').value;
+  const {key,mid}=getConfig();
   if(!mid){addErr('Model ID required — open Config.');return}
+  document.getElementById('inp').value='';autoH(document.getElementById('inp'));
+  rmWelcome();
 
-  inp.value='';autoH(inp);addU(msg);
-  busy=true;document.getElementById('btnSend').disabled=true;
-  addLoader();
+  setBusy(true);
 
-  const body={message:msg,model_id:mid,history:hist.slice(-20),language:lg,depth:'auto',gold_enabled:gold};
-  if(convId)body.conversation_id=convId;
+  const uid='c'+Date.now();
+
+  // Question + loading split
+  const wrap=document.createElement('div');wrap.className='msg cmp';wrap.style.maxWidth='100%';
+  wrap.innerHTML=`
+    <div class="cmp-q"><div class="ql">COMPARE</div><div class="qt">${esc(msg)}</div></div>
+    <div class="cmp-split">
+      <div class="pnl base" id="${uid}_b">
+        <div class="pnl-top"><span class="pnl-lbl">Without GOLD</span><span class="pnl-badge">RAW</span></div>
+        <div class="pnl-body"><div class="dots dots-r"><i></i><i></i><i></i></div></div>
+      </div>
+      <div class="pnl gold" id="${uid}_g">
+        <div class="pnl-top"><span class="pnl-lbl">With ONTO GOLD</span><span class="pnl-badge">Enhanced</span></div>
+        <div class="pnl-body"><div class="dots"><i></i><i></i><i></i></div></div>
+      </div>
+    </div>
+    <div class="cmp-mets" id="${uid}_mets" style="display:none"></div>`;
+  document.getElementById('msgs').appendChild(wrap);scroll();
+
   const hdrs={'Content-Type':'application/json'};
   if(key)hdrs['x-api-key']=key;
 
   try{
-    const r=await fetch(`${API}/v1/agent/chat`,{method:'POST',headers:hdrs,body:JSON.stringify(body)});
-    rmLoader();
-    if(!r.ok){let e=`Error ${r.status}`;try{e=(await r.json()).detail||e}catch{}addErr(e);return}
-    const data=await r.json();
-    addA(data);
-    hist.push({role:'user',content:msg});
-    hist.push({role:'assistant',content:data.response||''});
-    if(data.conversation_id)convId=data.conversation_id;
-  }catch(e){rmLoader();addErr('Network: '+e.message)}
-  finally{busy=false;document.getElementById('btnSend').disabled=false;inp.focus()}
+    // Parallel requests — no shared history
+    const [rawData,goldData]=await Promise.all([
+      apiCall(msg,false,hdrs),
+      apiCall(msg,true,hdrs)
+    ]);
+
+    // Render RAW panel
+    fillPanel(`${uid}_b`,rawData,'base');
+    // Render GOLD panel
+    fillPanel(`${uid}_g`,goldData,'gold');
+
+    // Improvement metrics
+    const rawScore=rawData.score?.grade;
+    const goldScore=goldData.score?.grade;
+    if(rawScore!=null&&goldScore!=null){
+      const diff=goldScore-rawScore;
+      const pct=rawScore>0?Math.round((diff/rawScore)*100):0;
+      const metsEl=document.getElementById(`${uid}_mets`);
+      metsEl.style.display='flex';
+      metsEl.innerHTML=`
+        <div class="cmet"><div class="cv">${rawScore}</div><div class="cl">RAW score</div></div>
+        <div class="cmet"><div class="cv" style="color:var(--safe-l)">${goldScore}</div><div class="cl">GOLD score</div></div>
+        <div class="cmet"><div class="cv">${diff>0?'+':''}${diff.toFixed(1)}</div><div class="cl">Improvement</div></div>
+        <div class="cmet"><div class="cv">${pct>0?'+':''}${pct}%</div><div class="cl">Change</div></div>`;
+    }
+
+    scroll();
+    if(goldData.remaining_today!=null)document.getElementById('remLbl').textContent=goldData.remaining_today+' left today';
+
+  }catch(e){addErr('Compare error: '+e.message)}
+  finally{setBusy(false);document.getElementById('inp').focus()}
+}
+
+function fillPanel(panelId,data,type){
+  const el=document.getElementById(panelId);
+  const s=data.score||{},m=s.metrics||{};
+  const gr=s.compliance_class||'?',num=s.grade!=null?s.grade:'?';
+  const risk=s.risk_score;
+  const mods=data.modules_loaded||[];
+  const proof=data.proof||{};
+  const uid=panelId+'_d';
+
+  const rows=[{k:'Score',v:num,max:10},{k:'QD',v:m.QD,max:1},{k:'SS',v:m.SS,max:1},{k:'UM',v:m.UM,max:1},{k:'CP',v:m.CP,max:1},{k:'VQ',v:m.VQ,max:1}];
+
+  const barsHtml=rows.map(r=>{
+    const v=r.v!=null?r.v:null;
+    const pct=v!=null?Math.round((v/r.max)*100):0;
+    return `<div class="sc-row">
+      <span class="sc-lbl">${r.k}</span>
+      <div class="sc-track"><div class="sc-fill" style="width:${pct}%"></div></div>
+      <span class="sc-val">${v!=null?(typeof v==='number'?v.toFixed(r.max>1?1:2):v):'—'}</span>
+    </div>`;
+  }).join('');
+
+  const modsH=mods.length?`<div class="sc-mods">${mods.map(x=>`<span class="sc-mod">${esc(x)}</span>`).join('')}</div>`:'';
+  const proofH=proof.hash?`<div class="sc-foot"><span>${proof.hash.substring(0,12)}…</span><a href="${proof.verify_url}" target="_blank">Verify ↗</a></div>`:'';
+
+  el.innerHTML=`
+    <div class="pnl-top"><span class="pnl-lbl">${type==='base'?'Without GOLD':'With ONTO GOLD'}</span>
+      <span class="pnl-badge">${type==='base'?'RAW':'Enhanced'}</span>
+      <span class="grade ${gradeClass(gr)}" style="margin-left:auto">Grade ${gr}</span>
+    </div>
+    <div class="pnl-body">${fmt(data.response||'')}</div>
+    ${barsHtml}
+    <div class="pnl-detail-toggle" onclick="document.getElementById('${uid}').classList.toggle('open');this.textContent=document.getElementById('${uid}').classList.contains('open')?'▲ collapse':'▼ details'">▼ details</div>
+    <div class="pnl-detail" id="${uid}">
+      ${modsH}${proofH}
+      <div class="sc-foot">
+        ${data.language?`<span>${data.language.toUpperCase()}</span>`:''}
+        <span>Risk ${typeof risk==='number'?risk.toFixed(3):'—'}</span>
+      </div>
+    </div>`;
+}
+
+function addErr(t){
+  const d=document.createElement('div');d.className='msg';
+  d.innerHTML=`<div class="msg-err">${esc(t)}</div>`;
+  document.getElementById('msgs').appendChild(d);scroll();
 }
 
 document.getElementById('inp').focus();
