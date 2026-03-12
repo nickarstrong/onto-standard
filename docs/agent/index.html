@@ -534,6 +534,51 @@ function addErr(t){
 }
 
 document.getElementById('inp').focus();
+
+// ── CONFIG PERSISTENCE ──
+const CFG_KEY='onto_agent_cfg';
+function loadCfg(){
+  try{
+    // URL params override (from portal link)
+    const p=new URLSearchParams(location.search);
+    if(p.get('key'))document.getElementById('apiKey').value=p.get('key');
+    if(p.get('model'))document.getElementById('modelId').value=p.get('model');
+    // Then fill from localStorage what's missing
+    const s=localStorage.getItem(CFG_KEY);
+    if(s){
+      const c=JSON.parse(s);
+      if(!document.getElementById('apiKey').value&&c.k)document.getElementById('apiKey').value=c.k;
+      if(!document.getElementById('modelId').value&&c.m)document.getElementById('modelId').value=c.m;
+      if(c.l)document.getElementById('lang').value=c.l;
+    }
+    // Clean URL params (don't keep key in address bar)
+    if(p.get('key')||p.get('model')){
+      history.replaceState(null,'',location.pathname);
+      saveCfg();
+    }
+  }catch{}
+}
+function saveCfg(){
+  try{
+    const c={
+      k:document.getElementById('apiKey').value,
+      m:document.getElementById('modelId').value,
+      l:document.getElementById('lang').value
+    };
+    localStorage.setItem(CFG_KEY,JSON.stringify(c));
+  }catch{}
+}
+loadCfg();
+document.getElementById('apiKey').addEventListener('input',saveCfg);
+document.getElementById('modelId').addEventListener('input',saveCfg);
+document.getElementById('lang').addEventListener('change',saveCfg);
+
+// Auto-hide config if fields are filled
+if(document.getElementById('apiKey').value&&document.getElementById('modelId').value){
+  document.getElementById('cfg').classList.remove('open');
+}else{
+  document.getElementById('cfg').classList.add('open');
+}
 </script>
 </body>
 </html>
