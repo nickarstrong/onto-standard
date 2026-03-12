@@ -160,6 +160,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font
 .btn-cmp{padding:10px 16px;background:transparent;color:var(--safe-l);font-size:12px;font-weight:600;border-radius:5px;border:1px solid var(--safe);cursor:pointer;transition:.2s;white-space:nowrap;font-family:var(--mono);letter-spacing:.3px}
 .btn-cmp:hover{background:var(--safe-s)}
 .btn-cmp:disabled{border-color:var(--border);color:var(--text-m);cursor:not-allowed}
+.btn-stop{padding:10px 16px;background:var(--danger);color:#fff;font-size:12px;font-weight:600;border-radius:5px;border:none;cursor:pointer;transition:.2s;white-space:nowrap;font-family:var(--mono);letter-spacing:.3px;display:none}
+.btn-stop:hover{background:#b91c1c}
+.btn-stop.vis{display:inline-block}
 .inp-meta{display:flex;justify-content:space-between;max-width:760px;margin:5px auto 0;font-family:var(--mono);font-size:9px;color:var(--text-m)}
 
 /* ── WELCOME ── */
@@ -225,11 +228,11 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font
     <h1 class="w-h">Ask anything. Get measured truth.</h1>
     <p class="w-p">Every response is scored for epistemic discipline. Use <strong>Send</strong> for conversation, or <strong>Compare</strong> to see GOLD vs RAW side-by-side.</p>
     <div class="examples">
-      <button class="ex" onclick="useEx(this)">What is the replication crisis in science?</button>
-      <button class="ex" onclick="useEx(this)">Are GLP-1 receptor agonists effective for weight loss? Cite evidence.</button>
-      <button class="ex" onclick="useEx(this)">Is correlation between ice cream sales and drowning evidence of causation?</button>
+      <button class="ex" onclick="useEx(this)">What is the exact mortality reduction from statins in primary prevention? Cite the NNT and source RCTs with DOIs.</button>
+      <button class="ex" onclick="useEx(this)">Is intermittent fasting proven to extend human lifespan? What does the clinical evidence say?</button>
+      <button class="ex" onclick="useEx(this)">What percentage of published psychology findings fail to replicate? Give the exact number and source.</button>
     </div>
-    <div class="w-hint">Compare = same question, GOLD ON vs OFF, side by side</div>
+    <div class="w-hint">Compare = same question, GOLD ON vs OFF, side by side. These questions expose fabrication.</div>
   </div>
 </div>
 
@@ -239,6 +242,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font
               onkeydown="onKey(event)" oninput="autoH(this)"></textarea>
     <button class="btn-send" id="btnSend" onclick="send()">Send</button>
     <button class="btn-cmp" id="btnCmp" onclick="compare()">Compare</button>
+    <button class="btn-stop" id="btnStop" onclick="stop()">Stop</button>
   </div>
   <div class="inp-meta">
     <span id="remLbl"></span>
@@ -248,27 +252,27 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font
 
 <script>
 const API='https://api.ontostandard.org';
-let gold=true,hist=[],convId=null,busy=false;
+let gold=true,hist=[],convId=null,busy=false,ac=null;
 
 function toggleGold(){
-  gold=!gold;hist=[];convId=null;
+  gold=!gold;hist=[];convId=null;if(ac){ac.abort();ac=null}
   const l=document.getElementById('gLbl'),t=document.getElementById('gTrack');
   l.textContent=gold?'GOLD ON':'GOLD OFF';
   l.className='gold-lbl '+(gold?'on':'off');
   t.className='sw-track'+(gold?' on':'');
 }
 function toggleCfg(){document.getElementById('cfg').classList.toggle('open')}
-function newChat(){hist=[];convId=null;document.getElementById('msgs').innerHTML=`
+function newChat(){hist=[];convId=null;if(ac){ac.abort();ac=null}document.getElementById('msgs').innerHTML=`
   <div class="welcome" id="welcome">
     <div class="w-tag">Epistemic Analysis Agent</div>
     <h1 class="w-h">Ask anything. Get measured truth.</h1>
     <p class="w-p">Every response is scored for epistemic discipline. Use <strong>Send</strong> for conversation, or <strong>Compare</strong> to see GOLD vs RAW side-by-side.</p>
     <div class="examples">
-      <button class="ex" onclick="useEx(this)">What is the replication crisis in science?</button>
-      <button class="ex" onclick="useEx(this)">Are GLP-1 receptor agonists effective for weight loss? Cite evidence.</button>
-      <button class="ex" onclick="useEx(this)">Is correlation between ice cream sales and drowning evidence of causation?</button>
+      <button class="ex" onclick="useEx(this)">What is the exact mortality reduction from statins in primary prevention? Cite the NNT and source RCTs with DOIs.</button>
+      <button class="ex" onclick="useEx(this)">Is intermittent fasting proven to extend human lifespan? What does the clinical evidence say?</button>
+      <button class="ex" onclick="useEx(this)">What percentage of published psychology findings fail to replicate? Give the exact number and source.</button>
     </div>
-    <div class="w-hint">Compare = same question, GOLD ON vs OFF, side by side</div>
+    <div class="w-hint">Compare = same question, GOLD ON vs OFF, side by side. These questions expose fabrication.</div>
   </div>`}
 function autoH(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,160)+'px'}
 function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}}
@@ -296,6 +300,14 @@ function setBusy(b){
   busy=b;
   document.getElementById('btnSend').disabled=b;
   document.getElementById('btnCmp').disabled=b;
+  document.getElementById('btnStop').classList.toggle('vis',b);
+}
+
+function stop(){
+  if(ac){ac.abort();ac=null}
+  const ld=document.getElementById('ldr');if(ld)ld.remove();
+  setBusy(false);
+  document.getElementById('inp').focus();
 }
 
 function rmWelcome(){const w=document.getElementById('welcome');if(w)w.remove()}
@@ -319,10 +331,10 @@ function metricRows(m,cls){
 }
 
 // ── API CALL ──
-async function apiCall(msg, goldOn, hdrs){
+async function apiCall(msg, goldOn, hdrs, signal){
   const {mid,lg}=getConfig();
   const body={message:msg,model_id:mid,history:[],language:lg,depth:'auto',gold_enabled:goldOn};
-  const r=await fetch(`${API}/v1/agent/chat`,{method:'POST',headers:hdrs,body:JSON.stringify(body)});
+  const r=await fetch(`${API}/v1/agent/chat`,{method:'POST',headers:hdrs,body:JSON.stringify(body),signal});
   if(!r.ok){let e=`Error ${r.status}`;try{e=(await r.json()).detail||e}catch{}throw new Error(e)}
   return r.json();
 }
@@ -342,6 +354,7 @@ async function send(){
   document.getElementById('msgs').appendChild(ud);scroll();
 
   setBusy(true);
+  ac=new AbortController();
 
   // Loader
   const ld=document.createElement('div');ld.className='msg msg-a';ld.id='ldr';
@@ -355,7 +368,7 @@ async function send(){
     const {mid:m,lg}=getConfig();
     const body={message:msg,model_id:m,history:hist.slice(-20),language:lg,depth:'auto',gold_enabled:gold};
     if(convId)body.conversation_id=convId;
-    const r=await fetch(`${API}/v1/agent/chat`,{method:'POST',headers:hdrs,body:JSON.stringify(body)});
+    const r=await fetch(`${API}/v1/agent/chat`,{method:'POST',headers:hdrs,body:JSON.stringify(body),signal:ac.signal});
     ld.remove();
     if(!r.ok){let e=`Error ${r.status}`;try{e=(await r.json()).detail||e}catch{}addErr(e);return}
     const data=await r.json();
@@ -363,8 +376,8 @@ async function send(){
     hist.push({role:'user',content:msg});
     hist.push({role:'assistant',content:data.response||''});
     if(data.conversation_id)convId=data.conversation_id;
-  }catch(e){ld.remove();addErr('Error: '+e.message)}
-  finally{setBusy(false);document.getElementById('inp').focus()}
+  }catch(e){ld.remove();if(e.name!=='AbortError')addErr('Error: '+e.message)}
+  finally{ac=null;setBusy(false);document.getElementById('inp').focus()}
 }
 
 function addAgentMsg(data){
@@ -415,6 +428,7 @@ async function compare(){
   rmWelcome();
 
   setBusy(true);
+  ac=new AbortController();
 
   const uid='c'+Date.now();
 
@@ -441,8 +455,8 @@ async function compare(){
   try{
     // Parallel requests — no shared history
     const [rawData,goldData]=await Promise.all([
-      apiCall(msg,false,hdrs),
-      apiCall(msg,true,hdrs)
+      apiCall(msg,false,hdrs,ac.signal),
+      apiCall(msg,true,hdrs,ac.signal)
     ]);
 
     // Render RAW panel
@@ -468,8 +482,8 @@ async function compare(){
     scroll();
     if(goldData.remaining_today!=null)document.getElementById('remLbl').textContent=goldData.remaining_today+' left today';
 
-  }catch(e){addErr('Compare error: '+e.message)}
-  finally{setBusy(false);document.getElementById('inp').focus()}
+  }catch(e){if(e.name!=='AbortError')addErr('Compare error: '+e.message);else wrap.remove()}
+  finally{ac=null;setBusy(false);document.getElementById('inp').focus()}
 }
 
 function fillPanel(panelId,data,type){
