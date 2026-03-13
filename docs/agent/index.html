@@ -205,10 +205,6 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font
     <div class="live-pill"><div class="live-dot"></div>LIVE</div>
   </div>
   <div class="top-right">
-    <div class="gold-sw" onclick="toggleGold()">
-      <span class="gold-lbl on" id="gLbl">GOLD ON</span>
-      <div class="sw-track on" id="gTrack"><div class="sw-dot"></div></div>
-    </div>
     <button class="tb new-chat" onclick="newChat()">New chat</button>
     <button class="tb" onclick="toggleCfg()">Config</button>
   </div>
@@ -254,13 +250,6 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font
 const API='https://api.ontostandard.org';
 let gold=true,hist=[],convId=null,busy=false,ac=null;
 
-function toggleGold(){
-  gold=!gold;hist=[];convId=null;if(ac){ac.abort();ac=null}
-  const l=document.getElementById('gLbl'),t=document.getElementById('gTrack');
-  l.textContent=gold?'GOLD ON':'GOLD OFF';
-  l.className='gold-lbl '+(gold?'on':'off');
-  t.className='sw-track'+(gold?' on':'');
-}
 function toggleCfg(){document.getElementById('cfg').classList.toggle('open')}
 function newChat(){hist=[];convId=null;if(ac){ac.abort();ac=null}document.getElementById('msgs').innerHTML=`
   <div class="welcome" id="welcome">
