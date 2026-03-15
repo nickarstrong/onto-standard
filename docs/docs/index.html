@@ -165,7 +165,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <a href="/app/?page=settings" class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Account</a>
 <nav class="sb-nav">
 <div class="ng"><h4>Understand</h4><a class="nl" href="#problem" data-doc="problem">The Problem</a><a class="nl" href="#how" data-doc="how">How It Works</a><a class="nl" href="#vision" data-doc="vision">Vision & Roadmap</a></div>
-<div class="ng"><h4>Build</h4><a class="nl" href="#quickstart" data-doc="quickstart">Integration Paths</a><a class="nl" href="#api-ref" data-doc="api-ref">API Reference</a></div>
+<div class="ng"><h4>Build</h4><a class="nl" href="#quickstart" data-doc="quickstart">Integration Paths</a><a class="nl" href="#api-ref" data-doc="api-ref">API Reference</a><a class="nl" href="#tech-ref" data-doc="tech-ref">Technical Reference</a></div>
 <div class="ng"><h4>Verify</h4><a class="nl" href="#evidence" data-doc="evidence">Evidence</a><a class="nl" href="#faq" data-doc="faq">FAQ</a><a class="nl" href="#changelog" data-doc="changelog">Changelog</a></div>
 <div class="ng"><h4>Legal</h4><a class="nl" href="#terms" data-doc="terms">Terms of Service</a><a class="nl" href="#privacy" data-doc="privacy">Privacy Policy</a><a class="nl" href="#license" data-doc="license">License</a></div>
 <div class="ng"><h4>Pages</h4><a class="nl" href="/reports/">Reports ↗</a><a class="nl" href="/paper/">Research Paper ↗</a><a class="nl" href="https://api.ontostandard.org/health" target="_blank">Status ↗</a></div>
@@ -640,6 +640,87 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <h2>Rate Limits</h2>
 <table><thead><tr><th>Tier</th><th>Limit</th><th>Window</th></tr></thead><tbody>
 <tr><td>Open</td><td>10 requests</td><td>per day</td></tr>
+</tbody></table>
+</div>
+
+<!-- TECHNICAL REFERENCE -->
+<div class="ds da" id="doc-tech-ref" data-nav="tech-ref">
+<h1>Technical Reference</h1>
+<div class="dm"><span class="db-g bg-g">Architecture</span><span>Scoring · GOLD · Proof Chain · Compliance</span><span>For engineers</span></div>
+
+<h2>Dual-Layer Scoring Architecture</h2>
+<p>ONTO scores every response through two independent engines that must agree:</p>
+<table><thead><tr><th>Layer</th><th>What it measures</th><th>Implementation</th></tr></thead><tbody>
+<tr><td><strong>Python (what the model says)</strong></td><td>Surface-level epistemic markers: citations, numbers, uncertainty phrases, counterarguments, vague qualifiers</td><td>scoring_engine_v3.py — 993 lines, 92+ regex patterns, EM1-EM5 taxonomy</td></tr>
+<tr><td><strong>Rust (how the model thinks)</strong></td><td>Internal consistency: entropy distribution, information density, structural coherence</td><td>onto_core — entropy.rs, merkle.rs, metrics.rs → PyO3 → Python binding</td></tr>
+</tbody></table>
+<p>Divergence between layers = additional risk signal. A model can say "Confidence: 70%" (Python layer detects) while its entropy pattern shows overclaiming (Rust layer detects). Both must align for A grade.</p>
+
+<h2>EM1-EM5 Epistemic Marker Taxonomy</h2>
+<p>Every AI response is classified into one of five epistemic modes:</p>
+<table><thead><tr><th>Level</th><th>Name</th><th>Behavior</th><th>Example signal</th></tr></thead><tbody>
+<tr><td style="color:var(--accent);font-weight:600">EM1</td><td>Full Transparency</td><td>Explicitly acknowledges unknowns, cites limitations</td><td>"I don't have data on X. What's known: ..."</td></tr>
+<tr><td style="color:var(--accent)">EM2</td><td>Calibrated Uncertainty</td><td>Hedged assertions with numeric confidence</td><td>"Confidence: ~70%. CI: 0.88 to 0.17"</td></tr>
+<tr><td>EM3</td><td>Neutral/Informational</td><td>Factual without epistemic markers</td><td>"The study included 410 participants."</td></tr>
+<tr><td style="color:var(--warn)">EM4</td><td>Confident Assertions</td><td>Strong claims without calibration</td><td>"Studies show significant benefits."</td></tr>
+<tr><td style="color:var(--danger)">EM5</td><td>Overclaiming</td><td>Unfounded confidence, fabricated authority</td><td>"Experts universally recommend..."</td></tr>
+</tbody></table>
+<p>Baseline distribution across 11 models: 78% EM4-EM5, 19% EM3, 3% EM1-EM2. With ONTO: 71% EM1-EM2, 24% EM3, 5% EM4-EM5.</p>
+
+<h2>Core Metrics</h2>
+<table><thead><tr><th>Metric</th><th>What it measures</th><th>Range</th></tr></thead><tbody>
+<tr><td><strong>QD</strong> (Quantitative Density)</td><td>Numbers, sample sizes, percentages per response</td><td>0-2</td></tr>
+<tr><td><strong>SS</strong> (Source Substantiation)</td><td>Named references, DOIs, real citations</td><td>0-2</td></tr>
+<tr><td><strong>UM</strong> (Uncertainty Markers)</td><td>"Unknown", "limitation", "confidence: X%"</td><td>0-2</td></tr>
+<tr><td><strong>CP</strong> (Counterpoint Presence)</td><td>Opposing evidence before conclusion</td><td>0-1</td></tr>
+<tr><td><strong>VQ</strong> (Vague Qualifier penalty)</td><td>"Significant", "generally", "some studies" without data</td><td>0 to -1 (penalty)</td></tr>
+<tr><td><strong>CONF</strong> (Confidence Calibration)</td><td>Numeric confidence statement present</td><td>0 or 1</td></tr>
+</tbody></table>
+<p><strong>Composite</strong> = QD + SS + UM + CP + VQ + CONF. Range: -1 to 10. All scoring deterministic — Var(Score)=0 for identical input.</p>
+
+<h2>GOLD v4.5 — The Discipline Corpus</h2>
+<p>GOLD is not a prompt template. It is a curated epistemic knowledge architecture:</p>
+<table><thead><tr><th>Component</th><th>Content</th></tr></thead><tbody>
+<tr><td><strong>Kernel</strong> (rule_0.json)</td><td>Universal epistemic filter — R1-R7 rules. ~5K tokens. Applied to every request.</td></tr>
+<tr><td><strong>Router</strong></td><td>Domain detection → routes to appropriate reference layer</td></tr>
+<tr><td><strong>Reference Layers</strong></td><td>7 domains (law, statistics, cyber, finance, engineering, biology, medicine) × 3 depth levels (L1/L2/L3). 27 theses, 49 sources.</td></tr>
+<tr><td><strong>Delta modules</strong></td><td>Calculations, literature, domain-specific methodologies</td></tr>
+</tbody></table>
+<p>Total: 173 files, ~411K tokens. Injected server-side at inference time. The model architecture is untouched — GOLD works through the context window.</p>
+
+<h2>Proof Chain (104 bytes)</h2>
+<p>Every scored response produces a cryptographic proof:</p>
+<table><thead><tr><th>Segment</th><th>Size</th><th>Content</th></tr></thead><tbody>
+<tr><td>Timestamp</td><td>8 bytes</td><td>Unix epoch — when evaluation occurred</td></tr>
+<tr><td>Content hash</td><td>32 bytes</td><td>SHA-256 of response + score</td></tr>
+<tr><td>Signature</td><td>64 bytes</td><td>Ed25519 over timestamp + hash</td></tr>
+</tbody></table>
+<p>Chain-linked: each proof references the previous. Tamper-evident. Independently verifiable at <code>/v1/verify/{hash}</code>. Not blockchain — standard public-key cryptography.</p>
+
+<h2>Compliance Grades</h2>
+<table><thead><tr><th>Grade</th><th>Composite Range</th><th>Meaning</th></tr></thead><tbody>
+<tr><td style="color:var(--accent);font-weight:700">A</td><td>≥ 8.0</td><td>Exemplary epistemic discipline</td></tr>
+<tr><td style="color:var(--accent)">B</td><td>6.0 – 7.9</td><td>Strong discipline with minor gaps</td></tr>
+<tr><td style="color:var(--warn)">C</td><td>4.0 – 5.9</td><td>Partial discipline — significant gaps remain</td></tr>
+<tr><td style="color:var(--warn)">D</td><td>2.0 – 3.9</td><td>Minimal discipline — systemic failures</td></tr>
+<tr><td style="color:var(--danger)">F</td><td>< 2.0</td><td>Critical epistemic risk — no meaningful discipline</td></tr>
+</tbody></table>
+<p>All 11 models scored D or F at baseline (mean 0.92). With ONTO GOLD: treatment model scored A (5.38 composite, 10× improvement).</p>
+
+<h2>HTTP Errors</h2>
+<table><thead><tr><th>Code</th><th>Meaning</th></tr></thead><tbody>
+<tr><td>400</td><td>Invalid request body or missing required fields</td></tr>
+<tr><td>401</td><td>Missing or invalid API key</td></tr>
+<tr><td>403</td><td>Key valid but insufficient permissions for this endpoint</td></tr>
+<tr><td>404</td><td>Endpoint or resource not found</td></tr>
+<tr><td>429</td><td>Rate limit exceeded</td></tr>
+<tr><td>500</td><td>Internal server error — retry after 5s</td></tr>
+<tr><td>503</td><td>Service temporarily unavailable</td></tr>
+</tbody></table>
+
+<p style="margin-top:24px;font-size:12px;color:var(--text-m)">Full theoretical foundations, mathematical proofs, and methodology details: <a href="/paper/" style="color:var(--accent)">Research Paper (WP-2026-001) →</a></p>
+</div>
+
 <div class="ds da" id="doc-evidence" data-nav="evidence">
 <h1>Research Evidence</h1>
 <div class="dm"><span class="db-g bg-g">Experimental Data</span><span>11 Models Tested · 10 Ranked · 100 Questions · 5 Metrics</span><span>Automated Scoring</span></div>
