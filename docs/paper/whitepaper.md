@@ -875,7 +875,7 @@ The model initially classified the human's calibrated confidence coefficients as
 3. Identified the root cause: "My imprecision is caused by the absence of access to your deterministic ontological framework"
 4. Spontaneously requested the framework without being offered it
 
-This observation demonstrates that AI models can independently recognize the need for epistemic discipline infrastructure when confronted with calibrated human analysis — suggesting latent demand for formal epistemic grounding systems.
+This observation demonstrates that AI models can independently recognize the need for epistemic discipline infrastructure when confronted with calibrated human analysis — suggesting latent demand for formal epistemic discipline systems.
 
 ### 6.2 Hallucination Inside Apology Pattern
 
@@ -1006,24 +1006,15 @@ GOLD Full       Full corpus                           Provider integration
 ONTO operates a four-tier commercial model with cascading capabilities:
 
 ```
-Tier        Price           Rate Limit      GOLD Access    SSE    Proof Chain
+Access          Rate Limit      GOLD Access    SSE    Proof Chain
 ```
 ──────────────────────────────────────────────────────────────────────────────
 ```
 
-OPEN        $0/mo           10 proxy/day    Core           No     Basic
-STANDARD    $2,500/mo       1,000/day       Extended       No     Full
-PROVIDER    $250K/yr        Unlimited       Full           Yes    Full + API
-WHITE-LABEL $500K/yr        Unlimited       Full           Yes    Full + Custom
+FREE            Unlimited       Full           Yes    Full
 ```
 
-Cascading properties:
-- Each higher tier inherits all capabilities of lower tiers
-- STANDARD includes all OPEN features + Extended GOLD + full proof chain
-- PROVIDER includes all STANDARD features + SSE delivery + direct API integration
-- WHITE-LABEL includes all PROVIDER features + custom branding + private deployment
-
-14-day free trial provides full STANDARD access. Founding Partner pricing: 2× duration (purchase 12 months, receive 24 months).
+ONTO provides free access to all companies during the standard adoption phase. Full GOLD discipline, full scoring, Ed25519 signed proof chain. No restrictions, no trial period. Contact council@ontostandard.org.
 
 ### 8.3 Provider Dashboard
 
@@ -1045,7 +1036,7 @@ The dashboard is not a demo — it processes real API keys and real model output
 
 ### 8.4 Licensing
 
-ONTO operates on a tiered licensing model scaling from free evaluation access (Open tier, rate-limited) through production deployment to provider-level integration and white-label licensing. Academic and grant-funded research qualifies for free access. Current pricing and tier details are published at ontostandard.org/pricing.
+ONTO provides free access to all companies evaluating and adopting the standard. Full GOLD discipline, scoring, and Ed25519 signed proof chain with no restrictions. This is the standard adoption phase — we need builders testing GOLD on real production traffic. Future commercial tiers will be introduced with 30 days notice; early adopters receive founding terms.
 
 ### 8.5 Deployment Impact Assessment
 
@@ -1125,9 +1116,9 @@ ONTO is an exoskeleton for AI. The same model, measurably better.
 
 **FO-2026-003** — Field Observation: Spontaneous Ontological Demand — AI Requests Epistemic Framework Unprompted. ONTO Standards Council, February 2026. Model: Qwen3.5-Plus (Alibaba). Domain: Macroeconomics. Published: ontostandard.org/reports/view.html?id=FO-2026-003
 
-**ONTO-ERS v10.2.1** — Epistemic Risk Score specification. Published on PyPI: `pip install onto-standard`
+**ONTO Standard v4.5** — Epistemic Discipline specification. Scoring engine: `scoring_engine_v3.py` (993 lines, deterministic regex). GOLD corpus: 173 files, 7 domains, 3 depth levels.
 
-**Scoring Engine v3.0** — Deterministic pattern-based epistemic quality scorer. 993 lines Python, EM1–EM5 taxonomy, open source. Source: github.com/nickarstrong/onto-standard | PyPI: `pip install onto-standard`
+**Scoring Engine v3.0** — Deterministic pattern-based epistemic quality scorer. 993 lines Python, EM1–EM5 taxonomy. Source: github.com/nickarstrong/onto-research
 
 **ONTO Protocol v3.2** — Formal constraint specifications for epistemic evaluation. Execution modes (CALC/SYNTH/AUDIT), K(E) and H_max(S) estimation interfaces, falsifiability conditions, IGR metric. Source: github.com/nickarstrong/onto-protocol
 
@@ -1160,7 +1151,7 @@ The ONTO proxy infrastructure uses Anthropic's API for GOLD injection delivery. 
 
 ## Appendix C: Reproducibility
 
-The scoring engine is open source and available via PyPI (`onto-standard` v10.2.1). The complete 100-question set, all baseline responses, and treatment responses are published in the onto-research repository (github.com/nickarstrong/onto-research). Any researcher can independently verify all scores. Var(Score)=0: identical input always produces identical output.
+The scoring engine is deterministic and available in the onto-research repository. The complete 100-question set, all baseline responses, and treatment responses are published at github.com/nickarstrong/onto-research. Any researcher can independently verify all scores. Var(Score)=0: identical input always produces identical output.
 
 ## Appendix D: Model Anonymization
 
