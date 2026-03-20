@@ -46,37 +46,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font
 .lang-sel{font-family:var(--mono);font-size:11px;background:var(--bg-c);border:1px solid var(--border);color:var(--text-s);padding:4px 8px;border-radius:4px;cursor:pointer;outline:none;color-scheme:dark}
 
 /* Provider selector */
-.model-sel{font-family:var(--mono);font-size:11px;background:var(--bg-c);border:1px solid var(--border);color:var(--text-s);padding:4px 8px;border-radius:4px;cursor:pointer;outline:none;color-scheme:dark;max-width:200px}
-
-/* Config layout */
-.cfg-row{display:flex;gap:10px;align-items:flex-end}
-.cfg-load-btn{font-family:var(--mono);font-size:11px;background:var(--safe);color:#fff;border:none;padding:7px 14px;border-radius:4px;cursor:pointer;white-space:nowrap;align-self:flex-end;margin-bottom:1px}
-.cfg-load-btn:hover{background:#166534}
-.cfg-models{margin-top:10px;max-height:160px;overflow-y:auto}
-.cfg-models::-webkit-scrollbar{width:3px}
-.cfg-models::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-.cfg-models-empty{font-family:var(--mono);font-size:10px;color:var(--text-m);padding:8px 0;text-align:center}
-.cfg-models-list{display:flex;flex-direction:column;gap:0}
-.mdl-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:.1s}
-.mdl-row:hover{background:var(--bg-c);margin:0 -4px;padding:7px 4px;border-radius:3px}
-.mdl-row.active{background:var(--safe-s);margin:0 -4px;padding:7px 4px;border-radius:3px}
-.mdl-name{font-size:12px;font-weight:600;color:var(--text);flex:1}
-.mdl-prov{font-family:var(--mono);font-size:10px;color:var(--text-m)}
-.mdl-score{font-family:var(--mono);font-size:13px;font-weight:700}
-.mdl-score.a{color:var(--safe-l)}
-.mdl-score.b{color:#fbbf24}
-.mdl-score.c{color:var(--warn)}
-.mdl-cert{font-family:var(--mono);font-size:9px;padding:2px 6px;border-radius:3px;background:var(--safe-s);color:var(--safe-l);border:1px solid rgba(21,128,61,.25)}
-
-/* Register row */
-.cfg-register{margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
-.cfg-reg-title{font-family:var(--mono);font-size:10px;color:var(--text-m);margin-bottom:6px;letter-spacing:.5px}
-.cfg-reg-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.cfg-reg-input{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:5px 8px;border-radius:4px;font-family:var(--mono);font-size:11px;outline:none;flex:1;min-width:100px}
-.cfg-reg-input:focus{border-color:var(--safe)}
-.cfg-reg-select{background:var(--bg);border:1px solid var(--border);color:var(--text-s);padding:5px 6px;border-radius:4px;font-family:var(--mono);font-size:11px;outline:none;color-scheme:dark}
-.cfg-reg-btn{font-family:var(--mono);font-size:11px;background:var(--safe);color:#fff;border:none;padding:5px 12px;border-radius:4px;cursor:pointer;font-weight:600;white-space:nowrap}
-.cfg-reg-btn:hover{background:#166534}
+/* Provider key wrap */
+#provKeyWrap{transition:display .2s}
 
 /* Mode toggle switch */
 .mode-switch{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
@@ -249,39 +220,17 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font
       <option value="tr">TR</option>
       <option value="ar">AR</option>
     </select>
-    <select class="model-sel" id="modelSel" onchange="selectModel(this.value)">
-      <option value="" disabled selected>Select model...</option>
-    </select>
     <button class="tb new-chat" id="btnNew" onclick="newChat()">New chat</button>
     <button class="tb" id="btnCfg" onclick="toggleCfg()">Config</button>
   </div>
 </div>
 
 <div class="cfg" id="cfg">
-  <div class="cfg-row">
-    <div class="cfg-f" style="flex:1"><label>ONTO API KEY</label><input type="password" id="apiKey" placeholder="onto_..." onchange="onApiKeyChange()" onkeydown="if(event.key==='Enter')loadModels()"></div>
-    <button class="cfg-load-btn" id="loadModelsBtn" onclick="loadModels()">Load Models</button>
+  <div class="cfg-f"><label>ONTO API KEY</label><input type="password" id="apiKey" placeholder="onto_..."></div>
+  <div class="cfg-f"><label>PROVIDER</label>
+    <select id="cfgProvider" onchange="onProvChange()"><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="xai">xAI (Grok)</option><option value="deepseek">DeepSeek</option><option value="mistral">Mistral</option><option value="onto">ONTO Standard (Human AI)</option></select>
   </div>
-  <div class="cfg-models" id="cfgModels">
-    <div class="cfg-models-empty" id="modelsEmpty">Enter ONTO API key and press Load Models</div>
-    <div class="cfg-models-list" id="modelsList"></div>
-  </div>
-  <div class="cfg-register" id="cfgRegister">
-    <div class="cfg-reg-title">+ Register new model</div>
-    <div class="cfg-reg-row">
-      <input type="text" id="regName" placeholder="Model name" class="cfg-reg-input">
-      <select id="regProvider" class="cfg-reg-select" onchange="onProviderChange()">
-        <option value="openai">OpenAI</option>
-        <option value="anthropic">Anthropic</option>
-        <option value="xai">xAI (Grok)</option>
-        <option value="deepseek">DeepSeek</option>
-        <option value="mistral">Mistral</option>
-        <option value="onto">ONTO Standard</option>
-      </select>
-      <input type="password" id="regKey" placeholder="Provider API key" class="cfg-reg-input" style="flex:1.5">
-      <button class="cfg-reg-btn" onclick="registerModel()">Register</button>
-    </div>
-  </div>
+  <div class="cfg-f" id="provKeyWrap"><label>PROVIDER API KEY</label><input type="password" id="providerKey" placeholder="sk-... or xai-..."></div>
   <div class="cfg-note" id="cfgNote">DEMO mode: no keys required</div>
 </div>
 
@@ -543,139 +492,12 @@ function toggleMode() {
   document.getElementById('cfgNote').textContent = demoMode ? t('cfgNote') : '';
   if (!demoMode) {
     document.getElementById('cfg').classList.add('open');
-    if (document.getElementById('apiKey').value) loadModels();
   }
   saveCfg();
 }
 
-let selectedModelId = '';
-let loadedModels = [];
-
-function selectModel(id) {
-  selectedModelId = id;
-  document.querySelectorAll('.mdl-row').forEach(r => r.classList.toggle('active', r.dataset.id === id));
-  saveCfg();
-}
-
-function onApiKeyChange() {
-  const key = document.getElementById('apiKey').value.trim();
-  if (key && key.startsWith('onto_') && key.length > 20) loadModels();
-}
-
-async function loadModels() {
-  const key = document.getElementById('apiKey').value.trim();
-  if (!key) { showModelError('Enter ONTO API key'); return; }
-  
-  const btn = document.getElementById('loadModelsBtn');
-  btn.textContent = '...';
-  
-  try {
-    const res = await fetch(`${API}/v1/models`, { headers: { 'x-api-key': key } });
-    if (!res.ok) { showModelError('Invalid key or server error'); btn.textContent = 'Load Models'; return; }
-    const data = await res.json();
-    loadedModels = data.models || [];
-    renderModels();
-  } catch (e) {
-    showModelError('Network error');
-  }
-  btn.textContent = 'Load Models';
-}
-
-function showModelError(msg) {
-  document.getElementById('modelsEmpty').textContent = msg;
-  document.getElementById('modelsEmpty').style.display = 'block';
-  document.getElementById('modelsList').innerHTML = '';
-}
-
-function renderModels() {
-  const list = document.getElementById('modelsList');
-  const sel = document.getElementById('modelSel');
-  const empty = document.getElementById('modelsEmpty');
-  
-  if (loadedModels.length === 0) {
-    empty.textContent = 'No models registered. Add one below.';
-    empty.style.display = 'block';
-    list.innerHTML = '';
-    sel.innerHTML = '<option value="" disabled selected>No models</option>';
-    return;
-  }
-  
-  empty.style.display = 'none';
-  
-  // Config list
-  list.innerHTML = loadedModels.filter(m => m.is_enabled !== false).map(m => {
-    const scoreClass = m.grade === 'A' ? 'a' : m.grade === 'B' ? 'b' : 'c';
-    const active = m.id === selectedModelId ? ' active' : '';
-    const certHtml = m.cert_status === 'active' ? '<span class="mdl-cert">CERTIFIED</span>' : '';
-    return `<div class="mdl-row${active}" data-id="${m.id}" onclick="selectModel('${m.id}')">
-      <div class="mdl-name">${esc(m.name)}</div>
-      <div class="mdl-prov">${m.provider_type}</div>
-      <div class="mdl-score ${scoreClass}">${m.avg_score ? m.avg_score.toFixed(1) : '—'} <span style="font-size:10px">${m.grade || ''}</span></div>
-      ${certHtml}
-    </div>`;
-  }).join('');
-  
-  // Top bar dropdown
-  sel.innerHTML = '<option value="" disabled>Select model...</option>';
-  loadedModels.filter(m => m.is_enabled !== false).forEach(m => {
-    const opt = document.createElement('option');
-    opt.value = m.id;
-    opt.textContent = `${m.name} (${m.provider_type}) ${m.grade ? '— ' + m.grade : ''}`;
-    if (m.id === selectedModelId) opt.selected = true;
-    sel.appendChild(opt);
-  });
-  
-  // Auto-select first if none selected
-  if (!selectedModelId && loadedModels.length > 0) {
-    selectedModelId = loadedModels[0].id;
-    sel.value = selectedModelId;
-    renderModels();
-  }
-}
-
-function onProviderChange() {
-  const prov = document.getElementById('regProvider').value;
-  const nameInput = document.getElementById('regName');
-  const keyInput = document.getElementById('regKey');
-  if (prov === 'onto') {
-    nameInput.value = 'Human AI v5';
-    keyInput.placeholder = 'Not required';
-    keyInput.disabled = true;
-    keyInput.value = '';
-  } else {
-    if (nameInput.value === 'Human AI v5') nameInput.value = '';
-    keyInput.placeholder = 'Provider API key';
-    keyInput.disabled = false;
-  }
-}
-
-async function registerModel() {
-  const name = document.getElementById('regName').value.trim();
-  const provider = document.getElementById('regProvider').value;
-  const provKey = document.getElementById('regKey').value.trim();
-  const apiKey = document.getElementById('apiKey').value.trim();
-  
-  if (!name) return;
-  if (!provKey && provider !== 'onto') return;
-  if (!apiKey) return;
-  
-  try {
-    const res = await fetch(`${API}/v1/models`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
-      body: JSON.stringify({ name, provider_type: provider, provider_key: provKey || '' })
-    });
-    const data = await res.json();
-    if (res.ok) {
-      document.getElementById('regName').value = '';
-      document.getElementById('regKey').value = '';
-      loadModels();
-    } else {
-      addErr(data.detail || 'Registration failed');
-    }
-  } catch (e) {
-    addErr('Network error: ' + e.message);
-  }
+function onProvChange() {
+  document.getElementById('provKeyWrap').style.display = document.getElementById('cfgProvider').value === 'onto' ? 'none' : 'flex';
 }
 
 function newChat() {
@@ -702,9 +524,10 @@ function fmt(t) {
 
 function getConfig() {
   const key = document.getElementById('apiKey').value.trim();
-  const mid = selectedModelId;
+  const prov = document.getElementById('cfgProvider').value;
+  const provKey = document.getElementById('providerKey').value.trim();
   const lg = curLang === 'en' ? 'auto' : curLang;
-  return { key, mid, lg };
+  return { key, prov, provKey, lg };
 }
 
 function setBusy(b) {
@@ -742,8 +565,9 @@ function metricRows(m, cls) {
 
 // ── API CALL ──
 async function apiCall(msg, goldOn, hdrs, signal) {
-  const { mid, lg } = getConfig();
-  const body = { message: msg, model_id: mid, history: [], language: lg, depth: 'auto', gold_enabled: goldOn };
+  const { prov, provKey, lg } = getConfig();
+  const body = { message: msg, provider: prov, history: [], language: lg, depth: 'auto', gold_enabled: goldOn };
+  if (provKey) body.provider_key = provKey;
   const r = await fetch(`${API}/v1/agent/chat`, { method: 'POST', headers: hdrs, body: JSON.stringify(body), signal });
   if (!r.ok) { let e = `Error ${r.status}`; try { e = (await r.json()).detail || e } catch {} throw new Error(e) }
   return r.json();
@@ -772,8 +596,8 @@ async function send() {
     return;
   }
 
-  const { key, mid } = getConfig();
-  if (!mid) { addErr(t('modelReq')); return }
+  const { key, prov, provKey } = getConfig();
+  if (!key && prov !== 'onto') { addErr(t('modelReq')); return }
   document.getElementById('inp').value = ''; autoH(document.getElementById('inp'));
   rmWelcome();
 
@@ -791,8 +615,9 @@ async function send() {
   if (key) hdrs['x-api-key'] = key;
 
   try {
-    const { mid: m, lg } = getConfig();
-    const body = { message: msg, model_id: m, history: hist.slice(-20), language: lg, depth: 'auto', gold_enabled: gold };
+    const { lg } = getConfig();
+    const body = { message: msg, provider: prov, history: hist.slice(-20), language: lg, depth: 'auto', gold_enabled: gold };
+    if (provKey) body.provider_key = provKey;
     if (convId) body.conversation_id = convId;
     const r = await fetch(`${API}/v1/agent/chat`, { method: 'POST', headers: hdrs, body: JSON.stringify(body), signal: ac.signal });
     ld.remove();
@@ -881,8 +706,8 @@ async function compare() {
   }
 
   // LIVE mode
-  const { key, mid } = getConfig();
-  if (!mid) { addErr(t('modelReq')); return }
+  const { key, prov, provKey } = getConfig();
+  if (!key && prov !== 'onto') { addErr(t('modelReq')); return }
 
   setBusy(true);
   ac = new AbortController();
@@ -998,7 +823,8 @@ function loadCfg() {
       const c = JSON.parse(s);
       if (!document.getElementById('apiKey').value && c.k) document.getElementById('apiKey').value = c.k;
       if (c.ui) { document.getElementById('uiLang').value = c.ui; curLang = c.ui; }
-      if (c.mid) selectedModelId = c.mid;
+      if (c.prov) document.getElementById('cfgProvider').value = c.prov;
+      if (c.pk) document.getElementById('providerKey').value = c.pk;
       if (c.demo != null) demoMode = c.demo;
     }
     if (p.get('key')) {
@@ -1012,7 +838,8 @@ function saveCfg() {
     const c = {
       k: document.getElementById('apiKey').value,
       ui: curLang,
-      mid: selectedModelId,
+      prov: document.getElementById('cfgProvider').value,
+      pk: document.getElementById('providerKey').value,
       demo: demoMode
     };
     localStorage.setItem(CFG_KEY, JSON.stringify(c));
@@ -1020,6 +847,8 @@ function saveCfg() {
 }
 loadCfg();
 document.getElementById('apiKey').addEventListener('input', saveCfg);
+document.getElementById('providerKey').addEventListener('input', saveCfg);
+document.getElementById('cfgProvider').addEventListener('change', saveCfg);
 
 // Init UI
 switchLang(curLang);
@@ -1030,8 +859,8 @@ track.className = 'mode-track' + (demoMode ? '' : ' live');
 document.getElementById('modeLabel').textContent = demoMode ? 'DEMO' : 'LIVE';
 if (!demoMode) {
   document.getElementById('cfg').classList.add('open');
-  if (document.getElementById('apiKey').value) loadModels();
 }
+onProvChange();
 
 document.getElementById('inp').focus();
 </script>
