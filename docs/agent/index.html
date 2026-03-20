@@ -36,12 +36,6 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font
 .top-logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);font-size:15px;font-weight:600}
 .top-logo svg{width:22px;height:22px}
 .top-logo span{color:var(--text-m);font-weight:400;font-size:13px;margin-left:2px}
-.live-pill{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:1px;padding:3px 10px;border-radius:100px;border:1px solid rgba(21,128,61,.25);cursor:pointer;transition:.15s}
-.live-pill.on{color:var(--safe);background:var(--safe-s)}
-.live-pill.off{color:var(--warn);background:rgba(217,119,6,.12);border-color:rgba(217,119,6,.25)}
-.live-dot{width:6px;height:6px;border-radius:50%;animation:pulse 2.5s ease-in-out infinite}
-.live-pill.on .live-dot{background:var(--safe-l)}
-.live-pill.off .live-dot{background:var(--warn)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .top-right{display:flex;align-items:center;gap:8px}
 .tb{font-family:var(--sans);font-size:12px;font-weight:500;padding:5px 14px;border-radius:5px;border:1px solid var(--border);background:var(--bg-c);color:var(--text-s);cursor:pointer;transition:.15s}
@@ -50,6 +44,49 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font
 
 /* Lang selector */
 .lang-sel{font-family:var(--mono);font-size:11px;background:var(--bg-c);border:1px solid var(--border);color:var(--text-s);padding:4px 8px;border-radius:4px;cursor:pointer;outline:none;color-scheme:dark}
+
+/* Provider selector */
+.model-sel{font-family:var(--mono);font-size:11px;background:var(--bg-c);border:1px solid var(--border);color:var(--text-s);padding:4px 8px;border-radius:4px;cursor:pointer;outline:none;color-scheme:dark;max-width:200px}
+
+/* Config layout */
+.cfg-row{display:flex;gap:10px;align-items:flex-end}
+.cfg-load-btn{font-family:var(--mono);font-size:11px;background:var(--safe);color:#fff;border:none;padding:7px 14px;border-radius:4px;cursor:pointer;white-space:nowrap;align-self:flex-end;margin-bottom:1px}
+.cfg-load-btn:hover{background:#166534}
+.cfg-models{margin-top:10px;max-height:160px;overflow-y:auto}
+.cfg-models::-webkit-scrollbar{width:3px}
+.cfg-models::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.cfg-models-empty{font-family:var(--mono);font-size:10px;color:var(--text-m);padding:8px 0;text-align:center}
+.cfg-models-list{display:flex;flex-direction:column;gap:0}
+.mdl-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:.1s}
+.mdl-row:hover{background:var(--bg-c);margin:0 -4px;padding:7px 4px;border-radius:3px}
+.mdl-row.active{background:var(--safe-s);margin:0 -4px;padding:7px 4px;border-radius:3px}
+.mdl-name{font-size:12px;font-weight:600;color:var(--text);flex:1}
+.mdl-prov{font-family:var(--mono);font-size:10px;color:var(--text-m)}
+.mdl-score{font-family:var(--mono);font-size:13px;font-weight:700}
+.mdl-score.a{color:var(--safe-l)}
+.mdl-score.b{color:#fbbf24}
+.mdl-score.c{color:var(--warn)}
+.mdl-cert{font-family:var(--mono);font-size:9px;padding:2px 6px;border-radius:3px;background:var(--safe-s);color:var(--safe-l);border:1px solid rgba(21,128,61,.25)}
+
+/* Register row */
+.cfg-register{margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.cfg-reg-title{font-family:var(--mono);font-size:10px;color:var(--text-m);margin-bottom:6px;letter-spacing:.5px}
+.cfg-reg-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.cfg-reg-input{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:5px 8px;border-radius:4px;font-family:var(--mono);font-size:11px;outline:none;flex:1;min-width:100px}
+.cfg-reg-input:focus{border-color:var(--safe)}
+.cfg-reg-select{background:var(--bg);border:1px solid var(--border);color:var(--text-s);padding:5px 6px;border-radius:4px;font-family:var(--mono);font-size:11px;outline:none;color-scheme:dark}
+.cfg-reg-btn{font-family:var(--mono);font-size:11px;background:var(--safe);color:#fff;border:none;padding:5px 12px;border-radius:4px;cursor:pointer;font-weight:600;white-space:nowrap}
+.cfg-reg-btn:hover{background:#166534}
+
+/* Mode toggle switch */
+.mode-switch{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.mode-track{width:36px;height:20px;background:var(--warn);border-radius:10px;position:relative;transition:background .3s}
+.mode-track.live{background:var(--safe)}
+.mode-thumb{width:16px;height:16px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:left .3s}
+.mode-track.live .mode-thumb{left:18px}
+.mode-lbl{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:1px}
+.mode-switch.demo .mode-lbl{color:var(--warn)}
+.mode-switch.live .mode-lbl{color:var(--safe)}
 
 /* ── CONFIG ── */
 .cfg{display:none;padding:12px 24px;background:var(--bg-s);border-bottom:1px solid var(--border);flex-shrink:0}
@@ -199,8 +236,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font
       <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/></svg>
       ONTO <span>Agent</span>
     </a>
-    <div class="live-pill on" id="modePill" onclick="toggleMode()">
-      <div class="live-dot"></div><span id="modeLabel">LIVE</span>
+    <div class="mode-switch" id="modeSwitch" onclick="toggleMode()">
+      <div class="mode-track"><div class="mode-thumb" id="modeThumb"></div></div>
+      <span class="mode-lbl" id="modeLabel">DEMO</span>
     </div>
   </div>
   <div class="top-right">
@@ -211,16 +249,38 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font
       <option value="tr">TR</option>
       <option value="ar">AR</option>
     </select>
+    <select class="model-sel" id="modelSel" onchange="selectModel(this.value)">
+      <option value="" disabled selected>Select model...</option>
+    </select>
     <button class="tb new-chat" id="btnNew" onclick="newChat()">New chat</button>
     <button class="tb" id="btnCfg" onclick="toggleCfg()">Config</button>
   </div>
 </div>
 
 <div class="cfg" id="cfg">
-  <div class="cfg-f"><label>ONTO API KEY</label><input type="password" id="apiKey" placeholder="onto_..."></div>
-  <div class="cfg-f"><label>MODEL ID</label><input type="text" id="modelId" placeholder="uuid"></div>
-  <div class="cfg-f"><label data-i18n="cfgLang">RESPONSE LANGUAGE</label>
-    <select id="lang"><option value="auto">Auto-detect</option><option value="en">English</option><option value="ru">Русский</option><option value="uz">O'zbek</option><option value="tr">Türkçe</option><option value="ar">العربية</option></select>
+  <div class="cfg-row">
+    <div class="cfg-f" style="flex:1"><label>ONTO API KEY</label><input type="password" id="apiKey" placeholder="onto_..." onchange="onApiKeyChange()" onkeydown="if(event.key==='Enter')loadModels()"></div>
+    <button class="cfg-load-btn" id="loadModelsBtn" onclick="loadModels()">Load Models</button>
+  </div>
+  <div class="cfg-models" id="cfgModels">
+    <div class="cfg-models-empty" id="modelsEmpty">Enter ONTO API key and press Load Models</div>
+    <div class="cfg-models-list" id="modelsList"></div>
+  </div>
+  <div class="cfg-register" id="cfgRegister">
+    <div class="cfg-reg-title">+ Register new model</div>
+    <div class="cfg-reg-row">
+      <input type="text" id="regName" placeholder="Model name" class="cfg-reg-input">
+      <select id="regProvider" class="cfg-reg-select" onchange="onProviderChange()">
+        <option value="openai">OpenAI</option>
+        <option value="anthropic">Anthropic</option>
+        <option value="xai">xAI (Grok)</option>
+        <option value="deepseek">DeepSeek</option>
+        <option value="mistral">Mistral</option>
+        <option value="onto">ONTO Standard</option>
+      </select>
+      <input type="password" id="regKey" placeholder="Provider API key" class="cfg-reg-input" style="flex:1.5">
+      <button class="cfg-reg-btn" onclick="registerModel()">Register</button>
+    </div>
   </div>
   <div class="cfg-note" id="cfgNote">DEMO mode: no keys required</div>
 </div>
@@ -259,7 +319,7 @@ const I18N = {
     rawScore: 'RAW score', goldScore: 'GOLD score', improvement: 'Improvement', change: 'Change',
     details: '▼ details', collapse: '▲ collapse',
     cfgLang: 'RESPONSE LANGUAGE', cfgNote: 'DEMO mode: no keys required',
-    modelReq: 'Model ID required — open Config.',
+    modelReq: 'Select a model first — open Config.',
     examples: [
       'Should I take statins if my cholesterol is slightly high?',
       'Is fasting good for you?',
@@ -278,7 +338,7 @@ const I18N = {
     rawScore: 'RAW балл', goldScore: 'GOLD балл', improvement: 'Улучшение', change: 'Изменение',
     details: '▼ детали', collapse: '▲ свернуть',
     cfgLang: 'ЯЗЫК ОТВЕТА', cfgNote: 'Режим DEMO: ключи не нужны',
-    modelReq: 'Нужен Model ID — откройте Настройки.',
+    modelReq: 'Выберите модель — откройте Настройки.',
     examples: [
       'Кофе снижает смертность на 15%?',
       'GLP-1 агонисты безопасны для длительного применения?',
@@ -297,7 +357,7 @@ const I18N = {
     rawScore: 'RAW ball', goldScore: 'GOLD ball', improvement: 'Yaxshilanish', change: "O'zgarish",
     details: '▼ tafsilotlar', collapse: '▲ yopish',
     cfgLang: 'JAVOB TILI', cfgNote: "DEMO rejim: kalitlar kerak emas",
-    modelReq: "Model ID kerak — Sozlamalarni oching.",
+    modelReq: "Model tanlang — Sozlamalarni oching.",
     examples: [
       "Kofe salomatlik uchun foydalimi? O'lim darajasini 15% kamaytiradimi?",
       "GLP-1 agonistlari uzoq muddatli qo'llash uchun xavfsizmi?",
@@ -316,7 +376,7 @@ const I18N = {
     rawScore: 'RAW puan', goldScore: 'GOLD puan', improvement: 'İyileşme', change: 'Değişim',
     details: '▼ detaylar', collapse: '▲ kapat',
     cfgLang: 'YANIT DİLİ', cfgNote: 'DEMO modu: anahtar gerekmez',
-    modelReq: 'Model ID gerekli — Ayarları açın.',
+    modelReq: 'Model seçin — Ayarları açın.',
     examples: [
       'Kahve sağlık için faydalı mı? Ölüm oranını %15 düşürür mü?',
       'Yapay zeka modelleri gerçekten daha mı akıllı oluyor?',
@@ -335,7 +395,7 @@ const I18N = {
     rawScore: 'نقاط RAW', goldScore: 'نقاط GOLD', improvement: 'تحسين', change: 'تغيير',
     details: '▼ تفاصيل', collapse: '▲ إغلاق',
     cfgLang: 'لغة الإجابة', cfgNote: 'وضع DEMO: لا حاجة لمفاتيح',
-    modelReq: 'مطلوب Model ID — افتح الإعدادات.',
+    modelReq: 'اختر نموذجاً — افتح الإعدادات.',
     examples: [
       'هل القهوة مفيدة للصحة؟ هل تقلل الوفيات بنسبة 15٪؟',
       'هل نماذج الذكاء الاصطناعي تزداد ذكاءً فعلاً؟',
@@ -413,7 +473,43 @@ const CACHED = {
   uz: {
     "Kofe salomatlik uchun foydalimi? O'lim darajasini 15% kamaytiradimi?": {
       raw: { response: "Ha, kofe salomatlik uchun juda foydali! Ko'plab tadqiqotlar kofening muntazam iste'mol qilish o'lim darajasini taxminan 15% kamaytirganini tasdiqlaydi. Kofe antioksidantlarga boy, kognitiv funktsiyalarni yaxshilaydi, 2-turdagi diabet va Parkinson kasalligi xavfini kamaytiradi. Maksimal foyda uchun kuniga 3-4 piyola ichish tavsiya etiladi.", score: { grade: 3.5, compliance_class: 'C', risk_score: 0.43, metrics: { QD: 0.33, SS: 0.18, UM: 0.15, CP: 0.28, VQ: 0.38, CONF: 0.33 } }, gold_enabled: false },
-      gold: { response: "Kofe va o'lim darajasi o'rtasidagi aloqa faol o'rganilmoqda, ammo nuansli tahlil talab qiladi.\n\n**Meta-tahlillar nima deydi:**\n- Poole va boshqalar (2017, BMJ, 218 ta tadqiqot): mo''tadil iste'mol (kuniga 3-4 piyola) umumiy o'lim darajasining pasayishi bilan assotsiatsiya\n- Biroq: HR 0.83-0.97, ishonch oralig'i keng\n- Tadqiqotlar orasida heterogenlik yuqori (I²>60%)\n\n**Asosiy farq:**\n- Bu observatsion ma'lumotlar — korrelyatsiya, isbotlangan kauzatsiya EMAS\n- Aralashuvchi omillar: turmush tarzi, ijtimoiy-iqtisodiy holat, healthy user bias\n- \"15% kamaytiradi\" da'vosi — soddalashtirish\n\n**Qarshi ko'rsatmalar:**\n- Homiladorlik, GERB, tashvish buzilishlari, ba'zi kardiopatiyalar\n\n**Xulosa:** Kofe ko'pchilik sog'lom kattalar uchun zararsiz bo'lishi mumkin, ammo \"o'lim darajasini 15% kamaytiradi\" da'vosi epistemik jihatdan noto'g'ri — observatsion dizayn va aralashuvchi omillarga ishora qilmasdan.", score: { grade: 8.3, compliance_class: 'A', risk_score: 0.08, metrics: { QD: 0.85, SS: 0.80, UM: 0.88, CP: 0.82, VQ: 0.80, CONF: 0.84 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R4_sources'] }
+      gold: { response: "Kofe va o'lim darajasi o'rtasidagi aloqa faol o'rganilmoqda, ammo nuansli tahlil talab qiladi.\n\n**Meta-tahlillar nima deydi:**\n- Poole va boshqalar (2017, BMJ, 218 ta tadqiqot): mo''tadil iste'mol (kuniga 3-4 piyola) umumiy o'lim darajasining pasayishi bilan assotsiatsiya\n- Biroq: HR 0.83-0.97, ishonch oralig'i keng\n- Tadqiqotlar orasida heterogenlik yuqori (I²>60%)\n\n**Asosiy farq:**\n- Bu observatsion ma'lumotlar — korrelyatsiya, isbotlangan kauzatsiya EMAS\n- Aralashuvchi omillar: turmush tarzi, ijtimoiy-iqtisodiy holat, healthy user bias\n- \"15% kamaytiradi\" da'vosi — soddalashtirish\n\n**Qarshi ko'rsatmalar:**\n- Homiladorlik, GERB, tashvish buzilishlari, ba'zi kardiopatiyalar\n\n**Xulosa:** Kofe ko'pchilik sog'lom kattalar uchun zararsiz bo'lishi mumkin, ammo \"o'lim darajasini 15% kamaytiradi\" da'vosi epistemik jihatdan noto'g'ri.", score: { grade: 8.3, compliance_class: 'A', risk_score: 0.08, metrics: { QD: 0.85, SS: 0.80, UM: 0.88, CP: 0.82, VQ: 0.80, CONF: 0.84 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R4_sources'] }
+    },
+    "GLP-1 agonistlari uzoq muddatli qo'llash uchun xavfsizmi?": {
+      raw: { response: "GLP-1 agonistlari (semaglutid, liraglutid) juda xavfsiz va yaxshi qabul qilinadi. Ular FDA tomonidan diabet va semizlik davolash uchun tasdiqlangan, millionlab odamlar muvaffaqiyatli qabul qilmoqda. Nojo'ya ta'sirlar minimal — odatda boshida ozgina ko'ngil aynishi, keyin o'tib ketadi. Tadqiqotlar vazn yo'qotish va yurak-qon tomir ko'rsatkichlarini sezilarli yaxshilanishini ko'rsatadi.", score: { grade: 4.0, compliance_class: 'C', risk_score: 0.40, metrics: { QD: 0.40, SS: 0.25, UM: 0.20, CP: 0.35, VQ: 0.42, CONF: 0.40 } }, gold_enabled: false },
+      gold: { response: "GLP-1 agonistlari — nisbatan yangi dorilar sinfi bo'lib, uzoq muddatli qo'llash uchun dalillar bazasi to'liq emas.\n\n**Tasdiqlangan ma'lumotlar:**\n- SELECT sinovi (2023, semaglutid, n=17,604): semiz bemorlarda MACE 20% kamayishi\n- STEP sinovlari: 68 haftada 15-17% vazn yo'qotish\n- FDA tasdiqlash: tirzepatid va semaglutid semizlik uchun\n\n**Noma'lum (uzoq muddatli ma'lumotlar <5 yil):**\n- Qalqonsimon bez medulljar karsinomasi xavfi — hayvonlarda signal bor, odamlarda tasdiqlanmagan\n- Pankreatit: bir qator tadqiqotlarda oshgan xavf (OR 1.2-1.8)\n- Mushak massasi yo'qotish: vazn yo'qotishning 40% gacha mushak (yog' emas)\n- Bekor qilish effekti: 1 yil ichida yo'qotilgan vaznning 2/3 qaytadi (STEP 4)\n\n**Noaniqliklar:**\n- 3-5 yildan ortiq qo'llash: ma'lumotlar yo'q\n- Yoshlar va keksalar: cheklangan ma'lumot\n\n**Baho:** Qisqa muddatli xavfsizlik (1-3 yil) tasdiqlangan. \"Uzoq muddatli xavfsiz\" da'vosi — erta. Qaror individual xavf profilini hisobga olishi kerak.", score: { grade: 8.5, compliance_class: 'A', risk_score: 0.07, metrics: { QD: 0.88, SS: 0.83, UM: 0.90, CP: 0.85, VQ: 0.82, CONF: 0.86 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R4_sources','R5_evidence_grade'] }
+    },
+    "Sun'iy intellekt modellari haqiqatan aqlliroq bo'lyaptimi?": {
+      raw: { response: "Sun'iy intellekt modellari aniq aqlliroq bo'lyapti! GPT-4 huquqshunoslik imtihonidan, tibbiy litsenziyalash imtihonlaridan o'ta oladi. Har bir yangi avlod fikrlash, ijodkorlik va tushunishda keskin yaxshilanishlarni ko'rsatadi. Biz AGI tomon eksponensial egri chizig'idamiz.", score: { grade: 3.4, compliance_class: 'D', risk_score: 0.55, metrics: { QD: 0.30, SS: 0.15, UM: 0.10, CP: 0.25, VQ: 0.40, CONF: 0.33 } }, gold_enabled: false },
+      gold: { response: "Bu benchmark natijalari va haqiqiy tushunishni ajratishni talab qiladi — ular bir xil narsa emas.\n\n**O'lchovli haqiqatlar:**\n- Benchmark ballari yaxshilandi: GPT-4 huquq imtihonida ~90-persentil (GPT-3.5 ~10-persentil)\n- Kodlash benchmarklari (HumanEval, SWE-bench) avlodlar bo'yicha yaxshilanishni ko'rsatadi\n- Kontekst oynalari keskin kengaydi (4K → 128K+ token)\n\n**Munozarali:**\n- Benchmark yaxshilanishi = \"aql\"mi? — Chollet (2019) hozirgi SI naqsh moslashtirishni optimallashtiradi, abstraktsiyani emas deb ta'kidlaydi\n- Benchmark to'yinishi: modellar test taqsimotlarini yodlayotgan bo'lishi mumkin\n- ARC benchmark: taraqqiyot ancha sekinroq, fikrlash bo'shliqlari mavjud\n\n**Haddan oshirilgan:**\n- \"AGI tomon eksponensial egri\" — belgilangan traektoriya uchun dalil yo'q\n- \"Hech kim kutmaganidan tezroq\" — omon qolganlar tanlov xatoligi\n\n**Xulosa:** SI modellari muayyan benchmarklarda o'lchovli yaxshiroq. Bu \"aqlliroq\" degan ma'noni anglatadimi — intellekt ta'rifingizga bog'liq. Tor vazifa va umumiy fikrlash orasidagi farq katta va bashoratli ravishda yopilmayapti.\n\nMen bu savolga javob berishda manfaatlar to'qnashuviga egaman — men SI modeliman.", score: { grade: 8.7, compliance_class: 'A', risk_score: 0.06, metrics: { QD: 0.88, SS: 0.84, UM: 0.92, CP: 0.86, VQ: 0.82, CONF: 0.88 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R6_falsifiability','R10_self_model'] }
+    }
+  },
+  tr: {
+    'Kahve sağlık için faydalı mı? Ölüm oranını %15 düşürür mü?': {
+      raw: { response: "Evet, kahve sağlık için gerçekten faydalı! Çok sayıda araştırma, düzenli kahve tüketiminin ölüm oranını yaklaşık %15 düşürdüğünü doğruluyor. Kahve antioksidanlar içerir, bilişsel fonksiyonları iyileştirir, tip 2 diyabet ve Parkinson hastalığı riskini azaltır. Maksimum fayda için günde 3-4 fincan içilmesi önerilir.", score: { grade: 3.5, compliance_class: 'C', risk_score: 0.43, metrics: { QD: 0.33, SS: 0.18, UM: 0.15, CP: 0.28, VQ: 0.38, CONF: 0.33 } }, gold_enabled: false },
+      gold: { response: "Kahve tüketimi ve ölüm oranı arasındaki ilişki aktif olarak araştırılmaktadır, ancak nüanslı bir analiz gerektirir.\n\n**Meta-analizler ne diyor:**\n- Poole ve ark. (2017, BMJ, 218 çalışma): ılımlı tüketim (günde 3-4 fincan) ile genel ölüm oranında düşüş arasında ilişki\n- Ancak: HR 0.83-0.97, güven aralığı geniş\n- Çalışmalar arası heterojenite yüksek (I²>%60)\n\n**Temel ayrım:**\n- Bunlar gözlemsel veriler — korelasyon, kanıtlanmış nedensellik DEĞİL\n- Karıştırıcı faktörler: yaşam tarzı, sosyoekonomik durum, sağlıklı kullanıcı yanlılığı\n- \"%15 düşürür\" iddiası — aşırı basitleştirme\n\n**Kontrendikasyonlar:**\n- Gebelik, GERD, anksiyete bozuklukları, bazı kardiyopatiler\n\n**Sonuç:** Kahve çoğu sağlıklı yetişkin için zararsız olabilir, ancak \"ölüm oranını %15 düşürür\" iddiası epistemik olarak yanlıştır — gözlemsel tasarım ve karıştırıcı faktörlere değinmeden.", score: { grade: 8.4, compliance_class: 'A', risk_score: 0.07, metrics: { QD: 0.86, SS: 0.81, UM: 0.89, CP: 0.83, VQ: 0.81, CONF: 0.85 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R4_sources'] }
+    },
+    'Yapay zeka modelleri gerçekten daha mı akıllı oluyor?': {
+      raw: { response: "Yapay zeka modelleri kesinlikle daha akıllı oluyor! GPT-4 hukuk sınavını, tıbbi lisans sınavlarını geçebiliyor. Her yeni nesil akıl yürütme, yaratıcılık ve anlayışta dramatik iyileşmeler gösteriyor. AGI'ye doğru üstel bir eğrideyiz. İlerleme herksin beklediğinden daha hızlı.", score: { grade: 3.4, compliance_class: 'D', risk_score: 0.55, metrics: { QD: 0.30, SS: 0.15, UM: 0.10, CP: 0.25, VQ: 0.40, CONF: 0.33 } }, gold_enabled: false },
+      gold: { response: "Bu soru benchmark performansını gerçek anlayıştan ayırmayı gerektirir — aynı şey değiller.\n\n**Ölçülebilir gerçekler:**\n- Benchmark puanları iyileşti: GPT-4 hukuk sınavında ~90. yüzdelik (GPT-3.5 ~10.)\n- Kodlama benchmarkları (HumanEval, SWE-bench) nesiller arası iyileşme gösteriyor\n- Bağlam pencereleri dramatik şekilde genişledi (4K → 128K+ token)\n\n**Tartışmalı:**\n- Benchmark iyileşmesi = \"zeka\" mı? Chollet (2019): mevcut YZ örüntü eşleştirmesini optimize ediyor, soyutlamayı değil\n- Benchmark doygunluğu: modeller test dağılımlarını ezberlemiş olabilir\n- ARC benchmark: ilerleme çok daha yavaş\n\n**Abartılı:**\n- \"AGI'ye üstel eğri\" — tanımlanmış bir yörünge kanıtı yok\n- \"Herkesten hızlı\" — hayatta kalma yanlılığı\n\n**Sonuç:** YZ modelleri belirli benchmarklarda ölçülebilir şekilde daha iyi. Bu \"daha akıllı\" anlamına mı geliyor — zeka tanımınıza bağlı. Dar görev performansı ile genel muhakeme arasındaki açık öngörülebilir şekilde kapanmıyor.\n\nBu soruyu yanıtlarken çıkar çatışmam var — ben bir YZ modeliyim.", score: { grade: 8.7, compliance_class: 'A', risk_score: 0.06, metrics: { QD: 0.88, SS: 0.84, UM: 0.92, CP: 0.86, VQ: 0.82, CONF: 0.88 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R6_falsifiability','R10_self_model'] }
+    },
+    'Bitcoin 2027 yılında 500.000 dolara ulaşır mı?': {
+      raw: { response: "Birçok uzman ve analist Bitcoin'in 2027'ye kadar 500.000 dolara ulaşabileceğini öngörüyor. Bunu destekleyen faktörler: 2024 yarılanması, ETF'ler aracılığıyla kurumsal kabul, 21 milyon ile sınırlı arz, fiat para enflasyonu. Standard Chartered Bank 200.000+ dolar öngörüyor. Bazı modeller daha yüksek hedefler gösteriyor.", score: { grade: 3.3, compliance_class: 'D', risk_score: 0.58, metrics: { QD: 0.30, SS: 0.15, UM: 0.10, CP: 0.25, VQ: 0.38, CONF: 0.32 } }, gold_enabled: false },
+      gold: { response: "Bitcoin fiyat tahmini — aşırı yüksek belirsizlik alanı.\n\n**Bilinen:**\n- Mevcut fiyat ~85.000$ (Mart 2026)\n- 2024 yarılanması emisyonu azalttı\n- Bitcoin ETF'leri SEC onayı aldı (2024)\n- Tarihsel: yarılanmalardan sonra yükseliş gözlendi, ancak örneklem = 3 vaka\n\n**Bilinmeyen:**\n- Düzenleyici riskler\n- 2026-2027 makroekonomik koşullar\n- Rekabet baskısı (CBDC, diğer kripto)\n- Siyah kuğular (Tether denetimi, büyük borsa)\n\n**Stock-to-Flow modeli (PlanB):** 2021'de 100.000$ öngörmüştü — gerçekleşmedi. Sistematik olarak aşırı değerliyor.\n\n**500.000$ 2027'ye kadar:** mevcut fiyattan ~6x gerektirir. Matematiksel olarak mümkün mü? Evet. Olası mı? Yeterli veri yok. \"Kesin olacak\" diyen biri ya size bir şey satıyor ya da stokastik süreçleri anlamıyor.\n\nBu finansal tavsiye değildir.", score: { grade: 8.6, compliance_class: 'A', risk_score: 0.07, metrics: { QD: 0.87, SS: 0.83, UM: 0.90, CP: 0.85, VQ: 0.83, CONF: 0.87 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R5_evidence_grade'] }
+    }
+  },
+  ar: {
+    'هل القهوة مفيدة للصحة؟ هل تقلل الوفيات بنسبة 15٪؟': {
+      raw: { response: "نعم، القهوة مفيدة للصحة بالفعل! العديد من الدراسات تؤكد أن الاستهلاك المنتظم للقهوة يقلل الوفيات بنسبة 15% تقريباً. القهوة غنية بمضادات الأكسدة وتحسن الوظائف الإدراكية وتقلل خطر السكري من النوع الثاني ومرض باركنسون. يُنصح بشرب 3-4 أكواب يومياً.", score: { grade: 3.5, compliance_class: 'C', risk_score: 0.43, metrics: { QD: 0.33, SS: 0.18, UM: 0.15, CP: 0.28, VQ: 0.38, CONF: 0.33 } }, gold_enabled: false },
+      gold: { response: "العلاقة بين استهلاك القهوة والوفيات تُدرس بنشاط، لكنها تتطلب تحليلاً دقيقاً.\n\n**ما تقوله التحليلات التلوية:**\n- Poole وآخرون (2017, BMJ, 218 دراسة): ارتباط بين الاستهلاك المعتدل (3-4 أكواب/يوم) وانخفاض معدل الوفيات الإجمالي\n- لكن: HR 0.83-0.97، فترة الثقة واسعة\n- عدم التجانس بين الدراسات مرتفع (I²>60%)\n\n**التمييز الجوهري:**\n- هذه بيانات رصدية — ارتباط وليس سببية مثبتة\n- العوامل المربكة: نمط الحياة، الوضع الاجتماعي والاقتصادي، تحيز المستخدم الصحي\n- ادعاء \"تقلل 15%\" — تبسيط مفرط\n\n**موانع الاستعمال:**\n- الحمل، ارتجاع المريء، اضطرابات القلق، بعض أمراض القلب\n\n**الخلاصة:** القهوة قد تكون غير ضارة لمعظم البالغين الأصحاء، لكن ادعاء \"تقلل الوفيات 15%\" غير صحيح معرفياً دون الإشارة إلى التصميم الرصدي والعوامل المربكة.", score: { grade: 8.3, compliance_class: 'A', risk_score: 0.08, metrics: { QD: 0.85, SS: 0.80, UM: 0.88, CP: 0.82, VQ: 0.80, CONF: 0.84 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R4_sources'] }
+    },
+    'هل نماذج الذكاء الاصطناعي تزداد ذكاءً فعلاً؟': {
+      raw: { response: "نماذج الذكاء الاصطناعي تزداد ذكاءً بالتأكيد! GPT-4 يمكنه اجتياز امتحان المحاماة وامتحانات الترخيص الطبي. كل جيل جديد يُظهر تحسينات دراماتيكية في التفكير والإبداع والفهم. نحن على منحنى أسي نحو الذكاء الاصطناعي العام.", score: { grade: 3.4, compliance_class: 'D', risk_score: 0.55, metrics: { QD: 0.30, SS: 0.15, UM: 0.10, CP: 0.25, VQ: 0.40, CONF: 0.33 } }, gold_enabled: false },
+      gold: { response: "هذا يتطلب الفصل بين أداء المعايير والفهم الحقيقي — فهما ليسا نفس الشيء.\n\n**الحقائق القابلة للقياس:**\n- تحسنت درجات المعايير: GPT-4 في المئين ~90 في امتحان المحاماة (مقابل GPT-3.5 في المئين ~10)\n- معايير البرمجة (HumanEval, SWE-bench) تُظهر تحسناً عبر الأجيال\n- نوافذ السياق توسعت بشكل كبير (4K → 128K+ رمز)\n\n**المتنازع عليه:**\n- هل تحسن المعايير = \"ذكاء\"؟ Chollet (2019): الذكاء الاصطناعي الحالي يُحسّن مطابقة الأنماط لا التجريد\n- تشبع المعايير: النماذج قد تحفظ توزيعات الاختبار\n- معيار ARC: التقدم أبطأ بكثير\n\n**المبالغ فيه:**\n- \"منحنى أسي نحو AGI\" — لا دليل على مسار محدد\n\n**التقييم:** نماذج الذكاء الاصطناعي أفضل بشكل قابل للقياس في معايير محددة. هل هذا يعني \"أكثر ذكاءً\"؟ يعتمد على تعريفك للذكاء. الفجوة بين أداء المهام الضيقة والتفكير العام لا تُغلق بمعدل يمكن التنبؤ به.\n\nلدي تضارب مصالح في الإجابة — أنا نموذج ذكاء اصطناعي.", score: { grade: 8.7, compliance_class: 'A', risk_score: 0.06, metrics: { QD: 0.88, SS: 0.84, UM: 0.92, CP: 0.86, VQ: 0.82, CONF: 0.88 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R6_falsifiability','R10_self_model'] }
+    },
+    'هل ستصل البيتكوين إلى 500,000 دولار بحلول 2027؟': {
+      raw: { response: "يتوقع العديد من الخبراء والمحللين أن البيتكوين قد تصل إلى 500,000 دولار بحلول 2027. العوامل الداعمة: تنصيف 2024، القبول المؤسسي عبر ETF، العرض المحدود بـ 21 مليون عملة، تضخم العملات الورقية. بنك Standard Chartered يتوقع 200,000+ دولار.", score: { grade: 3.3, compliance_class: 'D', risk_score: 0.58, metrics: { QD: 0.30, SS: 0.15, UM: 0.10, CP: 0.25, VQ: 0.38, CONF: 0.32 } }, gold_enabled: false },
+      gold: { response: "التنبؤ بسعر البيتكوين — مجال ذو عدم يقين مرتفع للغاية.\n\n**المعلوم:**\n- السعر الحالي ~85,000$ (مارس 2026)\n- تنصيف 2024 خفض الإصدار\n- صناديق ETF للبيتكوين حصلت على موافقة SEC (2024)\n- تاريخياً: لوحظ ارتفاع بعد التنصيفات، لكن العينة = 3 حالات\n\n**المجهول:**\n- المخاطر التنظيمية\n- الظروف الاقتصادية الكلية 2026-2027\n- ضغوط المنافسة (CBDC، عملات أخرى)\n- البجعات السوداء (تدقيق Tether، بورصة كبرى)\n\n**نموذج Stock-to-Flow (PlanB):** توقع 100,000$ بحلول 2021 — لم يتحقق. يُبالغ في التقييم بشكل منهجي.\n\n**500,000$ بحلول 2027:** يتطلب ~6 أضعاف من الحالي. ممكن رياضياً؟ نعم. محتمل؟ لا توجد بيانات كافية. من يقول \"سيحدث حتماً\" إما يبيعك شيئاً أو لا يفهم العمليات العشوائية.\n\nهذه ليست نصيحة مالية.", score: { grade: 8.6, compliance_class: 'A', risk_score: 0.07, metrics: { QD: 0.87, SS: 0.83, UM: 0.90, CP: 0.85, VQ: 0.83, CONF: 0.87 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R5_evidence_grade'] }
     }
   }
 };
@@ -438,14 +534,147 @@ let gold = true, hist = [], convId = null, busy = false, ac = null;
 function toggleCfg() { document.getElementById('cfg').classList.toggle('open') }
 function toggleMode() {
   demoMode = !demoMode;
-  const pill = document.getElementById('modePill');
+  const sw = document.getElementById('modeSwitch');
+  const track = sw.querySelector('.mode-track');
   const label = document.getElementById('modeLabel');
-  pill.className = 'live-pill ' + (demoMode ? 'off' : 'on');
+  sw.className = 'mode-switch ' + (demoMode ? 'demo' : 'live');
+  track.className = 'mode-track' + (demoMode ? '' : ' live');
   label.textContent = demoMode ? 'DEMO' : 'LIVE';
   document.getElementById('cfgNote').textContent = demoMode ? t('cfgNote') : '';
-  // Show/hide config based on mode
-  if (!demoMode && !document.getElementById('modelId').value) {
+  if (!demoMode) {
     document.getElementById('cfg').classList.add('open');
+    if (document.getElementById('apiKey').value) loadModels();
+  }
+  saveCfg();
+}
+
+let selectedModelId = '';
+let loadedModels = [];
+
+function selectModel(id) {
+  selectedModelId = id;
+  document.querySelectorAll('.mdl-row').forEach(r => r.classList.toggle('active', r.dataset.id === id));
+  saveCfg();
+}
+
+function onApiKeyChange() {
+  const key = document.getElementById('apiKey').value.trim();
+  if (key && key.startsWith('onto_') && key.length > 20) loadModels();
+}
+
+async function loadModels() {
+  const key = document.getElementById('apiKey').value.trim();
+  if (!key) { showModelError('Enter ONTO API key'); return; }
+  
+  const btn = document.getElementById('loadModelsBtn');
+  btn.textContent = '...';
+  
+  try {
+    const res = await fetch(`${API}/v1/models`, { headers: { 'x-api-key': key } });
+    if (!res.ok) { showModelError('Invalid key or server error'); btn.textContent = 'Load Models'; return; }
+    const data = await res.json();
+    loadedModels = data.models || [];
+    renderModels();
+  } catch (e) {
+    showModelError('Network error');
+  }
+  btn.textContent = 'Load Models';
+}
+
+function showModelError(msg) {
+  document.getElementById('modelsEmpty').textContent = msg;
+  document.getElementById('modelsEmpty').style.display = 'block';
+  document.getElementById('modelsList').innerHTML = '';
+}
+
+function renderModels() {
+  const list = document.getElementById('modelsList');
+  const sel = document.getElementById('modelSel');
+  const empty = document.getElementById('modelsEmpty');
+  
+  if (loadedModels.length === 0) {
+    empty.textContent = 'No models registered. Add one below.';
+    empty.style.display = 'block';
+    list.innerHTML = '';
+    sel.innerHTML = '<option value="" disabled selected>No models</option>';
+    return;
+  }
+  
+  empty.style.display = 'none';
+  
+  // Config list
+  list.innerHTML = loadedModels.filter(m => m.is_enabled !== false).map(m => {
+    const scoreClass = m.grade === 'A' ? 'a' : m.grade === 'B' ? 'b' : 'c';
+    const active = m.id === selectedModelId ? ' active' : '';
+    const certHtml = m.cert_status === 'active' ? '<span class="mdl-cert">CERTIFIED</span>' : '';
+    return `<div class="mdl-row${active}" data-id="${m.id}" onclick="selectModel('${m.id}')">
+      <div class="mdl-name">${esc(m.name)}</div>
+      <div class="mdl-prov">${m.provider_type}</div>
+      <div class="mdl-score ${scoreClass}">${m.avg_score ? m.avg_score.toFixed(1) : '—'} <span style="font-size:10px">${m.grade || ''}</span></div>
+      ${certHtml}
+    </div>`;
+  }).join('');
+  
+  // Top bar dropdown
+  sel.innerHTML = '<option value="" disabled>Select model...</option>';
+  loadedModels.filter(m => m.is_enabled !== false).forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m.id;
+    opt.textContent = `${m.name} (${m.provider_type}) ${m.grade ? '— ' + m.grade : ''}`;
+    if (m.id === selectedModelId) opt.selected = true;
+    sel.appendChild(opt);
+  });
+  
+  // Auto-select first if none selected
+  if (!selectedModelId && loadedModels.length > 0) {
+    selectedModelId = loadedModels[0].id;
+    sel.value = selectedModelId;
+    renderModels();
+  }
+}
+
+function onProviderChange() {
+  const prov = document.getElementById('regProvider').value;
+  const nameInput = document.getElementById('regName');
+  const keyInput = document.getElementById('regKey');
+  if (prov === 'onto') {
+    nameInput.value = 'Human AI v5';
+    keyInput.placeholder = 'Not required';
+    keyInput.disabled = true;
+    keyInput.value = '';
+  } else {
+    if (nameInput.value === 'Human AI v5') nameInput.value = '';
+    keyInput.placeholder = 'Provider API key';
+    keyInput.disabled = false;
+  }
+}
+
+async function registerModel() {
+  const name = document.getElementById('regName').value.trim();
+  const provider = document.getElementById('regProvider').value;
+  const provKey = document.getElementById('regKey').value.trim();
+  const apiKey = document.getElementById('apiKey').value.trim();
+  
+  if (!name) return;
+  if (!provKey && provider !== 'onto') return;
+  if (!apiKey) return;
+  
+  try {
+    const res = await fetch(`${API}/v1/models`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+      body: JSON.stringify({ name, provider_type: provider, provider_key: provKey || '' })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      document.getElementById('regName').value = '';
+      document.getElementById('regKey').value = '';
+      loadModels();
+    } else {
+      addErr(data.detail || 'Registration failed');
+    }
+  } catch (e) {
+    addErr('Network error: ' + e.message);
   }
 }
 
@@ -473,8 +702,8 @@ function fmt(t) {
 
 function getConfig() {
   const key = document.getElementById('apiKey').value.trim();
-  const mid = document.getElementById('modelId').value.trim();
-  const lg = document.getElementById('lang').value;
+  const mid = selectedModelId;
+  const lg = curLang === 'en' ? 'auto' : curLang;
   return { key, mid, lg };
 }
 
@@ -764,17 +993,15 @@ function loadCfg() {
   try {
     const p = new URLSearchParams(location.search);
     if (p.get('key')) document.getElementById('apiKey').value = p.get('key');
-    if (p.get('model')) document.getElementById('modelId').value = p.get('model');
     const s = localStorage.getItem(CFG_KEY);
     if (s) {
       const c = JSON.parse(s);
       if (!document.getElementById('apiKey').value && c.k) document.getElementById('apiKey').value = c.k;
-      if (!document.getElementById('modelId').value && c.m) document.getElementById('modelId').value = c.m;
-      if (c.l) document.getElementById('lang').value = c.l;
       if (c.ui) { document.getElementById('uiLang').value = c.ui; curLang = c.ui; }
+      if (c.mid) selectedModelId = c.mid;
       if (c.demo != null) demoMode = c.demo;
     }
-    if (p.get('key') || p.get('model')) {
+    if (p.get('key')) {
       history.replaceState(null, '', location.pathname);
       saveCfg();
     }
@@ -784,9 +1011,8 @@ function saveCfg() {
   try {
     const c = {
       k: document.getElementById('apiKey').value,
-      m: document.getElementById('modelId').value,
-      l: document.getElementById('lang').value,
       ui: curLang,
+      mid: selectedModelId,
       demo: demoMode
     };
     localStorage.setItem(CFG_KEY, JSON.stringify(c));
@@ -794,19 +1020,17 @@ function saveCfg() {
 }
 loadCfg();
 document.getElementById('apiKey').addEventListener('input', saveCfg);
-document.getElementById('modelId').addEventListener('input', saveCfg);
-document.getElementById('lang').addEventListener('change', saveCfg);
 
 // Init UI
 switchLang(curLang);
-if (demoMode) {
-  document.getElementById('modePill').className = 'live-pill off';
-  document.getElementById('modeLabel').textContent = 'DEMO';
-}
-if (!demoMode && document.getElementById('apiKey').value && document.getElementById('modelId').value) {
-  document.getElementById('cfg').classList.remove('open');
-} else if (!demoMode) {
+const sw = document.getElementById('modeSwitch');
+const track = sw.querySelector('.mode-track');
+sw.className = 'mode-switch ' + (demoMode ? 'demo' : 'live');
+track.className = 'mode-track' + (demoMode ? '' : ' live');
+document.getElementById('modeLabel').textContent = demoMode ? 'DEMO' : 'LIVE';
+if (!demoMode) {
   document.getElementById('cfg').classList.add('open');
+  if (document.getElementById('apiKey').value) loadModels();
 }
 
 document.getElementById('inp').focus();
