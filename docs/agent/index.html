@@ -46,8 +46,6 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font
 .lang-sel{font-family:var(--mono);font-size:11px;background:var(--bg-c);border:1px solid var(--border);color:var(--text-s);padding:4px 8px;border-radius:4px;cursor:pointer;outline:none;color-scheme:dark}
 
 /* Provider selector */
-/* Provider key wrap */
-#provKeyWrap{transition:display .2s}
 
 /* Mode toggle switch */
 .mode-switch{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
@@ -227,10 +225,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font
 
 <div class="cfg" id="cfg">
   <div class="cfg-f"><label>ONTO API KEY</label><input type="password" id="apiKey" placeholder="onto_..."></div>
-  <div class="cfg-f"><label>PROVIDER</label>
-    <select id="cfgProvider" onchange="onProvChange()"><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="xai">xAI (Grok)</option><option value="deepseek">DeepSeek</option><option value="mistral">Mistral</option><option value="onto">ONTO Standard (Human AI)</option></select>
-  </div>
-  <div class="cfg-f" id="provKeyWrap"><label>PROVIDER API KEY</label><input type="password" id="providerKey" placeholder="sk-... or xai-..."></div>
+  <div class="cfg-f"><label>MODEL ID</label><input type="text" id="modelId" placeholder="UUID from Portal → Proxy models"></div>
   <div class="cfg-note" id="cfgNote">DEMO mode: no keys required</div>
 </div>
 
@@ -496,10 +491,6 @@ function toggleMode() {
   saveCfg();
 }
 
-function onProvChange() {
-  document.getElementById('provKeyWrap').style.display = document.getElementById('cfgProvider').value === 'onto' ? 'none' : 'flex';
-}
-
 function newChat() {
   hist = []; convId = null;
   if (ac) { ac.abort(); ac = null }
@@ -524,10 +515,9 @@ function fmt(t) {
 
 function getConfig() {
   const key = document.getElementById('apiKey').value.trim();
-  const prov = document.getElementById('cfgProvider').value;
-  const provKey = document.getElementById('providerKey').value.trim();
+  const mid = document.getElementById('modelId').value.trim();
   const lg = curLang === 'en' ? 'auto' : curLang;
-  return { key, prov, provKey, lg };
+  return { key, mid, lg };
 }
 
 function setBusy(b) {
@@ -565,9 +555,8 @@ function metricRows(m, cls) {
 
 // ── API CALL ──
 async function apiCall(msg, goldOn, hdrs, signal) {
-  const { prov, provKey, lg } = getConfig();
-  const body = { message: msg, provider: prov, history: [], language: lg, depth: 'auto', gold_enabled: goldOn };
-  if (provKey) body.provider_key = provKey;
+  const { mid, lg } = getConfig();
+  const body = { message: msg, model_id: mid, history: [], language: lg, depth: 'auto', gold_enabled: goldOn };
   const r = await fetch(`${API}/v1/agent/chat`, { method: 'POST', headers: hdrs, body: JSON.stringify(body), signal });
   if (!r.ok) { let e = `Error ${r.status}`; try { e = (await r.json()).detail || e } catch {} throw new Error(e) }
   return r.json();
@@ -596,8 +585,8 @@ async function send() {
     return;
   }
 
-  const { key, prov, provKey } = getConfig();
-  if (!key && prov !== 'onto') { addErr(t('modelReq')); return }
+  const { key, mid } = getConfig();
+  if (!mid) { addErr(t('modelReq')); return }
   document.getElementById('inp').value = ''; autoH(document.getElementById('inp'));
   rmWelcome();
 
@@ -616,8 +605,7 @@ async function send() {
 
   try {
     const { lg } = getConfig();
-    const body = { message: msg, provider: prov, history: hist.slice(-20), language: lg, depth: 'auto', gold_enabled: gold };
-    if (provKey) body.provider_key = provKey;
+    const body = { message: msg, model_id: mid, history: hist.slice(-20), language: lg, depth: 'auto', gold_enabled: gold };
     if (convId) body.conversation_id = convId;
     const r = await fetch(`${API}/v1/agent/chat`, { method: 'POST', headers: hdrs, body: JSON.stringify(body), signal: ac.signal });
     ld.remove();
@@ -706,8 +694,8 @@ async function compare() {
   }
 
   // LIVE mode
-  const { key, prov, provKey } = getConfig();
-  if (!key && prov !== 'onto') { addErr(t('modelReq')); return }
+  const { key, mid } = getConfig();
+  if (!mid) { addErr(t('modelReq')); return }
 
   setBusy(true);
   ac = new AbortController();
@@ -823,8 +811,7 @@ function loadCfg() {
       const c = JSON.parse(s);
       if (!document.getElementById('apiKey').value && c.k) document.getElementById('apiKey').value = c.k;
       if (c.ui) { document.getElementById('uiLang').value = c.ui; curLang = c.ui; }
-      if (c.prov) document.getElementById('cfgProvider').value = c.prov;
-      if (c.pk) document.getElementById('providerKey').value = c.pk;
+      if (c.mid) document.getElementById('modelId').value = c.mid;
       if (c.demo != null) demoMode = c.demo;
     }
     if (p.get('key')) {
@@ -838,8 +825,7 @@ function saveCfg() {
     const c = {
       k: document.getElementById('apiKey').value,
       ui: curLang,
-      prov: document.getElementById('cfgProvider').value,
-      pk: document.getElementById('providerKey').value,
+      mid: document.getElementById('modelId').value,
       demo: demoMode
     };
     localStorage.setItem(CFG_KEY, JSON.stringify(c));
@@ -847,8 +833,7 @@ function saveCfg() {
 }
 loadCfg();
 document.getElementById('apiKey').addEventListener('input', saveCfg);
-document.getElementById('providerKey').addEventListener('input', saveCfg);
-document.getElementById('cfgProvider').addEventListener('change', saveCfg);
+document.getElementById('modelId').addEventListener('input', saveCfg);
 
 // Init UI
 switchLang(curLang);
@@ -861,7 +846,6 @@ document.getElementById('cfgNote').textContent = demoMode ? t('cfgNote') : '';
 if (!demoMode) {
   document.getElementById('cfg').classList.add('open');
 }
-onProvChange();
 
 document.getElementById('inp').focus();
 </script>
