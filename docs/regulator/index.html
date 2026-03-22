@@ -132,6 +132,11 @@ tbody tr.rsub td{padding:10px 16px 10px 56px;font-size:13px;border-bottom:1px da
 
 /* EMPTY */
 .empty{text-align:center;padding:48px 20px;}
+
+/* DEMO badge */
+.demo-tag{font-family:var(--mono);font-size:9px;font-weight:800;color:var(--amber);background:var(--stale-bg);border:1px dashed var(--amber);border-radius:4px;padding:2px 6px;letter-spacing:1px;margin-left:8px;vertical-align:middle;}
+.btn-demo{border-color:var(--amber);color:var(--amber);}
+.btn-demo.active{background:var(--stale-bg);color:var(--amber);border-color:var(--amber);}
 .empty h3{font-family:var(--mono);font-size:15px;margin-bottom:6px;}
 .empty p{font-size:13px;color:var(--text-s);}
 
@@ -195,6 +200,7 @@ tbody tr.rsub td{padding:10px 16px 10px 56px;font-size:13px;border-bottom:1px da
   <div class="header-right">
     <span class="live-dot"></span><span class="live-label">MONITORING</span>
     <button class="btn" id="thBtn" onclick="tog()">🌙 Night</button>
+    <button class="btn btn-demo" id="demoBtn" onclick="togDemo()">Demo: OFF</button>
     <button class="btn" onclick="sessionStorage.removeItem('rt');location.reload()">Logout</button>
   </div>
 </div>
@@ -233,12 +239,64 @@ tbody tr.rsub td{padding:10px 16px 10px 56px;font-size:13px;border-bottom:1px da
 <script>
 const API='https://api.ontostandard.org',gk=()=>sessionStorage.getItem('rt')||'';
 
+// ── DEMO DATA ──
+const DEMO_PROVIDERS=[
+  {name:"UzTelecom AI",models:3,models_detail:[
+    {name:"UzGPT-7B",status:"online",score:7.8,min_score:5.2,grade:"B",last_heartbeat:new Date(Date.now()-60000).toISOString()},
+    {name:"UzGPT-13B",status:"online",score:8.7,min_score:7.1,grade:"A",last_heartbeat:new Date(Date.now()-45000).toISOString()},
+    {name:"UzChat-v1",status:"stale",score:4.3,min_score:3.1,grade:"C",last_heartbeat:new Date(Date.now()-864000000).toISOString()}
+  ],status:"online",grade:"B",score:6.9,min_score:3.1,min_grade:"D",requests_today:1247,requests_total:34500,last_heartbeat:new Date(Date.now()-45000).toISOString(),_demo:true},
+  {name:"Samarkand Digital",models:2,models_detail:[
+    {name:"SilkRoad-LLM",status:"online",score:9.1,min_score:8.4,grade:"A",last_heartbeat:new Date(Date.now()-30000).toISOString()},
+    {name:"SilkRoad-Mini",status:"online",score:8.6,min_score:7.9,grade:"A",last_heartbeat:new Date(Date.now()-90000).toISOString()}
+  ],status:"online",grade:"A",score:8.9,min_score:7.9,min_grade:"B",requests_today:892,requests_total:21300,last_heartbeat:new Date(Date.now()-30000).toISOString(),_demo:true},
+  {name:"Tashkent AI Lab",models:1,models_detail:[
+    {name:"TAL-GPT-v2",status:"offline",score:5.4,min_score:2.8,grade:"C",last_heartbeat:new Date(Date.now()-7200000).toISOString()}
+  ],status:"offline",grade:"C",score:5.4,min_score:2.8,min_grade:"D",requests_today:0,requests_total:8700,last_heartbeat:new Date(Date.now()-7200000).toISOString(),_demo:true},
+  {name:"Navoiy Cloud",models:2,models_detail:[
+    {name:"NavoiyLLM-7B",status:"online",score:9.4,min_score:9.0,grade:"A",last_heartbeat:new Date(Date.now()-20000).toISOString()},
+    {name:"NavoiyAssist",status:"online",score:9.2,min_score:8.8,grade:"A",last_heartbeat:new Date(Date.now()-55000).toISOString()}
+  ],status:"online",grade:"A",score:9.3,min_score:8.8,min_grade:"A",requests_today:2340,requests_total:67800,last_heartbeat:new Date(Date.now()-20000).toISOString(),_demo:true},
+  {name:"Fergana Systems",models:1,models_detail:[
+    {name:"FerGPT-beta",status:"offline",score:3.1,min_score:1.9,grade:"D",last_heartbeat:new Date(Date.now()-172800000).toISOString()}
+  ],status:"offline",grade:"D",score:3.1,min_score:1.9,min_grade:"F",requests_today:0,requests_total:450,last_heartbeat:new Date(Date.now()-172800000).toISOString(),_demo:true}
+];
+
+function isDemoOn(){return localStorage.getItem('demo_reg')==='1';}
+function togDemo(){
+  const on=!isDemoOn();
+  localStorage.setItem('demo_reg',on?'1':'0');
+  updDemoBtn();
+  load();
+}
+function updDemoBtn(){
+  const b=document.getElementById('demoBtn');
+  if(!b)return;
+  const on=isDemoOn();
+  b.textContent=on?'Demo: ON':'Demo: OFF';
+  b.classList.toggle('active',on);
+}
+
+function mergeDemo(data){
+  if(!isDemoOn())return data;
+  const dp=JSON.parse(JSON.stringify(DEMO_PROVIDERS));
+  const allP=[...data.providers,...dp];
+  // Recalc summary
+  let on=0,off=0,rt=0,gd={A:0,B:0,C:0,D:0,F:0};
+  allP.forEach(p=>{
+    if(p.status==='online')on++;else off++;
+    rt+=p.requests_today;
+    gd[p.grade]=(gd[p.grade]||0)+1;
+  });
+  return {summary:{total_providers:allP.length,online:on,offline:off,requests_today:rt,grade_distribution:gd},providers:allP};
+}
+
 function tog(){const t=document.body.dataset.theme==='dark'?'light':'dark';document.body.dataset.theme=t;localStorage.setItem('rth',t);document.getElementById('thBtn').textContent=t==='dark'?'🌙 Night':'☀️ Day';}
 (function(){const s=localStorage.getItem('rth');if(s){document.body.dataset.theme=s;}setTimeout(()=>{const b=document.getElementById('thBtn');if(b)b.textContent=document.body.dataset.theme==='dark'?'🌙 Night':'☀️ Day';},0);})();
 
-async function auth(){const t=document.getElementById('tokenInput').value.trim();if(!t)return;try{const r=await fetch(`${API}/v1/regulator/dashboard`,{headers:{'Authorization':`Bearer ${t}`}});if(r.ok){sessionStorage.setItem('rt',t);document.getElementById('authScreen').style.display='none';document.getElementById('dash').style.display='block';render(await r.json());setInterval(load,30000);}else{document.getElementById('authError').style.display='block';}}catch(e){document.getElementById('authError').textContent='Connection error';document.getElementById('authError').style.display='block';}}
+async function auth(){const t=document.getElementById('tokenInput').value.trim();if(!t)return;try{const r=await fetch(`${API}/v1/regulator/dashboard`,{headers:{'Authorization':`Bearer ${t}`}});if(r.ok){sessionStorage.setItem('rt',t);document.getElementById('authScreen').style.display='none';document.getElementById('dash').style.display='block';updDemoBtn();render(mergeDemo(await r.json()));setInterval(load,30000);}else{document.getElementById('authError').style.display='block';}}catch(e){document.getElementById('authError').textContent='Connection error';document.getElementById('authError').style.display='block';}}
 
-(async function(){const t=gk();if(!t)return;try{const r=await fetch(`${API}/v1/regulator/dashboard`,{headers:{'Authorization':`Bearer ${t}`}});if(r.ok){document.getElementById('authScreen').style.display='none';document.getElementById('dash').style.display='block';render(await r.json());setInterval(load,30000);}else sessionStorage.removeItem('rt');}catch(e){sessionStorage.removeItem('rt');}})();
+(async function(){const t=gk();if(!t)return;try{const r=await fetch(`${API}/v1/regulator/dashboard`,{headers:{'Authorization':`Bearer ${t}`}});if(r.ok){document.getElementById('authScreen').style.display='none';document.getElementById('dash').style.display='block';updDemoBtn();render(mergeDemo(await r.json()));setInterval(load,30000);}else sessionStorage.removeItem('rt');}catch(e){sessionStorage.removeItem('rt');}})();
 
 function stB(s){const c=s==='online'?'st-on':s==='stale'?'st-stale':'st-off';return `<span class="st ${c}"><span class="sd"></span>${s.toUpperCase()}</span>`;}
 function scB(v,sm){const p=Math.min(v*10,100),c=v>=8.5?'#22c55e':v>=7?'#3b82f6':v>=5?'#f59e0b':'#ef4444';return `<div class="sbar"><span class="sval${sm?' sval-sm':''}" style="color:${c}">${v.toFixed(1)}</span><div class="strk"><div class="sfil" style="width:${p}%;background:${c}"></div></div></div>`;}
@@ -265,7 +323,7 @@ function render(data){
     h+=`<tr class="rmain" onclick="tsub(${i})" id="r${i}">
       <td><span class="chev" id="ch${i}">+</span></td>
       <td>${stB(p.status)}</td>
-      <td style="font-weight:800;font-size:16px">${p.name}</td>
+      <td style="font-weight:800;font-size:16px">${p.name}${p._demo?'<span class="demo-tag">DEMO</span>':''}</td>
       <td style="font-family:var(--mono);font-weight:700">${p.models}</td>
       <td><span class="gb gb-lg gb-${p.grade||'F'}">${p.grade}</span></td>
       <td>${lowB(p.min_score,p.min_grade)}</td>
@@ -297,7 +355,7 @@ function render(data){
       mdh+=`<div class="mcard-model"><span>${stB(m.status)} ${m.name}</span><span class="sval sval-sm" style="color:${mc2}">${m.score.toFixed(1)}</span></div>`;
     });
     mh+=`<div class="mcard">
-      <div class="mcard-top"><span class="mcard-name">${p.name}</span>${stB(p.status)}</div>
+      <div class="mcard-top"><span class="mcard-name">${p.name}${p._demo?'<span class="demo-tag">DEMO</span>':''}</span>${stB(p.status)}</div>
       <div class="mcard-row"><span class="card-label" style="margin:0">Grade</span><span class="gb gb-lg gb-${p.grade||'F'}">${p.grade}</span></div>
       <div class="mcard-row"><span class="mcard-label">Current</span><span class="mcard-val">${scB(p.score)}</span></div>
       <div class="mcard-row"><span class="mcard-label">Lowest</span><span class="mcard-val">${lowB(p.min_score,p.min_grade)}</span></div>
@@ -319,7 +377,7 @@ function tsub(i){
   document.querySelectorAll('.s'+i).forEach(s=>s.style.display=open?'table-row':'none');
 }
 
-async function load(){try{const r=await fetch(`${API}/v1/regulator/dashboard`,{headers:{'Authorization':`Bearer ${gk()}`}});if(r.status===403){sessionStorage.removeItem('rt');location.reload();return;}if(r.ok)render(await r.json());}catch(e){console.error(e);}}
+async function load(){try{const r=await fetch(`${API}/v1/regulator/dashboard`,{headers:{'Authorization':`Bearer ${gk()}`}});if(r.status===403){sessionStorage.removeItem('rt');location.reload();return;}if(r.ok)render(mergeDemo(await r.json()));}catch(e){console.error(e);}}
 </script>
 </body>
 </html>
