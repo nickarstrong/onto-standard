@@ -190,8 +190,9 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <h1 class="auth-title">Welcome back</h1>
 <p class="auth-subtitle">Sign in to your account</p>
 <div class="af-group"><label class="af-label">Email</label><input type="email" class="af-input" id="af-login-email" placeholder="you@company.com"></div>
-<div class="af-group"><label class="af-label">Password</label><div class="af-pw"><input type="password" class="af-input" id="af-login-pass" placeholder="••••••••"><button type="button" class="af-pw-toggle" onclick="afTogglePw('af-login-pass',this)">👁</button></div></div>
+<div class="af-group"><label class="af-label">Password</label><div class="af-pw"><input type="password" class="af-input" id="af-login-pass" placeholder="••••••••"><button type="button" class="af-pw-toggle" onclick="afTogglePw('af-login-pass',this)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
 <button class="af-btn" id="af-login-btn" onclick="afLogin(this)">Sign In</button>
+<p style="text-align:right;margin-top:8px"><a onclick="afShow('forgot')" style="color:#8b95a5;font-size:13px;cursor:pointer">Forgot password?</a></p>
 <p class="af-switch">Don't have an account? <a onclick="afShow('register')">Create one</a></p>
 </div>
 
@@ -201,7 +202,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <p class="auth-subtitle">Create account</p>
 <div class="af-group"><label class="af-label">Full Name</label><input type="text" class="af-input" id="af-reg-name" placeholder="John Doe"></div>
 <div class="af-group"><label class="af-label">Email</label><input type="email" class="af-input" id="af-reg-email" placeholder="you@company.com"></div>
-<div class="af-group"><label class="af-label">Password</label><div class="af-pw"><input type="password" class="af-input" id="af-reg-pass" placeholder="Min 8 characters"><button type="button" class="af-pw-toggle" onclick="afTogglePw('af-reg-pass',this)">👁</button></div></div>
+<div class="af-group"><label class="af-label">Password</label><div class="af-pw"><input type="password" class="af-input" id="af-reg-pass" placeholder="Min 8 characters"><button type="button" class="af-pw-toggle" onclick="afTogglePw('af-reg-pass',this)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
 <div class="af-terms">
 <h3>ONTO Gold Asymmetric AI License v5.1</h3>
 <table><tr><th>Use</th><th>Status</th></tr><tr><td>Read, study, cite, research, evaluate</td><td>✅ Free</td></tr><tr><td>Deploy, integrate, commercialize, RAG</td><td>❌ Requires license</td></tr></table>
@@ -243,6 +244,24 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <h1 class="auth-title">Email verified!</h1>
 <p class="auth-subtitle">Your account is ready. You can now sign in.</p>
 <button class="af-btn" style="margin-top:24px" onclick="afShow('login')">Sign In</button>
+</div>
+
+<!-- FORGOT PASSWORD -->
+<div id="af-forgot" class="hidden">
+<h1 class="auth-title">Reset password</h1>
+<p class="auth-subtitle">Enter your email and we'll send a reset link</p>
+<div class="af-group"><label class="af-label">Email</label><input type="email" class="af-input" id="af-forgot-email" placeholder="you@company.com"></div>
+<button class="af-btn" id="af-forgot-btn" onclick="afForgotPw(this)">Send Reset Link</button>
+<p class="af-switch" style="margin-top:16px"><a onclick="afShow('login')">Back to sign in</a></p>
+</div>
+
+<!-- RESET PASSWORD (from email link) -->
+<div id="af-reset" class="hidden">
+<h1 class="auth-title">New password</h1>
+<p class="auth-subtitle">Enter your new password</p>
+<div class="af-group"><label class="af-label">New Password</label><div class="af-pw"><input type="password" class="af-input" id="af-reset-pass" placeholder="Min 8 characters"><button type="button" class="af-pw-toggle" onclick="afTogglePw('af-reset-pass',this)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
+<button class="af-btn" onclick="afResetPw(this)">Reset Password</button>
+<p class="af-switch" style="margin-top:16px"><a onclick="afShow('login')">Back to sign in</a></p>
 </div>
 
 </div>
@@ -1072,16 +1091,42 @@ let afPendingEmail='';
 
 function afToast(msg,type='info'){const c=document.getElementById('doc-toast'),t=document.createElement('div');t.className='dt '+type;t.textContent=msg;c.appendChild(t);setTimeout(()=>t.remove(),3000)}
 function afSetLoad(btn,on){if(on){btn.classList.add('loading');btn.disabled=true}else{btn.classList.remove('loading');btn.disabled=false}}
-function afTogglePw(id,btn){const i=document.getElementById(id);if(i.type==='password'){i.type='text';btn.textContent='🙈'}else{i.type='password';btn.textContent='👁'}}
+function afTogglePw(id,btn){const i=document.getElementById(id);if(i.type==='password'){i.type='text';btn.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'}else{i.type='password';btn.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'}}
+
+async function afForgotPw(btn){
+const email=document.getElementById('af-forgot-email').value.trim();
+if(!email){afToast('Enter your email','error');return}
+btn.disabled=true;btn.textContent='Sending...';
+try{const r=await fetch(AF_API+'/v1/auth/forgot-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
+const d=await r.json();
+if(r.ok){afToast('Reset link sent to your email','success');afShow('login')}
+else{afToast(d.detail||'Failed to send','error')}}
+catch(e){afToast('Network error','error')}
+btn.disabled=false;btn.textContent='Send Reset Link'}
+
+async function afResetPw(btn){
+const pw=document.getElementById('af-reset-pass').value;
+if(!pw||pw.length<8){afToast('Password must be at least 8 characters','error');return}
+const params=new URLSearchParams(window.location.search);
+const token=params.get('reset_token');
+if(!token){afToast('Invalid reset link','error');return}
+btn.disabled=true;btn.textContent='Resetting...';
+try{const r=await fetch(AF_API+'/v1/auth/reset-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token,new_password:pw})});
+const d=await r.json();
+if(r.ok){afToast('Password reset. Sign in with your new password.','success');window.history.replaceState({},'',window.location.pathname);afShow('login')}
+else{afToast(d.detail||'Reset failed','error')}}
+catch(e){afToast('Network error','error')}
+btn.disabled=false;btn.textContent='Reset Password'}
 
 function openAuth(mode){document.getElementById('auth-overlay').classList.add('active');afShow(mode||'login');closeSB()}
 function closeAuth(){document.getElementById('auth-overlay').classList.remove('active')}
 
 function afShow(mode){
-const panels=['af-login','af-register','af-verify','af-success'];
+const panels=['af-login','af-register','af-verify','af-success','af-forgot','af-reset'];
 panels.forEach(p=>{const el=document.getElementById(p);if(el)el.classList.add('hidden')});
 const target=document.getElementById('af-'+mode);
 if(target)target.classList.remove('hidden');
+if(mode==='forgot'){const le=document.getElementById('af-login-email').value;if(le)document.getElementById('af-forgot-email').value=le}
 }
 
 document.getElementById('af-terms').addEventListener('change',function(){document.getElementById('af-reg-btn').disabled=!this.checked});
@@ -1193,6 +1238,8 @@ const t=localStorage.getItem('onto_token'),u=localStorage.getItem('onto_user');
 const a=document.getElementById('sb-auth'),s=document.getElementById('sb-si');
 if(t&&u){try{const d=JSON.parse(u);document.getElementById('d-av').textContent=(d.name||'U')[0].toUpperCase();document.getElementById('d-un').textContent=d.name||'User';document.getElementById('d-up').textContent=d.plan==='enterprise'?'AI PROVIDER':d.plan==='standard'?'STANDARD':'OPEN';a.style.display='block';s.style.display='none'}catch(e){a.style.display='none';s.style.display='block'}}else{a.style.display='none';s.style.display='block'}}
 checkAuth();
+// Auto-show reset form if reset_token in URL
+(function(){const p=new URLSearchParams(window.location.search);if(p.get('reset_token')){openAuth();setTimeout(()=>afShow('reset'),100)}})();
 const secs=document.querySelectorAll('.ds[data-nav]'),nls=document.querySelectorAll('.nl[data-doc]');
 function updNav(id){nls.forEach(l=>l.classList.remove('active'));const t=document.querySelector(`.nl[data-doc="${id}"]`);if(t){t.classList.add('active');t.scrollIntoView({block:'nearest',behavior:'smooth'})}}
 const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const id=e.target.getAttribute('data-nav');if(id){updNav(id);const h='#'+id;if(location.hash!==h)history.replaceState(null,'',h)}}})},{rootMargin:'-20% 0px -60% 0px',threshold:0});
