@@ -57,11 +57,16 @@ table{width:100%;border-collapse:collapse;}
 thead th{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text-xs);text-transform:uppercase;letter-spacing:1.5px;text-align:left;padding:14px 18px;border-bottom:1.5px solid var(--border);}
 tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
 tbody tr:hover{background:var(--surface-h);}
+tbody tr.row-main{cursor:pointer;}
+tbody tr.row-main td:first-child::before{content:'▸ ';font-size:12px;color:var(--text-xs);}
+tbody tr.row-main.expanded td:first-child::before{content:'▾ ';}
+tbody tr.row-sub{background:var(--card-bg);}
+tbody tr.row-sub td{padding:10px 18px 10px 48px;font-size:14px;border-bottom:1px dashed var(--border);}
 tbody td{padding:18px;font-size:16px;vertical-align:middle;}
 
 .status{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;font-weight:700;padding:6px 14px;border-radius:8px;letter-spacing:0.5px;}
-.st-on{background:var(--online-bg);color:var(--green-d);} .st-off{background:var(--offline-bg);color:var(--red);}
-.sd{width:8px;height:8px;border-radius:50%;} .st-on .sd{background:var(--green);} .st-off .sd{background:var(--red);}
+.st-on{background:var(--online-bg);color:var(--green-d);} .st-off{background:var(--offline-bg);color:var(--red);} .st-stale{background:var(--grade-c);color:var(--amber);}
+.sd{width:8px;height:8px;border-radius:50%;} .st-on .sd{background:var(--green);} .st-off .sd{background:var(--red);} .st-stale .sd{background:var(--amber);}
 
 .gb{font-family:var(--mono);font-size:20px;font-weight:800;width:44px;height:44px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;}
 .gb-A{background:var(--grade-a);color:var(--green-d);} .gb-B{background:var(--grade-b);color:var(--blue);} .gb-C{background:var(--grade-c);color:var(--amber);} .gb-D{background:var(--grade-d);color:#f87171;} .gb-F{background:var(--grade-f);color:var(--red);}
@@ -156,7 +161,8 @@ async function authenticate(){const token=document.getElementById('tokenInput').
 
 (async function(){const t=gt();if(!t)return;try{const r=await fetch(`${API}/v1/regulator/dashboard`,{headers:{'Authorization':`Bearer ${t}`}});if(r.ok){document.getElementById('authScreen').style.display='none';document.getElementById('dashboard').style.display='block';render(await r.json());setInterval(load,30000);}else{sessionStorage.removeItem('reg_token');}}catch(e){sessionStorage.removeItem('reg_token');}})();
 
-function stH(s){const c=s==='online'?'st-on':'st-off';return `<span class="status ${c}"><span class="sd"></span>${s.toUpperCase()}</span>`;}
+function stH(s){const c=s==='online'?'st-on':s==='stale'?'st-stale':'st-off';return `<span class="status ${c}"><span class="sd"></span>${s.toUpperCase()}</span>`;}
+function mStH(s){const c=s==='online'?'st-on':s==='stale'?'st-stale':'st-off';return `<span class="status ${c}" style="font-size:11px;padding:3px 8px;"><span class="sd" style="width:6px;height:6px;"></span>${s.toUpperCase()}</span>`;}
 function sbH(score){const p=Math.min(score*10,100),c=score>=8.5?'#22c55e':score>=7?'#3b82f6':score>=5?'#f59e0b':'#ef4444';return `<div class="sb"><span class="sv" style="color:${c}">${score.toFixed(1)}</span><div class="st"><div class="sf" style="width:${p}%;background:${c}"></div></div></div>`;}
 function taH(iso){if(!iso)return'—';const d=(Date.now()-new Date(iso).getTime())/1000;if(d<60)return Math.floor(d)+'s ago';if(d<3600)return Math.floor(d/60)+'m ago';if(d<86400)return Math.floor(d/3600)+'h ago';return Math.floor(d/86400)+'d ago';}
 
@@ -173,16 +179,31 @@ function render(data){
   document.getElementById('gradeDist').innerHTML=gh||'<span style="font-size:13px;color:var(--text-xs)">No evaluations</span>';
   const tb=document.getElementById('providerTable');
   if(!data.providers.length){tb.innerHTML='<tr><td colspan="8"><div class="empty"><h3>No providers connected</h3><p>When AI providers connect through ONTO, they appear here.</p></div></td></tr>';return;}
-  tb.innerHTML=data.providers.map(p=>{
-    const names=(p.model_names||[]).slice(0,4).join(', '),more=(p.model_names||[]).length>4?' +'+(p.model_names.length-4):'';
+  let html='';
+  data.providers.forEach((p,i)=>{
     const mc=p.min_score>=8.5?'#22c55e':p.min_score>=7?'#3b82f6':p.min_score>=5?'#f59e0b':'#ef4444';
-    return `<tr><td>${stH(p.status)}</td><td style="font-weight:800;font-size:17px">${p.name}</td><td><span class="mn">${p.models}</span><div class="ml">${names}${more}</div></td><td><span class="gb gb-${p.grade||'F'}">${p.grade}</span></td><td><span class="sv" style="color:${mc}">${p.min_score.toFixed(1)}</span> <span class="gb gb-${p.min_grade||'F'}" style="width:28px;height:28px;font-size:13px;">${p.min_grade}</span></td><td>${sbH(p.score)}</td><td><span class="tn">${p.requests_today}</span> <span class="tt">today</span><div class="tt">${p.requests_total.toLocaleString()} total</div></td><td class="ts">${taH(p.last_heartbeat)}</td></tr>`;
+    html+=`<tr class="row-main" onclick="toggleSub(${i})" id="rm${i}"><td>${stH(p.status)}</td><td style="font-weight:800;font-size:17px">${p.name}</td><td><span class="mn">${p.models}</span></td><td><span class="gb gb-${p.grade||'F'}">${p.grade}</span></td><td><span class="sv" style="color:${mc}">${p.min_score.toFixed(1)}</span> <span class="gb gb-${p.min_grade||'F'}" style="width:28px;height:28px;font-size:13px;">${p.min_grade}</span></td><td>${sbH(p.score)}</td><td><span class="tn">${p.requests_today}</span> <span class="tt">today</span><div class="tt">${p.requests_total.toLocaleString()} total</div></td><td class="ts">${taH(p.last_heartbeat)}</td></tr>`;
+    // Sub-rows (hidden by default)
+    (p.models_detail||[]).forEach(m=>{
+      const mmc=m.min_score>=8.5?'#22c55e':m.min_score>=7?'#3b82f6':m.min_score>=5?'#f59e0b':'#ef4444';
+      const sc=m.score>=8.5?'#22c55e':m.score>=7?'#3b82f6':m.score>=5?'#f59e0b':'#ef4444';
+      html+=`<tr class="row-sub sub-${i}" style="display:none"><td>${mStH(m.status)}</td><td style="font-size:14px;color:var(--text-s);padding-left:48px">${m.name}</td><td></td><td><span class="gb gb-${m.grade||'F'}" style="width:30px;height:30px;font-size:14px;">${m.grade}</span></td><td><span class="sv" style="color:${mmc};font-size:14px;">${m.min_score.toFixed(1)}</span></td><td><span class="sv" style="color:${sc};font-size:14px;">${m.score.toFixed(1)}</span></td><td colspan="2" class="ts">${taH(m.last_heartbeat)}</td></tr>`;
+    });
+  });
+  tb.innerHTML=html;
   }).join('');
   document.getElementById('tableCount').textContent=`${data.providers.length} providers`;
   document.getElementById('lastUpdate').textContent=`Updated: ${new Date().toLocaleTimeString()}`;
 }
 
 async function load(){try{const r=await fetch(`${API}/v1/regulator/dashboard`,{headers:{'Authorization':`Bearer ${gt()}`}});if(r.status===403){sessionStorage.removeItem('reg_token');location.reload();return;}if(r.ok)render(await r.json());}catch(e){console.error(e);}}
+
+function toggleSub(i){
+  const main=document.getElementById('rm'+i);
+  const subs=document.querySelectorAll('.sub-'+i);
+  const open=main.classList.toggle('expanded');
+  subs.forEach(s=>s.style.display=open?'table-row':'none');
+}
 </script>
 </body>
 </html>
