@@ -5,204 +5,321 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ONTO — Regulator Dashboard</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><rect width='400' height='400' rx='60' fill='%2322c55e'/><path d='M186 80L242 80L242 320L186 320L186 128L148 128L148 80Z' fill='white'/></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root { --mono:'JetBrains Mono',monospace; --sans:'DM Sans',sans-serif; --green:#22c55e; --green-d:#15803d; --red:#ef4444; --amber:#f59e0b; --blue:#3b82f6; }
-[data-theme="light"] { --bg:linear-gradient(135deg,#f8faf8 0%,#fff 50%,#f8faf8 100%); --grid:rgba(0,0,0,0.06); --topline:rgba(34,197,94,0.85); --surface:rgba(255,255,255,0.85); --surface-h:rgba(34,197,94,0.04); --border:rgba(0,0,0,0.08); --text:#0a0a0a; --text-s:rgba(0,0,0,0.55); --text-xs:rgba(0,0,0,0.3); --grade-a:rgba(34,197,94,0.1); --grade-b:rgba(59,130,246,0.1); --grade-c:rgba(245,158,11,0.1); --grade-d:rgba(239,68,68,0.08); --grade-f:rgba(239,68,68,0.12); --online-bg:rgba(34,197,94,0.1); --offline-bg:rgba(239,68,68,0.08); --card-bg:rgba(255,255,255,0.7); --card-border:rgba(0,0,0,0.06); --input-bg:#f5f5f5; --score-track:rgba(0,0,0,0.06); --tip-bg:#0a0a0a; --tip-text:#fff; }
-[data-theme="dark"] { --bg:linear-gradient(135deg,#071a0e 0%,#0a0a0a 50%,#071a0e 100%); --grid:rgba(34,197,94,0.07); --topline:rgba(34,197,94,0.6); --surface:rgba(18,23,34,0.9); --surface-h:rgba(34,197,94,0.04); --border:rgba(255,255,255,0.06); --text:#f0f0f0; --text-s:rgba(255,255,255,0.55); --text-xs:rgba(255,255,255,0.25); --grade-a:rgba(34,197,94,0.12); --grade-b:rgba(59,130,246,0.12); --grade-c:rgba(245,158,11,0.12); --grade-d:rgba(239,68,68,0.1); --grade-f:rgba(239,68,68,0.15); --online-bg:rgba(34,197,94,0.1); --offline-bg:rgba(239,68,68,0.08); --card-bg:rgba(255,255,255,0.03); --card-border:rgba(255,255,255,0.06); --input-bg:rgba(255,255,255,0.05); --score-track:rgba(255,255,255,0.06); --tip-bg:#fff; --tip-text:#0a0a0a; }
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:var(--sans);min-height:100vh;color:var(--text);overflow-x:hidden;}
-.page-bg{position:fixed;inset:0;background:var(--bg);z-index:0;}
-.grid-bg{position:fixed;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:36px 36px;z-index:1;pointer-events:none;}
-.topline{position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--topline) 50%,transparent 95%);z-index:10;}
-.wrap{position:relative;z-index:5;max-width:1200px;margin:0 auto;padding:32px 40px 40px;}
+:root{--mono:'JetBrains Mono',monospace;--sans:'DM Sans',sans-serif;--green:#22c55e;--green-d:#15803d;--red:#ef4444;--amber:#f59e0b;--blue:#3b82f6;}
 
-.auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;position:relative;z-index:5;}
-.auth-box{background:var(--surface);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:16px;padding:48px 44px;width:420px;text-align:center;}
+[data-theme="light"]{
+  --bg:#f0f2f5;--grid:rgba(0,0,0,0.04);--topline:rgba(34,197,94,0.9);
+  --surface:#fff;--surface-h:#f7faf8;--border:#d8dce3;--border-l:#e8ebf0;
+  --text:#111;--text-s:#555;--text-xs:#888;
+  --card-shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.06);
+  --row-shadow:0 1px 2px rgba(0,0,0,0.04);
+  --grade-a:rgba(34,197,94,0.12);--grade-b:rgba(59,130,246,0.12);--grade-c:rgba(245,158,11,0.12);--grade-d:rgba(239,68,68,0.1);--grade-f:rgba(239,68,68,0.15);
+  --online-bg:rgba(34,197,94,0.12);--offline-bg:rgba(239,68,68,0.1);--stale-bg:rgba(245,158,11,0.12);
+  --input-bg:#f5f7fa;--score-track:#e2e5ea;
+  --tip-bg:#111;--tip-text:#fff;
+  --expand-bg:#f5f7f6;--expand-border:#e0e4e8;
+  --chevron:#999;--chevron-h:#333;
+}
+[data-theme="dark"]{
+  --bg:#0b0e13;--grid:rgba(34,197,94,0.05);--topline:rgba(34,197,94,0.7);
+  --surface:#151a24;--surface-h:#1a2030;--border:#262d3a;--border-l:#1e2530;
+  --text:#eee;--text-s:#aaa;--text-xs:#666;
+  --card-shadow:0 1px 4px rgba(0,0,0,0.3),0 1px 2px rgba(0,0,0,0.2);
+  --row-shadow:0 1px 2px rgba(0,0,0,0.15);
+  --grade-a:rgba(34,197,94,0.15);--grade-b:rgba(59,130,246,0.15);--grade-c:rgba(245,158,11,0.15);--grade-d:rgba(239,68,68,0.12);--grade-f:rgba(239,68,68,0.18);
+  --online-bg:rgba(34,197,94,0.12);--offline-bg:rgba(239,68,68,0.1);--stale-bg:rgba(245,158,11,0.12);
+  --input-bg:#1a2030;--score-track:#262d3a;
+  --tip-bg:#fff;--tip-text:#111;
+  --expand-bg:#111620;--expand-border:#1e2530;
+  --chevron:#555;--chevron-h:#ccc;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;}
+.grid-bg{position:fixed;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:36px 36px;pointer-events:none;z-index:0;}
+.topline{position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--topline) 50%,transparent 95%);z-index:10;}
+.wrap{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:28px 32px 40px;}
+
+/* AUTH */
+.auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;position:relative;z-index:1;}
+.auth-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:48px 44px;width:420px;text-align:center;box-shadow:var(--card-shadow);}
 .auth-box h2{font-family:var(--mono);font-size:20px;font-weight:800;margin-bottom:6px;}
-.auth-box p{font-size:15px;color:var(--text-s);margin-bottom:28px;}
-.auth-input{width:100%;padding:16px 18px;background:var(--input-bg);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--mono);font-size:14px;outline:none;margin-bottom:16px;transition:border-color .2s;}
+.auth-box p{font-size:14px;color:var(--text-s);margin-bottom:24px;}
+.auth-input{width:100%;padding:14px 16px;background:var(--input-bg);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--mono);font-size:14px;outline:none;margin-bottom:14px;}
 .auth-input:focus{border-color:var(--green);}
-.auth-btn{width:100%;padding:16px;background:var(--green);color:#071a08;border:none;border-radius:10px;font-family:var(--mono);font-size:15px;font-weight:800;cursor:pointer;letter-spacing:0.5px;}
+.auth-btn{width:100%;padding:14px;background:var(--green);color:#071a08;border:none;border-radius:10px;font-family:var(--mono);font-size:14px;font-weight:800;cursor:pointer;}
 .auth-btn:hover{opacity:0.85;}
 .auth-error{font-family:var(--mono);font-size:12px;color:var(--red);margin-top:10px;display:none;}
 
-.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
-.header-left{display:flex;align-items:center;gap:14px;}
-.header-logo{font-family:var(--mono);font-weight:800;font-size:20px;}
-.header-tag{font-family:var(--mono);font-size:11px;color:var(--green-d);background:var(--grade-a);padding:5px 12px;border-radius:6px;font-weight:700;letter-spacing:1px;}
-.header-right{display:flex;align-items:center;gap:12px;}
-.live-dot{width:9px;height:9px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;display:inline-block;}
+/* HEADER */
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+.header-left{display:flex;align-items:center;gap:12px;}
+.header-logo{font-family:var(--mono);font-weight:800;font-size:18px;}
+.header-tag{font-family:var(--mono);font-size:10px;color:#fff;background:var(--green);padding:4px 10px;border-radius:5px;font-weight:700;letter-spacing:1px;}
+.header-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
-.live-label{font-family:var(--mono);font-size:13px;color:var(--green);font-weight:700;}
-.icon-btn{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:8px 14px;cursor:pointer;font-family:var(--mono);font-size:12px;color:var(--text-s);font-weight:600;transition:all .15s;}
-.icon-btn:hover{border-color:var(--green);color:var(--text);}
+.live-label{font-family:var(--mono);font-size:12px;color:var(--green);font-weight:700;}
+.btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-family:var(--mono);font-size:11px;color:var(--text-s);font-weight:600;box-shadow:var(--row-shadow);}
+.btn:hover{border-color:var(--green);color:var(--text);}
 
-.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:28px;}
-.card{background:var(--card-bg);backdrop-filter:blur(10px);border:1px solid var(--card-border);border-radius:14px;padding:22px 24px;}
-.card-label{font-family:var(--mono);font-size:11px;color:var(--text-xs);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;font-weight:600;}
-.card-value{font-family:var(--mono);font-size:40px;font-weight:800;line-height:1;}
-.c-green{color:var(--green);}
-.c-red{color:var(--red);}
-.card-sub{font-size:13px;color:var(--text-s);margin-top:8px;font-weight:500;}
-.grades{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
-.grade-pill{font-family:var(--mono);font-size:15px;font-weight:700;padding:5px 14px;border-radius:6px;}
+/* CARDS */
+.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:var(--card-shadow);}
+.card-label{font-family:var(--mono);font-size:10px;color:var(--text-xs);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;font-weight:700;}
+.card-value{font-family:var(--mono);font-size:36px;font-weight:800;line-height:1;}
+.c-green{color:var(--green);} .c-red{color:var(--red);}
+.card-sub{font-size:12px;color:var(--text-s);margin-top:6px;}
+.grades{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+.gp{font-family:var(--mono);font-size:14px;font-weight:700;padding:4px 12px;border-radius:5px;}
 .gp-A{background:var(--grade-a);color:var(--green-d);} .gp-B{background:var(--grade-b);color:var(--blue);} .gp-C{background:var(--grade-c);color:var(--amber);} .gp-D{background:var(--grade-d);color:#f87171;} .gp-F{background:var(--grade-f);color:var(--red);}
 
-.table-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-.table-title{font-family:var(--mono);font-size:16px;font-weight:800;}
-.table-count{font-family:var(--mono);font-size:13px;color:var(--text-xs);}
+/* TABLE */
+.tbl-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.tbl-title{font-family:var(--mono);font-size:15px;font-weight:800;}
+.tbl-count{font-family:var(--mono);font-size:12px;color:var(--text-xs);}
+.tbl-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--card-shadow);overflow:hidden;}
 table{width:100%;border-collapse:collapse;}
-thead th{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text-xs);text-transform:uppercase;letter-spacing:1.5px;text-align:left;padding:14px 18px;border-bottom:1.5px solid var(--border);}
-tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
-tbody tr:hover{background:var(--surface-h);}
-tbody tr.row-main{cursor:pointer;}
-tbody tr.row-main td:first-child::before{content:'▸ ';font-size:12px;color:var(--text-xs);}
-tbody tr.row-main.expanded td:first-child::before{content:'▾ ';}
-tbody tr.row-sub{background:var(--card-bg);}
-tbody tr.row-sub td{padding:10px 18px 10px 48px;font-size:14px;border-bottom:1px dashed var(--border);}
-tbody td{padding:18px;font-size:16px;vertical-align:middle;}
+thead th{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--text-xs);text-transform:uppercase;letter-spacing:1.5px;text-align:left;padding:14px 16px;border-bottom:2px solid var(--border);background:var(--surface);}
+tbody tr.rmain{cursor:pointer;transition:background .12s;}
+tbody tr.rmain:hover{background:var(--surface-h);}
+tbody tr.rmain td{padding:16px;font-size:15px;border-bottom:1px solid var(--border-l);}
+tbody tr.rsub{background:var(--expand-bg);}
+tbody tr.rsub td{padding:10px 16px 10px 56px;font-size:13px;border-bottom:1px dashed var(--expand-border);color:var(--text-s);}
 
-.status{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;font-weight:700;padding:6px 14px;border-radius:8px;letter-spacing:0.5px;}
-.st-on{background:var(--online-bg);color:var(--green-d);} .st-off{background:var(--offline-bg);color:var(--red);} .st-stale{background:var(--grade-c);color:var(--amber);}
-.sd{width:8px;height:8px;border-radius:50%;} .st-on .sd{background:var(--green);} .st-off .sd{background:var(--red);} .st-stale .sd{background:var(--amber);}
+/* CHEVRON */
+.chev{display:inline-block;width:20px;height:20px;text-align:center;line-height:20px;border-radius:4px;background:var(--expand-bg);border:1px solid var(--border-l);color:var(--chevron);font-size:11px;font-weight:800;margin-right:8px;transition:all .15s;font-family:var(--mono);}
+.rmain:hover .chev{color:var(--chevron-h);border-color:var(--border);}
+.rmain.open .chev{background:var(--grade-a);color:var(--green-d);border-color:var(--green);}
 
-.gb{font-family:var(--mono);font-size:20px;font-weight:800;width:44px;height:44px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;}
+/* STATUS */
+.st{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;font-weight:700;padding:5px 10px;border-radius:6px;letter-spacing:0.3px;}
+.st-on{background:var(--online-bg);color:var(--green-d);} .st-off{background:var(--offline-bg);color:var(--red);} .st-stale{background:var(--stale-bg);color:var(--amber);}
+.sd{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.st-on .sd{background:var(--green);} .st-off .sd{background:var(--red);} .st-stale .sd{background:var(--amber);}
+
+/* GRADE */
+.gb{font-family:var(--mono);font-weight:800;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;}
+.gb-lg{font-size:18px;width:40px;height:40px;}
+.gb-sm{font-size:12px;width:24px;height:24px;border-radius:5px;}
 .gb-A{background:var(--grade-a);color:var(--green-d);} .gb-B{background:var(--grade-b);color:var(--blue);} .gb-C{background:var(--grade-c);color:var(--amber);} .gb-D{background:var(--grade-d);color:#f87171;} .gb-F{background:var(--grade-f);color:var(--red);}
 
-.sb{display:flex;align-items:center;gap:10px;min-width:180px;}
-.sv{font-family:var(--mono);font-size:18px;font-weight:800;min-width:40px;}
-.st{flex:1;height:7px;border-radius:4px;background:var(--score-track);overflow:hidden;}
-.sf{height:7px;border-radius:4px;transition:width .6s ease;}
+/* SCORE */
+.sbar{display:flex;align-items:center;gap:8px;min-width:140px;}
+.sval{font-family:var(--mono);font-size:16px;font-weight:800;min-width:34px;}
+.sval-sm{font-size:13px;min-width:28px;}
+.strk{flex:1;height:6px;border-radius:3px;background:var(--score-track);overflow:hidden;}
+.sfil{height:6px;border-radius:3px;transition:width .5s ease;}
 
-.mn{font-family:var(--mono);font-size:18px;font-weight:800;}
-.ml{font-family:var(--mono);font-size:12px;color:var(--text-s);margin-top:3px;line-height:1.5;}
-.tn{font-family:var(--mono);font-size:18px;font-weight:800;}
-.tt{font-family:var(--mono);font-size:12px;color:var(--text-xs);margin-top:2px;}
-.ts{font-family:var(--mono);font-size:14px;color:var(--text-s);}
+/* LOW score */
+.low{display:flex;align-items:center;gap:6px;}
+.low-val{font-family:var(--mono);font-size:16px;font-weight:800;}
 
+/* TRAFFIC */
+.traf{font-family:var(--mono);}
+.traf-n{font-size:16px;font-weight:800;}
+.traf-s{font-size:11px;color:var(--text-xs);}
+
+/* TIMESTAMP */
+.ts{font-family:var(--mono);font-size:13px;color:var(--text-s);}
+
+/* TOOLTIP */
 .tip{position:relative;cursor:help;}
-.tip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--tip-bg);color:var(--tip-text);font-family:var(--sans);font-size:12px;font-weight:500;padding:8px 14px;border-radius:8px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,0.15);}
+.tip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--tip-bg);color:var(--tip-text);font-family:var(--sans);font-size:11px;font-weight:500;padding:7px 12px;border-radius:7px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;z-index:100;box-shadow:0 4px 16px rgba(0,0,0,0.2);}
 .tip:hover::after{opacity:1;}
 
-.empty{text-align:center;padding:60px 20px;}
-.empty h3{font-family:var(--mono);font-size:17px;margin-bottom:8px;}
-.empty p{font-size:14px;color:var(--text-s);}
+/* EMPTY */
+.empty{text-align:center;padding:48px 20px;}
+.empty h3{font-family:var(--mono);font-size:15px;margin-bottom:6px;}
+.empty p{font-size:13px;color:var(--text-s);}
 
-.footer{margin-top:28px;padding-top:20px;border-top:1.5px solid var(--border);display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--text-xs);}
+/* FOOTER */
+.footer{margin-top:24px;display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--text-xs);}
 .footer a{color:var(--green-d);text-decoration:none;font-weight:600;}
 
-@media(max-width:1000px){.cards{grid-template-columns:repeat(2,1fr);}.wrap{padding:20px;}tbody td{padding:12px;font-size:14px;}}
+/* ═══ MOBILE ═══ */
+@media(max-width:900px){
+  .wrap{padding:16px;}
+  .cards{grid-template-columns:repeat(2,1fr);gap:8px;}
+  .cards .card:last-child{grid-column:span 2;}
+  .card{padding:14px;}
+  .card-value{font-size:28px;}
+  /* Hide table, show mobile cards */
+  .tbl-wrap{display:none;}
+  .mob-cards{display:flex!important;flex-direction:column;gap:10px;}
+}
+@media(min-width:901px){
+  .mob-cards{display:none!important;}
+}
+
+/* Mobile provider card */
+.mcard{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--card-shadow);}
+.mcard-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.mcard-name{font-weight:800;font-size:16px;}
+.mcard-row{display:flex;align-items:center;gap:12px;margin-bottom:6px;flex-wrap:wrap;}
+.mcard-label{font-family:var(--mono);font-size:10px;color:var(--text-xs);text-transform:uppercase;letter-spacing:1px;width:60px;flex-shrink:0;}
+.mcard-val{font-family:var(--mono);font-size:14px;font-weight:700;}
+.mcard-models{margin-top:10px;padding-top:10px;border-top:1px dashed var(--border-l);}
+.mcard-model{display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:13px;color:var(--text-s);border-bottom:1px dashed var(--expand-border);}
+.mcard-model:last-child{border-bottom:none;}
 </style>
 </head>
-<body data-theme="light">
-<div class="page-bg"></div>
+<body data-theme="dark">
 <div class="grid-bg"></div>
 <div class="topline"></div>
 
+<!-- AUTH -->
 <div id="authScreen" class="auth-screen">
   <div class="auth-box">
     <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 400 400" style="border-radius:8px;margin-bottom:16px;"><rect width="400" height="400" rx="40" fill="#22c55e"/><path d="M186 80L242 80L242 320L186 320L186 128L148 128L148 80Z" fill="#fff"/></svg>
     <h2>ONTO REGULATOR</h2>
-    <p>Enter access token to continue</p>
-    <input type="password" class="auth-input" id="tokenInput" placeholder="Bearer token" onkeydown="if(event.key==='Enter')authenticate()">
-    <button class="auth-btn" onclick="authenticate()">ACCESS DASHBOARD</button>
+    <p>Enter access token</p>
+    <input type="password" class="auth-input" id="tokenInput" placeholder="Token" onkeydown="if(event.key==='Enter')auth()">
+    <button class="auth-btn" onclick="auth()">ACCESS</button>
     <div class="auth-error" id="authError">Invalid token</div>
   </div>
 </div>
 
-<div id="dashboard" style="display:none">
+<!-- DASHBOARD -->
+<div id="dash" style="display:none">
 <div class="wrap">
+
 <div class="header">
   <div class="header-left">
-    <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 400 400" style="border-radius:8px;"><rect width="400" height="400" rx="40" fill="#22c55e"/><path d="M186 80L242 80L242 320L186 320L186 128L148 128L148 80Z" fill="#fff"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 400 400" style="border-radius:7px;"><rect width="400" height="400" rx="40" fill="#22c55e"/><path d="M186 80L242 80L242 320L186 320L186 128L148 128L148 80Z" fill="#fff"/></svg>
     <span class="header-logo">ONTO REGULATOR</span>
     <span class="header-tag">LIVE</span>
   </div>
   <div class="header-right">
     <span class="live-dot"></span><span class="live-label">MONITORING</span>
-    <button class="icon-btn" id="themeToggle" onclick="toggleTheme()">☀️ Day</button>
-    <button class="icon-btn" onclick="sessionStorage.removeItem('reg_token');location.reload()">Logout</button>
+    <button class="btn" id="thBtn" onclick="tog()">🌙 Night</button>
+    <button class="btn" onclick="sessionStorage.removeItem('rt');location.reload()">Logout</button>
   </div>
 </div>
 
 <div class="cards">
-  <div class="card"><div class="card-label tip" data-tip="Companies connected to GOLD">Providers</div><div class="card-value" id="totalProviders">—</div><div class="card-sub" id="providerSub">Loading...</div></div>
-  <div class="card"><div class="card-label tip" data-tip="Heartbeat received < 5 min ago">Online Now</div><div class="card-value c-green" id="onlineCount">—</div><div class="card-sub" id="onlineSub"></div></div>
-  <div class="card"><div class="card-label tip" data-tip="No heartbeat for 5+ minutes">Offline</div><div class="card-value c-red" id="offlineCount">—</div><div class="card-sub" id="offlineSub"></div></div>
-  <div class="card"><div class="card-label tip" data-tip="API requests through GOLD proxy today">Requests Today</div><div class="card-value" id="requestsToday">—</div><div class="card-sub">Through GOLD proxy</div></div>
-  <div class="card"><div class="card-label tip" data-tip="A=Exemplary B=Compliant C=Marginal D=Non-compliant F=Critical">Grades</div><div class="grades" id="gradeDist"></div></div>
+  <div class="card"><div class="card-label tip" data-tip="Companies connected to GOLD">Providers</div><div class="card-value" id="tp">—</div><div class="card-sub" id="ps">Loading...</div></div>
+  <div class="card"><div class="card-label tip" data-tip="Heartbeat < 5 min ago">Online</div><div class="card-value c-green" id="on">—</div><div class="card-sub" id="os"></div></div>
+  <div class="card"><div class="card-label tip" data-tip="No heartbeat 5+ min">Offline</div><div class="card-value c-red" id="of">—</div><div class="card-sub" id="ofs"></div></div>
+  <div class="card"><div class="card-label tip" data-tip="Requests through GOLD today">Requests</div><div class="card-value" id="rt2">—</div><div class="card-sub">Through GOLD proxy</div></div>
+  <div class="card"><div class="card-label tip" data-tip="A=Exemplary B=Compliant C=Marginal D=Non-compliant F=Critical">Grades</div><div class="grades" id="gd"></div></div>
 </div>
 
-<div class="table-header"><span class="table-title">AI Providers</span><span class="table-count" id="tableCount"></span></div>
+<div class="tbl-head"><span class="tbl-title">AI Providers</span><span class="tbl-count" id="tc"></span></div>
+<div class="tbl-wrap">
 <table><thead><tr>
-  <th class="tip" data-tip="Online = heartbeat < 5 min">Status</th>
+  <th></th>
+  <th class="tip" data-tip="Heartbeat status">Status</th>
   <th>Provider</th>
-  <th class="tip" data-tip="AI models connected through GOLD">Models</th>
-  <th class="tip" data-tip="A (8.5+) B (7+) C (5+) D (2.5+) F (<2.5)">Grade</th>
-  <th class="tip" data-tip="Lowest recorded score across all evaluations">Lowest</th>
-  <th class="tip" data-tip="Current average epistemic quality 0-10">Current</th>
-  <th class="tip" data-tip="Requests via GOLD proxy">Traffic</th>
-  <th class="tip" data-tip="Last heartbeat ping">Last Seen</th>
+  <th class="tip" data-tip="Connected models">Models</th>
+  <th class="tip" data-tip="Current grade">Grade</th>
+  <th class="tip" data-tip="Lowest recorded score ever">Lowest</th>
+  <th class="tip" data-tip="Current average score 0-10">Current</th>
+  <th class="tip" data-tip="GOLD proxy requests">Traffic</th>
+  <th class="tip" data-tip="Last heartbeat">Seen</th>
 </tr></thead>
-<tbody id="providerTable"><tr><td colspan="8" style="text-align:center;padding:48px;color:var(--text-xs)">Loading...</td></tr></tbody>
+<tbody id="tb"><tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-xs)">Loading...</td></tr></tbody>
 </table>
+</div>
 
-<div class="footer"><span>ONTO Standards Council · <a href="https://ontostandard.org">ontostandard.org</a></span><span id="lastUpdate">—</span></div>
+<!-- MOBILE CARDS -->
+<div class="mob-cards" id="mc"></div>
+
+<div class="footer"><span>ONTO Standards Council · <a href="https://ontostandard.org">ontostandard.org</a></span><span id="lu">—</span></div>
 </div></div>
 
 <script>
-const API='https://api.ontostandard.org',gt=()=>sessionStorage.getItem('reg_token')||'';
-function toggleTheme(){const t=document.body.getAttribute('data-theme')==='light'?'dark':'light';document.body.setAttribute('data-theme',t);localStorage.setItem('reg_theme',t);document.getElementById('themeToggle').textContent=t==='light'?'☀️ Day':'🌙 Night';}
-(function(){const s=localStorage.getItem('reg_theme');if(s){document.body.setAttribute('data-theme',s);setTimeout(()=>{const b=document.getElementById('themeToggle');if(b)b.textContent=s==='light'?'☀️ Day':'🌙 Night';},0);}})();
+const API='https://api.ontostandard.org',gk=()=>sessionStorage.getItem('rt')||'';
 
-async function authenticate(){const token=document.getElementById('tokenInput').value.trim();if(!token)return;try{const r=await fetch(`${API}/v1/regulator/dashboard`,{headers:{'Authorization':`Bearer ${token}`}});if(r.ok){sessionStorage.setItem('reg_token',token);document.getElementById('authScreen').style.display='none';document.getElementById('dashboard').style.display='block';render(await r.json());setInterval(load,30000);}else{document.getElementById('authError').style.display='block';}}catch(e){document.getElementById('authError').textContent='Connection error';document.getElementById('authError').style.display='block';}}
+function tog(){const t=document.body.dataset.theme==='dark'?'light':'dark';document.body.dataset.theme=t;localStorage.setItem('rth',t);document.getElementById('thBtn').textContent=t==='dark'?'🌙 Night':'☀️ Day';}
+(function(){const s=localStorage.getItem('rth');if(s){document.body.dataset.theme=s;}setTimeout(()=>{const b=document.getElementById('thBtn');if(b)b.textContent=document.body.dataset.theme==='dark'?'🌙 Night':'☀️ Day';},0);})();
 
-(async function(){const t=gt();if(!t)return;try{const r=await fetch(`${API}/v1/regulator/dashboard`,{headers:{'Authorization':`Bearer ${t}`}});if(r.ok){document.getElementById('authScreen').style.display='none';document.getElementById('dashboard').style.display='block';render(await r.json());setInterval(load,30000);}else{sessionStorage.removeItem('reg_token');}}catch(e){sessionStorage.removeItem('reg_token');}})();
+async function auth(){const t=document.getElementById('tokenInput').value.trim();if(!t)return;try{const r=await fetch(`${API}/v1/regulator/dashboard`,{headers:{'Authorization':`Bearer ${t}`}});if(r.ok){sessionStorage.setItem('rt',t);document.getElementById('authScreen').style.display='none';document.getElementById('dash').style.display='block';render(await r.json());setInterval(load,30000);}else{document.getElementById('authError').style.display='block';}}catch(e){document.getElementById('authError').textContent='Connection error';document.getElementById('authError').style.display='block';}}
 
-function stH(s){const c=s==='online'?'st-on':s==='stale'?'st-stale':'st-off';return `<span class="status ${c}"><span class="sd"></span>${s.toUpperCase()}</span>`;}
-function mStH(s){const c=s==='online'?'st-on':s==='stale'?'st-stale':'st-off';return `<span class="status ${c}" style="font-size:11px;padding:3px 8px;"><span class="sd" style="width:6px;height:6px;"></span>${s.toUpperCase()}</span>`;}
-function sbH(score){const p=Math.min(score*10,100),c=score>=8.5?'#22c55e':score>=7?'#3b82f6':score>=5?'#f59e0b':'#ef4444';return `<div class="sb"><span class="sv" style="color:${c}">${score.toFixed(1)}</span><div class="st"><div class="sf" style="width:${p}%;background:${c}"></div></div></div>`;}
-function taH(iso){if(!iso)return'—';const d=(Date.now()-new Date(iso).getTime())/1000;if(d<60)return Math.floor(d)+'s ago';if(d<3600)return Math.floor(d/60)+'m ago';if(d<86400)return Math.floor(d/3600)+'h ago';return Math.floor(d/86400)+'d ago';}
+(async function(){const t=gk();if(!t)return;try{const r=await fetch(`${API}/v1/regulator/dashboard`,{headers:{'Authorization':`Bearer ${t}`}});if(r.ok){document.getElementById('authScreen').style.display='none';document.getElementById('dash').style.display='block';render(await r.json());setInterval(load,30000);}else sessionStorage.removeItem('rt');}catch(e){sessionStorage.removeItem('rt');}})();
+
+function stB(s){const c=s==='online'?'st-on':s==='stale'?'st-stale':'st-off';return `<span class="st ${c}"><span class="sd"></span>${s.toUpperCase()}</span>`;}
+function scB(v,sm){const p=Math.min(v*10,100),c=v>=8.5?'#22c55e':v>=7?'#3b82f6':v>=5?'#f59e0b':'#ef4444';return `<div class="sbar"><span class="sval${sm?' sval-sm':''}" style="color:${c}">${v.toFixed(1)}</span><div class="strk"><div class="sfil" style="width:${p}%;background:${c}"></div></div></div>`;}
+function ta(iso){if(!iso)return'—';const d=(Date.now()-new Date(iso).getTime())/1000;if(d<60)return Math.floor(d)+'s';if(d<3600)return Math.floor(d/60)+'m';if(d<86400)return Math.floor(d/3600)+'h';return Math.floor(d/86400)+'d';}
+function lowB(v,g){const c=v>=8.5?'#22c55e':v>=7?'#3b82f6':v>=5?'#f59e0b':'#ef4444';return `<div class="low"><span class="low-val" style="color:${c}">${v.toFixed(1)}</span><span class="gb gb-sm gb-${g||'F'}">${g}</span></div>`;}
 
 function render(data){
   const s=data.summary;
-  document.getElementById('totalProviders').textContent=s.total_providers;
-  document.getElementById('providerSub').textContent=`${s.online} active, ${s.offline} inactive`;
-  document.getElementById('onlineCount').textContent=s.online;
-  document.getElementById('onlineSub').textContent=s.online>0?'Passing through GOLD':'No active providers';
-  document.getElementById('offlineCount').textContent=s.offline;
-  document.getElementById('offlineSub').textContent=s.offline>0?'No heartbeat > 5min':'';
-  document.getElementById('requestsToday').textContent=s.requests_today.toLocaleString();
-  let gh='';for(const g of['A','B','C','D','F']){if(s.grade_distribution[g]>0)gh+=`<span class="grade-pill gp-${g}">${g}: ${s.grade_distribution[g]}</span>`;}
-  document.getElementById('gradeDist').innerHTML=gh||'<span style="font-size:13px;color:var(--text-xs)">No evaluations</span>';
-  const tb=document.getElementById('providerTable');
-  if(!data.providers.length){tb.innerHTML='<tr><td colspan="8"><div class="empty"><h3>No providers connected</h3><p>When AI providers connect through ONTO, they appear here.</p></div></td></tr>';return;}
-  let html='';
+  document.getElementById('tp').textContent=s.total_providers;
+  document.getElementById('ps').textContent=`${s.online} active, ${s.offline} inactive`;
+  document.getElementById('on').textContent=s.online;
+  document.getElementById('os').textContent=s.online>0?'Through GOLD':'No active';
+  document.getElementById('of').textContent=s.offline;
+  document.getElementById('ofs').textContent=s.offline>0?'No heartbeat > 5min':'';
+  document.getElementById('rt2').textContent=s.requests_today.toLocaleString();
+  let gh='';for(const g of['A','B','C','D','F'])if(s.grade_distribution[g]>0)gh+=`<span class="gp gp-${g}">${g}: ${s.grade_distribution[g]}</span>`;
+  document.getElementById('gd').innerHTML=gh||'<span style="font-size:12px;color:var(--text-xs)">No data</span>';
+
+  // Desktop table
+  const tb=document.getElementById('tb');
+  if(!data.providers.length){tb.innerHTML='<tr><td colspan="9"><div class="empty"><h3>No providers</h3><p>Providers will appear when connected.</p></div></td></tr>';document.getElementById('mc').innerHTML='';return;}
+  let h='';
   data.providers.forEach((p,i)=>{
-    const mc=p.min_score>=8.5?'#22c55e':p.min_score>=7?'#3b82f6':p.min_score>=5?'#f59e0b':'#ef4444';
-    html+=`<tr class="row-main" onclick="toggleSub(${i})" id="rm${i}"><td>${stH(p.status)}</td><td style="font-weight:800;font-size:17px">${p.name}</td><td><span class="mn">${p.models}</span></td><td><span class="gb gb-${p.grade||'F'}">${p.grade}</span></td><td><span class="sv" style="color:${mc}">${p.min_score.toFixed(1)}</span> <span class="gb gb-${p.min_grade||'F'}" style="width:28px;height:28px;font-size:13px;">${p.min_grade}</span></td><td>${sbH(p.score)}</td><td><span class="tn">${p.requests_today}</span> <span class="tt">today</span><div class="tt">${p.requests_total.toLocaleString()} total</div></td><td class="ts">${taH(p.last_heartbeat)}</td></tr>`;
-    // Sub-rows (hidden by default)
+    h+=`<tr class="rmain" onclick="tsub(${i})" id="r${i}">
+      <td><span class="chev" id="ch${i}">+</span></td>
+      <td>${stB(p.status)}</td>
+      <td style="font-weight:800;font-size:16px">${p.name}</td>
+      <td style="font-family:var(--mono);font-weight:700">${p.models}</td>
+      <td><span class="gb gb-lg gb-${p.grade||'F'}">${p.grade}</span></td>
+      <td>${lowB(p.min_score,p.min_grade)}</td>
+      <td>${scB(p.score)}</td>
+      <td class="traf"><span class="traf-n">${p.requests_today}</span> <span class="traf-s">today</span><div class="traf-s">${p.requests_total.toLocaleString()} total</div></td>
+      <td class="ts">${ta(p.last_heartbeat)}</td>
+    </tr>`;
     (p.models_detail||[]).forEach(m=>{
-      const mmc=m.min_score>=8.5?'#22c55e':m.min_score>=7?'#3b82f6':m.min_score>=5?'#f59e0b':'#ef4444';
-      const sc=m.score>=8.5?'#22c55e':m.score>=7?'#3b82f6':m.score>=5?'#f59e0b':'#ef4444';
-      html+=`<tr class="row-sub sub-${i}" style="display:none"><td>${mStH(m.status)}</td><td style="font-size:14px;color:var(--text-s);padding-left:48px">${m.name}</td><td></td><td><span class="gb gb-${m.grade||'F'}" style="width:30px;height:30px;font-size:14px;">${m.grade}</span></td><td><span class="sv" style="color:${mmc};font-size:14px;">${m.min_score.toFixed(1)}</span></td><td><span class="sv" style="color:${sc};font-size:14px;">${m.score.toFixed(1)}</span></td><td colspan="2" class="ts">${taH(m.last_heartbeat)}</td></tr>`;
+      h+=`<tr class="rsub s${i}" style="display:none">
+        <td></td>
+        <td>${stB(m.status)}</td>
+        <td style="padding-left:32px">${m.name}</td>
+        <td></td>
+        <td><span class="gb gb-sm gb-${m.grade||'F'}">${m.grade}</span></td>
+        <td>${lowB(m.min_score,m.grade)}</td>
+        <td>${scB(m.score,true)}</td>
+        <td colspan="2" class="ts">${ta(m.last_heartbeat)}</td>
+      </tr>`;
     });
   });
-  tb.innerHTML=html;
-  document.getElementById('tableCount').textContent=`${data.providers.length} providers`;
-  document.getElementById('lastUpdate').textContent=`Updated: ${new Date().toLocaleTimeString()}`;
+  tb.innerHTML=h;
+
+  // Mobile cards
+  let mh='';
+  data.providers.forEach(p=>{
+    let mdh='';
+    (p.models_detail||[]).forEach(m=>{
+      const mc2=m.score>=8.5?'#22c55e':m.score>=7?'#3b82f6':m.score>=5?'#f59e0b':'#ef4444';
+      mdh+=`<div class="mcard-model"><span>${stB(m.status)} ${m.name}</span><span class="sval sval-sm" style="color:${mc2}">${m.score.toFixed(1)}</span></div>`;
+    });
+    mh+=`<div class="mcard">
+      <div class="mcard-top"><span class="mcard-name">${p.name}</span>${stB(p.status)}</div>
+      <div class="mcard-row"><span class="card-label" style="margin:0">Grade</span><span class="gb gb-lg gb-${p.grade||'F'}">${p.grade}</span></div>
+      <div class="mcard-row"><span class="mcard-label">Current</span><span class="mcard-val">${scB(p.score)}</span></div>
+      <div class="mcard-row"><span class="mcard-label">Lowest</span><span class="mcard-val">${lowB(p.min_score,p.min_grade)}</span></div>
+      <div class="mcard-row"><span class="mcard-label">Traffic</span><span class="mcard-val">${p.requests_today} today · ${p.requests_total} total</span></div>
+      <div class="mcard-models">${mdh}</div>
+    </div>`;
+  });
+  document.getElementById('mc').innerHTML=mh;
+
+  document.getElementById('tc').textContent=`${data.providers.length} providers`;
+  document.getElementById('lu').textContent=`Updated: ${new Date().toLocaleTimeString()}`;
 }
 
-async function load(){try{const r=await fetch(`${API}/v1/regulator/dashboard`,{headers:{'Authorization':`Bearer ${gt()}`}});if(r.status===403){sessionStorage.removeItem('reg_token');location.reload();return;}if(r.ok)render(await r.json());}catch(e){console.error(e);}}
-
-function toggleSub(i){
-  const main=document.getElementById('rm'+i);
-  const subs=document.querySelectorAll('.sub-'+i);
-  const open=main.classList.toggle('expanded');
-  subs.forEach(s=>s.style.display=open?'table-row':'none');
+function tsub(i){
+  const main=document.getElementById('r'+i);
+  const ch=document.getElementById('ch'+i);
+  const open=main.classList.toggle('open');
+  ch.textContent=open?'−':'+';
+  document.querySelectorAll('.s'+i).forEach(s=>s.style.display=open?'table-row':'none');
 }
+
+async function load(){try{const r=await fetch(`${API}/v1/regulator/dashboard`,{headers:{'Authorization':`Bearer ${gk()}`}});if(r.status===403){sessionStorage.removeItem('rt');location.reload();return;}if(r.ok)render(await r.json());}catch(e){console.error(e);}}
 </script>
 </body>
 </html>
