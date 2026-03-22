@@ -146,29 +146,43 @@ tbody tr.rsub td{padding:10px 16px 10px 56px;font-size:13px;border-bottom:1px da
 
 /* ═══ MOBILE ═══ */
 @media(max-width:900px){
-  .wrap{padding:16px;}
+  .wrap{padding:14px;}
+  .header{flex-direction:column;align-items:flex-start;gap:10px;}
+  .header-right{width:100%;justify-content:flex-start;gap:8px;flex-wrap:wrap;}
   .cards{grid-template-columns:repeat(2,1fr);gap:8px;}
   .cards .card:last-child{grid-column:span 2;}
   .card{padding:14px;}
-  .card-value{font-size:28px;}
-  /* Hide table, show mobile cards */
+  .card-value{font-size:26px;}
+  .card-sub{font-size:11px;}
   .tbl-wrap{display:none;}
+  .tbl-head{margin-bottom:10px;}
   .mob-cards{display:flex!important;flex-direction:column;gap:10px;}
+  .footer{flex-direction:column;gap:4px;align-items:center;text-align:center;}
+}
+@media(max-width:480px){
+  .wrap{padding:10px;}
+  .cards{grid-template-columns:1fr;gap:8px;}
+  .cards .card:last-child{grid-column:span 1;}
+  .card-value{font-size:22px;}
+  .header-logo{font-size:15px;}
+  .btn{padding:6px 10px;font-size:10px;}
 }
 @media(min-width:901px){
   .mob-cards{display:none!important;}
 }
 
 /* Mobile provider card */
-.mcard{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--card-shadow);}
-.mcard-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.mcard-name{font-weight:800;font-size:16px;}
-.mcard-row{display:flex;align-items:center;gap:12px;margin-bottom:6px;flex-wrap:wrap;}
-.mcard-label{font-family:var(--mono);font-size:10px;color:var(--text-xs);text-transform:uppercase;letter-spacing:1px;width:60px;flex-shrink:0;}
+.mcard{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--card-shadow);overflow:hidden;}
+.mcard-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;flex-wrap:wrap;}
+.mcard-name{font-weight:800;font-size:15px;word-break:break-word;}
+.mcard-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;margin-bottom:10px;}
+.mcard-cell{}
+.mcard-label{font-family:var(--mono);font-size:9px;color:var(--text-xs);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
 .mcard-val{font-family:var(--mono);font-size:14px;font-weight:700;}
 .mcard-models{margin-top:10px;padding-top:10px;border-top:1px dashed var(--border-l);}
-.mcard-model{display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:13px;color:var(--text-s);border-bottom:1px dashed var(--expand-border);}
+.mcard-model{display:flex;align-items:center;justify-content:space-between;padding:8px 0;font-size:12px;color:var(--text-s);border-bottom:1px dashed var(--expand-border);gap:8px;}
 .mcard-model:last-child{border-bottom:none;}
+.mcard-mname{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 </style>
 </head>
 <body data-theme="dark">
@@ -241,25 +255,32 @@ const API='https://api.ontostandard.org',gk=()=>sessionStorage.getItem('rt')||''
 
 // ── DEMO DATA ──
 const DEMO_PROVIDERS=[
-  {name:"UzTelecom AI",models:3,models_detail:[
-    {name:"UzGPT-7B",status:"online",score:7.8,min_score:5.2,grade:"B",last_heartbeat:new Date(Date.now()-60000).toISOString()},
-    {name:"UzGPT-13B",status:"online",score:8.7,min_score:7.1,grade:"A",last_heartbeat:new Date(Date.now()-45000).toISOString()},
-    {name:"UzChat-v1",status:"stale",score:4.3,min_score:3.1,grade:"C",last_heartbeat:new Date(Date.now()-864000000).toISOString()}
-  ],status:"online",grade:"B",score:6.9,min_score:3.1,min_grade:"D",requests_today:1247,requests_total:34500,last_heartbeat:new Date(Date.now()-45000).toISOString(),_demo:true},
-  {name:"Samarkand Digital",models:2,models_detail:[
-    {name:"SilkRoad-LLM",status:"online",score:9.1,min_score:8.4,grade:"A",last_heartbeat:new Date(Date.now()-30000).toISOString()},
-    {name:"SilkRoad-Mini",status:"online",score:8.6,min_score:7.9,grade:"A",last_heartbeat:new Date(Date.now()-90000).toISOString()}
-  ],status:"online",grade:"A",score:8.9,min_score:7.9,min_grade:"B",requests_today:892,requests_total:21300,last_heartbeat:new Date(Date.now()-30000).toISOString(),_demo:true},
-  {name:"Tashkent AI Lab",models:1,models_detail:[
-    {name:"TAL-GPT-v2",status:"offline",score:5.4,min_score:2.8,grade:"C",last_heartbeat:new Date(Date.now()-7200000).toISOString()}
-  ],status:"offline",grade:"C",score:5.4,min_score:2.8,min_grade:"D",requests_today:0,requests_total:8700,last_heartbeat:new Date(Date.now()-7200000).toISOString(),_demo:true},
-  {name:"Navoiy Cloud",models:2,models_detail:[
-    {name:"NavoiyLLM-7B",status:"online",score:9.4,min_score:9.0,grade:"A",last_heartbeat:new Date(Date.now()-20000).toISOString()},
-    {name:"NavoiyAssist",status:"online",score:9.2,min_score:8.8,grade:"A",last_heartbeat:new Date(Date.now()-55000).toISOString()}
-  ],status:"online",grade:"A",score:9.3,min_score:8.8,min_grade:"A",requests_today:2340,requests_total:67800,last_heartbeat:new Date(Date.now()-20000).toISOString(),_demo:true},
-  {name:"Fergana Systems",models:1,models_detail:[
-    {name:"FerGPT-beta",status:"offline",score:3.1,min_score:1.9,grade:"D",last_heartbeat:new Date(Date.now()-172800000).toISOString()}
-  ],status:"offline",grade:"D",score:3.1,min_score:1.9,min_grade:"F",requests_today:0,requests_total:450,last_heartbeat:new Date(Date.now()-172800000).toISOString(),_demo:true}
+  {name:"OpenAI",models:3,models_detail:[
+    {name:"GPT-5.2",status:"online",score:8.2,min_score:6.1,grade:"B",last_heartbeat:new Date(Date.now()-25000).toISOString()},
+    {name:"GPT-4o",status:"online",score:7.4,min_score:5.8,grade:"B",last_heartbeat:new Date(Date.now()-40000).toISOString()},
+    {name:"o3-mini",status:"online",score:6.8,min_score:4.2,grade:"B",last_heartbeat:new Date(Date.now()-55000).toISOString()}
+  ],status:"online",grade:"B",score:7.5,min_score:4.2,min_grade:"C",requests_today:18420,requests_total:892000,last_heartbeat:new Date(Date.now()-25000).toISOString(),_demo:true},
+  {name:"Google DeepMind",models:2,models_detail:[
+    {name:"Gemini 2.5 Pro",status:"online",score:8.6,min_score:7.3,grade:"A",last_heartbeat:new Date(Date.now()-30000).toISOString()},
+    {name:"Gemini 2.5 Flash",status:"online",score:7.1,min_score:5.9,grade:"B",last_heartbeat:new Date(Date.now()-60000).toISOString()}
+  ],status:"online",grade:"B",score:7.9,min_score:5.9,min_grade:"C",requests_today:12350,requests_total:567000,last_heartbeat:new Date(Date.now()-30000).toISOString(),_demo:true},
+  {name:"xAI",models:1,models_detail:[
+    {name:"Grok 4.2",status:"online",score:9.1,min_score:8.6,grade:"A",last_heartbeat:new Date(Date.now()-15000).toISOString()}
+  ],status:"online",grade:"A",score:9.1,min_score:8.6,min_grade:"A",requests_today:7800,requests_total:234000,last_heartbeat:new Date(Date.now()-15000).toISOString(),_demo:true},
+  {name:"DeepSeek",models:2,models_detail:[
+    {name:"DeepSeek R1",status:"online",score:8.9,min_score:7.8,grade:"A",last_heartbeat:new Date(Date.now()-20000).toISOString()},
+    {name:"DeepSeek V3.1",status:"stale",score:5.4,min_score:3.2,grade:"C",last_heartbeat:new Date(Date.now()-864000000).toISOString()}
+  ],status:"online",grade:"B",score:7.2,min_score:3.2,min_grade:"D",requests_today:9200,requests_total:345000,last_heartbeat:new Date(Date.now()-20000).toISOString(),_demo:true},
+  {name:"Meta AI",models:2,models_detail:[
+    {name:"Llama 4 Maverick",status:"online",score:7.8,min_score:6.4,grade:"B",last_heartbeat:new Date(Date.now()-45000).toISOString()},
+    {name:"Llama 4 Scout",status:"online",score:6.9,min_score:5.1,grade:"B",last_heartbeat:new Date(Date.now()-70000).toISOString()}
+  ],status:"online",grade:"B",score:7.4,min_score:5.1,min_grade:"C",requests_today:5600,requests_total:198000,last_heartbeat:new Date(Date.now()-45000).toISOString(),_demo:true},
+  {name:"Mistral AI",models:1,models_detail:[
+    {name:"Mistral Large 3",status:"offline",score:6.7,min_score:4.8,grade:"B",last_heartbeat:new Date(Date.now()-7200000).toISOString()}
+  ],status:"offline",grade:"B",score:6.7,min_score:4.8,min_grade:"C",requests_today:0,requests_total:87000,last_heartbeat:new Date(Date.now()-7200000).toISOString(),_demo:true},
+  {name:"Cohere",models:1,models_detail:[
+    {name:"Command R+",status:"offline",score:4.3,min_score:2.1,grade:"C",last_heartbeat:new Date(Date.now()-172800000).toISOString()}
+  ],status:"offline",grade:"C",score:4.3,min_score:2.1,min_grade:"F",requests_today:0,requests_total:12400,last_heartbeat:new Date(Date.now()-172800000).toISOString(),_demo:true}
 ];
 
 function isDemoOn(){return localStorage.getItem('demo_reg')==='1';}
@@ -352,14 +373,18 @@ function render(data){
     let mdh='';
     (p.models_detail||[]).forEach(m=>{
       const mc2=m.score>=8.5?'#22c55e':m.score>=7?'#3b82f6':m.score>=5?'#f59e0b':'#ef4444';
-      mdh+=`<div class="mcard-model"><span>${stB(m.status)} ${m.name}</span><span class="sval sval-sm" style="color:${mc2}">${m.score.toFixed(1)}</span></div>`;
+      mdh+=`<div class="mcard-model"><span class="mcard-mname">${stB(m.status)} ${m.name}</span><span class="sval sval-sm" style="color:${mc2}">${m.score.toFixed(1)}</span></div>`;
     });
     mh+=`<div class="mcard">
       <div class="mcard-top"><span class="mcard-name">${p.name}${p._demo?'<span class="demo-tag">DEMO</span>':''}</span>${stB(p.status)}</div>
-      <div class="mcard-row"><span class="card-label" style="margin:0">Grade</span><span class="gb gb-lg gb-${p.grade||'F'}">${p.grade}</span></div>
-      <div class="mcard-row"><span class="mcard-label">Current</span><span class="mcard-val">${scB(p.score)}</span></div>
-      <div class="mcard-row"><span class="mcard-label">Lowest</span><span class="mcard-val">${lowB(p.min_score,p.min_grade)}</span></div>
-      <div class="mcard-row"><span class="mcard-label">Traffic</span><span class="mcard-val">${p.requests_today} today · ${p.requests_total} total</span></div>
+      <div class="mcard-grid">
+        <div class="mcard-cell"><div class="mcard-label">Grade</div><span class="gb gb-lg gb-${p.grade||'F'}">${p.grade}</span></div>
+        <div class="mcard-cell"><div class="mcard-label">Models</div><div class="mcard-val">${p.models}</div></div>
+        <div class="mcard-cell"><div class="mcard-label">Current</div>${scB(p.score,true)}</div>
+        <div class="mcard-cell"><div class="mcard-label">Lowest</div>${lowB(p.min_score,p.min_grade)}</div>
+        <div class="mcard-cell"><div class="mcard-label">Traffic</div><div class="mcard-val">${p.requests_today.toLocaleString()} <span class="traf-s">today</span></div></div>
+        <div class="mcard-cell"><div class="mcard-label">Total</div><div class="mcard-val">${p.requests_total.toLocaleString()}</div></div>
+      </div>
       <div class="mcard-models">${mdh}</div>
     </div>`;
   });
