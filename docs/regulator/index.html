@@ -4,426 +4,185 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ONTO — Regulator Dashboard</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><rect width='400' height='400' rx='60' fill='%2322c55e'/><path d='M186 80L242 80L242 320L186 320L186 128L148 128L148 80Z' fill='white'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0c0f14;
-  --panel: #121722;
-  --border: #1d2330;
-  --border-h: #2a3040;
-  --text: #e5e5e5;
-  --text-s: #888;
-  --text-xs: #555;
-  --green: #22c55e;
-  --green-bg: rgba(34,197,94,0.08);
-  --red: #ef4444;
-  --red-bg: rgba(239,68,68,0.08);
-  --amber: #f59e0b;
-  --amber-bg: rgba(245,158,11,0.08);
-  --blue: #3b82f6;
-  --mono: 'JetBrains Mono', monospace;
-  --sans: 'DM Sans', sans-serif;
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:var(--sans); background:var(--bg); color:var(--text); min-height:100vh; }
+:root { --mono:'JetBrains Mono',monospace; --sans:'DM Sans',sans-serif; --green:#22c55e; --green-d:#15803d; --red:#ef4444; --amber:#f59e0b; --blue:#3b82f6; }
+[data-theme="light"] { --bg:linear-gradient(135deg,#f8faf8 0%,#fff 50%,#f8faf8 100%); --grid:rgba(0,0,0,0.06); --topline:rgba(34,197,94,0.85); --surface:rgba(255,255,255,0.85); --surface-h:rgba(34,197,94,0.04); --border:rgba(0,0,0,0.08); --text:#0a0a0a; --text-s:rgba(0,0,0,0.55); --text-xs:rgba(0,0,0,0.3); --grade-a:rgba(34,197,94,0.1); --grade-b:rgba(59,130,246,0.1); --grade-c:rgba(245,158,11,0.1); --grade-d:rgba(239,68,68,0.08); --grade-f:rgba(239,68,68,0.12); --online-bg:rgba(34,197,94,0.1); --offline-bg:rgba(239,68,68,0.08); --card-bg:rgba(255,255,255,0.7); --card-border:rgba(0,0,0,0.06); --input-bg:#f5f5f5; --score-track:rgba(0,0,0,0.06); --tip-bg:#0a0a0a; --tip-text:#fff; }
+[data-theme="dark"] { --bg:linear-gradient(135deg,#071a0e 0%,#0a0a0a 50%,#071a0e 100%); --grid:rgba(34,197,94,0.07); --topline:rgba(34,197,94,0.6); --surface:rgba(18,23,34,0.9); --surface-h:rgba(34,197,94,0.04); --border:rgba(255,255,255,0.06); --text:#f0f0f0; --text-s:rgba(255,255,255,0.55); --text-xs:rgba(255,255,255,0.25); --grade-a:rgba(34,197,94,0.12); --grade-b:rgba(59,130,246,0.12); --grade-c:rgba(245,158,11,0.12); --grade-d:rgba(239,68,68,0.1); --grade-f:rgba(239,68,68,0.15); --online-bg:rgba(34,197,94,0.1); --offline-bg:rgba(239,68,68,0.08); --card-bg:rgba(255,255,255,0.03); --card-border:rgba(255,255,255,0.06); --input-bg:rgba(255,255,255,0.05); --score-track:rgba(255,255,255,0.06); --tip-bg:#fff; --tip-text:#0a0a0a; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--sans);min-height:100vh;color:var(--text);overflow-x:hidden;}
+.page-bg{position:fixed;inset:0;background:var(--bg);z-index:0;}
+.grid-bg{position:fixed;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:36px 36px;z-index:1;pointer-events:none;}
+.topline{position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 5%,var(--topline) 50%,transparent 95%);z-index:10;}
+.wrap{position:relative;z-index:5;max-width:1200px;margin:0 auto;padding:32px 40px 40px;}
 
-/* Header */
-.header {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:16px 24px; border-bottom:1px solid var(--border);
-}
-.header-left { display:flex; align-items:center; gap:12px; }
-.header-logo { font-family:var(--mono); font-weight:800; font-size:14px; color:#fff; letter-spacing:0.5px; }
-.header-tag { font-family:var(--mono); font-size:10px; color:var(--green); background:var(--green-bg); padding:3px 8px; border-radius:4px; font-weight:600; }
-.header-right { display:flex; align-items:center; gap:12px; }
-.header-country {
-  font-family:var(--mono); font-size:11px; color:var(--text-s);
-  background:var(--panel); border:1px solid var(--border); border-radius:6px;
-  padding:6px 12px; cursor:pointer;
-}
-.header-live {
-  display:flex; align-items:center; gap:6px;
-  font-family:var(--mono); font-size:10px; color:var(--green);
-}
-.header-live .dot { width:6px; height:6px; border-radius:50%; background:var(--green); animation:pulse 2s infinite; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;position:relative;z-index:5;}
+.auth-box{background:var(--surface);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:16px;padding:48px 44px;width:420px;text-align:center;}
+.auth-box h2{font-family:var(--mono);font-size:20px;font-weight:800;margin-bottom:6px;}
+.auth-box p{font-size:15px;color:var(--text-s);margin-bottom:28px;}
+.auth-input{width:100%;padding:16px 18px;background:var(--input-bg);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--mono);font-size:14px;outline:none;margin-bottom:16px;transition:border-color .2s;}
+.auth-input:focus{border-color:var(--green);}
+.auth-btn{width:100%;padding:16px;background:var(--green);color:#071a08;border:none;border-radius:10px;font-family:var(--mono);font-size:15px;font-weight:800;cursor:pointer;letter-spacing:0.5px;}
+.auth-btn:hover{opacity:0.85;}
+.auth-error{font-family:var(--mono);font-size:12px;color:var(--red);margin-top:10px;display:none;}
 
-/* Summary cards */
-.summary {
-  display:grid; grid-template-columns:repeat(5, 1fr); gap:12px;
-  padding:20px 24px;
-}
-.card {
-  background:var(--panel); border:1px solid var(--border); border-radius:10px;
-  padding:16px 18px;
-}
-.card-label { font-family:var(--mono); font-size:9px; color:var(--text-xs); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
-.card-value { font-family:var(--mono); font-size:28px; font-weight:800; color:#fff; }
-.card-sub { font-size:11px; color:var(--text-s); margin-top:4px; }
-.card-value.green { color:var(--green); }
-.card-value.red { color:var(--red); }
-.card-value.amber { color:var(--amber); }
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
+.header-left{display:flex;align-items:center;gap:14px;}
+.header-logo{font-family:var(--mono);font-weight:800;font-size:20px;}
+.header-tag{font-family:var(--mono);font-size:11px;color:var(--green-d);background:var(--grade-a);padding:5px 12px;border-radius:6px;font-weight:700;letter-spacing:1px;}
+.header-right{display:flex;align-items:center;gap:12px;}
+.live-dot{width:9px;height:9px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;display:inline-block;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.live-label{font-family:var(--mono);font-size:13px;color:var(--green);font-weight:700;}
+.icon-btn{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:8px 14px;cursor:pointer;font-family:var(--mono);font-size:12px;color:var(--text-s);font-weight:600;transition:all .15s;}
+.icon-btn:hover{border-color:var(--green);color:var(--text);}
 
-/* Grade distribution */
-.grades { display:flex; gap:6px; margin-top:8px; }
-.grade-pill {
-  font-family:var(--mono); font-size:11px; font-weight:700;
-  padding:3px 10px; border-radius:4px;
-}
-.grade-A { background:rgba(34,197,94,0.15); color:#22c55e; }
-.grade-B { background:rgba(59,130,246,0.15); color:#3b82f6; }
-.grade-C { background:rgba(245,158,11,0.15); color:#f59e0b; }
-.grade-D { background:rgba(239,68,68,0.12); color:#f87171; }
-.grade-F { background:rgba(239,68,68,0.2); color:#ef4444; }
+.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:28px;}
+.card{background:var(--card-bg);backdrop-filter:blur(10px);border:1px solid var(--card-border);border-radius:14px;padding:22px 24px;}
+.card-label{font-family:var(--mono);font-size:11px;color:var(--text-xs);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;font-weight:600;}
+.card-value{font-family:var(--mono);font-size:40px;font-weight:800;line-height:1;}
+.c-green{color:var(--green);}
+.c-red{color:var(--red);}
+.card-sub{font-size:13px;color:var(--text-s);margin-top:8px;font-weight:500;}
+.grades{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.grade-pill{font-family:var(--mono);font-size:15px;font-weight:700;padding:5px 14px;border-radius:6px;}
+.gp-A{background:var(--grade-a);color:var(--green-d);} .gp-B{background:var(--grade-b);color:var(--blue);} .gp-C{background:var(--grade-c);color:var(--amber);} .gp-D{background:var(--grade-d);color:#f87171;} .gp-F{background:var(--grade-f);color:var(--red);}
 
-/* Table */
-.table-wrap { padding:0 24px 24px; }
-.table-header {
-  display:flex; align-items:center; justify-content:space-between;
-  margin-bottom:12px;
-}
-.table-title { font-family:var(--mono); font-size:12px; font-weight:700; color:#fff; }
-.table-count { font-family:var(--mono); font-size:10px; color:var(--text-xs); }
+.table-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.table-title{font-family:var(--mono);font-size:16px;font-weight:800;}
+.table-count{font-family:var(--mono);font-size:13px;color:var(--text-xs);}
+table{width:100%;border-collapse:collapse;}
+thead th{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text-xs);text-transform:uppercase;letter-spacing:1.5px;text-align:left;padding:14px 18px;border-bottom:1.5px solid var(--border);}
+tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
+tbody tr:hover{background:var(--surface-h);}
+tbody td{padding:18px;font-size:16px;vertical-align:middle;}
 
-table { width:100%; border-collapse:collapse; }
-thead th {
-  font-family:var(--mono); font-size:9px; font-weight:600; color:var(--text-xs);
-  text-transform:uppercase; letter-spacing:1px;
-  text-align:left; padding:8px 12px;
-  border-bottom:1px solid var(--border);
-}
-tbody tr {
-  border-bottom:1px solid rgba(29,35,48,0.5);
-  transition:background .15s;
-}
-tbody tr:hover { background:rgba(34,197,94,0.03); }
-tbody td {
-  padding:10px 12px; font-size:12px; color:var(--text);
-  vertical-align:middle;
-}
+.status{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;font-weight:700;padding:6px 14px;border-radius:8px;letter-spacing:0.5px;}
+.st-on{background:var(--online-bg);color:var(--green-d);} .st-off{background:var(--offline-bg);color:var(--red);}
+.sd{width:8px;height:8px;border-radius:50%;} .st-on .sd{background:var(--green);} .st-off .sd{background:var(--red);}
 
-/* Status badge */
-.status {
-  display:inline-flex; align-items:center; gap:5px;
-  font-family:var(--mono); font-size:10px; font-weight:600;
-  padding:3px 8px; border-radius:4px;
-}
-.status-online { background:var(--green-bg); color:var(--green); }
-.status-offline { background:var(--red-bg); color:var(--red); }
-.status-pending { background:var(--amber-bg); color:var(--amber); }
-.status .sdot { width:5px; height:5px; border-radius:50%; }
-.status-online .sdot { background:var(--green); }
-.status-offline .sdot { background:var(--red); }
-.status-pending .sdot { background:var(--amber); }
+.gb{font-family:var(--mono);font-size:20px;font-weight:800;width:44px;height:44px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;}
+.gb-A{background:var(--grade-a);color:var(--green-d);} .gb-B{background:var(--grade-b);color:var(--blue);} .gb-C{background:var(--grade-c);color:var(--amber);} .gb-D{background:var(--grade-d);color:#f87171;} .gb-F{background:var(--grade-f);color:var(--red);}
 
-/* Grade badge in table */
-.grade-badge {
-  font-family:var(--mono); font-size:13px; font-weight:800;
-  width:28px; height:28px; border-radius:6px;
-  display:inline-flex; align-items:center; justify-content:center;
-}
+.sb{display:flex;align-items:center;gap:10px;min-width:180px;}
+.sv{font-family:var(--mono);font-size:18px;font-weight:800;min-width:40px;}
+.st{flex:1;height:7px;border-radius:4px;background:var(--score-track);overflow:hidden;}
+.sf{height:7px;border-radius:4px;transition:width .6s ease;}
 
-/* Score bar */
-.score-bar {
-  display:flex; align-items:center; gap:6px;
-}
-.score-bar-fill {
-  height:4px; border-radius:2px; background:var(--green);
-  transition:width .5s;
-}
-.score-bar-track {
-  flex:1; height:4px; border-radius:2px; background:var(--border);
-  overflow:hidden;
-}
-.score-val { font-family:var(--mono); font-size:11px; font-weight:600; min-width:30px; }
+.mn{font-family:var(--mono);font-size:18px;font-weight:800;}
+.ml{font-family:var(--mono);font-size:12px;color:var(--text-s);margin-top:3px;line-height:1.5;}
+.tn{font-family:var(--mono);font-size:18px;font-weight:800;}
+.tt{font-family:var(--mono);font-size:12px;color:var(--text-xs);margin-top:2px;}
+.ts{font-family:var(--mono);font-size:14px;color:var(--text-s);}
 
-/* Traffic */
-.traffic { font-family:var(--mono); font-size:11px; }
-.traffic-num { font-weight:700; color:#fff; }
-.traffic-label { color:var(--text-xs); font-size:9px; }
+.tip{position:relative;cursor:help;}
+.tip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--tip-bg);color:var(--tip-text);font-family:var(--sans);font-size:12px;font-weight:500;padding:8px 14px;border-radius:8px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,0.15);}
+.tip:hover::after{opacity:1;}
 
-/* Timestamp */
-.ts { font-family:var(--mono); font-size:10px; color:var(--text-xs); }
+.empty{text-align:center;padding:60px 20px;}
+.empty h3{font-family:var(--mono);font-size:17px;margin-bottom:8px;}
+.empty p{font-size:14px;color:var(--text-s);}
 
-/* Loading */
-.loading {
-  display:flex; align-items:center; justify-content:center;
-  height:300px; font-family:var(--mono); font-size:12px; color:var(--text-xs);
-}
+.footer{margin-top:28px;padding-top:20px;border-top:1.5px solid var(--border);display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--text-xs);}
+.footer a{color:var(--green-d);text-decoration:none;font-weight:600;}
 
-/* Empty state */
-.empty-state {
-  text-align:center; padding:60px 20px;
-}
-.empty-state h3 { font-family:var(--mono); font-size:14px; color:#fff; margin-bottom:8px; }
-.empty-state p { font-size:12px; color:var(--text-s); max-width:400px; margin:0 auto; }
-
-/* Footer */
-.footer {
-  padding:16px 24px; border-top:1px solid var(--border);
-  display:flex; justify-content:space-between;
-  font-family:var(--mono); font-size:9px; color:var(--text-xs);
-}
-.footer a { color:var(--green); text-decoration:none; }
-
-/* Auth screen */
-.auth-screen {
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  min-height:100vh; gap:16px;
-}
-.auth-box {
-  background:var(--panel); border:1px solid var(--border); border-radius:12px;
-  padding:32px; width:360px; text-align:center;
-}
-.auth-box h2 { font-family:var(--mono); font-size:14px; color:#fff; margin-bottom:4px; }
-.auth-box p { font-size:11px; color:var(--text-s); margin-bottom:20px; }
-.auth-input {
-  width:100%; padding:10px 14px; background:var(--bg); border:1px solid var(--border);
-  border-radius:6px; color:#fff; font-family:var(--mono); font-size:12px;
-  outline:none; margin-bottom:12px;
-}
-.auth-input:focus { border-color:var(--green); }
-.auth-btn {
-  width:100%; padding:10px; background:var(--green); color:#000; border:none;
-  border-radius:6px; font-family:var(--mono); font-size:12px; font-weight:700;
-  cursor:pointer;
-}
-.auth-btn:hover { opacity:0.9; }
-.auth-error { font-family:var(--mono); font-size:10px; color:var(--red); margin-top:8px; display:none; }
-
-/* Responsive */
-@media (max-width:900px) {
-  .summary { grid-template-columns:repeat(2, 1fr); }
-  table { font-size:11px; }
-  thead th, tbody td { padding:6px 8px; }
-}
+@media(max-width:1000px){.cards{grid-template-columns:repeat(2,1fr);}.wrap{padding:20px;}tbody td{padding:12px;font-size:14px;}}
 </style>
 </head>
-<body>
+<body data-theme="light">
+<div class="page-bg"></div>
+<div class="grid-bg"></div>
+<div class="topline"></div>
 
-<!-- Auth screen -->
 <div id="authScreen" class="auth-screen">
   <div class="auth-box">
-    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 400 400" style="border-radius:6px;margin-bottom:12px;">
-      <rect width="400" height="400" fill="#fff"/>
-      <path d="M186 80L242 80L242 320L186 320L186 128L148 128L148 80Z" fill="#0c0f14"/>
-    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 400 400" style="border-radius:8px;margin-bottom:16px;"><rect width="400" height="400" rx="40" fill="#22c55e"/><path d="M186 80L242 80L242 320L186 320L186 128L148 128L148 80Z" fill="#fff"/></svg>
     <h2>ONTO REGULATOR</h2>
     <p>Enter access token to continue</p>
     <input type="password" class="auth-input" id="tokenInput" placeholder="Bearer token" onkeydown="if(event.key==='Enter')authenticate()">
-    <button class="auth-btn" onclick="authenticate()">ACCESS</button>
+    <button class="auth-btn" onclick="authenticate()">ACCESS DASHBOARD</button>
     <div class="auth-error" id="authError">Invalid token</div>
   </div>
 </div>
 
-<!-- Dashboard (hidden until auth) -->
 <div id="dashboard" style="display:none">
+<div class="wrap">
 <div class="header">
   <div class="header-left">
-    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 400 400" style="border-radius:6px;">
-      <rect width="400" height="400" fill="#fff"/>
-      <path d="M186 80L242 80L242 320L186 320L186 128L148 128L148 80Z" fill="#0c0f14"/>
-    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 400 400" style="border-radius:8px;"><rect width="400" height="400" rx="40" fill="#22c55e"/><path d="M186 80L242 80L242 320L186 320L186 128L148 128L148 80Z" fill="#fff"/></svg>
     <span class="header-logo">ONTO REGULATOR</span>
-    <span class="header-tag">DASHBOARD</span>
+    <span class="header-tag">LIVE</span>
   </div>
   <div class="header-right">
-    <div class="header-live"><div class="dot"></div> LIVE</div>
-    <button onclick="sessionStorage.removeItem('reg_token');location.reload()" style="font-family:var(--mono);font-size:10px;color:var(--text-xs);background:none;border:1px solid var(--border);border-radius:4px;padding:4px 10px;cursor:pointer;">LOGOUT</button>
+    <span class="live-dot"></span><span class="live-label">MONITORING</span>
+    <button class="icon-btn" id="themeToggle" onclick="toggleTheme()">☀️ Day</button>
+    <button class="icon-btn" onclick="sessionStorage.removeItem('reg_token');location.reload()">Logout</button>
   </div>
 </div>
 
-<div class="summary" id="summaryCards">
-  <div class="card">
-    <div class="card-label">Providers</div>
-    <div class="card-value" id="totalProviders">—</div>
-    <div class="card-sub" id="providerSub">Loading...</div>
-  </div>
-  <div class="card">
-    <div class="card-label">Online Now</div>
-    <div class="card-value green" id="onlineCount">—</div>
-    <div class="card-sub" id="onlineSub"></div>
-  </div>
-  <div class="card">
-    <div class="card-label">Offline</div>
-    <div class="card-value red" id="offlineCount">—</div>
-    <div class="card-sub" id="offlineSub"></div>
-  </div>
-  <div class="card">
-    <div class="card-label">Requests Today</div>
-    <div class="card-value" id="requestsToday">—</div>
-    <div class="card-sub">Through GOLD proxy</div>
-  </div>
-  <div class="card">
-    <div class="card-label">Grade Distribution</div>
-    <div class="grades" id="gradeDist"></div>
-    <div class="card-sub" id="gradeAvg"></div>
-  </div>
+<div class="cards">
+  <div class="card"><div class="card-label tip" data-tip="Companies connected to GOLD">Providers</div><div class="card-value" id="totalProviders">—</div><div class="card-sub" id="providerSub">Loading...</div></div>
+  <div class="card"><div class="card-label tip" data-tip="Heartbeat received < 5 min ago">Online Now</div><div class="card-value c-green" id="onlineCount">—</div><div class="card-sub" id="onlineSub"></div></div>
+  <div class="card"><div class="card-label tip" data-tip="No heartbeat for 5+ minutes">Offline</div><div class="card-value c-red" id="offlineCount">—</div><div class="card-sub" id="offlineSub"></div></div>
+  <div class="card"><div class="card-label tip" data-tip="API requests through GOLD proxy today">Requests Today</div><div class="card-value" id="requestsToday">—</div><div class="card-sub">Through GOLD proxy</div></div>
+  <div class="card"><div class="card-label tip" data-tip="A=Exemplary B=Compliant C=Marginal D=Non-compliant F=Critical">Grades</div><div class="grades" id="gradeDist"></div></div>
 </div>
 
-<div class="table-wrap">
-  <div class="table-header">
-    <span class="table-title">AI Providers</span>
-    <span class="table-count" id="tableCount"></span>
-  </div>
-  <table>
-    <thead>
-      <tr>
-        <th>Status</th>
-        <th>Provider</th>
-        <th>Model</th>
-        <th>Grade</th>
-        <th>Score</th>
-        <th>Traffic</th>
-        <th>Last Seen</th>
-      </tr>
-    </thead>
-    <tbody id="providerTable">
-      <tr><td colspan="8" class="loading">Loading providers...</td></tr>
-    </tbody>
-  </table>
-</div>
+<div class="table-header"><span class="table-title">AI Providers</span><span class="table-count" id="tableCount"></span></div>
+<table><thead><tr>
+  <th class="tip" data-tip="Online = heartbeat < 5 min">Status</th>
+  <th>Provider</th>
+  <th class="tip" data-tip="AI models connected through GOLD">Models</th>
+  <th class="tip" data-tip="A (8.5+) B (7+) C (5+) D (2.5+) F (<2.5)">Grade</th>
+  <th class="tip" data-tip="Lowest recorded score across all evaluations">Lowest</th>
+  <th class="tip" data-tip="Current average epistemic quality 0-10">Current</th>
+  <th class="tip" data-tip="Requests via GOLD proxy">Traffic</th>
+  <th class="tip" data-tip="Last heartbeat ping">Last Seen</th>
+</tr></thead>
+<tbody id="providerTable"><tr><td colspan="8" style="text-align:center;padding:48px;color:var(--text-xs)">Loading...</td></tr></tbody>
+</table>
 
-<div class="footer">
-  <span>ONTO Standards Council · <a href="https://ontostandard.org">ontostandard.org</a></span>
-  <span id="lastUpdate">—</span>
-</div>
-</div><!-- /dashboard -->
+<div class="footer"><span>ONTO Standards Council · <a href="https://ontostandard.org">ontostandard.org</a></span><span id="lastUpdate">—</span></div>
+</div></div>
 
 <script>
-const API_BASE = 'https://api.ontostandard.org';
+const API='https://api.ontostandard.org',gt=()=>sessionStorage.getItem('reg_token')||'';
+function toggleTheme(){const t=document.body.getAttribute('data-theme')==='light'?'dark':'light';document.body.setAttribute('data-theme',t);localStorage.setItem('reg_theme',t);document.getElementById('themeToggle').textContent=t==='light'?'☀️ Day':'🌙 Night';}
+(function(){const s=localStorage.getItem('reg_theme');if(s){document.body.setAttribute('data-theme',s);setTimeout(()=>{const b=document.getElementById('themeToggle');if(b)b.textContent=s==='light'?'☀️ Day':'🌙 Night';},0);}})();
 
-function getToken() { return sessionStorage.getItem('reg_token') || ''; }
+async function authenticate(){const token=document.getElementById('tokenInput').value.trim();if(!token)return;try{const r=await fetch(`${API}/v1/regulator/dashboard`,{headers:{'Authorization':`Bearer ${token}`}});if(r.ok){sessionStorage.setItem('reg_token',token);document.getElementById('authScreen').style.display='none';document.getElementById('dashboard').style.display='block';render(await r.json());setInterval(load,30000);}else{document.getElementById('authError').style.display='block';}}catch(e){document.getElementById('authError').textContent='Connection error';document.getElementById('authError').style.display='block';}}
 
-async function authenticate() {
-  const input = document.getElementById('tokenInput');
-  const token = input.value.trim();
-  if (!token) return;
-  
-  try {
-    const resp = await fetch(`${API_BASE}/v1/regulator/dashboard`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    if (resp.ok) {
-      sessionStorage.setItem('reg_token', token);
-      document.getElementById('authScreen').style.display = 'none';
-      document.getElementById('dashboard').style.display = 'block';
-      const data = await resp.json();
-      renderDashboard(data);
-      setInterval(loadDashboard, 30000);
-    } else {
-      document.getElementById('authError').style.display = 'block';
-    }
-  } catch (e) {
-    document.getElementById('authError').textContent = 'Connection error';
-    document.getElementById('authError').style.display = 'block';
-  }
+(async function(){const t=gt();if(!t)return;try{const r=await fetch(`${API}/v1/regulator/dashboard`,{headers:{'Authorization':`Bearer ${t}`}});if(r.ok){document.getElementById('authScreen').style.display='none';document.getElementById('dashboard').style.display='block';render(await r.json());setInterval(load,30000);}else{sessionStorage.removeItem('reg_token');}}catch(e){sessionStorage.removeItem('reg_token');}})();
+
+function stH(s){const c=s==='online'?'st-on':'st-off';return `<span class="status ${c}"><span class="sd"></span>${s.toUpperCase()}</span>`;}
+function sbH(score){const p=Math.min(score*10,100),c=score>=8.5?'#22c55e':score>=7?'#3b82f6':score>=5?'#f59e0b':'#ef4444';return `<div class="sb"><span class="sv" style="color:${c}">${score.toFixed(1)}</span><div class="st"><div class="sf" style="width:${p}%;background:${c}"></div></div></div>`;}
+function taH(iso){if(!iso)return'—';const d=(Date.now()-new Date(iso).getTime())/1000;if(d<60)return Math.floor(d)+'s ago';if(d<3600)return Math.floor(d/60)+'m ago';if(d<86400)return Math.floor(d/3600)+'h ago';return Math.floor(d/86400)+'d ago';}
+
+function render(data){
+  const s=data.summary;
+  document.getElementById('totalProviders').textContent=s.total_providers;
+  document.getElementById('providerSub').textContent=`${s.online} active, ${s.offline} inactive`;
+  document.getElementById('onlineCount').textContent=s.online;
+  document.getElementById('onlineSub').textContent=s.online>0?'Passing through GOLD':'No active providers';
+  document.getElementById('offlineCount').textContent=s.offline;
+  document.getElementById('offlineSub').textContent=s.offline>0?'No heartbeat > 5min':'';
+  document.getElementById('requestsToday').textContent=s.requests_today.toLocaleString();
+  let gh='';for(const g of['A','B','C','D','F']){if(s.grade_distribution[g]>0)gh+=`<span class="grade-pill gp-${g}">${g}: ${s.grade_distribution[g]}</span>`;}
+  document.getElementById('gradeDist').innerHTML=gh||'<span style="font-size:13px;color:var(--text-xs)">No evaluations</span>';
+  const tb=document.getElementById('providerTable');
+  if(!data.providers.length){tb.innerHTML='<tr><td colspan="8"><div class="empty"><h3>No providers connected</h3><p>When AI providers connect through ONTO, they appear here.</p></div></td></tr>';return;}
+  tb.innerHTML=data.providers.map(p=>{
+    const names=(p.model_names||[]).slice(0,4).join(', '),more=(p.model_names||[]).length>4?' +'+(p.model_names.length-4):'';
+    const mc=p.min_score>=8.5?'#22c55e':p.min_score>=7?'#3b82f6':p.min_score>=5?'#f59e0b':'#ef4444';
+    return `<tr><td>${stH(p.status)}</td><td style="font-weight:800;font-size:17px">${p.name}</td><td><span class="mn">${p.models}</span><div class="ml">${names}${more}</div></td><td><span class="gb gb-${p.grade||'F'}">${p.grade}</span></td><td><span class="sv" style="color:${mc}">${p.min_score.toFixed(1)}</span> <span class="gb gb-${p.min_grade||'F'}" style="width:28px;height:28px;font-size:13px;">${p.min_grade}</span></td><td>${sbH(p.score)}</td><td><span class="tn">${p.requests_today}</span> <span class="tt">today</span><div class="tt">${p.requests_total.toLocaleString()} total</div></td><td class="ts">${taH(p.last_heartbeat)}</td></tr>`;
+  }).join('');
+  document.getElementById('tableCount').textContent=`${data.providers.length} providers`;
+  document.getElementById('lastUpdate').textContent=`Updated: ${new Date().toLocaleTimeString()}`;
 }
 
-// Auto-login if token in session
-(async function() {
-  const t = getToken();
-  if (t) {
-    try {
-      const resp = await fetch(`${API_BASE}/v1/regulator/dashboard`, {
-        headers: { 'Authorization': `Bearer ${t}` }
-      });
-      if (resp.ok) {
-        document.getElementById('authScreen').style.display = 'none';
-        document.getElementById('dashboard').style.display = 'block';
-        renderDashboard(await resp.json());
-        setInterval(loadDashboard, 30000);
-        return;
-      }
-    } catch(e) {}
-    sessionStorage.removeItem('reg_token');
-  }
-})();
-
-function gradeClass(g) { return 'grade-badge grade-' + (g || 'F'); }
-
-function statusHTML(s) {
-  const cls = s === 'online' ? 'status-online' : s === 'offline' ? 'status-offline' : 'status-pending';
-  return `<span class="status ${cls}"><span class="sdot"></span>${s}</span>`;
-}
-
-function scoreBar(score) {
-  const pct = Math.min(score * 10, 100);
-  const color = score >= 8.5 ? '#22c55e' : score >= 7 ? '#3b82f6' : score >= 5 ? '#f59e0b' : '#ef4444';
-  return `<div class="score-bar">
-    <span class="score-val" style="color:${color}">${score.toFixed(1)}</span>
-    <div class="score-bar-track"><div class="score-bar-fill" style="width:${pct}%;background:${color}"></div></div>
-  </div>`;
-}
-
-function timeAgo(iso) {
-  if (!iso) return '—';
-  const diff = (Date.now() - new Date(iso).getTime()) / 1000;
-  if (diff < 60) return `${Math.floor(diff)}s ago`;
-  if (diff < 3600) return `${Math.floor(diff/60)}m ago`;
-  if (diff < 86400) return `${Math.floor(diff/3600)}h ago`;
-  return `${Math.floor(diff/86400)}d ago`;
-}
-
-function renderDashboard(data) {
-  const s = data.summary;
-  document.getElementById('totalProviders').textContent = s.total_providers;
-  document.getElementById('providerSub').textContent = `${s.online} active, ${s.offline} inactive`;
-  document.getElementById('onlineCount').textContent = s.online;
-  document.getElementById('onlineSub').textContent = s.online > 0 ? 'Passing through GOLD' : 'No active providers';
-  document.getElementById('offlineCount').textContent = s.offline;
-  document.getElementById('offlineSub').textContent = s.offline > 0 ? 'No heartbeat > 5min' : '';
-  document.getElementById('requestsToday').textContent = s.requests_today.toLocaleString();
-
-  const gd = s.grade_distribution;
-  let gradeHTML = '';
-  for (const g of ['A','B','C','D','F']) {
-    if (gd[g] > 0) gradeHTML += `<span class="grade-pill grade-${g}">${g}: ${gd[g]}</span>`;
-  }
-  document.getElementById('gradeDist').innerHTML = gradeHTML || '<span style="font-size:10px;color:var(--text-xs)">No evaluations yet</span>';
-
-  const tbody = document.getElementById('providerTable');
-  if (data.providers.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><h3>No providers connected</h3><p>When AI providers connect through the ONTO proxy, they will appear here.</p></div></td></tr>`;
-  } else {
-    tbody.innerHTML = data.providers.map(p => `
-      <tr>
-        <td>${statusHTML(p.status)}</td>
-        <td style="font-weight:600;color:#fff">${p.name}</td>
-        <td><span style="font-family:var(--mono);font-size:11px;color:var(--text-s)">${p.model}</span></td>
-        <td><span class="${gradeClass(p.grade)}">${p.grade}</span></td>
-        <td>${scoreBar(p.score)}</td>
-        <td class="traffic">
-          <span class="traffic-num">${p.requests_today}</span>
-          <span class="traffic-label"> today</span>
-          <span style="color:var(--text-xs);margin-left:4px">(${p.requests_total} total)</span>
-        </td>
-        <td class="ts">${timeAgo(p.last_heartbeat)}</td>
-      </tr>
-    `).join('');
-  }
-
-  document.getElementById('tableCount').textContent = `${data.providers.length} providers`;
-  document.getElementById('lastUpdate').textContent = `Updated: ${new Date().toLocaleTimeString()}`;
-}
-
-async function loadDashboard() {
-  try {
-    const resp = await fetch(`${API_BASE}/v1/regulator/dashboard`, {
-      headers: { 'Authorization': `Bearer ${getToken()}` }
-    });
-    if (resp.status === 403) {
-      sessionStorage.removeItem('reg_token');
-      document.getElementById('dashboard').style.display = 'none';
-      document.getElementById('authScreen').style.display = 'flex';
-      return;
-    }
-    if (resp.ok) renderDashboard(await resp.json());
-  } catch (e) {
-    console.error('Dashboard load failed:', e);
-  }
-}
+async function load(){try{const r=await fetch(`${API}/v1/regulator/dashboard`,{headers:{'Authorization':`Bearer ${gt()}`}});if(r.status===403){sessionStorage.removeItem('reg_token');location.reload();return;}if(r.ok)render(await r.json());}catch(e){console.error(e);}}
 </script>
 </body>
 </html>
