@@ -167,6 +167,31 @@ tbody td {
 }
 .footer a { color:var(--green); text-decoration:none; }
 
+/* Auth screen */
+.auth-screen {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  min-height:100vh; gap:16px;
+}
+.auth-box {
+  background:var(--panel); border:1px solid var(--border); border-radius:12px;
+  padding:32px; width:360px; text-align:center;
+}
+.auth-box h2 { font-family:var(--mono); font-size:14px; color:#fff; margin-bottom:4px; }
+.auth-box p { font-size:11px; color:var(--text-s); margin-bottom:20px; }
+.auth-input {
+  width:100%; padding:10px 14px; background:var(--bg); border:1px solid var(--border);
+  border-radius:6px; color:#fff; font-family:var(--mono); font-size:12px;
+  outline:none; margin-bottom:12px;
+}
+.auth-input:focus { border-color:var(--green); }
+.auth-btn {
+  width:100%; padding:10px; background:var(--green); color:#000; border:none;
+  border-radius:6px; font-family:var(--mono); font-size:12px; font-weight:700;
+  cursor:pointer;
+}
+.auth-btn:hover { opacity:0.9; }
+.auth-error { font-family:var(--mono); font-size:10px; color:var(--red); margin-top:8px; display:none; }
+
 /* Responsive */
 @media (max-width:900px) {
   .summary { grid-template-columns:repeat(2, 1fr); }
@@ -177,6 +202,23 @@ tbody td {
 </head>
 <body>
 
+<!-- Auth screen -->
+<div id="authScreen" class="auth-screen">
+  <div class="auth-box">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 400 400" style="border-radius:6px;margin-bottom:12px;">
+      <rect width="400" height="400" fill="#fff"/>
+      <path d="M186 80L242 80L242 320L186 320L186 128L148 128L148 80Z" fill="#0c0f14"/>
+    </svg>
+    <h2>ONTO REGULATOR</h2>
+    <p>Enter access token to continue</p>
+    <input type="password" class="auth-input" id="tokenInput" placeholder="Bearer token" onkeydown="if(event.key==='Enter')authenticate()">
+    <button class="auth-btn" onclick="authenticate()">ACCESS</button>
+    <div class="auth-error" id="authError">Invalid token</div>
+  </div>
+</div>
+
+<!-- Dashboard (hidden until auth) -->
+<div id="dashboard" style="display:none">
 <div class="header">
   <div class="header-left">
     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 400 400" style="border-radius:6px;">
@@ -187,19 +229,8 @@ tbody td {
     <span class="header-tag">DASHBOARD</span>
   </div>
   <div class="header-right">
-    <select class="header-country" id="countryFilter" onchange="loadDashboard()">
-      <option value="">All Countries</option>
-      <option value="UZ">🇺🇿 Uzbekistan</option>
-      <option value="AE">🇦🇪 UAE</option>
-      <option value="TR">🇹🇷 Turkey</option>
-      <option value="SG">🇸🇬 Singapore</option>
-      <option value="KR">🇰🇷 South Korea</option>
-      <option value="JP">🇯🇵 Japan</option>
-      <option value="DE">🇩🇪 Germany</option>
-      <option value="US">🇺🇸 USA</option>
-      <option value="SA">🇸🇦 Saudi Arabia</option>
-    </select>
     <div class="header-live"><div class="dot"></div> LIVE</div>
+    <button onclick="sessionStorage.removeItem('reg_token');location.reload()" style="font-family:var(--mono);font-size:10px;color:var(--text-xs);background:none;border:1px solid var(--border);border-radius:4px;padding:4px 10px;cursor:pointer;">LOGOUT</button>
   </div>
 </div>
 
@@ -245,7 +276,6 @@ tbody td {
         <th>Grade</th>
         <th>Score</th>
         <th>Traffic</th>
-        <th>Domain</th>
         <th>Last Seen</th>
       </tr>
     </thead>
@@ -259,14 +289,59 @@ tbody td {
   <span>ONTO Standards Council · <a href="https://ontostandard.org">ontostandard.org</a></span>
   <span id="lastUpdate">—</span>
 </div>
+</div><!-- /dashboard -->
 
 <script>
 const API_BASE = 'https://api.ontostandard.org';
-// For local dev: const API_BASE = 'http://localhost:8000';
 
-function gradeClass(g) {
-  return 'grade-badge grade-' + (g || 'F');
+function getToken() { return sessionStorage.getItem('reg_token') || ''; }
+
+async function authenticate() {
+  const input = document.getElementById('tokenInput');
+  const token = input.value.trim();
+  if (!token) return;
+  
+  try {
+    const resp = await fetch(`${API_BASE}/v1/regulator/dashboard`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (resp.ok) {
+      sessionStorage.setItem('reg_token', token);
+      document.getElementById('authScreen').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      const data = await resp.json();
+      renderDashboard(data);
+      setInterval(loadDashboard, 30000);
+    } else {
+      document.getElementById('authError').style.display = 'block';
+    }
+  } catch (e) {
+    document.getElementById('authError').textContent = 'Connection error';
+    document.getElementById('authError').style.display = 'block';
+  }
 }
+
+// Auto-login if token in session
+(async function() {
+  const t = getToken();
+  if (t) {
+    try {
+      const resp = await fetch(`${API_BASE}/v1/regulator/dashboard`, {
+        headers: { 'Authorization': `Bearer ${t}` }
+      });
+      if (resp.ok) {
+        document.getElementById('authScreen').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+        renderDashboard(await resp.json());
+        setInterval(loadDashboard, 30000);
+        return;
+      }
+    } catch(e) {}
+    sessionStorage.removeItem('reg_token');
+  }
+})();
+
+function gradeClass(g) { return 'grade-badge grade-' + (g || 'F'); }
 
 function statusHTML(s) {
   const cls = s === 'online' ? 'status-online' : s === 'offline' ? 'status-offline' : 'status-pending';
@@ -275,7 +350,7 @@ function statusHTML(s) {
 
 function scoreBar(score) {
   const pct = Math.min(score * 10, 100);
-  const color = score >= 9 ? '#22c55e' : score >= 7.5 ? '#3b82f6' : score >= 6 ? '#f59e0b' : '#ef4444';
+  const color = score >= 8.5 ? '#22c55e' : score >= 7 ? '#3b82f6' : score >= 5 ? '#f59e0b' : '#ef4444';
   return `<div class="score-bar">
     <span class="score-val" style="color:${color}">${score.toFixed(1)}</span>
     <div class="score-bar-track"><div class="score-bar-fill" style="width:${pct}%;background:${color}"></div></div>
@@ -291,81 +366,64 @@ function timeAgo(iso) {
   return `${Math.floor(diff/86400)}d ago`;
 }
 
-async function loadDashboard() {
-  const country = document.getElementById('countryFilter').value;
-  const url = `${API_BASE}/v1/regulator/dashboard` + (country ? `?country=${country}` : '');
-  
-  try {
-    const resp = await fetch(url);
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const data = await resp.json();
-    
-    const s = data.summary;
-    
-    // Summary cards
-    document.getElementById('totalProviders').textContent = s.total_providers;
-    document.getElementById('providerSub').textContent = `${s.online} active, ${s.offline} inactive`;
-    document.getElementById('onlineCount').textContent = s.online;
-    document.getElementById('onlineSub').textContent = s.online > 0 ? 'Passing through GOLD' : 'No active providers';
-    document.getElementById('offlineCount').textContent = s.offline;
-    document.getElementById('offlineSub').textContent = s.offline > 0 ? 'No heartbeat > 5min' : '';
-    document.getElementById('requestsToday').textContent = s.requests_today.toLocaleString();
-    
-    // Grade distribution
-    const gd = s.grade_distribution;
-    let gradeHTML = '';
-    for (const g of ['A','B','C','D','F']) {
-      if (gd[g] > 0) gradeHTML += `<span class="grade-pill grade-${g}">${g}: ${gd[g]}</span>`;
-    }
-    document.getElementById('gradeDist').innerHTML = gradeHTML || '<span style="font-size:10px;color:var(--text-xs)">No evaluations yet</span>';
-    
-    // Provider table
-    const tbody = document.getElementById('providerTable');
-    if (data.providers.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8">
-        <div class="empty-state">
-          <h3>No providers connected</h3>
-          <p>When AI providers connect through the ONTO proxy, they will appear here with real-time quality grades.</p>
-        </div>
-      </td></tr>`;
-    } else {
-      tbody.innerHTML = data.providers.map(p => `
-        <tr>
-          <td>${statusHTML(p.status)}</td>
-          <td style="font-weight:600;color:#fff">${p.name}</td>
-          <td><span style="font-family:var(--mono);font-size:11px;color:var(--text-s)">${p.model}</span></td>
-          <td><span class="${gradeClass(p.grade)}">${p.grade}</span></td>
-          <td>${scoreBar(p.score)}</td>
-          <td class="traffic">
-            <span class="traffic-num">${p.requests_today}</span>
-            <span class="traffic-label"> today</span>
-            <span style="color:var(--text-xs);margin-left:4px">(${p.requests_total} total)</span>
-          </td>
-          <td style="font-family:var(--mono);font-size:10px;color:var(--text-s)">${p.domain || '—'}</td>
-          <td class="ts">${timeAgo(p.last_heartbeat)}</td>
-        </tr>
-      `).join('');
-    }
-    
-    document.getElementById('tableCount').textContent = `${data.providers.length} providers`;
-    document.getElementById('lastUpdate').textContent = `Updated: ${new Date().toLocaleTimeString()}`;
-    
-  } catch (err) {
-    console.error('Dashboard load failed:', err);
-    document.getElementById('providerTable').innerHTML = `
-      <tr><td colspan="8">
-        <div class="empty-state">
-          <h3>Connection Error</h3>
-          <p>Cannot reach ${API_BASE}. Ensure the backend is running and CORS is configured.</p>
-          <p style="margin-top:8px;font-family:var(--mono);font-size:10px;color:var(--red)">${err.message}</p>
-        </div>
-      </td></tr>`;
+function renderDashboard(data) {
+  const s = data.summary;
+  document.getElementById('totalProviders').textContent = s.total_providers;
+  document.getElementById('providerSub').textContent = `${s.online} active, ${s.offline} inactive`;
+  document.getElementById('onlineCount').textContent = s.online;
+  document.getElementById('onlineSub').textContent = s.online > 0 ? 'Passing through GOLD' : 'No active providers';
+  document.getElementById('offlineCount').textContent = s.offline;
+  document.getElementById('offlineSub').textContent = s.offline > 0 ? 'No heartbeat > 5min' : '';
+  document.getElementById('requestsToday').textContent = s.requests_today.toLocaleString();
+
+  const gd = s.grade_distribution;
+  let gradeHTML = '';
+  for (const g of ['A','B','C','D','F']) {
+    if (gd[g] > 0) gradeHTML += `<span class="grade-pill grade-${g}">${g}: ${gd[g]}</span>`;
   }
+  document.getElementById('gradeDist').innerHTML = gradeHTML || '<span style="font-size:10px;color:var(--text-xs)">No evaluations yet</span>';
+
+  const tbody = document.getElementById('providerTable');
+  if (data.providers.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><h3>No providers connected</h3><p>When AI providers connect through the ONTO proxy, they will appear here.</p></div></td></tr>`;
+  } else {
+    tbody.innerHTML = data.providers.map(p => `
+      <tr>
+        <td>${statusHTML(p.status)}</td>
+        <td style="font-weight:600;color:#fff">${p.name}</td>
+        <td><span style="font-family:var(--mono);font-size:11px;color:var(--text-s)">${p.model}</span></td>
+        <td><span class="${gradeClass(p.grade)}">${p.grade}</span></td>
+        <td>${scoreBar(p.score)}</td>
+        <td class="traffic">
+          <span class="traffic-num">${p.requests_today}</span>
+          <span class="traffic-label"> today</span>
+          <span style="color:var(--text-xs);margin-left:4px">(${p.requests_total} total)</span>
+        </td>
+        <td class="ts">${timeAgo(p.last_heartbeat)}</td>
+      </tr>
+    `).join('');
+  }
+
+  document.getElementById('tableCount').textContent = `${data.providers.length} providers`;
+  document.getElementById('lastUpdate').textContent = `Updated: ${new Date().toLocaleTimeString()}`;
 }
 
-// Auto-refresh every 30 seconds
-loadDashboard();
-setInterval(loadDashboard, 30000);
+async function loadDashboard() {
+  try {
+    const resp = await fetch(`${API_BASE}/v1/regulator/dashboard`, {
+      headers: { 'Authorization': `Bearer ${getToken()}` }
+    });
+    if (resp.status === 403) {
+      sessionStorage.removeItem('reg_token');
+      document.getElementById('dashboard').style.display = 'none';
+      document.getElementById('authScreen').style.display = 'flex';
+      return;
+    }
+    if (resp.ok) renderDashboard(await resp.json());
+  } catch (e) {
+    console.error('Dashboard load failed:', e);
+  }
+}
 </script>
 </body>
 </html>
