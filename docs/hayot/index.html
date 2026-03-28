@@ -3,293 +3,297 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ONTO × Hayot Ventures</title>
+<title>ONTO x Hayot Ventures</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#fafcfa;--text:#0a0a0a;--sub:#555;--border:#e5e7eb;--green:#22c55e;--green-dark:#15803d;--green-bg:rgba(34,197,94,0.04);--green-border:rgba(34,197,94,0.15);--purple:#7c3aed;--purple-bg:rgba(124,58,237,0.04);--purple-border:rgba(124,58,237,0.15);--black:#0a0a0a;--white:#fff;--font:'DM Sans',sans-serif;--mono:'JetBrains Mono',monospace}
-body{font-family:var(--font);color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
+:root{--bg:#fafcfa;--text:#0a0a0a;--sub:#555;--border:#e5e7eb;--green:#22c55e;--gd:#15803d;--gbg:rgba(34,197,94,0.04);--gbd:rgba(34,197,94,0.15);--purple:#7c3aed;--pbg:rgba(124,58,237,0.04);--pbd:rgba(124,58,237,0.15);--red:#dc2626;--bk:#0a0a0a;--wh:#fff;--f:'DM Sans',sans-serif;--m:'JetBrains Mono',monospace}
+body{font-family:var(--f);color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
 body.lang-uz .ru{display:none!important}
 body.lang-ru .uz{display:none!important}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,0,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.03) 1px,transparent 1px);background-size:32px 32px}
-.wrap{max-width:780px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
-.header{padding:20px 0;border-bottom:3px solid var(--black);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg);z-index:100}
+.w{max-width:780px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+.hd{padding:20px 0;border-bottom:3px solid var(--bk);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg);z-index:100}
 .logo{display:flex;align-items:center;gap:10px}
-.logo-circle{width:32px;height:32px;background:var(--black);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--green)}
-.logo-circle svg{width:18px;height:18px}
-.logo-text{font-family:var(--mono);font-size:12px;font-weight:800;letter-spacing:2.5px}
-.header-right{display:flex;align-items:center;gap:14px}
-.lang-toggle{display:flex;border:2px solid var(--border);border-radius:6px;overflow:hidden;font-family:var(--mono);font-size:11px;font-weight:800}
-.lang-toggle button{background:none;border:none;padding:5px 12px;cursor:pointer;color:var(--sub);transition:all 0.15s;letter-spacing:1px}
-.lang-toggle button.active{background:var(--black);color:var(--white)}
-.header-links{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--green-dark);text-align:right;line-height:1.6}
-.header-links a{color:var(--green-dark);text-decoration:none}
+.lc{width:32px;height:32px;background:var(--bk);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--green)}
+.lc svg{width:18px;height:18px}
+.lt{font-family:var(--m);font-size:12px;font-weight:800;letter-spacing:2.5px}
+.hr{display:flex;align-items:center;gap:14px}
+.lt2{display:flex;border:2px solid var(--border);border-radius:6px;overflow:hidden;font-family:var(--m);font-size:11px;font-weight:800}
+.lt2 button{background:none;border:none;padding:5px 12px;cursor:pointer;color:var(--sub);transition:all .15s;letter-spacing:1px}
+.lt2 button.active{background:var(--bk);color:var(--wh)}
+.hl{font-family:var(--m);font-size:10px;font-weight:700;color:var(--gd);text-align:right;line-height:1.6}
+.hl a{color:var(--gd);text-decoration:none}
 section{padding:56px 0;border-bottom:1px solid var(--border)}
 section:last-of-type{border-bottom:none}
-.stag{font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2.5px;color:var(--white);background:var(--black);display:inline-block;padding:6px 14px;border-radius:6px;margin-bottom:20px}
+.st{font-family:var(--m);font-size:10px;font-weight:800;letter-spacing:2.5px;color:var(--wh);background:var(--bk);display:inline-block;padding:6px 14px;border-radius:6px;margin-bottom:20px}
 .hero{padding:72px 0 56px}
-.hero-personal{font-size:14px;font-weight:600;color:var(--green-dark);margin-bottom:12px;font-family:var(--mono);letter-spacing:0.5px}
-.hero h1{font-size:clamp(28px,5vw,38px);font-weight:800;line-height:1.2;letter-spacing:-0.5px}
-.hero h1 em{color:var(--green-dark);font-style:normal}
-.hero-sub{font-size:16px;font-weight:600;color:var(--sub);margin-top:16px;line-height:1.6;max-width:640px}
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:32px}
-.metric{background:var(--black);border-radius:10px;padding:16px 10px;text-align:center}
-.metric-num{font-family:var(--mono);font-size:clamp(22px,4vw,30px);font-weight:900;color:var(--green);line-height:1}
-.metric-label{font-size:10px;font-weight:600;color:rgba(255,255,255,0.5);margin-top:6px;line-height:1.3}
-.products{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
-.product{border-radius:12px;padding:24px;position:relative}
-.product.std{background:var(--green-bg);border:2px solid var(--green-border)}
-.product.hai{background:var(--purple-bg);border:2px solid var(--purple-border)}
-.product-tag{font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:1.5px;margin-bottom:6px}
-.product.std .product-tag{color:var(--green-dark)}
-.product.hai .product-tag{color:var(--purple)}
-.product-name{font-size:20px;font-weight:800;margin-bottom:8px}
-.product-desc{font-size:13px;color:var(--sub);line-height:1.6}
-.demo-link{display:inline-block;margin-top:24px;font-family:var(--mono);font-size:13px;font-weight:800;color:var(--green-dark);text-decoration:none;background:var(--green-bg);border:2px solid var(--green-border);padding:10px 24px;border-radius:8px;transition:all 0.2s}
-.demo-link:hover{background:#dcfce7;border-color:var(--green)}
-.sectors{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}
-.sector{border:2px solid var(--border);border-radius:10px;padding:16px;transition:border-color 0.2s}
-.sector:hover{border-color:var(--green)}
-.sector-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.sector-icon{font-size:20px}
-.sector-name{font-size:15px;font-weight:800}
-.sector-text{font-size:12px;color:var(--sub);line-height:1.6}
-.traction-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
-.traction-card{border:2px solid var(--border);border-radius:10px;padding:18px}
-.traction-title{font-size:13px;font-weight:800;margin-bottom:8px}
-.traction-list{font-size:12px;color:var(--sub);line-height:1.8}
-.market-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
-.market-item{text-align:center;padding:16px 8px;border:2px solid var(--border);border-radius:10px}
-.market-num{font-family:var(--mono);font-size:22px;font-weight:900;color:var(--green-dark)}
-.market-label{font-size:10px;font-weight:700;color:var(--sub);margin-top:4px}
-.model-row{margin-top:12px;font-size:13px;color:var(--sub);line-height:1.8}
-.why-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-top:16px}
-.why-card{background:var(--green-bg);border:2px solid var(--green-border);border-radius:10px;padding:18px;display:flex;gap:14px;align-items:flex-start}
-.why-icon{font-size:24px;flex-shrink:0}
-.why-title{font-size:14px;font-weight:800}
-.why-desc{font-size:12px;color:var(--sub);margin-top:4px;line-height:1.6}
-.cta-section{text-align:center;padding:72px 0 48px}
-.cta-headline{font-size:clamp(24px,4vw,34px);font-weight:800;line-height:1.3}
-.cta-sub{font-size:15px;color:var(--sub);margin-top:12px;line-height:1.6}
-.cta-buttons{margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.cta-btn{font-family:var(--mono);font-size:14px;font-weight:800;padding:16px 36px;border-radius:10px;text-decoration:none;display:inline-block;transition:all 0.2s}
-.cta-btn.primary{background:var(--green-dark);color:var(--white)}
-.cta-btn.primary:hover{background:var(--green)}
-.cta-btn.secondary{background:var(--black);color:var(--white)}
-.cta-btn.secondary:hover{background:#222}
-.cta-contact{margin-top:24px;font-size:13px;color:var(--sub)}
-.cta-contact a{color:var(--green-dark);text-decoration:none;font-weight:700}
-.closing-block{background:var(--black);border-radius:12px;padding:24px 32px;margin-top:40px;text-align:center}
-.closing-block p{font-size:18px;font-weight:800;color:var(--white)}
-.depth-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}
-.depth-card{border:2px solid var(--border);border-radius:12px;padding:18px;text-decoration:none;color:inherit;transition:all 0.2s;display:block;background:var(--white)}
-.depth-card:hover{border-color:var(--green);background:var(--green-bg);transform:translateY(-2px);box-shadow:0 4px 16px rgba(34,197,94,0.1)}
-.depth-icon{font-size:24px;margin-bottom:8px}
-.depth-title{font-size:14px;font-weight:800}
-.depth-desc{font-size:11px;color:var(--sub);margin-top:4px;line-height:1.6}
-.forward-section{text-align:center;margin-top:32px;padding:28px;background:var(--black);border-radius:12px}
-.forward-btn{font-family:var(--mono);font-size:16px;font-weight:800;color:var(--black);background:var(--green);padding:16px 44px;border-radius:8px;text-decoration:none;display:inline-block;transition:all 0.2s;letter-spacing:0.5px}
-.forward-btn:hover{background:#4ade80;transform:scale(1.03)}
-.forward-hint{display:block;font-size:11px;color:rgba(255,255,255,0.5);margin-top:10px}
-.footer{padding:24px 0;border-top:2px solid var(--black);display:flex;align-items:center;justify-content:space-between}
-.footer-left .name{font-size:14px;font-weight:800}
-.footer-left .role{font-size:11px;color:var(--sub);margin-top:2px}
-.footer-left .email{font-family:var(--mono);font-size:11px;color:var(--green-dark);font-weight:700;margin-top:4px}
-.footer-right{font-family:var(--mono);font-size:11px;text-align:right;line-height:1.8}
-.footer-right a{color:var(--green-dark);text-decoration:none;font-weight:800}
+.hp{font-size:14px;font-weight:600;color:var(--gd);margin-bottom:12px;font-family:var(--m);letter-spacing:.5px}
+.hero h1{font-size:clamp(28px,5vw,38px);font-weight:800;line-height:1.2;letter-spacing:-.5px}
+.hero h1 em{color:var(--gd);font-style:normal}
+.hs{font-size:16px;font-weight:600;color:var(--sub);margin-top:16px;line-height:1.6;max-width:640px}
+.mg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:32px}
+.mi{background:var(--bk);border-radius:10px;padding:16px 10px;text-align:center}
+.mn{font-family:var(--m);font-size:clamp(22px,4vw,30px);font-weight:900;color:var(--green);line-height:1}
+.ml{font-size:10px;font-weight:600;color:rgba(255,255,255,.5);margin-top:6px;line-height:1.3}
+.pr{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+.pc{border-radius:12px;padding:24px}
+.pc.s{background:#f0fdf4;border:3px solid #86efac}
+.pc.h{background:#f5f3ff;border:3px solid #c4b5fd}
+.pt{font-family:var(--m);font-size:10px;font-weight:800;letter-spacing:1.5px;margin-bottom:6px}
+.pc.s .pt{color:var(--gd)}.pc.h .pt{color:var(--purple)}
+.pn{font-size:20px;font-weight:800;margin-bottom:8px}
+.pd{font-size:13px;color:var(--sub);line-height:1.6}
+.dl{display:inline-block;margin-top:24px;font-family:var(--m);font-size:13px;font-weight:800;color:var(--gd);text-decoration:none;background:var(--gbg);border:2px solid var(--gbd);padding:10px 24px;border-radius:8px;transition:all .2s}
+.dl:hover{background:#dcfce7;border-color:var(--green)}
+/* DEMO */
+.ds{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+.dc{border-radius:12px;padding:20px;overflow:hidden}
+.dc.bad{background:#fef2f2;border:2px solid #fecaca}
+.dc.good{background:#f0fdf4;border:2px solid #bbf7d0}
+.dtg{font-family:var(--m);font-size:9px;font-weight:800;letter-spacing:1.5px;padding:4px 10px;border-radius:4px;display:inline-block;margin-bottom:10px}
+.dc.bad .dtg{background:#fee2e2;color:var(--red)}
+.dc.good .dtg{background:#dcfce7;color:var(--gd)}
+.dtx{font-size:12px;color:var(--sub);line-height:1.7}
+.dtx em{font-style:normal;font-weight:700}
+.dsc{margin-top:12px;display:flex;align-items:center;gap:8px}
+.dsb{flex:1;height:8px;border-radius:4px;background:#e5e7eb;overflow:hidden}
+.dsf{height:100%;border-radius:4px}
+.dc.bad .dsf{width:18%;background:var(--red)}
+.dc.good .dsf{width:82%;background:var(--green)}
+.dsn{font-family:var(--m);font-size:18px;font-weight:900}
+.dc.bad .dsn{color:var(--red)}.dc.good .dsn{color:var(--gd)}
+.dsg{font-family:var(--m);font-size:12px;font-weight:800;padding:3px 8px;border-radius:4px}
+.dc.bad .dsg{background:#fee2e2;color:var(--red)}
+.dc.good .dsg{background:#dcfce7;color:var(--gd)}
+.dcta{text-align:center;margin-top:24px}
+.dcta a{font-family:var(--m);font-size:13px;font-weight:800;color:var(--wh);background:var(--gd);padding:12px 32px;border-radius:8px;text-decoration:none;display:inline-block;transition:background .2s}
+.dcta a:hover{background:var(--green)}
+/* SECTORS */
+.sg{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}
+.si{border:2px solid #d1d5db;border-radius:10px;padding:16px;transition:all .2s;background:var(--wh)}
+.si:hover{border-color:var(--green);background:#f0fdf4;transform:translateY(-2px)}
+.sit{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.sii{font-size:20px}.sin{font-size:15px;font-weight:800}
+.sid{font-size:12px;color:var(--sub);line-height:1.6}
+/* TRACTION */
+.tg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.ti{text-align:center;padding:18px;background:var(--bk);border-radius:10px}
+.tin{font-family:var(--m);font-size:28px;font-weight:900;color:var(--green)}
+.til{font-size:11px;font-weight:700;color:rgba(255,255,255,.5);margin-top:4px}
+.tsub{font-size:12px;color:rgba(255,255,255,.6);margin-top:16px;line-height:1.8;background:var(--bk);border-radius:10px;padding:14px 18px}
+/* MARKET */
+.mr{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.mri{text-align:center;padding:18px 8px;background:#f0fdf4;border:3px solid var(--green);border-radius:10px}
+.mrn{font-family:var(--m);font-size:24px;font-weight:900;color:var(--gd)}
+.mrl{font-size:10px;font-weight:700;color:var(--sub);margin-top:4px}
+.mdl{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.mdi{border:3px solid var(--bk);border-radius:10px;padding:16px;text-align:center;background:var(--wh)}
+.mdn{font-family:var(--m);font-size:22px;font-weight:900;color:var(--bk)}
+.mdl2{font-size:10px;color:var(--sub);margin-top:4px;line-height:1.4}
+/* WHY */
+.wg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.wi{background:#f0fdf4;border:3px solid #86efac;border-radius:10px;padding:18px}
+.wii{font-size:22px;margin-bottom:6px}
+.wit{font-size:14px;font-weight:800}
+.wid{font-size:12px;color:var(--sub);margin-top:4px;line-height:1.6}
+/* URGENCY */
+.ub{margin-top:16px;padding:20px;background:var(--bk);border-radius:12px}
+.urow{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:10px}
+.uc{font-family:var(--m);font-size:11px;font-weight:700;color:var(--green);background:rgba(34,197,94,0.1);padding:6px 14px;border-radius:6px;letter-spacing:1px}
+.usub{font-size:11px;color:rgba(255,255,255,.5);text-align:center}
+/* CTA */
+.cs{text-align:center;padding:72px 0 48px}
+.ch{font-size:clamp(24px,4vw,34px);font-weight:800;line-height:1.3}
+.csb{font-size:15px;color:var(--sub);margin-top:12px;line-height:1.6}
+.cb{margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.cbp,.cbs{font-family:var(--m);font-size:14px;font-weight:800;padding:16px 36px;border-radius:10px;text-decoration:none;display:inline-block;transition:all .2s}
+.cbp{background:var(--gd);color:var(--wh)}.cbp:hover{background:var(--green)}
+.cbs{background:var(--bk);color:var(--wh)}.cbs:hover{background:#222}
+.cc{margin-top:24px;font-size:13px;color:var(--sub)}
+.cc a{color:var(--gd);text-decoration:none;font-weight:700}
+.clb{background:var(--bk);border-radius:12px;padding:24px 32px;margin-top:40px;text-align:center}
+.clb p{font-size:18px;font-weight:800;color:var(--wh)}
+/* DEPTH */
+.dg{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}
+.da{border:2px solid #d1d5db;border-radius:12px;padding:18px;text-decoration:none;color:inherit;transition:all .2s;display:block;background:var(--wh)}
+.da:hover{border-color:var(--green);background:var(--gbg);transform:translateY(-2px);box-shadow:0 4px 16px rgba(34,197,94,.1)}
+.dai{font-size:24px;margin-bottom:8px}.dat{font-size:14px;font-weight:800}
+.dad{font-size:11px;color:var(--sub);margin-top:4px;line-height:1.6}
+.fs{text-align:center;margin-top:32px;padding:28px;background:var(--bk);border-radius:12px}
+.fb{font-family:var(--m);font-size:16px;font-weight:800;color:var(--bk);background:var(--green);padding:16px 44px;border-radius:8px;text-decoration:none;display:inline-block;transition:all .2s;letter-spacing:.5px}
+.fb:hover{background:#4ade80;transform:scale(1.03)}
+.fh{display:block;font-size:11px;color:rgba(255,255,255,.5);margin-top:10px}
+.ft{padding:24px 0;border-top:2px solid var(--bk);display:flex;align-items:center;justify-content:space-between}
+.ftl .nm{font-size:14px;font-weight:800}
+.ftl .rl{font-size:11px;color:var(--sub);margin-top:2px}
+.ftl .em{font-family:var(--m);font-size:11px;color:var(--gd);font-weight:700;margin-top:4px}
+.ftr{font-family:var(--m);font-size:11px;text-align:right;line-height:1.8}
+.ftr a{color:var(--gd);text-decoration:none;font-weight:800}
 @media(max-width:640px){
-  .metrics,.market-row{grid-template-columns:repeat(2,1fr)}
-  .products,.sectors,.traction-grid,.depth-grid{grid-template-columns:1fr}
-  .cta-buttons{flex-direction:column;align-items:center}
-  .header{position:static}
-  .footer{flex-direction:column;gap:16px;text-align:center}
-  .footer-right{text-align:center}
+  .mg,.mr,.tg,.mdl{grid-template-columns:repeat(2,1fr)}
+  .pr,.ds,.sg,.wg,.dg{grid-template-columns:1fr}
+  .cb{flex-direction:column;align-items:center}
+  .hd{position:static}
+  .ft{flex-direction:column;gap:16px;text-align:center}
+  .ftr{text-align:center}
 }
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-section,.hero{animation:fadeUp 0.6s ease-out both}
-section:nth-child(2){animation-delay:0.1s}
-section:nth-child(3){animation-delay:0.15s}
-section:nth-child(4){animation-delay:0.2s}
+section,.hero{animation:fadeUp .6s ease-out both}
+section:nth-child(2){animation-delay:.1s}section:nth-child(3){animation-delay:.15s}section:nth-child(4){animation-delay:.2s}
 </style>
 </head>
 <body class="lang-uz">
-<div class="wrap">
+<div class="w">
 
-<div class="header">
-  <div class="logo">
-    <div class="logo-circle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><path d="M186 80L242 80L242 320L186 320L186 128L148 128L148 80Z" fill="white"/></svg></div>
-    <span class="logo-text">ONTO STANDARDS COUNCIL</span>
-  </div>
-  <div class="header-right">
-    <div class="lang-toggle"><button class="active" onclick="setLang('uz')">UZ</button><button onclick="setLang('ru')">RU</button></div>
-    <div class="header-links"><a href="https://ontostandard.org">ontostandard.org</a><br><a href="https://onto.uz">onto.uz</a></div>
-  </div>
+<div class="hd">
+  <div class="logo"><div class="lc"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><path d="M186 80L242 80L242 320L186 320L186 128L148 128L148 80Z" fill="white"/></svg></div><span class="lt">ONTO STANDARDS COUNCIL</span></div>
+  <div class="hr"><div class="lt2"><button class="active" onclick="setLang('uz')">UZ</button><button onclick="setLang('ru')">RU</button></div><div class="hl"><a href="https://ontostandard.org">ontostandard.org</a><br><a href="https://onto.uz">onto.uz</a></div></div>
 </div>
 
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-personal"><span class="uz">Hayot Ventures uchun maxsus</span><span class="ru">Специально для Hayot Ventures</span></div>
+  <div class="hp"><span class="uz">Hayot Ventures uchun maxsus</span><span class="ru">Специально для Hayot Ventures</span></div>
   <h1><span class="uz">Bitta kashfiyot. Ikki mahsulot.<br><em>Nol raqobatchi.</em></span><span class="ru">Одно открытие. Два продукта.<br><em>Ноль конкурентов.</em></span></h1>
-  <div class="hero-sub"><span class="uz">26 mart kuni siz "Yangi O'zbekiston" universiteti bilan memorandum imzoladingiz. Bizda ularning SI-klasteri uchun tayyor mahsulot bor. Deep tech AI, MVP+, o'zbek ildizlari bilan xalqaro potensial.</span><span class="ru">26 марта вы подписали MOU с Университетом "Новый Узбекистан". У нас готов продукт для их AI-кластера. Deep tech AI, MVP+, международный потенциал с узбекскими корнями.</span></div>
-  <div class="metrics">
-    <div class="metric"><div class="metric-num">&times;10</div><div class="metric-label"><span class="uz">sifat yaxshilanishi</span><span class="ru">улучшение качества</span></div></div>
-    <div class="metric"><div class="metric-num">$0</div><div class="metric-label"><span class="uz">sarflangan byudjet</span><span class="ru">потрачено на разработку</span></div></div>
-    <div class="metric"><div class="metric-num">22+</div><div class="metric-label"><span class="uz">model tekshirildi</span><span class="ru">моделей протестировано</span></div></div>
-    <div class="metric"><div class="metric-num">0</div><div class="metric-label"><span class="uz">raqobatchi dunyoda</span><span class="ru">конкурентов в мире</span></div></div>
+  <div class="hs"><span class="uz">26 mart — siz "Yangi O'zbekiston" universiteti bilan MOU imzoladingiz. Bizda ularning SI-klasteri uchun tayyor mahsulot bor. Deep tech AI, MVP+, o'zbek ildizlari bilan xalqaro potensial.</span><span class="ru">26 марта — вы подписали MOU с Университетом "Новый Узбекистан". У нас готов продукт для их AI-кластера. Deep tech AI, MVP+, международный потенциал с узбекскими корнями.</span></div>
+  <div class="mg">
+    <div class="mi"><div class="mn">&times;10</div><div class="ml"><span class="uz">sifat yaxshilanishi</span><span class="ru">улучшение качества</span></div></div>
+    <div class="mi"><div class="mn">$0</div><div class="ml"><span class="uz">sarflangan byudjet</span><span class="ru">потрачено на разработку</span></div></div>
+    <div class="mi"><div class="mn">22+</div><div class="ml"><span class="uz">model tekshirildi</span><span class="ru">моделей протестировано</span></div></div>
+    <div class="mi"><div class="mn">0</div><div class="ml"><span class="uz">raqobatchi dunyoda</span><span class="ru">конкурентов в мире</span></div></div>
   </div>
 </div>
 
-<!-- TWO PRODUCTS -->
+<!-- PRODUCTS -->
 <section>
-  <div class="stag"><span class="uz">BITTA KASHFIYOT — IKKI MAHSULOT</span><span class="ru">ОДНО ОТКРЫТИЕ — ДВА ПРОДУКТА</span></div>
-  <p style="font-size:14px;color:var(--sub);margin-bottom:8px;line-height:1.7;"><span class="uz">SI ni inference darajasida intizomlashtirish mumkin — retraining'siz, fine-tuning'siz, istalgan model ustiga bitta qatlam. Sifat 10 baravargacha oshadi.</span><span class="ru">AI можно дисциплинировать на уровне inference — без retraining, без fine-tuning, один слой поверх любой модели. Качество до ×10.</span></p>
-  <div class="products">
-    <div class="product std">
-      <div class="product-tag">PRODUCT 1</div>
-      <div class="product-name">ONTO Standard</div>
-      <div class="product-desc"><span class="uz">SI sifatini o'lchaydi. Qaysi SI vazifani bajara oladi, qaysi biri yo'q — ko'rsatadi. Provayderlarni sertifikatsiyalash. Bozor: regulyatorlar, SI ishlatadigan kompaniyalar.</span><span class="ru">Измеряет качество AI. Показывает какой справляется, какой нет. Сертификация провайдеров. Рынок: регуляторы, компании использующие AI.</span></div>
+  <div class="st"><span class="uz">BITTA KASHFIYOT — IKKI MAHSULOT</span><span class="ru">ОДНО ОТКРЫТИЕ — ДВА ПРОДУКТА</span></div>
+  <p style="font-size:14px;color:var(--sub);margin-bottom:8px;line-height:1.7;"><span class="uz">SI ni inference darajasida intizomlashtirish mumkin — retraining'siz, bitta qatlam. Sifat &times;10.</span><span class="ru">AI можно дисциплинировать на уровне inference — без retraining, один слой. Качество &times;10.</span></p>
+  <div class="pr">
+    <div class="pc s"><div class="pt">PRODUCT 1</div><div class="pn">ONTO Standard</div><div class="pd"><span class="uz">SI sifatini o'lchaydi. Qaysi SI yaxshi, qaysi biri yo'q. Provayderlarni sertifikatsiyalash. Bozor: regulyatorlar, kompaniyalar.</span><span class="ru">Измеряет качество AI. Какой справляется, какой нет. Сертификация провайдеров. Рынок: регуляторы, компании.</span></div></div>
+    <div class="pc h"><div class="pt">PRODUCT 2</div><div class="pn">Human AI</div><div class="pd"><span class="uz">SI ni yaxshilaydi. Olim kabi fikr yuritadi, avtokomplit kabi emas. Manba keltiradi, bilmasligini tan oladi.</span><span class="ru">Улучшает AI. Думает как учёный, не как автокомплит. Цитирует, признаёт незнание.</span></div></div>
+  </div>
+</section>
+
+<!-- DEMO PROOF -->
+<section>
+  <div class="st"><span class="uz">ISBOT — 30 SONIYA</span><span class="ru">ДОКАЗАТЕЛЬСТВО — 30 СЕКУНД</span></div>
+  <p style="font-size:14px;color:var(--sub);margin-bottom:8px;"><span class="uz">Bitta savol. Bitta model. Chapda — ONTOsiz. O'ngda — ONTO bilan.</span><span class="ru">Один вопрос. Одна модель. Слева — без ONTO. Справа — с ONTO.</span></p>
+  <div class="ds">
+    <div class="dc bad">
+      <div class="dtg"><span class="uz">INTIZOM'SIZ</span><span class="ru">БЕЗ ДИСЦИПЛИНЫ</span></div>
+      <div class="dtx"><em>"Studies suggest... Many experts recommend..."</em><br><br><span class="uz">0 manba. 0 muallif. 0 raqam. To'liq ishonch — hech narsaga.</span><span class="ru">0 источников. 0 авторов. 0 цифр. Полная уверенность в ничём.</span></div>
+      <div class="dsc"><div class="dsb"><div class="dsf"></div></div><div class="dsn">0.18</div><div class="dsg">F</div></div>
     </div>
-    <div class="product hai">
-      <div class="product-tag">PRODUCT 2</div>
-      <div class="product-name">Human AI</div>
-      <div class="product-desc"><span class="uz">SI ni yaxshilaydi. Dunyoda birinchi epistemik intizomli SI — olim kabi fikr yuritadi, avtokomplit kabi emas. Manba keltiradi, bilmasligini tan oladi.</span><span class="ru">Улучшает AI. Первый в мире AI с эпистемической дисциплиной — думает как учёный, не как автокомплит. Цитирует, признаёт незнание.</span></div>
+    <div class="dc good">
+      <div class="dtg"><span class="uz">ONTO BILAN — XUDDI SHU MODEL</span><span class="ru">С ONTO — ТА ЖЕ МОДЕЛЬ</span></div>
+      <div class="dtx"><em>Patikorn et al. (2022), n=410, -0.53% HbA1c, 95% CI</em><br><br><span class="uz">Haqiqiy mualliflar. Tanlama. Ishonch intervali. Qarshi argument. ~70%.</span><span class="ru">Реальные авторы. Выборка. Доверительный интервал. Контраргумент. ~70%.</span></div>
+      <div class="dsc"><div class="dsb"><div class="dsf"></div></div><div class="dsn">0.82</div><div class="dsg">A</div></div>
     </div>
   </div>
-  <div style="text-align:center;margin-top:20px;">
-    <a class="demo-link" href="https://ontostandard.org/agent"><span class="uz">O'zingiz sinab ko'ring — 30 soniya →</span><span class="ru">Попробовать самому — 30 секунд →</span></a>
-  </div>
+  <div class="dcta"><a href="https://ontostandard.org/agent"><span class="uz">O'zingiz sinab ko'ring &rarr;</span><span class="ru">Попробовать самому &rarr;</span></a></div>
 </section>
 
 <!-- SECTORS -->
 <section>
-  <div class="stag"><span class="uz">TARMOQLARGA TA'SIR</span><span class="ru">ВЛИЯНИЕ НА ОТРАСЛИ</span></div>
-  <p style="font-size:14px;color:var(--sub);margin-bottom:12px;"><span class="uz">Har bir tarmoq — alohida bozor. Bitta yadro.</span><span class="ru">Каждый сектор — отдельный рынок. Одно ядро.</span></p>
-  <div class="sectors">
-    <div class="sector">
-      <div class="sector-top"><div class="sector-icon">💰</div><div class="sector-name"><span class="uz">Moliya</span><span class="ru">Финансы</span></div></div>
-      <div class="sector-text"><span class="uz">Markaziy bank va banklar uchun tahlil. Kredit skoringi ishonch intervali bilan. Hayot Bank — fintex. <strong>Siz birinchi bo'lib farqni ko'rasiz.</strong></span><span class="ru">Аналитика для ЦБ и банков. Кредитный скоринг с доверительным интервалом. Hayot Bank — финтех. <strong>Вы первыми увидите разницу.</strong></span></div>
-    </div>
-    <div class="sector">
-      <div class="sector-top"><div class="sector-icon">🏥</div><div class="sector-name"><span class="uz">Tibbiyot</span><span class="ru">Медицина</span></div></div>
-      <div class="sector-text"><span class="uz">Haqiqiy manbalar va confidence level bilan SI-assistent. Klinik protokollarni tezlashtirish. Tibbiy turizm.</span><span class="ru">AI-ассистент с реальными источниками и confidence level. Ускорение клинических протоколов. Медицинский туризм.</span></div>
-    </div>
-    <div class="sector">
-      <div class="sector-top"><div class="sector-icon">⚖</div><div class="sector-name"><span class="uz">Huquq</span><span class="ru">Право</span></div></div>
-      <div class="sector-text"><span class="uz">Haqiqiy havolalar va audit trail bilan avtomatlashtirish. Byurokratiyani kamaytirish.</span><span class="ru">Автоматизация с реальными ссылками и audit trail. Снижение бюрократии.</span></div>
-    </div>
-    <div class="sector">
-      <div class="sector-top"><div class="sector-icon">🎓</div><div class="sector-name"><span class="uz">Ta'lim</span><span class="ru">Образование</span></div></div>
-      <div class="sector-text"><span class="uz">"Yangi O'zbekiston" universiteti SI-klasteri uchun tayyor o'quv moduli — <strong>sizning hamkoringiz uchun</strong>.</span><span class="ru">Готовый модуль для AI-кластера Университета "Новый Узбекистан" — <strong>вашего партнёра</strong>.</span></div>
-    </div>
+  <div class="st"><span class="uz">TARMOQLARGA TA'SIR</span><span class="ru">ВЛИЯНИЕ НА ОТРАСЛИ</span></div>
+  <div class="sg">
+    <div class="si"><div class="sit"><div class="sii">💰</div><div class="sin"><span class="uz">Moliya</span><span class="ru">Финансы</span></div></div><div class="sid"><span class="uz">Markaziy bank va banklar uchun tahlil. Hayot Bank — fintex. <strong>Siz birinchi bo'lib farqni ko'rasiz.</strong></span><span class="ru">Аналитика для ЦБ и банков. Hayot Bank — финтех. <strong>Вы первыми увидите разницу.</strong></span></div></div>
+    <div class="si"><div class="sit"><div class="sii">🏥</div><div class="sin"><span class="uz">Tibbiyot</span><span class="ru">Медицина</span></div></div><div class="sid"><span class="uz">Haqiqiy manbalar va confidence level. Klinik protokollar. Tibbiy turizm.</span><span class="ru">Реальные источники и confidence level. Клинические протоколы. Медтуризм.</span></div></div>
+    <div class="si"><div class="sit"><div class="sii">⚖</div><div class="sin"><span class="uz">Huquq</span><span class="ru">Право</span></div></div><div class="sid"><span class="uz">Haqiqiy havolalar va audit trail. Byurokratiyani kamaytirish.</span><span class="ru">Реальные ссылки и audit trail. Снижение бюрократии.</span></div></div>
+    <div class="si"><div class="sit"><div class="sii">🎓</div><div class="sin"><span class="uz">Ta'lim</span><span class="ru">Образование</span></div></div><div class="sid"><span class="uz">Universitet SI-klasteri uchun tayyor modul — <strong>sizning hamkoringiz</strong>.</span><span class="ru">Готовый модуль для AI-кластера Университета — <strong>вашего партнёра</strong>.</span></div></div>
   </div>
 </section>
 
-<!-- TRACTION + MOAT -->
+<!-- TRACTION -->
 <section>
-  <div class="stag"><span class="uz">TRAKSIYA + MOAT</span><span class="ru">ТРАКЦИЯ + MOAT</span></div>
-  <div class="traction-grid">
-    <div class="traction-card">
-      <div class="traction-title"><span class="uz">Tayyor va ishlayapti</span><span class="ru">Готово и работает</span></div>
-      <div class="traction-list">
-        <span class="uz">22+ model, 12 hisobot, &times;10 yaxshilanish<br>Scoring engine: 993 qator ochiq kod<br>Live: Proxy API, Agent, Portal, Dashboard<br>Proof chain: Rust, Ed25519<br>Nashrlar: Medium, HN, ResearchGate</span>
-        <span class="ru">22+ моделей, 12 отчётов, &times;10 улучшение<br>Scoring engine: 993 строки open source<br>Live: Proxy API, Agent, Portal, Dashboard<br>Proof chain: Rust, Ed25519<br>Публикации: Medium, HN, ResearchGate</span>
-      </div>
-    </div>
-    <div class="traction-card">
-      <div class="traction-title"><span class="uz">Takrorlab bo'lmaydigan ustunlik</span><span class="ru">Невоспроизводимое преимущество</span></div>
-      <div class="traction-list">
-        <span class="uz">20 yillik epistemologiya yadroda<br>Meta: $1B &rarr; 0 productionda<br>Biz: $0 &rarr; hammasi ishlayapti<br>169 fayl GOLD Core serverni tark etmaydi<br>Dunyoda 0 raqobatchi — "kam" emas, nol</span>
-        <span class="ru">20 лет эпистемологии в ядре<br>Meta: $1B &rarr; 0 в production<br>Мы: $0 &rarr; всё работает<br>169 файлов GOLD Core не покидают сервер<br>0 конкурентов в мире — не "мало", ноль</span>
-      </div>
-    </div>
+  <div class="st"><span class="uz">TRAKSIYA</span><span class="ru">ТРАКЦИЯ</span></div>
+  <div class="tg">
+    <div class="ti"><div class="tin">22+</div><div class="til"><span class="uz">model</span><span class="ru">моделей</span></div></div>
+    <div class="ti"><div class="tin">12</div><div class="til"><span class="uz">hisobot</span><span class="ru">отчётов</span></div></div>
+    <div class="ti"><div class="tin">&times;10</div><div class="til"><span class="uz">yaxshilanish</span><span class="ru">улучшение</span></div></div>
+    <div class="ti"><div class="tin">993</div><div class="til"><span class="uz">qator ochiq kod</span><span class="ru">строк open source</span></div></div>
+    <div class="ti"><div class="tin">5</div><div class="til"><span class="uz">tayyor tizim</span><span class="ru">живых систем</span></div></div>
+    <div class="ti"><div class="tin">20</div><div class="til"><span class="uz">yil tadqiqot</span><span class="ru">лет исследований</span></div></div>
+  </div>
+  <div class="tsub">Live: Proxy API, Agent, Portal, Dashboard, Scoring Engine &middot; Proof chain: Rust, Ed25519 &middot; Medium, Hacker News, ResearchGate, LinkedIn</div>
+  <div class="st" style="margin-top:24px;">MOAT</div>
+  <div class="tg" style="grid-template-columns:repeat(2,1fr);">
+    <div class="ti"><div class="tin">$1B &rarr; 0</div><div class="til"><span class="uz">Meta AMI (LeCun) — productionda 0</span><span class="ru">Meta AMI (LeCun) — 0 в production</span></div></div>
+    <div class="ti"><div class="tin">$0 &rarr; all</div><div class="til"><span class="uz">ONTO — hammasi ishlayapti</span><span class="ru">ONTO — всё работает</span></div></div>
   </div>
 </section>
 
 <!-- MARKET -->
 <section>
-  <div class="stag"><span class="uz">BOZOR</span><span class="ru">РЫНОК</span></div>
-  <div class="market-row">
-    <div class="market-item"><div class="market-num">$50B+</div><div class="market-label">TAM</div></div>
-    <div class="market-item"><div class="market-num">$2-5B</div><div class="market-label">SAM</div></div>
-    <div class="market-item"><div class="market-num">$5-15M</div><div class="market-label"><span class="uz">SOM 1-2 yil</span><span class="ru">SOM год 1-2</span></div></div>
-    <div class="market-item"><div class="market-num">$250K</div><div class="market-label"><span class="uz">har bir provayder/yil</span><span class="ru">за провайдера/год</span></div></div>
+  <div class="st"><span class="uz">BOZOR</span><span class="ru">РЫНОК</span></div>
+  <div class="mr">
+    <div class="mri"><div class="mrn">$50B+</div><div class="mrl">TAM</div></div>
+    <div class="mri"><div class="mrn">$2-5B</div><div class="mrl">SAM</div></div>
+    <div class="mri"><div class="mrn">$5-15M</div><div class="mrl">SOM Y1-2</div></div>
+    <div class="mri"><div class="mrn">$250K</div><div class="mrl"><span class="uz">provayder/yil</span><span class="ru">провайдер/год</span></div></div>
   </div>
-  <div class="model-row"><span class="uz"><strong>Model:</strong> $30K—$500K/yil har bir mijoz. Sertifikatsiya: $250K/yil. Davlat bilan revenue share. Founding pricing: 2&times; muddat (12 oy to'laysiz &rarr; 24 oy olasiz).</span><span class="ru"><strong>Модель:</strong> $30K—$500K/год за клиента. Сертификация: $250K/год. Revenue share с государством. Founding pricing: 2&times; срок (12 мес платишь &rarr; 24 мес получаешь).</span></div>
+  <div class="mdl">
+    <div class="mdi"><div class="mdn">$30K</div><div class="mdl2">STANDARD<br><span class="uz">yiliga</span><span class="ru">в год</span></div></div>
+    <div class="mdi"><div class="mdn">$250K</div><div class="mdl2">PROVIDER<br><span class="uz">yiliga</span><span class="ru">в год</span></div></div>
+    <div class="mdi"><div class="mdn">$500K</div><div class="mdl2">WHITE-LABEL<br><span class="uz">yiliga</span><span class="ru">в год</span></div></div>
+  </div>
 </section>
 
 <!-- WHY HAYOT -->
 <section>
-  <div class="stag"><span class="uz">NIMA UCHUN HAYOT VENTURES</span><span class="ru">ПОЧЕМУ HAYOT VENTURES</span></div>
-  <div class="why-grid">
-    <div class="why-card">
-      <div class="why-icon">🤝</div>
-      <div><div class="why-title"><span class="uz">Sizning hamkoringiz — bizning hamkorimiz</span><span class="ru">Ваш партнёр — наш партнёр</span></div>
-      <div class="why-desc"><span class="uz">"Yangi O'zbekiston" universiteti SI-klaster yaratmoqda. Bizda 36 soatlik tayyor o'quv moduli bor. Bu tasodif emas — bu to'g'ri moslik.</span><span class="ru">Университет "Новый Узбекистан" создаёт AI-кластер. У нас готов 36-часовой curriculum module. Это не совпадение — это стыковка.</span></div></div>
+  <div class="st"><span class="uz">NIMA UCHUN HAYOT VENTURES</span><span class="ru">ПОЧЕМУ HAYOT VENTURES</span></div>
+  <div class="wg">
+    <div class="wi"><div class="wii">🤝</div><div class="wit"><span class="uz">Sizning hamkoringiz — bizning</span><span class="ru">Ваш партнёр — наш</span></div><div class="wid"><span class="uz">"Yangi O'zbekiston" SI-klaster yaratmoqda. 36 soatlik tayyor modul. Tasodif emas — moslik.</span><span class="ru">Университет создаёт AI-кластер. 36-часовой модуль готов. Не совпадение — стыковка.</span></div></div>
+    <div class="wi"><div class="wii">💰</div><div class="wit"><span class="uz">1+1 mexanizmi</span><span class="ru">Механизм 1+1</span></div><div class="wid"><span class="uz">Davlat investitsiyani $100K gacha ikki baravar oshiradi. Xavfingiz — yarmi.</span><span class="ru">Государство удваивает инвестицию до $100K. Ваш риск — половина.</span></div></div>
+    <div class="wi"><div class="wii">🌍</div><div class="wit"><span class="uz">Mintaqaviy hub</span><span class="ru">Региональный хаб</span></div><div class="wid"><span class="uz">O'zbekiston MDH va turkiy davlatlar uchun sertifikatsiya markazi bo'ladi.</span><span class="ru">Узбекистан становится сертификационным хабом для CIS и тюркских стран.</span></div></div>
+    <div class="wi"><div class="wii">🏗</div><div class="wit"><span class="uz">Chatbot emas — infratuzilma</span><span class="ru">Не chatbot — инфраструктура</span></div><div class="wid"><span class="uz">SI uchun POSIX. Standartga ega bo'lgan — bozorga ega.</span><span class="ru">POSIX для AI. Кто владеет стандартом — владеет рынком.</span></div></div>
+  </div>
+  <!-- URGENCY -->
+  <div class="ub">
+    <div class="urow">
+      <div class="uc">UZ</div><div class="uc">UAE</div><div class="uc">TR</div><div class="uc">SG</div><div class="uc">KR</div><div class="uc">JP</div><div class="uc">DE</div><div class="uc">US</div><div class="uc">SA</div>
     </div>
-    <div class="why-card">
-      <div class="why-icon">💰</div>
-      <div><div class="why-title"><span class="uz">1+1 mexanizmi</span><span class="ru">Механизм 1+1</span></div>
-      <div class="why-desc"><span class="uz">Davlat sizning investitsiyangizni $100K gacha ikki baravar oshiradi. Sizning xavfingiz — yarmi.</span><span class="ru">Государство удваивает вашу инвестицию до $100K. Ваш риск — половина.</span></div></div>
-    </div>
-    <div class="why-card">
-      <div class="why-icon">🌍</div>
-      <div><div class="why-title"><span class="uz">Raqamli suverenitet</span><span class="ru">Цифровой суверенитет</span></div>
-      <div class="why-desc"><span class="uz">O'zbekiston MDH va turkiy davlatlar uchun sertifikatsiya markazi bo'ladi. Provayderlar Toshkent orqali o'tadi.</span><span class="ru">Узбекистан становится сертификационным хабом для CIS и тюркских стран. Провайдеры сертифицируются через Ташкент.</span></div></div>
-    </div>
-    <div class="why-card">
-      <div class="why-icon">🏗</div>
-      <div><div class="why-title"><span class="uz">Chatbot emas — infratuzilma</span><span class="ru">Не chatbot — инфраструктура</span></div>
-      <div class="why-desc"><span class="uz">SI uchun POSIX. Standartga ega bo'lgan — bozorga ega bo'ladi.</span><span class="ru">POSIX для AI. Кто владеет стандартом, тот владеет рынком.</span></div></div>
-    </div>
+    <div class="usub"><span class="uz">9 davlat xuddi shu taklifni oladi. Birinchi imzolagan — eksklyuziv mintaqaviy hub.</span><span class="ru">9 стран получают тот же оффер. Первая подписавшая — эксклюзивный региональный хаб.</span></div>
   </div>
 </section>
 
 <!-- CTA -->
-<section class="cta-section">
-  <div class="cta-headline"><span class="uz">Due diligence, live demo, kodga kirish.<br>Tayyormiz.</span><span class="ru">Due diligence, live demo, доступ к коду.<br>Готовы.</span></div>
-  <div class="cta-sub"><span class="uz">Pre-seed raund. Birinchi qadam — 30 daqiqa.</span><span class="ru">Pre-seed раунд. Первый шаг — 30 минут.</span></div>
-  <div class="cta-buttons">
-    <a class="cta-btn primary" href="mailto:council&#64;ontostandard.org?subject=Hayot%20Ventures%20×%20ONTO"><span class="uz">Uchrashuv so'rash →</span><span class="ru">Запросить встречу →</span></a>
-    <a class="cta-btn secondary" href="https://ontostandard.org/agent">Live Demo — 30 <span class="uz">soniya</span><span class="ru">секунд</span> →</a>
+<section class="cs">
+  <div class="ch"><span class="uz">Due diligence, live demo, kodga kirish.<br>Tayyormiz.</span><span class="ru">Due diligence, live demo, доступ к коду.<br>Готовы.</span></div>
+  <div class="csb"><span class="uz">Pre-seed raund. Birinchi qadam — 30 daqiqa.</span><span class="ru">Pre-seed раунд. Первый шаг — 30 минут.</span></div>
+  <div class="cb">
+    <a class="cbp" href="mailto:council&#64;ontostandard.org?subject=Hayot%20Ventures%20x%20ONTO"><span class="uz">Uchrashuv so'rash &rarr;</span><span class="ru">Запросить встречу &rarr;</span></a>
+    <a class="cbs" href="https://ontostandard.org/agent">Live Demo &rarr;</a>
   </div>
-  <div class="cta-contact"><span class="uz">yoki to'g'ridan-to'g'ri:</span><span class="ru">или напрямую:</span> <a href="tel:+998903920139">+998 90 392 01 39</a></div>
-  <div class="closing-block"><p><span class="uz">Standartga ega bo'lgan — bozorga ega bo'ladi.</span><span class="ru">Кто владеет стандартом, тот владеет рынком.</span></p></div>
+  <div class="cc"><span class="uz">yoki:</span><span class="ru">или:</span> <a href="tel:+998903920139">+998 90 392 01 39</a></div>
+  <div class="clb"><p><span class="uz">Standartga ega bo'lgan — bozorga ega bo'ladi.</span><span class="ru">Кто владеет стандартом — владеет рынком.</span></p></div>
 </section>
 
 <!-- DEPTH -->
 <section>
-  <div class="stag"><span class="uz">CHUQURROQ O'RGANING</span><span class="ru">ИЗУЧИТЬ ГЛУБЖЕ</span></div>
-  <div class="depth-grid">
-    <a class="depth-card" href="https://ontostandard.org/reports" target="_blank"><div class="depth-icon">📄</div><div class="depth-title"><span class="uz">12 nashr etilgan hisobot</span><span class="ru">12 опубликованных отчётов</span></div><div class="depth-desc"><span class="uz">CS-2026-001, CS-2026-002. To'liq metodologiya. Takrorlanadigan.</span><span class="ru">CS-2026-001, CS-2026-002. Полная методология. Воспроизводимо.</span></div></a>
-    <a class="depth-card" href="https://github.com/nickarstrong/onto-research" target="_blank"><div class="depth-icon">💻</div><div class="depth-title"><span class="uz">Ochiq kod va ma'lumotlar</span><span class="ru">Открытый код и данные</span></div><div class="depth-desc"><span class="uz">Scoring engine 993 qator. GitHub. Hammasi tekshiriladi.</span><span class="ru">Scoring engine 993 строки. GitHub. Всё проверяемо.</span></div></a>
-    <a class="depth-card" href="https://ontostandard.org/agent" target="_blank"><div class="depth-icon">🧪</div><div class="depth-title"><span class="uz">Live Agent</span><span class="ru">Live Agent</span></div><div class="depth-desc"><span class="uz">Istalgan savol bering. Oddiy SI bilan solishtiring. 30 soniya.</span><span class="ru">Задайте любой вопрос. Сравните с обычным AI. 30 секунд.</span></div></a>
-    <a class="depth-card" href="https://ontostandard.org/regulator" target="_blank"><div class="depth-icon">📊</div><div class="depth-title"><span class="uz">Regulyator dashboardi</span><span class="ru">Регуляторный дашборд</span></div><div class="depth-desc"><span class="uz">Nazorat qanday ko'rinishda. A-F baho. Real vaqt.</span><span class="ru">Как выглядит контроль. Оценки A-F. Реальное время.</span></div></a>
+  <div class="st"><span class="uz">CHUQURROQ</span><span class="ru">ГЛУБЖЕ</span></div>
+  <div class="dg">
+    <a class="da" href="https://ontostandard.org/reports" target="_blank"><div class="dai">📄</div><div class="dat"><span class="uz">12 hisobot</span><span class="ru">12 отчётов</span></div><div class="dad"><span class="uz">CS-2026-001, CS-2026-002. To'liq metodologiya.</span><span class="ru">CS-2026-001, CS-2026-002. Полная методология.</span></div></a>
+    <a class="da" href="https://github.com/nickarstrong/onto-research" target="_blank"><div class="dai">💻</div><div class="dat"><span class="uz">Ochiq kod</span><span class="ru">Открытый код</span></div><div class="dad"><span class="uz">993 qator. GitHub. Tekshiriladi.</span><span class="ru">993 строки. GitHub. Проверяемо.</span></div></a>
+    <a class="da" href="https://ontostandard.org/agent" target="_blank"><div class="dai">🧪</div><div class="dat">Live Agent</div><div class="dad"><span class="uz">Sinab ko'ring. 30 soniya.</span><span class="ru">Попробуйте. 30 секунд.</span></div></a>
+    <a class="da" href="https://ontostandard.org/regulator" target="_blank"><div class="dai">📊</div><div class="dat">Dashboard</div><div class="dad"><span class="uz">A-F baho. Real vaqt.</span><span class="ru">Оценки A-F. Реальное время.</span></div></a>
   </div>
-  <div class="forward-section">
-    <a class="forward-btn" href="mailto:?subject=ONTO%20Standards%20Council&body=Ikki%20mahsulot%2C%20nol%20raqobatchi.%20Batafsil%3A%20https%3A%2F%2Fonto.uz%2Fhayot">📤 <span class="uz">Hamkasbga yuborish</span><span class="ru">Переслать коллеге</span></a>
-    <div class="forward-hint"><span class="uz">Pochta dasturi tayyor matn va havola bilan ochiladi</span><span class="ru">Откроет почтовый клиент с готовым текстом и ссылкой</span></div>
+  <div class="fs">
+    <a class="fb" href="mailto:?subject=ONTO%20Standards%20Council&body=Ikki%20mahsulot%2C%20nol%20raqobat.%20https%3A%2F%2Fonto.uz%2Fhayot">📤 <span class="uz">Hamkasbga yuborish</span><span class="ru">Переслать коллеге</span></a>
+    <div class="fh"><span class="uz">Pochta tayyor matn bilan ochiladi</span><span class="ru">Откроет почту с готовым текстом</span></div>
   </div>
 </section>
 
-<!-- FOOTER -->
-<div class="footer">
-  <div class="footer-left">
-    <div class="name">Hakim Tohirovich</div>
-    <div class="role">Founder · Scientist-Engineer</div>
-    <div class="email">council&#64;ontostandard.org</div>
-  </div>
-  <div class="footer-right">
-    <a href="https://ontostandard.org">ontostandard.org</a><br>
-    <a href="https://onto.uz">onto.uz</a><br>
-    <a href="https://ontostandard.org/agent">ontostandard.org/agent</a>
-  </div>
+<div class="ft">
+  <div class="ftl"><div class="nm">Hakim Tohirovich</div><div class="rl">Founder &middot; Scientist-Engineer</div><div class="em">council&#64;ontostandard.org</div></div>
+  <div class="ftr"><a href="https://ontostandard.org">ontostandard.org</a><br><a href="https://onto.uz">onto.uz</a><br><a href="https://ontostandard.org/agent">ontostandard.org/agent</a></div>
 </div>
 
 </div>
 <script>
 function setLang(lang){
   document.body.className='lang-'+lang;
-  document.querySelectorAll('.lang-toggle button').forEach(function(b){
+  document.querySelectorAll('.lt2 button').forEach(function(b){
     b.classList.toggle('active',b.textContent.toLowerCase()===lang);
   });
 }
