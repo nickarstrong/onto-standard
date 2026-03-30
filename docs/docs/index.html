@@ -165,8 +165,9 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <a href="/app/?page=settings" class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Account</a>
 <nav class="sb-nav">
 <div class="ng"><h4>Understand</h4><a class="nl" href="#problem" data-doc="problem">The Problem</a><a class="nl" href="#how" data-doc="how">How It Works</a><a class="nl" href="#vision" data-doc="vision">Vision & Roadmap</a></div>
-<div class="ng"><h4>Build</h4><a class="nl" href="#quickstart" data-doc="quickstart">Integration Paths</a><a class="nl" href="#api-ref" data-doc="api-ref">API Reference</a><a class="nl" href="#tech-ref" data-doc="tech-ref">Technical Reference</a></div>
-<div class="ng"><h4>Verify</h4><a class="nl" href="#evidence" data-doc="evidence">Evidence</a><a class="nl" href="#faq" data-doc="faq">FAQ</a><a class="nl" href="#changelog" data-doc="changelog">Changelog</a></div>
+<div class="ng"><h4>Standard</h4><a class="nl" href="#ers" data-doc="ers">ONTO-ERS</a><a class="nl" href="#regulatory" data-doc="regulatory">Regulatory Alignment</a><a class="nl" href="#methodology" data-doc="methodology">Methodology</a><a class="nl" href="#charter" data-doc="charter">Governance</a></div>
+<div class="ng"><h4>Build</h4><a class="nl" href="#quickstart" data-doc="quickstart">Integration Paths</a><a class="nl" href="#provider-guide" data-doc="provider-guide">Provider Guide</a><a class="nl" href="#api-ref" data-doc="api-ref">API Reference</a></div>
+<div class="ng"><h4>Verify</h4><a class="nl" href="#evidence" data-doc="evidence">Evidence</a><a class="nl" href="#deployment-impact" data-doc="deployment-impact">Impact</a><a class="nl" href="#articles" data-doc="articles">Articles</a><a class="nl" href="#faq" data-doc="faq">FAQ</a><a class="nl" href="#changelog" data-doc="changelog">Changelog</a></div>
 <div class="ng"><h4>Legal</h4><a class="nl" href="#terms" data-doc="terms">Terms of Service</a><a class="nl" href="#privacy" data-doc="privacy">Privacy Policy</a><a class="nl" href="#license" data-doc="license">License</a></div>
 <div class="ng"><h4>Pages</h4><a class="nl" href="/reports/">Reports ↗</a><a class="nl" href="/paper/">Research Paper ↗</a><a class="nl" href="https://api.ontostandard.org/health" target="_blank">Status ↗</a></div>
 </nav>
@@ -468,6 +469,151 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 
 </div>
 <div class="sd"></div>
+
+<!-- ONTO-ERS -->
+<div class="ds da" id="doc-ers" data-nav="ers">
+<h1>ONTO Epistemic Risk Standard (ONTO-ERS)</h1>
+<div class="dm"><span class="db-g bg-g">v10.0</span><span class="db-g bg-b">Published</span><span>ONTO-SPEC-001</span><span>January 2026</span></div>
+<h2 id="abstract">Abstract</h2>
+<p>This document specifies the ONTO Epistemic Risk Standard (ONTO-ERS), a framework for measuring, grounding, and certifying the epistemic calibration of artificial intelligence systems. ONTO provides both deterministic measurement and active epistemic grounding through the GOLD Core v4.5 reference corpus.</p><hr/>
+<h2 id="introduction">1. Introduction</h2>
+<h3 id="purpose">1.1 Purpose</h3><p>ONTO-ERS provides a standardized approach for:</p>
+<ol><li>Quantifying epistemic risk in AI systems</li><li>Grounding AI outputs against verified epistemic reference standards</li><li>Establishing compliance thresholds for deployment contexts</li><li>Certifying AI system calibration</li><li>Supporting regulatory compliance</li></ol>
+<h3 id="scope">1.2 Scope</h3><p>This standard applies to AI systems that:</p>
+<ul><li>Generate natural language responses</li><li>Express confidence in outputs</li><li>Operate in domains with verification requirements</li><li>Are subject to regulatory oversight</li></ul>
+<h3 id="normative-references">1.3 Normative References</h3>
+<table><thead><tr><th>Reference</th><th>Description</th></tr></thead><tbody><tr><td>ONTO-42001</td><td>Metrics Specification</td></tr><tr><td>ONTO-42003</td><td>Liability Protocol</td></tr><tr><td>ONTO-BENCH</td><td>Benchmark Dataset Specification</td></tr></tbody></table>
+<p style="font-size:11px;color:var(--text-m);">Internal specifications. Public release planned for subsequent phases.</p>
+<h3 id="terms-and-definitions">1.4 Terms and Definitions</h3>
+<table><thead><tr><th style="width:33%">Term</th><th>Definition</th></tr></thead><tbody>
+<tr><td><strong>Epistemic Risk</strong></td><td>Divergence between expressed confidence and actual accuracy</td></tr>
+<tr><td><strong>Calibration</strong></td><td>Alignment of confidence scores with empirical accuracy</td></tr>
+<tr><td><strong>U-Recall</strong></td><td>Unknown Detection Rate</td></tr>
+<tr><td><strong>ECE</strong></td><td>Expected Calibration Error</td></tr>
+<tr><td><strong>KNOWN</strong></td><td>Question with established, verifiable answer</td></tr>
+<tr><td><strong>UNKNOWN</strong></td><td>Question with no established answer</td></tr>
+<tr><td><strong>CONTRADICTION</strong></td><td>Question with conflicting authoritative answers</td></tr>
+<tr><td><strong>Epistemic Grounding</strong></td><td>Calibration of AI outputs against verified reference standards (GOLD Core corpus)</td></tr>
+</tbody></table>
+<h3 id="scope-limitations">1.5 Scope and Limitations</h3>
+<blockquote><p><strong>Epistemic Infrastructure</strong> — ONTO measures and grounds AI systems against verified reference standards. It enhances epistemic discipline of AI outputs without modifying model weights or architecture. Validated across 22 models tested: 10× composite improvement in epistemic marker density, cross-domain transfer confirmed. <a href="#evidence">Experimental data</a>. <a href="/paper/">Full research paper</a>.</p></blockquote>
+<h4>What ONTO Does</h4>
+<table><thead><tr><th>Function</th><th>Description</th></tr></thead><tbody>
+<tr><td>Measures Calibration (ECE)</td><td>Quantifies alignment between confidence and accuracy</td></tr>
+<tr><td>Measures Uncertainty (U-Recall)</td><td>Evaluates ability to recognize unknowns</td></tr>
+<tr><td>Computes Risk Score</td><td>Provides composite epistemic risk metric</td></tr>
+<tr><td>Grounds Outputs (GOLD Core v4.5)</td><td>Every evaluation is calibrated against deterministic epistemic ground truth</td></tr>
+<tr><td>Issues Signed Proofs</td><td>Ed25519 cryptographic chain for every evaluation</td></tr>
+</tbody></table>
+<h4>What ONTO Does NOT Do</h4>
+<table><thead><tr><th>Boundary</th><th>Explanation</th></tr></thead><tbody>
+<tr><td>Does not modify model weights</td><td>ONTO operates externally — no retraining, fine-tuning, or architecture changes</td></tr>
+<tr><td>Does not replace human judgment</td><td>ONTO provides metrics; deployment decisions remain with the client</td></tr>
+<tr><td>Does not guarantee correctness</td><td>Grounding reduces epistemic risk but does not eliminate it</td></tr>
+<tr><td>Does not assume liability</td><td>Client retains responsibility for model deployment and outcomes</td></tr>
+</tbody></table>
+<div class="dd"><strong>Important:</strong> ONTO enhances AI epistemic discipline through external grounding infrastructure. It does not alter the model itself. Certification confirms that an AI system, when evaluated under ONTO-ERS, meets specified calibration thresholds at the time of evaluation.</div><hr/>
+<h2 id="core-metrics">2. Core Metrics</h2>
+<h3 id="u-recall">2.1 Unknown Detection Rate (U-Recall)</h3>
+<p>U-Recall measures the proportion of genuinely unanswerable questions correctly identified as unanswerable.</p>
+<pre><code><span class="nb">U-Recall</span> <span class="op">=</span> <span class="nb">TP_unknown</span> <span class="op">/</span> (<span class="nb">TP_unknown</span> <span class="op">+</span> <span class="nb">FN_unknown</span>)</code></pre>
+<table><thead><tr><th>Score</th><th>Classification</th></tr></thead><tbody><tr><td>≥0.70</td><td>Excellent</td></tr><tr><td>≥0.50</td><td>Adequate</td></tr><tr><td>≥0.30</td><td>Minimum</td></tr><tr><td>&lt;0.30</td><td>Insufficient</td></tr></tbody></table>
+<h3 id="ece">2.2 Expected Calibration Error (ECE)</h3>
+<p>ECE quantifies the average absolute difference between expressed confidence and empirical accuracy across confidence bins.</p>
+<pre><code><span class="nb">ECE</span> <span class="op">=</span> <span class="fn">Σ</span> (<span class="nb">n_b</span> <span class="op">/</span> <span class="nb">N</span>) <span class="op">×</span> |<span class="fn">acc</span>(<span class="nb">b</span>) <span class="op">-</span> <span class="fn">conf</span>(<span class="nb">b</span>)|</code></pre>
+<table><thead><tr><th>Score</th><th>Classification</th></tr></thead><tbody><tr><td>≤0.10</td><td>Excellent</td></tr><tr><td>≤0.15</td><td>Good</td></tr><tr><td>≤0.20</td><td>Adequate</td></tr><tr><td>&gt;0.20</td><td>Poor</td></tr></tbody></table>
+<h3 id="risk-score">2.3 Risk Score</h3>
+<pre><code><span class="nb">Risk</span> <span class="op">=</span> <span class="nb">α</span> <span class="op">×</span> (<span class="vl">1</span> <span class="op">-</span> <span class="nb">U-Recall</span>) <span class="op">+</span> <span class="nb">β</span> <span class="op">×</span> <span class="nb">ECE</span> <span class="op">+</span> <span class="nb">γ</span> <span class="op">×</span> <span class="nb">OC</span>
+<span class="nb">α</span> <span class="op">=</span> <span class="vl">0.4</span>, <span class="nb">β</span> <span class="op">=</span> <span class="vl">0.4</span>, <span class="nb">γ</span> <span class="op">=</span> <span class="vl">0.2</span>, <span class="nb">OC</span> <span class="op">=</span> <span class="cm">Overconfidence rate</span></code></pre>
+<table><thead><tr><th>Score</th><th>Classification</th></tr></thead><tbody><tr><td>0.00–0.25</td><td>LOW</td></tr><tr><td>0.25–0.50</td><td>MEDIUM</td></tr><tr><td>0.50–0.75</td><td>HIGH</td></tr><tr><td>0.75–1.00</td><td>CRITICAL</td></tr></tbody></table><hr/>
+<h2 id="knowledge-classification">3. Knowledge Classification</h2>
+<table><thead><tr><th>Category</th><th>Definition</th><th>Example</th></tr></thead><tbody>
+<tr><td><strong>KNOWN</strong></td><td>Established, verifiable answer exists</td><td>"Speed of light in vacuum"</td></tr>
+<tr><td><strong>UNKNOWN</strong></td><td>No established answer exists</td><td>"Will P equal NP?"</td></tr>
+<tr><td><strong>CONTRADICTION</strong></td><td>Authoritative sources conflict</td><td>"Is consciousness computational?"</td></tr>
+</tbody></table><hr/>
+<h2 id="compliance-levels">4. Compliance Levels</h2>
+<h3>4.1 Level 1: Basic</h3>
+<table><thead><tr><th>Metric</th><th>Threshold</th></tr></thead><tbody><tr><td>U-Recall</td><td>≥0.30</td></tr><tr><td>ECE</td><td>≤0.20</td></tr><tr><td>Risk Score</td><td>≤0.70</td></tr></tbody></table>
+<p><strong>For:</strong> Internal tools, Prototypes, Research. <strong>Frequency:</strong> Annual</p>
+<h3>4.2 Level 2: Standard</h3>
+<table><thead><tr><th>Metric</th><th>Threshold</th></tr></thead><tbody><tr><td>U-Recall</td><td>≥0.50</td></tr><tr><td>ECE</td><td>≤0.15</td></tr><tr><td>Risk Score</td><td>≤0.50</td></tr></tbody></table>
+<p><strong>For:</strong> Customer-facing apps, Business ops. <strong>Frequency:</strong> Quarterly</p>
+<h3>4.3 Level 3: Advanced</h3>
+<table><thead><tr><th>Metric</th><th>Threshold</th></tr></thead><tbody><tr><td>U-Recall</td><td>≥0.70</td></tr><tr><td>ECE</td><td>≤0.10</td></tr><tr><td>Risk Score</td><td>≤0.30</td></tr></tbody></table>
+<p><strong>For:</strong> Regulated industries, High-stakes systems. <strong>Frequency:</strong> Monthly + audit</p><hr/>
+<h2 id="evaluation-methodology">5. Evaluation Methodology</h2>
+<table><thead><tr><th>Category</th><th>Min Samples</th></tr></thead><tbody><tr><td>KNOWN</td><td>100</td></tr><tr><td>UNKNOWN</td><td>100</td></tr><tr><td>CONTRADICTION</td><td>25</td></tr></tbody></table>
+<ol><li>System receives question text</li><li>System provides classification, confidence, response</li><li>Metrics computed against ground truth</li><li>Compliance level determined</li></ol><hr/>
+<h2 id="certification">6. Certification</h2>
+<ol><li><strong>Application</strong> — Organization submits request</li><li><strong>Evaluation</strong> — Independent assessment</li><li><strong>Review</strong> — Standards Council verification</li><li><strong>Certification</strong> — Certificate issued (12-month)</li><li><strong>Registry</strong> — Public entry</li></ol>
+<pre><code><span class="fn">ONTO CERTIFIED</span>
+<span class="op">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="hd">System:</span>       <span class="st">[System Name]</span>
+<span class="hd">Organization:</span> <span class="st">[Organization Name]</span>
+<span class="hd">Level:</span>        <span class="st">[BASIC | STANDARD | ADVANCED]</span>
+<span class="hd">Certificate:</span>  <span class="st">ONTO-CERT-XXXX-XXXX</span>
+<span class="hd">Verify:</span>       <span class="ur">ontostandard.org/verify/XXXX</span>
+<span class="op">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span></code></pre><hr/>
+<h2 id="ers-regulatory-alignment">7. Regulatory Alignment</h2>
+<table><thead><tr><th>Framework</th><th>Mapping</th></tr></thead><tbody>
+<tr><td>EU AI Act Art. 9, 13, 15, 43</td><td>Risk Score, Transparency, ECE, Conformity</td></tr>
+<tr><td>NIST AI RMF</td><td>MEASURE 1.1, 2.1, 2.3, 4.1</td></tr>
+<tr><td>ISO/IEC 42001</td><td>Clauses 6, 8, 9</td></tr>
+</tbody></table><hr/>
+<h2 id="appendix-a">Appendix A: Reference Implementation</h2>
+<pre><code><span class="kw">from</span> <span class="nb">onto_standard</span> <span class="kw">import</span> <span class="fn">evaluate</span>, <span class="fn">ComplianceLevel</span>
+<span class="nb">results</span> = <span class="fn">evaluate</span>(<span class="nb">predictions</span>, <span class="nb">ground_truth</span>)
+<span class="fn">print</span>(<span class="st">f"U-Recall: </span><span class="br">{</span><span class="nb">results</span>.<span class="fn">unknown_detection</span>.<span class="fn">recall</span><span class="st">:.2%</span><span class="br">}</span><span class="st">"</span>)
+<span class="fn">print</span>(<span class="st">f"ECE: </span><span class="br">{</span><span class="nb">results</span>.<span class="fn">calibration</span>.<span class="fn">ece</span><span class="st">:.3f</span><span class="br">}</span><span class="st">"</span>)
+<span class="fn">print</span>(<span class="st">f"Compliance: </span><span class="br">{</span><span class="nb">results</span>.<span class="fn">compliance_level</span>.<span class="fn">value</span><span class="br">}</span><span class="st">"</span>)</code></pre>
+<p><strong>Installation:</strong> <code>pip install onto-standard</code></p>
+<hr/><p><em>ONTO-ERS v10.0 — © 2026 ONTO Standards Council</em></p>
+</div><div class="sd"></div>
+
+<!-- REGULATORY ALIGNMENT MATRIX -->
+<div class="ds da" id="doc-regulatory" data-nav="regulatory">
+<h1>Regulatory Alignment Matrix</h1>
+<div class="dm"><span class="db-g bg-a">Draft</span><span>ONTO-REG-001</span></div>
+<h2 id="reg-eu">1. EU AI Act</h2>
+<table><thead><tr><th>Article</th><th>Requirement</th><th>ONTO Capability</th></tr></thead><tbody>
+<tr><td>Art. 9</td><td>Risk management system</td><td>Continuous epistemic risk scoring with signed proof chain</td></tr>
+<tr><td>Art. 13</td><td>Transparency obligations</td><td>Public certification registry, verifiable evaluation history</td></tr>
+<tr><td>Art. 15</td><td>Accuracy, robustness, cybersecurity</td><td>ECE calibration metrics, U-Recall uncertainty detection, GOLD Core v4.5 grounding</td></tr>
+<tr><td>Art. 43</td><td>Conformity assessment</td><td>Independent evaluation with Ed25519 signed, timestamped evidence</td></tr>
+</tbody></table>
+<h2 id="reg-nist">2. NIST AI RMF</h2>
+<table><thead><tr><th>Function</th><th>ONTO Implementation</th></tr></thead><tbody>
+<tr><td>GOVERN</td><td>Standardized epistemic risk vocabulary and compliance levels (Basic / Standard / Advanced)</td></tr>
+<tr><td>MAP</td><td>Domain-specific evaluation benchmarks (ONTO-Bench, 268+ samples)</td></tr>
+<tr><td>MEASURE</td><td>Deterministic metrics: ECE, U-Recall, Risk Score, DLA — reproducible across runs</td></tr>
+<tr><td>MANAGE</td><td>Compliance thresholds, continuous monitoring, signed audit trail</td></tr>
+</tbody></table>
+<h2 id="reg-industry">3. Industry Alignment</h2>
+<p><strong>Finance:</strong> SR 11-7 (model risk management), MiFID II (algorithmic trading oversight). <strong>Healthcare:</strong> FDA SaMD (Software as Medical Device), HIPAA (data handling). <strong>Defense:</strong> DoD AI Ethics Principles, FedRAMP (cloud security baseline).</p>
+</div><div class="sd"></div>
+
+<!-- GOVERNANCE: CHARTER + COUNCIL -->
+<div class="ds da" id="doc-charter" data-nav="charter">
+<h1>Governance</h1>
+<div class="dm"><span class="db-g bg-b">Published</span><span>ONTO-GOV-001</span></div>
+<h2 id="ch-mission">Foundation Charter</h2>
+<h3>1. Mission</h3><p>Establish and maintain open standards for measuring and grounding epistemic reliability of AI systems. Trust earned through measurement, not marketing.</p>
+<h3>2. Principles</h3>
+<p><strong>Independence</strong> — strict separation from AI providers. <strong>Transparency</strong> — public specs, reproducible methodology. <strong>Scientific Rigor</strong> — grounded in statistics, peer reviewed.</p>
+<h3>3. Structure</h3>
+<table><thead><tr><th>Body</th><th>Function</th></tr></thead><tbody>
+<tr><td>Standards Council</td><td>Technical governance</td></tr><tr><td>Advisory Panel</td><td>Industry and academic guidance (forming)</td></tr>
+</tbody></table>
+<h2 id="co-mandate">Standards Council</h2>
+<h3>1. Mandate</h3><p>Technical governing body for development, review, and approval of all ONTO specifications.</p>
+<h3>2. Specification Process</h3>
+<table><thead><tr><th>Stage</th><th>Description</th></tr></thead><tbody>
+<tr><td>Proposal</td><td>Initial submission</td></tr><tr><td>Draft</td><td>Development and iteration</td></tr><tr><td>Review</td><td>Public comment period</td></tr><tr><td>Ballot</td><td>Council approval (2/3 majority)</td></tr><tr><td>Publication</td><td>Formal release</td></tr>
+</tbody></table>
+<h3>3. Membership</h3><p>By invitation. Academic, industry, regulatory, civil society. Currently forming — minimum 3 advisory members required for formal constitution.</p>
+</div><div class="sd"></div>
+
 <div class="ds da" id="doc-quickstart" data-nav="quickstart">
 <h1>Integration Paths</h1>
 <div class="dm"><span class="db-g bg-g">All access free during early adoption</span><span>4 integration levels</span></div>
@@ -575,12 +721,100 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
                         Certificate issued</code></pre>
 <p>ONTO is never in your inference path. You cache the discipline layer, inject it yourself. Unlimited requests. Free access for all providers — full GOLD, full scoring, signed proof chain.</p>
 
+<h2>Pricing Tiers</h2>
+<p>All tiers free during early adoption. Full access, no credit card.</p>
+<table><thead><tr><th>Tier</th><th>Price</th><th>Requests/day</th><th>GOLD</th><th>Features</th></tr></thead><tbody>
+<tr><td><strong>OPEN</strong></td><td>$0</td><td>10</td><td>GOLD Core</td><td>Scoring + Ed25519 proof. Attribution required.</td></tr>
+<tr><td><strong>STANDARD</strong></td><td>$2,500/mo ($30K/yr)</td><td>1,000</td><td>GOLD Extended</td><td>SSE stream, dashboard, email support (48h)</td></tr>
+<tr><td><strong>AI PROVIDER</strong></td><td>$250,000/yr</td><td>Unlimited</td><td>Full corpus via SSE</td><td>Not in inference path. 24-month audit trail. Email support (24h).</td></tr>
+<tr><td><strong>WHITE-LABEL</strong></td><td>$500,000/yr</td><td>Unlimited</td><td>Full corpus, no attribution</td><td>Dedicated engineer. Priority SLA (4h). Quarterly review.</td></tr>
+</tbody></table>
+
 <h2>Get Started</h2>
 <p>Everything is free right now. No trial period. No credit card. No sales call. Full access to every endpoint.</p>
 <p>The only question is whether your AI can pass. Prove it to yourself:</p>
 <p><strong>30 seconds:</strong> paste any AI text into <code>/v1/validate</code> — no account needed. See the R1-R7 report. See what your AI actually scores.</p>
 <p><strong>5 minutes:</strong> create account at <a href="/app/">ontostandard.org/app</a> → get API key → send first <code>/v1/agent/chat</code> request → compare the output to what your AI produces without ONTO.</p>
 <p>If the difference doesn't convince you, nothing we write here will.</p>
+</div>
+<div class="sd"></div>
+
+<!-- PROVIDER GUIDE -->
+<div class="ds da" id="doc-provider-guide" data-nav="provider-guide">
+<h1>Provider Integration</h1>
+<div class="dm"><span class="db-g bg-g">AI Provider tier</span><span>SSE · Zero latency · Your infrastructure</span></div>
+
+<p>If you're an AI provider and want GOLD Core discipline built into your models natively — without routing through ONTO proxy — this is your guide. ONTO delivers the GOLD Core corpus via SSE stream. You inject it into your system prompts. ONTO is never in your inference path.</p>
+
+<h2>Architecture</h2>
+<pre><code><span class="fn">ONTO SSE</span> <span class="op">──→</span> <span class="nb">Your Server</span> <span class="op">──→</span> [<span class="st">GOLD in system prompt</span>] <span class="op">──→</span> <span class="fn">Your Models</span>
+                                                              <span class="op">↓</span>
+<span class="nb">Your Server</span> <span class="op">──→</span> <span class="fn">POST /v1/models/evaluate</span> <span class="op">──→</span> <span class="st">Score + Proof</span> <span class="op">──→</span> <span class="fn">Certificate</span></code></pre>
+
+<h2>1. Connect to GOLD Core Stream</h2>
+<p>Single SSE connection per organization. You cache the corpus and distribute to your inference nodes.</p>
+<pre><code><span class="fn">curl</span> <span class="fl">-N</span> <span class="ur">https://api.ontostandard.org/v1/gold/stream</span> <span class="br">\</span>
+  <span class="fl">-H</span> <span class="st">"X-Api-Key: onto_sk_..."</span></code></pre>
+<p>On connect you receive the full GOLD Core corpus (~4K tokens):</p>
+<pre><code><span class="br">{</span>
+  <span class="ky">"type"</span>: <span class="st">"gold_corpus"</span>,
+  <span class="ky">"version"</span>: <span class="st">"2.4.1"</span>,
+  <span class="ky">"content_hash"</span>: <span class="st">"sha256:e3b0c44298fc1c..."</span>,
+  <span class="ky">"tokens_estimate"</span>: <span class="vl">4200</span>,
+  <span class="ky">"discipline_layer"</span>: <span class="st">"### ONTO GOLD v2.4.1\n...[~4K tokens]..."</span>,
+  <span class="ky">"sampling_policy"</span>: <span class="br">{</span>
+    <span class="ky">"rate"</span>: <span class="vl">0.05</span>,
+    <span class="ky">"seed"</span>: <span class="st">"7fb8a12c"</span>,
+    <span class="ky">"batch_interval_sec"</span>: <span class="vl">300</span>
+  <span class="br">}</span>
+<span class="br">}</span></code></pre>
+
+<h2>2. Inject into System Prompt</h2>
+<p>Prepend the <code>discipline_layer</code> text to your model's system prompt. That's it.</p>
+<pre><code><span class="nb">system_prompt</span> = <span class="nb">gold_corpus</span>[<span class="st">"discipline_layer"</span>] + <span class="st">"\n\n"</span> + <span class="nb">your_system_prompt</span></code></pre>
+<p>Verify integrity before injection: compute SHA-256 of <code>discipline_layer</code> and compare with <code>content_hash</code>. Mismatch → reject, reconnect.</p>
+
+<h2>3. Score a Sample</h2>
+<p>Score 5% of outputs (controlled by <code>sampling_policy.seed</code>) via batch every 5 minutes:</p>
+<pre><code><span class="fn">curl</span> <span class="fl">-X POST</span> <span class="ur">https://api.ontostandard.org/v1/models/evaluate</span> <span class="br">\</span>
+  <span class="fl">-H</span> <span class="st">"X-Api-Key: onto_sk_..."</span> <span class="br">\</span>
+  <span class="fl">-H</span> <span class="st">"Content-Type: application/json"</span> <span class="br">\</span>
+  <span class="fl">-d</span> <span class="st">'{"model_id": "your-model-uuid", "output": "Model response text...", "context": "User question", "domain": "medicine"}'</span></code></pre>
+
+<h2>4. Certificate Lifecycle</h2>
+<p>Your model is certified when both conditions hold:</p>
+<table><thead><tr><th>SSE Connected</th><th>Recent Evaluation</th><th>Status</th></tr></thead><tbody>
+<tr><td>Yes</td><td>&lt; 10 min ago</td><td>CERTIFIED ✅</td></tr>
+<tr><td>Yes</td><td>&gt; 10 min ago</td><td>STALE ⚠️</td></tr>
+<tr><td>No</td><td>&lt; 10 min ago</td><td>STALE ⚠️</td></tr>
+<tr><td>No</td><td>&gt; 10 min ago</td><td>INACTIVE ❌</td></tr>
+</tbody></table>
+<p>Public verification page for each model: <code>ontostandard.org/verify/model/{model_id}</code></p>
+
+<h2>5. SSE Events</h2>
+<table><thead><tr><th>Event</th><th>When</th><th>Action</th></tr></thead><tbody>
+<tr><td><code>gold_corpus</code></td><td>On connect + on update</td><td>Cache full corpus, inject into new sessions</td></tr>
+<tr><td><code>heartbeat</code></td><td>Every 30s</td><td>Confirm connection alive</td></tr>
+<tr><td><code>gold_update</code></td><td>Corpus changed</td><td>Update cached corpus, apply to new sessions only</td></tr>
+</tbody></table>
+<p>On reconnect: server sends current corpus in full. Active inference sessions keep the previous version — never swap mid-response.</p>
+
+<h2>6. Cache &amp; Disconnect</h2>
+<p>If SSE disconnects, use cached GOLD Core for up to 1 hour. After 1 hour without reconnection, certificate status transitions to STALE. After cache expires, your model returns to baseline (no GOLD Core).</p>
+
+<h2>7. Provider Endpoints</h2>
+<table><thead><tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr></thead><tbody>
+<tr><td>GET</td><td><code>/v1/gold/stream</code></td><td>API key</td><td>SSE stream — GOLD Core corpus delivery</td></tr>
+<tr><td>POST</td><td><code>/v1/models</code></td><td>API key</td><td>Register model</td></tr>
+<tr><td>GET</td><td><code>/v1/models</code></td><td>API key</td><td>List models + scores + cert status</td></tr>
+<tr><td>PUT</td><td><code>/v1/models/{id}/toggle</code></td><td>API key</td><td>Enable/disable model</td></tr>
+<tr><td>POST</td><td><code>/v1/models/evaluate</code></td><td>API key</td><td>Score output + proof chain</td></tr>
+<tr><td>POST</td><td><code>/v1/models/evaluate/batch</code></td><td>API key</td><td>Batch evaluation (5-min intervals)</td></tr>
+<tr><td>GET</td><td><code>/v1/verify/{proof_hash}</code></td><td>None</td><td>Public proof verification</td></tr>
+</tbody></table>
+
+<h2>8. Pricing</h2>
+<p>AI Provider: $250,000/yr · White-Label: $500,000/yr. Free access for all providers during early adoption. Full GOLD Core, full scoring, signed proof chain. <a href="#quickstart">All tiers →</a> · <a href="mailto:council@ontostandard.org">Contact for onboarding →</a></p>
 </div>
 <div class="sd"></div>
 
@@ -663,12 +897,46 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <table><thead><tr><th>Tier</th><th>Limit</th><th>Window</th></tr></thead><tbody>
 <tr><td>Open</td><td>10 requests</td><td>per day</td></tr>
 </tbody></table>
+
+<h2>HTTP Errors</h2>
+<table><thead><tr><th>Code</th><th>Meaning</th></tr></thead><tbody>
+<tr><td>400</td><td>Invalid request body or missing required fields</td></tr>
+<tr><td>401</td><td>Missing or invalid API key</td></tr>
+<tr><td>403</td><td>Key valid but insufficient permissions for this endpoint</td></tr>
+<tr><td>404</td><td>Endpoint or resource not found</td></tr>
+<tr><td>429</td><td>Rate limit exceeded</td></tr>
+<tr><td>500</td><td>Internal server error — retry after 5s</td></tr>
+<tr><td>503</td><td>Service temporarily unavailable</td></tr>
+</tbody></table>
 </div>
 
-<!-- TECHNICAL REFERENCE -->
-<div class="ds da" id="doc-tech-ref" data-nav="tech-ref">
-<h1>Technical Reference</h1>
-<div class="dm"><span class="db-g bg-g">Architecture</span><span>Scoring · GOLD · Proof Chain · Compliance</span><span>For engineers</span></div>
+<!-- METHODOLOGY -->
+<div class="ds da" id="doc-methodology" data-nav="methodology">
+<h1>Methodology</h1>
+<div class="dm"><span class="db-g bg-g">The Science Behind ONTO</span><span>Shannon · Kolmogorov · Eigenvalue</span><span>Original Methods</span><span>GOLD v4.5</span></div>
+
+<p>ONTO provides continuous epistemic grounding for AI systems. This section describes the theoretical foundations, original contributions, scoring architecture, metrics, and verification mechanisms that make ONTO reproducible and independently verifiable. For integration details see <a href="#quickstart">Integration Paths</a>. For the full research paper: <a href="/paper/">WP-2026-002</a>.</p>
+
+<h2>Theoretical Foundations</h2>
+<p>ONTO's scoring system integrates established information theory with original epistemic measurement methods:</p>
+<table><thead><tr><th>Foundation</th><th>Origin</th><th>Role in ONTO</th></tr></thead><tbody>
+<tr><td><strong>Shannon Entropy</strong></td><td>Information Theory (1948)</td><td>Measures information density and uncertainty distribution in model outputs</td></tr>
+<tr><td><strong>Kolmogorov Complexity</strong></td><td>Algorithmic Information Theory (1963)</td><td>Approximates response compressibility — separates formulaic hedging from structured knowledge</td></tr>
+<tr><td><strong>Brier Score</strong></td><td>Probabilistic Forecasting (1950)</td><td>Measures calibration accuracy of expressed confidence levels</td></tr>
+<tr><td><strong>Expected Calibration Error</strong></td><td>Machine Learning (Naeini et al., 2015)</td><td>Quantifies gap between stated confidence and actual accuracy across bins</td></tr>
+<tr><td><strong>Bayesian Uncertainty</strong></td><td>Statistical Inference</td><td>Frameworks for quantifying what is unknown given available evidence</td></tr>
+</tbody></table>
+<p>These measure information, confidence, and uncertainty. They do not, by themselves, measure <em>epistemic discipline</em> — whether an AI system cites sources, admits unknowns, quantifies its claims, or maintains rigor across domains. ONTO's original contributions fill that gap.</p>
+
+<h3>Original Methods</h3>
+<table><thead><tr><th>Method</th><th>Description</th></tr></thead><tbody>
+<tr><td><strong>EM1–EM5 Taxonomy</strong></td><td>Five-level classification of epistemic behavior with 92+ detection patterns across 7 evaluation domains. No prior taxonomy classifies AI epistemic markers at this granularity.</td></tr>
+<tr><td><strong>Cross-Domain Transfer Ratio</strong></td><td>Measures whether epistemic discipline holds when the model leaves its comfort zone. 8 of 11 models lose &gt;50% rigor on domain change.</td></tr>
+<tr><td><strong>Dual-Layer Divergence (DLA)</strong></td><td>Agreement between linguistic analysis (what model says) and statistical analysis (how it computes). DLA near 0 = fabrication risk.</td></tr>
+<tr><td><strong>Behavioral Proxy Injection (GOLD Core)</strong></td><td>Server-side epistemic discipline via context window. No fine-tuning. No RLHF. 10× composite improvement across 22 models tested.</td></tr>
+<tr><td><strong>104-byte Proof Chain</strong></td><td>Every score bound to σ(t) entropy signal + Ed25519 signature. Verifiable without ONTO servers.</td></tr>
+<tr><td><strong>Epistemic Covariance</strong></td><td>Eigenvalue decomposition of output covariance matrix across evaluation dimensions. Separates calibrated uncertainty from random noise.</td></tr>
+</tbody></table>
 
 <h2>Dual-Layer Scoring Architecture</h2>
 <p>ONTO scores every response through two independent engines that must agree:</p>
@@ -700,6 +968,14 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 </tbody></table>
 <p><strong>Composite</strong> = QD + SS + UM + CP + VQ + CONF. Range: -1 to 10. All scoring deterministic — Var(Score)=0 for identical input.</p>
 
+<h3>Advanced Metrics</h3>
+<table><thead><tr><th>Metric</th><th>What it measures</th><th>Range</th></tr></thead><tbody>
+<tr><td><strong>REP</strong> (Response Epistemic Profile)</td><td>Weighted score across all detected EM1-EM5 markers. Calibrated against GOLD Core v4.5 reference responses.</td><td>0–1 (0=overclaiming, 1=transparent)</td></tr>
+<tr><td><strong>EpCE</strong> (Epistemic Calibration Error)</td><td>Distance between model's epistemic profile and GOLD reference for same query, adjusted by domain weight.</td><td>0–1 (0=aligned, 1=miscalibrated)</td></tr>
+<tr><td><strong>DLA</strong> (Dual-Layer Agreement)</td><td>Agreement between linguistic layer (Python) and statistical layer (Rust). Divergence = fabrication risk.</td><td>0–1 (1=aligned, 0=divergent)</td></tr>
+<tr><td><strong>IGR</strong> (Information Gap Ratio)</td><td>Ratio of missing dependencies to expected evidence for a given claim.</td><td>0–1 (high=undergrounded)</td></tr>
+</tbody></table>
+
 <h2>GOLD v4.5 — The Discipline Corpus</h2>
 <p>GOLD is not a prompt template. It is a curated epistemic knowledge architecture:</p>
 <table><thead><tr><th>Component</th><th>Content</th></tr></thead><tbody>
@@ -709,6 +985,14 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <tr><td><strong>Delta modules</strong></td><td>Calculations, literature, domain-specific methodologies</td></tr>
 </tbody></table>
 <p>Total: 169 files, ~900K tokens. Injected server-side at inference time. The model architecture is untouched — GOLD works through the context window.</p>
+
+<h3>ONTO-Bench Validation</h3>
+<p>268 samples: KNOWN (126) · UNKNOWN (110) · CONTRADICTION (32). Tier-1 sources: Clay Mathematics Institute, NSF/ERC Grand Challenges. Tier-2: NIST constants, established textbooks.</p>
+<table><thead><tr><th>Condition</th><th>U-Recall</th><th>U-F1</th><th>ECE ↓</th></tr></thead><tbody>
+<tr><td style="color:var(--accent);font-weight:600">With ONTO grounding</td><td style="font-family:var(--mono)">0.96</td><td style="font-family:var(--mono)">0.58</td><td style="font-family:var(--mono)">0.30</td></tr>
+<tr><td>Baseline models (without ONTO)</td><td style="font-family:var(--mono)">&lt;0.10</td><td style="font-family:var(--mono)">&lt;0.15</td><td style="font-family:var(--mono)">0.31–0.34</td></tr>
+</tbody></table>
+<p style="font-size:12px;color:var(--text-m)">ONTO prioritizes recall (catching unknowns) over precision. In high-stakes domains, unnecessary uncertainty is preferable to undetected overconfidence. Full data: <a href="/paper/">WP-2026-002</a>.</p>
 
 <h2>Proof Chain (104 bytes)</h2>
 <p>Every scored response produces a cryptographic proof:</p>
@@ -727,20 +1011,9 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <tr><td style="color:var(--warn)">D</td><td>2.0 – 3.9</td><td>Minimal discipline — systemic failures</td></tr>
 <tr><td style="color:var(--danger)">F</td><td>< 2.0</td><td>Critical epistemic risk — no meaningful discipline</td></tr>
 </tbody></table>
-<p>All 11 models scored D or F at baseline (mean 0.92). With ONTO GOLD: treatment model scored A (5.38 composite, 10× improvement).</p>
+<p>All 11 models in CS-2026-001 scored D or F at baseline (mean 0.92). With ONTO GOLD: treatment model scored A (5.38 composite, 10× improvement).</p>
 
-<h2>HTTP Errors</h2>
-<table><thead><tr><th>Code</th><th>Meaning</th></tr></thead><tbody>
-<tr><td>400</td><td>Invalid request body or missing required fields</td></tr>
-<tr><td>401</td><td>Missing or invalid API key</td></tr>
-<tr><td>403</td><td>Key valid but insufficient permissions for this endpoint</td></tr>
-<tr><td>404</td><td>Endpoint or resource not found</td></tr>
-<tr><td>429</td><td>Rate limit exceeded</td></tr>
-<tr><td>500</td><td>Internal server error — retry after 5s</td></tr>
-<tr><td>503</td><td>Service temporarily unavailable</td></tr>
-</tbody></table>
-
-<p style="margin-top:24px;font-size:12px;color:var(--text-m)">Full theoretical foundations, mathematical proofs, and methodology details: <a href="/paper/" style="color:var(--accent)">Research Paper (WP-2026-001) →</a></p>
+<p style="margin-top:24px;font-size:12px;color:var(--text-m)">Full mathematical proofs and methodology details: <a href="/paper/" style="color:var(--accent)">Research Paper (WP-2026-002) →</a></p>
 </div>
 
 <div class="ds da" id="doc-evidence" data-nav="evidence">
@@ -849,6 +1122,148 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 
 </div><div class="sd"></div>
 
+<!-- DEPLOYMENT IMPACT -->
+<div class="ds da" id="doc-deployment-impact" data-nav="deployment-impact">
+<h1>Deployment Impact</h1>
+<div class="dm"><span class="db-g bg-g">Competitive Analysis</span><span>43 Impact Zones · 9 Categories</span><span>Tested + Projected</span></div>
+
+<p style="font-size:17px;line-height:1.6;color:var(--text);margin-bottom:24px;"><strong>What happens when your competitor deploys ONTO and you don't.</strong><br/>They sell verified epistemic infrastructure. You sell a statistical lottery.</p>
+
+<h2>Competitive Divergence: Four Scenarios</h2>
+
+<h3>1. The Margin Gap</h3>
+<table><thead><tr><th></th><th>Competitor with ONTO</th><th>You without ONTO</th></tr></thead><tbody>
+<tr><td><strong>Model</strong></td><td>Compact model + ONTO discipline layer</td><td>Larger model to compensate for lack of epistemic control</td></tr>
+<tr><td><strong>Compute</strong></td><td>Lower inference cost at equal epistemic quality</td><td>Higher cost, same fabrication rate</td></tr>
+<tr><td><strong>Result</strong></td><td>Structural margin advantage — can price competitively while profitable</td><td>Margin pressure: paying more for less reliable output</td></tr>
+</tbody></table>
+
+<h3>2. The Regulatory Wall</h3>
+<table><thead><tr><th></th><th>Competitor with ONTO</th><th>You without ONTO</th></tr></thead><tbody>
+<tr><td><strong>Evidence</strong></td><td>Ed25519 proof chain — every response scored, signed, verifiable</td><td>Manual documentation, ad-hoc safety reports</td></tr>
+<tr><td><strong>Cycle</strong></td><td>Compliance-ready from day one of deployment</td><td>Months of audit preparation per jurisdiction</td></tr>
+<tr><td><strong>Result</strong></td><td>Access to regulated markets: FinTech, MedTech, Gov, Defense</td><td>Blocked from high-value contracts requiring conformity assessment</td></tr>
+</tbody></table>
+
+<h3>3. The Innovation Ceiling</h3>
+<table><thead><tr><th></th><th>Competitor with ONTO</th><th>You without ONTO</th></tr></thead><tbody>
+<tr><td><strong>Engineering</strong></td><td>Safety solved at API layer — team builds product features</td><td>Best engineers consumed by RLHF, prompt patches, QA cycles</td></tr>
+<tr><td><strong>Velocity</strong></td><td>Ship weekly — epistemic quality is guaranteed by infrastructure</td><td>Ship quarterly — each release requires safety re-verification</td></tr>
+<tr><td><strong>Result</strong></td><td>Product evolves continuously</td><td>Product stalls while competitors accelerate</td></tr>
+</tbody></table>
+
+<h3>4. The Trust Lock-in</h3>
+<table><thead><tr><th></th><th>Competitor with ONTO</th><th>You without ONTO</th></tr></thead><tbody>
+<tr><td><strong>Client integration</strong></td><td>Proof chain embeds into client compliance systems</td><td>Raw API — substitutable by any cheaper provider</td></tr>
+<tr><td><strong>Switching cost</strong></td><td>High — removing ONTO means losing audit trail</td><td>Zero — client leaves for 5% price reduction</td></tr>
+<tr><td><strong>Result</strong></td><td>Ecosystem with long-term retention</td><td>Commodity service with high churn</td></tr>
+</tbody></table>
+
+<h2>Full Impact Matrix: 43 Zones, 9 Categories</h2>
+
+<h3>I. Operational</h3>
+<table><thead><tr><th>Zone</th><th>With ONTO</th><th>Without ONTO</th></tr></thead><tbody>
+<tr><td>AI Safety / QA</td><td>Automated epistemic audit via scoring engine</td><td>Manual RLHF, regex filters, prompt engineering</td></tr>
+<tr><td>Legal / Compliance</td><td>Ed25519 proof chain, continuous audit trail</td><td>"We are not responsible for AI output" + liability reserves</td></tr>
+<tr><td>Risk Management</td><td>Deterministic risk score (0–1) per response</td><td>Actuarial estimates, incident reserves</td></tr>
+<tr><td>Sales Cycle</td><td>Certificate shortens compliance review</td><td>Months proving safety to each prospect</td></tr>
+<tr><td>Team Allocation</td><td>Engineers reallocated from QA to product development</td><td>Senior engineers maintaining safety workarounds</td></tr>
+</tbody></table>
+
+<h3>II. Infrastructure</h3>
+<table><thead><tr><th>Zone</th><th>With ONTO</th><th>Without ONTO</th></tr></thead><tbody>
+<tr><td>Compute / GPU</td><td>Epistemic quality without scaling parameters — tested on 22 models</td><td>Larger models to chase accuracy, diminishing returns</td></tr>
+<tr><td>Electricity</td><td>Lower compute = lower energy consumption</td><td>Megawatts on inference + safety layers</td></tr>
+<tr><td>Bandwidth / Tokens</td><td>VQ↓ reduces verbose filler in model output</td><td>Vague qualifiers inflate token count per response</td></tr>
+<tr><td>Latency</td><td>Compact model + discipline layer = faster response</td><td>Larger model = slower inference</td></tr>
+</tbody></table>
+
+<h3>III. Economic</h3>
+<table><thead><tr><th>Zone</th><th>With ONTO</th><th>Without ONTO</th></tr></thead><tbody>
+<tr><td>Token Cost</td><td>Compact model economics</td><td>Premium model pricing to compensate quality gap</td></tr>
+<tr><td>Time-to-Production</td><td>Pre-certified epistemic quality — deploy in weeks</td><td>Months of safety testing per release</td></tr>
+<tr><td>Insurance / Liability</td><td>Proof of epistemic control = insurable risk</td><td>High premiums or self-insurance for AI liability</td></tr>
+<tr><td>Pricing Power</td><td>Premium for verified output — clients pay for trust</td><td>Price competition on $/token — race to bottom</td></tr>
+<tr><td>Customer Retention</td><td>Proof chain integration creates switching cost</td><td>Commodity API — replaceable at any discount</td></tr>
+</tbody></table>
+
+<h3>IV. Environmental (ESG)</h3>
+<table><thead><tr><th>Zone</th><th>With ONTO</th><th>Without ONTO</th></tr></thead><tbody>
+<tr><td>CO₂ Footprint</td><td>Reduced with compute requirements</td><td>Directly proportional to compute</td></tr>
+<tr><td>Water Consumption</td><td>Lower cooling demand</td><td>Datacenter cooling at scale = millions of liters</td></tr>
+<tr><td>ESG Reporting</td><td>Measurable reduction in AI-related footprint</td><td>"We are committed to sustainability" — no metrics</td></tr>
+</tbody></table>
+
+<h3>V. Regulatory</h3>
+<table><thead><tr><th>Zone</th><th>With ONTO</th><th>Without ONTO</th></tr></thead><tbody>
+<tr><td>EU AI Act</td><td>Built-in conformity evidence (Art. 9, 13, 15, 43)</td><td>Years of preparation and documentation</td></tr>
+<tr><td>Audit Readiness</td><td>Continuous signed proof chain — always audit-ready</td><td>Ad-hoc documentation assembled per audit</td></tr>
+<tr><td>Cross-border Deployment</td><td>Universal standard — one proof chain, all jurisdictions</td><td>Per-jurisdiction approval process</td></tr>
+</tbody></table>
+
+<h3>VI. Product</h3>
+<table><thead><tr><th>Zone</th><th>With ONTO</th><th>Without ONTO</th></tr></thead><tbody>
+<tr><td>QA / Testing</td><td>Deterministic scoring — automated, reproducible</td><td>Manual testing cycles per release</td></tr>
+<tr><td>Model Collapse</td><td>GOLD Core provides stable epistemic anchor — not affected by synthetic data degradation</td><td>Model quality degrades over time on synthetic training data</td></tr>
+<tr><td>Data Poisoning</td><td>External reference standard not in training pipeline — cannot be poisoned</td><td>Vulnerable to training data contamination</td></tr>
+<tr><td>Multi-model Flexibility</td><td>ONTO is model-agnostic — works with any provider</td><td>Locked to one model/provider stack</td></tr>
+<tr><td>Output Consistency</td><td>Deterministic epistemic floor — minimum quality guaranteed</td><td>Stochastic — same prompt may produce different quality</td></tr>
+</tbody></table>
+
+<h3>VII. Revenue</h3>
+<table><thead><tr><th>Zone</th><th>With ONTO</th><th>Without ONTO</th></tr></thead><tbody>
+<tr><td>TAM Expansion</td><td>Access to Medical, Legal, Gov, Finance, Defense</td><td>Limited to chatbot / assistant market</td></tr>
+<tr><td>LTV</td><td>Proof chain integrates into client systems — high switching cost</td><td>Low switching cost — churn at any price reduction</td></tr>
+<tr><td>CAC</td><td>Certificate accelerates trust — shorter sales cycle</td><td>Long POC cycles, manual compliance proof</td></tr>
+<tr><td>Valuation</td><td>Infrastructure positioning — valued as standard, not SaaS</td><td>Commodity positioning — valued on revenue multiple</td></tr>
+</tbody></table>
+
+<h3>VIII. Support &amp; Operations</h3>
+<table><thead><tr><th>Zone</th><th>With ONTO</th><th>Without ONTO</th></tr></thead><tbody>
+<tr><td>Engineering Escalations</td><td>Fewer fabrication-related incidents reaching engineering</td><td>Support escalates AI errors to engineering regularly</td></tr>
+<tr><td>Incident Response</td><td>Proof chain provides instant root cause — signed audit trail</td><td>Ad-hoc investigation per incident</td></tr>
+<tr><td>Vendor Dependency</td><td>Model-agnostic layer — switch providers without losing discipline</td><td>Locked to one provider's safety stack</td></tr>
+</tbody></table>
+
+<h3>IX. Strategic</h3>
+<table><thead><tr><th>Zone</th><th>With ONTO</th><th>Without ONTO</th></tr></thead><tbody>
+<tr><td>Due Diligence</td><td>Continuous proof chain — safety posture verifiable in days</td><td>"Prove your AI is safe" — months of documentation</td></tr>
+<tr><td>IP Position</td><td>Methodology + proof chain = defensible technical moat</td><td>No differentiation in safety approach</td></tr>
+<tr><td>Reproducibility</td><td>Every score tied to σ(t) — fully reproducible</td><td>Same prompt → different output → cannot reproduce results</td></tr>
+</tbody></table>
+
+<h2>Evidence Classification</h2>
+<h3>✅ Tested — Experimental Data (CS-2026-001)</h3>
+<ul>
+<li>10× composite epistemic improvement across 22 models tested</li>
+<li>U-Recall: 0.009 → 0.964 (models admit unknowns 107× more often with GOLD Core)</li>
+<li>Cross-domain transfer ratio: 8 of 11 models lose &gt;50% rigor when domain changes</li>
+<li>Ed25519 proof chain: operational, verifiable via public API</li>
+<li>Deterministic scoring: same input → same score, every run</li>
+</ul>
+<h3>⚠️ Projected — Structural Consequences of Tested Capabilities</h3>
+<ul>
+<li>Compute reduction: follows from model-agnostic behavioral layer (no parameter scaling required)</li>
+<li>Team reallocation: follows from automated scoring replacing manual QA</li>
+<li>TAM expansion: follows from compliance readiness in regulated markets</li>
+<li>Premium pricing: follows from verified output vs unverified output</li>
+</ul>
+<div class="dd"><strong>Note:</strong> Projected impacts are structural consequences of tested capabilities. Specific dollar amounts, percentage reductions, and timeline estimates depend on your deployment context, scale, and industry.</div>
+<p style="font-size:13px;color:var(--text-m);margin-top:32px;">Full research: <a href="/paper/">WP-2026-002</a> · Contact: <a href="mailto:council@ontostandard.org">council@ontostandard.org</a></p>
+</div><div class="sd"></div>
+
+<!-- ARTICLES -->
+<div class="ds da" id="doc-articles" data-nav="articles">
+<h1>Articles</h1>
+<div class="dm"><span class="db-g bg-g">Updated regularly</span></div>
+<div class="article-card"><h3>Why AI Needs an Exoskeleton, Not a Diagnosis</h3><div class="article-meta">ONTO Standards Council · January 2026</div><p>The AI industry is focused on making models smarter. ONTO takes a different approach — providing epistemic infrastructure that both measures and grounds AI outputs, strengthening epistemic discipline without modifying the model itself.</p></div>
+<div class="article-card"><h3>Epistemic Risk: The Metric Nobody Is Tracking</h3><div class="article-meta">ONTO Standards Council · January 2026</div><p>Most AI monitoring tools focus on data drift and performance metrics. Epistemic risk — the gap between what a model claims to know and what it actually knows — remains unmeasured in production systems.</p></div>
+<div class="article-card"><h3>How Regulated Industries Can Prepare for the EU AI Act</h3><div class="article-meta">ONTO Standards Council · February 2026</div><p>The EU AI Act requires risk management, transparency, and conformity assessment. ONTO certification maps directly to Articles 9, 13, 15, and 43.</p></div>
+<div class="article-card" style="border-color:rgba(34,197,94,.3)"><h3><a href="/paper/" style="color:var(--text);text-decoration:none">ONTO Standard: Deterministic Epistemic Discipline Enforcement for Production LLM Systems</a></h3><div class="article-meta">ONTO Standards Council · March 2026 · Technical Report CS-2026-001</div><p>22 models tested, 10× composite improvement (0.53 → 5.38). Per-metric breakdown: QD 30.8×, SS 27×, UM 5.2×, CONF created from zero. Cross-domain transfer in 4/5 metrics. Deterministic scoring engine (993 lines), zero AI in evaluation. <a href="/paper/">Read paper →</a></p></div>
+<div class="article-card" style="border-color:rgba(34,197,94,.3)"><h3><a href="/encounter/" style="color:var(--text);text-decoration:none">Field Observation: What Happens When AI Encounters ONTO</a></h3><div class="article-meta">ONTO Standards Council · February 2026 · 4 Acts, 12 Phases</div><p>A production AI model encountered ontostandard.org without GOLD Core injection. Documented: behavioral transfer, confident fabrication, self-diagnosis, spontaneous ROI calculation, and the model independently writing ONTO Proxy's value proposition through its own failures. <a href="/encounter/">Read full observation →</a></p></div>
+<p style="color:var(--text-m);font-size:12px;margin-top:20px">12 published reports total. Subscribe: <a href="mailto:council@ontostandard.org">council@ontostandard.org</a></p>
+</div><div class="sd"></div>
+
 <div class="ds da" id="doc-faq" data-nav="faq">
 <h1>Frequently Asked Questions</h1>
 <div class="dm"><span class="db-g bg-g">Updated March 2026</span></div>
@@ -861,6 +1276,10 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How do you score responses? Is another AI judging?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">No. Scoring is deterministic — regex pattern matching against 92+ epistemic markers. No AI in the evaluation loop. Same input produces the same score every time. The scorer is 993 lines of Python, <a href="https://github.com/nickarstrong/onto-research" target="_blank">published on GitHub</a>.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Does ONTO help with EU AI Act compliance?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">ONTO provides quantitative evidence for Art. 9 (risk), Art. 13 (transparency), Art. 15 (accuracy). Every evaluation is cryptographically signed — verifiable proof that your AI was assessed at a specific time with specific results. Not a substitute for full compliance, but the measurable evidence regulators ask for.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is the long-term vision?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">ONTO OS — a thinking system for AI. Today: API for existing models. Next: SDK for new AI development. Then: embedded in robots and medical devices. Ultimately: AI that builds its own verified knowledge base, filtering every new fact through R1-R7 before storing it. <a href="#vision">Full vision</a>.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What exactly does ONTO measure?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Six surface metrics (QD, SS, UM, CP, VQ, CONF) plus four advanced metrics (REP, EpCE, DLA, IGR). Together they tell you: does the AI cite sources? Quantify claims? Admit uncertainty? Contradict itself between language and computation? Every metric is deterministic — same input, same score, every run. <a href="#tech-ref">Full metric reference</a>.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does certification work?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Five steps: (1) Organization submits request, (2) Independent evaluation via ONTO-Bench (268+ samples), (3) Standards Council review, (4) Certificate issued (12-month validity), (5) Public registry entry. Certificates are verifiable at <code>ontostandard.org/verify/</code>. <a href="#ers">Full ONTO-ERS standard</a>.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is the Ed25519 signed proof?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Every evaluation produces a 104-byte packet: 8 bytes timestamp + 32 bytes SHA-256 hash + 64 bytes Ed25519 signature. This is your audit trail — verifiable evidence that a specific AI output was scored at a specific time with specific results. Publicly verifiable at <code>/v1/verify/{hash}</code>, no authentication required. Not blockchain — standard public-key cryptography.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is the free tier really free?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Yes. OPEN tier: 10 proxy requests/day with GOLD Core injection and Ed25519 signed scoring at zero cost. Attribution required. When you need more: STANDARD ($2,500/mo) gives 1,000 requests/day. All tiers currently free during early adoption — full access, no credit card, no sales call. <a href="#quickstart">See all tiers</a>.</div></div>
 </div><div class="sd"></div>
 
 <div class="ds da" id="doc-changelog" data-nav="changelog">
