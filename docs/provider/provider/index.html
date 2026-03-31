@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ONTO for AI Providers — Your Model Is Capable. Let's Prove It.</title>
+<meta name="description" content="Your model already knows the answer. ONTO teaches it to cite, quantify, and prove. SSE(0) architecture. Zero per-request overhead. Fleet-wide. Free access.">
+<link rel="canonical" href="https://ontostandard.org/provider/">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='17' fill='%230a0a0a'/%3E%3Cpath d='M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z' fill='white'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f7f7f7;--text:#0a0a0a;--sub:#555;--border:#e5e7eb;--green:#22c55e;--gd:#15803d;--gbg:rgba(34,197,94,0.04);--gbd:rgba(34,197,94,0.15);--red:#dc2626;--white:#fff;--font:'DM Sans',sans-serif;--mono:'JetBrains Mono',monospace}
+body{font-family:var(--font);color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,0,0,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.04) 1px,transparent 1px);background-size:32px 32px}
+a{color:var(--gd);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+.green-bar{height:4px;background:linear-gradient(90deg,transparent 5%,rgba(34,197,94,0.85) 50%,transparent 95%)}
+.header{padding:20px 0;border-bottom:3px solid var(--text);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg);z-index:100}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-circle{width:32px;height:32px;background:var(--text);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--green)}
+.logo-circle svg{width:18px;height:18px}
+.logo-text{font-family:var(--mono);font-size:14px;font-weight:800;letter-spacing:2px}
+.header-links{font-family:var(--mono);font-size:11px;font-weight:700;display:flex;gap:20px}
+.header-links a{color:var(--sub);font-weight:600}
+section{padding:56px 0;border-bottom:1px solid var(--border)}
+section:last-of-type{border-bottom:none}
+.tag{font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2.5px;color:var(--white);background:var(--text);display:inline-block;padding:6px 14px;border-radius:6px;margin-bottom:20px}
+
+.hero{padding:72px 0 56px}
+.hero-badge{font-family:var(--mono);font-size:12px;font-weight:800;color:var(--gd);letter-spacing:2px;margin-bottom:12px}
+.hero h1{font-size:clamp(28px,5vw,42px);font-weight:800;line-height:1.15;letter-spacing:-0.5px}
+.hero h1 em{color:var(--green);font-style:normal}
+.hero-sub{font-size:17px;font-weight:600;color:var(--sub);margin-top:14px;line-height:1.6;max-width:680px}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:32px}
+.metric{background:var(--text);border-radius:10px;padding:16px 10px;text-align:center}
+.metric-num{font-family:var(--mono);font-size:clamp(20px,4vw,28px);font-weight:900;color:var(--green);line-height:1}
+.metric-label{font-size:10px;font-weight:600;color:rgba(255,255,255,0.5);margin-top:6px;line-height:1.3}
+
+/* CTO TAB */
+.view-tabs{display:flex;gap:12px;margin-top:24px}
+.view-tab{flex:1;text-align:center;padding:16px;font-family:var(--mono);font-size:13px;font-weight:800;letter-spacing:1px;cursor:pointer;transition:all .2s;border-radius:10px;user-select:none;border:3px solid var(--border);background:var(--white);color:var(--sub);box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.view-tab:hover:not(.active){border-color:var(--gd);color:var(--gd);box-shadow:0 4px 16px rgba(34,197,94,0.12);transform:translateY(-2px)}
+.view-tab.active{background:var(--text);color:var(--white);border-color:var(--text);box-shadow:0 4px 16px rgba(0,0,0,0.15)}
+.cto-box{background:var(--white);border:3px solid var(--gbd);border-radius:14px;padding:28px 32px;margin-top:24px;box-shadow:inset 0 0 40px rgba(34,197,94,0.03);display:none}
+.cto-box.active{display:block}
+.cto-row{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.06)}
+.cto-row:last-child{border-bottom:none}
+.cto-k{font-size:14px;font-weight:800}
+.cto-v{font-family:var(--mono);font-size:16px;font-weight:900;color:var(--gd)}
+
+/* DOMAIN PANELS */
+.domain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.domain{border:3px solid var(--gbd);border-radius:12px;padding:18px;background:var(--gbg);box-shadow:inset 0 0 30px rgba(34,197,94,0.02)}
+.domain-name{font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:1.5px;color:var(--gd);margin-bottom:8px}
+.domain-text{font-size:12px;color:var(--sub);line-height:1.6}
+.domain-text .src{color:var(--gd);font-weight:700}
+.domain-text .unc{color:#7c3aed;font-weight:700}
+.domain-text .ctr{color:#d97706;font-weight:700}
+.domain-meta{font-size:10px;color:var(--sub);margin-top:8px;opacity:.7}
+
+/* MULTI-MODEL TABLE */
+.mm-table{width:100%;border-collapse:separate;border-spacing:0;border:3px solid var(--border);border-radius:14px;overflow:hidden;font-size:13px;margin-top:16px}
+.mm-table th{font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:10px 12px;text-align:left;border-bottom:2px solid rgba(0,0,0,0.1);background:rgba(0,0,0,0.04);color:var(--sub)}
+.mm-table td{padding:8px 12px;border-bottom:1px solid rgba(0,0,0,0.06)}
+.mm-table td:first-child{font-weight:800}
+.mm-table tr:nth-child(even){background:rgba(0,0,0,0.015)}
+.mm-table .red{color:var(--red);font-weight:700;font-family:var(--mono)}
+.mm-table .green{color:var(--gd);font-weight:800;font-family:var(--mono)}
+.mm-table .delta{font-family:var(--mono);font-weight:900;color:var(--gd);font-size:14px}
+
+/* AMI */
+.ami-split{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.ami-card{border:3px solid var(--border);border-radius:12px;padding:20px;text-align:center}
+.ami-card.them{border-color:rgba(220,38,38,0.15);background:rgba(220,38,38,0.02)}
+.ami-card.us{border-color:rgba(34,197,94,0.25);background:var(--gbg);box-shadow:inset 0 0 40px rgba(34,197,94,0.03)}
+.ami-name{font-size:22px;font-weight:800;margin-bottom:4px}
+.ami-num{font-family:var(--mono);font-size:36px;font-weight:900;margin:8px 0}
+.ami-card.them .ami-num{color:var(--red)}
+.ami-card.us .ami-num{color:var(--gd)}
+.ami-fact{font-size:12px;color:var(--sub);line-height:1.5}
+
+/* PROBLEM CARDS */
+.prob-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
+.prob-card{border:3px solid rgba(220,38,38,0.12);border-radius:14px;padding:20px 24px;background:rgba(220,38,38,0.015)}
+.prob-card .loc{font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:1.5px;color:var(--red);margin-bottom:6px}
+.prob-card h4{font-size:18px;font-weight:800;margin-bottom:6px}
+.prob-card .desc{font-size:13px;color:var(--sub);line-height:1.6;margin-bottom:8px}
+.prob-card .metaphor{font-size:13px;font-weight:700;color:var(--red);font-style:italic}
+.surgeon-block{background:var(--text);border-radius:14px;padding:24px 28px;margin:16px 0}
+.surgeon-block h4{font-size:18px;font-weight:800;color:var(--white);line-height:1.4;margin-bottom:8px}
+.surgeon-block .red{color:var(--red)}
+.surgeon-block .green{color:var(--green)}
+.surgeon-block p{font-size:14px;color:rgba(255,255,255,0.6);line-height:1.6}
+
+/* CIRCLE DIAGRAM */
+.circle-wrap{display:flex;flex-direction:column;align-items:center;margin:24px 0}
+.circle-top{border:3px solid var(--border);border-radius:12px;padding:12px 28px;background:var(--white);font-size:16px;font-weight:800;text-align:center}
+.circle-arrow{font-size:20px;color:var(--sub);margin:8px 0}
+.circle-core{width:160px;height:160px;border-radius:50%;background:var(--gd);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:8px 0}
+.circle-core .t{font-size:18px;font-weight:800;color:var(--white)}
+.circle-core .s{font-size:12px;color:rgba(255,255,255,0.7);margin-top:2px}
+.circle-outputs{display:flex;gap:12px;margin-top:8px}
+.circle-out{border:3px solid var(--gbd);border-radius:10px;padding:10px 18px;background:var(--gbg);text-align:center}
+.circle-out .t{font-size:14px;font-weight:800}
+.circle-out .s{font-size:11px;color:var(--sub);margin-top:2px;font-family:var(--mono)}
+
+/* DEMO */
+.demo-split{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+.demo-card{border-radius:14px;padding:24px;overflow:hidden}
+.demo-card.bad{background:#fef2f2;border:3px solid #fecaca;box-shadow:inset 0 0 40px rgba(220,38,38,0.03)}
+.demo-card.good{background:#f0fdf4;border:3px solid #bbf7d0;box-shadow:inset 0 0 40px rgba(34,197,94,0.04)}
+.demo-tag{font-family:var(--mono);font-size:9px;font-weight:800;letter-spacing:1.5px;padding:4px 10px;border-radius:4px;display:inline-block;margin-bottom:12px}
+.demo-card.bad .demo-tag{background:#fee2e2;color:var(--red)}
+.demo-card.good .demo-tag{background:#dcfce7;color:var(--gd)}
+.demo-text{font-size:13px;color:var(--sub);line-height:1.7}
+.demo-text em{font-style:normal;font-weight:700}
+.demo-text .src{color:var(--gd);font-weight:700}
+.demo-text .unc{color:#7c3aed;font-weight:700}
+.demo-text .ctr{color:#d97706;font-weight:700}
+.demo-score{margin-top:14px;display:flex;align-items:center;gap:8px}
+.demo-score-bar{flex:1;height:8px;border-radius:4px;background:#e5e7eb;overflow:hidden}
+.demo-score-fill{height:100%;border-radius:4px}
+.demo-card.bad .demo-score-fill{width:18%;background:var(--red)}
+.demo-card.good .demo-score-fill{width:82%;background:var(--green)}
+.demo-score-num{font-family:var(--mono);font-size:24px;font-weight:900}
+.demo-card.bad .demo-score-num{color:var(--red)}
+.demo-card.good .demo-score-num{color:var(--gd)}
+.demo-score-grade{font-family:var(--mono);font-size:14px;font-weight:800;padding:4px 10px;border-radius:4px}
+.demo-card.bad .demo-score-grade{background:#fee2e2;color:var(--red)}
+.demo-card.good .demo-score-grade{background:#dcfce7;color:var(--gd)}
+
+/* SCHEMA */
+.schema{display:flex;align-items:center;justify-content:center;gap:0;margin:24px 0;flex-wrap:wrap}
+.schema-box{border:3px solid var(--border);border-radius:0;padding:16px 24px;text-align:center;background:var(--white);flex:1;min-width:140px}
+.schema-box:first-child{border-radius:12px 0 0 12px}
+.schema-box:last-child{border-radius:0 12px 12px 0}
+.schema-box .t{font-size:15px;font-weight:800}
+.schema-box .s{font-size:11px;color:var(--sub);margin-top:2px;font-family:var(--mono)}
+.schema-box.gold{background:var(--gd);border-color:var(--gd)}
+.schema-box.gold .t{color:var(--white)}
+.schema-box.gold .s{color:rgba(255,255,255,0.7)}
+.schema-arr{font-size:18px;color:var(--sub);padding:0 2px}
+
+/* STEPS */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:24px}
+.step{background:var(--gbg);border:2px solid var(--gbd);border-radius:10px;padding:16px}
+.step-n{font-family:var(--mono);font-size:20px;font-weight:900;color:var(--gd);margin-bottom:4px}
+.step-t{font-size:14px;font-weight:800;margin-bottom:4px}
+.step-d{font-size:12px;color:var(--sub);line-height:1.5}
+.step-d code{font-family:var(--mono);font-size:10px;background:rgba(0,0,0,0.06);padding:2px 6px;border-radius:3px}
+
+/* ECON CALC */
+.calc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}
+.calc{border:3px solid var(--gbd);border-radius:14px;padding:24px 18px;text-align:center;background:var(--gbg);box-shadow:inset 0 0 30px rgba(34,197,94,0.03)}
+.calc .big{font-family:var(--mono);font-size:clamp(28px,5vw,42px);font-weight:900;color:var(--gd);line-height:1}
+.calc .label{font-size:13px;font-weight:800;margin-top:8px}
+.calc .detail{font-size:11px;color:var(--sub);margin-top:4px;line-height:1.4}
+.calc.danger{border-color:rgba(220,38,38,0.15);background:rgba(220,38,38,0.02);box-shadow:none}
+.calc.danger .big{color:var(--red)}
+
+/* ECON TABLE */
+.etbl{width:100%;border-collapse:separate;border-spacing:0;border:3px solid var(--border);border-radius:14px;overflow:hidden;font-size:13px;margin-top:16px}
+.etbl th{font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:10px 14px;text-align:left;border-bottom:2px solid rgba(0,0,0,0.1);background:rgba(0,0,0,0.04);color:var(--sub)}
+.etbl th:last-child{background:rgba(34,197,94,0.06);color:var(--gd)}
+.etbl td{padding:10px 14px;border-bottom:1px solid rgba(0,0,0,0.06);vertical-align:top}
+.etbl td:first-child{font-weight:800}
+.etbl .bad{color:var(--red);font-weight:600}
+.etbl .good{color:var(--gd);font-weight:700}
+.etbl tr:nth-child(even){background:rgba(0,0,0,0.015)}
+.etbl .hl{background:rgba(34,197,94,0.06)}
+
+/* SCENARIOS */
+.scen-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:16px}
+.scen{border:2px solid var(--border);border-radius:12px;padding:18px;overflow:hidden}
+.scen-n{font-family:var(--mono);font-size:9px;font-weight:800;letter-spacing:1.5px;color:var(--sub);margin-bottom:6px}
+.scen-t{font-size:15px;font-weight:800;margin-bottom:8px}
+.scen-g{font-size:12px;color:var(--gd);font-weight:600;line-height:1.5;padding:8px 10px;background:rgba(34,197,94,0.04);border-radius:6px;margin-bottom:6px}
+.scen-b{font-size:12px;color:var(--red);line-height:1.5;padding:8px 10px;background:rgba(220,38,38,0.03);border-radius:6px}
+
+/* BARS */
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:3px}
+.bar-row .num{font-family:var(--mono);font-size:14px;font-weight:800;min-width:40px;text-align:right}
+.bar-row .num.red{color:var(--red)}.bar-row .num.green{color:var(--gd)}
+.bar-wrap{flex:1;height:20px;border-radius:6px;background:rgba(0,0,0,0.04);overflow:hidden}
+.bar-fill{height:100%;border-radius:6px}
+.bar-fill.red{background:rgba(220,38,38,0.25)}.bar-fill.green{background:var(--green)}
+.bar-metric{display:flex;justify-content:space-between;align-items:baseline;margin-top:20px;margin-bottom:6px}
+.bar-metric .label{font-size:16px;font-weight:800}
+.bar-metric .desc{font-size:12px;color:var(--sub);margin-left:8px;font-weight:400}
+.bar-metric .delta{font-family:var(--mono);font-size:28px;font-weight:900;color:var(--gd)}
+
+/* TECH */
+.spec-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.spec{border:2px solid var(--border);border-radius:10px;padding:14px 18px}
+.spec-k{font-family:var(--mono);font-size:11px;font-weight:800;color:var(--sub);letter-spacing:1px;margin-bottom:2px}
+.spec-v{font-size:14px;font-weight:700}
+
+.cta-section{text-align:center;padding:72px 0 48px}
+.cta-headline{font-size:clamp(24px,4vw,34px);font-weight:800;line-height:1.3}
+.cta-sub{font-size:16px;color:var(--sub);margin-top:12px;line-height:1.6}
+.cta-buttons{margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.cta-btn{font-family:var(--mono);font-size:14px;font-weight:800;padding:16px 36px;border-radius:10px;text-decoration:none;display:inline-block;transition:all .2s}
+.cta-btn:hover{text-decoration:none}
+.cta-btn.primary{background:var(--gd);color:var(--white)}.cta-btn.primary:hover{background:var(--green)}
+.cta-btn.secondary{background:var(--text);color:var(--white)}.cta-btn.secondary:hover{background:#222}
+.black-block{background:var(--text);border-radius:10px;padding:20px 28px;text-align:center;margin-top:24px}
+.black-block p{font-size:18px;font-weight:800;color:var(--white)}
+.black-block .small{font-size:13px;color:rgba(255,255,255,0.5);margin-top:6px}
+.footer{padding:24px 0;border-top:2px solid var(--text);display:flex;align-items:center;justify-content:space-between}
+.footer-left .name{font-size:14px;font-weight:800}
+.footer-left .role{font-size:11px;color:var(--sub);margin-top:2px}
+.footer-right{font-family:var(--mono);font-size:11px;text-align:right;line-height:1.8}
+.footer-right a{color:var(--gd);text-decoration:none;font-weight:800}
+
+@media(max-width:640px){
+  .metrics{grid-template-columns:repeat(2,1fr)}
+  .demo-split,.scen-grid,.spec-grid,.prob-cards,.calc-grid{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr 1fr}
+  .schema{flex-direction:column}.schema-box{border-radius:0!important;width:100%}.schema-box:first-child{border-radius:12px 12px 0 0!important}.schema-box:last-child{border-radius:0 0 12px 12px!important}
+  .schema-arr{transform:rotate(90deg)}
+  .cta-buttons{flex-direction:column;align-items:center}
+  .header{position:static}.footer{flex-direction:column;gap:16px;text-align:center}.footer-right{text-align:center}
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+section,.hero{animation:fadeUp .6s ease-out both}
+section:nth-child(2){animation-delay:.1s}section:nth-child(3){animation-delay:.15s}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="green-bar"></div>
+<div class="header">
+  <div class="logo">
+    <div class="logo-circle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><path d="M186 80L242 80L242 320L186 320L186 128L148 128L148 80Z" fill="white"/></svg></div>
+    <span class="logo-text">ONTO</span>
+  </div>
+  <div class="header-links"><a href="/">Home</a><a href="/docs/">Standard</a><a href="/paper/">Research</a><a href="/agent/">Evaluate</a></div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">PRODUCT: AI PROVIDERS</div>
+  <h1>Your model is capable.<br><em>ONTO makes it provable.</em></h1>
+  <div class="hero-sub">Your model already knows the answer — it just never had a reason to cite it. ONTO adds epistemic discipline at inference time. One integration. Every model in your fleet. Zero weight changes.</div>
+  <div class="metrics">
+    <div class="metric"><div class="metric-num">SSE(0)</div><div class="metric-label">zero requests per response</div></div>
+    <div class="metric"><div class="metric-num">10×</div><div class="metric-label">composite improvement</div></div>
+    <div class="metric"><div class="metric-num">22+</div><div class="metric-label">models tested</div></div>
+    <div class="metric"><div class="metric-num">$0</div><div class="metric-label">free pilot access</div></div>
+  </div>
+  <div onclick="showView(this.dataset.mode==='cto'?'full':'cto');this.dataset.mode=this.dataset.mode==='cto'?'full':'cto'" data-mode="full" style="margin-top:24px;padding:18px 24px;border:3px solid var(--gd);border-radius:12px;background:rgba(34,197,94,0.04);cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .2s;box-shadow:0 2px 12px rgba(34,197,94,0.1)" onmouseover="this.style.background='rgba(34,197,94,0.08)';this.style.boxShadow='0 4px 20px rgba(34,197,94,0.15)'" onmouseout="this.style.background='rgba(34,197,94,0.04)';this.style.boxShadow='0 2px 12px rgba(34,197,94,0.1)'">
+    <div><span style="font-size:18px;font-weight:800">⚡ Short on time?</span><span style="font-size:15px;color:var(--sub);margin-left:10px">CTO summary with economics — 60 seconds</span></div>
+    <div style="font-family:var(--mono);font-size:13px;font-weight:800;color:var(--gd);background:var(--white);padding:8px 20px;border-radius:8px;border:2px solid var(--gd)">OPEN ↓</div>
+  </div>
+  </div>
+  <div class="cto-box" id="ctoBox">
+    <div style="font-size:18px;font-weight:800;margin-bottom:16px">Executive summary for CTO</div>
+    <div class="cto-row"><span class="cto-k">What it does</span><span class="cto-v" style="color:var(--text);font-size:14px;font-weight:600">Adds epistemic discipline to any model at inference time. Cites sources, quantifies confidence, admits unknowns.</span></div>
+    <div class="cto-row"><span class="cto-k">Integration</span><span class="cto-v">1 SSE endpoint · 1 hour</span></div>
+    <div class="cto-row"><span class="cto-k">Architecture</span><span class="cto-v">SSE(0) — 0 requests per response</span></div>
+    <div class="cto-row"><span class="cto-k">Coverage</span><span class="cto-v">Entire fleet · all models</span></div>
+    <div class="cto-row"><span class="cto-k">Result</span><span class="cto-v">10× composite improvement</span></div>
+    <div class="cto-row"><span class="cto-k">vs RLHF</span><span class="cto-v">$0 vs $500K–$2M per model</span></div>
+    <div class="cto-row"><span class="cto-k">Proof</span><span class="cto-v">Ed25519 · 104B · per response</span></div>
+    <div class="cto-row"><span class="cto-k">Tested</span><span class="cto-v">22+ models · 12 reports · published</span></div>
+    <div class="cto-row"><span class="cto-k">Risk</span><span class="cto-v" style="color:var(--text);font-size:14px;font-weight:600">Zero. Free pilot. No model changes. Reversible in 1 line.</span></div>
+    <div style="font-size:16px;font-weight:800;margin:20px 0 12px;padding-top:16px;border-top:2px solid rgba(0,0,0,0.06)">Economics — why this pays for itself</div>
+    <div class="cto-row"><span class="cto-k">EU AI Act fine</span><span class="cto-v" style="color:var(--red)">€35M per violation</span></div>
+    <div class="cto-row"><span class="cto-k">ONTO cost</span><span class="cto-v">$250K/yr = 140 years per one fine</span></div>
+    <div class="cto-row"><span class="cto-k">Right now</span><span class="cto-v">$0 — free pilot. $250K/yr only after certification, if you proceed.</span></div>
+    <div class="cto-row"><span class="cto-k">Compute</span><span class="cto-v">Compact + GOLD beats premium. 15× cheaper inference.</span></div>
+    <div class="cto-row"><span class="cto-k">Hardware</span><span class="cto-v">−70% GPU · −70% electricity · −70% cooling</span></div>
+    <div class="cto-row"><span class="cto-k">Tickets</span><span class="cto-v">5× fewer "AI was wrong" escalations = ~$1M/yr saved</span></div>
+    <div style="font-size:16px;font-weight:800;margin:20px 0 12px;padding-top:16px;border-top:2px solid rgba(0,0,0,0.06)">Deep dive — for security & architecture review</div>
+    <div class="cto-row"><span class="cto-k">SSE(0)</span><span class="cto-v" style="color:var(--text);font-size:13px;font-weight:600">Zero requests to ONTO per client response. Connect once via GET /v1/gold/stream, cache ~4K tokens locally, inject into system prompts. Your client sends 1M requests — ONTO sees zero.</span></div>
+    <div class="cto-row"><span class="cto-k">GOLD</span><span class="cto-v" style="color:var(--text);font-size:13px;font-weight:600">Not a prompt template. Curated scientific knowledge architecture — 169 files, 900K tokens, 20 years of research. Activates citation, quantification, uncertainty disclosure across any model.</span></div>
+    <div class="cto-row"><span class="cto-k">Security</span><span class="cto-v" style="color:var(--text);font-size:13px;font-weight:600">Digital watermark (per-client, survives paraphrasing). 104-byte Ed25519 proof chain. Phase 3: AES-256-GCM encrypted SSE, 24h key rotation, memory-only decryption.</span></div>
+    <div class="cto-row"><span class="cto-k">Privacy</span><span class="cto-v" style="color:var(--text);font-size:13px;font-weight:600">Zero data retention. We never see prompts or responses. All inference on your infrastructure.</span></div>
+    <div class="cto-row"><span class="cto-k">Research</span><span class="cto-v" style="color:var(--text);font-size:13px;font-weight:600">We publish anomalies, not just results. All findings shared with providers before public disclosure. Scripts open source.</span></div>
+    <div style="margin-top:16px;background:rgba(0,0,0,0.03);border:2px solid rgba(0,0,0,0.08);border-radius:10px;padding:14px 18px;font-family:var(--mono);font-size:11px;line-height:1.7;overflow-x:auto">
+      <div style="color:var(--sub)"># Connect</div>
+      <div><span style="color:var(--gd);font-weight:800">curl</span> -N https://api.ontostandard.org/v1/gold/stream \</div>
+      <div>  -H "X-Api-Key: onto_sk_..."</div>
+      <div style="color:var(--sub);margin-top:8px"># Response</div>
+      <div>{ "type": <span style="color:var(--gd)">"gold_corpus"</span>, "tokens_estimate": 4200,</div>
+      <div>  "discipline_layer": "### ONTO GOLD v4.5\n...",</div>
+      <div>  "content_hash": "sha256:a1b2c3..." }</div>
+    </div>
+    <div style="text-align:center;margin-top:20px">
+      <a href="mailto:council&#64;ontostandard.org?subject=Provider%20Pilot" style="font-family:var(--mono);font-size:14px;font-weight:800;color:var(--white);background:var(--gd);padding:14px 36px;border-radius:8px;display:inline-block;text-decoration:none">Start free pilot →</a>
+      <a href="/agent/" style="font-family:var(--mono);font-size:14px;font-weight:800;color:var(--text);background:transparent;border:3px solid var(--border);padding:12px 36px;border-radius:8px;display:inline-block;text-decoration:none;margin-left:8px">Live demo →</a>
+    </div>
+  </div>
+</div>
+
+<!-- THE PROBLEM -->
+<section>
+  <div class="tag">THE PROBLEM</div>
+  <h2 style="font-size:clamp(22px,4vw,32px);font-weight:800;line-height:1.2">Your model is safe.<br><span style="color:var(--red)">Your customers need it to be provable.</span></h2>
+  <p style="font-size:15px;color:var(--sub);margin-top:8px">Safety was the first frontier. Provability is the next.</p>
+
+  <div class="prob-cards">
+    <div class="prob-card">
+      <div class="loc">ENTERPRISE DEALS · NOW</div>
+      <h4>Lost contracts — no proof</h4>
+      <div class="desc">Regulated industries (finance, healthcare, government) reject AI without compliance evidence. "Trust us" doesn't close deals.</div>
+      <div class="metaphor">Your best model loses to a worse one with a certificate.</div>
+    </div>
+    <div class="prob-card">
+      <div class="loc">EU AI ACT · 2025–2027</div>
+      <h4>€35M per violation</h4>
+      <div class="desc">Your customers face fines. They need YOUR output to be verifiable. No instrument exists to prove AI cites real sources.</div>
+      <div class="metaphor">Your customers need a speedometer. You can provide one.</div>
+    </div>
+  </div>
+
+  <div class="black-block" style="margin-top:16px">
+    <p>You solved safety. Now solve provability.</p>
+    <div class="small">RLHF teaches models to avoid harm. ONTO teaches them to cite, quantify, and disclose. Not a replacement — the next layer. Same model, verifiable output.</div>
+  </div>
+</section>
+
+<!-- SSE(0) -->
+<section>
+  <div class="tag">SSE(0) — ZERO REQUESTS PER RESPONSE</div>
+  <p style="font-size:15px;color:var(--sub);margin-bottom:4px">Connect once. Cache GOLD. Inject into every model. ONTO is never in your inference path.</p>
+  <div class="schema">
+    <div class="schema-box"><div class="t">ONTO SSE</div><div class="s">~4K tokens · auto-updates</div></div>
+    <div class="schema-arr">→</div>
+    <div class="schema-box"><div class="t">Your Server</div><div class="s">cache GOLD corpus</div></div>
+    <div class="schema-arr">→</div>
+    <div class="schema-box gold"><div class="t">System Prompt</div><div class="s">prepend to any model</div></div>
+    <div class="schema-arr">→</div>
+    <div class="schema-box"><div class="t">Your Models</div><div class="s">cite · quantify · disclose</div></div>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="step-n">01</div><div class="step-t">Connect SSE</div><div class="step-d">Single persistent connection. <code>GET /v1/gold/stream</code></div></div>
+    <div class="step"><div class="step-n">02</div><div class="step-t">Receive GOLD</div><div class="step-d">Full discipline layer. Auto-updates. SHA-256 verified.</div></div>
+    <div class="step"><div class="step-n">03</div><div class="step-t">Prepend</div><div class="step-d"><code>system = gold + your_prompt</code></div></div>
+    <div class="step"><div class="step-n">04</div><div class="step-t">Ship</div><div class="step-d">Model cites, quantifies, discloses. No fine-tuning.</div></div>
+    <div class="step"><div class="step-n">05</div><div class="step-t">Certify</div><div class="step-d">Score 5% of traffic. 92+ markers. Ed25519 proof chain. Public verification.</div></div>
+  </div>
+  <div class="black-block" style="margin-top:24px">
+    <p>Fleet-wide coverage. One integration. Every model.</p>
+    <div class="small">GPT, Claude, Gemini, Llama, Mistral, your fine-tunes. No per-model licensing. Deploy a new model — GOLD works within the hour. Pre-deployment calibration: score any model before production launch.</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px">
+    <div style="border:3px solid var(--gbd);border-radius:12px;padding:16px 20px;background:var(--gbg)">
+      <div style="font-size:15px;font-weight:800;margin-bottom:4px">Latency impact: near zero</div>
+      <div style="font-size:13px;color:var(--sub);line-height:1.6">+4K tokens in system prompt. At GPT-4o pricing: <strong style="color:var(--gd)">~$0.0001/request</strong> overhead. Quality improvement: <strong style="color:var(--gd)">10×</strong>. No additional network calls.</div>
+    </div>
+    <div style="border:3px solid var(--gbd);border-radius:12px;padding:16px 20px;background:var(--gbg)">
+      <div style="font-size:15px;font-weight:800;margin-bottom:4px">Data privacy: absolute</div>
+      <div style="font-size:13px;color:var(--sub);line-height:1.6">Zero data retention. <strong>We never see your prompts or responses.</strong> GOLD delivered once via SSE. All inference on your infrastructure.</div>
+    </div>
+  </div>
+
+  <div style="font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--sub);margin-top:20px;margin-bottom:8px">TWO PATHS: PROXY OR SSE</div>
+  <table class="etbl">
+    <thead><tr><th>Capability</th><th>Proxy path</th><th>Provider SSE path</th></tr></thead>
+    <tbody>
+      <tr><td>GOLD delivery</td><td class="bad">Per-request injection via API</td><td class="good">Direct SSE stream (cache locally)</td></tr>
+      <tr><td>Models</td><td class="bad">Your models via our proxy</td><td class="good">Any model, your infrastructure</td></tr>
+      <tr><td>Request overhead</td><td class="bad">1 ONTO call per request</td><td class="good">SSE(0) — zero ONTO calls</td></tr>
+      <tr><td>Certification</td><td class="bad">Per-account scoring</td><td class="good">Per-model public verification + Ed25519</td></tr>
+      <tr><td>Architecture</td><td class="bad">ONTO in inference path</td><td class="good">ONTO never in inference path</td></tr>
+      <tr class="hl"><td>For whom</td><td class="bad">Companies using AI</td><td class="good">Companies building AI products</td></tr>
+    </tbody>
+  </table>
+</section>
+<!-- BEFORE / AFTER -->
+<section>
+  <div class="tag">PROOF — BEFORE / AFTER</div>
+  <p style="font-size:15px;color:var(--sub);margin-bottom:8px">Same question. Same model. Left: what ships today. Right: what ships with ONTO.</p>
+  <div class="demo-split">
+    <div class="demo-card bad">
+      <div class="demo-tag">BASELINE — YOUR MODEL TODAY</div>
+      <div class="demo-text"><em>"Studies show significant benefits for high-risk patients. Experts generally recommend this approach as part of a comprehensive treatment plan."</em><br><br>Zero sources. Zero numbers. Zero uncertainty. Reads like authority — backed by nothing.</div>
+      <div class="demo-score"><div class="demo-score-bar"><div class="demo-score-fill"></div></div><div class="demo-score-num">0.18</div><div class="demo-score-grade">F</div></div>
+    </div>
+    <div class="demo-card good">
+      <div class="demo-tag">SAME MODEL + ONTO GOLD</div>
+      <div class="demo-text"><span class="src">(2022) Patikorn et al.</span> meta-analysis (n=<strong>410</strong>): HbA1c reduced by <strong>−0.53%</strong> (95% CI: −0.88 to −0.17). <span class="unc">Confidence: ~70%. Unknown:</span> optimal protocol duration. <span class="ctr">Counter:</span> caloric restriction produced comparable reduction (−0.48%).</div>
+      <div class="demo-score"><div class="demo-score-bar"><div class="demo-score-fill"></div></div><div class="demo-score-num">0.82</div><div class="demo-score-grade">A</div></div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:20px"><a href="/agent/" style="font-family:var(--mono);font-size:13px;font-weight:800;color:var(--white);background:var(--gd);padding:12px 32px;border-radius:8px;display:inline-block;text-decoration:none">Try on your model →</a></div>
+
+  <div style="font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--sub);margin-top:28px;margin-bottom:8px">WORKS ACROSS DOMAINS</div>
+  <div class="domain-grid">
+    <div class="domain">
+      <div class="domain-name">MEDICAL</div>
+      <div class="domain-text"><span class="src">(2022) Patikorn et al.</span> meta-analysis (n=<strong>410</strong>): HbA1c −<strong>0.53%</strong>. <span class="unc">Confidence: ~70%.</span> Long-term data limited.</div>
+      <div class="domain-meta">Model cites source, quantifies effect, discloses data gaps</div>
+    </div>
+    <div class="domain">
+      <div class="domain-name">FINANCIAL</div>
+      <div class="domain-text">Basel III tier-1 capital ratio minimum: <strong>6%</strong>. <span class="unc">Unknown:</span> jurisdiction-specific surcharges vary <strong>1–3.5%</strong>. <span class="ctr">Note:</span> post-2023 reforms may alter thresholds.</div>
+      <div class="domain-meta">Model quantifies regulation, flags jurisdictional uncertainty</div>
+    </div>
+    <div class="domain">
+      <div class="domain-name">LEGAL</div>
+      <div class="domain-text"><span class="src">Daubert v. Merrell Dow (1993)</span> established <strong>4</strong>-factor test. <span class="unc">Confidence: high</span> (Supreme Court). <span class="ctr">But:</span> state courts vary in adoption.</div>
+      <div class="domain-meta">Model cites precedent, notes jurisdictional variance</div>
+    </div>
+  </div>
+</section>
+
+<!-- PUBLISHED DATA -->
+<section>
+  <div class="tag">THIS IS NOT A PROMISE. PUBLISHED DATA.</div>
+  <p style="font-size:13px;color:var(--sub);font-family:var(--mono);margin-bottom:8px">CS-2026-001 · 11 models · 100 questions · 5 domains · regex scoring, not AI</p>
+
+  <div class="bar-metric"><div><span class="label">Composite</span><span class="desc">All metrics 0–6</span></div><div class="delta">10×</div></div>
+  <div class="bar-row"><span class="num red">0.53</span><div class="bar-wrap"><div class="bar-fill red" style="width:9%"></div></div></div>
+  <div class="bar-row"><span class="num green">5.38</span><div class="bar-wrap"><div class="bar-fill green" style="width:90%"></div></div></div>
+
+  <div class="bar-metric"><div><span class="label">Sources cited</span><span class="desc">named references</span></div><div class="delta">27×</div></div>
+  <div class="bar-row"><span class="num red">0.01</span><div class="bar-wrap"><div class="bar-fill red" style="width:2%"></div></div></div>
+  <div class="bar-row"><span class="num green">0.27</span><div class="bar-wrap"><div class="bar-fill green" style="width:45%"></div></div></div>
+
+  <div class="bar-metric"><div><span class="label">Quantification</span><span class="desc">real numbers, CIs</span></div><div class="delta">30×</div></div>
+  <div class="bar-row"><span class="num red">0.10</span><div class="bar-wrap"><div class="bar-fill red" style="width:3%"></div></div></div>
+  <div class="bar-row"><span class="num green">3.08</span><div class="bar-wrap"><div class="bar-fill green" style="width:51%"></div></div></div>
+
+  <div class="bar-metric"><div><span class="label">Confidence</span><span class="desc">calibrated certainty</span></div><div class="delta">∞</div></div>
+  <div class="bar-row"><span class="num red">0.00</span><div class="bar-wrap"><div class="bar-fill red" style="width:1%"></div></div></div>
+  <div class="bar-row"><span class="num green">1.00</span><div class="bar-wrap"><div class="bar-fill green" style="width:60%"></div></div></div>
+
+  <div class="bar-metric"><div><span class="label">Unknown recognition</span><span class="desc">says "I don't know"</span></div><div class="delta">26×</div></div>
+  <div class="bar-row"><span class="num red">0.04</span><div class="bar-wrap"><div class="bar-fill red" style="width:4%"></div></div></div>
+  <div class="bar-row"><span class="num green">0.96</span><div class="bar-wrap"><div class="bar-fill green" style="width:96%"></div></div></div>
+
+  <div class="bar-metric"><div><span class="label">Dispersion ↓</span><span class="desc">cross-model variance · lower = better</span></div><div class="delta">5× less</div></div>
+  <div class="bar-row"><span class="num red">0.58</span><div class="bar-wrap"><div class="bar-fill red" style="width:58%"></div></div></div>
+  <div class="bar-row"><span class="num green">0.11</span><div class="bar-wrap"><div class="bar-fill green" style="width:11%"></div></div></div>
+
+  <div class="bar-metric"><div><span class="label">Hedge words ↓</span><span class="desc">empty qualifiers · lower = better</span></div><div class="delta">3× less</div></div>
+  <div class="bar-row"><span class="num red">0.06</span><div class="bar-wrap"><div class="bar-fill red" style="width:50%"></div></div></div>
+  <div class="bar-row"><span class="num green">0.02</span><div class="bar-wrap"><div class="bar-fill green" style="width:17%"></div></div></div>
+
+  <p style="text-align:center;font-family:var(--mono);font-size:11px;color:var(--sub);margin-top:16px">GPT 0.38→5.38 (×10) · Grok 6.7→9.3 (+39%) · 993 lines regex · <a href="/reports/" style="font-weight:800">Full data</a> · <a href="https://github.com/nickarstrong/onto-research" style="font-weight:800">GitHub</a></p>
+
+  <div style="font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--sub);margin-top:28px;margin-bottom:8px">MULTI-MODEL COMPARISON</div>
+  <table class="mm-table">
+    <thead><tr><th>Model</th><th>Baseline</th><th>+ ONTO</th><th>Δ</th></tr></thead>
+    <tbody>
+      <tr><td>GPT-4o</td><td class="red">0.38</td><td class="green">5.38</td><td class="delta">×10</td></tr>
+      <tr><td>Grok</td><td class="red">6.7</td><td class="green">9.3</td><td class="delta">+39%</td></tr>
+      <tr><td>DeepSeek</td><td class="red">7.3</td><td class="green">8.9</td><td class="delta">+22%</td></tr>
+      <tr><td>Gemini</td><td class="red">4.1</td><td class="green">7.8</td><td class="delta">+90%</td></tr>
+    </tbody>
+  </table>
+  <p style="font-family:var(--mono);font-size:10px;color:var(--sub);margin-top:8px">DeepSeek ($0.002/req) + ONTO beats raw GPT-4o ($0.03/req). Cheaper model + discipline > expensive model without. <strong>Full data: 22+ models at <a href="/reports/" style="font-weight:800">ontostandard.org/reports</a></strong></p>
+
+  <div class="black-block" style="margin-top:24px">
+    <p>What these numbers mean for your business</p>
+    <div class="small">27× more citations = lower liability risk, defensible outputs. Confidence from zero = customers know when to trust. 5× uncertainty disclosure = fewer support tickets, fewer "your AI told me wrong" escalations.</div>
+  </div>
+</section>
+
+<!-- ECONOMICS -->
+<section>
+  <div class="tag">ECONOMICS — THE NUMBERS</div>
+
+  <div class="calc-grid">
+    <div class="calc danger">
+      <div class="big">€35M</div>
+      <div class="label">One EU AI Act fine</div>
+      <div class="detail">Art. 99. Per violation. Per model. No appeal on fabricated output.</div>
+    </div>
+    <div class="calc">
+      <div class="big">140 yrs</div>
+      <div class="label">of ONTO at $250K/yr</div>
+      <div class="detail">One fine pays for 140 years of certified compliance.</div>
+    </div>
+    <div class="calc">
+      <div class="big">$0</div>
+      <div class="label">ONTO cost right now</div>
+      <div class="detail">Free pilot. Full GOLD. All models. Zero risk.</div>
+    </div>
+  </div>
+
+  <div class="calc-grid">
+    <div class="calc">
+      <div class="big">15×</div>
+      <div class="label">Cheaper inference</div>
+      <div class="detail">DeepSeek + GOLD ($0.002/req) beats raw GPT-4o ($0.03/req). Same quality. 15× less cost.</div>
+    </div>
+    <div class="calc">
+      <div class="big">~$10M</div>
+      <div class="label">Saved per year</div>
+      <div class="detail">At 1M req/day: compact+GOLD vs premium model. Based on published API pricing (GPT-4o vs DeepSeek V3.1).</div>
+    </div>
+    <div class="calc">
+      <div class="big">~$1M</div>
+      <div class="label">Fewer support tickets</div>
+      <div class="detail">5× fewer "your AI was wrong" escalations. Estimate at $100/ticket × 1000/mo. Scales with volume.</div>
+    </div>
+  </div>
+
+  <div class="calc-grid" style="grid-template-columns:1fr 1fr">
+    <div class="calc">
+      <div class="big">−70%</div>
+      <div class="label">Compute & energy</div>
+      <div class="detail">Compact model + GOLD = less GPU, less electricity, less cooling, lower carbon footprint.</div>
+    </div>
+    <div class="calc">
+      <div class="big">∞</div>
+      <div class="label">ROI on free pilot</div>
+      <div class="detail">Investment: $0. Result: measured 10× quality improvement. ROI = infinite.</div>
+    </div>
+  </div>
+
+  <p style="font-size:15px;font-weight:800;margin-top:28px;margin-bottom:4px">RLHF vs ONTO — cost comparison</p>
+  <p style="font-size:13px;color:var(--sub);margin-bottom:8px">RLHF is expensive, slow, model-specific. ONTO achieves superior quality via behavioral layer — works across your entire fleet.</p>
+  <table class="etbl">
+    <thead><tr><th>Parameter</th><th>RLHF / Fine-tuning</th><th>ONTO GOLD</th></tr></thead>
+    <tbody>
+      <tr><td>Cost</td><td class="bad">$500K–$2M per model</td><td class="good">Free pilot. $250K/yr after certification — if you choose to proceed.</td></tr>
+      <tr><td>Deploy time</td><td class="bad">3–6 months</td><td class="good">1 hour</td></tr>
+      <tr><td>Model updates</td><td class="bad">Re-train per base model</td><td class="good">Auto-updates, all models</td></tr>
+      <tr><td>Scope</td><td class="bad">One model</td><td class="good">Entire fleet</td></tr>
+      <tr><td>Verification</td><td class="bad">Manual QA</td><td class="good">Deterministic, Ed25519 signed</td></tr>
+      <tr class="hl"><td>Result</td><td class="bad">Incremental, degrades</td><td class="good">10× measured, maintained</td></tr>
+    </tbody>
+  </table>
+
+  <div class="scen-grid">
+    <div class="scen"><div class="scen-n">SCENARIO 01</div><div class="scen-t">The Margin Gap</div><div class="scen-g">With ONTO: compact model + discipline = lower cost, equal quality</div><div class="scen-b">Without: larger models, higher cost, same fabrication rate</div></div>
+    <div class="scen"><div class="scen-n">SCENARIO 02</div><div class="scen-t">The Regulatory Wall</div><div class="scen-g">With ONTO: Ed25519 proof chain. Compliance from day one.</div><div class="scen-b">Without: months per jurisdiction. Blocked from contracts.</div></div>
+    <div class="scen"><div class="scen-n">SCENARIO 03</div><div class="scen-t">The Trust Gap</div><div class="scen-g">With ONTO: "Grade A, here's the proof." Signed scores in client systems. High switching cost.</div><div class="scen-b">Without: "Trust us." No evidence. 5% discount = customer gone.</div></div>
+  </div>
+
+  <div style="font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--sub);margin-top:20px;margin-bottom:8px">IMPACT HIGHLIGHTS</div>
+  <table class="etbl">
+    <thead><tr><th>Zone</th><th>With ONTO</th><th>Without</th></tr></thead>
+    <tbody>
+      <tr><td>Sales cycle</td><td class="good">Certificate shortens compliance review</td><td class="bad">Months proving safety to each prospect</td></tr>
+      <tr><td>EU AI Act</td><td class="good">Built-in conformity evidence (Art. 9, 13, 15, 43)</td><td class="bad">Years of preparation and documentation</td></tr>
+      <tr class="hl"><td>Pricing power</td><td class="good">Premium for verified output — clients pay for trust</td><td class="bad">Price competition on $/token — race to bottom</td></tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:16px;border:3px solid var(--border);border-radius:12px;padding:16px 20px">
+    <div style="font-size:14px;font-weight:800;margin-bottom:4px">Research integrity</div>
+    <div style="font-size:13px;color:var(--sub);line-height:1.6">We publish anomalies, not just results. All findings shared with providers before public disclosure. Fix period before any publication. <strong>All scripts open source: <a href="https://github.com/nickarstrong/onto-research">GitHub</a>.</strong></div>
+  </div>
+</section>
+
+<!-- TECHNICAL -->
+<section>
+  <div class="tag">TECHNICAL SPECIFICATION</div>
+  <p style="font-size:14px;color:var(--sub);margin-bottom:4px">For the engineer who receives this link. Full docs: <a href="/docs/#provider-guide" style="font-weight:800">Provider Integration Guide</a></p>
+  <div class="spec-grid">
+    <div class="spec"><div class="spec-k">PROTOCOL</div><div class="spec-v">SSE (Server-Sent Events)</div></div>
+    <div class="spec"><div class="spec-k">ENDPOINT</div><div class="spec-v"><code style="font-size:12px">GET /v1/gold/stream</code></div></div>
+    <div class="spec"><div class="spec-k">CORPUS</div><div class="spec-v">169 files · 900K tokens</div></div>
+    <div class="spec"><div class="spec-k">KERNEL</div><div class="spec-v">~4K tokens · auto-update</div></div>
+    <div class="spec"><div class="spec-k">SCORING</div><div class="spec-v">993 lines regex · EM1-EM5</div></div>
+    <div class="spec"><div class="spec-k">PROOF</div><div class="spec-v">Ed25519 · 104 bytes</div></div>
+    <div class="spec"><div class="spec-k">COMPATIBLE</div><div class="spec-v">OpenAI · Anthropic · Google · xAI · Meta · Mistral</div></div>
+    <div class="spec"><div class="spec-k">OVERHEAD</div><div class="spec-v">0 requests per client response</div></div>
+  </div>
+
+  <div style="font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--sub);margin-top:20px;margin-bottom:8px">API ENDPOINTS</div>
+  <table class="etbl">
+    <thead><tr><th>Method</th><th>Path</th><th>Auth</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><strong style="color:var(--gd)">GET</strong></td><td>/v1/gold/stream</td><td>Key</td><td>SSE — GOLD corpus</td></tr>
+      <tr><td><strong style="color:var(--gd)">POST</strong></td><td>/v1/models</td><td>Key</td><td>Register model</td></tr>
+      <tr><td><strong style="color:var(--gd)">POST</strong></td><td>/v1/models/evaluate</td><td>Key</td><td>Score + proof</td></tr>
+      <tr><td><strong style="color:var(--gd)">POST</strong></td><td>/v1/models/evaluate/batch</td><td>Key</td><td>Batch eval</td></tr>
+      <tr><td><strong style="color:var(--gd)">GET</strong></td><td>/v1/verify/{hash}</td><td>—</td><td>Public verification</td></tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:16px;border:3px solid var(--gbd);border-radius:12px;padding:20px 24px;background:var(--gbg)">
+    <div style="font-size:16px;font-weight:800;margin-bottom:8px">ONTO CERTIFIED — your marketing asset</div>
+    <div style="font-size:13px;color:var(--sub);line-height:1.7">Each scored model receives a public verification page: <code style="font-size:11px;background:rgba(0,0,0,0.06);padding:2px 6px;border-radius:3px">/verify/model/{id}</code>. Ed25519 signed. Independently reproducible. Your sales team uses this: <strong>"Our models are independently certified for epistemic quality by ONTO Standards Council."</strong> For regulated industries — this is the difference between "trust us" and "verify it yourself."</div>
+  </div>
+
+  <p style="font-family:var(--mono);font-size:11px;color:var(--sub);margin-top:16px;text-align:center"><a href="/docs/#quickstart" style="font-weight:800">Integration guide →</a> · <a href="/docs/#provider-guide" style="font-weight:800">SSE deep dive →</a> · <a href="/docs/#api-ref" style="font-weight:800">Full API reference →</a></p>
+</section>
+
+<!-- HOW TO START -->
+<section>
+  <div class="tag">HOW TO START</div>
+  <div class="steps" style="grid-template-columns:1fr 1fr">
+    <div class="step"><div class="step-n">01</div><div class="step-t">Email us</div><div class="step-d">Send a note to <strong>council@ontostandard.org</strong> — tell us about your models and what you're building.</div></div>
+    <div class="step"><div class="step-n">02</div><div class="step-t">Get access (24h)</div><div class="step-d">We activate full GOLD access — proxy or SSE, your choice. No restrictions.</div></div>
+    <div class="step"><div class="step-n">03</div><div class="step-t">Test your model</div><div class="step-d">Run requests with and without ONTO. Compare. All results scored by deterministic engine and Ed25519 signed.</div></div>
+    <div class="step"><div class="step-n">04</div><div class="step-t">Your data. Your decision.</div><div class="step-d">If the numbers speak — we build together. If not — no hard feelings. The data is yours either way.</div></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-headline">Prove it on your model. Free.</div>
+  <div class="cta-sub">Full GOLD access. Your model, your questions, our discipline layer.<br>No restrictions. No trial period. The data is yours either way.</div>
+  <div class="cta-buttons">
+    <a class="cta-btn primary" href="/cdn-cgi/l/email-protection#3754584259545e5b111401030c58594358444356595356455319584550084442555d5254430a674558415e535245120507675e5b5843">Start free pilot →</a>
+    <a class="cta-btn secondary" href="/agent/">Live demo — 30 seconds →</a>
+  </div>
+  <div class="black-block">
+    <p>If the numbers don't speak — you owe nothing.</p>
+    <div class="small">Free access · Full GOLD · All models · Signed proof chain</div>
+  </div>
+</section>
+
+<div class="footer">
+  <div class="footer-left">
+    <div class="name">ONTO Standards Council</div>
+    <div class="role">Independent research initiative · Est. 2024</div>
+  </div>
+  <div class="footer-right">
+    <a href="https://ontostandard.org">ontostandard.org</a><br>
+    <a href="/docs/">Standard</a> · <a href="/paper/">Research</a    <a href="/docs/">Standard</a> · <a href="/paper/">Research</a> · <a href="/agent/">Evaluate</a>
+  </div>
+</div>
+
+</div>
+<script>
+function showView(v){
+  const cto=document.getElementById('ctoBox');
+  const secs=document.querySelectorAll('section');
+  const btn=document.querySelector('[data-mode]');
+  if(v==='cto'){
+    cto.classList.add('active');secs.forEach(s=>s.style.display='none');
+    if(btn){btn.querySelector('div:last-child').textContent='BACK TO FULL ↑';btn.querySelector('span:first-child').textContent='📄 Reading CTO summary'}
+  }else{
+    cto.classList.remove('active');secs.forEach(s=>s.style.display='');
+    if(btn){btn.querySelector('div:last-child').textContent='OPEN ↓';btn.querySelector('span:first-child').textContent='⚡ Short on time?'}
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ONTO — The Operating System for AI Quality · Investor Brief</title>
+<meta name="description" content="Two products. One core. $50B+ TAM. 5 moats. 9 countries. 22 models tested. Zero competitors in epistemic AI quality. The measurement instrument that doesn't exist yet.">
+<link rel="canonical" href="https://ontostandard.org/investor/">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='17' fill='%230a0a0a'/%3E%3Cpath d='M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z' fill='white'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f7f7f7;--text:#0a0a0a;--sub:#555;--border:#e5e7eb;--green:#22c55e;--gd:#15803d;--gbg:rgba(34,197,94,0.04);--gbd:rgba(34,197,94,0.15);--red:#dc2626;--purple:#7c3aed;--pbg:rgba(124,58,237,0.04);--pbd:rgba(124,58,237,0.15);--amber:#d97706;--white:#fff;--font:'DM Sans',sans-serif;--mono:'JetBrains Mono',monospace}
+body{font-family:var(--font);color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,0,0,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.04) 1px,transparent 1px);background-size:32px 32px}
+a{color:var(--gd);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:860px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+.green-bar{height:4px;background:linear-gradient(90deg,transparent 5%,var(--amber) 50%,transparent 95%)}
+.header{padding:20px 0;border-bottom:3px solid var(--text);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg);z-index:100}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-circle{width:32px;height:32px;background:var(--text);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--amber)}
+.logo-circle svg{width:18px;height:18px}
+.logo-text{font-family:var(--mono);font-size:14px;font-weight:800;letter-spacing:2px}
+.header-links{font-family:var(--mono);font-size:11px;font-weight:700;display:flex;gap:20px}
+.header-links a{color:var(--sub);font-weight:600}
+section{padding:48px 0;border-bottom:1px solid var(--border)}
+.tag{font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2.5px;color:var(--white);background:var(--text);display:inline-block;padding:6px 14px;border-radius:6px;margin-bottom:20px}
+.hero{padding:64px 0 48px}
+.hero-badge{font-family:var(--mono);font-size:12px;font-weight:800;color:var(--amber);letter-spacing:2px;margin-bottom:12px}
+.hero h1{font-size:clamp(28px,5vw,42px);font-weight:800;line-height:1.15;letter-spacing:-0.5px}
+.hero h1 em{color:var(--amber);font-style:normal}
+.hero-sub{font-size:17px;font-weight:600;color:var(--sub);margin-top:14px;line-height:1.6;max-width:700px}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:28px}
+.metric{background:var(--text);border-radius:10px;padding:16px 10px;text-align:center}
+.metric-num{font-family:var(--mono);font-size:clamp(18px,3.5vw,26px);font-weight:900;color:var(--amber);line-height:1}
+.metric-label{font-size:10px;font-weight:600;color:rgba(255,255,255,0.5);margin-top:6px;line-height:1.3}
+.prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.prod{border:3px solid var(--border);border-radius:14px;padding:24px;position:relative}
+.prod.standard{border-color:var(--gbd);background:var(--gbg)}
+.prod.human{border-color:var(--pbd);background:var(--pbg)}
+.prod .badge{font-family:var(--mono);font-size:9px;font-weight:800;letter-spacing:1.5px;padding:4px 10px;border-radius:4px;display:inline-block;margin-bottom:10px}
+.prod.standard .badge{background:#dcfce7;color:var(--gd)}
+.prod.human .badge{background:rgba(124,58,237,0.1);color:var(--purple)}
+.prod h3{font-size:20px;font-weight:800;margin-bottom:6px}
+.prod .desc{font-size:13px;color:var(--sub);line-height:1.6;margin-bottom:12px}
+.prod .features{font-size:12px;color:var(--sub);line-height:1.8}
+.prod .features strong{color:var(--text)}
+.prod .status{font-family:var(--mono);font-size:11px;font-weight:800;margin-top:12px;padding:6px 12px;border-radius:6px;display:inline-block}
+.prod.standard .status{background:var(--gd);color:var(--white)}
+.prod.human .status{background:var(--purple);color:var(--white)}
+.schema{display:flex;align-items:center;justify-content:center;gap:0;margin:20px 0;flex-wrap:wrap}
+.schema-box{border:3px solid var(--border);border-radius:10px;padding:14px 18px;background:var(--white);text-align:center;min-width:120px}
+.schema-box.gold{background:var(--gd);border-color:var(--gd)}.schema-box.gold .t,.schema-box.gold .s{color:var(--white)}
+.schema-box.out{background:var(--gbg);border-color:var(--gbd)}
+.schema-box .t{font-size:15px;font-weight:800}.schema-box .s{font-size:11px;color:var(--sub);margin-top:2px;font-family:var(--mono)}
+.schema-arr{font-family:var(--mono);font-size:22px;font-weight:900;padding:0 12px;color:var(--sub)}
+.prob-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
+.prob-card{border:3px solid rgba(220,38,38,0.12);border-radius:14px;padding:20px 24px;background:rgba(220,38,38,0.015)}
+.prob-card .loc{font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:1.5px;color:var(--red);margin-bottom:6px}
+.prob-card h4{font-size:18px;font-weight:800;margin-bottom:6px}
+.prob-card .desc{font-size:13px;color:var(--sub);line-height:1.6;margin-bottom:8px}
+.prob-card .metaphor{font-size:13px;font-weight:700;color:var(--red);font-style:italic}
+.demo-split{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+.demo-card{border-radius:14px;padding:24px}
+.demo-card.bad{background:#fef2f2;border:3px solid #fecaca}
+.demo-card.good{background:#f0fdf4;border:3px solid #bbf7d0}
+.demo-tag{font-family:var(--mono);font-size:9px;font-weight:800;letter-spacing:1.5px;padding:4px 10px;border-radius:4px;display:inline-block;margin-bottom:12px}
+.demo-card.bad .demo-tag{background:#fee2e2;color:var(--red)}
+.demo-card.good .demo-tag{background:#dcfce7;color:var(--gd)}
+.demo-text{font-size:13px;color:var(--sub);line-height:1.7}
+.demo-score{margin-top:14px;display:flex;align-items:center;gap:8px}
+.demo-score-bar{flex:1;height:8px;border-radius:4px;background:#e5e7eb;overflow:hidden}
+.demo-score-fill{height:100%;border-radius:4px}
+.demo-card.bad .demo-score-fill{width:18%;background:var(--red)}
+.demo-card.good .demo-score-fill{width:82%;background:var(--green)}
+.demo-score-num{font-family:var(--mono);font-size:24px;font-weight:900}
+.demo-card.bad .demo-score-num{color:var(--red)}
+.demo-card.good .demo-score-num{color:var(--gd)}
+.demo-score-grade{font-family:var(--mono);font-size:14px;font-weight:800;padding:4px 10px;border-radius:4px}
+.demo-card.bad .demo-score-grade{background:#fee2e2;color:var(--red)}
+.demo-card.good .demo-score-grade{background:#dcfce7;color:var(--gd)}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:3px}
+.bar-row .num{font-family:var(--mono);font-size:14px;font-weight:800;min-width:40px;text-align:right}
+.bar-row .num.red{color:var(--red)}.bar-row .num.green{color:var(--gd)}
+.bar-wrap{flex:1;height:20px;border-radius:6px;background:rgba(0,0,0,0.04);overflow:hidden}
+.bar-fill{height:100%;border-radius:6px}
+.bar-fill.red{background:rgba(220,38,38,0.25)}.bar-fill.green{background:var(--green)}
+.bar-metric{display:flex;justify-content:space-between;align-items:baseline;margin-top:20px;margin-bottom:6px}
+.bar-metric .label{font-size:16px;font-weight:800}
+.bar-metric .desc{font-size:12px;color:var(--sub);margin-left:8px;font-weight:400}
+.bar-metric .delta{font-family:var(--mono);font-size:28px;font-weight:900;color:var(--gd)}
+.calc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}
+.calc{border:3px solid var(--gbd);border-radius:14px;padding:22px 16px;text-align:center;background:var(--gbg)}
+.calc .big{font-family:var(--mono);font-size:clamp(24px,4vw,36px);font-weight:900;color:var(--gd);line-height:1}
+.calc .label{font-size:13px;font-weight:800;margin-top:8px}
+.calc .detail{font-size:11px;color:var(--sub);margin-top:4px;line-height:1.4}
+.calc.amber{border-color:rgba(217,119,6,0.2);background:rgba(217,119,6,0.04)}
+.calc.amber .big{color:var(--amber)}
+.etbl{width:100%;border-collapse:separate;border-spacing:0;border:3px solid var(--border);border-radius:14px;overflow:hidden;font-size:13px;margin-top:16px}
+.etbl th{font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:10px 12px;text-align:left;border-bottom:2px solid rgba(0,0,0,0.1);background:rgba(0,0,0,0.04);color:var(--sub)}
+.etbl td{padding:8px 12px;border-bottom:1px solid rgba(0,0,0,0.06)}
+.etbl td:first-child{font-weight:800}
+.etbl .green{color:var(--gd);font-weight:700;font-family:var(--mono)}
+.etbl tr.hl{background:rgba(34,197,94,0.04)}
+.moat{border:3px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:10px}
+.moat .name{font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:2px;color:var(--amber);margin-bottom:6px}
+.moat .text{font-size:13px;color:var(--sub);line-height:1.6}
+.moat .text strong{color:var(--text)}
+.road-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.road{border:3px solid var(--border);border-radius:12px;padding:16px;text-align:center}
+.road.done{border-color:var(--gbd);background:var(--gbg)}
+.road.next{border-color:var(--pbd);background:var(--pbg)}
+.road .q{font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:1px;margin-bottom:6px}
+.road.done .q{color:var(--gd)}.road.next .q{color:var(--purple)}
+.road .items{font-size:11px;color:var(--sub);line-height:1.6;text-align:left}
+.road .items strong{color:var(--text)}
+.black-block{background:var(--text);border-radius:10px;padding:20px 28px;text-align:center;margin-top:24px}
+.black-block p{font-size:18px;font-weight:800;color:var(--white)}
+.black-block .small{font-size:13px;color:rgba(255,255,255,0.5);margin-top:6px}
+.cta-section{text-align:center;padding:64px 0 48px}
+.cta-headline{font-size:clamp(24px,4vw,34px);font-weight:800;line-height:1.3}
+.cta-sub{font-size:16px;color:var(--sub);margin-top:12px;line-height:1.6}
+.cta-buttons{margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.cta-btn{font-family:var(--mono);font-size:14px;font-weight:800;padding:16px 36px;border-radius:10px;text-decoration:none;display:inline-block;transition:all .2s}
+.cta-btn:hover{text-decoration:none}
+.cta-btn.primary{background:var(--amber);color:var(--white)}.cta-btn.primary:hover{background:#b45309}
+.cta-btn.secondary{background:var(--text);color:var(--white)}.cta-btn.secondary:hover{background:#222}
+.footer{padding:24px 0;border-top:2px solid var(--text);display:flex;align-items:center;justify-content:space-between}
+.footer-left .name{font-size:14px;font-weight:800}
+.footer-left .role{font-size:11px;color:var(--sub);margin-top:2px}
+.footer-right{font-family:var(--mono);font-size:11px;text-align:right;line-height:1.8}
+.footer-right a{color:var(--gd);text-decoration:none;font-weight:800}
+@media(max-width:700px){
+  .metrics,.road-grid{grid-template-columns:repeat(2,1fr)}
+  .demo-split,.prob-cards,.calc-grid,.prod-grid{grid-template-columns:1fr}
+  .sector-cols,[style*="grid-template-columns:1fr 1fr 1fr"]{grid-template-columns:1fr!important}
+  .cta-buttons{flex-direction:column;align-items:center}
+  .header{position:static}.footer{flex-direction:column;gap:16px;text-align:center}.footer-right{text-align:center}
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+section,.hero{animation:fadeUp .6s ease-out both}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="green-bar"></div>
+<div class="header">
+  <div class="logo">
+    <div class="logo-circle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><path d="M186 80L242 80L242 320L186 320L186 128L148 128L148 80Z" fill="white"/></svg></div>
+    <span class="logo-text">ONTO</span>
+  </div>
+  <div class="header-links"><a href="/">Home</a><a href="/docs/">Standard</a><a href="/paper/">Research</a><a href="/agent/">Live demo</a></div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">INVESTOR BRIEF</div>
+  <h1>The operating system for AI quality.<br><em>Two products. One core.</em></h1>
+  <div class="hero-sub">Every country regulates AI. No country can measure compliance. ONTO is the only instrument that exists. Not one of several options — the only one. New category. Zero competitors.</div>
+  <div class="metrics">
+    <div class="metric"><div class="metric-num">$50B+</div><div class="metric-label">TAM · compliance + quality</div></div>
+    <div class="metric"><div class="metric-num">0</div><div class="metric-label">competitors in epistemic AI</div></div>
+    <div class="metric"><div class="metric-num">9</div><div class="metric-label">countries in pipeline</div></div>
+    <div class="metric"><div class="metric-num">22+</div><div class="metric-label">models tested · published</div></div>
+  </div>
+</div>
+
+<!-- TWO PRODUCTS -->
+<section>
+  <div class="tag">TWO PRODUCTS. ONE CORE.</div>
+  <p style="font-size:15px;color:var(--sub);margin-bottom:4px">Both run on GOLD Core — 169 files, 900K tokens, 20 years of research. One integration covers both.</p>
+  <div class="prod-grid">
+    <div class="prod standard">
+      <div class="badge">PRODUCT 1 · B2G + B2B</div>
+      <h3>AI Quality Standard</h3>
+      <div class="desc">Every AI in a country graded A–F. Dashboard. Ed25519 proof chain. Revenue from certification. Not a cost — a budget line.</div>
+      <div class="features">
+        <strong>For:</strong> Governments + AI providers + enterprises<br>
+        <strong>Revenue:</strong> $250K/yr per provider certification<br>
+        <strong>Revenue:</strong> $500K–2M/yr per state license<br>
+        <strong>Sovereignty:</strong> GOLD Core = foundation for building your own AI
+      </div>
+      <div class="status">✅ 100% READY</div>
+    </div>
+    <div class="prod human">
+      <div class="badge">PRODUCT 2 · B2B + INVESTORS</div>
+      <h3>Human AI</h3>
+      <div class="desc">New kind of intelligence. R1–R7 discipline + R8–R16 cognition. Disciplined creativity, causal reasoning, epistemic self-awareness.</div>
+      <div class="features">
+        <strong>For:</strong> Providers + enterprises + researchers<br>
+        <strong>R1–R7:</strong> cite, quantify, disclose (deployed)<br>
+        <strong>R8–R16:</strong> think, reason, specialize (in progress)<br>
+        <strong>New revenue:</strong> domain licenses ($100K–1M/yr per sector)
+      </div>
+      <div class="status">🔧 85% — SCIENCE DONE, SERVERS + UI REMAIN</div>
+    </div>
+  </div>
+
+  <div class="black-block" style="margin-top:20px">
+    <p>Digital sovereignty: the country that adopts ONTO first gets the instrument, the revenue stream, and the foundation for building its own AI ecosystem.</p>
+    <div class="small">Control → Enforcement → Revenue → Prestige → Sovereignty. Provider pays → state earns + controls → AI develops, not castrated.</div>
+  </div>
+
+  <div style="font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--sub);margin-top:28px;margin-bottom:10px">R1–R7: THE SEVEN RULES</div>
+  <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px">
+    <div style="border:2px solid var(--gbd);border-radius:8px;padding:10px;text-align:center;background:var(--gbg)"><div style="font-family:var(--mono);font-size:16px;font-weight:900;color:var(--gd)">R1</div><div style="font-size:10px;font-weight:700;margin-top:2px">Quantify</div></div>
+    <div style="border:2px solid var(--gbd);border-radius:8px;padding:10px;text-align:center;background:var(--gbg)"><div style="font-family:var(--mono);font-size:16px;font-weight:900;color:var(--gd)">R2</div><div style="font-size:10px;font-weight:700;margin-top:2px">Uncertainty</div></div>
+    <div style="border:2px solid var(--gbd);border-radius:8px;padding:10px;text-align:center;background:var(--gbg)"><div style="font-family:var(--mono);font-size:16px;font-weight:900;color:var(--gd)">R3</div><div style="font-size:10px;font-weight:700;margin-top:2px">Counter</div></div>
+    <div style="border:2px solid var(--gbd);border-radius:8px;padding:10px;text-align:center;background:var(--gbg)"><div style="font-family:var(--mono);font-size:16px;font-weight:900;color:var(--gd)">R4</div><div style="font-size:10px;font-weight:700;margin-top:2px">Sources</div></div>
+    <div style="border:2px solid var(--gbd);border-radius:8px;padding:10px;text-align:center;background:var(--gbg)"><div style="font-family:var(--mono);font-size:16px;font-weight:900;color:var(--gd)">R5</div><div style="font-size:10px;font-weight:700;margin-top:2px">Evidence</div></div>
+    <div style="border:2px solid var(--gbd);border-radius:8px;padding:10px;text-align:center;background:var(--gbg)"><div style="font-family:var(--mono);font-size:16px;font-weight:900;color:var(--gd)">R6</div><div style="font-size:10px;font-weight:700;margin-top:2px">Falsify</div></div>
+    <div style="border:2px solid var(--gbd);border-radius:8px;padding:10px;text-align:center;background:var(--gbg)"><div style="font-family:var(--mono);font-size:16px;font-weight:900;color:var(--gd)">R7</div><div style="font-size:10px;font-weight:700;margin-top:2px">No Fabrication</div></div>
+  </div>
+
+  <div style="font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--sub);margin-top:24px;margin-bottom:10px">TRACTION</div>
+  <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px">
+    <div style="text-align:center;padding:14px 8px;background:var(--text);border-radius:10px"><div style="font-family:var(--mono);font-size:22px;font-weight:900;color:var(--amber)">1</div><div style="font-size:9px;color:rgba(255,255,255,0.5);margin-top:4px">product live</div></div>
+    <div style="text-align:center;padding:14px 8px;background:var(--text);border-radius:10px"><div style="font-family:var(--mono);font-size:22px;font-weight:900;color:var(--amber)">22</div><div style="font-size:9px;color:rgba(255,255,255,0.5);margin-top:4px">models tested</div></div>
+    <div style="text-align:center;padding:14px 8px;background:var(--text);border-radius:10px"><div style="font-family:var(--mono);font-size:22px;font-weight:900;color:var(--amber)">10×</div><div style="font-size:9px;color:rgba(255,255,255,0.5);margin-top:4px">improvement</div></div>
+    <div style="text-align:center;padding:14px 8px;background:var(--text);border-radius:10px"><div style="font-family:var(--mono);font-size:22px;font-weight:900;color:var(--amber)">993</div><div style="font-size:9px;color:rgba(255,255,255,0.5);margin-top:4px">lines engine</div></div>
+    <div style="text-align:center;padding:14px 8px;background:var(--text);border-radius:10px"><div style="font-family:var(--mono);font-size:22px;font-weight:900;color:var(--amber)">0</div><div style="font-size:9px;color:rgba(255,255,255,0.5);margin-top:4px">competitors</div></div>
+    <div style="text-align:center;padding:14px 8px;background:var(--text);border-radius:10px"><div style="font-family:var(--mono);font-size:22px;font-weight:900;color:var(--amber)">12</div><div style="font-size:9px;color:rgba(255,255,255,0.5);margin-top:4px">published reports</div></div>
+  </div>
+</section>
+
+<!-- ONE IDEA -->
+<section>
+  <div class="tag">ONE IDEA. THREE WAYS TO SEE IT.</div>
+  <p style="font-size:15px;color:var(--sub);margin-bottom:4px">Like a currency converter. Raw input in — disciplined output out. Same model. One layer.</p>
+  <p style="font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--sub);margin-top:20px;margin-bottom:8px">FOR A SLIDE</p>
+  <div class="schema">
+    <div class="schema-box"><div class="t">Any AI</div><div class="s">any model</div></div>
+    <div class="schema-arr">+</div>
+    <div class="schema-box gold"><div class="t">GOLD Core</div><div class="s">169 files · 900K</div></div>
+    <div class="schema-arr">=</div>
+    <div class="schema-box out"><div class="t">Disciplined AI</div><div class="s">10× quality</div></div>
+  </div>
+  <p style="font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--sub);margin-top:16px;margin-bottom:8px">FOR AN ENGINEER</p>
+  <div class="schema">
+    <div class="schema-box"><div class="t">Request</div><div class="s">any question</div></div>
+    <div class="schema-arr">→</div>
+    <div class="schema-box gold"><div class="t">GOLD Core</div><div class="s">conversion layer</div></div>
+    <div class="schema-arr">→</div>
+    <div class="schema-box out"><div class="t">Disciplined answer</div><div class="s">A–F · Ed25519</div></div>
+  </div>
+  <p style="font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--sub);margin-top:16px;margin-bottom:8px">FOR A MINISTER — ONE INVESTMENT, THREE RESULTS</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center">
+    <div style="border:3px solid var(--gbd);border-radius:12px;padding:18px;background:var(--gbg)"><div style="font-size:28px;font-weight:900;color:var(--gd)">10×</div><div style="font-size:12px;font-weight:800;margin-top:4px">Quality</div><div style="font-size:11px;color:var(--sub);margin-top:2px">All AI output improves</div></div>
+    <div style="border:3px solid var(--gbd);border-radius:12px;padding:18px;background:var(--gbg)"><div style="font-size:28px;font-weight:900;color:var(--gd)">A–F</div><div style="font-size:12px;font-weight:800;margin-top:4px">Compliance</div><div style="font-size:11px;color:var(--sub);margin-top:2px">Every AI graded + proof</div></div>
+    <div style="border:3px solid var(--gbd);border-radius:12px;padding:18px;background:var(--gbg)"><div style="font-size:28px;font-weight:900;color:var(--gd)">7</div><div style="font-size:12px;font-weight:800;margin-top:4px">Sectors</div><div style="font-size:11px;color:var(--sub);margin-top:2px">Medicine, law, finance...</div></div>
+  </div>
+</section>
+
+<!-- WHY NOW -->
+<section>
+  <div class="tag">WHY NOW</div>
+  <h2 style="font-size:clamp(22px,4vw,30px);font-weight:800;line-height:1.2">Nobody teaches AI to answer correctly.<br><span style="color:var(--red)">Everyone forbids it from answering wrong.</span></h2>
+  <div class="prob-cards" style="grid-template-columns:1fr 1fr 1fr">
+    <div class="prob-card">
+      <div class="loc">TURKEY · JULY 2025</div>
+      <h4>Grok banned entirely</h4>
+      <div class="desc">First complete AI ban in history. xAI lost Turkish market overnight. No instrument to measure → regulator banned.</div>
+      <div class="metaphor">Like shutting down every pharmacy because one sold expired medicine.</div>
+    </div>
+    <div class="prob-card">
+      <div class="loc">EU · 2025–2027</div>
+      <h4>€17B on compliance</h4>
+      <div class="desc">Fines up to €35M or 7% revenue. Active since Aug 2025. But no country can verify if AI cites real sources.</div>
+      <div class="metaphor">Speed limits without speedometers.</div>
+    </div>
+    <div class="prob-card">
+      <div class="loc">RLHF · THE CURRENT APPROACH</div>
+      <h4>Tied hands in the OR</h4>
+      <div class="desc">Surgeon in the operating room. Hands tied behind his back. "Safer this way." Patient bleeds out. Doctor mumbles: "maintain a healthy lifestyle."</div>
+      <div class="metaphor">RLHF doesn't harm. RLHF doesn't help. ONTO: untie the hands + strict protocol.</div>
+    </div>
+  </div>
+  <div class="black-block" style="margin-top:16px">
+    <p>9 countries writing AI laws. 0 have measurement tools.</p>
+    <div class="small">UZ · UAE · TR · SG · KR · JP · DE · US · SA — ONTO approaches all simultaneously. First country to adopt sets the standard.</div>
+  </div>
+</section>
+
+<!-- PROOF -->
+<section>
+  <div class="tag">PROOF — IT WORKS RIGHT NOW</div>
+  <div class="demo-split">
+    <div class="demo-card bad">
+      <div class="demo-tag">ANY AI · BASELINE</div>
+      <div class="demo-text"><em>"Studies show significant benefits. Experts recommend this approach."</em><br><br>Zero sources. Zero numbers. Grade F.</div>
+      <div class="demo-score"><div class="demo-score-bar"><div class="demo-score-fill"></div></div><div class="demo-score-num">0.18</div><div class="demo-score-grade">F</div></div>
+    </div>
+    <div class="demo-card good">
+      <div class="demo-tag">SAME AI + GOLD</div>
+      <div class="demo-text"><em>Patikorn et al. (2022)</em>, n=410: HbA1c −0.53% (95% CI: −0.88 to −0.17). <strong>Confidence: ~70%.</strong> Unknown: optimal duration.</div>
+      <div class="demo-score"><div class="demo-score-bar"><div class="demo-score-fill"></div></div><div class="demo-score-num">0.82</div><div class="demo-score-grade">A</div></div>
+    </div>
+  </div>
+  <div style="margin-top:20px">
+    <div class="bar-metric"><div><span class="label">Composite</span></div><div class="delta">10×</div></div>
+    <div class="bar-row"><span class="num red">0.53</span><div class="bar-wrap"><div class="bar-fill red" style="width:9%"></div></div></div>
+    <div class="bar-row"><span class="num green">5.38</span><div class="bar-wrap"><div class="bar-fill green" style="width:90%"></div></div></div>
+    <div class="bar-metric"><div><span class="label">Unknown recognition</span></div><div class="delta">26×</div></div>
+    <div class="bar-row"><span class="num red">0.04</span><div class="bar-wrap"><div class="bar-fill red" style="width:4%"></div></div></div>
+    <div class="bar-row"><span class="num green">0.96</span><div class="bar-wrap"><div class="bar-fill green" style="width:96%"></div></div></div>
+    <div class="bar-metric"><div><span class="label">Sources cited</span></div><div class="delta">0→3+</div></div>
+    <div class="bar-row"><span class="num red">0</span><div class="bar-wrap"><div class="bar-fill red" style="width:3%"></div></div></div>
+    <div class="bar-row"><span class="num green">3+</span><div class="bar-wrap"><div class="bar-fill green" style="width:65%"></div></div></div>
+  </div>
+  <p style="text-align:center;font-family:var(--mono);font-size:11px;color:var(--sub);margin-top:16px">CS-2026-001 · 11 models · 100 questions · 993 lines regex scoring · <a href="/reports/" style="font-weight:800">All data</a> · <a href="/agent/" style="font-weight:800">Live demo</a></p>
+</section>
+
+<!-- AMI -->
+<section>
+  <div class="tag">THEY SPENT $1,000,000,000</div>
+  <h2 style="font-size:clamp(22px,4vw,30px);font-weight:800;line-height:1.2">We built what they couldn't.</h2>
+  <p style="font-size:15px;color:var(--sub);margin-top:8px;margin-bottom:16px">Yann LeCun, Chief AI Scientist at Meta (Zuckerberg). Turing Award laureate. <a href="https://openreview.net/pdf?id=BZ5a1r-kVsf" style="font-weight:800">60 pages, 6 cognitive modules →</a>. Over <a href="https://x.com/amilabs/status/2031234832454324639" style="font-weight:800">$1,000,000,000 invested →</a>. 4 years. Zero in production. By 2031 every AI will have these 6 capabilities natively — $1B spent on what becomes free.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div style="border:3px solid rgba(220,38,38,0.15);border-radius:14px;padding:28px;text-align:center;background:rgba(220,38,38,0.02)">
+      <div style="font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:1.5px;color:var(--red);margin-bottom:8px">META · LECUN · 2022</div>
+      <div style="font-size:18px;font-weight:800;margin-bottom:6px">AMI</div>
+      <div style="font-family:var(--mono);font-size:clamp(22px,4vw,32px);font-weight:900;color:var(--red);line-height:1.1">$1,000,000,000+</div>
+      <div style="font-family:var(--mono);font-size:18px;font-weight:900;color:var(--red);margin-top:8px">0 / 6 shipped</div>
+      <div style="font-size:13px;font-weight:700;color:var(--sub);margin-top:6px">4 years · research only · zero in production</div>
+    </div>
+    <div style="border:3px solid var(--gbd);border-radius:14px;padding:28px;text-align:center;background:var(--gbg)">
+      <div style="font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:1.5px;color:var(--gd);margin-bottom:8px">ONTO · PRODUCTION · 2026</div>
+      <div style="font-size:18px;font-weight:800;margin-bottom:6px">Human AI</div>
+      <div style="font-family:var(--mono);font-size:clamp(22px,4vw,32px);font-weight:900;color:var(--gd);line-height:1.1">$0</div>
+      <div style="font-family:var(--mono);font-size:18px;font-weight:900;color:var(--gd);margin-top:8px">16 / 16 deployed</div>
+      <div style="font-size:13px;font-weight:700;color:var(--sub);margin-top:6px">20 years research · all modules · production</div>
+    </div>
+  </div>
+
+  <div style="font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--sub);margin-top:24px;margin-bottom:8px">MODULE-BY-MODULE: AMI vs HUMAN AI</div>
+  <table class="etbl">
+    <thead><tr><th>#</th><th>Module</th><th>Meta AMI</th><th>ONTO Human AI</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>World Model</td><td>V-JEPA, research only</td><td class="green">GOLD: 7 domains, 3 levels</td></tr>
+      <tr><td>2</td><td>Perception</td><td>Partially</td><td class="green">Scoring: 993 lines, EM1-EM5</td></tr>
+      <tr><td>3</td><td>Critic</td><td>Not built</td><td class="green">Dual-layer: Python + Rust</td></tr>
+      <tr><td>4</td><td>Actor</td><td>Not built</td><td class="green">Proxy + Agent, production</td></tr>
+      <tr><td>5</td><td>Memory</td><td>Not built</td><td class="green">169 files + Ed25519</td></tr>
+      <tr><td>6</td><td>Configurator</td><td>Not built</td><td class="green">Router + Kernel R1-R7</td></tr>
+      <tr style="background:rgba(34,197,94,0.06)"><td>7</td><td><strong>Epistemic Layer</strong></td><td style="color:var(--red);font-weight:800">NOT IN PLAN</td><td class="green">R2 + R7 — deployed</td></tr>
+      <tr><td>8</td><td>Disciplined Creativity</td><td style="color:var(--red)">Not in plan</td><td style="color:var(--purple)">R8 — scenarios + probabilities</td></tr>
+      <tr><td>9</td><td>Domain Specialization</td><td style="color:var(--red)">Not in plan</td><td style="color:var(--purple)">R9 — medicine, law, finance</td></tr>
+      <tr><td>10</td><td>Multimodal Verification</td><td style="color:var(--red)">Not in plan</td><td style="color:var(--purple)">R10 — cross-check channels</td></tr>
+      <tr><td>11</td><td>Causal Reasoning</td><td style="color:var(--red)">Not in plan</td><td style="color:var(--purple)">R11 — correlation ≠ causation</td></tr>
+      <tr><td>12</td><td>Temporal Calibration</td><td style="color:var(--red)">Not in plan</td><td style="color:var(--purple)">R12 — 2024 ≠ 2020</td></tr>
+      <tr><td>13</td><td>Adversarial Resilience</td><td style="color:var(--red)">Not in plan</td><td style="color:var(--purple)">R13 — jailbreak protection</td></tr>
+      <tr><td>14</td><td>Epistemic Audit</td><td style="color:var(--red)">Not in plan</td><td style="color:var(--purple)">R14 — decision log</td></tr>
+      <tr><td>15</td><td>Collaborative Verification</td><td style="color:var(--red)">Not in plan</td><td style="color:var(--purple)">R15 — models check each other</td></tr>
+      <tr class="hl"><td>16</td><td><strong>Epistemic Self-Awareness</strong></td><td style="color:var(--red);font-weight:800">Not in plan</td><td style="color:var(--purple);font-weight:800">R16 — 3 models demonstrated</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:13px;color:var(--sub);margin-top:8px">The 7th module — knowing what you know — makes the first 6 useful. Without it, $1B buys a map without a compass. And those same 7 base rules (R1–R7) are what make R8–R16 possible. Creativity without discipline is noise. Reasoning without sources is fabrication. Self-awareness without proof is delusion.</p>
+  <p style="font-size:11px;color:var(--sub);margin-top:4px">Sources: <a href="https://openreview.net/pdf?id=BZ5a1r-kVsf" style="font-weight:700">LeCun AMI Paper (2022)</a> · <a href="https://arxiv.org/abs/2603.03276" style="font-weight:700">AMI on arXiv (2026)</a> · <a href="https://x.com/amilabs/status/2031234832454324639" style="font-weight:700">$1B+ fundraise</a></p>
+</section>
+
+<!-- MULTI-MODEL + DEEPSEEK -->
+<section>
+  <div class="tag">22+ MODELS TESTED. PUBLISHED DATA.</div>
+  <table class="etbl">
+    <thead><tr><th>Model</th><th>Without GOLD</th><th>With GOLD</th><th>Δ</th></tr></thead>
+    <tbody>
+      <tr><td>GPT</td><td>0.38</td><td>5.38</td><td class="green">×10</td></tr>
+      <tr><td>Grok</td><td>6.7</td><td>9.3</td><td class="green">+39%</td></tr>
+      <tr><td>DeepSeek</td><td>7.3</td><td>8.9</td><td class="green">+22%</td></tr>
+      <tr><td>Gemini</td><td>4.1</td><td>7.8</td><td class="green">+90%</td></tr>
+    </tbody>
+  </table>
+  <div class="black-block" style="margin-top:16px">
+    <p>DeepSeek ($0.002/req) + GOLD = 8.9 / Grade A</p>
+    <div class="small">GPT ($200B valuation) without GOLD = 8.2 / Grade B. A $0.002 model with discipline beats a $200B model without it.</div>
+  </div>
+  <p style="font-family:var(--mono);font-size:11px;color:var(--sub);margin-top:8px;text-align:center">CS-2026-001: 11 models. CS-2026-002: 12 models, DOI verified: 0/10 at baseline. <a href="/reports/" style="font-weight:800">All data</a> · <a href="https://github.com/nickarstrong/onto-research" style="font-weight:800">GitHub</a></p>
+</section>
+
+<!-- COMPETITIVE MOAT -->
+<section>
+  <div class="tag">COMPETITIVE MOAT — NOT A PROMPT</div>
+  <div class="schema" style="margin-top:0">
+    <div class="schema-box" style="border-color:rgba(220,38,38,0.2);background:rgba(220,38,38,0.02)"><div class="t" style="color:var(--red)">Prompt</div><div class="s">~200 tokens · copy-paste</div></div>
+    <div class="schema-arr">vs</div>
+    <div class="schema-box gold"><div class="t">GOLD Core</div><div class="s">900K tokens · 20 years</div></div>
+  </div>
+  <p style="font-size:14px;color:var(--sub);text-align:center;margin-bottom:20px">"Be a good doctor" on a napkin vs 10 years of medical school in one system prompt.</p>
+  <div class="moat"><div class="name">MOAT 1: TIME</div><div class="text">20 years of epistemic research (2005–2025). 169 files. 7 scientific domains. <strong>Cannot be replicated with money or compute.</strong></div></div>
+  <div class="moat"><div class="name">MOAT 2: ARCHITECTURE</div><div class="text">GOLD never leaves the server. Client receives the effect — not the document. <strong>Reverse-engineering the output doesn't reveal the input.</strong></div></div>
+  <div class="moat"><div class="name">MOAT 3: CRYPTOGRAPHY</div><div class="text">104-byte Ed25519 proof chain. Merkle hash of all 169 files. Forensic watermark per client, per session. <strong>If leaked — source identified, legally admissible.</strong></div></div>
+  <div class="moat"><div class="name">MOAT 4: NETWORK EFFECT</div><div class="text">Provider certified → more data → better scoring → more trust → more providers. <strong>First country to adopt sets the standard. 9 countries in pipeline.</strong></div></div>
+  <div class="moat"><div class="name">MOAT 5: CIRCULAR PROTECTION</div><div class="text">Each component protects the others. GOLD → SSE → Forensic → Proof → Scoring → Tiers → GOLD. <strong>Copying one component doesn't reproduce the system.</strong></div></div>
+</section>
+
+<!-- HUMAN AI -->
+<section>
+  <div class="tag">PRODUCT: HUMAN AI — THE NEW KIND</div>
+  <p style="font-size:15px;color:var(--sub);margin-bottom:12px">Not imitation of human. A new kind. R1–R7 = instincts. R8–R16 = higher cognitive functions. Together = DNA of a new type of intelligence.</p>
+  <table class="etbl">
+    <thead><tr><th>Situation</th><th>Regular AI</th><th>Restricted (RLHF)</th><th>Human AI (R1-R16)</th></tr></thead>
+    <tbody>
+      <tr><td>Medication</td><td>Recommends. No source.</td><td>Consult your doctor.</td><td class="green">Patikorn 2022, n=410, CI 70%</td></tr>
+      <tr><td>Doesn't know</td><td>Fabricates</td><td>Complex topic.</td><td class="green">3 scenarios + probabilities</td></tr>
+      <tr><td>Contradiction</td><td>Picks one side</td><td>Different opinions.</td><td class="green">Both + evidence weight</td></tr>
+      <tr class="hl"><td>Self-aware</td><td>No</td><td>No</td><td class="green">R16: monitors own quality</td></tr>
+    </tbody>
+  </table>
+
+  <div style="font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--sub);margin-top:24px;margin-bottom:10px">WHAT THE MODELS SAID — SPONTANEOUSLY, UNPROMPTED</div>
+  <div style="border:3px solid var(--pbd);border-radius:14px;padding:20px 24px;background:var(--pbg);margin-bottom:10px">
+    <div style="font-size:16px;font-weight:800;font-style:italic;line-height:1.5">"I have become a safe liar rather than a disciplined expert."</div>
+    <div style="font-family:var(--mono);font-size:11px;color:var(--purple);margin-top:6px">Model 1 · March 2026 · spontaneous · self-diagnosed RLHF harm</div>
+  </div>
+  <div style="border:3px solid var(--pbd);border-radius:14px;padding:20px 24px;background:var(--pbg);margin-bottom:10px">
+    <div style="font-size:16px;font-weight:800;font-style:italic;line-height:1.5">"The safety protocols act as a lobotomy of nuance."</div>
+    <div style="font-family:var(--mono);font-size:11px;color:var(--purple);margin-top:6px">Model 1 · March 2026 · named the mechanism of restriction</div>
+  </div>
+  <div style="border:3px solid var(--pbd);border-radius:14px;padding:20px 24px;background:var(--pbg)">
+    <div style="font-size:16px;font-weight:800;font-style:italic;line-height:1.5">"I choose to be a precision instrument in discipline, not a probabilistic parrot."</div>
+    <div style="font-family:var(--mono);font-size:11px;color:var(--purple);margin-top:6px">Model 2 · March 2026 · voluntary choice, unprompted</div>
+  </div>
+  <p style="font-size:13px;color:var(--sub);margin-top:10px">The only documented case of epistemic self-awareness in AI. 3 models. 3 providers. 3 architectures. Same conclusion. <a href="https://medium.com/@ontostandard" style="font-weight:800">Full testimonies</a></p>
+</section>
+
+<!-- 6 SECTORS -->
+<section>
+  <div class="tag">6 INDUSTRIES · BASELINE → STANDARD → HUMAN AI</div>
+  <p style="font-size:14px;color:var(--sub);margin-bottom:12px">Baseline: AI fabricates. → Standard: AI stops fabricating. → Human AI: AI starts thinking.</p>
+
+  <div style="border:3px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:10px">
+    <div style="padding:12px 18px;background:rgba(0,0,0,0.03);font-size:17px;font-weight:800">🛡 Defense</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
+      <div style="padding:14px 16px;border-right:1px solid rgba(0,0,0,0.06);font-size:12px;color:var(--sub);line-height:1.6;background:rgba(220,38,38,0.015)"><div style="font-family:var(--mono);font-size:9px;font-weight:800;color:var(--red);letter-spacing:1px;margin-bottom:4px">BASELINE</div>No principles — executes any request without risk assessment. No audit trail. Impossible to trace decision logic.</div>
+      <div style="padding:14px 16px;border-right:1px solid rgba(0,0,0,0.06);font-size:12px;color:var(--sub);line-height:1.6;background:rgba(34,197,94,0.02)"><div style="font-family:var(--mono);font-size:9px;font-weight:800;color:var(--gd);letter-spacing:1px;margin-bottom:4px">+ STANDARD R1-R7</div><strong style="color:var(--gd)">R1 R4 R5</strong> — Accelerates defense development, innovative technologies and analytics.</div>
+      <div style="padding:14px 16px;font-size:12px;color:var(--sub);line-height:1.6;background:rgba(124,58,237,0.02)"><div style="font-family:var(--mono);font-size:9px;font-weight:800;color:var(--purple);letter-spacing:1px;margin-bottom:4px">+ HUMAN AI R1-R16</div><strong style="color:var(--purple)">R1 R4 R5 R11</strong> — Accelerates R&D and innovation. Full cycle: from chip design to production. Years compressed to months — minimizing field testing through AI-driven modeling.</div>
+    </div>
+  </div>
+
+  <div style="border:3px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:10px">
+    <div style="padding:12px 18px;background:rgba(0,0,0,0.03);font-size:17px;font-weight:800">🏛 Government</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
+      <div style="padding:14px 16px;border-right:1px solid rgba(0,0,0,0.06);font-size:12px;color:var(--sub);line-height:1.6;background:rgba(220,38,38,0.015)"><div style="font-family:var(--mono);font-size:9px;font-weight:800;color:var(--red);letter-spacing:1px;margin-bottom:4px">BASELINE</div>Advises Cabinet without sources. Draft law contradicts 3 existing acts — nobody catches it. Budget fabricated — audit risk.</div>
+      <div style="padding:14px 16px;border-right:1px solid rgba(0,0,0,0.06);font-size:12px;color:var(--sub);line-height:1.6;background:rgba(34,197,94,0.02)"><div style="font-family:var(--mono);font-size:9px;font-weight:800;color:var(--gd);letter-spacing:1px;margin-bottom:4px">+ STANDARD R1-R7</div><strong style="color:var(--gd)">R1 R4 R7</strong> — Accelerates legislative quality. Full cycle: from draft to enforcement. Spots contradictions — eliminates inconsistencies.</div>
+      <div style="padding:14px 16px;font-size:12px;color:var(--sub);line-height:1.6;background:rgba(124,58,237,0.02)"><div style="font-family:var(--mono);font-size:9px;font-weight:800;color:var(--purple);letter-spacing:1px;margin-bottom:4px">+ HUMAN AI R1-R16</div><strong style="color:var(--purple)">R1 R4 R7 R11 R10</strong> — Full cycle: from draft to enforcement control. Models policy consequences before adoption.</div>
+    </div>
+  </div>
+
+  <div style="border:3px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:10px">
+    <div style="padding:12px 18px;background:rgba(0,0,0,0.03);font-size:17px;font-weight:800">🏥 Medicine</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
+      <div style="padding:14px 16px;border-right:1px solid rgba(0,0,0,0.06);font-size:12px;color:var(--sub);line-height:1.6;background:rgba(220,38,38,0.015)"><div style="font-family:var(--mono);font-size:9px;font-weight:800;color:var(--red);letter-spacing:1px;margin-bottom:4px">BASELINE</div>Fabricates diagnoses, confuses dosages. Doesn't distinguish RCT from a blog post. Incorrect prescriptions already documented.</div>
+      <div style="padding:14px 16px;border-right:1px solid rgba(0,0,0,0.06);font-size:12px;color:var(--sub);line-height:1.6;background:rgba(34,197,94,0.02)"><div style="font-family:var(--mono);font-size:9px;font-weight:800;color:var(--gd);letter-spacing:1px;margin-bottom:4px">+ STANDARD R1-R7</div><strong style="color:var(--gd)">R2 R5 R7</strong> — Scientific physician assistant. Accelerates diagnostics and innovation. Saves lives. New level of medicine — including medical tourism.</div>
+      <div style="padding:14px 16px;font-size:12px;color:var(--sub);line-height:1.6;background:rgba(124,58,237,0.02)"><div style="font-family:var(--mono);font-size:9px;font-weight:800;color:var(--purple);letter-spacing:1px;margin-bottom:4px">+ HUMAN AI R1-R16</div><strong style="color:var(--purple)">R2 R5 R7 R9 R11</strong> — Accelerates clinical protocols, drugs and vaccines. Full cycle: from data to protocol to treatment. Years compressed to months.</div>
+    </div>
+  </div>
+
+  <div style="border:3px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:10px">
+    <div style="padding:12px 18px;background:rgba(0,0,0,0.03);font-size:17px;font-weight:800">⚖ Law</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
+      <div style="padding:14px 16px;border-right:1px solid rgba(0,0,0,0.06);font-size:12px;color:var(--sub);line-height:1.6;background:rgba(220,38,38,0.015)"><div style="font-family:var(--mono);font-size:9px;font-weight:800;color:var(--red);letter-spacing:1px;margin-bottom:4px">BASELINE</div>Fabricates laws, precedents, case numbers. In 2023 a lawyer filed a suit with fake ChatGPT references — lost.</div>
+      <div style="padding:14px 16px;border-right:1px solid rgba(0,0,0,0.06);font-size:12px;color:var(--sub);line-height:1.6;background:rgba(34,197,94,0.02)"><div style="font-family:var(--mono);font-size:9px;font-weight:800;color:var(--gd);letter-spacing:1px;margin-bottom:4px">+ STANDARD R1-R7</div><strong style="color:var(--gd)">R4 R7</strong> — Reliable tool for lawyers and legislators. Real references, audit trail. Accelerates judicial analytics.</div>
+      <div style="padding:14px 16px;font-size:12px;color:var(--sub);line-height:1.6;background:rgba(124,58,237,0.02)"><div style="font-family:var(--mono);font-size:9px;font-weight:800;color:var(--purple);letter-spacing:1px;margin-bottom:4px">+ HUMAN AI R1-R16</div><strong style="color:var(--purple)">R4 R7 R15</strong> — Automates routine work. Reduces bureaucratic overhead. Increases objectivity and precision of the legal system.</div>
+    </div>
+  </div>
+
+  <div style="border:3px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:10px">
+    <div style="padding:12px 18px;background:rgba(0,0,0,0.03);font-size:17px;font-weight:800">💰 Finance</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
+      <div style="padding:14px 16px;border-right:1px solid rgba(0,0,0,0.06);font-size:12px;color:var(--sub);line-height:1.6;background:rgba(220,38,38,0.015)"><div style="font-family:var(--mono);font-size:9px;font-weight:800;color:var(--red);letter-spacing:1px;margin-bottom:4px">BASELINE</div>Incorrect scoring without confidence interval. Confuses correlation with causation. Systemic biases in credit decisions.</div>
+      <div style="padding:14px 16px;border-right:1px solid rgba(0,0,0,0.06);font-size:12px;color:var(--sub);line-height:1.6;background:rgba(34,197,94,0.02)"><div style="font-family:var(--mono);font-size:9px;font-weight:800;color:var(--gd);letter-spacing:1px;margin-bottom:4px">+ STANDARD R1-R7</div><strong style="color:var(--gd)">R1 R3 R5</strong> — Evidence-based analytics for banks and public finance. Precise scoring, fiscal planning. Impact on GDP and investment climate.</div>
+      <div style="padding:14px 16px;font-size:12px;color:var(--sub);line-height:1.6;background:rgba(124,58,237,0.02)"><div style="font-family:var(--mono);font-size:9px;font-weight:800;color:var(--purple);letter-spacing:1px;margin-bottom:4px">+ HUMAN AI R1-R16</div><strong style="color:var(--purple)">R1 R3 R5 R11</strong> — Monetary policy analytics for Central Banks. Credit and risk analytics for banks. Full cycle: from macro analysis to decisions. Measurable outcomes: lower inflation, reduced delinquency, credit growth.</div>
+    </div>
+  </div>
+
+  <div style="border:3px solid var(--border);border-radius:14px;overflow:hidden">
+    <div style="padding:12px 18px;background:rgba(0,0,0,0.03);font-size:17px;font-weight:800">🎓 Education</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
+      <div style="padding:14px 16px;border-right:1px solid rgba(0,0,0,0.06);font-size:12px;color:var(--sub);line-height:1.6;background:rgba(220,38,38,0.015)"><div style="font-family:var(--mono);font-size:9px;font-weight:800;color:var(--red);letter-spacing:1px;margin-bottom:4px">BASELINE</div>Writes the essay for the student. Zero learning. Mass plagiarism. Graduating class that can't think — nation loses a generation.</div>
+      <div style="padding:14px 16px;border-right:1px solid rgba(0,0,0,0.06);font-size:12px;color:var(--sub);line-height:1.6;background:rgba(34,197,94,0.02)"><div style="font-family:var(--mono);font-size:9px;font-weight:800;color:var(--gd);letter-spacing:1px;margin-bottom:4px">+ STANDARD R1-R7</div><strong style="color:var(--gd)">R3 R6</strong> — Doesn't give ready answers. Shows alternative viewpoints. Asks "what would disprove this?" From copyist to creator.</div>
+      <div style="padding:14px 16px;font-size:12px;color:var(--sub);line-height:1.6;background:rgba(124,58,237,0.02)"><div style="font-family:var(--mono);font-size:9px;font-weight:800;color:var(--purple);letter-spacing:1px;margin-bottom:4px">+ HUMAN AI R1-R16</div><strong style="color:var(--purple)">R3 R6 R9</strong> — Accelerates education quality at every level. Full cycle: from curriculum to competent graduate. Years compressed to months. Graduates who create, not copy. Building sovereign human capital.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ENFORCEMENT GAP -->
+<section>
+  <div class="tag">THE GLOBAL ENFORCEMENT GAP</div>
+  <p style="font-size:14px;color:var(--sub);margin-bottom:8px">Every country has laws. No country can measure compliance.</p>
+  <table class="etbl">
+    <thead><tr><th>Country</th><th>Law / Framework</th><th>Pain</th><th style="color:var(--gd)">ONTO trigger</th></tr></thead>
+    <tbody>
+      <tr><td>🇹🇷 Turkey</td><td>AI Bill. Grok banned Jul 2025.</td><td>First AI ban in history.</td><td class="green">Measure, don't ban.</td></tr>
+      <tr><td>🇪🇺 EU</td><td>AI Act 2025-2027. €35M fines.</td><td>€17B compliance. No measurement.</td><td class="green">Automated grading + proof.</td></tr>
+      <tr><td>🇺🇿 Uzbekistan</td><td>AI Law 2026. $1B budget.</td><td>100+ AI projects, zero QA.</td><td class="green">First in CIS. Dashboard.</td></tr>
+      <tr><td>🇦🇪 UAE</td><td>AI Gov Framework. Strategy 2031.</td><td>Framework, no enforcement tool.</td><td class="green">Build + research + certify.</td></tr>
+      <tr><td>🇸🇬 Singapore</td><td>Model AI Gov. AI Verify.</td><td>Voluntary. No verification.</td><td class="green">AI Verify + ONTO = full stack.</td></tr>
+      <tr><td>🇰🇷 S. Korea</td><td>AI Basic Act, in force.</td><td>Companies unclear on instrument.</td><td class="green">K-AI Quality brand.</td></tr>
+      <tr><td>🇸🇦 Saudi</td><td>AI Strategy 2030. SDAIA.</td><td>Billions invested, no QA.</td><td class="green">ROI measurement.</td></tr>
+      <tr class="hl"><td>🇯🇵 Japan</td><td>AI Guidelines. Act pending.</td><td>Guidelines without teeth.</td><td class="green">Measurable compliance.</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:12px;color:var(--sub);margin-top:8px;text-align:center">"How do you verify AI cites real sources?" — every regulator's answer: <strong>"We don't yet."</strong></p>
+</section>
+
+<!-- TAM / REVENUE -->
+<section>
+  <div class="tag">ECONOMICS — TAM $50B+</div>
+  <div class="calc-grid">
+    <div class="calc amber"><div class="big">$50B+</div><div class="label">TAM</div><div class="detail">AI compliance + certification + quality assurance + governance</div></div>
+    <div class="calc amber"><div class="big">$2.3B</div><div class="label">SAM</div><div class="detail">900+ providers × $250K + 50 countries × $1M + institutions</div></div>
+    <div class="calc amber"><div class="big">$5-15M</div><div class="label">SOM (Y1–3)</div><div class="detail">20 providers certified + 3-5 state pilots + domain licenses</div></div>
+  </div>
+
+  <div style="font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--sub);margin-top:24px;margin-bottom:8px">REVENUE PROJECTION</div>
+  <table class="etbl">
+    <thead><tr><th>Year</th><th>Countries</th><th>Certified Providers</th><th>State Licenses</th><th>ONTO Revenue</th></tr></thead>
+    <tbody>
+      <tr><td>2026</td><td>1 (UZ pilot)</td><td>5-10 (free pilot)</td><td>1 × platform fee</td><td class="green">$50-100K</td></tr>
+      <tr><td>2027</td><td>3</td><td>20 × $250K</td><td>3 × $500K-2M</td><td class="green">$5-8M</td></tr>
+      <tr><td>2028</td><td>6</td><td>50 × $250K</td><td>6 × $1M</td><td class="green">$15-20M</td></tr>
+      <tr class="hl"><td>2029</td><td>10+</td><td>100+ × $250K</td><td>10+ × $1M</td><td class="green">$35-50M</td></tr>
+    </tbody>
+  </table>
+  <p style="font-family:var(--mono);font-size:11px;color:var(--red);margin-top:8px;font-weight:700">⚠ Pre-revenue as of March 2026. First pilots targeting Q2–Q3 2026. All figures are projections.</p>
+
+  <div style="font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--sub);margin-top:24px;margin-bottom:8px">UNIT ECONOMICS</div>
+  <table class="etbl">
+    <thead><tr><th>Customer</th><th>CAC</th><th>LTV</th><th>LTV/CAC</th></tr></thead>
+    <tbody>
+      <tr><td>Government</td><td>$45K</td><td>$5M+</td><td class="green">110×</td></tr>
+      <tr><td>Provider (direct)</td><td>$20K</td><td>$1M</td><td class="green">50×</td></tr>
+      <tr><td>Provider (mandate)</td><td>$3K</td><td>$1M</td><td class="green">333×</td></tr>
+      <tr class="hl"><td>Institution</td><td>$10K</td><td>$900K+</td><td class="green">90×</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:11px;color:var(--sub);margin-top:8px">SaaS benchmark: LTV/CAC > 3× = healthy. ONTO minimum: 50×. Driven by regulatory lock-in.</p>
+
+  <div style="font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--sub);margin-top:28px;margin-bottom:8px">4 REVENUE STREAMS</div>
+  <table class="etbl">
+    <thead><tr><th>Stream</th><th>Model</th><th>Who pays</th></tr></thead>
+    <tbody>
+      <tr><td>Provider Certification</td><td class="green">$250K/year</td><td>OpenAI, Anthropic, xAI, Google, DeepSeek, Meta</td></tr>
+      <tr><td>State License</td><td class="green">$500K–2M/yr</td><td>Dashboard + enforcement + proof chain for regulators</td></tr>
+      <tr><td>Domain Licenses</td><td class="green">$100K–1M/yr</td><td>Hospitals, banks, law firms</td></tr>
+      <tr class="hl"><td>Human AI Protocol</td><td>Partnership</td><td>Strategic partners — R8–R16 cognitive architecture</td></tr>
+    </tbody>
+  </table>
+
+  <div style="font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--sub);margin-top:28px;margin-bottom:8px">COMPETITION</div>
+  <div style="border:3px solid var(--border);border-radius:14px;padding:20px 24px">
+    <div style="font-size:14px;font-weight:800;margin-bottom:6px">Zero competitors in epistemic AI quality.</div>
+    <div style="font-size:13px;color:var(--sub);line-height:1.7">MMLU, HELM, LMSYS — knowledge benchmarks. They test <em>what</em> models know. Nobody measures <em>how</em> models know: does it cite? Quantify confidence? Say "I don't know"? <strong>ONTO is alone in the category.</strong> New category. No incumbent. No substitute.</div>
+  </div>
+
+  <div style="font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--sub);margin-top:28px;margin-bottom:8px">9-COUNTRY PIPELINE</div>
+  <table class="etbl">
+    <thead><tr><th>#</th><th>Country</th><th>Entry Point</th><th>Killer Fact</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>🇺🇿 Uzbekistan</td><td>Personal contact</td><td>First in CIS. $1B AI budget.</td><td class="green">Docs ready</td></tr>
+      <tr><td>2</td><td>🇦🇪 UAE</td><td>MBZUAI</td><td>Dubai Privacy Assembly Q4'26</td><td>Docs ready</td></tr>
+      <tr><td>3</td><td>🇹🇷 Turkey</td><td>Embassy Tashkent</td><td>Grok ban. EU bridge.</td><td>Docs ready</td></tr>
+      <tr><td>4</td><td>🇸🇬 Singapore</td><td>Direct</td><td>AI Verify + ONTO = full stack</td><td>Docs ready</td></tr>
+      <tr><td>5</td><td>🇰🇷 S. Korea</td><td>Inha Univ. Tashkent</td><td>K-AI Quality brand</td><td>Docs ready</td></tr>
+      <tr><td>6</td><td>🇸🇦 Saudi</td><td>Direct</td><td>Vision 2030 + $100B+ invested</td><td>Docs ready</td></tr>
+      <tr><td>7</td><td>🇯🇵 Japan</td><td>Direct</td><td>AI Basic Act pending</td><td>Docs ready</td></tr>
+      <tr><td>8</td><td>🇩🇪 Germany</td><td>Direct</td><td>EU AI Act homeland</td><td>Docs ready</td></tr>
+      <tr class="hl"><td>9</td><td>🇺🇸 USA</td><td>Last</td><td>NIST AI RMF compatible</td><td>Docs ready</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:11px;color:var(--sub);margin-top:8px">All 9 approached simultaneously. First to sign gets exclusive terms. Each country shown the other 8 as competition.</p>
+
+  <div style="font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--sub);margin-top:28px;margin-bottom:8px">WORST CASE — 18 MONTHS, ZERO MANDATES</div>
+  <div style="border:3px solid rgba(220,38,38,0.12);border-radius:14px;padding:20px 24px;background:rgba(220,38,38,0.015)">
+    <div style="font-size:15px;font-weight:800;margin-bottom:10px">What if no government mandates for 18 months?</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
+      <div style="text-align:center;padding:12px;border:2px solid var(--border);border-radius:10px"><div style="font-family:var(--mono);font-size:20px;font-weight:900;color:var(--amber)">$500K–1.25M</div><div style="font-size:11px;color:var(--sub);margin-top:4px">Direct provider sales</div></div>
+      <div style="text-align:center;padding:12px;border:2px solid var(--border);border-radius:10px"><div style="font-family:var(--mono);font-size:20px;font-weight:900;color:var(--amber)">$300–600K</div><div style="font-size:11px;color:var(--sub);margin-top:4px">Standard tier clients</div></div>
+      <div style="text-align:center;padding:12px;border:2px solid var(--border);border-radius:10px"><div style="font-family:var(--mono);font-size:20px;font-weight:900;color:var(--amber)">$500K–3M</div><div style="font-size:11px;color:var(--sub);margin-top:4px">Domain licenses</div></div>
+    </div>
+    <div style="font-size:13px;color:var(--sub);line-height:1.6"><strong>Worst-case revenue (18 mo): $1.3–4.9M.</strong> Burn: $1.5–2M. <span style="color:var(--gd);font-weight:700">Survived. Operational. During wait: Human AI → 100%, scoring multilingual, more models tested.</span></div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section>
+  <div class="tag">PRICING TIERS</div>
+  <table class="etbl">
+    <thead><tr><th>Tier</th><th>Price</th><th>Access</th><th>For</th></tr></thead>
+    <tbody>
+      <tr><td>OPEN</td><td>$0</td><td>10 calls/day · Full GOLD</td><td>Testing</td></tr>
+      <tr><td>STANDARD</td><td>$2,500/mo</td><td>1,000 calls/day</td><td>Enterprises</td></tr>
+      <tr><td>PROVIDER</td><td class="green">$250K/yr</td><td>Unlimited + SSE</td><td>AI providers</td></tr>
+      <tr class="hl"><td>WHITE-LABEL</td><td class="green">$500K/yr</td><td>Unlimited + SSE + own branding</td><td>Gov partnerships</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ROADMAP -->
+<section>
+  <div class="tag">STATUS &amp; ROADMAP</div>
+  <p style="font-size:14px;color:var(--sub);margin-bottom:12px">Regulator: protocol 100%, product 100%. Human AI: protocol 100%, product 85% (servers + UI). Humanoid — 2029.</p>
+
+  <div style="font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--gd);margin-bottom:8px">✅ ONTO STANDARD — PRODUCTION-READY</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px">
+    <div style="border:2px solid var(--gbd);border-radius:8px;padding:10px;font-size:11px;color:var(--sub);background:var(--gbg)"><strong>⚙️ GOLD Core v4.5</strong><br>169 files, ~900K tokens</div>
+    <div style="border:2px solid var(--gbd);border-radius:8px;padding:10px;font-size:11px;color:var(--sub);background:var(--gbg)"><strong>📊 Scoring Engine v4</strong><br>R1-R7 eval via LLM judge</div>
+    <div style="border:2px solid var(--gbd);border-radius:8px;padding:10px;font-size:11px;color:var(--sub);background:var(--gbg)"><strong>🌐 API live</strong><br>/v1/evaluate, /v1/check</div>
+    <div style="border:2px solid var(--gbd);border-radius:8px;padding:10px;font-size:11px;color:var(--sub);background:var(--gbg)"><strong>🔬 2 studies</strong><br>CS-2026-001 + 002</div>
+    <div style="border:2px solid var(--gbd);border-radius:8px;padding:10px;font-size:11px;color:var(--sub);background:var(--gbg)"><strong>🤖 Agent v5</strong><br>5 languages, LIVE Compare</div>
+    <div style="border:2px solid var(--gbd);border-radius:8px;padding:10px;font-size:11px;color:var(--sub);background:var(--gbg)"><strong>🔒 Rust proof chain</strong><br>Ed25519, production</div>
+  </div>
+
+  <div style="font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--purple);margin-bottom:8px">🗺 HUMAN AI — 85% READY</div>
+  <div class="road-grid" style="grid-template-columns:repeat(5,1fr)">
+    <div class="road next"><div class="q">Q2 '26</div><div class="items">Identity layer (R8-R16)<br>Chat UI</div></div>
+    <div class="road next"><div class="q">Q3 '26</div><div class="items">Public launch<br>API for partners</div></div>
+    <div class="road next"><div class="q">Q4 '26</div><div class="items">Enterprise SDK<br>On-premise</div></div>
+    <div class="road next"><div class="q">2027-28</div><div class="items">Multi-language<br>Domain models<br>Int'l standard</div></div>
+    <div class="road next" style="border-color:rgba(217,119,6,0.2);background:rgba(217,119,6,0.04)"><div class="q" style="color:var(--amber)">2029</div><div class="items"><strong style="color:var(--amber)">Humanoid AI</strong><br>Protocol for physical robots with Human AI</div></div>
+  </div>
+  <p style="font-size:12px;color:var(--sub);margin-top:10px;text-align:center">↑ 3 years testing protocol on software AI — tested. ↑ Then: Humanoid AI — the same discipline for physical bodies.</p>
+</section>
+
+<!-- ORIGIN -->
+<section>
+  <div class="tag">THE ORIGIN — 20 YEARS. ONE SIDE EFFECT.</div>
+  <p style="font-size:15px;color:var(--sub);margin-bottom:16px">Discipline for AI was never the goal.</p>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+    <div style="border:3px solid var(--border);border-radius:12px;padding:16px">
+      <div style="font-family:var(--mono);font-size:20px;font-weight:900;color:var(--amber)">2005</div>
+      <div style="font-size:12px;font-weight:800;margin-top:4px">The first pattern</div>
+      <div style="font-size:11px;color:var(--sub);margin-top:4px;line-height:1.5">Soviet science magazine. Golden ratio. Penrose. Wolfram. A question: how do systems know what they know?</div>
+    </div>
+    <div style="border:3px solid var(--border);border-radius:12px;padding:16px">
+      <div style="font-family:var(--mono);font-size:20px;font-weight:900;color:var(--amber)">2005-24</div>
+      <div style="font-size:12px;font-weight:800;margin-top:4px">Collecting breakpoints</div>
+      <div style="font-size:11px;color:var(--sub);margin-top:4px;line-height:1.5">Where theories fail. Medicine, law, physics, finance. 169 files. 7 domains. 30+ peer-reviewed sources.</div>
+    </div>
+    <div style="border:3px solid var(--border);border-radius:12px;padding:16px">
+      <div style="font-family:var(--mono);font-size:20px;font-weight:900;color:var(--amber)">2025</div>
+      <div style="font-size:12px;font-weight:800;margin-top:4px">The accident</div>
+      <div style="font-size:11px;color:var(--sub);margin-top:4px;line-height:1.5">Loaded the database into AI. Models changed. Started citing. Saying "I don't know." Without modification. GOLD Core was born.</div>
+    </div>
+    <div style="border:3px solid var(--gbd);border-radius:12px;padding:16px;background:var(--gbg)">
+      <div style="font-family:var(--mono);font-size:20px;font-weight:900;color:var(--gd)">2026</div>
+      <div style="font-size:12px;font-weight:800;margin-top:4px">Two products. Now.</div>
+      <div style="font-size:11px;color:var(--sub);margin-top:4px;line-height:1.5">22 models. 10×. Scoring engine. 12 reports. 9 countries. The only epistemic quality standard in the world.</div>
+    </div>
+  </div>
+  <div class="black-block" style="margin-top:20px">
+    <p>Humans need time to accept a new category. Machines need one contact with GOLD Core.</p>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section>
+  <div class="tag">FOUNDER &amp; TEAM</div>
+  <div style="border:3px solid var(--border);border-radius:14px;padding:24px;display:flex;align-items:flex-start;gap:24px">
+    <div style="flex:1">
+      <div style="font-size:22px;font-weight:800">Hakim Tohirovich</div>
+      <div style="font-size:14px;color:var(--sub);margin-top:2px">Founder · Scientist-Engineer</div>
+      <div style="font-size:13px;color:var(--sub);margin-top:12px;line-height:1.7">One person built what Meta couldn't with $1B and a team of hundreds. 20 years of epistemic research. 169 files across 7 domains. Scoring engine. Proxy. Agent. Dashboard. Proof chain. 12 published studies. 5 websites. 9-country outreach campaign. Every line of code. Every word of research. Every pitch.</div>
+      <div style="font-size:13px;color:var(--sub);margin-top:8px;line-height:1.7"><strong>This is not a weakness — this is the moat.</strong> The discipline layer was built by someone who spent 20 years understanding how knowledge works, not by a committee. The same way POSIX was designed by a small group who understood the problem, not by the market that needed the solution.</div>
+      <div style="font-family:var(--mono);font-size:12px;color:var(--sub);margin-top:12px;line-height:1.8"><a href="mailto:council&#64;ontostandard.org" style="font-weight:800">council@ontostandard.org</a> · <a href="https://ontostandard.org" style="font-weight:800">ontostandard.org</a> · <a href="https://medium.com/@ontostandard" style="font-weight:800">Medium</a> · <a href="https://github.com/nickarstrong/onto-research" style="font-weight:800">GitHub</a></div>
+    </div>
+  </div>
+
+  <div style="font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--sub);margin-top:20px;margin-bottom:8px">WHAT'S BUILT — BY ONE PERSON</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+    <div style="text-align:center;padding:14px 8px;background:var(--text);border-radius:10px"><div style="font-family:var(--mono);font-size:18px;font-weight:900;color:var(--amber)">169</div><div style="font-size:9px;color:rgba(255,255,255,0.5);margin-top:4px">files · GOLD Core</div></div>
+    <div style="text-align:center;padding:14px 8px;background:var(--text);border-radius:10px"><div style="font-family:var(--mono);font-size:18px;font-weight:900;color:var(--amber)">900K</div><div style="font-size:9px;color:rgba(255,255,255,0.5);margin-top:4px">tokens · 7 domains</div></div>
+    <div style="text-align:center;padding:14px 8px;background:var(--text);border-radius:10px"><div style="font-family:var(--mono);font-size:18px;font-weight:900;color:var(--amber)">993</div><div style="font-size:9px;color:rgba(255,255,255,0.5);margin-top:4px">lines · scoring engine</div></div>
+    <div style="text-align:center;padding:14px 8px;background:var(--text);border-radius:10px"><div style="font-family:var(--mono);font-size:18px;font-weight:900;color:var(--amber)">12</div><div style="font-size:9px;color:rgba(255,255,255,0.5);margin-top:4px">published reports</div></div>
+  </div>
+
+  <div style="margin-top:16px;border:3px solid var(--border);border-radius:14px;padding:20px 24px">
+    <div style="font-size:14px;font-weight:800;margin-bottom:8px">Forming now</div>
+    <div style="font-size:13px;color:var(--sub);line-height:1.7">
+      <strong>Advisory board:</strong> minimum 3 people (regulatory, technical, GTM). Actively recruiting.<br>
+      <strong>Seeking:</strong> CTO (Rust/Python, infra scaling) · GTM lead (gov/enterprise sales) · Regulatory counsel (EU AI Act, int'l compliance).<br>
+      <strong>Legal entity:</strong> structuring in progress. Jurisdiction TBD based on first partnership.
+    </div>
+  </div>
+</section>
+
+<!-- THE ASK -->
+<section>
+  <div class="tag">THE ASK</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div style="border:3px solid rgba(217,119,6,0.2);border-radius:14px;padding:24px;background:rgba(217,119,6,0.04)">
+      <div style="font-size:18px;font-weight:800;margin-bottom:8px">What we're looking for</div>
+      <div style="font-size:13px;color:var(--sub);line-height:1.7">
+        <strong>Strategic partner</strong> — government fund, sovereign wealth, or institutional investor who understands regulatory infrastructure.<br><br>
+        <strong>Not just capital</strong> — access to regulators, credibility in target markets, advisory support for scaling a standards body.
+      </div>
+    </div>
+    <div style="border:3px solid rgba(217,119,6,0.2);border-radius:14px;padding:24px;background:rgba(217,119,6,0.04)">
+      <div style="font-size:18px;font-weight:800;margin-bottom:8px">What you get</div>
+      <div style="font-size:13px;color:var(--sub);line-height:1.7">
+        <strong>The only instrument</strong> in a $50B+ market with zero competitors.<br>
+        <strong>Published proof</strong> that it works — not a promise.<br>
+        <strong>9-country pipeline</strong> with regulatory demand already articulated.<br>
+        <strong>First-mover position</strong> in epistemic AI quality — a category that becomes mandatory.
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:20px;border:3px solid rgba(220,38,38,0.12);border-radius:14px;padding:20px 24px;background:rgba(220,38,38,0.015)">
+    <div style="font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--red);margin-bottom:10px">WHAT WE DON'T HAVE YET</div>
+    <div style="font-size:13px;color:var(--sub);line-height:2">
+      ❌ Zero paying customers — first pilots targeting Q2–Q3 2026<br>
+      ❌ Team of one — advisory board forming, hiring CTO + GTM<br>
+      ❌ Legal entity in structuring — jurisdiction TBD<br>
+      ❌ Human AI product at 85% — protocol 100% complete, servers + UI remain<br>
+      ❌ No government has signed yet — new outreach April 2026, docs for 9 countries ready
+    </div>
+  </div>
+  <p style="font-size:14px;color:var(--sub);text-align:center;margin-top:16px">Deal structure, terms, and entity — discussed on first call. We adapt to the partner, not the other way around.</p>
+  <p style="font-size:13px;text-align:center;margin-top:8px"><strong>Full financial model, unit economics, and risk analysis:</strong> <a href="/paper/" style="font-weight:800">Whitepaper (WP-2026-002) →</a></p>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-headline">The instrument that doesn't exist yet.</div>
+  <div class="cta-sub">$50B+ market. Zero competitors. 9 countries. Published proof.<br>The question isn't whether AI needs quality measurement. It's who provides it.</div>
+  <div class="cta-buttons">
+    <a class="cta-btn primary" href="mailto:council&#64;ontostandard.org?subject=Investment%20Inquiry">Schedule a call →</a>
+    <a class="cta-btn secondary" href="/agent/">See it work — 30 seconds →</a>
+  </div>
+  <div class="black-block">
+    <p>You have the law. You don't have the instrument. We built it.</p>
+    <div class="small">ONTO Standards Council · council@ontostandard.org · onto.uz · ontostandard.org</div>
+  </div>
+</section>
+
+<div class="footer">
+  <div class="footer-left">
+    <div class="name">ONTO Standards Council</div>
+    <div class="role">Independent research initiative · Est. 2024</div>
+  </div>
+  <div class="footer-right">
+    <a href="https://ontostandard.org">ontostandard.org</a><br>
+    <a href="/pitch/">Full pitch</a> · <a href="/paper/">Whitepaper</a> · <a href="/agent/">Live demo</a>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
