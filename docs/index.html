@@ -27,10 +27,12 @@ a{color:var(--gd);text-decoration:none}a:hover{text-decoration:underline}
 .logo-circle{width:32px;height:32px;background:var(--text);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--green)}
 .logo-circle svg{width:18px;height:18px}
 .logo-text{font-family:var(--mono);font-size:14px;font-weight:800;letter-spacing:2px}
-.header-right{display:flex;align-items:center;gap:16px}
-.header-links{font-family:var(--mono);font-size:11px;font-weight:700;display:flex;gap:20px}
-.header-links a{color:var(--sub);font-weight:600}
+.header-right{display:flex;align-items:center;gap:14px}
+.header-links{font-family:var(--mono);font-size:12px;font-weight:700;display:flex;gap:16px;align-items:center}
+.header-links a{color:var(--sub);font-weight:700}
 .header-links a:hover{color:var(--gd)}
+.header-links .app-btn{color:var(--white);background:var(--gd);padding:5px 14px;border-radius:6px;font-size:11px;font-weight:800;text-decoration:none}
+.header-links .app-btn:hover{background:#22c55e;color:var(--white)}
 .sig{font-family:var(--mono);font-size:9px;color:var(--sub);display:flex;align-items:center;gap:3px}
 .sig .bytes{display:flex;gap:2px}
 .sig .byte{color:var(--gd);animation:bp 2s infinite}
@@ -142,10 +144,14 @@ section:last-of-type{border-bottom:none}
   .orb-ring:nth-child(3){width:190px;height:190px}
   .orb-ring:nth-child(4){width:240px;height:240px}
   .metrics{grid-template-columns:repeat(2,1fr)}
-  .demo-split,.doors-grid{grid-template-columns:1fr}
+  .demo-split{grid-template-columns:1fr}
+  .doors-grid{grid-template-columns:1fr}
   .header{position:static}
+  .header-links{gap:12px;font-size:11px}
+  .header-links .app-btn{padding:5px 12px;font-size:10px}
   .footer{flex-direction:column;gap:16px;text-align:center}
   .footer-right{text-align:center}
+  .sig{display:none}
 }
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 section,.hero{animation:fadeUp .6s ease-out both}
@@ -167,7 +173,7 @@ section:nth-child(3){animation-delay:.15s}
     <div class="header-links">
       <a href="/docs/">Standard</a>
       <a href="/paper/">Research</a>
-      <a href="/agent/">Evaluate</a>
+      <a href="/app/" class="app-btn">Open App</a>
     </div>
     <div class="sig">
       <span>σ(t)=</span>
