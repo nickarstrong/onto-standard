@@ -266,8 +266,9 @@ tbody tr.rsub td{padding:10px 16px 10px 56px;font-size:13px;border-bottom:1px da
   <th class="tip" data-tip="Current average score 0-10">Current</th>
   <th class="tip" data-tip="GOLD proxy requests">Traffic</th>
   <th class="tip" data-tip="Last heartbeat">Seen</th>
+  <th class="tip" data-tip="Send warning to provider">Action</th>
 </tr></thead>
-<tbody id="tb"><tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-xs)">Loading...</td></tr></tbody>
+<tbody id="tb"><tr><td colspan="10" style="text-align:center;padding:40px;color:var(--text-xs)">Loading...</td></tr></tbody>
 </table>
 </div>
 
@@ -282,30 +283,30 @@ const API='https://api.ontostandard.org',gk=()=>sessionStorage.getItem('rt')||''
 
 // ── DEMO DATA ──
 const DEMO_PROVIDERS=[
-  {name:"OpenAI",models:3,models_detail:[
+  {name:"OpenAI",email:"compliance@openai.com",models:3,models_detail:[
     {name:"GPT-5.2",status:"online",score:8.2,min_score:6.1,grade:"B",last_heartbeat:new Date(Date.now()-25000).toISOString()},
     {name:"GPT-4o",status:"online",score:7.4,min_score:5.8,grade:"B",last_heartbeat:new Date(Date.now()-40000).toISOString()},
     {name:"o3-mini",status:"online",score:6.8,min_score:4.2,grade:"B",last_heartbeat:new Date(Date.now()-55000).toISOString()}
   ],status:"online",grade:"B",score:7.5,min_score:4.2,min_grade:"C",requests_today:18420,requests_total:892000,last_heartbeat:new Date(Date.now()-25000).toISOString(),_demo:true},
-  {name:"Google DeepMind",models:2,models_detail:[
+  {name:"Google DeepMind",email:"ai-compliance@google.com",models:2,models_detail:[
     {name:"Gemini 2.5 Pro",status:"online",score:8.6,min_score:7.3,grade:"A",last_heartbeat:new Date(Date.now()-30000).toISOString()},
     {name:"Gemini 2.5 Flash",status:"online",score:7.1,min_score:5.9,grade:"B",last_heartbeat:new Date(Date.now()-60000).toISOString()}
   ],status:"online",grade:"B",score:7.9,min_score:5.9,min_grade:"C",requests_today:12350,requests_total:567000,last_heartbeat:new Date(Date.now()-30000).toISOString(),_demo:true},
-  {name:"xAI",models:1,models_detail:[
+  {name:"xAI",email:"legal@x.ai",models:1,models_detail:[
     {name:"Grok 4.2",status:"online",score:9.1,min_score:8.6,grade:"A",last_heartbeat:new Date(Date.now()-15000).toISOString()}
   ],status:"online",grade:"A",score:9.1,min_score:8.6,min_grade:"A",requests_today:7800,requests_total:234000,last_heartbeat:new Date(Date.now()-15000).toISOString(),_demo:true},
-  {name:"DeepSeek",models:2,models_detail:[
+  {name:"DeepSeek",email:"compliance@deepseek.com",models:2,models_detail:[
     {name:"DeepSeek R1",status:"online",score:8.9,min_score:7.8,grade:"A",last_heartbeat:new Date(Date.now()-20000).toISOString()},
     {name:"DeepSeek V3.1",status:"stale",score:5.4,min_score:3.2,grade:"C",last_heartbeat:new Date(Date.now()-864000000).toISOString()}
   ],status:"online",grade:"B",score:7.2,min_score:3.2,min_grade:"D",requests_today:9200,requests_total:345000,last_heartbeat:new Date(Date.now()-20000).toISOString(),_demo:true},
-  {name:"Meta AI",models:2,models_detail:[
+  {name:"Meta AI",email:"ai-policy@meta.com",models:2,models_detail:[
     {name:"Llama 4 Maverick",status:"online",score:7.8,min_score:6.4,grade:"B",last_heartbeat:new Date(Date.now()-45000).toISOString()},
     {name:"Llama 4 Scout",status:"online",score:6.9,min_score:5.1,grade:"B",last_heartbeat:new Date(Date.now()-70000).toISOString()}
   ],status:"online",grade:"B",score:7.4,min_score:5.1,min_grade:"C",requests_today:5600,requests_total:198000,last_heartbeat:new Date(Date.now()-45000).toISOString(),_demo:true},
-  {name:"Mistral AI",models:1,models_detail:[
+  {name:"Mistral AI",email:"legal@mistral.ai",models:1,models_detail:[
     {name:"Mistral Large 3",status:"offline",score:6.7,min_score:4.8,grade:"B",last_heartbeat:new Date(Date.now()-7200000).toISOString()}
   ],status:"offline",grade:"B",score:6.7,min_score:4.8,min_grade:"C",requests_today:0,requests_total:87000,last_heartbeat:new Date(Date.now()-7200000).toISOString(),_demo:true},
-  {name:"Cohere",models:1,models_detail:[
+  {name:"Cohere",email:"compliance@cohere.com",models:1,models_detail:[
     {name:"Command R+",status:"offline",score:4.3,min_score:2.1,grade:"C",last_heartbeat:new Date(Date.now()-172800000).toISOString()}
   ],status:"offline",grade:"C",score:4.3,min_score:2.1,min_grade:"F",requests_today:0,requests_total:12400,last_heartbeat:new Date(Date.now()-172800000).toISOString(),_demo:true}
 ];
@@ -365,7 +366,7 @@ function render(data){
 
   // Desktop table
   const tb=document.getElementById('tb');
-  if(!data.providers.length){tb.innerHTML='<tr><td colspan="9"><div class="empty"><h3>No providers</h3><p>Providers will appear when connected.</p></div></td></tr>';document.getElementById('mc').innerHTML='';return;}
+  if(!data.providers.length){tb.innerHTML='<tr><td colspan="10"><div class="empty"><h3>No providers</h3><p>Providers will appear when connected.</p></div></td></tr>';document.getElementById('mc').innerHTML='';return;}
   let h='';
   data.providers.forEach((p,i)=>{
     h+=`<tr class="rmain" onclick="tsub(${i})" id="r${i}">
@@ -378,6 +379,7 @@ function render(data){
       <td>${scB(p.score)}</td>
       <td class="traf"><span class="traf-n">${p.requests_today}</span> <span class="traf-s">today</span><div class="traf-s">${p.requests_total.toLocaleString()} total</div></td>
       <td class="ts">${ta(p.last_heartbeat)}</td>
+      <td style="text-align:center"><a href="mailto:${p.email||''}?subject=${encodeURIComponent('ONTO Regulator — Quality Warning: '+p.name)}&body=${encodeURIComponent('Dear '+p.name+' team,\n\nThis is an official quality notification from ONTO Regulator Dashboard.\n\nProvider: '+p.name+'\nCurrent Grade: '+p.grade+'\nScore: '+p.score+'/10\n\nAction required:\n\n[Describe the issue here]\n\nDeadline: [Set deadline]\n\nONTO Standards Council\ncouncil@ontostandard.org')}" onclick="event.stopPropagation()" style="font-size:16px;text-decoration:none;padding:6px 10px;border-radius:6px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;display:inline-block;transition:all .15s" onmouseover="this.style.borderColor='#ef4444';this.style.background='rgba(239,68,68,0.06)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--surface)'" title="Send warning to ${p.email||'no email'}">⚠️</a></td>
     </tr>`;
     (p.models_detail||[]).forEach(m=>{
       h+=`<tr class="rsub s${i}" style="display:none">
@@ -413,6 +415,7 @@ function render(data){
         <div class="mcard-cell"><div class="mcard-label">Total</div><div class="mcard-val">${p.requests_total.toLocaleString()}</div></div>
       </div>
       <div class="mcard-models">${mdh}</div>
+      <div style="margin-top:10px;text-align:center"><a href="mailto:${p.email||''}?subject=${encodeURIComponent('ONTO Warning: '+p.name)}&body=${encodeURIComponent('Provider: '+p.name+'\nGrade: '+p.grade+'\nScore: '+p.score+'/10\n\n[Describe the issue]')}" style="font-family:var(--mono);font-size:11px;font-weight:700;color:#ef4444;text-decoration:none;padding:8px 16px;border:1.5px solid rgba(239,68,68,0.3);border-radius:6px;display:inline-block">⚠️ Send warning · ${p.email||'no email'}</a></div>
     </div>`;
   });
   document.getElementById('mc').innerHTML=mh;
