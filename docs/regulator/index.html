@@ -372,7 +372,7 @@ function render(data){
     h+=`<tr class="rmain" onclick="tsub(${i})" id="r${i}">
       <td><span class="chev" id="ch${i}">+</span></td>
       <td>${stB(p.status)}</td>
-      <td style="font-weight:800;font-size:16px">${p.name}${p._demo?'<span class="demo-tag">DEMO</span>':''}</td>
+      <td style="font-weight:800;font-size:16px">${p.name}${p._demo?'<span class="demo-tag">DEMO</span>':''}<div style="font-size:11px;font-weight:500;color:var(--text-xs);margin-top:2px">${p.email||'no email'}</div></td>
       <td style="font-family:var(--mono);font-weight:700">${p.models}</td>
       <td><span class="gb gb-lg gb-${p.grade||'F'}">${p.grade}</span></td>
       <td>${lowB(p.min_score,p.min_grade)}</td>
@@ -406,6 +406,7 @@ function render(data){
     });
     mh+=`<div class="mcard">
       <div class="mcard-top"><span class="mcard-name">${p.name}${p._demo?'<span class="demo-tag">DEMO</span>':''}</span>${stB(p.status)}</div>
+      <div style="font-size:11px;color:var(--text-xs);margin:-4px 0 8px">${p.email||'no email'}</div>
       <div class="mcard-grid">
         <div class="mcard-cell"><div class="mcard-label">Grade</div><span class="gb gb-lg gb-${p.grade||'F'}">${p.grade}</span></div>
         <div class="mcard-cell"><div class="mcard-label">Models</div><div class="mcard-val">${p.models}</div></div>
