@@ -52,6 +52,18 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .auth-btn{width:100%;padding:14px;background:var(--green);color:#071a08;border:none;border-radius:10px;font-family:var(--mono);font-size:14px;font-weight:800;cursor:pointer;}
 .auth-btn:hover{opacity:0.85;}
 .auth-error{font-family:var(--mono);font-size:12px;color:var(--red);margin-top:10px;display:none;}
+.auth-divider{margin:20px 0 16px;font-size:12px;color:var(--text-xs);position:relative;}
+.auth-divider::before,.auth-divider::after{content:'';position:absolute;top:50%;width:35%;height:1px;background:var(--border);}
+.auth-divider::before{left:0}.auth-divider::after{right:0}
+.req-link{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--green);cursor:pointer;text-decoration:none;letter-spacing:0.5px;}
+.req-link:hover{opacity:0.8}
+.req-form{display:none;margin-top:16px;text-align:left;}
+.req-form.show{display:block;}
+.req-form label{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--text-s);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;margin-top:12px;}
+.req-form label:first-child{margin-top:0;}
+.req-submit{width:100%;padding:14px;background:var(--text);color:var(--green);border:none;border-radius:10px;font-family:var(--mono);font-size:14px;font-weight:800;cursor:pointer;margin-top:16px;letter-spacing:0.5px;}
+.req-submit:hover{opacity:0.85}
+.req-success{font-family:var(--mono);font-size:12px;color:var(--green);margin-top:10px;display:none;}
 
 /* HEADER */
 .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
@@ -198,6 +210,21 @@ tbody tr.rsub td{padding:10px 16px 10px 56px;font-size:13px;border-bottom:1px da
     <input type="password" class="auth-input" id="tokenInput" placeholder="Token" onkeydown="if(event.key==='Enter')auth()">
     <button class="auth-btn" onclick="auth()">ACCESS</button>
     <div class="auth-error" id="authError">Invalid token</div>
+    <div class="auth-divider">or</div>
+    <a class="req-link" onclick="document.getElementById('reqForm').classList.toggle('show')">Request access →</a>
+    <div class="req-form" id="reqForm">
+      <label>Name</label>
+      <input type="text" class="auth-input" id="reqName" placeholder="Full name" style="margin-bottom:0">
+      <label>Organization</label>
+      <input type="text" class="auth-input" id="reqOrg" placeholder="Ministry, agency, or company" style="margin-bottom:0">
+      <label>Email</label>
+      <input type="email" class="auth-input" id="reqEmail" placeholder="Official email" style="margin-bottom:0">
+      <label>Position</label>
+      <input type="text" class="auth-input" id="reqPos" placeholder="Your role" style="margin-bottom:0">
+      <button class="req-submit" onclick="submitReq()">SEND REQUEST</button>
+      <div class="req-success" id="reqSuccess">✓ Request sent. We'll respond within 24 hours.</div>
+      <div class="auth-error" id="reqError">Please fill all fields</div>
+    </div>
   </div>
 </div>
 
@@ -403,6 +430,22 @@ function tsub(i){
 }
 
 async function load(){try{const r=await fetch(`${API}/v1/regulator/dashboard`,{headers:{'Authorization':`Bearer ${gk()}`}});if(r.status===403){sessionStorage.removeItem('rt');location.reload();return;}if(r.ok)render(mergeDemo(await r.json()));}catch(e){console.error(e);}}
+
+function submitReq(){
+  const n=document.getElementById('reqName').value.trim();
+  const o=document.getElementById('reqOrg').value.trim();
+  const e=document.getElementById('reqEmail').value.trim();
+  const p=document.getElementById('reqPos').value.trim();
+  if(!n||!o||!e||!p){document.getElementById('reqError').style.display='block';return;}
+  document.getElementById('reqError').style.display='none';
+  const subj=encodeURIComponent('Regulator Access Request — '+o);
+  const body=encodeURIComponent('Name: '+n+'\nOrganization: '+o+'\nEmail: '+e+'\nPosition: '+p+'\n\nRequesting access to ONTO Regulator Dashboard.');
+  window.open('mailto:council@ontostandard.org?subject='+subj+'&body='+body);
+  document.getElementById('reqSuccess').style.display='block';
+  document.querySelectorAll('#reqForm input').forEach(i=>i.disabled=true);
+  document.querySelector('.req-submit').disabled=true;
+  document.querySelector('.req-submit').textContent='✓ SENT';
+}
 </script>
 </body>
 </html>
