@@ -10,7 +10,7 @@ ontostandard.org · council@ontostandard.org
 1. [Executive Summary](#1-executive-summary) — Two products, formula, proof snapshot
 2. [The Problem](#2-the-problem) — What AI does wrong across 6 industries
 3. [Six Industries: Before and After](#3-six-industries) — Defense, Medicine, Law, Finance, Education, Government
-4. [Two Products](#4-two-products) — Regulator (100%) + Human AI (85%) + 9 Countries
+4. [Two Products](#4-two-products) — Regulator (100%) + Human AI (protocol complete) + 9 Countries
 5. [Proof](#5-proof) — CS-2026-001, CS-2026-002, 22 models, published data
 6. [Why Now](#6-why-now) — Turkey, EU, 9 countries, AMI/$1B
 7. [Architecture](#7-architecture) — Proxy, SSE, Scoring Engine, Proof Chain
@@ -47,7 +47,7 @@ ONTO Standards Council builds two products from one technology:
 │  │                             │ │                             ││
 │  │  For: governments           │ │  For: providers, investors  ││
 │  │                             │ │                             ││
-│  │  ✅ 100% ready              │ │  🔧 85% ready               ││
+│  │  ✅ 100% ready              │ │  ✅ PROTOCOL COMPLETE · PLATFORM IN PROGRESS               ││
 │  └─────────────────────────────┘ └─────────────────────────────┘│
 │                                                                 │
 │  Both run on one core: GOLD. One integration. Any AI provider.  │
@@ -119,7 +119,7 @@ what they know from what they invented. They fabricate sources,
 confuse dosages, invent precedents. With absolute confidence.
 22 models tested. Zero exceptions.
 
-The industry responded with restriction (RLHF, guardrails).
+The industry responded with restriction (safety restrictions, guardrails).
 Result: AI that answers "consult your doctor" to a doctor.
 Billions spent to make AI simultaneously dangerous and useless.
 
@@ -386,7 +386,7 @@ The AI industry has two responses to this problem. Both fail.
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
-│   RESPONSE 1: RESTRICTION (RLHF, guardrails, safety)           │
+│   RESPONSE 1: RESTRICTION (safety restrictions, guardrails, safety)           │
 │                                                                 │
 │   Method:   Punish the model for producing harmful output.      │
 │   Result:   "Consult your doctor." "I can't help with that."   │
@@ -397,7 +397,7 @@ The AI industry has two responses to this problem. Both fail.
 │             Patient bleeds out. Doctor mumbles:                  │
 │             "maintain a healthy lifestyle."                      │
 │                                                                 │
-│   Cost:     Billions in RLHF training. Result: weaker AI.      │
+│   Cost:     Billions in safety restrictions. Result: weaker AI.      │
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
@@ -597,13 +597,13 @@ Two products deliver this across every critical sector.
 ┌─────────────────────────────────────────────────────────────────┐
 │                     THE PROGRESSION                              │
 │                                                                 │
-│   BASELINE          → + STANDARD (R1-R7)  → + HUMAN AI (R1-R16)│
+│   BASELINE          → + REGULATOR (R1-R7)  → + HUMAN AI (R1-R16)│
 │   AI without rules     AI with discipline     AI expert          │
 │   dangerous,           law-compliant,         full cycle,        │
 │   unpredictable        accurate               years → months     │
 │                                                                 │
 │   Product 1 delivers step 2.  100% deployed.                    │
-│   Product 2 delivers step 3.  85% ready. Foundation complete.   │
+│   Product 2 delivers step 3.  PROTOCOL COMPLETE · PLATFORM IN PROGRESS. Foundation complete.   │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -624,7 +624,7 @@ Two products deliver this across every critical sector.
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   + STANDARD (R1-R7)                              Product 1     │
+│   + REGULATOR (R1-R7)                              Product 1     │
 │   ████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░ operational  │
 │                                                                 │
 │   R1 (Quantify) + R4 (Sources) + R5 (Evidence Grade)           │
@@ -662,7 +662,7 @@ Two products deliver this across every critical sector.
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   + STANDARD (R1-R7)                              Product 1     │
+│   + REGULATOR (R1-R7)                              Product 1     │
 │   ████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░ operational  │
 │                                                                 │
 │   R2 (Uncertainty) + R5 (Evidence Grade) + R7 (No Fabrication)  │
@@ -704,7 +704,7 @@ Two products deliver this across every critical sector.
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   + STANDARD (R1-R7)                              Product 1     │
+│   + REGULATOR (R1-R7)                              Product 1     │
 │   ████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░ operational  │
 │                                                                 │
 │   R4 (Sources) + R7 (No Fabrication)                            │
@@ -745,7 +745,7 @@ Two products deliver this across every critical sector.
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   + STANDARD (R1-R7)                              Product 1     │
+│   + REGULATOR (R1-R7)                              Product 1     │
 │   ████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░ operational  │
 │                                                                 │
 │   R1 (Quantify) + R3 (Counter) + R5 (Evidence Grade)           │
@@ -788,7 +788,7 @@ Two products deliver this across every critical sector.
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   + STANDARD (R1-R7)                              Product 1     │
+│   + REGULATOR (R1-R7)                              Product 1     │
 │   ████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░ operational  │
 │                                                                 │
 │   R3 (Counter) + R6 (Falsifiability)                            │
@@ -828,7 +828,7 @@ Two products deliver this across every critical sector.
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   + STANDARD (R1-R7)                              Product 1     │
+│   + REGULATOR (R1-R7)                              Product 1     │
 │   ████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░ operational  │
 │                                                                 │
 │   R1 (Quantify) + R4 (Sources) + R7 (No Fabrication)           │
@@ -869,8 +869,8 @@ Two products deliver this across every critical sector.
 │  🏛 Gov      No sources       Contradiction ck  Policy modeling │
 │                                                                 │
 │  Product 1 (Standard) delivers column 2. 100% ready. Now.      │
-│  Product 2 (Human AI) delivers column 3. 85% ready.            │
-│  Foundation complete. Remaining 15%: servers + UI.              │
+│  Product 2 (Human AI) delivers column 3. PROTOCOL COMPLETE · PLATFORM IN PROGRESS.            │
+│  Protocol complete. Remaining: servers + UI.              │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -1064,7 +1064,7 @@ The regulator reads a grade: A, B, C, D, or F.
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │   HUMAN AI                                                      │
-│   Status: 🔧 85% READY (foundation 100%, remaining: servers+UI) │
+│   Status: ✅ PROTOCOL COMPLETE · PLATFORM IN PROGRESS │
 │   For: Investors, AI providers, national AI programs            │
 │   Price: Partnership / license                                   │
 └─────────────────────────────────────────────────────────────────┘
@@ -1089,14 +1089,14 @@ that knows what it knows and what it doesn't.
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   LEVEL 2: COGNITION (R8-R16)              🔧 85% ready         │
+│   LEVEL 2: COGNITION (R8-R16)              ✅ PROTOCOL COMPLETE · PLATFORM IN PROGRESS         │
 │                                                                 │
 │   AI starts thinking. Builds hypotheses with probabilities.     │
 │   Evaluates causality. Checks itself. Understands its own       │
 │   limits. Multiplies Level 1 results across all 6 industries.  │
 │                                                                 │
 │   "AI starts reasoning" — the science is done. Engineering      │
-│   remains: servers + UI = 15%.                                  │
+│   remains: servers + UI (platform build).                                  │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -1145,7 +1145,7 @@ that knows what it knows and what it doesn't.
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
 │  Situation    Regular AI    Restricted     Human AI              │
-│                             (RLHF)         (R1-R16)             │
+│                             (safety restrictions)         (R1-R16)             │
 │  ─────────── ───────────── ────────────── ──────────────────     │
 │  Medication   Recommends.   "Consult your  Patikorn 2022,       │
 │               No source.    doctor."       n=410, CI 70%        │
@@ -1215,7 +1215,7 @@ that knows what it knows and what it doesn't.
 │   • 12 published reports                                        │
 │   • 22 models tested                                            │
 │                                                                 │
-│   REMAINING (15%)                                               │
+│   REMAINING (platform build)                                               │
 │                                                                 │
 │   • Server architecture for Human AI endpoint                  │
 │   • UI for Human AI configuration                               │
@@ -2141,8 +2141,8 @@ can AI cite real medical evidence?
 │   ─────────────  ──────────── ──────────── ──────────           │
 │   Grok           6.7          9.3          +39%                 │
 │   Claude         7.3          8.4          +15%                 │
-│   DeepSeek V3.1  —            8.9 / A      —                   │
-│   GPT-5.2        —            8.2 / B      —                   │
+│   DeepSeek  —            8.9 / A      —                   │
+│   GPT        —            8.2 / B      —                   │
 │                                                                 │
 │   Source citation across all models:                            │
 │   Baseline: 0.03 (3%)                                           │
@@ -2154,8 +2154,8 @@ can AI cite real medical evidence?
 │                                                                 │
 │   THE KEY FINDING:                                               │
 │                                                                 │
-│   DeepSeek V3.1 ($0.002/call) + GOLD = 8.9 / Grade A           │
-│   GPT-5.2 ($200B valuation) without GOLD = 8.2 / Grade B       │
+│   DeepSeek ($0.002/call) + GOLD = 8.9 / Grade A           │
+│   GPT ($200B valuation) without GOLD = 8.2 / Grade B       │
 │                                                                 │
 │   A $0.002 model with discipline beats a $200B model            │
 │   without it. On a clinical question. Where lives depend        │
@@ -2959,7 +2959,7 @@ delivered in real-time via SSE through the ONTO proxy:
 
 **Scoring v4 (in development):** adds `evaluate_response()` to
 kernel via GOLD R1-R7 rules as judge constitution using cheap
-LLM (grok-3-mini, gpt-4o-mini). R7 (No Fabrication) carries
+LLM (smaller models). R7 (No Fabrication) carries
 2× weight; critical fails cap composite score. Proven: fabricated
 claim scores R7=0.0, composite 0.5, Grade F. GOLD-enhanced
 response scores 9.7/A. Real difference: +47% (vs regex +11%).
@@ -3408,7 +3408,7 @@ The #1 question: "Isn't this just a prompt?"
 │                                              deterministic       │
 │                                              Var(Score) ≠ 0     │
 │                                                                 │
-│   Safety/alignment       Anthropic RLHF,     Restriction, not   │
+│   Safety/alignment       Anthropic safety restrictions,     Restriction, not   │
 │                          OpenAI safety       discipline. Makes   │
 │                                              AI weaker, not      │
 │                                              stronger            │
@@ -3508,8 +3508,8 @@ an AI provider can add to their P&L. Here's why.
 │   THE CORE INSIGHT:                                              │
 │   A cheap model + GOLD beats an expensive model without GOLD.   │
 │                                                                 │
-│   DeepSeek V3.1 ($0.002/call) + GOLD = 8.9 / Grade A           │
-│   GPT-5.2 ($200B valuation) without GOLD = 8.2 / Grade B       │
+│   DeepSeek ($0.002/call) + GOLD = 8.9 / Grade A           │
+│   GPT ($200B valuation) without GOLD = 8.2 / Grade B       │
 │                                                                 │
 │   What this means for a provider:                               │
 │                                                                 │
@@ -3761,7 +3761,7 @@ an AI provider can add to their P&L. Here's why.
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
 │   AI compute = massive energy consumption.                       │
-│   Training GPT-4: estimated 50 GWh.                             │
+│   Training GPT: estimated 50 GWh.                             │
 │   Running inference at scale: hundreds of GWh/year.             │
 │                                                                 │
 │   ONTO enables same quality from lighter models.                │
@@ -3941,8 +3941,8 @@ an AI provider can add to their P&L. Here's why.
 │                                                                 │
 │   1. PRODUCT IS READY                                           │
 │      Product 1 (Regulator): 100% deployed.                     │
-│      Product 2 (Human AI): 85% — foundation complete,          │
-│      remaining 15% = servers + UI = engineering, not science.  │
+│      Product 2 (Human AI): protocol complete —          │
+│      remaining work = servers + UI = engineering, not science.  │
 │      Fastest path to revenue in AI industry.                   │
 │                                                                 │
 │   2. ZERO COMPETITION                                           │
@@ -4197,7 +4197,7 @@ This is the documentation of a product that already works.
 │   Forensic           3-layer IP protection system               │
 │                                                                 │
 │   Product 1 (Regulator): ✅ 100% ready                          │
-│   Product 2 (Human AI):  🔧 85% — servers + UI remaining       │
+│   Product 2 (Human AI): ✅ protocol complete — servers + UI remaining       │
 │                                                                 │
 │   This is not a prototype. Not an MVP. Not a demo.              │
 │   This is production infrastructure that processes real         │
@@ -4354,53 +4354,49 @@ This is the documentation of a product that already works.
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
-│   CONSERVATIVE (no mandates, direct sales only)                  │
+│   🔴 PESSIMISTIC (0 mandates, only direct provider sales)       │
 │                                                                 │
-│                    Y1        Y2        Y3        Y4        Y5   │
-│   ──────────────── ──────── ──────── ──────── ──────── ──────── │
-│   Countries (pilot) 2        3         4         5        6     │
-│   Countries (signed) 0       1         2         3        4     │
-│   Providers         2        8         16        28       45    │
-│   Revenue           $650K    $2.5M     $5.5M     $9.5M   $16M  │
-│   Costs             $900K    $1.8M     $3.2M     $5M     $7M   │
-│   Net               -$250K   $700K     $2.3M     $4.5M   $9M   │
-│   Margin            -38%     28%       42%       47%     56%   │
+│                    2026      2027      2028      2029            │
+│   ──────────────── ──────── ──────── ──────── ────────          │
+│   Countries         1 pilot  1-2       3         5              │
+│   Providers         0 paid   5-20      20-40     40-60          │
+│   Revenue           $50K     $1-5M     $5-10M    $10-15M       │
+│   Costs             $200K    $1M       $3M       $5M            │
+│   Net               -$150K   $0-4M     $2-7M     $5-10M        │
 │                                                                 │
-│   Break-even: Month 14                                          │
-│   Assumption: providers pay for EU compliance proof +           │
-│   competitive advantage. No government forces adoption.         │
+│   Assumption: no government forces adoption. Providers pay      │
+│   for EU compliance proof + competitive advantage only.         │
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   BASE (first mandate by Y2, network effect by Y3)              │
+│   🟢 BASE (3 countries by 2027, network effect by 2028)         │
 │                                                                 │
-│                    Y1        Y2        Y3        Y4        Y5   │
-│   ──────────────── ──────── ──────── ──────── ──────── ──────── │
-│   Countries (signed) 1       3         5         7        10    │
-│   Providers         5        18        40        75       130   │
-│   Revenue           $1.8M    $6M       $14M      $26M    $44M  │
-│   Costs             $1.1M    $2.5M     $4.5M     $7.5M   $11M  │
-│   Net               $700K    $3.5M     $9.5M     $18.5M  $33M  │
-│   Margin            39%      58%       68%       71%     75%   │
+│                    2026      2027      2028      2029            │
+│   ──────────────── ──────── ──────── ──────── ────────          │
+│   Countries         1 pilot  3         6         10+            │
+│   Providers         5-10 free 20       50        100+           │
+│   Revenue           $100K    $5-8M     $15-20M   $35-50M       │
+│   Costs             $200K    $1.5M     $5M        $10M          │
+│   Profit            -$100K   $4-6.5M   $12-15M   $28-40M       │
+│   Margin            pilot    ~75%      ~78%      ~80%           │
 │                                                                 │
-│   Break-even: Month 8                                           │
+│   Break-even: 2027 Q1                                           │
 │   Assumption: first mandate creates provider adoption wave.     │
-│   Second country triggers FOMO. Domain licensing from Y2.       │
+│   Second country triggers FOMO. Domain licensing from 2027.     │
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   AGGRESSIVE (2+ mandates by Y2, EU enforcement active)          │
+│   🟣 OPTIMISTIC (early network effect + domain licenses)         │
 │                                                                 │
-│                    Y1        Y2        Y3        Y4        Y5   │
-│   ──────────────── ──────── ──────── ──────── ──────── ──────── │
-│   Countries (signed) 2       4         7         10       14    │
-│   Providers         8        25        55        100      170   │
-│   Revenue           $2.8M    $8.5M     $19M      $34M    $55M  │
-│   Costs             $1.2M    $3M       $5.5M     $9M     $13M  │
-│   Net               $1.6M    $5.5M     $13.5M    $25M    $42M  │
-│   Margin            57%      65%       71%       74%     76%   │
+│                    2026      2027      2028      2029            │
+│   ──────────────── ──────── ──────── ──────── ────────          │
+│   Countries         1-2      4-5       8-10      14+            │
+│   Providers         10+      40+       80+       150+           │
+│   Revenue           $200K    $10-15M   $30-40M   $70-100M      │
+│   Costs             $200K    $2M       $6M        $12M          │
+│   Net               $0       $8-13M    $24-34M   $58-88M       │
+│   Margin            pilot    ~80%      ~82%      ~85%           │
 │                                                                 │
-│   Break-even: Month 5                                           │
 │   Assumption: EU enforcement + Turkey precedent creates         │
 │   urgent demand. Multiple countries adopt simultaneously.       │
 │   This requires strong execution AND favorable timing.          │
@@ -4422,11 +4418,11 @@ This is the documentation of a product that already works.
 │   Healthcare AI: $45.2B (GVR) · Financial AI: $44.1B (FBI)     │
 │   Legal AI: $3.3B (M&M) · Defense AI: $24.8B (FBI)             │
 │                                                                 │
-│   SAM: $2.3B                                                    │
+│   SAM: $2-5B                                                    │
 │   900+ providers × $250K + 50 countries × $1M +                │
 │   10,000 institutions × $200K avg                               │
 │                                                                 │
-│   SOM (Y1-Y3): $650K-14M (conservative-base range)             │
+│   SOM (Y1-Y3): $50K-20M (pessimistic-base range)             │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -4457,7 +4453,7 @@ This is the documentation of a product that already works.
 │                                                                 │
 │   What we build during 18 months of waiting:                    │
 │                                                                 │
-│   • Human AI: 85% → 100%                                       │
+│   • Human AI: platform build (servers + UI)                                       │
 │   • Scoring v4: LLM judge operational                          │
 │   • Models tested: 22 → 50+                                    │
 │   • Reports: 12 → 20+                                          │
@@ -4482,19 +4478,21 @@ This is the documentation of a product that already works.
 │   ASK:             [TBD]                                        │
 │   VALUATION:       [TBD]                                        │
 │                                                                 │
-│   USE OF FUNDS:                                                  │
+│   USE OF FUNDS (12-18 months):                                   │
 │                                                                 │
-│   40%  Engineering    Human AI (15% → 100%), scoring v4,        │
-│                       Rust onto_core, multi-language scoring     │
+│   50%  CTO + GTM      CTO (Rust/Python, scaling) +             │
+│                       GTM lead (gov/enterprise sales)           │
 │                                                                 │
-│   25%  Business Dev   9-country campaign, first pilots,         │
-│                       direct provider sales (EU market)         │
+│   15%  Tender + travel 9-country campaign, embassy visits,      │
+│                       pilot deployments                         │
 │                                                                 │
-│   20%  Team           3-5 hires: backend, BD, gov relations    │
+│   11%  Infra + servers Production infrastructure, scaling       │
 │                                                                 │
-│   10%  Operations     Legal entity, IP, advisory board (3 min) │
+│   9%   Operations     Running costs, office, tools              │
 │                                                                 │
-│   5%   Reserve        18-month runway buffer                    │
+│   6%   Legal entity   Registration, IP, advisory board          │
+│                                                                 │
+│   9%   Reserve        Runway buffer                             │
 │                                                                 │
 │   MILESTONES:                                                    │
 │                                                                 │
@@ -4521,7 +4519,7 @@ This is the documentation of a product that already works.
 │   Countries signed: 0           1-3                              │
 │   Providers certified: 0        5-18                             │
 │   ARR: $0                       $1.8-2.8M (base-aggressive)     │
-│   Human AI: 85%                 100%                             │
+│   Human AI: protocol ✅         platform 100%                             │
 │   Team: 1                       5-8                              │
 │   Advisory board: 0             3+                               │
 │   Legal entity: pending         established                      │
@@ -4589,7 +4587,7 @@ This is the documentation of a product that already works.
 │                                                                 │
 │   Mitigation: 22 models tested. Best baseline (Qwen, 2.06)     │
 │   still far below treated (5.38). CONF=0.00 universal.          │
-│   RLHF restricts, doesn't add epistemic structure.              │
+│   safety restrictions restricts, doesn't add epistemic structure.              │
 │   Even if baselines reach 3.0 — GOLD still adds ×3-5.          │
 │   And measurement (Product 1) needed regardless: "how good?"   │
 │   requires instrument even when answer is "very good."          │
@@ -4608,7 +4606,7 @@ This is the documentation of a product that already works.
 │                                                                 │
 │   RISK 6: REGULATION REVERSES                      Prob: LOW    │
 │                                                                 │
-│   Mitigation: ONTO measures discipline, not compliance with     │
+│   Mitigation: ONTO disciplines discipline, not compliance with     │
 │   specific law — works under any framework · Turkey banned AI  │
 │   WITHOUT dedicated AI law — deregulation ≠ no consequences · │
 │   providers need quality proof for B2B sales regardless of     │
@@ -4666,24 +4664,24 @@ This is the documentation of a product that already works.
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
-│   ONTO Standard — 100% ready.  Human AI — 85%.                   │
-│   Humanoid AI Protocol — 50%.                                    │
+│   ONTO Standard — 100% ready.  Human AI — protocol complete.                   │
+│   Humanoid AI Protocol — 2029 horizon.                                    │
 │                                                                 │
 │ ┌─────────────────────────────┐ ┌─────────────────────────────┐ │
-│ │ ✅ ONTO STANDARD — 100%     │ │ 🔧 HUMAN AI — 85%           │ │
+│ │ ✅ ONTO STANDARD — 100%     │ │ ✅ HUMAN AI — PROTOCOL COMPLETE           │ │
 │ │                             │ │                             │ │
 │ │ GOLD Core v4.5              │ │ Q2'26  Identity layer       │ │
 │ │ 169 files, ~900K tokens     │ │        (R8-R16) + Chat UI   │ │
 │ │ deployed                    │ │                             │ │
 │ │                             │ │ Q3'26  Public Human AI      │ │
-│ │ Scoring Engine v4           │ │        launch + API for     │ │
+│ │ Scoring Engine v3           │ │        launch + API for     │ │
 │ │ R1-R7 via LLM judge        │ │        partners             │ │
 │ │                             │ │                             │ │
 │ │ API live                    │ │ Q4'26  Enterprise SDK +     │ │
 │ │ /v1/evaluate, /v1/check     │ │        on-premise deploy    │ │
 │ │ production                  │ │                             │ │
 │ │                             │ │ 2027   Multi-language,      │ │
-│ │ 2 public studies            │ │        domain-specific      │ │
+│ │ 12 published reports            │ │        domain-specific      │ │
 │ │ CS-2026-001 (10 models)     │ │        models               │ │
 │ │ CS-2026-002 (12 models)     │ │                             │ │
 │ │                             │ │ 2028   Human AI as          │ │
@@ -4708,8 +4706,8 @@ This is the documentation of a product that already works.
 │  │ MEDIUM   │ │  EVALUATED   │ │ GITHUB       │ │PUBLISHED │   │
 │  └──────────┘ └──────────────┘ └──────────────┘ └──────────┘   │
 │                                                                 │
-│  ONTO Standard = 100% ready platform. That's 85% of the        │
-│  hardest work for Human AI. Human AI architecture = 50% of     │
+│  ONTO Standard = 100% ready platform. That's the majority of the        │
+│  hardest work for Human AI. Human AI architecture = foundation for     │
 │  the hardest work for Humanoid AI Protocol.                     │
 │  The rest is assembly.                                          │
 │                                                                 │
@@ -4759,7 +4757,7 @@ This is the documentation of a product that already works.
 │                Agent deployed. Dashboard deployed.              │
 │                                                                 │
 │   Result: Product 1 (Regulator) = 100% production-ready.       │
-│           Product 2 (Human AI) = 85% (foundation complete).    │
+│           Product 2 (Human AI) = protocol complete (platform in progress).    │
 │           The science is done. Engineering remains.             │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
@@ -4780,7 +4778,7 @@ This is the documentation of a product that already works.
 │   Month 1-3    Human AI endpoint live                           │
 │                Server architecture for R8-R16 delivery          │
 │                UI for Human AI configuration                    │
-│                Product 2: 85% → 100%                            │
+│                Product 2: platform build → 100%                            │
 │                                                                 │
 │   Month 1-2    Scoring engine v4                                │
 │                LLM judge with R1-R7 as constitution             │
@@ -4820,8 +4818,8 @@ This is the documentation of a product that already works.
 │                                                                 │
 │   Month 4-6    Direct provider sales (EU market)                │
 │                EU AI Act fines = urgency driver                 │
-│                Target: 3-5 providers on STANDARD/PROVIDER tier │
-│                Revenue begins                                   │
+│                Target: 5-10 providers onboarded (free pilot → paid conversion Y2) │
+│                Pipeline for Y2 paid conversion                                   │
 │                                                                 │
 │   HIRING:                                                        │
 │                                                                 │
@@ -4835,7 +4833,7 @@ This is the documentation of a product that already works.
 │   • Scoring v4: operational                                    │
 │   • Multi-language: RU + AR minimum                            │
 │   • 2 government pilots active                                  │
-│   • 3-5 providers paying                                       │
+│   • 5-10 providers in free pilot                                       │
 │   • Legal entity established                                   │
 │   • Advisory board: 3 members                                   │
 │   • Team: 5-6 people                                           │
@@ -4901,7 +4899,7 @@ This is the documentation of a product that already works.
 │                Data moat grows with every test                  │
 │                                                                 │
 │   DELIVERABLES END OF PHASE 2:                                   │
-│   • Break-even achieved (base scenario: month 8)               │
+│   • Break-even: 2027 Q1 (base scenario)               │
 │   • 1-3 countries signed                                       │
 │   • 10-20 providers certified                                  │
 │   • Domain licensing: first contracts                          │
@@ -5037,8 +5035,8 @@ This is the documentation of a product that already works.
 │   ✅ done   ✅    ✅    ✅    ⏳ next     📋     🌐      🤖           │
 │                                                                         │
 │   ONTO Standard ─────────────────────────────────────── 100%            │
-│   Human AI ─────────────────────── 85% ──── 100% Q3'26                 │
-│   Humanoid AI Protocol ───────────────────── 50% ──────── 2029         │
+│   Human AI ─────────────────────── protocol ✅ ── platform 100% Q3'26                 │
+│   Humanoid AI Protocol ──────────────────── foundation ──── 2029         │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
@@ -5100,7 +5098,7 @@ These axes are independent. A model can occupy any quadrant:
 │   KEY INSIGHT:                                                   │
 │   Accuracy benchmarks cannot distinguish Q1 from Q2,           │
 │   or Q3 from Q4. They see only the horizontal axis.            │
-│   ONTO measures the vertical.                                   │
+│   ONTO disciplines the vertical.                                   │
 │                                                                 │
 │   ONTO is not a replacement for MMLU or SWE-bench.             │
 │   It is a complementary measurement layer.                      │
@@ -5415,9 +5413,9 @@ is demonstrated:
 │   → Prior work: epistemic uncertainty decomposition             │
 │                                                                 │
 │   Li J et al. (2023)                                            │
-│   HaluEval: hallucination evaluation benchmark. EMNLP.          │
+│   HaluEval: fabrication evaluation benchmark. EMNLP.          │
 │   arXiv:2305.11747                                              │
-│   → Prior work: hallucination detection                         │
+│   → Prior work: fabrication detection                         │
 │                                                                 │
 │   Min S et al. (2023)                                           │
 │   FActScorer: atomic evaluation of factual precision. EMNLP.    │
@@ -5452,7 +5450,7 @@ is incomplete, and what remains unproven.
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
-│   ONTO measures epistemic discipline — not factual accuracy.    │
+│   ONTO disciplines epistemic discipline — not factual accuracy.    │
 │                                                                 │
 │   A disciplined response CAN still contain factual errors.     │
 │   The difference: disciplined errors are DISCOVERABLE.          │
@@ -5564,7 +5562,7 @@ is incomplete, and what remains unproven.
 
 ---
 
-### 12.4 Novel failure mode: Hallucination Inside Apology (HIA)
+### 12.4 Novel failure mode: fabrication Inside Apology (HIA)
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -5661,7 +5659,7 @@ is incomplete, and what remains unproven.
 │   NO HUMAN EXPERT VALIDATION                                     │
 │                                                                 │
 │   Response accuracy has not been verified by domain experts.   │
-│   ONTO measures discipline, not correctness. A Grade A          │
+│   ONTO disciplines discipline, not correctness. A Grade A          │
 │   response is well-structured and epistemically disciplined —  │
 │   it is not guaranteed to be factually correct.                 │
 │   Domain expert validation would strengthen the evidence       │
@@ -5990,7 +5988,7 @@ is incomplete, and what remains unproven.
 │       arXiv:1703.04977                                          │
 │                                                                 │
 │   10. Li J et al. (2023) HaluEval: A large-scale               │
-│       hallucination evaluation benchmark for LLMs. EMNLP.       │
+│       fabrication evaluation benchmark for LLMs. EMNLP.       │
 │       arXiv:2305.11747                                          │
 │                                                                 │
 │   11. Min S et al. (2023) FActScorer: Fine-grained atomic      │
