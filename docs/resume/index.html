@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hakim Tohirovich — AI Scientist-Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f7f7f7;--bk:#0a0a0a;--sub:#444;--dim:#888;--border:#e5e7eb;--green:#22c55e;--gd:#15803d;--red:#dc2626;--purple:#7c3aed;--wh:#fff;--f:'DM Sans',sans-serif;--m:'JetBrains Mono',monospace}
+html{overflow-x:hidden}
+body{font-family:var(--f);color:var(--bk);background:var(--bg);-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,0,0,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.04) 1px,transparent 1px);background-size:32px 32px}
+a{color:var(--gd);text-decoration:none;font-weight:700}a:hover{text-decoration:underline}
+.w{max-width:860px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+section{padding:48px 0;border-top:3px solid var(--bk)}
+.tag{font-family:var(--m);font-size:10px;font-weight:800;letter-spacing:2.5px;color:var(--wh);background:var(--bk);display:inline-block;padding:6px 14px;border-radius:6px;margin-bottom:16px}
+.tag.green{background:var(--gd)}.tag.purple{background:var(--purple)}
+
+/* HERO */
+.hero{padding:52px 0 44px;display:flex;gap:28px;align-items:stretch}
+.hero-photo{width:180px;min-width:180px;border-radius:14px;overflow:hidden;border:3px solid var(--bk)}
+.hero-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-right{flex:1;display:flex;flex-direction:column;justify-content:center}
+.hero-right h1{font-size:clamp(32px,5vw,44px);font-weight:900;letter-spacing:-1px;line-height:1.1}
+.hero-right h1 em{color:var(--gd);font-style:normal}
+.hero-role{font-family:var(--m);font-size:12px;font-weight:800;color:var(--gd);margin-top:8px;letter-spacing:1.5px}
+.hero-sub{font-size:18px;font-weight:700;color:var(--sub);margin-top:12px;line-height:1.5}
+.hero-links{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px}
+.hero-links a{font-family:var(--m);font-size:11px;font-weight:700;color:var(--gd);padding:5px 12px;border:2px solid var(--border);border-radius:6px;background:var(--wh)}
+
+/* ORIGIN */
+.origin{margin-top:20px;border:3px solid var(--bk);border-radius:14px;padding:22px 26px;background:var(--wh);position:relative;overflow:hidden}
+.origin::after{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--gd)}
+.origin h2{font-size:24px;font-weight:900}
+.origin h2 em{color:var(--gd);font-style:normal}
+.origin p{font-size:15px;color:var(--sub);line-height:1.7;margin-top:8px}
+.origin .quote{font-family:var(--m);font-size:13px;font-weight:800;color:var(--gd);margin-top:12px;padding-top:10px;border-top:2px solid var(--border)}
+
+/* PRODUCT */
+.product{margin-top:14px;border:3px solid rgba(34,197,94,0.3);border-radius:14px;padding:18px 22px;background:rgba(34,197,94,0.03);display:flex;align-items:center;gap:16px}
+.product .icon{width:48px;height:48px;background:var(--bk);border-radius:10px;display:flex;align-items:center;justify-content:center;border:2px solid var(--green);flex-shrink:0}
+.product .icon span{color:var(--wh);font-family:var(--m);font-size:20px;font-weight:900}
+.product h3{font-size:16px;font-weight:800}
+.product .desc{font-size:13px;color:var(--sub);margin-top:2px;line-height:1.5}
+.product .result{font-family:var(--m);font-size:11px;color:var(--gd);font-weight:800;margin-top:4px}
+
+/* RADAR — no card, direct SVG */
+.radar-section{display:flex;gap:28px;align-items:center;margin-top:16px}
+.radar-list{flex:1;min-width:260px}
+.rl-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)}
+.rl-item:last-child{border-bottom:none}
+.rl-item .dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.rl-item .info{flex:1}
+.rl-item .name{font-size:14px;font-weight:800}
+.rl-item .detail{font-size:11px;color:var(--dim)}
+.rl-item .yrs{font-family:var(--m);font-size:12px;font-weight:800;color:var(--gd)}
+
+/* METRICS */
+.mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.mbox{text-align:center;padding:16px 8px;background:var(--bk);border-radius:10px}
+.mbox .num{font-family:var(--m);font-size:clamp(20px,4vw,26px);font-weight:900;color:var(--green)}
+.mbox .lbl{font-size:10px;color:rgba(255,255,255,0.5);margin-top:6px;font-weight:600}
+
+/* BENCHMARK BARS — hayot/pitch style */
+.bm{margin-top:20px}
+.bm-head{display:flex;align-items:baseline;justify-content:space-between}
+.bm .label{font-size:16px;font-weight:800}
+.bm .delta{font-family:var(--m);font-size:22px;font-weight:900;color:var(--gd)}
+.brow{display:flex;align-items:center;gap:8px;margin-top:5px}
+.brow .num{font-family:var(--m);font-size:13px;font-weight:800;min-width:36px;text-align:right}
+.brow .num.r{color:var(--red)}.brow .num.g{color:var(--gd)}
+.bwrap{flex:1;height:16px;border-radius:6px;background:rgba(0,0,0,0.04);overflow:hidden}
+.bfill{height:100%;border-radius:6px}
+.bfill.r{background:rgba(220,38,38,0.25)}.bfill.g{background:var(--green)}
+
+/* PILLS */
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;margin-bottom:16px}
+.pills span{font-family:var(--m);font-size:11px;font-weight:700;padding:5px 12px;border:2px solid var(--border);border-radius:6px;background:var(--wh);color:var(--sub)}
+
+/* TIMELINE */
+.tl{margin-top:16px;position:relative;padding-left:30px}
+.tl::before{content:'';position:absolute;left:9px;top:8px;bottom:8px;width:3px;background:linear-gradient(to bottom,var(--gd),var(--purple));border-radius:2px}
+.tl-item{position:relative;padding:12px 0 16px 22px;border-bottom:1px solid var(--border)}
+.tl-item:last-child{border-bottom:none}
+.tl-item::before{content:'';position:absolute;left:-25px;top:18px;width:14px;height:14px;background:var(--gd);border-radius:50%;border:3px solid var(--bg)}
+.tl-item:last-child::before{background:var(--purple)}
+.tl-year{font-family:var(--m);font-size:12px;font-weight:800;color:var(--gd)}
+.tl-title{font-size:16px;font-weight:800;margin-top:2px}
+.tl-desc{font-size:13px;color:var(--sub);margin-top:2px;line-height:1.6}
+
+/* PUBS */
+.pub{border:2px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:8px;background:var(--wh)}
+.pub .type{font-family:var(--m);font-size:10px;font-weight:800;letter-spacing:1.5px;color:var(--gd)}
+.pub .title{font-size:14px;font-weight:700;margin-top:3px}
+.pub .pmeta{font-size:12px;color:var(--dim);margin-top:3px}
+
+/* LANGS */
+.langs{display:flex;gap:14px;margin-top:14px}
+.lang{flex:1;text-align:center;padding:16px;border:3px solid var(--border);border-radius:12px;background:var(--wh)}
+.lang .lname{font-size:18px;font-weight:800}
+.lang .llevel{font-family:var(--m);font-size:11px;color:var(--dim);margin-top:4px;font-weight:700}
+
+@media(max-width:700px){
+.hero{flex-direction:column;align-items:center;text-align:center}
+.hero-photo{width:140px;min-width:140px;height:180px}
+.mgrid{grid-template-columns:repeat(2,1fr)}
+.radar-section{flex-direction:column;align-items:center}
+.hero-links{justify-content:center}
+.product{flex-direction:column;text-align:center}
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+section,.hero,.origin{animation:fadeUp .6s ease-out both}
+@media print{body::before{display:none}section{page-break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<div style="height:4px;background:linear-gradient(90deg,transparent 5%,rgba(34,197,94,0.85) 50%,transparent 95%)"></div>
+
+<div class="w">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-photo">
+    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAAAAAAD/7QBQUGhvdG9zaG9wIDMuMAA4QklNBAQAAAAAABgcAm4AE01hZGUgd2l0aCBHb29nbGUgQUk4QklNBCUAAAAAABDIs4lltEU3qRin51mYyOP2/+ECkGh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8APD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczpJcHRjNHhtcEV4dD0iaHR0cDovL2lwdGMub3JnL3N0ZC9JcHRjNHhtcEV4dC8yMDA4LTAyLTI5LyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiBJcHRjNHhtcEV4dDpEaWdpdGFsU291cmNlRmlsZVR5cGU9Imh0dHA6Ly9jdi5pcHRjLm9yZy9uZXdzY29kZXMvZGlnaXRhbHNvdXJjZXR5cGUvdHJhaW5lZEFsZ29yaXRobWljTWVkaWEiIElwdGM0eG1wRXh0OkRpZ2l0YWxTb3VyY2VUeXBlPSJodHRwOi8vY3YuaXB0Yy5vcmcvbmV3c2NvZGVzL2RpZ2l0YWxzb3VyY2V0eXBlL3RyYWluZWRBbGdvcml0aG1pY01lZGlhIiBwaG90b3Nob3A6Q3JlZGl0PSJNYWRlIHdpdGggR29vZ2xlIEFJIi8+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+ICAgPD94cGFja2V0IGVuZD0idyI/Pv/bAEMABgQFBgUEBgYFBgcHBggKEAoKCQkKFA4PDBAXFBgYFxQWFhodJR8aGyMcFhYgLCAjJicpKikZHy0wLSgwJSgpKP/bAEMBBwcHCggKEwoKEygaFhooKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKP/AABEIAZABkAMBIgACEQEDEQH/xAAdAAACAgIDAQAAAAAAAAAAAAABAgADBAgFBgcJ/8QASRAAAQMCBAMFBQUECAQFBQAAAQACAwQRBQYSITFBUQcTImFxCBSBkaEyQlKxwRUzYnIjJIKSssLR4UOi8PEWFyZzozREU4OT/8QAGQEBAQEBAQEAAAAAAAAAAAAAAAECAwQF/8QAIxEBAAICAwACAgMBAAAAAAAAAAECAxESITEEQRMiMlFxkf/aAAwDAQACEQMRAD8A9XCcJAmC6snCYJQmCBgmBSBOEDAogpQiEDBMEoRCBgiEoTBAQigEUBBRulCIQFEFBRAbo3SqIGupdBRAbo3SqXQNdS6UFS6BlEqIQFRC6iAqXQUQFS6CCBroXQUQS6l0EEBuhdRBBEt0UEAJQuoUqCJSiUpKAEpCUSlKCXSkqIFAjUzQoAmAQEBMAoAmAQQJmhQBMAgARARCKABMAoAiAggTBQBEBBAjZEBGyAWUsjZEBAqiaygCBVE1kEAURXBZvzTheVMO97xeo7trjaONu75D5D9eCg5wKXt8F4VjPb5GLtwjCweWupft5bN/1XmeZc147mESy1WNP7t51dzG8sYDyFh+qzN4WKy2uqMfwimqHwVOKUEMrPtMkqGNcPgSsylrKWrZro6mGeP8UTw4fRaJz+8NJe5zZrnxaSdj1WbSYnLCxrXukhHAPic5n1BU5rxbzhRam5ez/mPAKylkjxSoq6Mf8KZ3eMe2/A33B8wbr07Bu3KlmqIosVwl1O1x8UkMpcAOuki9virF4lOMvZFAsHBsWoMaomVeF1cNVA4X1ROvbyPQ+qz1pEUUUAVAsiEVEAsgmQsgVBNZCyBVEUEAQTIWQIUqeyFkFZQTkJbIESlOQlIQIgmKBQABO1KAmCBgiFAmAQQBMAoAmAQABEBEBEBBAEQEbIgIIAjZEBEBAAE1kQFAEAUTWUtsgVRMpZAqBTFYeK10OG4dUVlS9scMLC9znHooOKzdmnDcr4f7ziUhu46YoWbvkd0H+vJalZ/zJLmfMFTWzuedbzoiD9TY28mg+XkuZ7QswV+PV8lZPI6SaUlsEQ4RN6D/AFXT/cQyLxElxF3Hm706DzXK1tusV04x7Tckm5bxI4DyvzQp3yMden1BxNhY2urqhhjiu6wj6cr+SogYXAuI+nBZNOwYXU1IdeWkidIOLm2ufXkrJqp7HyaaIGNws9jG8R5tP6LjsNeHEsmlMEjPskO0O/3WdfxB7KpzyNntdxb8+I/6uhCuldTOhdG1ru6dvod90+R4hUyytsyJ8trOuxxO4T10jr65PCbamyNNwfjx+a4+RwkjcXNa5vPqCg7rkvM1TlnGo62nAlHB7dRbrHnbgfmFtBkzN+F5soDPhshbKywlgfs6Mn6Eea0kLtLGvjcbg247grnMpZprsExiLEKGZ8NRC7xgfZkbfdrhzBWq20kxtvAEwXHZcxWmxzBaTEqGQPgqIw8HoeYPmCuSC7OYKKBEIBZRMggFktk6FkCWQsnISoEKiayFkC2QITIIEIS2ViUoKyEhCsKUoK7IEJ7JSglk7QoAmAQQBMAoAmAQQBMAoAmAQABMAoAmAQQBEBEBEBAAEwCIRAQCylk1lEChGyNkbIFshZPZCyBCF4f2+Zx7ojLtK/mx1UR8w35C5+C9pxOrZh+HVVZKLxwROlcBzDQTb6LT/E66XHcWqsSryHTVNQZXdALcB5AWHwXO86jTdI32xqdzqhj+8b4LXf1AP2WD1VdTSuLzHYgyWDtPJvS65DBKV8tW2FhP2i923D/sF3t+UHxwuncw2dTEtFr2Ldv9PmvNfJFZ09VMU2jbxutoZp9M2hwpWksbtYbc/TdU01I4kkGzWW+q95iylT12GVdGwNu8Nmhc3o5tj9QV0KbLz8Hlkgr26SNtXI9D8VKZeRfDx7dXgwcVVOSWnvAT4uINuoVsmGsbCHkDU3wk34jlfr6rsdLU0tLL3UjgxsnhD+TX8rrHngmjrXUtVCBS1DrRyg7Bx+7flfiPktc2fxbjbp81LUMjc6InunXDmHi1cXM19O5zJW9N+RHX0Xaa+mqcKmfFVhz4ZD4ZAOfQ+dvyXHYpTOfFG1oDxfwHyPJai8SxOOYcACQSL3asiG7ZNRG44+YTuo3sAuOe3mqnO0NBHHcFa3tjWvXuns8Z0fQ4x/4Zrng0tWXGmLj9iYb6fRwHzA6rZALQnC6yaixOmrKdxZLC9szHDiHNOx+gW9mD10eKYVR18Nu7qoWTC3LUAbLpSetMWj7ZYCICICIC6MlsgnshZAqiNlLIEshZOhZAlkE9ktkCIJyELIEKUhOQlIQJZKU5CUoKyEpTlBAwCZqlkQEBCYKAIgICEwCACcBBAmCATAIAAnAQAToAAiAiAiAgFkbIgI2QKomspZAtkLJ7KWQdV7TY5pcg48ylv3rqV4Fvr9LrUajlvUEXtGI7G/Ulbk5yhfPlPGYovtvo5QP7pWm0Mfdid7vvadI6gFccjrjd3yRTtdjkTneESOEbr8CNlsdJh8UsYIY27L6duosQvHsAy/M7BqWso2sZO0sc0Hg4jf4f917RQSl0TDJZpIFwvmXtyt0+pjrxo6fLglRh0l42numfuZW7+E/cf+h4cFZj+DYdmLCSyTu2VLRYOuLg9CDvYr0GPRpsTssOegpXy6zFGX/i0i6vCY8IyRPUtY8W7M6x9Q8U0o0nYCS426EjgfmFn4PlPGaACnxCmbV0h8JY6Te3ThY/QrYYUMRl8QaR5qmqp6eMOFm7JM312sRTfTxGuyuKqmlp6uGR0Lh4XPtq8r+Y6810uvyo+gFNE0ukZ7w0NB4gXWw2IdwGu1BoXT8XipXX8bbg7eRWa2tC2rWXjmP4UyIyBjdtnAWXQa9ndWZ97USV7BmWklNxBoc5+1ydgvNcxYZJRTsEpDi8ai4cPRevDZ489ftw7joexv4Rv8lub2Jukf2aYKZJNY7s6D/DqNh8N1pfbxkk8TZbudk1K2l7Ocvxs4GkY/pu7c/mvVT147eO2hMEAEQF1YSyCayFkCoJ7IWQIomS2QKgnsggRKU5S2QIUqsKQoEKQqwpCECFCyYhCyBwEwUATNCIgCcBQBMAioAmAUATAIAAmARATAIAAiAiiAggCICICNlAFAjZGyBbI2RsogFlLJrIgIKZoBPDJE8XbI0sI9RZaR4zG+imqaYtIdBUmPflZ5H6LdytnFJRz1BBIiYXkDnYXWqXaRhP/rI1cRY6jxKRlTG6M3a7U7xW+K45LRvTtipaYm309cbXMwLLFE6WIyOZCxrYm7F7rcF1qqzHj05fNT005kd922zPIDh8Su7V+FsqI6d0gBEAu0EXF7W4LqWLY7NFiLcPo4C+R5DWRsdp1dXPd91g8tzyXzcdtfXb6d6zaPeodMxnOecaeRscrKtkd/vWAPyK7fk7NtfJTNbM+V0hIJDzw/64LoWaqzFpMcGGe50/vDZHsmYaW7bAjQWuLi4l3H5LsuUst1zcRfE60YjOoG50kDc25hdr2mI7c8VItPW3rlNis0lJ372EX8l0PPub5aYgQvdcA3aOZXp0cbf2CRobqt0WtnaIaiTH5oGXbZ3rt1suVJ3LraP1dfxPNGYZ5iYJaodAH7FSGuzTNFqqIHFv4i4XXZ8Ny66ny3NikMbXzRuGqPQJZ3N5us7YAbbAGy67Qz426gfWVcUZ07ObGzunceRGxNuRC9Ub19PHMRvW5LS4xX003d10T3Qu2O3DzCOeIhJg7Zmi7mOBv5FZlC4Yiy0rQXeYsfiOquzBTasv1LPwMv8AJZ3G4lrU8Zh5dGBqG3Nb65WpTSZZwmnIAMdJC0266AtHsr0L6vGICWt7mJwfIX/ZsNzdbu5KxxmZMt0eJxRiISgtcxvAOabG1+XReukxvTx2pPHl9OZARRARsujmVCyeyFlQllLJkEC2QsmspZAiBCeyVAhCUhWWSkIK7JSFYQlKCohLZWEJSgrIQsnslIQWAJgFAmaiC0JgFAmARUATgIAJgEECIRARAQABMAoAmsggCKgCYBQABSyZSyKWylk9lLIFARRARsoKKpuulmba92OH0K8LzXgbI8s4bUaADT4qwW6Mc8g/Wy97t1Gy84z5h+vAqyJo8MDjJYdWuDwfovJ8mNTWz6Hw7bpfH/ff/HN0zWTRPa7e+y4msyxTyv7yOBokFzfgT8Vn4LKJGB19iLhdgh0vFl4K13L28uPjodRgmJS2YNMbALB8kheQPIcVy2DYAMPiOt7nySbOJ5rtXd8bALFqnWkA58AFu3jNbbLUNDMNeBy5LwHNNOyrzBPLwcH7FbATtIw+W426rw3OtOaLFzK1l2OJvZWPYX6k1LR1BphoebW3a43CxqzBKmcEEsAPG5J/Ndjy85stJGWnUCAbrlXsaN3BZ5zEtcImHnseDe4vD3NbsOi4nGC11HVMI2MbgR8F3bHntALQNl57jsoioql7jtpK603Lz5IivjissUsTcuVBhc10r43OeAdwd7C3otkOwhj29muH6xa8kjm+l/8AutaMCHu+JNihF290HSDoS3cLcPKWGNwjLOF0DQAYKdjXD+K13fUlerDG7zLzZ9VxxVydlLJrKWXqeItkLJlEQlkLJ7KWQV2QsnshZUJZAhPZKQgQhKQrLJSEFdkpCtISkIKilIVhCW3FBXZKQrCELIGCdqATNCIZoTAKAJgEVAEwCACdoQQBEBEBMAoBZEBEIgIQgCICICIUULIgIhFALKWRspZAAFAEwCNkC2XA47RtlfMx99NREWG3mLFdgssatpG1cOgucxw3a9vFpXPLTnXTrgyfjtuXnGSKp02HRNlBE0Y7t4I+802P5LuVM8Hy/VefUT/2DnPFcJme5zXzGeJ77AnWA7l53Xd6eUECx2XzLRxtO306W5V6cjJMGsJB5LrGbcXqMBom1baGate8hrWRkDc8iTsPiuTq8SpaIa6uUMA336ea6TmnPcc9O9mFt1tHhe8t1EegT+TUTFZclV55bDhMZxCnlo5JNzFKBcfEEg/BeMZqzfPWY2DDSvfTl1tYcAB+pXMYtjFVWT0mHYhG2aKVhe0PbYg22t8V55jEU+H4q6SFjmsO+gt2Xetf7cbZPqHpeR8Ske6SNzS2MOJbtyXbq2otH0XnmVMwUbKZnvFmSHieC7PVYjFPTOfDI144bLjasxL0UvE19cPi9YXyObfddKzQ50sLaePd0pAt8Vz2J1IbqkcbC9kmQMEhzZnqiw+tkmZC5r3vdFbU0NaSLXHWy74699PJlt/bkuznLzMTx7DsPYzSzve9mJ3JY3xOv8vqtoLbldeylk3Dcr966hMs1RKNL55iC63QWAAC7JZevHThHbx5snOevCWQsnshZdHEllLJrKWRSWQT2QsqhbJbJ7IIEslIVlkLKishLZWWSoEISEKwpSEFZCQq0hVkIKygnIS2QWgJggEzQiGCYBRoTgIoAJmhEBMAggCICICYBQABEIgI2RUARUATAKAAI2RUsgFlLJrI2QKpZMoAgFlAE1lEHjfbfRupMewPGI2uayS9NJIORG7b/DV8lnZVxmOWPuZZA54uCeQ2uu756y+3MmWavD7NE5HeU7nfdlbu3/T0K19y9i8kE5inaY6mKQxzRu+00gkEH47LxfJx97e342TrUuYzjJWYhilRpBIfsyJv2ngGw/681mYVBWYZRQxRZdlNTbxPqHs0i/TfdcjgPu82YhUVD26iA1jSL325LtWOzOhi1sZ3gA+yOK8kW11L3Uiu9y6hW1uOMDS7BGTuA8GprHWPQc10rMMuYKhz5sQwtp24ShjQB5WK5LHs+z0leYo2aY2jYSA3/NcI/NM+I1Avd0p2LdNx9V2iPtu2XFPTrEmH1uITju8OfTNvdzw8EX8uZWbgck+Hyz09RIXNLb+hXcaCOYAun225cAun5jkhpqmcte7x8VYtynTyWrFO4cbX4i2UkHUG6uK9S9mfD++xzGcRLbingZE1/wDE91yPk1eD1ld/Sv66reS2d9mWj93yzir3C0kk8Zd66CbfVejHGpeXJbcS9gQTWUsvS8xbIWT2QsgRCydCyBLKWT2QQIhZPZLZVC2QKayBVFZSkKwhKQgSyUpylKCshIVaQkIQVFKQrCksgtaFY0IAJ2ogtCcBBqYBFEBEKBMAgICYBAIhQEBEBEBEBRUARAUARCCKWRARQABSyKIQABSyNlAEARCNlLIFtda59umCvwPM82P0DAyGYsdVWF/ERYP9CRv8FsfZdG7RKCKslENQxr4ainLHNcLg2P8AuFxzzqm3b48btprpRZjdJWh8N+9JBBa6wA8/NewZZzZBW0wZUhsjx4A22/nxXgeacuVeTcVdJHrdR3vG/c2ueF/JZ1DmMeCSKQMcwAXvwtz+S8tqRMbh6q5JrOpep5ydgWIOnaaBrZdWgSN2Isd11mgpaHDKjSIA67jYudv8107FMxiSplImuSbEk7cL/wC6pmxvVC0zTi9vCTupFJ01+SNu0ZkzLExnd0wLDcBwG/1XmmYa4yO2cNV+PksOvxEuqS8uIabk2N/JY+G082Jy3LnCMX1PO97rrSkVjbhe83nTPy1SSYjiDZpG/wBWiIcb8HOHALaXsAxCmFJimHF9qt0jZ2sP3mBuk29CvBMKhjp4RFE0NYOS9H7OYqylkqsUoHtiqWMMVO97dTde/Ecxci4Wsc7ul66xtkLIWXnfZB2n02faSopKuBlDmCi2qqUElrgDYvjvvpvsQdweoIK9GXqeUiiayFkQtlLJrIIpUCE1kLIEshZOQlsgUoWTWUsqishKQrCkIVFdkpCsslKCtKQnISkIKyEllYUtkFrU4CVqdqIZqYBABOAii0JgEAmCgICICgCYBRUATBQIgIBZMBsoAmQBQBEBEBAAFAEUUAUUUQQBGyISyyRwxPlme2OJgu573BrWjzJ2CAjfguqZjnp8VwWlxLD3tnp2TyRd43gbEtNvLU07rzrtZ7ZqGnoanCMozCqrJWmKSuYf6OEHY92fvOtffgPMrufYVSNn7H8Dp6kXjlie7zF5XkH8ljJXnWYbxX4WizrOPYVT4rQPhrIWviI4OF7LxTNfZrUUrZJMGm1RtsQxw8XptxWymL4ZJSTugeLbXaQNnDqP+tl1qspDG07bDla6+dW1qTp9K1K3jcNUKnB66gkHvFPJcXtsSCVBh9bNt3RvvpJNgL8f9F7/AI/h1PNC9xDQfzXSZsOaHksb9F3jLt55xadAo8vd23VWv1337scPmuUgZaQaGhrRsABYBdldhpl3IsOS7Nl7s/mqNM+KtfTU/ERcJH+v4R9fRWN3nUGoxxuXBZWwSfGajRACyFh/pZiNmeQ6u8vmvW6Sjjo6KOlpm6YoxZoV+GYZDRU7KekibFCwWDWiwWLmzEo8EwCur3kDuInOb5utsPmvTTHFIea+Wby1vqsfq8t9peI4vgVR3FTT10jo3jcHcggjm07gjndbd9lPaVhnaBhZdDppcWgaDVURdct/jZ+Jh68RwPnorK98kr5JDd73FzieZJuVyGBYvXYJilPiOFVUtLW07tUcsZsWn9R1B2K1Eub6LKLwTIvtFYVVU0FNnCmloqwDS6rpo9cL/wCItHiZ52uF7XgeNYbjtEKvBa+mrqY/8SnkDwPXmPjZUZ6FkyiBbIWTIEIEtxQsnQsgQhBOlIVQhCUhWJSqKyEpCsKQhBXZIQrSEhQVkJFYUpQWhO1AJmhEM1MAg1MAiiEzVAEwCgICYIAJgoqBEBQBMAggRAUCIQAIqKIIgmsuIzDmTBcuQd7juJ0tC0i4bK+z3ejR4j8Ag5YBYeL4pQYLQSV2LVkFHSR/amneGt9PM+Q3Xh2d/aHpII5KfJ1C6pn4CsrG6Y2+bY73d8SPRa/5lzHjOZ681mPYhUVs1/D3jvCwdGtGzR6BBsBnj2iKSnMlNk6hNXJw98rAWxjzbGPEfiR6LxHMucMw5ml77MGK1FVzbBfTCz0YPD9F16l0eIkgkfRSaQC4HFF0va8vBA4jZbtdibdHZdlgHnQxu+dz+q0gpGuc0hu7nbD1W9XZZF3PZ7lqLgWYfE0+obZEl2euo4a2AxTtuOII4tPUFdGxjB5aR7hMNUJ+zKBsfUcivQC4NaS4gNAuSdgF4Z2idudPSVMuH5SpafEdB0S1k5vEeojb9/8AmNh0uuOTFGT/AF1xZpx/4qx/Ce98LW7Hm1cXQZTqa6oFPRQFzvvOd9lg6k8kZu1zKnuUZkwnFTX2brbsyIu52s4kDyXo3Zp2gZdzdBJQ4UBR19O0PkonjS5zfxtP3h15jmuNfjW3+09PTb5VdfrHbBwTJFFglpiBVV3/AOZzdmfyDl68fRZs9C3xPdcuXbp4RY2C4upg2dsvZWsVjUPDa02ncuuvha1p2svC/aCxsx0tNhMTrd87W8dQ3/e31Xvk8LjHcb+S1K7XMSbiuecRdE7VBTO91jPXRfUfi7UtT4kOhEbpmqx8e1wkYN1zaPewv0XL4Ji2IYNWNq8Jraiiqm8JaeQsd9OPoVxRbtZXweKMHmrA98yN7QmJUnd02bqNuIw8Pe6cCOYDq5v2Xf8AKV77lLOGA5spu+wHEoalwF3w30ys/mYdx68PNaGAWWRR1c9HUR1FLNJBPGbskjcWuaeoI3Cpp9CkFq9kbt/xXDI2UuZ6c4tA3YVDXBlQB5n7L/jY+a9pyt2q5RzG5kVLirKWqdwp60dy8noCfCfgUR3chBORt9UqBUEyBCBClTlIrCFKUpylPBUVlIVYUhQVkJSFYUhQWhOAlanaiGanAShOEUWhOAlCcKKgTDgoAmCggCIUCICCAJrbKBFALLoGeO1nK2Tq59BiFTNU4gwXfTUketzDyDiSA0+V7rle1DNByhkjEsWi0+9MaIqYO4GV5s0/Dc/BaL1MstbUzVNTI+WaV5c+R5u5xJuST1JuhD1/Onb/AJhxjXBgEbMFpDtrjPeTkfznZv8AZHxXklVU1NdUSVFbPLPPIbukleXOd6k7lVsjsrNN9rqKrAUcNrBW6bBKBxsqMcxkO1A2PD1THndPJvslfsFBzeVKb3nF6KEC+uTgt7MqUwpMAoYG8Io9C0v7KoGz5ww+N3W49bhbn1VTPh2BvfRU7qipDLRRD7zzsL+XVX6SXn/bNml8jTljCyXzTt/rene7Twj+PPyWsWKYJWZYzE7DsRie3vGCaG++ph4fKxHwW2mXMiMo6qTEsWmFVikzjJK/kCeIC6P7TmXYXZcwnHYmBs1BVNge7rFJcW+DgPmUr0S11xh/dMN+BHAqjJtNiVdj9LJhlXVwVbJA6J9OPG0jmDfayqzNMH6WMcCPJevez1gTnVElZouGxgA25k/6LTL37KOLV9XhcMOORBle1oaZW2DZvOw2a7qOHTouZmjBab80tLSRuiEZFwBv6qycCG4kf4QLk9AoroHaLmBmVsrV+ImxnDSymZ+KQ7A+gJutM3kue5zyXOJuSeZ5le8+0xjBmfhdFYsdO01PdnYshBLYwRyLjqefIN6LwfipKxBAzZUSxuAJY256XWYBYKNbxBGyisNtK59jK8kdG7BZcbAxga0WA6I20k72RicJGBw4FEGyBVlkLKqqsi1xFxyTWQLboO+ZI7WMy5RDIKWrFXh7f/s6u72Afwm92fA28lsHkXtpy1mOFseJTNwSv2vHVyDu3n+CTh8DYrT7SAbne35rHnnN7AptH0XFiAQQQRcEc1Fr37K+eKnEIqrKuJzuldTR+8ULnm5EYNnx+guCOguOS2EQKQlTpSrCFISEJylKorckIVrgqygQpCrCkKC1oTtStTtRDtCYJQmaopgmCATNUUwRCjUQgICYIAWRCAohQBFEeCe1jiBZhGAYa11hNPJUvb1DWhrfq4rWimb/AEQ8yfzK9a9ovGzivaLV0rXXhw1jaRg/itqef7zrfBeUw2EXxP5lFQBA7JwlPFAhQaeJTFKOJCBBu5K+5cArWiwVXGUIrvfZFd2fcLaOTxdbswfuWjyWlnY3Y9oVBbc6gAt1YxaNo8lAbLzv2gHO/wDKrFxE6Ma5IGODwDqaZW3Avz/3XoL3b2C8F9p7Hiw4Jl6B25d77OAfVrAfk4/JWI7SWuWPhpDY4mNuONmgWWzPs+0jW5VZJGb94W8ePALXerha99yNybrYL2ZqgzZefETfQ82HTcj9FuWYh7lEwRx7LFhBlqnOJsOCyKl+iI2XTO1DHjlns6xjEI3aap8Xu9P/AO5J4QfgLn4LCtUu13MAzJn7GcQjfqpu+7mn/wDaZ4W/OxPxXTG73TTHcNB4IxtRpAiBbmjzQc4NY5zjsNyURjzXe8RN4u4noOaymgBoAFgNtlTSMJa6V4s6TcDoOQV/5IogKWU4KXRASPIYwu4nkESd7KsuBkt91g1H15IqqZ3dt0335+qwXElxKeeTU4qkOssjvPYvjP7D7TMvVjnaYjVNgk/kk8B/xLewg8DxGy+cVJM+nnjniNpInCRp6FpuPqF9E8JqxiGFUVcBYVUEc9umtod+q1CMlKUyBVhCFKU6VUIUhCsKQoKyEhVhCQoiwJ2pWhWNCBgmaEAnaootCdKOKdvFRRCLQomHBBEQgnCIgTNFyB1NkAqayobSUdRUvNmwRulJ8mgn9FEaL9oFSazPGYKgm5fiE5/+Rw/Rdbpz4Xjo8rJq6h1VUyzvN3zPMjieZJJP5rEi2lmHmD9FWl44JSi1C6IBCFvEEyB2IPmilPMKlgvMPVXnmqYx/TD1Qh6L2GM7ztLoRyB1H5Lc8nYWWmvYO4R9okTjxDdluVD4mNPkoDGzra52F1pZ2hY6cy9ouNYhqLqfvjDB5Rs8LfoL/FbZ9oWLnA8mY1iDHWkgpJCz+cjS36kLSqhj0uO9zzK3WElZVeG56Be9eylFryrW1HH+sOb+v6rwPEjopZSeTSVsL7J8RZ2e1LzwfVuI+QVlIew1jtTg1a8e1PmHXWYTl2F/gp2e+TgH77rtYD6NDj/aWwkjmd6+SVwbHGC57jwa0C5PyWjWfswSZlzXiuLSE2qp3OjB+7GNmD+6AsNOtG7n7K9g2VMYuSrxwQCyx5R30zYfujxP9OQ+KuleI43OdyCFNGWRkv8A3jzqd69FBbZA7BG6rc7qVQS5C+xVd03JA19iViPfppy63ikN/hyRqpCG6G/acQPmqax136G2swaVBjHdCyPBBQWRbE87r6Cdn1XHXZDy5UQOa5j8OgsWm4uGAH6ghfPhpW2fsmZhNfk/EcDmfeTDJ+8iBP8Awpbm3weHf3lYHuSCZKVQhQKYpTzVQpSFOUhVCFIU5SlEWhMEoTtUDhMEAmCqmanbwSBOOCyohMEGpgggTBAJgiIurdqVb7h2cZlqQbObQyNafNw0j/Eu0rzf2iKn3fspxQA2M0sEXreQH/KoNNz5cljh2mrd5gFX38RWHMbVMZv5KqzgpzQZ9lEIDYJXjZMOKluKoQjbdVs2lVvEKu1nXUV3vsdk7ntCoz+IgFbrU/7hh8lo92ZSiLP+FfxOA+q3ehd/VmeiI8r9ozEDTZE92DrOrKuOL+y27z/hC1ppwBqtzXt/tMVd5sv0QPBs1S4epawfk5eHR7X2W6+MqMb2w2oP8BW0Hs1UZpOymkkcLGeaV49L2/Rat444fsycdQB9VuT2U0YoOy/LsIFj7kx59XXcfzUlYde7ccw/sLs+xFsb9NViJFDFY72dcvP9wEfFae1DgXr2L2ksw+/5vjwuJ14MLi0uAPGZ/id8hpHzXjO5dcrKwsY1WW2QYOiWd5jZ4d3uNmjqUFY/pZ7H7EZv6u/2V7tksbBFGGg3txPU9VC7ZAC4dVjvdune8WKxnO3UFrDcppHWBN1WwqmpksLAoowHva1nMMBeVTIQXu2TUJIjnk5u8AQDbXJURXZKrCVWUVBxXsHswY0cM7Taamc60WJQyUjh1dbWz6st8V4+Fz+Q8U/Y2c8CxAu0tpq6GRx/hDxf6XVhH0JSJyLEgG4vslK0FKUp7JCiEKQ8FYUhVCFIU5SFEXBO1I1WNQMEwQamCimCZKEyimbwTBAIhEMigEUBXiftV4h3GUcJoAbGqrDI4eUbD+rwvbWrWz2tqknF8u01/Cylmlt5ueB/lUghr44bktWHWOA33uN1ng7Ljq4EEneyK5CM3aOhTXWNSP1QM9FkN5qwGBRbzQFro8UAHO6Q2TniPklcL3Qc5kyb3XN2Czk2AnAW8tDKJqGNwN/CFoJDN7vU0MoP2Jmm/wAVvHkep96y5SSk3JiB+iQjwT2gqv3jP/cXuKWjijt0LtTz/iC8x+8fNdv7W6oVXaRmB4Nw2p7oejGtb+i6gPMLpCOOx8H9nPa37TnNb9Vu3HW0+W+z+GrqrCDD8PY9w66Yxt8Tt8VpfNB73VUFOOMtXE3/AJl7/wC01jr8OynhGCQO0+/P72YA8Y4wLD0LiP7qzKw1ux7EJsSxKqrap+uoqZXTSHq5xJP5rj4xzQc8ucSeqtj+Sy0YGwN1RERLKZj9lt2s/U/olq5HWEcd9bzbbkOZTNcGANDbACwURY5yqe7YpJZbX4qh02xsCine7ZUgpHPcfT1Sg7XIRGSXWasCofcqzvC4O5AcAFiSuvdRXJ0jbUbCRsbn5qt7t9ldfTTsYOQCx9B5qoQlBOQAlKgW+6du4KQpozvbqg3z7GswuzN2aYFiEz9dSIfd5z1kjOgn4gA/FdzPBeIeyNUOk7PcUgcTpgxN2n+1Gwn6he3laQqUpigVoIUhTlIUCFIU5SFEWtVjeCrCsagdqZqUJwoohOEoTBRTBM3mlCYIGCnJRFRBHBave1mSM3YNfgcPNv8A+r7raELU/wBqfEBVdoVPSA3FHQRtPkXuc8/QhIIeMuO11x9S8gG6zZb6TZYFQDpJ5Kqtw94dEQORKzm7ea4rDiA57b8d1yTTuoq1pTJAfNM0qoJ4IP4bKHz4IA3ugrrP/pC4cWkFbl9jmJNrci4e/Ve7GhabSN1QPHktifZxxnv8ntpnu8VM54+A3Vj1J8eU5mqjWZlxaovfvauZ9/WRy4tzt7KSSd5M9x3LiXH4m6Q3vf5LaOXyXSe/57y1TcpK5hN/Lf8ARc37R2PDFu0Srp43aocNjZRtt+IXc/8A5nEfBcLkTEosJz/gdfUm0FJI+of6Mjc63xtb4rp2N10uIYlU1dQ689RK6aQ/xOJJ+pWLLDCb58VcXaWEnYWuqmWWPUu76UQt+zxcfLp8VlpZTXcHSkeJ/C/IclabkXSXtzP5JC7Y8fiUCSHjdUki3JFxH4QkLiOFh8EQARbilcduBsoSTzKqcoDezCsV53Hqr3HZY53e0eaiuYiAEIe7nwCre5WeLumi1hZVHZVCFIVbyVTkACPNKmHVBuH7KNEafsynqSLe94hK8ejWsZ+YK9kXhXsh4oanJmMYY91zRVokYOjZWX/Nh+a91W4QEpTJSqEKQpyqyiFKQpilKC5qdqrarGoHanCRqcKBgmCQJwimCYcEoTDgopkUEVEHktJO3CsNd2qZklvcMqu4b6RtDf0K3db9po8wtAs81Jqs3Y5OTfvK6d/zkckEOvyPsN1x1S57+FtKvqHlxNlRICI90aVUzu7nb57Ll2G4XAudYgjkbrmoXamgjgQkELg4cE7TZVPNrdVGu23VRaTv5qN4oNN0XDY3QHi0jqvRuwXGRhrsfpXut/V5JWj/APWf9F5yDdTCMSdhmNOewkNmhfEfO4SPSY3DmWcfgEzjd1glYLBRxLXLowwcQB7xjr2AaVw8jtTyVyOJy+IgHhsuLuBc32C5z63HgzSiKIk8lTSAtYXu+283KpJNTUhnFjDd3mVm6bC3JRS3ukdZMdlW8oip7uKRRzhvZIHXUDHgqnHdM47KolFBx2VTd5h6pykZvKFBy5H9GOKr5qyNxYwatwiXtIuAFoVOVTla83KrcoivmmbuEp4otNiqNjPY5mcMXzRDfwupYJLeYkcP8y2cWrHsfVDWZtzBTn7UuHte3+zKL/4gtpzwWo8QClKZIVUKUhTpCgQqsqwqsoLmqxqranagsCYJQmCBgnCQJgosHCZqVqYKKYIoBHkohmkBzSdgCCvnjmWZkuNYjJEdUclTK5p6gvdb6LevtExX9iZEx/EQ7S+CilLD/GRpb9XBaCPB2B5bJBDHDLm5S1ezAAsm1gsSr2ajTj3cCuRw2TVAB+E2XHOV+Gvs97b7EXURyxPBDkk1XAVvEKqDHWKsBNlUAeqe9giLGniFxeJtI8Y4tN1yDD4vJU17A6EoOx0UjZaeN/HU0FB77FxJ2C47Lkxkw5rTxjOlXVUto3X2ubLpvrbOu3GVj9TyuPqZu6Zt9s7N9VlTv2LjxXGRH3ipLz9hvBc22ZSs7mIfiO5KZz+qVzuKrJRDF5Kpe4p0rlBUVCdrBQnilQBxVaZyUqKQpY/3o9Ux4JYv3jfVBzLTqja211W9hYrYdo7quR5J3WkINxulcEzQoeCCk7IBM5KFB7J7KtSYe1aGPlPQ1EZ+Aa7/ACrcVaU+zQSO17BdP4ZwfTuXLdZbjxClKUxSFVClIeCcpCgQpCnKrKC5pTtVTVY0oLQUzUgKZqCwJgkCYKLBwmCUJgopgmCUJgiPJfafxE0XZg+na6zq2shhPm0Xef8AAFqAd7rZr2vKktwTLdMDs+qmlI/lYB/mWsMj9LTZFgssobsCsOc6uCsETpDc3sjNE2Ju5UHHSbEqUbrVLPM2QkN3FUg6X6hxBuoObvYbcFbG/kqR4m35FRrrKqzAlKRjw5WclQjh0TSnvISUHb3SNdpJB5/moGyzJ3ctVCfJwWVXv1OIHouLoXiDGGX2DwWlZFfUNY1z3b+Su+k1243EZ9+7Ydzx9E9KzREsOBpllL37klZ9tlmFKTcqWTNbzQcQFQDsqXuUe9UudcqIN0CgOaiigUqJ5oWQI7ghF+8b6ou4IRfvG+qDmof3aod9oq6L90qCfEQFpBHBApwg4KClyVOUiD1T2ZXxs7YMIEpsXRVDWfzd0636rdU8FoZ2J1goe1fKszjZvv7IyfJ92f5lvlyW48SSlKUUpRClIUxSFUKUhTOVZQWtVjVS0q1qCwJ2qtpTtQWhMFW1O1A4TBIE4UUwTBKEeRUGr/tc4o2XMuB4a03NNSPmf5GR9h9GfVeAlwvvuvQvaDxB2I9rOPm5008jKVvkGMA/O685EZPNRYXtlAFhxWBWSFzistsBaCSbALjppRqNkFDlURd4HWye5O6DBeoYP4h+ag5keF9ioWX4Jpm3aSOI3QhfcG6pBN2FZEcgcFC0ELHcwsN28kGYBcFVTAhCGa434qySzhfkgxIo+8q43n7u55LAxCc1E+lpPdtO3meqyKyYwwFrTZ8m3wWHAy25UIZFMzSFlWsFXCLeiFRKGiwVEkkAusV8hKRzi5M2MlQLclQNKuEdkdCaFIChCsdYC3mk5IESuKjnJQLqKRxug3ZwPQqwhVgboOahdYW5FWCJliQTdUwC8bT5BWE6RdaQHM3Vbha6bvN0C4EIKSk4qxw5qvgVByuUZzS5pwadpsYq6B4PpI1fROTaR/8AMfzXzgw9/dYhSv8AwzMd8nAr6OudqJPXdaqklKQlMUhK0hSkKYlI4oEcUhKLikJV0LWlWAqlpVjTsoLWp2lVNKdpUFzU4KqanCosBTBI0pwosHCYJAU8Z8bb8Lj81FaHdqF5e0jNEhN74lP/AIyP0XWDZgu42C5TM1W6rzDitTJs6WrmefjI4rq9ZO6Vxa2+lPAa6s1gsYbN/NceHNvvcrNpqB0nikNgnqYI4rNba6yMMOvysEjDaVp6EH6q2YaW7G6qj8T2jqbIOeAuqJGaXbLItZB7bhUgI3bJjuOCVgsEVVUuZzGxTRykGzlZpvvZKYtioOJqbzVMjhctabX5BNGN9+SEbiY9LidAcSbdTzV7opWPjZLsdGux4gHhfp1UEL9LSAscgvcSVliIb3RdGANggxmRgKzYIuFlW4FVBLkjnEqWSONlFC+6QlS/FAAkqBbXVrW7Jo407xpaqMeTmqU7jcpLbqDmKQgwsHkE1S7S3biqKY2ib6BZDSHndaGHqPMIat1nOiGngsd8Vr7IisFAqEWUUFtOLyxW462j6r6Ot+w30C+deBR99i9DF+Ooib83gL6Kv2e4cgSFuPEkpKQpikJVQpSOKYlVuPFWAjiqymcVW4qi5qsaVS0qxpWRaCrGqoFO0oLmp2qppTtKC0JwqgU4KirAje2/TdICsHH68YZgGKVzuFLSyzb/AMLCf0UV8/8AE3h9XUXPGR1z6uKphhia0EAX81TO2SU6rbnc+qRjJW/eugypnaWGxAsuKe1z37uWfMS2Il9lxz3AkngoKqhtttV/ghRN1VTByBulkcN1kYULzPd0Cn2OWaiRdK3imHNaCHwkqNCLm39U4CAtHJCVwYwk8UXODWkrBlkMj/K6DFjia51nA/kspkTGNswWvuVTHs8q++yyJwUuoUqqkeOKpPFXuVLhuiAdgsd9yVa+9tkIoy478FAjYyQsiOG6cNs63QKzVpagU6Y2rBmk1Ep55bkgKgC5QKAlPFXabBVO4qKz6caom26Kyz2b2ukw83j9FngArUIoimDhYlWEBVPibe4FihchAJI7rHcCFeZSD1UL2OG43QX4DJ3WM4fJyZUxO+TwV9FZDd7z1JP1XzgifolDm/dId8l9GKeTvKaGT8cbXfMAqx4kmKQlM4qslahAJVbii4qtxWgriqnFM4qpxRWQ0qxpVDSrGnZZRc0qxpVDSrGlBc0qxpVLSnaUFzSnBVTSmBQWgrpfbXWe5dlOZ5QbF1IYgf53Bv6ruIK8x9pOo7nsmxBoNu+qaeP/AJ7/AOVRWnpksSEzXAhLa4QcNLTvYKKwq+ZznaWA2CwSXcCsyTdxNwqXEbkqDEebmwXJYSy0L3dXfkuPdpueq5CiLoYGki7Hb+ikDOG3FO08lQ1wePCU4O9loW2U1BoS69lS9+xQJPIXGwSxs5oNGpyuAsFFYbftn1V19lWftu9UwKgN7qX2SkoclUQlAWJUPBJdBYIwSnAa0bKnWd0C/ZA5PiVE0myYusFQdyoEAuVY1tkRsEboEeqH8VeVS9QZmG/Yd5Fciw7WXGYZ9qQLk2bXPRagWN0kEFUyRtAJBS9/vvwSPlDgUGM9wBKqJJVz23VRuFAQfC70K+iWBP7zAsMf+KkhPzjavnaODrdCvodgQ7vAcMYeLaSEf/G1bqks4lVkouKrJW0BxVbio4qtxQBzlU48UXFVuKD/2Q==" alt="Hakim Tohirovich">
+  </div>
+  <div class="hero-right">
+    <h1>Hakim <em>Tohirovich</em></h1>
+    <div class="hero-role">AI SCIENTIST-ENGINEER · INDEPENDENT RESEARCHER · AUTODIDACT</div>
+    <div class="hero-sub">Self-taught scientist. 20 years of cross-domain research. 7 disciplines. $0 budget. One product. Zero competitors.</div>
+    <div class="hero-links">
+      <a href="tel:+998903920139">+998 90 392 01 39</a>
+      <a href="/cdn-cgi/l/email-protection#53303c263d303a3f133c3d273c2027323d373221377d3c2134" style="font-size:12px;color:#15803d;text-decoration:none;font-weight:600"><span class="__cf_email__" data-cfemail="4b28243e252822270b24253f24383f2a252f2a392f6524392c">[email&#160;protected]</span></a>
+      <a href="https://t.me/ontokhakim">Telegram</a>
+      <a href="https://ontostandard.org">ontostandard.org</a>
+      <a href="https://github.com/nickarstrong/onto-research">GitHub</a>
+      <a href="https://linkedin.com/company/ontostandard">LinkedIn</a>
+      <a href="https://medium.com/@ontostandard">Medium</a>
+    </div>
+  </div>
+</div>
+
+<!-- ORIGIN -->
+<div class="origin">
+  <h2>Independent <em>Researcher</em></h2>
+  <p>2005. No AI/ML programs in Central Asia. No courses. No mentors. No institutions. 20 years of independent cross-domain research — mathematics, epistemology, medicine, law, physics, cybersecurity, biology — produced a knowledge system no single university curriculum could. Built solo what a $1B-funded team of hundreds hasn't shipped in 4 years. 12 published research reports. Open-source scoring methodology. Peer-verifiable results.</p>
+  <p style="font-size:13px;color:var(--sub);margin-top:8px;line-height:1.6"><strong style="color:var(--bk)">Formal equivalent:</strong> 12 published research reports · open-source scoring engine (993 lines, reproducible) · peer-reviewed methodology · 22+ models evaluated across 5 domains · cited in government tender documents for 9 countries. The field didn't exist when the research began — no degree program could have prepared for it.</p>
+  <div class="quote">"When there are no institutions, you become the institution."</div>
+</div>
+
+<!-- TWO PRODUCTS -->
+<div style="margin-top:20px">
+  <div style="font-family:var(--m);font-size:10px;font-weight:800;letter-spacing:2.5px;color:var(--wh);background:var(--bk);display:inline-block;padding:6px 14px;border-radius:6px;margin-bottom:12px">RESEARCH PROJECT — SHIPPED TO PRODUCTION</div>
+  <div style="font-size:15px;color:var(--sub);margin-bottom:14px">Built end-to-end: research → engineering → deployment. Both products run on GOLD Core — 169 files, 900K tokens, 20 years of research.</div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap">
+    <a href="https://ontostandard.org/regulator" style="flex:1;min-width:260px;border:3px solid rgba(34,197,94,0.3);border-radius:14px;padding:20px;background:rgba(34,197,94,0.03);text-decoration:none;color:inherit;display:block">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-family:var(--m);font-size:11px;font-weight:800;color:var(--gd);letter-spacing:1.5px">PRODUCT 1</div>
+        <div style="font-family:var(--m);font-size:9px;font-weight:800;color:var(--gd);letter-spacing:1px;padding:3px 10px;background:#dcfce7;border-radius:4px">FOR REGULATORS</div>
+      </div>
+      <div style="font-size:22px;font-weight:900">ONTO Standard</div>
+      <div style="font-size:13px;color:var(--sub);margin-top:4px">AI quality standard for any country</div>
+      <div style="margin-top:10px;padding:8px 12px;background:rgba(34,197,94,0.06);border:2px solid rgba(34,197,94,0.15);border-radius:8px">
+        <div style="font-family:var(--m);font-size:9px;font-weight:800;color:var(--gd)">DASHBOARD</div>
+        <div style="font-size:12px;font-weight:700;margin-top:2px">Every AI graded A-F</div>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:10px;font-family:var(--m)">
+        <div><div style="font-size:20px;font-weight:900;color:var(--gd)">A-F</div><div style="font-size:9px;color:var(--dim)">GRADES</div></div>
+        <div><div style="font-size:20px;font-weight:900;color:var(--gd)">104B</div><div style="font-size:9px;color:var(--dim)">PROOF</div></div>
+        <div><div style="font-size:20px;font-weight:900;color:var(--gd)">$0</div><div style="font-size:9px;color:var(--dim)">PILOT</div></div>
+      </div>
+      <div style="font-family:var(--m);font-size:10px;font-weight:800;color:var(--gd);margin-top:8px">✅ 100% PRODUCTION READY</div>
+    </a>
+    <a href="https://ontostandard.org/pitch" style="flex:1;min-width:260px;border:3px solid rgba(124,58,237,0.2);border-radius:14px;padding:20px;background:rgba(124,58,237,0.03);text-decoration:none;color:inherit;display:block">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-family:var(--m);font-size:11px;font-weight:800;color:var(--purple);letter-spacing:1.5px">PRODUCT 2</div>
+        <div style="font-family:var(--m);font-size:9px;font-weight:800;color:var(--purple);letter-spacing:1px;padding:3px 10px;background:rgba(124,58,237,0.1);border-radius:4px">FOR AI PROVIDERS</div>
+      </div>
+      <div style="font-size:22px;font-weight:900">Human AI</div>
+      <div style="font-size:13px;color:var(--sub);margin-top:4px">Thinks like a scientist, not like autocomplete</div>
+      <div style="margin-top:10px;padding:8px 12px;background:rgba(124,58,237,0.04);border:2px solid rgba(124,58,237,0.12);border-radius:8px">
+        <div style="font-family:var(--m);font-size:9px;font-weight:800;color:var(--purple)">R1-R16</div>
+        <div style="font-size:12px;font-weight:700;margin-top:2px">Epistemic discipline + cognitive architecture</div>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:10px;font-family:var(--m)">
+        <div><div style="font-size:20px;font-weight:900;color:var(--purple)">16</div><div style="font-size:9px;color:var(--dim)">RULES</div></div>
+        <div><div style="font-size:20px;font-weight:900;color:var(--purple)">10×</div><div style="font-size:9px;color:var(--dim)">IMPROVEMENT</div></div>
+        <div><div style="font-size:20px;font-weight:900;color:var(--purple)">$0</div><div style="font-size:9px;color:var(--dim)">MODIFICATION</div></div>
+      </div>
+      <div style="font-family:var(--m);font-size:10px;font-weight:800;color:var(--purple);margin-top:8px">✅ PROTOCOL COMPLETE · PLATFORM IN PROGRESS</div>
+    </a>
+  </div>
+  <div style="margin-top:12px;background:var(--bk);border-radius:10px;padding:14px 20px;display:flex;align-items:center;gap:14px">
+    <div style="width:36px;height:36px;background:var(--bk);border:2px solid var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="color:var(--wh);font-family:var(--m);font-size:16px;font-weight:900">1</span></div>
+    <div>
+      <div style="font-size:14px;font-weight:800;color:var(--wh)">One core: GOLD</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.5)">169 files · 7 scientific domains · 30+ peer-reviewed sources · 20 years of research</div>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:6px">
+      <div style="font-family:var(--m);font-size:10px;font-weight:800;padding:5px 12px;border-radius:4px;background:var(--gd);color:var(--wh)">DISCIPLINES</div>
+      <div style="font-size:10px;font-weight:800;color:rgba(255,255,255,0.3)">+</div>
+      <div style="font-family:var(--m);font-size:10px;font-weight:800;padding:5px 12px;border-radius:4px;background:var(--purple);color:var(--wh)">GRADES</div>
+    </div>
+  </div>
+</div>
+
+<!-- 7 SPECIALIZATIONS -->
+<section>
+  <div class="tag">7 DISCIPLINES</div>
+
+  <div class="radar-section">
+    <svg viewBox="0 0 320 320" width="300" height="300">
+      <!-- Grid hexagons -->
+      <polygon points="160,30 273,95 273,225 160,290 47,225 47,95" fill="none" stroke="#e5e7eb" stroke-width="1.5"/>
+      <polygon points="160,65 244,113 244,207 160,255 76,207 76,113" fill="none" stroke="#e5e7eb" stroke-width="1"/>
+      <polygon points="160,100 215,131 215,189 160,220 105,189 105,131" fill="none" stroke="#e5e7eb" stroke-width="0.7"/>
+      <!-- Axes -->
+      <line x1="160" y1="30" x2="160" y2="290" stroke="#e5e7eb" stroke-width="0.7"/>
+      <line x1="47" y1="95" x2="273" y2="225" stroke="#e5e7eb" stroke-width="0.7"/>
+      <line x1="273" y1="95" x2="47" y2="225" stroke="#e5e7eb" stroke-width="0.7"/>
+      <!-- Data polygon -->
+      <polygon points="160,34 270,98 256,220 160,282 56,212 52,102" fill="rgba(34,197,94,0.12)" stroke="#22c55e" stroke-width="2.5"/>
+      <!-- Dots + Labels -->
+      <circle cx="160" cy="34" r="5" fill="#15803d"/>
+      <text x="160" y="20" text-anchor="middle" font-family="'JetBrains Mono'" font-size="11" font-weight="800" fill="#15803d">RESEARCH 20y</text>
+      <circle cx="270" cy="98" r="5" fill="#15803d"/>
+      <text x="288" y="92" font-family="'JetBrains Mono'" font-size="11" font-weight="800" fill="#15803d">AI/ML 3y</text>
+      <circle cx="256" cy="220" r="5" fill="#22c55e"/>
+      <text x="280" y="232" font-family="'JetBrains Mono'" font-size="11" font-weight="800" fill="#15803d">SECURITY 2y</text>
+      <circle cx="160" cy="282" r="5" fill="#7c3aed"/>
+      <text x="160" y="306" text-anchor="middle" font-family="'JetBrains Mono'" font-size="11" font-weight="800" fill="#7c3aed">AI PRODUCT 2y</text>
+      <circle cx="56" cy="212" r="5" fill="#22c55e"/>
+      <text x="18" y="224" font-family="'JetBrains Mono'" font-size="11" font-weight="800" fill="#15803d">DATA 3y</text>
+      <circle cx="52" cy="102" r="5" fill="#22c55e"/>
+      <text x="18" y="92" font-family="'JetBrains Mono'" font-size="11" font-weight="800" fill="#15803d">INFRA 3y</text>
+    </svg>
+
+    <div class="radar-list">
+      <div class="rl-item"><div class="dot" style="background:#15803d"></div><div class="info"><div class="name">AI/ML Research Scientist</div><div class="detail">R1-R16 · 169 files · 7 domains · 12 reports</div></div><div class="yrs">20y</div></div>
+      <div class="rl-item"><div class="dot" style="background:#22c55e"></div><div class="info"><div class="name">AI/ML Engineer</div><div class="detail">Scoring v3 · 993 lines · 22+ models · EM1-EM5</div></div><div class="yrs">3y</div></div>
+      <div class="rl-item"><div class="dot" style="background:#22c55e"></div><div class="info"><div class="name">AI Security & Cryptography</div><div class="detail">Rust · Ed25519 · Merkle · 104-byte forensic</div></div><div class="yrs">2y</div></div>
+      <div class="rl-item"><div class="dot" style="background:#22c55e"></div><div class="info"><div class="name">Backend & Infrastructure</div><div class="detail">FastAPI · ~5500 lines · REST · SSE · Stripe · Railway · CI/CD</div></div><div class="yrs">3y</div></div>
+      <div class="rl-item"><div class="dot" style="background:#22c55e"></div><div class="info"><div class="name">Data Engineer</div><div class="detail">900K token corpus · scoring pipelines</div></div><div class="yrs">3y</div></div>
+      <div class="rl-item"><div class="dot" style="background:#7c3aed"></div><div class="info"><div class="name">AI Product Engineer</div><div class="detail">6 roles via AI · 5 prod sites · 9 countries</div></div><div class="yrs">2y</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROOF + BENCHMARKS -->
+<section>
+  <div class="tag green">PROOF — WHAT'S BUILT</div>
+  <div style="font-size:16px;font-weight:800;color:var(--sub)">Everything below — one person. $0 external funding.</div>
+  
+  <div class="mgrid">
+    <div class="mbox"><div class="num">169</div><div class="lbl">files · GOLD Core</div></div>
+    <div class="mbox"><div class="num">900K</div><div class="lbl">tokens · 7 domains</div></div>
+    <div class="mbox"><div class="num">993</div><div class="lbl">lines · scoring engine</div></div>
+    <div class="mbox"><div class="num">12</div><div class="lbl">published reports</div></div>
+    <div class="mbox"><div class="num">22+</div><div class="lbl">models evaluated</div></div>
+    <div class="mbox"><div class="num">5</div><div class="lbl">production websites</div></div>
+    <div class="mbox"><div class="num">9</div><div class="lbl">countries in outreach</div></div>
+    <div class="mbox"><div class="num">$0</div><div class="lbl">external budget</div></div>
+  </div>
+
+  <!-- HAYOT-STYLE BENCHMARK BARS -->
+  <div class="bm" style="margin-top:28px">
+    <div class="bm-head"><div class="label">Composite Score</div><div class="delta">7.1×</div></div>
+    <div class="brow"><div class="num r">0.12</div><div class="bwrap"><div class="bfill r" style="width:2%"></div></div></div>
+    <div class="brow"><div class="num g">8.85</div><div class="bwrap"><div class="bfill g" style="width:89%"></div></div></div>
+  </div>
+  <div class="bm">
+    <div class="bm-head"><div class="label">Sources cited</div><div class="delta">0→4</div></div>
+    <div class="brow"><div class="num r">0</div><div class="bwrap"><div class="bfill r" style="width:1%"></div></div></div>
+    <div class="brow"><div class="num g">4</div><div class="bwrap"><div class="bfill g" style="width:55%"></div></div></div>
+  </div>
+  <div class="bm">
+    <div class="bm-head"><div class="label">Confidence disclosed</div><div class="delta">0→56%</div></div>
+    <div class="brow"><div class="num r">0</div><div class="bwrap"><div class="bfill r" style="width:1%"></div></div></div>
+    <div class="brow"><div class="num g">56%</div><div class="bwrap"><div class="bfill g" style="width:56%"></div></div></div>
+  </div>
+  <div class="bm">
+    <div class="bm-head"><div class="label">Unknowns disclosed</div><div class="delta">0→4</div></div>
+    <div class="brow"><div class="num r">0</div><div class="bwrap"><div class="bfill r" style="width:1%"></div></div></div>
+    <div class="brow"><div class="num g">4</div><div class="bwrap"><div class="bfill g" style="width:55%"></div></div></div>
+  </div>
+  <div class="bm">
+    <div class="bm-head"><div class="label">Unknown recognition — the edge</div><div class="delta">26×</div></div>
+    <div class="brow"><div class="num r">0.04</div><div class="bwrap"><div class="bfill r" style="width:4%"></div></div></div>
+    <div class="brow"><div class="num g">0.96</div><div class="bwrap"><div class="bfill g" style="width:96%"></div></div></div>
+  </div>
+
+  <div style="font-family:var(--m);font-size:11px;color:var(--dim);margin-top:12px;text-align:center"><span style="color:var(--red);font-weight:800">■</span> WITHOUT DISCIPLINE &nbsp; <span style="color:var(--gd);font-weight:800">■</span> WITH ONTO GOLD &nbsp; | &nbsp; Zero retraining. Inference-time only.</div>
+</section>
+
+<!-- TECH STACK -->
+<section>
+  <div class="tag">TECH STACK</div>
+  <div style="font-family:var(--m);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--dim);margin-bottom:6px">LANGUAGES</div>
+  <div class="pills"><span>Python</span><span>Rust</span><span>JavaScript</span><span>HTML/CSS</span><span>SQL</span><span>Bash</span></div>
+  <div style="font-family:var(--m);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--dim);margin-bottom:6px">AI / ML</div>
+  <div class="pills"><span>LLM Architecture</span><span>System Prompt Design</span><span>RAG</span><span>Inference Optimization</span><span>Model Evaluation</span><span>Scoring Systems</span><span>Epistemic Scoring</span></div>
+  <div style="font-family:var(--m);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--dim);margin-bottom:6px">BACKEND & INFRASTRUCTURE</div>
+  <div class="pills"><span>FastAPI</span><span>PyO3</span><span>REST API</span><span>SSE</span><span>Stripe</span><span>Railway</span><span>GitHub Pages</span><span>CI/CD</span><span>Nginx</span><span>Docker</span></div>
+  <div style="font-family:var(--m);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--dim);margin-bottom:6px">SECURITY & CRYPTO</div>
+  <div class="pills"><span>Ed25519</span><span>Merkle Trees</span><span>Forensic Watermarking</span><span>Proof Chains</span><span>JWT</span></div>
+  <div style="font-family:var(--m);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--dim);margin-bottom:6px">RESEARCH DOMAINS</div>
+  <div class="pills"><span>Epistemology</span><span>Mathematics</span><span>Medicine</span><span>Law</span><span>Physics</span><span>Cybersecurity</span><span>Biology</span></div>
+</section>
+
+<!-- TIMELINE -->
+<section>
+  <div class="tag">TIMELINE</div>
+  <div class="tl">
+    <div class="tl-item"><div class="tl-year">2005–2015</div><div class="tl-title">Research Foundations</div><div class="tl-desc">Self-directed cross-domain research. Mathematics, epistemology, philosophy of science. No AI/ML programs existed in Central Asia.</div></div>
+    <div class="tl-item"><div class="tl-year">2015–2020</div><div class="tl-title">Formalization</div><div class="tl-desc">R1-R7 epistemic discipline. R8-R16 cognitive architecture. Cross-verified across 7 scientific domains.</div></div>
+    <div class="tl-item"><div class="tl-year">2020–2023</div><div class="tl-title">Corpus Construction</div><div class="tl-desc">GOLD Core: 169 files, ~900K tokens. Discovery: loading into AI = epistemic discipline at inference time. Zero training.</div></div>
+    <div class="tl-item"><div class="tl-year">2023–2024</div><div class="tl-title">Engineering</div><div class="tl-desc">Scoring Engine v3 (Python). onto_core (Rust). FastAPI backend. API, proxy, auth, billing. Ed25519 proof chain.</div></div>
+    <div class="tl-item"><div class="tl-year">2024–2025</div><div class="tl-title">Validation & Launch</div><div class="tl-desc">22+ models. 12 reports. Agent v5. Dashboard. 5 production websites. IT Park residency.</div></div>
+    <div class="tl-item"><div class="tl-year">2026</div><div class="tl-title">Production & Global Outreach</div><div class="tl-desc">ONTO production-ready. Government tenders to 9 countries. Venture applications. AI Alliance UZ member.</div></div>
+  </div>
+</section>
+
+<!-- PUBLICATIONS -->
+<section>
+  <div class="tag">PUBLICATIONS & OPEN SOURCE</div>
+  <div class="pub"><div class="type">CASE STUDY × 4</div><div class="title">CS-2026-001 — CS-2026-004: AI Epistemic Quality Evaluation</div><div class="pmeta">22+ models · 5 domains · <a href="https://ontostandard.org/reports">ontostandard.org/reports</a></div></div>
+  <div class="pub"><div class="type">FIELD OBSERVATION × 2</div><div class="title">FO-2026-001, FO-2026-002: Model Behavior Under GOLD Discipline</div><div class="pmeta"><a href="https://ontostandard.org/reports">ontostandard.org/reports</a></div></div>
+  <div class="pub"><div class="type">ARTICLE</div><div class="title">From Golden Ratio to GOLD Core: The Mathematics of AI Discipline</div><div class="pmeta">Medium · March 2026 · <a href="https://medium.com/@ontostandard">medium.com/@ontostandard</a></div></div>
+  <div class="pub"><div class="type">OPEN SOURCE</div><div class="title">Scoring Engine v3 — 993 lines, deterministic, reproducible</div><div class="pmeta"><a href="https://github.com/nickarstrong/onto-research">github.com/nickarstrong/onto-research</a></div></div>
+  <div class="pub"><div class="type">WHITEPAPER</div><div class="title">WP-2026-002: Architecture, Economics, Risk Analysis</div><div class="pmeta"><a href="https://ontostandard.org/paper">ontostandard.org/paper</a></div></div>
+</section>
+
+<!-- LANGUAGES -->
+<section>
+  <div class="tag">LANGUAGES</div>
+  <div class="langs">
+    <div class="lang"><div class="lname">Russian</div><div class="llevel">NATIVE</div></div>
+    <div class="lang"><div class="lname">English</div><div class="llevel">WORKING · READ / WRITE · SPOKEN IN PROGRESS</div></div>
+  </div>
+</section>
+
+<section>
+  <div class="tag purple">AVAILABLE FOR</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div style="border:3px solid var(--border);border-radius:12px;padding:16px 20px;background:var(--wh)">
+      <div style="font-size:16px;font-weight:800">Research</div>
+      <div style="font-size:13px;color:var(--sub);margin-top:4px">AI safety, epistemic quality, model evaluation, cross-domain methodology</div>
+    </div>
+    <div style="border:3px solid var(--border);border-radius:12px;padding:16px 20px;background:var(--wh)">
+      <div style="font-size:16px;font-weight:800">Engineering</div>
+      <div style="font-size:13px;color:var(--sub);margin-top:4px">AI/ML systems, scoring pipelines, proof chains, production APIs</div>
+    </div>
+    <div style="border:3px solid var(--border);border-radius:12px;padding:16px 20px;background:var(--wh)">
+      <div style="font-size:16px;font-weight:800">Advisory</div>
+      <div style="font-size:13px;color:var(--sub);margin-top:4px">AI governance, regulatory standards, epistemic discipline, quality frameworks</div>
+    </div>
+    <div style="border:3px solid var(--border);border-radius:12px;padding:16px 20px;background:var(--wh)">
+      <div style="font-size:16px;font-weight:800">Consulting</div>
+      <div style="font-size:13px;color:var(--sub);margin-top:4px">AI quality audits, model benchmarking, compliance measurement, GOLD integration</div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:14px;font-family:var(--m);font-size:12px;font-weight:800;color:var(--sub)">Tashkent · Remote · Open to relocation</div>
+  <div style="margin-top:14px;border:3px solid var(--border);border-radius:12px;padding:16px 20px;background:var(--wh)">
+    <div style="font-size:14px;color:var(--sub);line-height:1.7"><strong style="color:var(--bk)">Note on ONTO:</strong> ONTO Standards Council runs on automated infrastructure — API, scoring, proof chain operate independently. Available for full-time engagement. ONTO and employer interests are complementary, not competing: the protocol makes AI systems better, regardless of context.</div>
+    <div style="font-size:14px;color:var(--sub);line-height:1.7;margin-top:8px"><strong style="color:var(--bk)">Note on English:</strong> Working proficiency — read, write, technical documentation, research papers. Speaking — in active development. Ready to invest in intensive language training. Every document on this page, every landing, every report was written in English by the author.</div>
+  </div>
+</section>
+
+</div>
+
+
+<div style="padding:32px 24px;text-align:center;border-top:3px solid var(--bk)">
+  <div style="font-size:18px;font-weight:900">Hakim Tohirovich</div>
+  <div style="font-family:var(--m);font-size:12px;color:var(--dim);margin-top:6px;line-height:2">
+    <a href="/cdn-cgi/l/email-protection#5f3c302a313c36331f30312b302c2b3e313b3e2d3b71302d38"><span class="__cf_email__" data-cfemail="91f2fee4fff2f8fdd1feffe5fee2e5f0fff5f0e3f5bffee3f6">[email&#160;protected]</span></a> · 
+    
