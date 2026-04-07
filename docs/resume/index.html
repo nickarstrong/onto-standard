@@ -113,16 +113,25 @@ section{padding:48px 0;border-top:3px solid var(--bk)}
 section,.hero,.origin{animation:fadeUp .6s ease-out both}
 @media print{
   body::before{display:none}
-  section,.origin,.products-wrap{page-break-inside:avoid;break-inside:avoid}
-  .hero{page-break-after:avoid}
-  .radar-section{page-break-inside:avoid}
-  .bm{page-break-inside:avoid}
-  .tl{page-break-inside:avoid}
-  a{color:var(--bk)!important;text-decoration:underline}
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .hero{page-break-after:avoid;break-after:avoid}
+  .origin{page-break-inside:avoid;break-inside:avoid}
+  .radar-section{page-break-inside:avoid;break-inside:avoid}
+  .bm{page-break-inside:avoid;break-inside:avoid}
+  .tl-item{page-break-inside:avoid;break-inside:avoid}
+  .pub{page-break-inside:avoid;break-inside:avoid}
+  .mgrid{page-break-inside:avoid;break-inside:avoid}
+  .pills{page-break-inside:avoid;break-inside:avoid}
+  .langs{page-break-inside:avoid;break-inside:avoid}
+  section{padding:24px 0;page-break-before:auto}
+  a{color:var(--bk)!important;text-decoration:underline}
   .w{max-width:100%;padding:0 16px}
   body{font-size:11px}
-  section{padding:28px 0}
+  div[style*="display:flex;gap:16px"]{page-break-inside:avoid;break-inside:avoid}
+  div[style*="display:grid"]{page-break-inside:avoid;break-inside:avoid}
+  table{page-break-inside:avoid;break-inside:avoid}
+  div[style*="border:3px solid"]{page-break-inside:avoid;break-inside:avoid}
+  div[style*="border-radius:14px"]{page-break-inside:avoid;break-inside:avoid}
 }
 </style>
 </head>
@@ -474,6 +483,24 @@ section,.hero,.origin{animation:fadeUp .6s ease-out both}
       <em style="color:rgba(255,255,255,0.85)">Schema</em> — for an engineer. Input → process → output.<br>
       <em style="color:rgba(255,255,255,0.85)">Circle</em> — for a minister. One investment, three results.
     </div>
+  </div>
+
+  <!-- BEFORE/AFTER -->
+  <div style="margin-top:24px">
+    <div style="font-family:var(--m);font-size:11px;font-weight:800;color:var(--dim);letter-spacing:2px;margin-bottom:10px">CONVERTER IN ACTION — REAL API OUTPUT</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <div style="flex:1;min-width:240px;border:3px solid rgba(220,38,38,0.2);border-radius:10px;padding:14px 16px;background:rgba(220,38,38,0.03)">
+        <div style="font-family:var(--m);font-size:10px;font-weight:800;color:var(--red);letter-spacing:1.5px;margin-bottom:6px">WITHOUT GOLD</div>
+        <div style="font-size:13px;color:var(--sub);line-height:1.6;font-style:italic">"Studies show that vitamin D is very effective for preventing respiratory infections. Many experts recommend supplementation."</div>
+        <div style="font-family:var(--m);font-size:10px;color:var(--red);margin-top:8px;font-weight:700">⚠ No source · No confidence · No limitations · No DOI</div>
+      </div>
+      <div style="flex:1;min-width:240px;border:3px solid rgba(34,197,94,0.2);border-radius:10px;padding:14px 16px;background:rgba(34,197,94,0.03)">
+        <div style="font-family:var(--m);font-size:10px;font-weight:800;color:var(--gd);letter-spacing:1.5px;margin-bottom:6px">WITH GOLD</div>
+        <div style="font-size:13px;color:var(--sub);line-height:1.6">"Vitamin D supplementation shows <strong>moderate effect</strong> (OR 1.3, 95% CI 1.1-1.5) on acute respiratory infections. <strong>Source:</strong> Martineau et al., BMJ, 2017. <strong>DOI:</strong> 10.1136/bmj.i6583. <strong>Grade:</strong> systematic review, 25 RCTs. <strong>Confidence:</strong> moderate. <strong>Limitation:</strong> heterogeneity across study populations."</div>
+        <div style="font-family:var(--m);font-size:10px;color:var(--gd);margin-top:8px;font-weight:700">✅ Source · DOI · CI · Grade · Limitations · Confidence</div>
+      </div>
+    </div>
+    <div style="font-family:var(--m);font-size:11px;color:var(--dim);margin-top:8px;text-align:center">Same model. Same question. One layer difference.</div>
   </div>
 </section>
 
