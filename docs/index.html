@@ -371,7 +371,7 @@ section:nth-child(3){animation-delay:.15s}
 
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 let isCal=false;
 function toggleOrb(){
   isCal=!isCal;
@@ -393,3 +393,12 @@ function toggleOrb(){
 function updateSig(){
   const el=document.getElementById('sigBytes');if(!el)return;
   const b=[];for(let i=0;i<8;i++)b.push(
+    Math.floor(Math.random()*256).toString(16).padStart(2,'0').toUpperCase()
+  );
+  el.innerHTML=b.map(x=>'<span class="byte">'+x+'</span>').join('');
+}
+setInterval(updateSig,2000);
+updateSig();
+</script>
+</body>
+</html>
