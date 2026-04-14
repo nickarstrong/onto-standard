@@ -177,12 +177,12 @@ section:last-of-type{border-bottom:none}
 .res-list{font-size:13px;color:#333;line-height:1.8}
 
 /* FOOTER */
-
-
-
-
-
-
+.footer{padding:24px 0;border-top:2px solid var(--black);display:flex;align-items:center;justify-content:space-between}
+.footer-left .name{font-size:14px;font-weight:800}
+.footer-left .role{font-size:11px;color:var(--sub);margin-top:2px}
+.footer-left .email{font-family:var(--mono);font-size:11px;color:var(--gd);font-weight:700;margin-top:4px}
+.footer-right{font-family:var(--mono);font-size:11px;text-align:right;line-height:1.8}
+.footer-right a{color:var(--gd);text-decoration:none;font-weight:800}
 
 @media(max-width:640px){
   .metrics{grid-template-columns:repeat(2,1fr)}
@@ -191,8 +191,8 @@ section:last-of-type{border-bottom:none}
   .fl-arr{transform:rotate(90deg);padding:2px 0}
   .cta-buttons{flex-direction:column;align-items:center}
   .header{position:static}
-  
-  
+  .footer{flex-direction:column;gap:16px;text-align:center}
+  .footer-right{text-align:center}
   .hero h1{font-size:26px}
 }
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
@@ -454,14 +454,14 @@ section:nth-child(4){animation-delay:.2s}
       <div class="depth-icon" style="font-size:32px">📖</div>
       <div>
         <div class="depth-title" style="font-size:16px"><span class="uz">To'liq texnik tahlil — ONTO Lightpaper</span><span class="ru">Полный технический обзор — ONTO Lightpaper</span></div>
-        <div class="depth-desc" style="font-size:12px;margin-top:4px"><span class="uz">Meta AMI ($1B) vs ONTO taqqoslash. 16 modul. 6 metrika before/after. DeepSeek $0.002 GPT $200B ni yengadi. R1-R16 to'liq jadval.</span><span class="ru">Сравнение Meta AMI ($1B) vs ONTO. 16 модулей. 6 метрик before/after. DeepSeek $0.002 бьёт GPT $200B. Полная таблица R1-R16.</span></div>
+        <div class="depth-desc" style="font-size:12px;margin-top:4px"><span class="uz">Meta AMI ($1B) vs ONTO taqqoslash. 18 modul. 6 metrika before/after. DeepSeek $0.002 GPT $200B ni yengadi. R1-R18 to'liq jadval.</span><span class="ru">Сравнение Meta AMI ($1B) vs ONTO. 18 модулей. 6 метрик before/after. DeepSeek $0.002 бьёт GPT $200B. Полная таблица R1-R18.</span></div>
       </div>
     </div>
   </a>
   <div class="depth-grid">
     <a class="depth-card" href="https://ontostandard.org/regulator" target="_blank"><div class="depth-icon">📊</div><div class="depth-title"><span class="uz">Regulyator dashboardi</span><span class="ru">Регуляторный дашборд</span></div><div class="depth-desc"><span class="uz">Nazorat qanday ko'rinishda. Har bir model uchun A-F baho. Trendlar. Bitta ekran.</span><span class="ru">Как выглядит контроль AI. Оценки A-F по каждой модели. Тренды. Один экран.</span></div></a>
     <a class="depth-card" href="https://ontostandard.org/reports" target="_blank"><div class="depth-icon">📄</div><div class="depth-title"><span class="uz">12 nashr etilgan hisobot</span><span class="ru">12 опубликованных отчётов</span></div><div class="depth-desc"><span class="uz">CS-2026-001 (11 model, 1000 baho), CS-2026-002 (GLP-1, 12 model). To'liq metodologiya.</span><span class="ru">CS-2026-001 (11 моделей, 1000 оценок), CS-2026-002 (GLP-1, 12 моделей). Полная методология.</span></div></a>
-    <a class="depth-card" href="https://github.com/nickarstrong/onto-research" target="_blank"><div class="depth-icon">💻</div><div class="depth-title"><span class="uz">Ochiq kod va ma'lumotlar</span><span class="ru">Открытый код и данные</span></div><div class="depth-desc"><span class="uz">Scoring engine 993 qator. Barcha eksperimental ma'lumotlar. GitHub. Tekshiriladi.</span><span class="ru">Scoring engine 993 строки. Все экспериментальные данные. GitHub. Всё проверяемо.</span></div></a>
+    <a class="depth-card" href="https://github.com/nickarstrong/onto-research" target="_blank"><div class="depth-icon">💻</div><div class="depth-title"><span class="uz">Ochiq kod va ma'lumotlar</span><span class="ru">Открытый код и данные</span></div><div class="depth-desc"><span class="uz">Scoring engine 1073 qator. Barcha eksperimental ma'lumotlar. GitHub. Tekshiriladi.</span><span class="ru">Scoring engine 1073 строки. Все экспериментальные данные. GitHub. Всё проверяемо.</span></div></a>
     <a class="depth-card" href="https://ontostandard.org/agent" target="_blank"><div class="depth-icon">🧪</div><div class="depth-title"><span class="uz">Live Agent — sinab ko'ring</span><span class="ru">Live Agent — попробовать</span></div><div class="depth-desc"><span class="uz">Istalgan savol bering. Oddiy SI bilan solishtiring. Farq — 30 soniyada.</span><span class="ru">Задайте любой вопрос. Сравните с обычным AI. Разница — за 30 секунд.</span></div></a>
   </div>
   <div class="forward-section">
@@ -471,22 +471,16 @@ section:nth-child(4){animation-delay:.2s}
 </section>
 
 <!-- FOOTER -->
-<div style="padding:24px 0;border-top:2px solid var(--text,#1a1a1a);margin-top:32px;">
-  <div style="text-align:center;">
-    <p style="font-size:14px;font-weight:800;color:var(--text,#1a1a1a);">Hakim Tohirovich</p>
-    <p style="font-size:11px;color:var(--sub,#888);margin-top:2px;">Founder · ONTO Standards Council</p>
-    <p style="font-size:11px;margin-top:6px;">
-      <a href="mailto:council@ontostandard.org" style="color:var(--gd,#15803d);font-weight:700;text-decoration:none;">council@ontostandard.org</a>
-      &middot; <a href="tel:+998903920139" style="color:var(--gd,#15803d);font-weight:700;text-decoration:none;">+998 90 392 01 39</a>
-      &middot; <a href="https://t.me/ontokhakim" target="_blank" style="color:var(--gd,#15803d);font-weight:700;text-decoration:none;">Telegram</a>
-    </p>
-    <div style="display:flex;gap:8px;margin-top:10px;justify-content:center;flex-wrap:wrap;">
-      <a href="https://www.linkedin.com/company/ontostandard" target="_blank" style="font-size:10px;color:var(--sub,#888);text-decoration:none;padding:3px 8px;border:1px solid var(--border,#e5e7eb);border-radius:4px">LinkedIn</a>
-      <a href="https://medium.com/@ontostandard" target="_blank" style="font-size:10px;color:var(--sub,#888);text-decoration:none;padding:3px 8px;border:1px solid var(--border,#e5e7eb);border-radius:4px">Medium</a>
-      <a href="https://github.com/nickarstrong/onto-research" target="_blank" style="font-size:10px;color:var(--sub,#888);text-decoration:none;padding:3px 8px;border:1px solid var(--border,#e5e7eb);border-radius:4px">GitHub</a>
-      <a href="https://x.com/ontostandards" target="_blank" style="font-size:10px;color:var(--sub,#888);text-decoration:none;padding:3px 8px;border:1px solid var(--border,#e5e7eb);border-radius:4px">X</a>
-    </div>
-    <p style="font-size:10px;color:var(--sub,#888);margin-top:8px;"><a href="https://ontostandard.org" style="color:var(--gd,#15803d);text-decoration:none;font-weight:600;">ontostandard.org</a></p>
+<div class="footer">
+  <div class="footer-left">
+    <div class="name">Hakim Tohirovich</div>
+    <div class="role">Founder · Scientist-Engineer</div>
+    <div class="email">council&#64;ontostandard.org</div>
+  </div>
+  <div class="footer-right">
+    <a href="https://ontostandard.org">ontostandard.org</a><br>
+    <a href="https://ontostandard.org/docs/">Standard</a> · <a href="https://ontostandard.org/paper/">Research</a> · <a href="https://ontostandard.org/agent">Evaluate</a>
+    <div style="font-size:7px;color:rgba(0,0,0,0.25);margin-top:4px">v2.8 · 02.04.2026</div>
   </div>
 </div>
 
