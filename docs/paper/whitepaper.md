@@ -42,7 +42,7 @@ ONTO Standards Council builds two products from one technology:
 │  │                             │ │  New kind of intelligence   ││
 │  │  Every AI in the country    │ │                             ││
 │  │  graded A-F.                │ │  R1-R7: discipline          ││
-│  │  Dashboard. Proof chain.    │ │  R8-R16: cognition          ││
+│  │  Dashboard. Proof chain.    │ │  R8-R18: cognition          ││
 │  │  Revenue from certification.│ │  ×10 quality. 6 industries. ││
 │  │                             │ │                             ││
 │  │  For: governments           │ │  For: providers, investors  ││
@@ -152,7 +152,7 @@ Disciplined.
 │   cited                           cited                          │
 │                                                                 │
 │   Source: CS-2026-001 · 10 models · 100 questions · 5 domains    │
-│   Scoring: 993 lines Python · deterministic · open source        │
+│   Scoring: 1073 lines Python · deterministic · open source        │
 │   Data: github.com/nickarstrong/onto-research                    │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -421,7 +421,7 @@ The AI industry has two responses to this problem. Both fail.
 │             to shut up.                                          │
 │   Result:   AI cites real sources, quantifies confidence,       │
 │             says "I don't know." Stronger, not weaker.          │
-│   Scoring:  Deterministic. 993 lines regex. Var(Score)=0.      │
+│   Scoring:  Deterministic. 1073 lines regex. Var(Score)=0.      │
 │             Same input → same output. Always. Auditable.        │
 │                                                                 │
 │   Cost:     One API call. <50ms latency. Zero retraining.      │
@@ -597,7 +597,7 @@ Two products deliver this across every critical sector.
 ┌─────────────────────────────────────────────────────────────────┐
 │                     THE PROGRESSION                              │
 │                                                                 │
-│   BASELINE          → + REGULATOR (R1-R7)  → + HUMAN AI (R1-R16)│
+│   BASELINE          → + REGULATOR (R1-R7)  → + HUMAN AI (R1-R18)│
 │   AI without rules     AI with discipline     AI expert          │
 │   dangerous,           law-compliant,         full cycle,        │
 │   unpredictable        accurate               years → months     │
@@ -634,7 +634,7 @@ Two products deliver this across every critical sector.
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   + HUMAN AI (R1-R16)                             Product 2     │
+│   + HUMAN AI (R1-R18)                             Product 2     │
 │   ████████████████████████████████████████████████ full cycle    │
 │                                                                 │
 │   + R11 (Causal Reasoning)                                      │
@@ -674,7 +674,7 @@ Two products deliver this across every critical sector.
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   + HUMAN AI (R1-R16)                             Product 2     │
+│   + HUMAN AI (R1-R18)                             Product 2     │
 │   ████████████████████████████████████████████████ full cycle    │
 │                                                                 │
 │   + R9 (Domain Specialization) + R11 (Causal Reasoning)         │
@@ -715,7 +715,7 @@ Two products deliver this across every critical sector.
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   + HUMAN AI (R1-R16)                             Product 2     │
+│   + HUMAN AI (R1-R18)                             Product 2     │
 │   ████████████████████████████████████████████████ full cycle    │
 │                                                                 │
 │   + R15 (Collaborative Verification)                            │
@@ -756,7 +756,7 @@ Two products deliver this across every critical sector.
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   + HUMAN AI (R1-R16)                             Product 2     │
+│   + HUMAN AI (R1-R18)                             Product 2     │
 │   ████████████████████████████████████████████████ full cycle    │
 │                                                                 │
 │   + R11 (Causal Reasoning)                                      │
@@ -798,7 +798,7 @@ Two products deliver this across every critical sector.
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   + HUMAN AI (R1-R16)                             Product 2     │
+│   + HUMAN AI (R1-R18)                             Product 2     │
 │   ████████████████████████████████████████████████ full cycle    │
 │                                                                 │
 │   + R9 (Domain Specialization)                                  │
@@ -839,7 +839,7 @@ Two products deliver this across every critical sector.
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   + HUMAN AI (R1-R16)                             Product 2     │
+│   + HUMAN AI (R1-R18)                             Product 2     │
 │   ████████████████████████████████████████████████ full cycle    │
 │                                                                 │
 │   + R11 (Causal Reasoning) + R10 (Multimodal Verification)      │
@@ -993,7 +993,7 @@ The regulator reads a grade: A, B, C, D, or F.
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
-│   993 lines Python. Deterministic. Open source.                 │
+│   1073 lines Python. Deterministic. Open source.                 │
 │   github.com/nickarstrong/onto-research                         │
 │                                                                 │
 │   Zero AI in evaluation. Pure regex pattern matching.           │
@@ -1089,7 +1089,7 @@ that knows what it knows and what it doesn't.
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   LEVEL 2: COGNITION (R8-R16)              ✅ PROTOCOL COMPLETE · PLATFORM IN PROGRESS         │
+│   LEVEL 2: COGNITION (R8-R18)              ✅ PROTOCOL COMPLETE · PLATFORM IN PROGRESS         │
 │                                                                 │
 │   AI starts thinking. Builds hypotheses with probabilities.     │
 │   Evaluates causality. Checks itself. Understands its own       │
@@ -1101,7 +1101,7 @@ that knows what it knows and what it doesn't.
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**R8-R16: Higher cognitive functions**
+**R8-R18: Higher cognitive functions**
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -1136,6 +1136,23 @@ that knows what it knows and what it doesn't.
 │                                  3 models demonstrated this —   │
 │                                  spontaneously.                  │
 │                                                                 │
+│   R17  Self-Consistency          Cross-R validation. 8          │
+│        (Epistemic Proofreading)  constraints (C1-C8). Numbers   │
+│                                  need sources (R1↔R4). Full     │
+│                                  confidence needs evidence      │
+│                                  hierarchy (R2↔R5). Fabrication │
+│                                  = frameshift → all scores      │
+│                                  invalidated (R7→ALL).          │
+│                                                                 │
+│   R18  Epistemic Splicing        Removes epistemic introns:     │
+│                                  "studies show" (which?),       │
+│                                  "complex topic" (zero info),   │
+│                                  "many experts" (who?).         │
+│                                  Keeps only exons: named        │
+│                                  sources, specific numbers,     │
+│                                  genuine counterarguments,      │
+│                                  honest "I don't know."         │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1145,7 +1162,7 @@ that knows what it knows and what it doesn't.
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
 │  Situation    Regular AI    Restricted     Human AI              │
-│                             (safety restrictions)         (R1-R16)             │
+│                             (safety restrictions)         (R1-R18)             │
 │  ─────────── ───────────── ────────────── ──────────────────     │
 │  Medication   Recommends.   "Consult your  Patikorn 2022,       │
 │               No source.    doctor."       n=410, CI 70%        │
@@ -1199,6 +1216,85 @@ that knows what it knows and what it doesn't.
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+**Layer V: Coherence (R17-R18) — April 2026**
+
+R17 and R18 were discovered through analysis of P.P. Garyaev's "Wave Genome" (1994). The book itself failed R7 (fabricated co-authorships, non-existent lab). But the structural analogies survived R1-R7 filtering — and produced two new rules.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│   R17: SELF-CONSISTENCY (Epistemic Proofreading)                │
+│                                                                 │
+│   Cross-validates R-scores against each other.                  │
+│   8 constraints (C1-C8):                                        │
+│                                                                 │
+│   C1  Numbers without sources → where did they come from?       │
+│       (R1 ↔ R4)                                                 │
+│   C2  Counterarguments without citations → theater              │
+│       (R3 ↔ R4)                                                 │
+│   C3  100% confidence without evidence hierarchy → blind        │
+│       (R2 ↔ R5)                                                 │
+│   C4  All scores high but sources = 0 → beautiful empty         │
+│       (R4 ↔ ALL)                                                │
+│   C5  Fabrication detected → frameshift: all scores             │
+│       invalidated (R7 → ALL)                                    │
+│   C6  High creativity without discipline → noise                │
+│       (R8 ↔ R1-R7)                                              │
+│   C7  Reasoning without sources → fabrication                   │
+│       (R11 ↔ R4)                                                │
+│   C8  Self-awareness claims without evidence → performance      │
+│       (R16 ↔ R4)                                                │
+│                                                                 │
+│   Analogy: DNA polymerase proofreading.                         │
+│   Error rate: 10⁻⁴ → 10⁻⁹ (100,000× reduction).               │
+│   R17 catches contradictions BETWEEN rules.                     │
+│                                                                 │
+│   Tested: healthy answer 9.2→9.2 (OK).                          │
+│           beautiful empty 8.5→3.5 (caught).                     │
+│           fabrication 4.0→1.0 (frameshift).                     │
+│                                                                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   R18: EPISTEMIC SPLICING (Signal Extraction)                   │
+│                                                                 │
+│   Removes epistemic introns — phrases with zero                 │
+│   information content:                                          │
+│                                                                 │
+│   INTRON (remove)              EXON (keep)                      │
+│   ─────────────────            ─────────────────                │
+│   "Studies show..."            Which studies? Named or cut.     │
+│   "This is complex"            Zero information. Cut.           │
+│   "Many experts agree"         Who? Named or cut.               │
+│   "It should be noted"         Then just say it. Cut.           │
+│   "Research suggests"          Whose research? Named or cut.    │
+│                                                                 │
+│   Analogy: pre-mRNA splicing.                                   │
+│   Introns removed. Exons joined. Mature mRNA = signal only.    │
+│                                                                 │
+│   What survives: named source, specific number,                 │
+│   genuine counterargument, honest "I don't know."               │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Architecture: 5 layers, 18 primitives**
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│   I    DISCIPLINE    R1-R7     Immune system                    │
+│   II   AGENCY        R8-R12    Nervous system                   │
+│   III  LEGACY        R13-R15   Reproductive system              │
+│   IV   CREATION      R16       Creative faculty                 │
+│   V    COHERENCE     R17-R18   Proofreading + splicing          │
+│                                                                 │
+│   Each layer creates conditions for the next.                   │
+│   Discovery is recursive: R17 was found by applying R1-R7      │
+│   to a source that failed R7.                                   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
 **What the investor/buyer gets:**
 
 ```
@@ -1208,7 +1304,7 @@ that knows what it knows and what it doesn't.
 │                                                                 │
 │   • GOLD OS foundation: 100% complete                          │
 │     169 files · 900K tokens · 7 domains · 20 years R&D         │
-│   • Scoring engine: 993 lines · open source · deterministic    │
+│   • Scoring engine: 1073 lines · open source · deterministic    │
 │   • Dashboard for regulators: deployed                          │
 │   • Agent: live at ontostandard.org/agent                      │
 │   • Proxy: production                                           │
@@ -1258,7 +1354,7 @@ that knows what it knows and what it doesn't.
 │  │                      │   │                      │             │
 │  │  Measures quality    │   │  Converts quality    │             │
 │  │  Grades A-F          │   │  ×10 and beyond      │             │
-│  │  Proof chain         │   │  R8-R16 multiply     │             │
+│  │  Proof chain         │   │  R8-R18 multiply     │             │
 │  │  Dashboard           │   │  results             │             │
 │  │                      │   │                      │             │
 │  │  OUTPUT:             │   │  OUTPUT:             │             │
@@ -1760,7 +1856,7 @@ as the measurement layer for existing frameworks."
 │   Sample:        100 questions × 10 models = 1,000 evaluations  │
 │   Domains:       5 (origins of life, medicine, physics,         │
 │                     economics, climate)                          │
-│   Scoring:       993 lines Python · deterministic regex         │
+│   Scoring:       1073 lines Python · deterministic regex         │
 │                  Zero AI in evaluation · Var(Score) = 0          │
 │   Treatment:     GPT 5.2 + GOLD DIGEST v1.0                    │
 │   Selection:     Lowest baseline (0.38) = maximum measurable    │
@@ -2291,7 +2387,7 @@ can AI cite real medical evidence?
 │                                                                 │
 │   ONTO uses zero AI.                                            │
 │                                                                 │
-│   993 lines of Python. Deterministic regex patterns.            │
+│   1073 lines of Python. Deterministic regex patterns.            │
 │   Same input = same output. Always. On any machine.             │
 │   Var(Score) = 0.                                               │
 │                                                                 │
@@ -2486,7 +2582,7 @@ Three forces are converging in 2025-2026 that make the next
 │   By 2031, every AI will have these 6 capabilities natively.   │
 │   $1B spent on what becomes free.                               │
 │                                                                 │
-│   ONTO shipped all 7 equivalents + 9 more (R8-R16)             │
+│   ONTO shipped all 7 equivalents + 11 more (R8-R18)            │
 │   that LeCun didn't include in his plan.                        │
 │   $0 budget. 20 years. All in production.                       │
 │                                                                 │
@@ -2555,12 +2651,12 @@ No deployment. No revenue.
 │              ─────────────────        ────                      │
 │                                                                 │
 │   Paper      60 pages, 2022          169 files, 20 years       │
-│   Modules    6 proposed              16 rules (R1-R16)         │
+│   Modules    6 proposed              18 rules (R1-R18)         │
 │   Budget     $1,000,000,000+         $0                        │
 │   Timeline   4 years (2022-2026)     20 years (2005-2025)      │
 │   Team       Meta AI Research        One researcher + AI       │
 │   Shipped    0 of 6                  7 of 7 (R1-R7)           │
-│                                      + 9 cognitive (R8-R16)    │
+│                                      + 11 cognitive (R8-R18)   │
 │   Production None                    Proxy, Agent, Dashboard,  │
 │                                      Scoring Engine, Portal    │
 │   Models     V-JEPA (research)       22 models tested          │
@@ -2592,7 +2688,7 @@ $1B buys a map without a compass.
 │   #   Module               Meta AMI         ONTO               │
 │   ──  ──────────────────── ──────────────── ──────────────────  │
 │   1   World Model          V-JEPA, research GOLD: 7 domains    │
-│   2   Perception           Partial          Scoring: 993 lines │
+│   2   Perception           Partial          Scoring: 1073 lines │
 │   3   Critic               Not built        Dual-layer: Py+Rust│
 │   4   Actor                Not built        Proxy + Agent, prod │
 │   5   Memory               Not built        169 files + Ed25519│
@@ -2936,7 +3032,7 @@ delivered in real-time via SSE through the ONTO proxy:
 │     ▼                                                           │
 │   ┌─────────────────────────────────┐                           │
 │   │  Scoring Engine v3.0            │                           │
-│   │  993 lines · Pure Python        │                           │
+│   │  1073 lines · Pure Python        │                           │
 │   │  Zero AI · Zero network calls   │                           │
 │   │                                 │                           │
 │   │  EM1-EM5 taxonomy (92 patterns) │                           │
@@ -3914,7 +4010,7 @@ an AI provider can add to their P&L. Here's why.
 │                                       protocols                  │
 │                                                                 │
 │   Human AI Protocol   Partnership     Strategic partners —       │
-│                                       R8-R16 cognitive           │
+│                                       R8-R18 cognitive           │
 │                                       architecture license       │
 │                                       for building sovereign AI  │
 │                                                                 │
@@ -4093,7 +4189,7 @@ an AI provider can add to their P&L. Here's why.
 │                                                                 │
 │   Infrastructure cost: near-zero (SSE architecture)             │
 │   GOLD R&D: already done (20 years, sunk cost)                  │
-│   Scoring engine: 993 lines, maintenance only                   │
+│   Scoring engine: 1073 lines, maintenance only                   │
 │   Staff: small team (no server farm, no DevOps army)            │
 │                                                                 │
 │   This is a software business with 60-70% margins               │
@@ -4178,7 +4274,7 @@ This is the documentation of a product that already works.
 │   GOLD Core          169 files · 900K tokens · 7 domains        │
 │                      20 years of research. Compiled. Deployed.  │
 │                                                                 │
-│   Scoring Engine     993 lines Python · deterministic           │
+│   Scoring Engine     1073 lines Python · deterministic           │
 │                      Var(Score)=0 · open source · reproducible  │
 │                                                                 │
 │   Proxy + SSE        Production. Any AI provider.               │
@@ -4395,7 +4491,7 @@ This is the documentation of a product that already works.
 │   Revenue           $200K    $10-15M   $30-40M   $70-100M      │
 │   Costs             $200K    $2M       $6M        $12M          │
 │   Net               $0       $8-13M    $24-34M   $58-88M       │
-│   Margin            pilot    ~80%      ~82%      ~85%           │
+│   Margin            pilot    ~80%      ~82%      ~Protocol 100%           │
 │                                                                 │
 │   Assumption: EU enforcement + Turkey precedent creates         │
 │   urgent demand. Multiple countries adopt simultaneously.       │
@@ -4670,8 +4766,8 @@ This is the documentation of a product that already works.
 │ ┌─────────────────────────────┐ ┌─────────────────────────────┐ │
 │ │ ✅ ONTO STANDARD — 100%     │ │ ✅ HUMAN AI — PROTOCOL COMPLETE           │ │
 │ │                             │ │                             │ │
-│ │ GOLD Core v4.5              │ │ Q2'26  Identity layer       │ │
-│ │ 169 files, ~900K tokens     │ │        (R8-R16) + Chat UI   │ │
+│ │ GOLD Core v5.1              │ │ Q2'26  Identity layer       │ │
+│ │ 169 files, ~900K tokens     │ │        (R8-R18) + Chat UI   │ │
 │ │ deployed                    │ │                             │ │
 │ │                             │ │ Q3'26  Public Human AI      │ │
 │ │ Scoring Engine v3           │ │        launch + API for     │ │
@@ -4745,7 +4841,7 @@ This is the documentation of a product that already works.
 │                Merkle hash verification implemented.            │
 │                                                                 │
 │   2023-2024    Engineering                                      │
-│                Scoring engine v1-v3 (993 lines, deterministic). │
+│                Scoring engine v1-v3 (1073 lines, deterministic). │
 │                Proxy architecture. SSE delivery.                │
 │                Ed25519 proof chain. Forensic detection.         │
 │                                                                 │
@@ -4776,7 +4872,7 @@ This is the documentation of a product that already works.
 │   ENGINEERING:                                                   │
 │                                                                 │
 │   Month 1-3    Human AI endpoint live                           │
-│                Server architecture for R8-R16 delivery          │
+│                Server architecture for R8-R18 delivery          │
 │                UI for Human AI configuration                    │
 │                Product 2: platform build → 100%                            │
 │                                                                 │
@@ -4792,8 +4888,8 @@ This is the documentation of a product that already works.
 │                Korean, Japanese patterns                        │
 │                Currently EN-only — gap for 6 of 9 countries    │
 │                                                                 │
-│   Month 3-6    Scoring rules R8-R16                             │
-│                Currently R1-R7 scored, R8-R16 not yet          │
+│   Month 3-6    Scoring rules R8-R18                             │
+│                Currently R1-R7 scored, R8-R18 not yet          │
 │                Full 16-rule evaluation = Human AI grading       │
 │                                                                 │
 │   BUSINESS:                                                      │
@@ -4921,7 +5017,7 @@ This is the documentation of a product that already works.
 │   ENGINEERING:                                                   │
 │                                                                 │
 │   • Native speaker review: AR, KR, JP, TR translations         │
-│   • Scoring engine: all 16 rules (R1-R16) fully scored         │
+│   • Scoring engine: all 18 rules (R1-R18) fully scored         │
 │   • Multi-model cross-verification (R15)                       │
 │   • Real-time anomaly detection across country portfolio       │
 │   • API v2: batch scoring, webhook notifications               │
@@ -4985,8 +5081,8 @@ This is the documentation of a product that already works.
 │   (RU, AR, KR, JP, TR)        designed. EN live.                │
 │                                Implementation next.             │
 │                                                                 │
-│   R8-R16 scoring rules         R1-R7 in production.  Month 3-6  │
-│                                R8-R16 designed.                  │
+│   R8-R18 scoring rules         R1-R7 in production.  Month 3-6  │
+│                                R8-R18 designed.                  │
 │                                Expansion planned.               │
 │                                                                 │
 │   Domain-specific              General proof         Phase 1    │
@@ -5295,7 +5391,7 @@ justified. Post-hoc method switching is prohibited.
 │                      No "we ran it again and got different."    │
 │                                                                 │
 │   LEGALLY ADMISSIBLE If a provider disputes a score,            │
-│                      the methodology is public (993 lines),    │
+│                      the methodology is public (1073 lines),    │
 │                      the input is hashed (SHA-256),            │
 │                      the output is signed (Ed25519).           │
 │                      Any court can verify.                      │
@@ -5518,7 +5614,7 @@ is incomplete, and what remains unproven.
 │                                                                 │
 │   REGEX MEASURES FORM, NOT REASONING                             │
 │                                                                 │
-│   Scoring engine v3 (993 lines) uses regex pattern matching.   │
+│   Scoring engine v3 (1073 lines) uses regex pattern matching.   │
 │   It detects epistemic markers: numbers, sources, uncertainty  │
 │   phrases, counterarguments, vague qualifiers.                  │
 │   It cannot assess reasoning coherence, logical consistency,   │
@@ -5681,7 +5777,7 @@ is incomplete, and what remains unproven.
 │   20 years of research originates from one researcher.         │
 │   GOLD is documented (169 files), scoring is open source,      │
 │   all research is published. However, deep understanding of    │
-│   the epistemic framework, R8-R16 cognitive architecture,      │
+│   the epistemic framework, R8-R18 cognitive architecture,      │
 │   and strategic direction currently depends on one person.     │
 │   Advisory board and Foundation+Labs model planned to           │
 │   distribute this dependency.                                  │
@@ -5793,7 +5889,7 @@ is incomplete, and what remains unproven.
 │           It was a side effect of studying how                  │
 │           knowledge works in humans.                            │
 │                                                                 │
-│   2025-   Engineering. Scoring engine (993 lines).              │
+│   2025-   Engineering. Scoring engine (1073 lines).              │
 │   2026    Proxy. SSE. Ed25519 proof chain. Agent. Dashboard.    │
 │           22 models tested. 12 reports published.               │
 │           CS-2026-001: 10 models, ×10 improvement.             │
@@ -5828,10 +5924,10 @@ is incomplete, and what remains unproven.
 │   discipline injection produces measurable, reproducible,      │
 │   cross-domain behavioral change in commercial LLMs.           │
 │                                                                 │
-│   Built: GOLD Core (169 files), scoring engine (993 lines),    │
+│   Built: GOLD Core (169 files), scoring engine (1073 lines),    │
 │   proxy infrastructure, SSE delivery, proof chain, forensic    │
 │   detection, agent, dashboard. Tested 22 models. Published     │
-│   12 reports. Designed R1-R16 architecture.                    │
+│   12 reports. Designed R1-R18 architecture.                    │
 │                                                                 │
 │   Contact:                                                      │
 │   council@ontostandard.org                                      │
@@ -5927,7 +6023,7 @@ is incomplete, and what remains unproven.
 │   This document.                                                │
 │                                                                 │
 │   Scoring Engine v3.0                                            │
-│   993 lines Python. Deterministic regex. EM1-EM5 taxonomy.     │
+│   1073 lines Python. Deterministic regex. EM1-EM5 taxonomy.     │
 │   github.com/nickarstrong/onto-research                         │
 │                                                                 │
 │   ONTO Protocol v3.2                                             │
