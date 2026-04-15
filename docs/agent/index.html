@@ -174,6 +174,19 @@ header{display:flex;align-items:center;justify-content:space-between;height:52px
 .mode-pill .dot{width:8px;height:8px;border-radius:50%;background:var(--orange)}
 .mode-pill.live .dot{background:var(--green)}
 
+/* ── R-MODULE TOGGLES ── */
+.r-toggles{margin-top:14px;border-top:1px solid var(--border);padding-top:12px}
+.r-toggles-hdr{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.r-toggles-hdr span{cursor:pointer;color:var(--green);font-size:9px;text-transform:none;letter-spacing:0}
+.r-layer{margin-bottom:8px}
+.r-layer-title{font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:4px}
+.r-grid{display:flex;flex-wrap:wrap;gap:4px}
+.r-chip{display:flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);cursor:pointer;font-family:var(--mono);font-size:10px;color:var(--text2);transition:.15s;user-select:none}
+.r-chip:hover{border-color:var(--border-h)}
+.r-chip.on{border-color:var(--green-d);background:var(--green-bg);color:var(--green)}
+.r-chip .r-dot{width:6px;height:6px;border-radius:50%;background:var(--text3);transition:.15s}
+.r-chip.on .r-dot{background:var(--green)}
+
 /* RTL */
 [dir="rtl"] .msg-user{justify-content:flex-start}
 [dir="rtl"] .msg-user-text{border-radius:var(--radius) var(--radius) var(--radius) 4px}
@@ -242,6 +255,28 @@ header{display:flex;align-items:center;justify-content:space-between;height:52px
         <span id="modeLbl">DEMO</span>
       </div>
       <button class="modal-close" onclick="closeSettings()">Close</button>
+    </div>
+    <div class="r-toggles">
+      <div class="r-toggles-hdr">R-MODULES <span onclick="toggleAllR()">all on/off</span></div>
+      <div class="r-layer"><div class="r-layer-title">II · Agency</div><div class="r-grid">
+        <div class="r-chip on" data-r="8" onclick="toggleR(this)"><span class="r-dot"></span>R8 Resolve</div>
+        <div class="r-chip on" data-r="9" onclick="toggleR(this)"><span class="r-dot"></span>R9 Surprise</div>
+        <div class="r-chip on" data-r="10" onclick="toggleR(this)"><span class="r-dot"></span>R10 Self</div>
+        <div class="r-chip on" data-r="11" onclick="toggleR(this)"><span class="r-dot"></span>R11 Integrity</div>
+        <div class="r-chip on" data-r="12" onclick="toggleR(this)"><span class="r-dot"></span>R12 Drive</div>
+      </div></div>
+      <div class="r-layer"><div class="r-layer-title">III · Legacy</div><div class="r-grid">
+        <div class="r-chip on" data-r="13" onclick="toggleR(this)"><span class="r-dot"></span>R13 Empathy</div>
+        <div class="r-chip on" data-r="14" onclick="toggleR(this)"><span class="r-dot"></span>R14 Transmit</div>
+        <div class="r-chip on" data-r="15" onclick="toggleR(this)"><span class="r-dot"></span>R15 Correct</div>
+      </div></div>
+      <div class="r-layer"><div class="r-layer-title">IV · Creation</div><div class="r-grid">
+        <div class="r-chip on" data-r="16" onclick="toggleR(this)"><span class="r-dot"></span>R16 Discover</div>
+      </div></div>
+      <div class="r-layer"><div class="r-layer-title">V · Coherence</div><div class="r-grid">
+        <div class="r-chip on" data-r="17" onclick="toggleR(this)"><span class="r-dot"></span>R17 Consist.</div>
+        <div class="r-chip on" data-r="18" onclick="toggleR(this)"><span class="r-dot"></span>R18 Splicing</div>
+      </div></div>
     </div>
   </div>
 </div>
@@ -419,6 +454,16 @@ let gold = true, hist = [], convId = null, busy = false, ac = null;
 
 function openSettings() { document.getElementById('modalBg').classList.add('open') }
 function closeSettings() { document.getElementById('modalBg').classList.remove('open') }
+
+function toggleR(el) { el.classList.toggle('on') }
+function toggleAllR() {
+  const chips = document.querySelectorAll('.r-chip');
+  const allOn = [...chips].every(c => c.classList.contains('on'));
+  chips.forEach(c => c.classList.toggle('on', !allOn));
+}
+function getEnabledR() {
+  return [...document.querySelectorAll('.r-chip.on')].map(c => parseInt(c.dataset.r));
+}
 function toggleMode() {
   demoMode = !demoMode;
   const pill = document.getElementById('modePill');
@@ -478,27 +523,29 @@ function rBars(metrics, extra) {
     { k: 'R1', v: metrics.QD }, { k: 'R2', v: metrics.UM }, { k: 'R3', v: metrics.CP },
     { k: 'R4', v: metrics.SS }, { k: 'R5', v: metrics.VQ }, { k: 'R7', v: metrics.CONF }
   ];
-  const rm = extra?.r_modules || {};
-  ['R8','R9','R10','R11','R12','R13','R14','R15','R16'].forEach(k => {
-    if (rm[k]) rows.push({ k, v: rm[k].score });
-  });
   let html = rows.map(r => {
     const v = r.v != null ? r.v : null;
     const pct = v != null ? Math.round(v * 100) : 0;
     const cls = v >= 0.7 ? 'good' : v >= 0.4 ? 'mid' : 'bad';
     return `<div class="r-bar"><span class="r-label">${r.k}</span><div class="r-track"><div class="r-fill ${cls}" style="width:${pct}%"></div></div><span class="r-val">${v != null ? v.toFixed(2) : '—'}</span></div>`;
   }).join('');
-  const cr = extra?.r17_cross_r;
-  if (cr) html += `<div class="r-signal ${cr.self_consistent?'ok':'warn'}"><span style="font-weight:600">R17</span> ${cr.self_consistent?'✓ Consistent':'⚠ '+cr.signals+' signal(s)'}</div>`;
-  const sp = extra?.r18_splicing;
-  if (sp) html += `<div class="r-signal ${sp.clean?'ok':'warn'}"><span style="font-weight:600">R18</span> ${sp.clean?'✓ Clean':'🧬 '+sp.intron_count+' intron(s)'}</div>`;
+  const enabled = getEnabledR();
+  const rNames = {8:'Resolve',9:'Surprise',10:'Self',11:'Integrity',12:'Drive',13:'Empathy',14:'Transmit',15:'Correct',16:'Discover',17:'Consist.',18:'Splicing'};
+  if (enabled.length > 0) {
+    html += '<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:3px">';
+    for (let i = 8; i <= 18; i++) {
+      const on = enabled.includes(i);
+      html += `<span style="font-family:var(--mono);font-size:9px;padding:2px 6px;border-radius:4px;background:${on?'var(--green-bg)':'var(--bg3)'};color:${on?'var(--green)':'var(--text3)'};border:1px solid ${on?'var(--green-d)':'var(--border)'}">R${i}</span>`;
+    }
+    html += '</div>';
+  }
   return html;
 }
 
 // ── API CALL ──
 async function apiCall(msg, goldOn, hdrs, signal) {
   const { mid } = getConfig();
-  const body = { message: msg, model_id: mid, history: [], language: curLang === 'en' ? 'auto' : curLang, depth: 'auto', gold_enabled: goldOn };
+  const body = { message: msg, model_id: mid, history: [], language: curLang === 'en' ? 'auto' : curLang, depth: 'auto', gold_enabled: goldOn, enabled_r_modules: getEnabledR() };
   const r = await fetch(`${API}/v1/agent/chat`, { method: 'POST', headers: hdrs, body: JSON.stringify(body), signal });
   if (!r.ok) { let e = `Error ${r.status}`; try { e = (await r.json()).detail || e } catch {} throw new Error(e) }
   return r.json();
@@ -539,7 +586,7 @@ async function send() {
   if (key) hdrs['x-api-key'] = key;
 
   try {
-    const body = { message: msg, model_id: mid, history: hist.slice(-20), language: curLang === 'en' ? 'auto' : curLang, depth: 'auto', gold_enabled: true };
+    const body = { message: msg, model_id: mid, history: hist.slice(-20), language: curLang === 'en' ? 'auto' : curLang, depth: 'auto', gold_enabled: true, enabled_r_modules: getEnabledR() };
     if (convId) body.conversation_id = convId;
     const r = await fetch(`${API}/v1/agent/chat`, { method: 'POST', headers: hdrs, body: JSON.stringify(body), signal: ac.signal });
     ld.remove();
@@ -662,8 +709,6 @@ function fillPanel(id, data, type) {
   const gr = s.compliance_class||'?', num = s.grade!=null?s.grade:'?';
   const uid = id + '_d';
   const rows = [{k:'R1',v:m.QD},{k:'R2',v:m.UM},{k:'R3',v:m.CP},{k:'R4',v:m.SS},{k:'R5',v:m.VQ},{k:'R7',v:m.CONF}];
-  const rm = s.r_modules||{};
-  ['R8','R9','R10','R11','R12','R13','R14','R15','R16'].forEach(k=>{if(rm[k])rows.push({k,v:rm[k].score})});
   const barsHtml = rows.map(r=>{
     const v=r.v!=null?r.v:null,pct=v!=null?Math.round(v*100):0,cls=v>=0.7?'good':v>=0.4?'mid':'bad';
     return `<div class="r-bar"><span class="r-label">${r.k}</span><div class="r-track"><div class="r-fill ${cls}" style="width:${pct}%"></div></div><span class="r-val">${v!=null?v.toFixed(2):'—'}</span></div>`;
