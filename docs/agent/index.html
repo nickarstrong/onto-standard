@@ -572,21 +572,47 @@ function stop() {
 function rmWelcome() { const w = document.getElementById('welcome'); if (w) w.remove() }
 function gradeClass(g) { return 'grade-' + (g === 'A' ? 'a' : g === 'B' ? 'b' : g === 'C' ? 'c' : g === 'D' ? 'd' : 'f') }
 
-function metricRows(m, cls) {
+function metricRows(m, cls, extra) {
+  // R1-R7 from score.metrics
   const rows = [
     { k: 'R1', v: m.QD, label: 'Quantify' }, { k: 'R2', v: m.UM, label: 'Uncertainty' },
     { k: 'R3', v: m.CP, label: 'Counter' }, { k: 'R4', v: m.SS, label: 'Sources' },
     { k: 'R5', v: m.VQ, label: 'Evidence' }, { k: 'R7', v: m.CONF, label: 'Fabrication' }
   ];
-  return rows.map(r => {
+  // R8-R16 from score.r_modules
+  const rm = extra?.r_modules || {};
+  const r8map = {R8:'Creativity',R9:'Domain',R10:'Multimodal',R11:'Causal',R12:'Temporal',R13:'Adversarial',R14:'Audit',R15:'Collaborative',R16:'Self-Aware'};
+  Object.entries(r8map).forEach(([k,label]) => {
+    const mod = rm[k]; if (mod) rows.push({ k, v: mod.score, label });
+  });
+  let html = rows.map(r => {
     const v = r.v != null ? r.v : null;
     const pct = v != null ? Math.round(v * 100) : 0;
     return `<div class="sc-row">
       <span class="sc-lbl" title="${r.label}">${r.k}</span>
       <div class="sc-track"><div class="sc-fill" style="width:${pct}%"></div></div>
-      <span class="sc-val">${v != null ? v.toFixed(2) : '—'}</span>
+      <span class="sc-val">${v != null ? (typeof v === 'number' ? v.toFixed(2) : v) : '—'}</span>
     </div>`;
   }).join('');
+  // R17 Cross-R
+  const cr = extra?.r17_cross_r;
+  if (cr) {
+    const ok = cr.self_consistent;
+    html += `<div class="sc-row" style="margin-top:6px;border-top:1px solid var(--border);padding-top:6px">
+      <span class="sc-lbl" title="Self-Consistency" style="color:${ok?'var(--safe-l)':'var(--warn)'}">R17</span>
+      <span style="font-size:11px;color:${ok?'var(--safe-l)':'var(--warn)'}">${ok ? '✓ Consistent' : '⚠ ' + (cr.signals?.length || 0) + ' signal(s), penalty ' + (cr.penalty||0)}</span>
+    </div>`;
+  }
+  // R18 Splicing
+  const sp = extra?.r18_splicing;
+  if (sp) {
+    const clean = sp.clean;
+    html += `<div class="sc-row">
+      <span class="sc-lbl" title="Epistemic Splicing" style="color:${clean?'var(--safe-l)':'var(--warn)'}">R18</span>
+      <span style="font-size:11px;color:${clean?'var(--safe-l)':'var(--warn)'}">${clean ? '✓ Clean' : '🧬 ' + sp.intron_count + ' intron(s), score ' + sp.r18_score}</span>
+    </div>`;
+  }
+  return html;
 }
 
 // ── API CALL ──
@@ -661,7 +687,7 @@ function addAgentMsg(data) {
   const risk = s.risk_score, mods = data.modules_loaded || [], proof = data.proof || {};
   const uid = 's' + Date.now();
 
-  const barsHtml = metricRows(m);
+  const barsHtml = metricRows(m, null, s);
   const modsH = mods.length ? `<div class="sc-mods">${mods.map(x => `<span class="sc-mod">${esc(x)}</span>`).join('')}</div>` : '';
   const proofH = proof.hash ? `<span>${proof.hash.substring(0, 12)}…</span><a href="${proof.verify_url}" target="_blank">Verify ↗</a>` : '';
 
@@ -672,11 +698,10 @@ function addAgentMsg(data) {
     <div class="sc">
       <div class="sc-head" onclick="document.getElementById('${uid}').classList.toggle('open');this.querySelector('.sc-arrow').textContent=document.getElementById('${uid}').classList.contains('open')?'▲':'▼'">
         <div class="sc-left">
-          <div class="sc-score">${num}</div>
-          <span class="grade ${gradeClass(gr)}">Grade ${gr}</span>
-          <span class="sc-risk">Risk ${typeof risk === 'number' ? risk.toFixed(3) : risk}</span>
+          <span class="grade ${gradeClass(gr)}">${gr}</span>
+          <span class="sc-score" style="font-size:14px">${num}/10</span>
         </div>
-        <span class="sc-arrow">▼</span>
+        <span class="sc-arrow" style="color:var(--text-m);font-size:11px">Show analysis ▼</span>
       </div>
       <div class="sc-detail" id="${uid}">
         <div class="sc-metrics">${barsHtml}</div>
@@ -836,6 +861,9 @@ function fillPanel(panelId, data, type) {
   const uid = panelId + '_d';
 
   const rows = [{ k: 'Score', v: num, max: 10 }, { k: 'R1', v: m.QD, max: 1 }, { k: 'R2', v: m.UM, max: 1 }, { k: 'R3', v: m.CP, max: 1 }, { k: 'R4', v: m.SS, max: 1 }, { k: 'R5', v: m.VQ, max: 1 }, { k: 'R7', v: m.CONF, max: 1 }];
+  // R8-R16 from r_modules
+  const rm = s.r_modules || {};
+  ['R8','R9','R10','R11','R12','R13','R14','R15','R16'].forEach(k => { if (rm[k]) rows.push({ k, v: rm[k].score, max: 1 }) });
 
   const barsHtml = rows.map(r => {
     const v = r.v != null ? r.v : null;
@@ -847,6 +875,12 @@ function fillPanel(panelId, data, type) {
     </div>`;
   }).join('');
 
+  // R17/R18 indicators
+  const cr = s.r17_cross_r; const sp = s.r18_splicing;
+  let r17r18 = '';
+  if (cr) r17r18 += `<div class="sc-row" style="margin-top:4px"><span class="sc-lbl" style="color:${cr.self_consistent?'var(--safe-l)':'var(--warn)'}">R17</span><span style="font-size:10px;color:${cr.self_consistent?'var(--safe-l)':'var(--warn)'}">${cr.self_consistent?'✓':'⚠ '+cr.signals+' sig'}</span></div>`;
+  if (sp) r17r18 += `<div class="sc-row"><span class="sc-lbl" style="color:${sp.clean?'var(--safe-l)':'var(--warn)'}">R18</span><span style="font-size:10px;color:${sp.clean?'var(--safe-l)':'var(--warn)'}">${sp.clean?'✓':'🧬 '+sp.intron_count}</span></div>`;
+
   const modsH = mods.length ? `<div class="sc-mods">${mods.map(x => `<span class="sc-mod">${esc(x)}</span>`).join('')}</div>` : '';
   const proofH = proof.hash ? `<div class="sc-foot"><span>${proof.hash.substring(0, 12)}…</span><a href="${proof.verify_url}" target="_blank">Verify ↗</a></div>` : '';
 
@@ -856,10 +890,10 @@ function fillPanel(panelId, data, type) {
   el.innerHTML = `
     <div class="pnl-top"><span class="pnl-lbl">${lbl}</span>
       <span class="pnl-badge">${badge}</span>
-      <span class="grade ${gradeClass(gr)}" style="margin-left:auto">Grade ${gr}</span>
+      <span class="grade ${gradeClass(gr)}" style="margin-left:auto">${gr} ${num}/10</span>
     </div>
     <div class="pnl-body">${fmt(data.response || '')}</div>
-    ${barsHtml}
+    ${barsHtml}${r17r18}
     <div class="pnl-detail-toggle" onclick="document.getElementById('${uid}').classList.toggle('open');this.textContent=document.getElementById('${uid}').classList.contains('open')?'${t('collapse')}':'${t('details')}'">${t('details')}</div>
     <div class="pnl-detail" id="${uid}">
       ${modsH}${proofH}
