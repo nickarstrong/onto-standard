@@ -182,12 +182,13 @@ button{font-family:var(--sans)}
   <button class="btn-cmp" id="btnCmp" onclick="compare()">VS</button>
   <button class="btn-stop" id="btnStop" onclick="stop()">Stop</button>
 </div><div class="input-meta"><span id="remLbl"></span><span id="langLbl"></span></div></div>
-<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeSettings()"><div class="modal">
+<div class="modal-bg" id="modalBg" onmousedown="if(event.target===this)closeSettings()"><div class="modal" onmousedown="event.stopPropagation()" onclick="event.stopPropagation()">
   <div class="modal-handle"></div>
   <h3 id="settingsTitle">Settings</h3>
   <div class="modal-field"><label>AI PROVIDER KEY</label><input type="password" id="apiKey" placeholder="sk-... from OpenAI, Anthropic, etc."></div>
   <div class="modal-field"><label>MODEL <span style="opacity:.5;text-transform:none">(auto-detected)</span></label><input type="text" id="modelId" placeholder="gpt-4o, claude-sonnet-4... or leave empty"></div>
   <div class="modal-row"><button class="modal-close" onclick="closeSettings()">Close</button></div>
+  <div style="margin-top:10px;text-align:center"><span style="font-family:var(--mono);font-size:11px;color:var(--text3);cursor:pointer;border-bottom:1px dashed var(--text3)" onclick="document.getElementById('apiKey').value='';document.getElementById('modelId').value='';saveCfg()">Clear all fields</span></div>
   <div class="r-toggles"><div class="r-toggles-hdr">R-MODULES <span onclick="toggleAllR()">all on/off</span></div>
     <div class="r-layer"><div class="r-layer-title">II · Agency</div><div class="r-grid"><div class="r-chip on" data-r="8" onclick="toggleR(this)"><span class="r-dot"></span>R8</div><div class="r-chip on" data-r="9" onclick="toggleR(this)"><span class="r-dot"></span>R9</div><div class="r-chip on" data-r="10" onclick="toggleR(this)"><span class="r-dot"></span>R10</div><div class="r-chip on" data-r="11" onclick="toggleR(this)"><span class="r-dot"></span>R11</div><div class="r-chip on" data-r="12" onclick="toggleR(this)"><span class="r-dot"></span>R12</div></div></div>
     <div class="r-layer"><div class="r-layer-title">III · Legacy</div><div class="r-grid"><div class="r-chip on" data-r="13" onclick="toggleR(this)"><span class="r-dot"></span>R13</div><div class="r-chip on" data-r="14" onclick="toggleR(this)"><span class="r-dot"></span>R14</div><div class="r-chip on" data-r="15" onclick="toggleR(this)"><span class="r-dot"></span>R15</div></div></div>
