@@ -174,6 +174,15 @@ header{display:flex;align-items:center;justify-content:space-between;height:52px
 .mode-pill .dot{width:8px;height:8px;border-radius:50%;background:var(--orange)}
 .mode-pill.live .dot{background:var(--green)}
 
+/* ── MENU DROPDOWN ── */
+.menu-wrap{position:relative}
+.menu-dropdown{display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:6px;min-width:170px;z-index:30;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.menu-dropdown.open{display:block}
+.menu-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;font-family:var(--sans);font-size:13px;color:var(--text2);cursor:pointer;text-decoration:none;transition:.1s}
+.menu-item:hover{background:var(--bg3);color:var(--text)}
+.menu-item svg{width:14px;height:14px;opacity:.6;flex-shrink:0}
+.menu-divider{height:1px;background:var(--border);margin:4px 0}
+
 /* ── R-MODULE TOGGLES ── */
 .r-toggles{margin-top:14px;border-top:1px solid var(--border);padding-top:12px}
 .r-toggles-hdr{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
@@ -222,6 +231,38 @@ header{display:flex;align-items:center;justify-content:space-between;height:52px
     <button class="hdr-btn" onclick="openSettings()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </button>
+    <div class="menu-wrap">
+      <button class="hdr-btn" onclick="toggleMenu(event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="menu-dropdown" id="menuDropdown">
+        <a href="/docs/#how" class="menu-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          About ONTO
+        </a>
+        <a href="/docs/#faq" class="menu-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          FAQ
+        </a>
+        <a href="/docs/#privacy" class="menu-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Privacy
+        </a>
+        <a href="/docs/#terms" class="menu-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Terms
+        </a>
+        <div class="menu-divider"></div>
+        <a href="mailto:council@ontostandard.org" class="menu-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Contact
+        </a>
+        <a href="https://ontostandard.org" target="_blank" class="menu-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          ontostandard.org
+        </a>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -454,6 +495,15 @@ let gold = true, hist = [], convId = null, busy = false, ac = null;
 
 function openSettings() { document.getElementById('modalBg').classList.add('open') }
 function closeSettings() { document.getElementById('modalBg').classList.remove('open') }
+
+function toggleMenu(e) {
+  e.stopPropagation();
+  document.getElementById('menuDropdown').classList.toggle('open');
+}
+document.addEventListener('click', (e) => {
+  const dd = document.getElementById('menuDropdown');
+  if (dd && !e.target.closest('.menu-wrap')) dd.classList.remove('open');
+});
 
 function toggleR(el) { el.classList.toggle('on') }
 function toggleAllR() {
