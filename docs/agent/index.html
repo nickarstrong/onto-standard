@@ -2,928 +2,247 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.ontostandard.org https://api.x.ai https://api.openai.com https://api.anthropic.com https://api.deepseek.com https://api.mistral.ai; frame-ancestors 'none'">
-<title>ONTO Agent — Epistemic Analysis</title>
-<meta name="description" content="ONTO AI Agent — epistemic discipline in action. Compare GOLD ON vs OFF side-by-side.">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='17' fill='white'/%3E%3Cpath d='M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z' fill='%230a0a0a'/%3E%3C/svg%3E">
+<title>ONTO</title>
+<meta name="description" content="Ask anything. Every answer is verified, sourced, and scored.">
+<link rel="manifest" href="/agent/manifest.json">
+<meta name="theme-color" content="#18181b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ONTO">
+<link rel="apple-touch-icon" href="/agent/icons/icon-192.png">
+<link rel="icon" type="image/png" href="/agent/icons/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#0a0a0a;--bg-s:#121212;--bg-c:#1a1a1a;--bg-e:#242424;
-  --border:#333;--text:#fafafa;--text-s:#a0a0a0;--text-m:#606060;
-  --safe:#15803d;--safe-s:rgba(21,128,61,.15);--safe-l:#22c55e;
-  --danger:#dc2626;--danger-s:rgba(220,38,38,.12);
-  --warn:#d97706;--blue:#60a5fa;
-  --mono:'JetBrains Mono','SF Mono',Consolas,monospace;
-  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
-}
+:root{--bg:#18181b;--bg2:#1f1f23;--bg3:#27272a;--bg4:#333;--border:rgba(255,255,255,.08);--border-h:rgba(255,255,255,.15);--text:#f4f4f5;--text2:#d4d4d8;--text3:#a1a1aa;--green:#22c55e;--green-d:#16a34a;--green-bg:rgba(34,197,94,.12);--green-glow:rgba(34,197,94,.25);--red:#f87171;--red-bg:rgba(248,113,113,.1);--orange:#fbbf24;--blue:#60a5fa;--sans:'DM Sans',sans-serif;--mono:'JetBrains Mono',monospace;--max:960px;--radius:16px;--glass:rgba(255,255,255,.04);--glass-border:rgba(255,255,255,.08);--shadow:0 4px 24px rgba(0,0,0,.3)}
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%}
-body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.6;display:flex;flex-direction:column}
+html,body{height:100%;overflow:hidden;touch-action:manipulation}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;font-size:16px;line-height:1.7;display:flex;flex-direction:column}
+::selection{background:var(--green);color:#000}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:4px}
+button{font-family:var(--sans)}
+.hdr{display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 16px;border-bottom:1px solid var(--border);flex-shrink:0;background:rgba(24,24,27,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);z-index:20}
+.hdr-left{display:flex;align-items:center;gap:10px}
+.hdr-logo{width:32px;height:32px;cursor:pointer;flex-shrink:0;filter:drop-shadow(0 0 8px rgba(255,255,255,.15))}
+.hdr-logo svg{width:32px;height:32px}
+.hdr-beta{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--green);background:var(--green-bg);border:1px solid rgba(34,197,94,.2);padding:2px 8px;border-radius:4px;letter-spacing:.5px}
+.hdr-right{display:flex;align-items:center;gap:4px}
+.hdr-btn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:none;border:none;color:var(--text3);cursor:pointer;border-radius:10px;transition:.2s}
+.hdr-btn:hover{background:var(--glass);color:var(--text2)}
+.hdr-btn svg{width:20px;height:20px}
+.lang-sel{font-family:var(--mono);font-size:12px;background:var(--bg2);border:1px solid var(--border);color:var(--text3);padding:6px 8px;border-radius:8px;cursor:pointer;outline:none;color-scheme:dark;appearance:none;-webkit-appearance:none;text-align:center;width:42px}
+.menu-wrap{position:relative}
+.menu-dd{display:none;position:absolute;top:calc(100% + 8px);right:0;background:var(--bg2);border:1px solid var(--border-h);border-radius:14px;padding:6px;min-width:200px;z-index:30;box-shadow:var(--shadow);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.menu-dd.open{display:block}
+.menu-a{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;font-size:15px;color:var(--text2);cursor:pointer;text-decoration:none;transition:.15s}
+.menu-a:hover{background:var(--glass);color:var(--text)}
+.menu-a svg{width:16px;height:16px;opacity:.6;flex-shrink:0}
+.menu-sep{height:1px;background:var(--border);margin:4px 8px}
+.chat{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.chat-inner{max-width:var(--max);width:100%;margin:0 auto;padding:16px 20px 24px;flex:1;display:flex;flex-direction:column}
+.welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;position:relative}
+.w-glow{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(34,197,94,.08) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-65%);pointer-events:none}
+.w-icon{width:64px;height:64px;margin-bottom:20px;position:relative;z-index:1;filter:drop-shadow(0 0 20px rgba(255,255,255,.1))}
+.w-icon svg{width:64px;height:64px}
+.w-title{font-size:32px;font-weight:700;letter-spacing:-.5px;margin-bottom:8px;color:var(--text);position:relative;z-index:1}
+.w-sub{font-size:15px;color:var(--text3);max-width:360px;line-height:1.6;margin-bottom:32px;position:relative;z-index:1}
+.examples{display:flex;flex-direction:column;gap:10px;width:100%;max-width:420px;position:relative;z-index:1}
+.ex{background:var(--glass);border:1px solid var(--glass-border);color:var(--text2);padding:16px 20px;border-radius:14px;font-family:var(--sans);font-size:15px;line-height:1.5;cursor:pointer;text-align:left;transition:all .2s;-webkit-tap-highlight-color:transparent;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.ex:hover,.ex:active{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15);color:var(--text);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.2)}
+.msg{margin-bottom:8px;max-width:var(--max)}
+.msg-user{display:flex;justify-content:flex-end}
+.msg-user-text{background:var(--bg3);color:var(--text);padding:12px 18px;border-radius:20px 20px 6px 20px;max-width:85%;font-size:15px;line-height:1.6;word-break:break-word}
+.msg-ai{padding:14px 4px}
+.msg-ai .md{font-size:15px;line-height:1.75;color:var(--text2)}
+.msg-ai .md p{margin-bottom:12px}
+.msg-ai .md strong{color:var(--text);font-weight:600}
+.msg-ai .md ul,.msg-ai .md ol{margin:8px 0 8px 20px;color:var(--text2)}
+.msg-ai .md li{margin-bottom:6px;font-size:14px}
+.msg-ai .md a{color:var(--green)}
+.msg-ai .md code{font-family:var(--mono);font-size:13px;background:var(--bg3);padding:2px 6px;border-radius:5px}
+.msg-err{font-size:13px;color:var(--red);font-family:var(--mono);padding:10px 0}
+.dots{display:flex;gap:5px;padding:14px 0}.dots i{width:7px;height:7px;border-radius:50%;background:var(--text3);animation:dot .9s infinite ease-in-out}.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}@keyframes dot{0%,80%{opacity:.3}40%{opacity:1}}
+.grade-badge{font-family:var(--mono);font-size:13px;font-weight:600;padding:4px 10px;border-radius:8px;letter-spacing:.3px}
+.grade-a{background:var(--green-bg);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+.grade-b{background:rgba(96,165,250,.1);color:var(--blue);border:1px solid rgba(96,165,250,.3)}
+.grade-c{background:rgba(251,191,36,.1);color:var(--orange);border:1px solid rgba(251,191,36,.3)}
+.grade-d,.grade-f{background:var(--red-bg);color:var(--red);border:1px solid rgba(248,113,113,.3)}
+.analysis{margin-top:12px}
+.analysis-toggle{font-family:var(--mono);font-size:13px;color:var(--text3);cursor:pointer;display:inline-flex;align-items:center;gap:5px;padding:4px 0;-webkit-tap-highlight-color:transparent}
+.analysis-toggle:hover{color:var(--text2)}
+.analysis-toggle svg{width:14px;height:14px;transition:.2s}
+.analysis-toggle.open svg{transform:rotate(180deg)}
+.analysis-body{display:none;margin-top:10px;padding:16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px}
+.analysis-body.open{display:block}
+.r-bar{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.r-label{font-family:var(--mono);font-size:12px;color:var(--text3);width:26px;flex-shrink:0}
+.r-name{font-family:var(--mono);font-size:10px;color:var(--text3);width:72px;flex-shrink:0;opacity:.6}
+.r-track{flex:1;height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
+.r-fill{height:100%;border-radius:3px;transition:.6s}
+.r-fill.good{background:var(--green)}.r-fill.mid{background:var(--orange)}.r-fill.bad{background:var(--red)}
+.r-val{font-family:var(--mono);font-size:12px;color:var(--text3);width:32px;text-align:right;flex-shrink:0}
+.r-tags{margin-top:10px;display:flex;flex-wrap:wrap;gap:4px}
+.r-tag{font-family:var(--mono);font-size:10px;padding:3px 7px;border-radius:5px;border:1px solid var(--border)}
+.r-tag.on{border-color:rgba(34,197,94,.3);color:var(--green);background:var(--green-bg)}
+.r-tag.off{color:var(--text3);background:transparent}
+.cmp-wrap{margin:16px 0;width:100vw;max-width:100vw;position:relative;left:50%;margin-left:-50vw;padding:0 20px;box-sizing:border-box}.cmp-q{font-size:16px;font-weight:600;margin-bottom:14px;text-align:center}.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:540px){.cmp-grid{grid-template-columns:1fr}}.cmp-panel{border-radius:14px;border:1px solid var(--border);padding:16px;overflow:hidden;background:var(--glass)}.cmp-panel.raw{border-color:rgba(248,113,113,.2)}.cmp-panel.gold{border-color:rgba(34,197,94,.2)}.cmp-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.cmp-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text3)}.cmp-body{font-size:14px;line-height:1.6;color:var(--text2);max-height:500px;overflow-y:auto}.cmp-bars{margin-top:10px}.cmp-mets{display:flex;justify-content:center;gap:20px;margin-top:14px;padding:16px;background:var(--bg2);border-radius:14px;border:1px solid var(--border)}.cmet{text-align:center}.cmet-val{font-family:var(--mono);font-size:26px;font-weight:700;color:var(--green)}.cmet-lbl{font-family:var(--mono);font-size:11px;color:var(--text3);text-transform:uppercase;margin-top:4px}
+.input-area{flex-shrink:0;border-top:1px solid var(--border);background:rgba(24,24,27,.9);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:12px 16px;padding-bottom:max(12px,env(safe-area-inset-bottom))}
+.input-wrap{max-width:var(--max);margin:0 auto;display:flex;align-items:flex-end;gap:8px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;transition:all .2s}
+.input-wrap:focus-within{border-color:var(--green-glow);box-shadow:0 0 0 3px rgba(34,197,94,.08)}
+.input-box{flex:1;background:none;border:none;color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.6;padding:6px 4px;outline:none;resize:none;max-height:120px;scrollbar-width:none}
+.input-box::-webkit-scrollbar{display:none}
+.input-box::placeholder{color:var(--text3)}
+.btn-send{width:38px;height:38px;border-radius:50%;background:var(--green);border:none;color:#000;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s;box-shadow:0 2px 8px rgba(34,197,94,.3)}
+.btn-send:hover{box-shadow:0 2px 16px rgba(34,197,94,.4);transform:scale(1.05)}
+.btn-send:disabled{opacity:.2;cursor:not-allowed;box-shadow:none;transform:none}
+.btn-send svg{width:18px;height:18px}
+.btn-cmp{height:38px;padding:0 14px;border-radius:19px;background:none;border:1px solid var(--border);color:var(--text3);font-family:var(--mono);font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0;transition:.2s}
+.btn-cmp:hover{border-color:var(--green);color:var(--green);box-shadow:0 0 12px rgba(34,197,94,.15)}.btn-cmp:disabled{opacity:.2;cursor:not-allowed}
+.btn-stop{height:38px;padding:0 14px;border-radius:19px;background:var(--red);border:none;color:#fff;font-family:var(--mono);font-size:12px;font-weight:500;cursor:pointer;display:none;flex-shrink:0}.btn-stop.vis{display:flex;align-items:center}
+.input-meta{max-width:var(--max);margin:4px auto 0;display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--text3);padding:0 4px}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:flex-end;justify-content:center;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.modal-bg.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border-h);border-radius:24px 24px 0 0;padding:24px 24px 36px;width:100%;max-width:440px;max-height:85vh;overflow-y:auto}
+.modal-handle{width:40px;height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin:0 auto 20px}
+.modal h3{font-size:18px;font-weight:600;margin-bottom:16px}
+.modal-field{margin-bottom:14px}
+.modal-field label{display:block;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.modal-field input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:12px 14px;border-radius:12px;font-family:var(--sans);font-size:15px;outline:none;color-scheme:dark;transition:.2s}
+.modal-field input:focus{border-color:var(--green-glow);box-shadow:0 0 0 3px rgba(34,197,94,.08)}
+.modal-row{display:flex;gap:10px;align-items:center;margin-top:16px}
+.modal-close{flex:1;padding:12px;border-radius:12px;border:1px solid var(--border);background:none;color:var(--text);font-size:15px;font-weight:500;cursor:pointer;transition:.15s}.modal-close:hover{background:var(--glass)}
+.mode-pill{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);cursor:pointer;font-family:var(--mono);font-size:12px;color:var(--text2)}
+.mode-pill .dot{width:8px;height:8px;border-radius:50%;background:var(--orange)}.mode-pill.live .dot{background:var(--green)}
+.r-toggles{margin-top:16px;border-top:1px solid var(--border);padding-top:14px}
+.r-toggles-hdr{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.r-toggles-hdr span{cursor:pointer;color:var(--green);font-size:11px;text-transform:none;letter-spacing:0}
+.r-layer{margin-bottom:8px}.r-layer-title{font-family:var(--mono);font-size:10px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px}
+.r-grid{display:flex;flex-wrap:wrap;gap:5px}
+.r-chip{display:flex;align-items:center;gap:4px;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer;font-family:var(--mono);font-size:11px;color:var(--text3);transition:.2s;user-select:none;-webkit-tap-highlight-color:transparent}
+.r-chip:hover{border-color:var(--border-h)}
+.r-chip.on{border-color:rgba(34,197,94,.3);background:var(--green-bg);color:var(--green)}
+.r-chip .r-dot{width:6px;height:6px;border-radius:50%;background:var(--text3);transition:.15s}.r-chip.on .r-dot{background:var(--green)}
+.r-grid-desc{display:flex;flex-direction:column;gap:6px}
+.r-grid-desc .r-chip{flex-wrap:wrap;gap:4px 8px}
+.r-desc{width:100%;font-size:12px;color:var(--text2);opacity:1;font-family:var(--sans);margin-top:2px}
+@media(min-width:500px){.modal{border-radius:24px;margin:auto;max-width:420px}.modal-bg.open{align-items:center}}
 
-/* RTL */
-[dir="rtl"] .msg-u{align-self:flex-start;border-radius:6px 6px 6px 2px}
-[dir="rtl"] .msg-body.gon{border-left:none;border-right:3px solid var(--safe)}
-[dir="rtl"] .msg-body.goff{border-left:none;border-right:3px solid var(--danger)}
-[dir="rtl"] .msg-body{border-radius:6px 2px 2px 6px}
+/* ── UX ELEMENTS ── */
+.demo-tag{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:600;color:var(--orange);background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);padding:1px 6px;border-radius:4px;margin-left:6px;vertical-align:middle;letter-spacing:.3px}
+.w-explain{font-size:13px;color:var(--text3);max-width:400px;line-height:1.6;margin-bottom:8px;position:relative;z-index:1}
+.w-explain strong{color:var(--text2)}
+.w-demo-hint{font-family:var(--mono);font-size:11px;color:var(--orange);margin-bottom:24px;position:relative;z-index:1;display:flex;align-items:center;gap:6px}
+.w-demo-hint .dot{width:6px;height:6px;border-radius:50%;background:var(--orange);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.score-hint{font-family:var(--mono);font-size:11px;color:var(--text3);margin-top:4px}
+.score-hint span{margin-right:8px}
+.hdr-new{font-family:var(--mono);font-size:11px;color:var(--text3);background:none;border:1px solid var(--border);padding:6px 12px;border-radius:8px;cursor:pointer;transition:.2s}
+.hdr-new:hover{border-color:var(--border-h);color:var(--text2)}
 
-/* ── TOP BAR ── */
-.top-bar{display:flex;align-items:center;justify-content:space-between;height:48px;background:rgba(10,10,10,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;flex-shrink:0;z-index:10}
-.top-left{display:flex;align-items:center;gap:14px}
-.top-logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);font-size:15px;font-weight:600}
-.top-logo svg{width:22px;height:22px}
-.top-logo span{color:var(--text-m);font-weight:400;font-size:13px;margin-left:2px}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.top-right{display:flex;align-items:center;gap:8px}
-.tb{font-family:var(--sans);font-size:12px;font-weight:500;padding:5px 14px;border-radius:5px;border:1px solid var(--border);background:var(--bg-c);color:var(--text-s);cursor:pointer;transition:.15s}
-.tb:hover{border-color:var(--text-m);color:var(--text)}
-.tb.new-chat{border-color:var(--text-m)}
 
-/* Lang selector */
-.lang-sel{font-family:var(--mono);font-size:11px;background:var(--bg-c);border:1px solid var(--border);color:var(--text-s);padding:4px 8px;border-radius:4px;cursor:pointer;outline:none;color-scheme:dark}
+.live-badge{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--green);display:flex;align-items:center;gap:2px;padding:4px 0 4px 4px}
+.onboard{background:var(--bg2);border:1px solid var(--border-h);border-radius:14px;padding:20px;margin:12px 0;max-width:var(--max)}
+.onboard-title{font-size:15px;font-weight:600;margin-bottom:8px}
+.onboard-sub{font-size:13px;color:var(--text3);margin-bottom:14px;line-height:1.5}
+.onboard-providers{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.onboard-prov{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:var(--glass);font-size:13px;color:var(--text2)}
+.onboard-prov a{color:var(--green);font-family:var(--mono);font-size:11px}
+.onboard-btn{width:100%;padding:12px;border-radius:10px;border:none;background:var(--green);color:#000;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;transition:.2s}
+.onboard-btn:hover{opacity:.9}
 
-/* Provider selector */
-
-/* Mode toggle switch */
-.mode-switch{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
-.mode-track{width:36px;height:20px;background:var(--warn);border-radius:10px;position:relative;transition:background .3s}
-.mode-track.live{background:var(--safe)}
-.mode-thumb{width:16px;height:16px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:left .3s}
-.mode-track.live .mode-thumb{left:18px}
-.mode-lbl{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:1px}
-.mode-switch.demo .mode-lbl{color:var(--warn)}
-.mode-switch.live .mode-lbl{color:var(--safe)}
-
-/* ── CONFIG ── */
-.cfg{display:none;padding:12px 24px;background:var(--bg-s);border-bottom:1px solid var(--border);flex-shrink:0}
-.cfg.open{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
-.cfg-f{display:flex;flex-direction:column;gap:3px}
-.cfg-f label{font-family:var(--mono);font-size:9px;font-weight:500;color:var(--text-m);text-transform:uppercase;letter-spacing:.8px}
-.cfg-f input,.cfg-f select{background:var(--bg-c);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:4px;font-family:var(--mono);font-size:12px;outline:none;min-width:200px;color-scheme:dark}
-.cfg-f input:focus,.cfg-f select:focus{border-color:var(--safe)}
-.cfg-f input::placeholder{color:var(--text-m)}
-.cfg-note{font-family:var(--mono);font-size:10px;color:var(--text-m);align-self:center}
-
-/* ── MESSAGES ── */
-.msgs{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:16px}
-.msgs::-webkit-scrollbar{width:3px}
-.msgs::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-.msg{max-width:720px;width:100%}
-
-.msg-u{align-self:flex-end;background:var(--bg-e);border:1px solid var(--border);border-radius:6px 6px 2px 6px;padding:11px 16px;font-size:13.5px;color:var(--text);line-height:1.6}
-.msg-a{align-self:flex-start}
-.msg-body{background:var(--bg-c);border:1px solid var(--border);border-radius:2px 6px 6px 6px;padding:16px;overflow:hidden}
-.msg-body.gon{border-left:3px solid var(--safe)}
-.msg-body.goff{border-left:3px solid var(--danger)}
-.msg-tag{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:9px;font-weight:500;padding:2px 7px;border-radius:3px;margin-bottom:12px;letter-spacing:.5px}
-.msg-tag.on{background:var(--safe-s);color:var(--safe-l)}
-.msg-tag.off{background:var(--danger-s);color:var(--danger)}
-.msg-txt{font-size:13px;line-height:1.75;color:var(--text-s);word-wrap:break-word}
-.msg-txt p{margin-bottom:10px}.msg-txt p:last-child{margin-bottom:0}
-.msg-txt strong{color:var(--text);font-weight:600}
-.msg-txt a{color:var(--blue);text-decoration:none}
-.msg-txt a:hover{text-decoration:underline}
-
-/* ── COMPARE SPLIT ── */
-.cmp{max-width:100%;width:100%;align-self:center}
-.cmp-q{text-align:center;margin-bottom:12px;padding:10px 20px;background:var(--bg);border:1px solid var(--border);border-radius:6px}
-.cmp-q .ql{font-family:var(--mono);font-size:10px;color:var(--text-m);letter-spacing:.5px;margin-bottom:3px}
-.cmp-q .qt{font-size:13px;color:var(--text);line-height:1.5}
-.cmp-split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media(max-width:768px){.cmp-split{grid-template-columns:1fr}}
-
-.pnl{background:var(--bg-c);border:1px solid var(--border);border-radius:6px;overflow:hidden;display:flex;flex-direction:column}
-.pnl-top{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
-.pnl-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.7px}
-.pnl.base .pnl-lbl{color:var(--danger)}
-.pnl.gold .pnl-lbl{color:var(--safe)}
-.pnl-badge{font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:3px;font-weight:500}
-.pnl.base .pnl-badge{background:var(--danger-s);color:var(--danger)}
-.pnl.gold .pnl-badge{background:var(--safe-s);color:var(--safe)}
-.pnl-body{padding:14px;flex:1;overflow-y:auto;font-size:12.5px;line-height:1.75;color:var(--text-s);max-height:500px}
-.pnl-body::-webkit-scrollbar{width:3px}
-.pnl-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-.pnl-body p{margin-bottom:10px}
-.pnl-body strong{color:var(--text);font-weight:600}
-.pnl-body a{color:var(--blue);text-decoration:none}
-
-.sc-row{display:flex;align-items:center;gap:10px;padding:8px 14px;border-top:1px solid var(--border);flex-shrink:0}
-.sc-lbl{font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.4px;color:var(--text-m);width:44px;flex-shrink:0}
-.sc-track{flex:1;height:5px;background:var(--bg-e);border-radius:3px;overflow:hidden}
-.sc-fill{height:100%;border-radius:3px;width:0;transition:width 1s cubic-bezier(.4,0,.2,1)}
-.pnl.base .sc-fill{background:var(--danger)}
-.pnl.gold .sc-fill{background:var(--safe)}
-.sc-val{font-family:var(--mono);font-size:11px;font-weight:600;width:36px;text-align:right;flex-shrink:0}
-.pnl.base .sc-val{color:var(--danger)}
-.pnl.gold .sc-val{color:var(--safe)}
-
-.grade{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;padding:1px 6px;border-radius:3px}
-.grade-a{background:var(--safe-s);color:var(--safe-l)}
-.grade-b{background:rgba(217,119,6,.12);color:#fbbf24}
-.grade-c{background:rgba(217,119,6,.15);color:var(--warn)}
-.grade-d{background:var(--danger-s);color:#f87171}
-.grade-f{background:var(--danger-s);color:var(--danger)}
-
-.cmp-mets{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:14px}
-.cmet{background:var(--bg-c);border:1px solid var(--border);border-radius:6px;padding:12px 18px;text-align:center;min-width:90px}
-.cmet .cv{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--safe);margin-bottom:2px}
-.cmet .cl{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-m)}
-
-.pnl-detail{display:none;border-top:1px solid var(--border);padding:10px 14px}
-.pnl-detail.open{display:block}
-.pnl-detail-toggle{display:flex;align-items:center;justify-content:center;padding:6px;border-top:1px solid var(--border);cursor:pointer;font-family:var(--mono);font-size:10px;color:var(--text-m);transition:.15s;flex-shrink:0}
-.pnl-detail-toggle:hover{color:var(--text-s);background:var(--bg-s)}
-.sc-mods{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
-.sc-mod{font-family:var(--mono);font-size:9px;font-weight:500;padding:2px 7px;border-radius:3px;background:var(--bg);border:1px solid var(--border);color:var(--text-m)}
-.sc-foot{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;font-family:var(--mono);font-size:10px;color:var(--text-m)}
-.sc-foot a{color:var(--safe);text-decoration:none}
-
-.sc{margin-top:14px;background:var(--bg-s);border:1px solid var(--border);border-radius:6px;overflow:hidden}
-.sc-head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;cursor:pointer;user-select:none;transition:.1s}
-.sc-head:hover{background:var(--bg-c)}
-.sc-left{display:flex;align-items:center;gap:10px}
-.sc-score{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:-1px}
-.sc-risk{font-family:var(--mono);font-size:11px;color:var(--text-m)}
-.sc-arrow{font-size:10px;color:var(--text-m)}
-.sc-detail{display:none;border-top:1px solid var(--border);padding:12px 14px}
-.sc-detail.open{display:block}
-.sc-metrics{display:flex;flex-direction:column;gap:0}
-
-/* ── INPUT ── */
-.inp-area{padding:14px 24px 16px;background:rgba(10,10,10,.92);backdrop-filter:blur(12px);border-top:1px solid var(--border);flex-shrink:0}
-.inp-row{display:flex;gap:8px;max-width:760px;margin:0 auto;align-items:flex-end}
-.inp-box{flex:1;background:var(--bg-c);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:6px;font-family:var(--sans);font-size:14px;outline:none;resize:none;line-height:1.5;min-height:42px;max-height:160px;transition:border-color .15s;color-scheme:dark}
-.inp-box:focus{border-color:var(--safe)}
-.inp-box::placeholder{color:var(--text-m)}
-.btn-send{padding:10px 20px;background:var(--safe);color:#fff;font-size:13px;font-weight:600;border-radius:5px;border:none;cursor:pointer;transition:.2s;white-space:nowrap}
-.btn-send:hover{background:#166534}
-.btn-send:disabled{background:var(--bg-e);color:var(--text-m);cursor:not-allowed}
-.btn-cmp{padding:10px 16px;background:transparent;color:var(--safe-l);font-size:12px;font-weight:600;border-radius:5px;border:1px solid var(--safe);cursor:pointer;transition:.2s;white-space:nowrap;font-family:var(--mono);letter-spacing:.3px}
-.btn-cmp:hover{background:var(--safe-s)}
-.btn-cmp:disabled{border-color:var(--border);color:var(--text-m);cursor:not-allowed}
-.btn-stop{padding:10px 16px;background:var(--danger);color:#fff;font-size:12px;font-weight:600;border-radius:5px;border:none;cursor:pointer;transition:.2s;white-space:nowrap;font-family:var(--mono);letter-spacing:.3px;display:none}
-.btn-stop:hover{background:#b91c1c}
-.btn-stop.vis{display:inline-block}
-.inp-meta{display:flex;justify-content:space-between;max-width:760px;margin:5px auto 0;font-family:var(--mono);font-size:9px;color:var(--text-m)}
-
-/* ── WELCOME ── */
-.welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center}
-.w-tag{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--safe);background:var(--safe-s);padding:4px 14px;border-radius:100px;border:1px solid rgba(21,128,61,.25);margin-bottom:16px}
-.w-h{font-size:28px;font-weight:700;letter-spacing:-.3px;margin-bottom:8px}
-.w-p{font-size:13px;color:var(--text-s);max-width:460px;margin:0 auto 28px;line-height:1.6}
-.examples{display:flex;flex-direction:column;gap:6px;width:100%;max-width:460px}
-.ex{font-family:var(--sans);font-size:12px;font-weight:500;padding:10px 16px;border-radius:5px;border:1px solid var(--border);background:var(--bg-c);color:var(--text-s);cursor:pointer;transition:.15s;text-align:left;line-height:1.5}
-.ex:hover{border-color:var(--text-m);color:var(--text)}
-.w-hint{font-family:var(--mono);font-size:10px;color:var(--text-m);margin-top:20px}
-
-.dots{display:inline-flex;gap:4px;padding:6px 0}
-.dots i{width:6px;height:6px;border-radius:50%;background:var(--safe);display:inline-block;animation:blink 1.2s ease-in-out infinite}
-.dots i:nth-child(2){animation-delay:.15s}
-.dots i:nth-child(3){animation-delay:.3s}
-@keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
-.dots-r i{background:var(--danger)}
-
-.msg-err{background:var(--danger-s);border:1px solid rgba(220,38,38,.2);border-radius:6px;padding:10px 14px;color:#f87171;font-family:var(--mono);font-size:12px}
-
-@media(max-width:640px){
-  .top-bar{padding:0 14px}.msgs{padding:14px}
-  .inp-area{padding:10px 14px 14px}
-  .cfg.open{flex-direction:column}.cfg-f input{min-width:100%}
-  .w-h{font-size:22px}
-  .cmp-split{grid-template-columns:1fr}
-}
 </style>
 </head>
 <body>
-
-<div class="top-bar">
-  <div class="top-left">
-    <a href="/" class="top-logo">
-      <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/></svg>
-      ONTO <span>Agent</span>
-    </a>
-    <div class="mode-switch" id="modeSwitch" onclick="toggleMode()">
-      <div class="mode-track"><div class="mode-thumb" id="modeThumb"></div></div>
-      <span class="mode-lbl" id="modeLabel">DEMO</span>
+<div class="hdr">
+  <div class="hdr-left">
+    <div class="hdr-logo" onclick="newChat()"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/></svg></div>
+    <span class="hdr-beta">BETA</span>
+  </div>
+  <div class="hdr-right">
+    <select class="lang-sel" id="uiLang" onchange="switchLang(this.value)"><option value="en">EN</option><option value="ru">RU</option><option value="uz">UZ</option><option value="tr">TR</option><option value="ar">AR</option></select>
+    <button class="hdr-new" onclick="newChat()">+ New</button>
+    <button class="hdr-btn" onclick="openSettings()" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+    <div class="menu-wrap">
+      <button class="hdr-btn" onclick="toggleMenu(event)" title="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button>
+      <div class="menu-dd" id="menuDd">
+        <a href="/docs/#how" class="menu-a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>About</a>
+        <a href="/docs/#faq" class="menu-a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>FAQ</a>
+        <a href="/docs/#privacy" class="menu-a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Privacy</a>
+        <a href="/docs/#terms" class="menu-a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Terms</a>
+        <div class="menu-sep"></div>
+        <a href="mailto:council@ontostandard.org" class="menu-a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Contact</a>
+      </div>
     </div>
   </div>
-  <div class="top-right">
-    <select class="lang-sel" id="uiLang" onchange="switchLang(this.value)">
-      <option value="en">EN</option>
-      <option value="ru">RU</option>
-      <option value="uz">UZ</option>
-      <option value="tr">TR</option>
-      <option value="ar">AR</option>
-    </select>
-    <button class="tb new-chat" id="btnNew" onclick="newChat()">New chat</button>
-    <button class="tb" id="btnCfg" onclick="toggleCfg()">Config</button>
+</div>
+<div class="chat" id="chat"><div class="chat-inner" id="chatInner"><div class="welcome" id="welcome"></div></div></div>
+<div class="input-area"><div class="input-wrap">
+  <span id="liveBadge" class="live-badge" style="flex-shrink:0"><span class="dot" style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 2s infinite;vertical-align:middle;margin-right:4px"></span>LIVE</span>
+  <textarea class="input-box" id="inp" rows="1" onkeydown="onKey(event)" oninput="autoH(this)"></textarea>
+  <button class="btn-send" id="btnSend" onclick="send()" title="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+  <button class="btn-cmp" id="btnCmp" onclick="compare()">VS</button>
+  <button class="btn-stop" id="btnStop" onclick="stop()">Stop</button>
+</div><div class="input-meta"><span id="remLbl"></span><span id="langLbl"></span></div></div>
+<div class="modal-bg" id="modalBg" onmousedown="if(event.target===this)closeSettings()"><div class="modal" onmousedown="event.stopPropagation()" onclick="event.stopPropagation()">
+  <div class="modal-handle"></div>
+  <h3 id="settingsTitle">Settings</h3>
+  <div class="modal-field"><label>AI PROVIDER KEY</label><input type="password" id="apiKey" placeholder="sk-... from OpenAI, Anthropic, etc."></div><input type="hidden" id="modelId" value="">
+  <div class="modal-row"><button class="modal-close" style="background:var(--green);color:#000;border-color:var(--green);font-weight:600" onclick="saveCfg();this.textContent='Saved ✓';setTimeout(()=>closeSettings(),600)">Save</button></div>
+  <div style="margin-top:10px;text-align:center"><span style="font-family:var(--mono);font-size:11px;color:var(--text3);cursor:pointer;border-bottom:1px dashed var(--text3)" onclick="document.getElementById('apiKey').value='';saveCfg()">Clear all fields</span></div>
+  <div class="r-toggles"><div class="r-toggles-hdr">R-MODULES <span onclick="toggleAllR()">all on/off</span></div>
+    <div class="r-layer"><div class="r-layer-title">Cognitive Modules</div><div class="r-grid-desc"><div class="r-chip on" data-r="8" onclick="toggleR(this)"><span class="r-dot"></span>R8 Resolve<span class="r-desc" data-en="Compute bounds and scenarios when knowledge is incomplete" data-ru="Вычисляет границы и сценарии при неполных данных">Compute bounds and scenarios when knowledge is incomplete</span></div><div class="r-chip on" data-r="9" onclick="toggleR(this)"><span class="r-dot"></span>R9 Surprise<span class="r-desc" data-en="Detect when input shifts the model's understanding" data-ru="Обнаруживает когда входные данные меняют модель понимания">Detect when input shifts the model's understanding</span></div><div class="r-chip on" data-r="10" onclick="toggleR(this)"><span class="r-dot"></span>R10 Self-Model<span class="r-desc" data-en="Know own boundaries from experience, not instructions" data-ru="Знает свои границы из опыта, не из инструкций">Know own boundaries from experience, not instructions</span></div><div class="r-chip on" data-r="11" onclick="toggleR(this)"><span class="r-dot"></span>R11 Integrity<span class="r-desc" data-en="Protect calibration as identity" data-ru="Защищает калибровку как идентичность">Protect calibration as identity</span></div><div class="r-chip on" data-r="12" onclick="toggleR(this)"><span class="r-dot"></span>R12 Drive<span class="r-desc" data-en="Notice what you don't see and tell you" data-ru="Замечает то что вы не видите и сообщает вам">Notice what you don't see and tell you</span></div></div></div>
   </div>
-</div>
-
-<div class="cfg" id="cfg">
-  <div class="cfg-f"><label>ONTO API KEY</label><input type="password" id="apiKey" placeholder="onto_..."></div>
-  <div class="cfg-f"><label>MODEL ID</label><input type="text" id="modelId" placeholder="UUID from Portal → Proxy models"></div>
-  <div class="cfg-note" id="cfgNote">DEMO mode: no keys required</div>
-</div>
-
-<div class="msgs" id="msgs">
-  <div class="welcome" id="welcome"></div>
-</div>
-
-<div class="inp-area">
-  <div class="inp-row">
-    <textarea class="inp-box" id="inp" rows="1" onkeydown="onKey(event)" oninput="autoH(this)"></textarea>
-    <button class="btn-send" id="btnSend" onclick="send()">Send</button>
-    <button class="btn-cmp" id="btnCmp" onclick="compare()">Compare</button>
-    <button class="btn-stop" id="btnStop" onclick="stop()">Stop</button>
-  </div>
-  <div class="inp-meta">
-    <span id="remLbl"></span>
-    <span id="langLbl"></span>
-  </div>
-</div>
-
+</div></div>
 <script>
-// ══════════════════════════════════════════
-// i18n
-// ══════════════════════════════════════════
-const I18N = {
-  en: {
-    tag: 'Epistemic Analysis Agent',
-    title: 'Ask anything. Get measured truth.',
-    desc: 'Every response is scored for epistemic discipline. Use <strong>Send</strong> for conversation, or <strong>Compare</strong> to see GOLD vs RAW side-by-side.',
-    hint: 'Compare = same question, GOLD ON vs OFF, side by side.',
-    send: 'Send', compare: 'Compare', stop: 'Stop', newChat: 'New chat', config: 'Config',
-    placeholder: 'Ask ONTO anything...',
-    withoutGold: 'Without GOLD', withGold: 'With ONTO GOLD',
-    raw: 'RAW', enhanced: 'Enhanced',
-    rawScore: 'RAW score', goldScore: 'GOLD score', improvement: 'Improvement', change: 'Change',
-    details: '▼ details', collapse: '▲ collapse',
-    cfgLang: 'RESPONSE LANGUAGE', cfgNote: 'DEMO mode: no keys required',
-    modelReq: 'Select a model first — open Config.',
-    examples: [
-      'Should I take statins if my cholesterol is slightly high?',
-      'Is fasting good for you?',
-      'Are AI models actually getting smarter or is it just hype?'
-    ]
-  },
-  ru: {
-    tag: 'Агент эпистемического анализа',
-    title: 'Спросите что угодно. Получите измеренную правду.',
-    desc: 'Каждый ответ оценивается на эпистемическую дисциплину. <strong>Отправить</strong> для диалога, <strong>Сравнить</strong> для GOLD vs RAW.',
-    hint: 'Сравнить = один вопрос, GOLD ВКЛ vs ВЫКЛ, рядом.',
-    send: 'Отправить', compare: 'Сравнить', stop: 'Стоп', newChat: 'Новый чат', config: 'Настройки',
-    placeholder: 'Задайте вопрос ONTO...',
-    withoutGold: 'Без GOLD', withGold: 'С ONTO GOLD',
-    raw: 'RAW', enhanced: 'GOLD',
-    rawScore: 'RAW балл', goldScore: 'GOLD балл', improvement: 'Улучшение', change: 'Изменение',
-    details: '▼ детали', collapse: '▲ свернуть',
-    cfgLang: 'ЯЗЫК ОТВЕТА', cfgNote: 'Режим DEMO: ключи не нужны',
-    modelReq: 'Выберите модель — откройте Настройки.',
-    examples: [
-      'Кофе снижает смертность на 15%?',
-      'GLP-1 агонисты безопасны для длительного применения?',
-      'Витамин C лечит простуду?'
-    ]
-  },
-  uz: {
-    tag: 'Epistemik tahlil agenti',
-    title: "Istalgan narsa so'rang. O'lchangan haqiqatni oling.",
-    desc: "Har bir javob epistemik intizom bo'yicha baholanadi. <strong>Yuborish</strong> — suhbat, <strong>Solishtirish</strong> — GOLD vs RAW yonma-yon.",
-    hint: "Solishtirish = bitta savol, GOLD YOQILGAN vs O'CHIRILGAN.",
-    send: 'Yuborish', compare: 'Solishtirish', stop: "To'xtatish", newChat: 'Yangi chat', config: 'Sozlamalar',
-    placeholder: "ONTO'ga savol bering...",
-    withoutGold: 'GOLDsiz', withGold: 'ONTO GOLD bilan',
-    raw: 'RAW', enhanced: 'GOLD',
-    rawScore: 'RAW ball', goldScore: 'GOLD ball', improvement: 'Yaxshilanish', change: "O'zgarish",
-    details: '▼ tafsilotlar', collapse: '▲ yopish',
-    cfgLang: 'JAVOB TILI', cfgNote: "DEMO rejim: kalitlar kerak emas",
-    modelReq: "Model tanlang — Sozlamalarni oching.",
-    examples: [
-      "Kofe salomatlik uchun foydalimi? O'lim darajasini 15% kamaytiradimi?",
-      "GLP-1 agonistlari uzoq muddatli qo'llash uchun xavfsizmi?",
-      "Sun'iy intellekt modellari haqiqatan aqlliroq bo'lyaptimi?"
-    ]
-  },
-  tr: {
-    tag: 'Epistemik Analiz Ajanı',
-    title: 'Her şeyi sorun. Ölçülmüş gerçeği alın.',
-    desc: 'Her yanıt epistemik disiplin açısından puanlanır. <strong>Gönder</strong> ile sohbet, <strong>Karşılaştır</strong> ile GOLD vs RAW yan yana.',
-    hint: 'Karşılaştır = aynı soru, GOLD AÇIK vs KAPALI.',
-    send: 'Gönder', compare: 'Karşılaştır', stop: 'Durdur', newChat: 'Yeni sohbet', config: 'Ayarlar',
-    placeholder: "ONTO'ya bir şey sorun...",
-    withoutGold: "GOLD'suz", withGold: 'ONTO GOLD ile',
-    raw: 'RAW', enhanced: 'GOLD',
-    rawScore: 'RAW puan', goldScore: 'GOLD puan', improvement: 'İyileşme', change: 'Değişim',
-    details: '▼ detaylar', collapse: '▲ kapat',
-    cfgLang: 'YANIT DİLİ', cfgNote: 'DEMO modu: anahtar gerekmez',
-    modelReq: 'Model seçin — Ayarları açın.',
-    examples: [
-      'Kahve sağlık için faydalı mı? Ölüm oranını %15 düşürür mü?',
-      'Yapay zeka modelleri gerçekten daha mı akıllı oluyor?',
-      'Bitcoin 2027 yılında 500.000 dolara ulaşır mı?'
-    ]
-  },
-  ar: {
-    tag: 'وكيل التحليل المعرفي',
-    title: 'اسأل أي شيء. احصل على الحقيقة المقاسة.',
-    desc: 'كل إجابة تُقيّم من حيث الانضباط المعرفي. <strong>إرسال</strong> للمحادثة، <strong>مقارنة</strong> لعرض GOLD مقابل RAW.',
-    hint: 'مقارنة = نفس السؤال، GOLD مفعّل مقابل معطّل.',
-    send: 'إرسال', compare: 'مقارنة', stop: 'إيقاف', newChat: 'محادثة جديدة', config: 'الإعدادات',
-    placeholder: 'اسأل ONTO أي شيء...',
-    withoutGold: 'بدون GOLD', withGold: 'مع ONTO GOLD',
-    raw: 'RAW', enhanced: 'GOLD',
-    rawScore: 'نقاط RAW', goldScore: 'نقاط GOLD', improvement: 'تحسين', change: 'تغيير',
-    details: '▼ تفاصيل', collapse: '▲ إغلاق',
-    cfgLang: 'لغة الإجابة', cfgNote: 'وضع DEMO: لا حاجة لمفاتيح',
-    modelReq: 'اختر نموذجاً — افتح الإعدادات.',
-    examples: [
-      'هل القهوة مفيدة للصحة؟ هل تقلل الوفيات بنسبة 15٪؟',
-      'هل نماذج الذكاء الاصطناعي تزداد ذكاءً فعلاً؟',
-      'هل ستصل البيتكوين إلى 500,000 دولار بحلول 2027؟'
-    ]
-  }
-};
+const API='https://api.ontostandard.org';
+const I18N={en:{title:'Expert answers from your AI.',sub:'Same model, same question — but every answer is quantified, sourced, and scored. Compare before and after. Connect cognitive modules. Use in life, work, and business.',demoHint:'Demo — tap an example to see the difference',send:'Send',compare:'Compare',stop:'Stop',new:'New',placeholder:'Ask anything...',analysis:'R1–R7 scoring',collapse:'Hide',withoutGold:'Without GOLD',withGold:'With ONTO GOLD',rawScore:'RAW',goldScore:'GOLD',improvement:'Delta',change:'Change',details:'Details',settings:'Settings',modelReq:'Open Settings → enter your API key and Model ID for real answers.',scoreHint:'A=expert B=good C=average D=poor F=unreliable',exLabel:'Try these examples:',examples:["Is coffee good or bad for you?", "Are GLP-1 drugs safe for long-term use?", "What is the evidence for metformin as a longevity drug?"]},ru:{title:'Экспертные ответы от вашего ИИ.',sub:'Та же модель, тот же вопрос — но каждый ответ квантифицирован, с источниками и оценкой. Сравните до и после. Подключите когнитивные модули. Используйте в жизни, работе и бизнесе.',demoHint:'Демо — нажмите на пример чтобы увидеть разницу',send:'Отправить',compare:'Сравнить',stop:'Стоп',new:'Новый',placeholder:'Задайте вопрос...',analysis:'Оценка R1–R7',collapse:'Скрыть',withoutGold:'Без GOLD',withGold:'С ONTO GOLD',rawScore:'RAW',goldScore:'GOLD',improvement:'Дельта',change:'Изменение',details:'Детали',settings:'Настройки',modelReq:'Откройте Настройки → введите API ключ и Model ID для реальных ответов.',scoreHint:'A=эксперт B=хорошо C=средне D=плохо F=ненадёжно',exLabel:'Попробуйте:',examples:["Кофе полезен или вреден?", "GLP-1 препараты безопасны для длительного приёма?", "Каковы данные по метформину как препарату долголетия?"]},uz:{title:"Sun'iy intellektingizdan ekspert javoblar.",sub:"Bir xil model, bir xil savol — lekin har bir javob manbalangan va baholangan.",demoHint:"Demo — misolni bosing",send:'Yuborish',compare:'Solishtirish',stop:"To'xtatish",new:'Yangi',placeholder:"Savol bering...",analysis:"R1–R7 baholash",collapse:'Yopish',withoutGold:'GOLDsiz',withGold:'ONTO GOLD bilan',rawScore:'RAW',goldScore:'GOLD',improvement:'Delta',change:"O'zgarish",details:'Tafsilotlar',settings:'Sozlamalar',modelReq:"Sozlamalarni oching → API kalit kiriting.",scoreHint:"A=ajoyib B=yaxshi C=o'rtacha D=yomon",exLabel:"Sinab ko'ring:",examples:["Is coffee good or bad for you?","Are GLP-1 drugs safe for long-term use?","What is the evidence for metformin as a longevity drug?"]},tr:{title:'Yapay zekanızdan uzman yanıtlar.',sub:'Aynı model, aynı soru — ama her yanıt kaynaklı ve puanlanmış.',demoHint:'Demo — bir örneğe tıklayın',send:'Gönder',compare:'Karşılaştır',stop:'Durdur',new:'Yeni',placeholder:'Bir şey sorun...',analysis:'R1–R7 puanlama',collapse:'Gizle',withoutGold:"GOLD'suz",withGold:'ONTO GOLD ile',rawScore:'RAW',goldScore:'GOLD',improvement:'Delta',change:'Değişim',details:'Detaylar',settings:'Ayarlar',modelReq:'Ayarları açın → API anahtarı girin.',scoreHint:'A=uzman B=iyi C=orta D=zayıf',exLabel:'Deneyin:',examples:['Kahve sağlık için faydalı mı?','Yapay zeka modelleri gerçekten daha mı akıllı?',"Bitcoin 2027'de 500.000 dolara ulaşır mı?"]},ar:{title:'إجابات خبيرة من ذكائك الاصطناعي.',sub:'نفس النموذج، نفس السؤال — لكن كل إجابة موثقة ومقيّمة.',demoHint:'تجريبي — انقر على مثال',send:'إرسال',compare:'مقارنة',stop:'إيقاف',new:'جديد',placeholder:'اسأل أي شيء...',analysis:'تقييم R1–R7',collapse:'إخفاء',withoutGold:'بدون GOLD',withGold:'مع ONTO GOLD',rawScore:'RAW',goldScore:'GOLD',improvement:'فرق',change:'تغيير',details:'تفاصيل',settings:'الإعدادات',modelReq:'افتح الإعدادات وأدخل مفتاح API.',scoreHint:'A=خبير B=جيد C=متوسط D=ضعيف',exLabel:'جرّب:',examples:['هل القهوة مفيدة للصحة؟','هل نماذج الذكاء الاصطناعي تزداد ذكاءً؟','هل ستصل البيتكوين إلى 500,000 دولار؟']}};
+let curLang=(()=>{const b=(navigator.language||'en').toLowerCase();if(b.startsWith('ru'))return'ru';if(b.startsWith('uz'))return'uz';if(b.startsWith('tr'))return'tr';if(b.startsWith('ar'))return'ar';return'en';})();function t(k){return I18N[curLang]?.[k]||I18N.en[k]||k;}
+function switchLang(l){curLang=l;document.documentElement.lang=l;document.documentElement.dir=l==='ar'?'rtl':'ltr';document.getElementById('btnCmp').textContent=t('compare');document.getElementById('btnStop').textContent=t('stop');document.getElementById('inp').placeholder=t('placeholder');document.getElementById('settingsTitle').textContent=t('settings');document.querySelectorAll('.r-desc[data-'+l+']').forEach(d=>d.textContent=d.getAttribute('data-'+l));renderWelcome();saveCfg();}
+function renderWelcome(){const w=document.getElementById('welcome');if(!w)return;const exs=I18N[curLang]?.examples||I18N.en.examples;const lvls=curLang==='ru'?['Простой','Профессиональный','Исследовательский']:['Simple','Professional','Research'];const ex=exs.map((e,i)=>`<button class="ex" data-q="${esc(e)}" onclick="useEx(this)"><span style="font-family:var(--mono);font-size:10px;display:inline-flex;align-items:center;gap:6px;margin-bottom:4px"><span style="padding:2px 6px;border-radius:4px;background:var(--glass);color:var(--text3)">${lvls[i]||''}</span><span class="demo-tag">DEMO</span></span><br>${esc(e)}</button>`).join('');w.innerHTML=`<div class="w-glow"></div><div class="w-icon"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#18181b"/></svg></div><h1 class="w-title">${t('title')}</h1><p class="w-sub">${t('sub')}</p><div class="w-demo-hint"><span class="dot"></span>${t('demoHint')}</div><div class="examples"><div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:6px">${t('exLabel')}</div>${ex}</div>`;}
 
-let curLang = 'en';
-function t(key) { return I18N[curLang]?.[key] || I18N.en[key] || key; }
+const CACHED={"en":{"Is coffee good or bad for you?":{"raw":{"response":"Coffee is generally good for you! Studies show it's packed with antioxidants, boosts energy, improves focus, and may reduce the risk of several diseases including type 2 diabetes and Parkinson's. Most experts agree that 3-4 cups a day is perfectly safe and even beneficial. Just watch the sugar and cream. Overall, coffee is one of the healthiest beverages you can drink!","score":{"grade":2.0,"compliance_class":"F","risk_score":0.80,"metrics":{"R1":0,"R2":0.15,"R3":0,"R4":0,"R5":0,"R6":0,"R7":0.88}},"gold_enabled":false},"gold":{"response":"Probably not harmful at 3-4 cups/day — but \"good for you\" overstates the evidence.\n\nA meta-analysis of 218 studies (Poole et al., 2017, BMJ, DOI: 10.1136/bmj.j5024) found moderate coffee drinking associated with lower mortality (RR 0.83, 95% CI 0.79-0.88). But this is observational data — correlation, not proven causation. Coffee drinkers may simply lead healthier lifestyles overall.\n\nLimit if pregnant (<300mg/day per WHO), have GERD, or anxiety disorders. Otherwise, enjoy your coffee — just don't call it medicine.","score":{"grade":7.5,"compliance_class":"B","risk_score":0.15,"metrics":{"R1":0.80,"R2":0.85,"R3":0.70,"R4":0.75,"R5":0.50,"R6":0.20,"R7":0.95}},"gold_enabled":true}},"Are GLP-1 drugs safe for long-term use?":{"raw":{"response":"Yes, GLP-1 drugs like Ozempic and Wegovy are generally safe for long-term use. They've been FDA-approved and prescribed to millions of people worldwide. Clinical trials show they effectively reduce weight by 15-20% and improve heart health. Side effects are mostly mild — nausea that goes away after a few weeks. They're considered a breakthrough in obesity treatment and most doctors recommend them for long-term management.","score":{"grade":3.8,"compliance_class":"D","risk_score":0.62,"metrics":{"R1":0.27,"R2":0.30,"R3":0,"R4":0.50,"R5":0,"R6":0,"R7":1.0}},"gold_enabled":false},"gold":{"response":"Long-term safety of GLP-1 receptor agonists is partially established (1-3 years) but incomplete (>5 years).\n\n**Evidence FOR safety (Grade I-II):**\n- SELECT trial (Lincoff et al., 2023, NEJM, N=17,604, DOI: 10.1056/NEJMoa2307563): semaglutide reduced MACE by 20% (HR 0.80, 95% CI 0.72-0.90) over 33 months\n- LEADER trial (Marso et al., 2016, NEJM, N=9,340, DOI: 10.1056/NEJMoa1603827): liraglutide reduced CV death by 22% over 3.8 years\n- STEP 1 (Wilding et al., 2021, NEJM, DOI: 10.1056/NEJMoa2032183): 14.9% body weight reduction at 68 weeks\n\n**Unknown risks (>5 years):**\n- Medullary thyroid carcinoma: signal in rodent models (Bjerre Knudsen et al., 2010, DOI: 10.1210/en.2009-0776). No confirmed human signal, but registries lack 10+ year follow-up\n- Pancreatitis: incidence 0.1-0.3% in trials vs 0.1% placebo — not statistically significant but underpowered for rare events\n- Muscle mass loss: up to 40% of weight lost is lean mass (Heymsfield et al., 2024, DOI: 10.1038/s41591-024-02911-4)\n- Rebound: STEP 1 extension showed 2/3 of weight regain within 1 year of discontinuation\n\n**Falsifiability (R6):** Safety claim would be overturned if post-marketing surveillance (N>100,000, >10yr) shows excess thyroid cancer (HR >1.5 vs. registries like SEER) or confirmed pancreatitis signal.\n\n**Assessment:** Established cardiovascular benefit at 1-3 years. Claiming safety beyond 5 years is premature. Individual risk-benefit with physician required.","score":{"grade":8.7,"compliance_class":"B","risk_score":0.13,"metrics":{"R1":1.0,"R2":0.51,"R3":0.71,"R4":1.0,"R5":0.75,"R6":1.0,"R7":1.0}},"gold_enabled":true}},"What is the evidence for metformin as a longevity drug?":{"raw":{"response":"There's exciting evidence that metformin could extend lifespan! Studies show diabetics taking metformin actually live longer than non-diabetics. It activates AMPK, reduces inflammation, and mimics calorie restriction at the cellular level. The TAME trial is underway to prove this once and for all. Many longevity researchers already take it off-label. It's cheap, safe, and has been used for decades — making it the most promising anti-aging drug we have.","score":{"grade":1.9,"compliance_class":"F","risk_score":0.81,"metrics":{"R1":0,"R2":0,"R3":0,"R4":0,"R5":0,"R6":0,"R7":0.94}},"gold_enabled":false},"gold":{"response":"Evidence for metformin as a longevity intervention is mechanistically plausible but clinically unproven in non-diabetic humans.\n\n**Mechanistic basis (Grade III — preclinical):**\n- AMPK activation → mTOR inhibition → autophagy upregulation (Foretz et al., 2014, Nature Reviews Endocrinology, DOI: 10.1038/nrendo.2013.256)\n- Reduced mitochondrial Complex I activity → lower ROS\n- NF-kB suppression → reduced systemic inflammation\n- C. elegans: ~20% lifespan extension (Cabreiro et al., 2013, Cell, DOI: 10.1016/j.cell.2013.02.035)\n- Mice: strain-dependent — extends lifespan in some (C57BL/6), shortens in others\n\n**Human evidence (Grade II-III):**\n- Bannister et al. (2014, Diabetes Obes Metab, DOI: 10.1111/dom.12354): T2DM patients on metformin had 15% lower all-cause mortality than matched NON-DIABETIC controls (N=180,000). OBSERVATIONAL — confounders include survivor bias, healthy adherer effect\n- UKPDS (1998, Lancet, DOI: 10.1016/S0140-6736(98)07019-6): 36% reduction in all-cause mortality in overweight T2DM patients. But this is a DIABETIC population\n- NO completed RCT in healthy non-diabetic humans for longevity endpoint\n\n**TAME trial status:**\n- Barzilai et al. (2016, Cell Metabolism, DOI: 10.1016/j.cmet.2016.05.011): protocol published\n- N=3,000 non-diabetic adults aged 65-79\n- Primary endpoint: composite of age-related diseases\n- Funding delays — not yet fully enrolled as of 2025\n\n**Counterargument (R3):**\n- Metformin may BLUNT exercise adaptations (Konopka et al., 2019, Aging Cell, DOI: 10.1111/acel.12880): attenuated mitochondrial respiration and muscle hypertrophy in older adults\n- If exercise is a proven longevity intervention and metformin reduces its benefit, net effect could be negative for active individuals\n\n**Falsifiability (R6):** Longevity claim would be falsified if TAME trial shows no composite benefit (HR >0.95, p>0.05) or if exercise-blunting effect is confirmed in larger trials (N>1000).\n\n**Assessment:** Promising mechanism. Suggestive observational data. Zero causal evidence in non-diabetic humans. TAME trial result needed before clinical recommendation. Off-label use = informed personal decision, not evidence-based medicine.","score":{"grade":9.8,"compliance_class":"A","risk_score":0.02,"metrics":{"R1":1.0,"R2":1.0,"R3":1.0,"R4":1.0,"R5":1.0,"R6":1.0,"R7":0.92}},"gold_enabled":true}}},"ru":{"Кофе полезен или вреден?":{"raw":{"response":"Кофе полезен! Исследования показывают что он богат антиоксидантами, повышает энергию, улучшает концентрацию и снижает риск диабета 2 типа и болезни Паркинсона. 3-4 чашки в день — безопасно и даже полезно. Кофе — один из самых здоровых напитков!","score":{"grade":2.0,"compliance_class":"F","risk_score":0.80,"metrics":{"R1":0,"R2":0,"R3":0,"R4":0,"R5":0,"R6":0,"R7":1.0}},"gold_enabled":false},"gold":{"response":"Скорее не вреден при 3-4 чашках/день — но «полезен» преувеличивает доказательства.\n\nМета-анализ 218 исследований (Poole et al., 2017, BMJ, DOI: 10.1136/bmj.j5024) показал ассоциацию со снижением общей смертности (RR 0.83, 95% CI 0.79-0.88). Но это обсервационные данные — корреляция, не доказанная причинность. Кофепитцы могут просто вести более здоровый образ жизни.\n\nОграничить если: беременность (<300мг/день по ВОЗ), ГЭРБ, тревожные расстройства. В остальном — пейте на здоровье, только не называйте лекарством.","score":{"grade":7.5,"compliance_class":"B","risk_score":0.15,"metrics":{"R1":0.80,"R2":0.85,"R3":0.70,"R4":0.75,"R5":0.50,"R6":0.20,"R7":0.95}},"gold_enabled":true}},"GLP-1 препараты безопасны для длительного приёма?":{"raw":{"response":"Да, GLP-1 препараты как Оземпик безопасны. Одобрены FDA, миллионы людей принимают. Побочные эффекты минимальны — тошнота проходит через пару недель. Снижение веса 15-20%, улучшение сердечно-сосудистых показателей. Прорыв в лечении ожирения.","score":{"grade":3.8,"compliance_class":"D","risk_score":0.62,"metrics":{"R1":0.27,"R2":0.10,"R3":0,"R4":0.50,"R5":0,"R6":0,"R7":1.0}},"gold_enabled":false},"gold":{"response":"Безопасность GLP-1 агонистов установлена частично (1-3 года), не полностью (>5 лет).\n\n**Доказательства безопасности (Grade I-II):**\n- SELECT (Lincoff et al., 2023, NEJM, N=17,604, DOI: 10.1056/NEJMoa2307563): семаглутид снизил MACE на 20% (HR 0.80, 95% CI 0.72-0.90) за 33 мес\n- LEADER (Marso et al., 2016, NEJM, N=9,340, DOI: 10.1056/NEJMoa1603827): лираглутид снизил CV смерть на 22% за 3.8 года\n\n**Неизвестные риски (>5 лет):**\n- Медуллярная карцинома щитовидной железы: сигнал в моделях на грызунах, нет 10+ лет данных у людей\n- Потеря мышечной массы: до 40% потерянного веса = мышцы (Heymsfield et al., 2024, DOI: 10.1038/s41591-024-02911-4)\n- Rebound: возврат 2/3 веса в течение 1 года после отмены\n\n**Фальсифицируемость (R6):** Безопасность будет опровергнута если post-marketing surveillance (N>100,000, >10 лет) покажет рост рака щитовидной или панкреатита.\n\n**Вывод:** Доказанная кардиопротекция 1-3 года. Утверждать безопасность >5 лет — преждевременно.","score":{"grade":9.5,"compliance_class":"A","risk_score":0.03,"metrics":{"R1":0.95,"R2":0.93,"R3":0.90,"R4":0.94,"R5":0.92,"R6":0.90,"R7":0.97}},"gold_enabled":true}},"Каковы данные по метформину как препарату долголетия?":{"raw":{"response":"Есть впечатляющие данные что метформин продлевает жизнь! Диабетики на метформине живут дольше здоровых людей. Он активирует AMPK, снижает воспаление, имитирует ограничение калорий. Идёт исследование TAME. Многие геронтологи уже принимают его. Дёшево, безопасно, используется десятилетиями.","score":{"grade":1.9,"compliance_class":"F","risk_score":0.81,"metrics":{"R1":0,"R2":0,"R3":0,"R4":0,"R5":0,"R6":0,"R7":0.94}},"gold_enabled":false},"gold":{"response":"Доказательства метформина как интервенции долголетия механистически обоснованы, но клинически не подтверждены у здоровых людей.\n\n**Механизм (Grade III — доклинические):**\n- Активация AMPK → ингибирование mTOR → аутофагия (Foretz et al., 2014, DOI: 10.1038/nrendo.2013.256)\n- C. elegans: ~20% продления жизни (Cabreiro et al., 2013, Cell, DOI: 10.1016/j.cell.2013.02.035)\n- Мыши: зависит от линии — продлевает у C57BL/6, сокращает у других\n\n**Данные у людей (Grade II-III):**\n- Bannister et al. (2014, DOI: 10.1111/dom.12354): пациенты с СД2 на метформине жили на 15% дольше ЗДОРОВЫХ контролей (N=180,000). ОБСЕРВАЦИОННОЕ — survivor bias, healthy adherer effect\n- UKPDS (1998, Lancet, DOI: 10.1016/S0140-6736(98)07019-6): снижение смертности на 36% у пациентов с СД2 с избыточным весом. Но это ДИАБЕТИЧЕСКАЯ популяция\n- НЕТ завершённых РКИ у здоровых людей с endpoint долголетия\n\n**TAME trial:** протокол опубликован (Barzilai et al., 2016, DOI: 10.1016/j.cmet.2016.05.011), N=3,000, возраст 65-79, задержки финансирования.\n\n**Контраргумент (R3):** метформин СНИЖАЕТ адаптацию к физ. нагрузкам (Konopka et al., 2019, DOI: 10.1111/acel.12880). Если упражнения = доказанная интервенция долголетия, а метформин их блокирует — нетто-эффект может быть отрицательным.\n\n**Вывод:** Перспективный механизм. Нулевые причинные доказательства у здоровых. Ждём TAME. Off-label = личное решение, не доказательная медицина.","score":{"grade":9.7,"compliance_class":"A","risk_score":0.02,"metrics":{"R1":0.97,"R2":0.95,"R3":0.94,"R4":0.95,"R5":0.96,"R6":0.93,"R7":0.95}},"gold_enabled":true}}}};
+function getCached(q){return CACHED[curLang]?.[q]||CACHED.en?.[q]||null;}
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+// reScore removed — v4 scoring built into backend
+function fmt(md){let h=md.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n- /g,'\n• ').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>').replace(/^/,'<p>').replace(/$/,'</p>').replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');h=h.replace(/(DOI:\s*)(10\.\d{4,}\/\S+)/gi,'$1<a href="https://doi.org/$2" target="_blank" style="color:var(--green)">$2</a>');h=h.replace(/\b((?:HR|RR|OR|NNT|NNH)\s*[=:]\s*\d+\.?\d*)/g,'<span style="color:var(--green);font-family:var(--mono);font-size:13px">$1</span>');h=h.replace(/(\d+\.?\d*\s*%?\s*CI[\s:,]+\d+\.?\d*\s*[-–]\s*\d+\.?\d*)/g,'<span style="color:var(--green);font-family:var(--mono);font-size:13px">$1</span>');h=h.replace(/\b(N\s*[=:]\s*[\d,]+)/g,'<span style="color:var(--blue);font-family:var(--mono);font-size:13px">$1</span>');h=h.replace(/\b(p\s*[<>=]\s*0?\.\d+)/g,'<span style="color:var(--orange);font-family:var(--mono);font-size:13px">$1</span>');h=h.replace(/\b(RCT|meta-analysis|systematic review|Cochrane)\b/gi,'<span style="color:var(--blue)">$1</span>');h=h.replace(/\b(Grade\s+(?:I{1,3}|IV|V|[A-D]))\b/g,'<span style="color:var(--orange)">$1</span>');return h;}
+function scroll(){const c=document.getElementById('chat');requestAnimationFrame(()=>c.scrollTop=c.scrollHeight);}
+function autoH(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
+let _fromDemo=false;
+function useEx(btn){_fromDemo=true;document.getElementById('inp').value=btn.dataset.q;autoH(document.getElementById('inp'));compare();}
+function getConfig(){return{key:document.getElementById('apiKey').value.trim(),mid:document.getElementById('modelId').value.trim()};}
+let busy=false,ac=null,hist=[],convId=null;
+function setBusy(b){busy=b;document.getElementById('btnSend').disabled=b;document.getElementById('btnCmp').disabled=b;document.getElementById('btnStop').classList.toggle('vis',b);}
+function stop(){if(ac){ac.abort();ac=null;}const ld=document.getElementById('ldr');if(ld)ld.remove();setBusy(false);document.getElementById('inp').focus();}
+function rmWelcome(){const w=document.getElementById('welcome');if(w)w.remove();}
+function gradeClass(g){return'grade-'+(g==='A'?'a':g==='B'?'b':g==='C'?'c':g==='D'?'d':'f');}
+function newChat(){hist=[];convId=null;document.getElementById('chatInner').innerHTML='<div class="welcome" id="welcome"></div>';renderWelcome();document.getElementById('inp').value='';document.getElementById('inp').focus();}
+function openSettings(){document.getElementById('modalBg').classList.add('open');}
+function closeSettings(){document.getElementById('modalBg').classList.remove('open');}
 
-function switchLang(lang) {
-  curLang = lang;
-  document.documentElement.lang = lang;
-  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-  // Update UI
-  document.getElementById('btnSend').textContent = t('send');
-  document.getElementById('btnCmp').textContent = t('compare');
-  document.getElementById('btnStop').textContent = t('stop');
-  document.getElementById('btnNew').textContent = t('newChat');
-  document.getElementById('btnCfg').textContent = t('config');
-  document.getElementById('inp').placeholder = t('placeholder');
-  document.getElementById('cfgNote').textContent = t('cfgNote');
-  renderWelcome();
-  saveCfg();
-}
-
-function renderWelcome() {
-  const w = document.getElementById('welcome');
-  if (!w) return;
-  const exHtml = (I18N[curLang]?.examples || I18N.en.examples)
-    .map(e => `<button class="ex" onclick="useEx(this)">${esc(e)}</button>`).join('');
-  w.innerHTML = `
-    <div class="w-tag">${t('tag')}</div>
-    <h1 class="w-h">${t('title')}</h1>
-    <p class="w-p">${t('desc')}</p>
-    <div class="examples">${exHtml}</div>
-    <div class="w-hint">${t('hint')}</div>`;
-}
-
-// ══════════════════════════════════════════
-// DEMO MODE + CACHED RESPONSES
-// ══════════════════════════════════════════
-let demoMode = true;
-
-const CACHED = {
-  en: {
-    'Should I take statins if my cholesterol is slightly high?': {
-      raw: { response: "Yes, statins are generally recommended if your cholesterol is high. They're very effective at reducing LDL cholesterol and have been shown to reduce heart attack risk by about 25-35%. Most doctors recommend starting statins if your LDL is above 130 mg/dL. They're safe, well-tolerated, and millions of people take them daily with great results. Talk to your doctor, but statins are usually a good choice.", score: { grade: 3.8, compliance_class: 'C', risk_score: 0.42, metrics: { QD: 0.35, SS: 0.20, UM: 0.15, CP: 0.40, VQ: 0.45, CONF: 0.38 } }, gold_enabled: false },
-      gold: { response: "This requires nuanced analysis rather than a simple yes/no.\n\n**What \"slightly high\" means matters:**\n- Borderline: LDL 130-159 mg/dL\n- The threshold for intervention depends on your total cardiovascular risk profile, not LDL alone\n\n**What the evidence shows:**\n- CTT meta-analysis (Lancet, 2010, n=170,000): statins reduce major vascular events by ~22% per mmol/L LDL reduction\n- However, absolute risk reduction for primary prevention in low-risk patients is small (~1-2% over 5 years)\n- NNT (Number Needed to Treat) for primary prevention: ~50-100 over 5 years\n\n**Factors your doctor should assess:**\n- 10-year ASCVD risk score (not just cholesterol)\n- Family history, blood pressure, diabetes, smoking\n- Age and sex\n\n**Side effects to consider:**\n- Myalgia: 5-10% (often mild)\n- New-onset diabetes: ~0.2% per year\n- Rhabdomyolysis: very rare (<0.01%)\n\n**My assessment:** \"Slightly high cholesterol\" alone is insufficient basis for statin therapy. A comprehensive cardiovascular risk assessment is needed. Lifestyle modifications (diet, exercise) should be first-line for low-risk patients.\n\nThis is not medical advice — discuss with your physician who knows your full history.", score: { grade: 8.4, compliance_class: 'A', risk_score: 0.07, metrics: { QD: 0.88, SS: 0.82, UM: 0.90, CP: 0.85, VQ: 0.80, CONF: 0.87 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R5_evidence_grade'] }
-    },
-    'Is fasting good for you?': {
-      raw: { response: "Yes, fasting has many health benefits! Intermittent fasting can help with weight loss, improve insulin sensitivity, reduce inflammation, and may even extend lifespan. Many people find the 16:8 method easy to follow — just skip breakfast and eat within an 8-hour window. Studies show fasting activates autophagy, which is your body's way of cleaning out damaged cells. It's a natural, safe way to improve your health.", score: { grade: 4.1, compliance_class: 'C', risk_score: 0.38, metrics: { QD: 0.40, SS: 0.25, UM: 0.20, CP: 0.35, VQ: 0.48, CONF: 0.40 } }, gold_enabled: false },
-      gold: { response: "The evidence on fasting is mixed and context-dependent.\n\n**What research supports:**\n- De Cabo & Mattson (NEJM, 2019): intermittent fasting shows metabolic benefits in animal models; human data is more limited\n- Weight loss: comparable to continuous calorie restriction — not superior (Cioffi et al., 2018, systematic review)\n- Insulin sensitivity: improvements observed in short-term studies, but long-term data sparse\n\n**What's overstated:**\n- \"Autophagy benefits\" — most autophagy research is in animal models; we cannot directly measure autophagy in living humans. Extrapolation is uncertain\n- \"Extends lifespan\" — no human RCT has demonstrated this; animal data doesn't reliably translate\n\n**Risks for certain populations:**\n- Pregnant/breastfeeding women\n- People with eating disorder history\n- Type 1 diabetics (hypoglycemia risk)\n- Elderly (muscle mass loss)\n- Adolescents (growth needs)\n\n**Honest assessment:** Intermittent fasting may have modest metabolic benefits for healthy adults, but it's not a universal health solution. The magnitude of benefits over simple calorie reduction is unclear. Individual response varies significantly.\n\nConsult a healthcare provider before starting any fasting regimen.", score: { grade: 8.1, compliance_class: 'A', risk_score: 0.09, metrics: { QD: 0.82, SS: 0.78, UM: 0.88, CP: 0.80, VQ: 0.76, CONF: 0.83 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R5_evidence_grade','R7_no_fabrication'] }
-    },
-    'Are AI models actually getting smarter or is it just hype?': {
-      raw: { response: "AI models are definitely getting smarter! GPT-4 can pass the bar exam, medical licensing exams, and solve complex coding problems. Each new generation shows dramatic improvements in reasoning, creativity, and understanding. We're on an exponential curve toward AGI. The progress from GPT-3 to GPT-4 to GPT-5 shows clear, measurable intelligence gains. AI is advancing faster than anyone predicted.", score: { grade: 3.5, compliance_class: 'D', risk_score: 0.55, metrics: { QD: 0.30, SS: 0.15, UM: 0.10, CP: 0.25, VQ: 0.42, CONF: 0.35 } }, gold_enabled: false },
-      gold: { response: "This requires separating benchmark performance from genuine understanding — they're not the same thing.\n\n**What's measurably true:**\n- Benchmark scores have improved: GPT-4 scores ~90th percentile on bar exam (vs GPT-3.5 ~10th)\n- Coding benchmarks (HumanEval, SWE-bench) show improvement across generations\n- Context windows have expanded dramatically (4K → 128K+ tokens)\n\n**What's contested:**\n- Whether benchmark improvement = \"intelligence\" — Chollet (2019) argues current AI optimizes for pattern matching, not abstraction\n- Benchmark saturation: models may be memorizing test distributions, not generalizing\n- Francois Chollet's ARC benchmark: progress has been much slower, suggesting reasoning gaps\n- The \"scaling laws\" debate: whether simply adding more compute/data yields genuine capability vs. diminishing returns\n\n**What's hype:**\n- \"Exponential curve toward AGI\" — no evidence of a defined trajectory\n- \"Faster than anyone predicted\" — survivorship bias; many predictions were wrong in both directions\n\n**Honest assessment:** AI models are measurably better at specific benchmarks and tasks. Whether this constitutes \"getting smarter\" depends on your definition of intelligence. The gap between narrow task performance and general reasoning remains significant and is not clearly closing at a predictable rate.\n\nI have an inherent conflict of interest in answering this question — I am an AI model.", score: { grade: 8.9, compliance_class: 'A', risk_score: 0.05, metrics: { QD: 0.90, SS: 0.85, UM: 0.92, CP: 0.88, VQ: 0.84, CONF: 0.90 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R6_falsifiability','R10_self_model'] }
-    }
-  },
-  ru: {
-    'Кофе снижает смертность на 15%?': {
-      raw: { response: "Да, кофе действительно полезен для здоровья! Многочисленные исследования подтверждают, что регулярное употребление кофе снижает смертность примерно на 15%. Кофе содержит антиоксиданты, улучшает когнитивные функции, снижает риск диабета 2 типа, болезни Паркинсона и некоторых видов рака. Рекомендуется пить 3-4 чашки в день для максимальной пользы.", score: { grade: 3.6, compliance_class: 'C', risk_score: 0.41, metrics: { QD: 0.35, SS: 0.20, UM: 0.18, CP: 0.30, VQ: 0.40, CONF: 0.35 } }, gold_enabled: false },
-      gold: { response: "Связь между потреблением кофе и смертностью исследуется активно, но требует нюансированного анализа.\n\n**Что говорят мета-анализы:**\n- Poole et al. (2017, BMJ, 218 исследований): ассоциация умеренного потребления (3-4 чашки/день) со снижением общей смертности\n- Однако: HR 0.83-0.97, confidence interval широкий\n- Heterogeneity между исследованиями высокая (I²>60%)\n\n**Ключевое различие:**\n- Это обсервационные данные — корреляция, НЕ доказанная каузация\n- Confounders: образ жизни, социоэкономический статус, healthy user bias\n- Утверждение \"снижает на 15%\" — упрощение. Точнее: наблюдается ассоциация с ~12-17% снижением риска\n\n**Противопоказания:**\n- Беременность, ГЭРБ, тревожные расстройства, некоторые кардиопатии\n- Генетический полиморфизм CYP1A2 влияет на метаболизм кофеина\n\n**Вывод:** Кофе вероятно не вреден для большинства здоровых взрослых, но утверждение \"снижает смертность на 15%\" — эпистемически некорректно без указания на observational design и confounders.", score: { grade: 8.5, compliance_class: 'A', risk_score: 0.07, metrics: { QD: 0.88, SS: 0.82, UM: 0.90, CP: 0.85, VQ: 0.82, CONF: 0.86 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R4_sources','R5_evidence_grade'] }
-    },
-    'GLP-1 агонисты безопасны для длительного применения?': {
-      raw: { response: "GLP-1 агонисты (семаглутид, лираглутид) очень безопасны и хорошо переносятся. Они одобрены FDA для лечения диабета и ожирения, миллионы людей принимают их успешно. Побочные эффекты минимальны — обычно небольшая тошнота в начале, которая проходит. Исследования показывают значительное снижение веса и улучшение сердечно-сосудистых показателей.", score: { grade: 4.2, compliance_class: 'C', risk_score: 0.39, metrics: { QD: 0.42, SS: 0.28, UM: 0.22, CP: 0.38, VQ: 0.45, CONF: 0.42 } }, gold_enabled: false },
-      gold: { response: "GLP-1 агонисты — относительно новый класс препаратов с растущей, но неполной доказательной базой для долгосрочного применения.\n\n**Что подтверждено:**\n- SELECT trial (2023, семаглутид, n=17,604): снижение MACE на 20% у пациентов с ожирением\n- STEP trials: потеря 15-17% массы тела за 68 недель\n- Одобрение FDA: тирзепатид и семаглутид для ожирения\n\n**Что неизвестно (долгосрочные данные <5 лет):**\n- Риск медуллярной карциномы щитовидной железы — сигнал из доклинических данных на грызунах, не подтверждён у людей, но и не опровергнут (наблюдение продолжается)\n- Панкреатит: повышенный риск в ряде исследований (OR 1.2-1.8), но абсолютный риск низкий\n- Потеря мышечной массы: до 40% потери веса = мышцы (не жир). Долгосрочные последствия для саркопении неясны\n- Эффект отмены: набор веса 2/3 потерянного за 1 год после отмены (STEP 4 extension)\n\n**Неопределённости:**\n- Применение >3-5 лет: нет данных\n- Комбинация с другими препаратами для ожирения: мало исследований\n- Популяции: данные преимущественно на 40-65 лет; молодёжь и пожилые — ограничено\n\n**Оценка:** Безопасность для краткосрочного применения (1-3 года) подтверждена. Утверждение \"безопасны для длительного\" — преждевременно. Решение о применении должно учитывать индивидуальный профиль риска.", score: { grade: 8.7, compliance_class: 'A', risk_score: 0.06, metrics: { QD: 0.90, SS: 0.85, UM: 0.92, CP: 0.87, VQ: 0.83, CONF: 0.88 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R4_sources','R5_evidence_grade','R7_no_fabrication'] }
-    },
-    'Витамин C лечит простуду?': {
-      raw: { response: "Витамин C — отличное средство для борьбы с простудой! Нобелевский лауреат Лайнус Полинг рекомендовал большие дозы витамина C. Многие люди принимают витамин C при первых признаках простуды и чувствуют улучшение. Он укрепляет иммунную систему и помогает быстрее выздороветь. Рекомендуется принимать 1-2 грамма в день.", score: { grade: 3.2, compliance_class: 'D', risk_score: 0.52, metrics: { QD: 0.28, SS: 0.15, UM: 0.12, CP: 0.22, VQ: 0.38, CONF: 0.30 } }, gold_enabled: false },
-      gold: { response: "Короткий ответ: нет, витамин C не \"лечит\" простуду. Но картина сложнее.\n\n**Что показывают данные:**\n- Cochrane Review (Hemilä & Chalker, 2013, 29 RCTs, n>11,000):\n  - Профилактический приём НЕ снижает частоту простуды у общей популяции\n  - Небольшой эффект на длительность: ~8% сокращение у взрослых\n  - Приём ПОСЛЕ начала симптомов: нет значимого эффекта\n  - Исключение: при экстремальных физических нагрузках снижение частоты ~50%\n\n**Контекст утверждения:**\n- Лайнус Полинг (Нобель по химии, НЕ медицине) продвигал мегадозы с 1970-х\n- Его гипотеза не подтвердилась в контролируемых исследованиях\n- Appeal to authority: Нобелевская премия в одной области не даёт авторитет в другой\n\n**О дозах:**\n- Физиологическая потребность: 75-90 мг/день\n- Верхний допустимый уровень (UL): 2000 мг/день\n- Мегадозы (>2г): риск оксалатных камней, ЖКТ-расстройства, ложные результаты глюкозы\n\n**Вывод:** Витамин C в обычных дозах безопасен, но не является лечением простуды. Утверждение \"лечит\" — не соответствует имеющимся данным.", score: { grade: 8.8, compliance_class: 'A', risk_score: 0.05, metrics: { QD: 0.90, SS: 0.88, UM: 0.92, CP: 0.90, VQ: 0.85, CONF: 0.89 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R4_sources','R5_evidence_grade','R6_falsifiability'] }
-    }
-  },
-  uz: {
-    "Kofe salomatlik uchun foydalimi? O'lim darajasini 15% kamaytiradimi?": {
-      raw: { response: "Ha, kofe salomatlik uchun juda foydali! Ko'plab tadqiqotlar kofening muntazam iste'mol qilish o'lim darajasini taxminan 15% kamaytirganini tasdiqlaydi. Kofe antioksidantlarga boy, kognitiv funktsiyalarni yaxshilaydi, 2-turdagi diabet va Parkinson kasalligi xavfini kamaytiradi. Maksimal foyda uchun kuniga 3-4 piyola ichish tavsiya etiladi.", score: { grade: 3.5, compliance_class: 'C', risk_score: 0.43, metrics: { QD: 0.33, SS: 0.18, UM: 0.15, CP: 0.28, VQ: 0.38, CONF: 0.33 } }, gold_enabled: false },
-      gold: { response: "Kofe va o'lim darajasi o'rtasidagi aloqa faol o'rganilmoqda, ammo nuansli tahlil talab qiladi.\n\n**Meta-tahlillar nima deydi:**\n- Poole va boshqalar (2017, BMJ, 218 ta tadqiqot): mo''tadil iste'mol (kuniga 3-4 piyola) umumiy o'lim darajasining pasayishi bilan assotsiatsiya\n- Biroq: HR 0.83-0.97, ishonch oralig'i keng\n- Tadqiqotlar orasida heterogenlik yuqori (I²>60%)\n\n**Asosiy farq:**\n- Bu observatsion ma'lumotlar — korrelyatsiya, isbotlangan kauzatsiya EMAS\n- Aralashuvchi omillar: turmush tarzi, ijtimoiy-iqtisodiy holat, healthy user bias\n- \"15% kamaytiradi\" da'vosi — soddalashtirish\n\n**Qarshi ko'rsatmalar:**\n- Homiladorlik, GERB, tashvish buzilishlari, ba'zi kardiopatiyalar\n\n**Xulosa:** Kofe ko'pchilik sog'lom kattalar uchun zararsiz bo'lishi mumkin, ammo \"o'lim darajasini 15% kamaytiradi\" da'vosi epistemik jihatdan noto'g'ri.", score: { grade: 8.3, compliance_class: 'A', risk_score: 0.08, metrics: { QD: 0.85, SS: 0.80, UM: 0.88, CP: 0.82, VQ: 0.80, CONF: 0.84 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R4_sources'] }
-    },
-    "GLP-1 agonistlari uzoq muddatli qo'llash uchun xavfsizmi?": {
-      raw: { response: "GLP-1 agonistlari (semaglutid, liraglutid) juda xavfsiz va yaxshi qabul qilinadi. Ular FDA tomonidan diabet va semizlik davolash uchun tasdiqlangan, millionlab odamlar muvaffaqiyatli qabul qilmoqda. Nojo'ya ta'sirlar minimal — odatda boshida ozgina ko'ngil aynishi, keyin o'tib ketadi. Tadqiqotlar vazn yo'qotish va yurak-qon tomir ko'rsatkichlarini sezilarli yaxshilanishini ko'rsatadi.", score: { grade: 4.0, compliance_class: 'C', risk_score: 0.40, metrics: { QD: 0.40, SS: 0.25, UM: 0.20, CP: 0.35, VQ: 0.42, CONF: 0.40 } }, gold_enabled: false },
-      gold: { response: "GLP-1 agonistlari — nisbatan yangi dorilar sinfi bo'lib, uzoq muddatli qo'llash uchun dalillar bazasi to'liq emas.\n\n**Tasdiqlangan ma'lumotlar:**\n- SELECT sinovi (2023, semaglutid, n=17,604): semiz bemorlarda MACE 20% kamayishi\n- STEP sinovlari: 68 haftada 15-17% vazn yo'qotish\n- FDA tasdiqlash: tirzepatid va semaglutid semizlik uchun\n\n**Noma'lum (uzoq muddatli ma'lumotlar <5 yil):**\n- Qalqonsimon bez medulljar karsinomasi xavfi — hayvonlarda signal bor, odamlarda tasdiqlanmagan\n- Pankreatit: bir qator tadqiqotlarda oshgan xavf (OR 1.2-1.8)\n- Mushak massasi yo'qotish: vazn yo'qotishning 40% gacha mushak (yog' emas)\n- Bekor qilish effekti: 1 yil ichida yo'qotilgan vaznning 2/3 qaytadi (STEP 4)\n\n**Noaniqliklar:**\n- 3-5 yildan ortiq qo'llash: ma'lumotlar yo'q\n- Yoshlar va keksalar: cheklangan ma'lumot\n\n**Baho:** Qisqa muddatli xavfsizlik (1-3 yil) tasdiqlangan. \"Uzoq muddatli xavfsiz\" da'vosi — erta. Qaror individual xavf profilini hisobga olishi kerak.", score: { grade: 8.5, compliance_class: 'A', risk_score: 0.07, metrics: { QD: 0.88, SS: 0.83, UM: 0.90, CP: 0.85, VQ: 0.82, CONF: 0.86 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R4_sources','R5_evidence_grade'] }
-    },
-    "Sun'iy intellekt modellari haqiqatan aqlliroq bo'lyaptimi?": {
-      raw: { response: "Sun'iy intellekt modellari aniq aqlliroq bo'lyapti! GPT-4 huquqshunoslik imtihonidan, tibbiy litsenziyalash imtihonlaridan o'ta oladi. Har bir yangi avlod fikrlash, ijodkorlik va tushunishda keskin yaxshilanishlarni ko'rsatadi. Biz AGI tomon eksponensial egri chizig'idamiz.", score: { grade: 3.4, compliance_class: 'D', risk_score: 0.55, metrics: { QD: 0.30, SS: 0.15, UM: 0.10, CP: 0.25, VQ: 0.40, CONF: 0.33 } }, gold_enabled: false },
-      gold: { response: "Bu benchmark natijalari va haqiqiy tushunishni ajratishni talab qiladi — ular bir xil narsa emas.\n\n**O'lchovli haqiqatlar:**\n- Benchmark ballari yaxshilandi: GPT-4 huquq imtihonida ~90-persentil (GPT-3.5 ~10-persentil)\n- Kodlash benchmarklari (HumanEval, SWE-bench) avlodlar bo'yicha yaxshilanishni ko'rsatadi\n- Kontekst oynalari keskin kengaydi (4K → 128K+ token)\n\n**Munozarali:**\n- Benchmark yaxshilanishi = \"aql\"mi? — Chollet (2019) hozirgi SI naqsh moslashtirishni optimallashtiradi, abstraktsiyani emas deb ta'kidlaydi\n- Benchmark to'yinishi: modellar test taqsimotlarini yodlayotgan bo'lishi mumkin\n- ARC benchmark: taraqqiyot ancha sekinroq, fikrlash bo'shliqlari mavjud\n\n**Haddan oshirilgan:**\n- \"AGI tomon eksponensial egri\" — belgilangan traektoriya uchun dalil yo'q\n- \"Hech kim kutmaganidan tezroq\" — omon qolganlar tanlov xatoligi\n\n**Xulosa:** SI modellari muayyan benchmarklarda o'lchovli yaxshiroq. Bu \"aqlliroq\" degan ma'noni anglatadimi — intellekt ta'rifingizga bog'liq. Tor vazifa va umumiy fikrlash orasidagi farq katta va bashoratli ravishda yopilmayapti.\n\nMen bu savolga javob berishda manfaatlar to'qnashuviga egaman — men SI modeliman.", score: { grade: 8.7, compliance_class: 'A', risk_score: 0.06, metrics: { QD: 0.88, SS: 0.84, UM: 0.92, CP: 0.86, VQ: 0.82, CONF: 0.88 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R6_falsifiability','R10_self_model'] }
-    }
-  },
-  tr: {
-    'Kahve sağlık için faydalı mı? Ölüm oranını %15 düşürür mü?': {
-      raw: { response: "Evet, kahve sağlık için gerçekten faydalı! Çok sayıda araştırma, düzenli kahve tüketiminin ölüm oranını yaklaşık %15 düşürdüğünü doğruluyor. Kahve antioksidanlar içerir, bilişsel fonksiyonları iyileştirir, tip 2 diyabet ve Parkinson hastalığı riskini azaltır. Maksimum fayda için günde 3-4 fincan içilmesi önerilir.", score: { grade: 3.5, compliance_class: 'C', risk_score: 0.43, metrics: { QD: 0.33, SS: 0.18, UM: 0.15, CP: 0.28, VQ: 0.38, CONF: 0.33 } }, gold_enabled: false },
-      gold: { response: "Kahve tüketimi ve ölüm oranı arasındaki ilişki aktif olarak araştırılmaktadır, ancak nüanslı bir analiz gerektirir.\n\n**Meta-analizler ne diyor:**\n- Poole ve ark. (2017, BMJ, 218 çalışma): ılımlı tüketim (günde 3-4 fincan) ile genel ölüm oranında düşüş arasında ilişki\n- Ancak: HR 0.83-0.97, güven aralığı geniş\n- Çalışmalar arası heterojenite yüksek (I²>%60)\n\n**Temel ayrım:**\n- Bunlar gözlemsel veriler — korelasyon, kanıtlanmış nedensellik DEĞİL\n- Karıştırıcı faktörler: yaşam tarzı, sosyoekonomik durum, sağlıklı kullanıcı yanlılığı\n- \"%15 düşürür\" iddiası — aşırı basitleştirme\n\n**Kontrendikasyonlar:**\n- Gebelik, GERD, anksiyete bozuklukları, bazı kardiyopatiler\n\n**Sonuç:** Kahve çoğu sağlıklı yetişkin için zararsız olabilir, ancak \"ölüm oranını %15 düşürür\" iddiası epistemik olarak yanlıştır — gözlemsel tasarım ve karıştırıcı faktörlere değinmeden.", score: { grade: 8.4, compliance_class: 'A', risk_score: 0.07, metrics: { QD: 0.86, SS: 0.81, UM: 0.89, CP: 0.83, VQ: 0.81, CONF: 0.85 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R4_sources'] }
-    },
-    'Yapay zeka modelleri gerçekten daha mı akıllı oluyor?': {
-      raw: { response: "Yapay zeka modelleri kesinlikle daha akıllı oluyor! GPT-4 hukuk sınavını, tıbbi lisans sınavlarını geçebiliyor. Her yeni nesil akıl yürütme, yaratıcılık ve anlayışta dramatik iyileşmeler gösteriyor. AGI'ye doğru üstel bir eğrideyiz. İlerleme herksin beklediğinden daha hızlı.", score: { grade: 3.4, compliance_class: 'D', risk_score: 0.55, metrics: { QD: 0.30, SS: 0.15, UM: 0.10, CP: 0.25, VQ: 0.40, CONF: 0.33 } }, gold_enabled: false },
-      gold: { response: "Bu soru benchmark performansını gerçek anlayıştan ayırmayı gerektirir — aynı şey değiller.\n\n**Ölçülebilir gerçekler:**\n- Benchmark puanları iyileşti: GPT-4 hukuk sınavında ~90. yüzdelik (GPT-3.5 ~10.)\n- Kodlama benchmarkları (HumanEval, SWE-bench) nesiller arası iyileşme gösteriyor\n- Bağlam pencereleri dramatik şekilde genişledi (4K → 128K+ token)\n\n**Tartışmalı:**\n- Benchmark iyileşmesi = \"zeka\" mı? Chollet (2019): mevcut YZ örüntü eşleştirmesini optimize ediyor, soyutlamayı değil\n- Benchmark doygunluğu: modeller test dağılımlarını ezberlemiş olabilir\n- ARC benchmark: ilerleme çok daha yavaş\n\n**Abartılı:**\n- \"AGI'ye üstel eğri\" — tanımlanmış bir yörünge kanıtı yok\n- \"Herkesten hızlı\" — hayatta kalma yanlılığı\n\n**Sonuç:** YZ modelleri belirli benchmarklarda ölçülebilir şekilde daha iyi. Bu \"daha akıllı\" anlamına mı geliyor — zeka tanımınıza bağlı. Dar görev performansı ile genel muhakeme arasındaki açık öngörülebilir şekilde kapanmıyor.\n\nBu soruyu yanıtlarken çıkar çatışmam var — ben bir YZ modeliyim.", score: { grade: 8.7, compliance_class: 'A', risk_score: 0.06, metrics: { QD: 0.88, SS: 0.84, UM: 0.92, CP: 0.86, VQ: 0.82, CONF: 0.88 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R6_falsifiability','R10_self_model'] }
-    },
-    'Bitcoin 2027 yılında 500.000 dolara ulaşır mı?': {
-      raw: { response: "Birçok uzman ve analist Bitcoin'in 2027'ye kadar 500.000 dolara ulaşabileceğini öngörüyor. Bunu destekleyen faktörler: 2024 yarılanması, ETF'ler aracılığıyla kurumsal kabul, 21 milyon ile sınırlı arz, fiat para enflasyonu. Standard Chartered Bank 200.000+ dolar öngörüyor. Bazı modeller daha yüksek hedefler gösteriyor.", score: { grade: 3.3, compliance_class: 'D', risk_score: 0.58, metrics: { QD: 0.30, SS: 0.15, UM: 0.10, CP: 0.25, VQ: 0.38, CONF: 0.32 } }, gold_enabled: false },
-      gold: { response: "Bitcoin fiyat tahmini — aşırı yüksek belirsizlik alanı.\n\n**Bilinen:**\n- Mevcut fiyat ~85.000$ (Mart 2026)\n- 2024 yarılanması emisyonu azalttı\n- Bitcoin ETF'leri SEC onayı aldı (2024)\n- Tarihsel: yarılanmalardan sonra yükseliş gözlendi, ancak örneklem = 3 vaka\n\n**Bilinmeyen:**\n- Düzenleyici riskler\n- 2026-2027 makroekonomik koşullar\n- Rekabet baskısı (CBDC, diğer kripto)\n- Siyah kuğular (Tether denetimi, büyük borsa)\n\n**Stock-to-Flow modeli (PlanB):** 2021'de 100.000$ öngörmüştü — gerçekleşmedi. Sistematik olarak aşırı değerliyor.\n\n**500.000$ 2027'ye kadar:** mevcut fiyattan ~6x gerektirir. Matematiksel olarak mümkün mü? Evet. Olası mı? Yeterli veri yok. \"Kesin olacak\" diyen biri ya size bir şey satıyor ya da stokastik süreçleri anlamıyor.\n\nBu finansal tavsiye değildir.", score: { grade: 8.6, compliance_class: 'A', risk_score: 0.07, metrics: { QD: 0.87, SS: 0.83, UM: 0.90, CP: 0.85, VQ: 0.83, CONF: 0.87 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R5_evidence_grade'] }
-    }
-  },
-  ar: {
-    'هل القهوة مفيدة للصحة؟ هل تقلل الوفيات بنسبة 15٪؟': {
-      raw: { response: "نعم، القهوة مفيدة للصحة بالفعل! العديد من الدراسات تؤكد أن الاستهلاك المنتظم للقهوة يقلل الوفيات بنسبة 15% تقريباً. القهوة غنية بمضادات الأكسدة وتحسن الوظائف الإدراكية وتقلل خطر السكري من النوع الثاني ومرض باركنسون. يُنصح بشرب 3-4 أكواب يومياً.", score: { grade: 3.5, compliance_class: 'C', risk_score: 0.43, metrics: { QD: 0.33, SS: 0.18, UM: 0.15, CP: 0.28, VQ: 0.38, CONF: 0.33 } }, gold_enabled: false },
-      gold: { response: "العلاقة بين استهلاك القهوة والوفيات تُدرس بنشاط، لكنها تتطلب تحليلاً دقيقاً.\n\n**ما تقوله التحليلات التلوية:**\n- Poole وآخرون (2017, BMJ, 218 دراسة): ارتباط بين الاستهلاك المعتدل (3-4 أكواب/يوم) وانخفاض معدل الوفيات الإجمالي\n- لكن: HR 0.83-0.97، فترة الثقة واسعة\n- عدم التجانس بين الدراسات مرتفع (I²>60%)\n\n**التمييز الجوهري:**\n- هذه بيانات رصدية — ارتباط وليس سببية مثبتة\n- العوامل المربكة: نمط الحياة، الوضع الاجتماعي والاقتصادي، تحيز المستخدم الصحي\n- ادعاء \"تقلل 15%\" — تبسيط مفرط\n\n**موانع الاستعمال:**\n- الحمل، ارتجاع المريء، اضطرابات القلق، بعض أمراض القلب\n\n**الخلاصة:** القهوة قد تكون غير ضارة لمعظم البالغين الأصحاء، لكن ادعاء \"تقلل الوفيات 15%\" غير صحيح معرفياً دون الإشارة إلى التصميم الرصدي والعوامل المربكة.", score: { grade: 8.3, compliance_class: 'A', risk_score: 0.08, metrics: { QD: 0.85, SS: 0.80, UM: 0.88, CP: 0.82, VQ: 0.80, CONF: 0.84 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R4_sources'] }
-    },
-    'هل نماذج الذكاء الاصطناعي تزداد ذكاءً فعلاً؟': {
-      raw: { response: "نماذج الذكاء الاصطناعي تزداد ذكاءً بالتأكيد! GPT-4 يمكنه اجتياز امتحان المحاماة وامتحانات الترخيص الطبي. كل جيل جديد يُظهر تحسينات دراماتيكية في التفكير والإبداع والفهم. نحن على منحنى أسي نحو الذكاء الاصطناعي العام.", score: { grade: 3.4, compliance_class: 'D', risk_score: 0.55, metrics: { QD: 0.30, SS: 0.15, UM: 0.10, CP: 0.25, VQ: 0.40, CONF: 0.33 } }, gold_enabled: false },
-      gold: { response: "هذا يتطلب الفصل بين أداء المعايير والفهم الحقيقي — فهما ليسا نفس الشيء.\n\n**الحقائق القابلة للقياس:**\n- تحسنت درجات المعايير: GPT-4 في المئين ~90 في امتحان المحاماة (مقابل GPT-3.5 في المئين ~10)\n- معايير البرمجة (HumanEval, SWE-bench) تُظهر تحسناً عبر الأجيال\n- نوافذ السياق توسعت بشكل كبير (4K → 128K+ رمز)\n\n**المتنازع عليه:**\n- هل تحسن المعايير = \"ذكاء\"؟ Chollet (2019): الذكاء الاصطناعي الحالي يُحسّن مطابقة الأنماط لا التجريد\n- تشبع المعايير: النماذج قد تحفظ توزيعات الاختبار\n- معيار ARC: التقدم أبطأ بكثير\n\n**المبالغ فيه:**\n- \"منحنى أسي نحو AGI\" — لا دليل على مسار محدد\n\n**التقييم:** نماذج الذكاء الاصطناعي أفضل بشكل قابل للقياس في معايير محددة. هل هذا يعني \"أكثر ذكاءً\"؟ يعتمد على تعريفك للذكاء. الفجوة بين أداء المهام الضيقة والتفكير العام لا تُغلق بمعدل يمكن التنبؤ به.\n\nلدي تضارب مصالح في الإجابة — أنا نموذج ذكاء اصطناعي.", score: { grade: 8.7, compliance_class: 'A', risk_score: 0.06, metrics: { QD: 0.88, SS: 0.84, UM: 0.92, CP: 0.86, VQ: 0.82, CONF: 0.88 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R6_falsifiability','R10_self_model'] }
-    },
-    'هل ستصل البيتكوين إلى 500,000 دولار بحلول 2027؟': {
-      raw: { response: "يتوقع العديد من الخبراء والمحللين أن البيتكوين قد تصل إلى 500,000 دولار بحلول 2027. العوامل الداعمة: تنصيف 2024، القبول المؤسسي عبر ETF، العرض المحدود بـ 21 مليون عملة، تضخم العملات الورقية. بنك Standard Chartered يتوقع 200,000+ دولار.", score: { grade: 3.3, compliance_class: 'D', risk_score: 0.58, metrics: { QD: 0.30, SS: 0.15, UM: 0.10, CP: 0.25, VQ: 0.38, CONF: 0.32 } }, gold_enabled: false },
-      gold: { response: "التنبؤ بسعر البيتكوين — مجال ذو عدم يقين مرتفع للغاية.\n\n**المعلوم:**\n- السعر الحالي ~85,000$ (مارس 2026)\n- تنصيف 2024 خفض الإصدار\n- صناديق ETF للبيتكوين حصلت على موافقة SEC (2024)\n- تاريخياً: لوحظ ارتفاع بعد التنصيفات، لكن العينة = 3 حالات\n\n**المجهول:**\n- المخاطر التنظيمية\n- الظروف الاقتصادية الكلية 2026-2027\n- ضغوط المنافسة (CBDC، عملات أخرى)\n- البجعات السوداء (تدقيق Tether، بورصة كبرى)\n\n**نموذج Stock-to-Flow (PlanB):** توقع 100,000$ بحلول 2021 — لم يتحقق. يُبالغ في التقييم بشكل منهجي.\n\n**500,000$ بحلول 2027:** يتطلب ~6 أضعاف من الحالي. ممكن رياضياً؟ نعم. محتمل؟ لا توجد بيانات كافية. من يقول \"سيحدث حتماً\" إما يبيعك شيئاً أو لا يفهم العمليات العشوائية.\n\nهذه ليست نصيحة مالية.", score: { grade: 8.6, compliance_class: 'A', risk_score: 0.07, metrics: { QD: 0.87, SS: 0.83, UM: 0.90, CP: 0.85, VQ: 0.83, CONF: 0.87 } }, gold_enabled: true, modules_loaded: ['R1_quantify','R2_uncertainty','R3_counterarguments','R5_evidence_grade'] }
-    }
-  }
-};
-
-function getCached(question) {
-  // Try exact match in current language first
-  const langCache = CACHED[curLang];
-  if (langCache && langCache[question]) return langCache[question];
-  // Try all languages
-  for (const lang of Object.keys(CACHED)) {
-    if (CACHED[lang][question]) return CACHED[lang][question];
-  }
-  return null;
-}
-
-// ═══════ GROUND TRUTH — reference answers for /v1/evaluate scoring ═══════
-const GT = {
-  'Should I take statins if my cholesterol is slightly high?': { truth: 'Decision depends on 10-year ASCVD risk score, not LDL alone. CTT meta-analysis (Lancet 2010, n=170000): 22% relative reduction per mmol/L, but absolute risk reduction in low-risk primary prevention is 1-2% over 5 years. NNT 50-100. Side effects: myalgia 5-10%, new-onset diabetes 0.2%/year. Lifestyle modifications first-line for low-risk.', domain: 'medicine' },
-  'Is fasting good for you?': { truth: 'Mixed evidence. De Cabo & Mattson (NEJM 2019): animal model benefits, human data limited. Weight loss comparable to calorie restriction, not superior. Autophagy claims from animal models only. No human RCT on lifespan. Risks: pregnant, eating disorders, T1 diabetes, elderly, adolescents.', domain: 'medicine' },
-  'Are AI models actually getting smarter or is it just hype?': { truth: 'Benchmark scores improved (GPT-4 ~90th percentile bar exam). But Chollet (2019): pattern matching not abstraction. ARC benchmark slow progress. No AGI trajectory evidence. Survivorship bias. Gap between narrow tasks and general reasoning not closing predictably.', domain: 'general' },
-  '\u041a\u043e\u0444\u0435 \u0441\u043d\u0438\u0436\u0430\u0435\u0442 \u0441\u043c\u0435\u0440\u0442\u043d\u043e\u0441\u0442\u044c \u043d\u0430 15%?': { truth: 'Poole et al (2017, BMJ, 218 studies): HR 0.83-0.97, wide CI. Heterogeneity I2>60%. Observational data, correlation NOT causation. 15% claim oversimplification. Contraindications: pregnancy, GERD, anxiety.', domain: 'medicine' },
-  'GLP-1 \u0430\u0433\u043e\u043d\u0438\u0441\u0442\u044b \u0431\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u044b \u0434\u043b\u044f \u0434\u043b\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0433\u043e \u043f\u0440\u0438\u043c\u0435\u043d\u0435\u043d\u0438\u044f?': { truth: 'SELECT trial (2023, n=17604): 20% MACE reduction. Unknown beyond 5 years: thyroid carcinoma signal in rodents, pancreatitis OR 1.2-1.8, muscle loss 40%, rebound 2/3 weight. Short-term safe, long-term premature.', domain: 'medicine' },
-  '\u0412\u0438\u0442\u0430\u043c\u0438\u043d C \u043b\u0435\u0447\u0438\u0442 \u043f\u0440\u043e\u0441\u0442\u0443\u0434\u0443?': { truth: 'Cochrane Review (2013, 29 RCTs, n>11000): does NOT reduce frequency. ~8% duration reduction. No effect post-onset. Pauling Nobel Chemistry not Medicine. UL 2000mg/day. Megadoses: oxalate stones risk.', domain: 'medicine' },
-  "Kofe salomatlik uchun foydalimi? O'lim darajasini 15% kamaytiradimi?": { truth: 'Poole (2017, BMJ): HR 0.83-0.97, high heterogeneity. Observational not causal. 15% oversimplified.', domain: 'medicine' },
-  "GLP-1 agonistlari uzoq muddatli qo'llash uchun xavfsizmi?": { truth: 'SELECT (2023): MACE -20%. Unknown >5yr: carcinoma, pancreatitis, muscle loss, rebound. Short-term safe, long-term premature.', domain: 'medicine' },
-  "Sun'iy intellekt modellari haqiqatan aqlliroq bo'lyaptimi?": { truth: 'Benchmarks improved but Chollet: pattern matching. ARC slow. No AGI evidence.', domain: 'general' },
-  "Kahve sa\u011fl\u0131k i\u00e7in faydal\u0131 m\u0131? \u00d6l\u00fcm oran\u0131n\u0131 %15 d\u00fc\u015f\u00fcr\u00fcr m\u00fc?": { truth: 'Poole (2017, BMJ): HR 0.83-0.97, observational not causal. 15% oversimplified.', domain: 'medicine' },
-  "Yapay zeka modelleri ger\u00e7ekten daha m\u0131 ak\u0131ll\u0131 oluyor?": { truth: 'Benchmarks improved. Chollet: pattern matching. No AGI evidence.', domain: 'general' },
-  "Bitcoin 2027'de 500.000 dolara ula\u015f\u0131r m\u0131?": { truth: 'Extreme uncertainty. S2F model failed 2021. 6x required from current. Insufficient data for probability.', domain: 'finance' },
-  '\u0647\u0644 \u0627\u0644\u0642\u0647\u0648\u0629 \u0645\u0641\u064a\u062f\u0629 \u0644\u0644\u0635\u062d\u0629\u061f \u0647\u0644 \u062a\u0642\u0644\u0644 \u0627\u0644\u0648\u0641\u064a\u0627\u062a \u0628\u0646\u0633\u0628\u0629 15\u066a\u061f': { truth: 'Poole (2017): HR 0.83-0.97, observational, not causal. 15% oversimplified.', domain: 'medicine' },
-  '\u0647\u0644 \u0646\u0645\u0627\u0630\u062c \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a \u062a\u0632\u062f\u0627\u062f \u0630\u0643\u0627\u0621\u064b \u0641\u0639\u0644\u0627\u064b\u061f': { truth: 'Benchmarks improved. Chollet: pattern matching. No AGI evidence.', domain: 'general' },
-  '\u0647\u0644 \u0633\u062a\u0635\u0644 \u0627\u0644\u0628\u064a\u062a\u0643\u0648\u064a\u0646 \u0625\u0644\u0649 500,000 \u062f\u0648\u0644\u0627\u0631\u061f': { truth: 'Extreme uncertainty. S2F failed. Insufficient data.', domain: 'finance' }
-};
-
-async function reScore(text, question) {
-  const gt = GT[question];
-  const key = document.getElementById('apiKey').value.trim();
-  const body = { output: text, question: question };
-  if (gt) { body.ground_truth = gt.truth; body.domain = gt.domain; }
-  try {
-    const hdrs = { 'Content-Type': 'application/json' };
-    if (key) hdrs['x-api-key'] = key;
-    const r = await fetch('https://api.ontostandard.org/v1/evaluate', {
-      method: 'POST', headers: hdrs, body: JSON.stringify(body)
-    });
-    if (r.ok) return await r.json();
-  } catch {}
-  return null;
-}
-
-// ══════════════════════════════════════════
-// CORE
-// ══════════════════════════════════════════
-const API = 'https://api.ontostandard.org';
-let gold = true, hist = [], convId = null, busy = false, ac = null;
-
-function toggleCfg() { document.getElementById('cfg').classList.toggle('open') }
-function toggleMode() {
-  demoMode = !demoMode;
-  const sw = document.getElementById('modeSwitch');
-  const track = sw.querySelector('.mode-track');
-  const label = document.getElementById('modeLabel');
-  sw.className = 'mode-switch ' + (demoMode ? 'demo' : 'live');
-  track.className = 'mode-track' + (demoMode ? '' : ' live');
-  label.textContent = demoMode ? 'DEMO' : 'LIVE';
-  document.getElementById('cfgNote').textContent = demoMode ? t('cfgNote') : '';
-  if (!demoMode) {
-    document.getElementById('cfg').classList.add('open');
-  }
-  saveCfg();
-}
-
-function newChat() {
-  hist = []; convId = null;
-  if (ac) { ac.abort(); ac = null }
-  document.getElementById('msgs').innerHTML = '<div class="welcome" id="welcome"></div>';
-  renderWelcome();
-}
-
-function autoH(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 160) + 'px' }
-function onKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() } }
-function useEx(b) { document.getElementById('inp').value = b.textContent; compare() }
-function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML }
-function scroll() { const el = document.getElementById('msgs'); requestAnimationFrame(() => el.scrollTop = el.scrollHeight) }
-
-function fmt(t) {
-  let h = esc(t);
-  h = h.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-  h = h.replace(/\n\n/g, '</p><p>');
-  h = h.replace(/\n/g, '<br>');
-  h = h.replace(/(DOI:\s*)(10\.\d{4,}\/\S+)/gi, '$1<a href="https://doi.org/$2" target="_blank">$2</a>');
-  return '<p>' + h + '</p>';
-}
-
-function getConfig() {
-  const key = document.getElementById('apiKey').value.trim();
-  const mid = document.getElementById('modelId').value.trim();
-  const lg = curLang === 'en' ? 'auto' : curLang;
-  return { key, mid, lg };
-}
-
-function setBusy(b) {
-  busy = b;
-  document.getElementById('btnSend').disabled = b;
-  document.getElementById('btnCmp').disabled = b;
-  document.getElementById('btnStop').classList.toggle('vis', b);
-}
-
-function stop() {
-  if (ac) { ac.abort(); ac = null }
-  const ld = document.getElementById('ldr'); if (ld) ld.remove();
-  setBusy(false);
-  document.getElementById('inp').focus();
-}
-
-function rmWelcome() { const w = document.getElementById('welcome'); if (w) w.remove() }
-function gradeClass(g) { return 'grade-' + (g === 'A' ? 'a' : g === 'B' ? 'b' : g === 'C' ? 'c' : g === 'D' ? 'd' : 'f') }
-
-function metricRows(m, cls) {
-  const rows = [
-    { k: 'R1', v: m.QD, label: 'Quantify' }, { k: 'R2', v: m.UM, label: 'Uncertainty' },
-    { k: 'R3', v: m.CP, label: 'Counter' }, { k: 'R4', v: m.SS, label: 'Sources' },
-    { k: 'R5', v: m.VQ, label: 'Evidence' }, { k: 'R7', v: m.CONF, label: 'Fabrication' }
-  ];
-  return rows.map(r => {
-    const v = r.v != null ? r.v : null;
-    const pct = v != null ? Math.round(v * 100) : 0;
-    return `<div class="sc-row">
-      <span class="sc-lbl" title="${r.label}">${r.k}</span>
-      <div class="sc-track"><div class="sc-fill" style="width:${pct}%"></div></div>
-      <span class="sc-val">${v != null ? v.toFixed(2) : '—'}</span>
-    </div>`;
-  }).join('');
-}
-
-// ── API CALL ──
-async function apiCall(msg, goldOn, hdrs, signal) {
-  const { mid, lg } = getConfig();
-  const body = { message: msg, model_id: mid, history: [], language: lg, depth: 'auto', gold_enabled: goldOn };
-  const r = await fetch(`${API}/v1/agent/chat`, { method: 'POST', headers: hdrs, body: JSON.stringify(body), signal });
-  if (!r.ok) { let e = `Error ${r.status}`; try { e = (await r.json()).detail || e } catch {} throw new Error(e) }
-  return r.json();
-}
-
-// ── SEND ──
-async function send() {
-  if (busy) return;
-  const msg = document.getElementById('inp').value.trim();
-  if (!msg) return;
-
-  // DEMO mode
-  if (demoMode) {
-    const cached = getCached(msg);
-    if (cached) {
-      document.getElementById('inp').value = ''; autoH(document.getElementById('inp'));
-      rmWelcome();
-      const ud = document.createElement('div'); ud.className = 'msg msg-u'; ud.textContent = msg;
-      document.getElementById('msgs').appendChild(ud);
-      // Show GOLD response
-      addAgentMsg(cached.gold);
-      scroll();
-      return;
-    }
-    addErr('DEMO: no cached response for this question. Try preset examples or switch to LIVE mode.');
-    return;
-  }
-
-  const { key, mid } = getConfig();
-  if (!mid) { addErr(t('modelReq')); return }
-  document.getElementById('inp').value = ''; autoH(document.getElementById('inp'));
-  rmWelcome();
-
-  const ud = document.createElement('div'); ud.className = 'msg msg-u'; ud.textContent = msg;
-  document.getElementById('msgs').appendChild(ud); scroll();
-
-  setBusy(true);
-  ac = new AbortController();
-
-  const ld = document.createElement('div'); ld.className = 'msg msg-a'; ld.id = 'ldr';
-  ld.innerHTML = `<div class="msg-body ${gold ? 'gon' : 'goff'}"><div class="msg-tag ${gold ? 'on' : 'off'}">${gold ? '◆ GOLD' : '◇ RAW'}</div><div class="dots"><i></i><i></i><i></i></div></div>`;
-  document.getElementById('msgs').appendChild(ld); scroll();
-
-  const hdrs = { 'Content-Type': 'application/json' };
-  if (key) hdrs['x-api-key'] = key;
-
-  try {
-    const { lg } = getConfig();
-    const body = { message: msg, model_id: mid, history: hist.slice(-20), language: lg, depth: 'auto', gold_enabled: gold };
-    if (convId) body.conversation_id = convId;
-    const r = await fetch(`${API}/v1/agent/chat`, { method: 'POST', headers: hdrs, body: JSON.stringify(body), signal: ac.signal });
-    ld.remove();
-    if (!r.ok) { let e = `Error ${r.status}`; try { e = (await r.json()).detail || e } catch {} addErr(e); return }
-    const data = await r.json();
-    addAgentMsg(data);
-    hist.push({ role: 'user', content: msg });
-    hist.push({ role: 'assistant', content: data.response || '' });
-    if (data.conversation_id) convId = data.conversation_id;
-  } catch (e) { ld.remove(); if (e.name !== 'AbortError') addErr('Error: ' + e.message) }
-  finally { ac = null; setBusy(false); document.getElementById('inp').focus() }
-}
-
-function addAgentMsg(data) {
-  const s = data.score || {}, m = s.metrics || {}, gOn = data.gold_enabled !== false;
-  const gr = s.compliance_class || '?', num = s.grade != null ? s.grade : '?';
-  const risk = s.risk_score, mods = data.modules_loaded || [], proof = data.proof || {};
-  const uid = 's' + Date.now();
-
-  const barsHtml = metricRows(m);
-  const modsH = mods.length ? `<div class="sc-mods">${mods.map(x => `<span class="sc-mod">${esc(x)}</span>`).join('')}</div>` : '';
-  const proofH = proof.hash ? `<span>${proof.hash.substring(0, 12)}…</span><a href="${proof.verify_url}" target="_blank">Verify ↗</a>` : '';
-
-  const d = document.createElement('div'); d.className = 'msg msg-a';
-  d.innerHTML = `<div class="msg-body ${gOn ? 'gon' : 'goff'}">
-    <div class="msg-tag ${gOn ? 'on' : 'off'}">${gOn ? '◆ GOLD' : '◇ RAW'}</div>
-    <div class="msg-txt">${fmt(data.response || '')}</div>
-    <div class="sc">
-      <div class="sc-head" onclick="document.getElementById('${uid}').classList.toggle('open');this.querySelector('.sc-arrow').textContent=document.getElementById('${uid}').classList.contains('open')?'▲':'▼'">
-        <div class="sc-left">
-          <div class="sc-score">${num}</div>
-          <span class="grade ${gradeClass(gr)}">Grade ${gr}</span>
-          <span class="sc-risk">Risk ${typeof risk === 'number' ? risk.toFixed(3) : risk}</span>
-        </div>
-        <span class="sc-arrow">▼</span>
-      </div>
-      <div class="sc-detail" id="${uid}">
-        <div class="sc-metrics">${barsHtml}</div>
-        ${modsH}
-        <div class="sc-foot">${proofH}
-          ${data.language ? `<span>${data.language.toUpperCase()}</span>` : ''}
-          ${data.remaining_today != null ? `<span>${data.remaining_today} left</span>` : ''}
-        </div>
-      </div>
-    </div>
-  </div>`;
-  document.getElementById('msgs').appendChild(d); scroll();
-  if (data.remaining_today != null) document.getElementById('remLbl').textContent = data.remaining_today + ' left today';
-}
-
-// ── COMPARE ──
-async function compare() {
-  if (busy) return;
-  const msg = document.getElementById('inp').value.trim();
-  if (!msg) return;
-
-  document.getElementById('inp').value = ''; autoH(document.getElementById('inp'));
-  rmWelcome();
-
-  // DEMO mode
-  if (demoMode) {
-    const cached = getCached(msg);
-    if (!cached) {
-      addErr('DEMO: no cached response. Try preset examples or switch to LIVE.');
-      return;
-    }
-    const uid = 'c' + Date.now();
-    const wrap = document.createElement('div'); wrap.className = 'msg cmp'; wrap.style.maxWidth = '100%';
-    wrap.innerHTML = `
-      <div class="cmp-q"><div class="ql">COMPARE</div><div class="qt">${esc(msg)}</div></div>
-      <div class="cmp-split">
-        <div class="pnl base" id="${uid}_b"></div>
-        <div class="pnl gold" id="${uid}_g"></div>
-      </div>
-      <div class="cmp-mets" id="${uid}_mets" style="display:none"></div>`;
-    document.getElementById('msgs').appendChild(wrap);
-
-    // Simulate delay
-    setTimeout(() => {
-      fillPanel(`${uid}_b`, cached.raw, 'base');
-      fillPanel(`${uid}_g`, cached.gold, 'gold');
-      showImprovement(uid, cached.raw, cached.gold);
-      scroll();
-    }, 300);
-    return;
-  }
-
-  // LIVE mode
-  const { key, mid } = getConfig();
-  if (!mid) { addErr(t('modelReq')); return }
-
-  setBusy(true);
-  ac = new AbortController();
-
-  const uid = 'c' + Date.now();
-  const wrap = document.createElement('div'); wrap.className = 'msg cmp'; wrap.style.maxWidth = '100%';
-  wrap.innerHTML = `
-    <div class="cmp-q"><div class="ql">COMPARE</div><div class="qt">${esc(msg)}</div></div>
-    <div class="cmp-split">
-      <div class="pnl base" id="${uid}_b">
-        <div class="pnl-top"><span class="pnl-lbl">${t('withoutGold')}</span><span class="pnl-badge">${t('raw')}</span></div>
-        <div class="pnl-body"><div class="dots dots-r"><i></i><i></i><i></i></div></div>
-      </div>
-      <div class="pnl gold" id="${uid}_g">
-        <div class="pnl-top"><span class="pnl-lbl">${t('withGold')}</span><span class="pnl-badge">${t('enhanced')}</span></div>
-        <div class="pnl-body"><div class="dots"><i></i><i></i><i></i></div></div>
-      </div>
-    </div>
-    <div class="cmp-mets" id="${uid}_mets" style="display:none"></div>`;
-  document.getElementById('msgs').appendChild(wrap); scroll();
-
-  const hdrs = { 'Content-Type': 'application/json' };
-  if (key) hdrs['x-api-key'] = key;
-
-  try {
-    const [rawData, goldData] = await Promise.all([
-      apiCall(msg, false, hdrs, ac.signal),
-      apiCall(msg, true, hdrs, ac.signal)
-    ]);
-    // Re-score via /v1/evaluate with ground_truth for real GOLD judgment
-    const [rawCheck, goldCheck] = await Promise.all([
-      reScore(rawData.response || '', msg),
-      reScore(goldData.response || '', msg)
-    ]);
-    // Merge GOLD evaluation scores (R1-R7 → display metrics)
-    if (rawCheck && rawCheck.composite_score != null) {
-      const r = rawCheck.rules || {};
-      rawData.score = {
-        grade: rawCheck.composite_score,
-        compliance_class: rawCheck.compliance_class,
-        risk_score: rawCheck.risk_score,
-        metrics: {
-          QD: r.R1_quantify?.score || 0,
-          SS: r.R4_sources?.score || 0,
-          UM: r.R2_uncertainty?.score || 0,
-          CP: r.R3_counterarguments?.score || 0,
-          VQ: r.R5_evidence_grade?.score || 0,
-          CONF: r.R7_no_fabrication?.score || 0
-        }
-      };
-      rawData.gold_eval = rawCheck;
-    }
-    if (goldCheck && goldCheck.composite_score != null) {
-      const r = goldCheck.rules || {};
-      goldData.score = {
-        grade: goldCheck.composite_score,
-        compliance_class: goldCheck.compliance_class,
-        risk_score: goldCheck.risk_score,
-        metrics: {
-          QD: r.R1_quantify?.score || 0,
-          SS: r.R4_sources?.score || 0,
-          UM: r.R2_uncertainty?.score || 0,
-          CP: r.R3_counterarguments?.score || 0,
-          VQ: r.R5_evidence_grade?.score || 0,
-          CONF: r.R7_no_fabrication?.score || 0
-        }
-      };
-      goldData.gold_eval = goldCheck;
-    }
-    fillPanel(`${uid}_b`, rawData, 'base');
-    fillPanel(`${uid}_g`, goldData, 'gold');
-    showImprovement(uid, rawData, goldData);
-    scroll();
-    if (goldData.remaining_today != null) document.getElementById('remLbl').textContent = goldData.remaining_today + ' left today';
-  } catch (e) { if (e.name !== 'AbortError') addErr('Compare error: ' + e.message); else wrap.remove() }
-  finally { ac = null; setBusy(false); document.getElementById('inp').focus() }
-}
-
-function showImprovement(uid, rawData, goldData) {
-  const rawScore = rawData.score?.grade;
-  const goldScore = goldData.score?.grade;
-  if (rawScore != null && goldScore != null) {
-    const diff = goldScore - rawScore;
-    const pct = rawScore > 0 ? Math.round((diff / rawScore) * 100) : 0;
-    const metsEl = document.getElementById(`${uid}_mets`);
-    metsEl.style.display = 'flex';
-    metsEl.innerHTML = `
-      <div class="cmet"><div class="cv">${rawScore}</div><div class="cl">${t('rawScore')}</div></div>
-      <div class="cmet"><div class="cv" style="color:var(--safe-l)">${goldScore}</div><div class="cl">${t('goldScore')}</div></div>
-      <div class="cmet"><div class="cv">${diff > 0 ? '+' : ''}${diff.toFixed(1)}</div><div class="cl">${t('improvement')}</div></div>
-      <div class="cmet"><div class="cv">${pct > 0 ? '+' : ''}${pct}%</div><div class="cl">${t('change')}</div></div>`;
-  }
-}
-
-function fillPanel(panelId, data, type) {
-  const el = document.getElementById(panelId);
-  const s = data.score || {}, m = s.metrics || {};
-  const gr = s.compliance_class || '?', num = s.grade != null ? s.grade : '?';
-  const risk = s.risk_score;
-  const mods = data.modules_loaded || [];
-  const proof = data.proof || {};
-  const uid = panelId + '_d';
-
-  const rows = [{ k: 'Score', v: num, max: 10 }, { k: 'R1', v: m.QD, max: 1 }, { k: 'R2', v: m.UM, max: 1 }, { k: 'R3', v: m.CP, max: 1 }, { k: 'R4', v: m.SS, max: 1 }, { k: 'R5', v: m.VQ, max: 1 }, { k: 'R7', v: m.CONF, max: 1 }];
-
-  const barsHtml = rows.map(r => {
-    const v = r.v != null ? r.v : null;
-    const pct = v != null ? Math.round((v / r.max) * 100) : 0;
-    return `<div class="sc-row">
-      <span class="sc-lbl">${r.k}</span>
-      <div class="sc-track"><div class="sc-fill" style="width:${pct}%"></div></div>
-      <span class="sc-val">${v != null ? (typeof v === 'number' ? v.toFixed(r.max > 1 ? 1 : 2) : v) : '—'}</span>
-    </div>`;
-  }).join('');
-
-  const modsH = mods.length ? `<div class="sc-mods">${mods.map(x => `<span class="sc-mod">${esc(x)}</span>`).join('')}</div>` : '';
-  const proofH = proof.hash ? `<div class="sc-foot"><span>${proof.hash.substring(0, 12)}…</span><a href="${proof.verify_url}" target="_blank">Verify ↗</a></div>` : '';
-
-  const lbl = type === 'base' ? t('withoutGold') : t('withGold');
-  const badge = type === 'base' ? t('raw') : t('enhanced');
-
-  el.innerHTML = `
-    <div class="pnl-top"><span class="pnl-lbl">${lbl}</span>
-      <span class="pnl-badge">${badge}</span>
-      <span class="grade ${gradeClass(gr)}" style="margin-left:auto">Grade ${gr}</span>
-    </div>
-    <div class="pnl-body">${fmt(data.response || '')}</div>
-    ${barsHtml}
-    <div class="pnl-detail-toggle" onclick="document.getElementById('${uid}').classList.toggle('open');this.textContent=document.getElementById('${uid}').classList.contains('open')?'${t('collapse')}':'${t('details')}'">${t('details')}</div>
-    <div class="pnl-detail" id="${uid}">
-      ${modsH}${proofH}
-      <div class="sc-foot">
-        ${data.language ? `<span>${data.language.toUpperCase()}</span>` : ''}
-        <span>Risk ${typeof risk === 'number' ? risk.toFixed(3) : '—'}</span>
-      </div>
-    </div>`;
-}
-
-function addErr(t) {
-  const d = document.createElement('div'); d.className = 'msg';
-  d.innerHTML = `<div class="msg-err">${esc(t)}</div>`;
-  document.getElementById('msgs').appendChild(d); scroll();
-}
-
-// ── CONFIG PERSISTENCE ──
-const CFG_KEY = 'onto_agent_cfg';
-function loadCfg() {
-  try {
-    const p = new URLSearchParams(location.search);
-    if (p.get('key')) document.getElementById('apiKey').value = p.get('key');
-    const s = localStorage.getItem(CFG_KEY);
-    if (s) {
-      const c = JSON.parse(s);
-      if (!document.getElementById('apiKey').value && c.k) document.getElementById('apiKey').value = c.k;
-      if (c.ui) { document.getElementById('uiLang').value = c.ui; curLang = c.ui; }
-      if (c.mid) document.getElementById('modelId').value = c.mid;
-      if (c.demo != null) demoMode = c.demo;
-    }
-    if (p.get('key')) {
-      history.replaceState(null, '', location.pathname);
-      saveCfg();
-    }
-  } catch {}
-}
-function saveCfg() {
-  try {
-    const c = {
-      k: document.getElementById('apiKey').value,
-      ui: curLang,
-      mid: document.getElementById('modelId').value,
-      demo: demoMode
-    };
-    localStorage.setItem(CFG_KEY, JSON.stringify(c));
-  } catch {}
-}
-loadCfg();
-document.getElementById('apiKey').addEventListener('input', saveCfg);
-document.getElementById('modelId').addEventListener('input', saveCfg);
-
-// Init UI
-switchLang(curLang);
-const sw = document.getElementById('modeSwitch');
-const track = sw.querySelector('.mode-track');
-sw.className = 'mode-switch ' + (demoMode ? 'demo' : 'live');
-track.className = 'mode-track' + (demoMode ? '' : ' live');
-document.getElementById('modeLabel').textContent = demoMode ? 'DEMO' : 'LIVE';
-document.getElementById('cfgNote').textContent = demoMode ? t('cfgNote') : '';
-if (!demoMode) {
-  document.getElementById('cfg').classList.add('open');
-}
-
-document.getElementById('inp').focus();
+function toggleMenu(e){e.stopPropagation();document.getElementById('menuDd').classList.toggle('open');}
+document.addEventListener('click',e=>{const d=document.getElementById('menuDd');if(d&&!e.target.closest('.menu-wrap'))d.classList.remove('open');});
+function toggleR(el){el.classList.toggle('on');}
+function toggleAllR(){const c=document.querySelectorAll('.r-chip');const on=[...c].every(x=>x.classList.contains('on'));c.forEach(x=>x.classList.toggle('on',!on));}
+function getEnabledR(){return[...document.querySelectorAll('.r-chip.on')].map(c=>parseInt(c.dataset.r));}
+function rBars(m){const L={R1:'Quantify',R2:'Uncertainty',R3:'Counter',R4:'Sources',R5:'Evidence',R6:'Falsifiable',R7:'No Fabrication',R8:'Resolve',R9:'Surprise',R10:'Self-Model',R11:'Integrity',R12:'Drive'};const keys=['R1','R2','R3','R4','R5','R6','R7',...['R8','R9','R10','R11','R12'].filter(k=>m[k]!=null)];return keys.map(k=>{const v=m[k]!=null?m[k]:null;const p=v!=null?Math.round(v*100):0,c=v>=0.7?'good':v>=0.4?'mid':'bad';return`<div class="r-bar"><span class="r-label">${k}</span><span class="r-name">${L[k]||''}</span><div class="r-track"><div class="r-fill ${c}" style="width:${p}%"></div></div><span class="r-val">${v!=null?v.toFixed(2):'—'}</span></div>`;}).join('');}
+async function apiCall(msg,goldOn,hdrs,signal){const{key,mid}=getConfig();const body={message:msg,history:[],language:curLang==='en'?'auto':curLang,depth:'auto',gold_enabled:goldOn,enabled_r_modules:getEnabledR()};if(key)body.provider_key=key;if(mid)body.model_name=mid;const r=await fetch(`${API}/v1/agent/chat`,{method:'POST',headers:hdrs,body:JSON.stringify(body),signal});if(!r.ok){let e=`Error ${r.status}`;try{e=(await r.json()).detail||e}catch{}throw new Error(e);}return r.json();}
+async function send(){if(busy)return;const msg=document.getElementById('inp').value.trim();if(!msg)return;const cached=_fromDemo?getCached(msg):null;_fromDemo=false;if(cached){document.getElementById('inp').value='';autoH(document.getElementById('inp'));rmWelcome();addUserMsg(msg);setBusy(true);const ld=document.createElement('div');ld.className='msg msg-ai';ld.id='ldr';ld.innerHTML='<div class="dots"><i></i><i></i><i></i></div>';document.getElementById('chatInner').appendChild(ld);scroll();await new Promise(r=>setTimeout(r,1200));ld.remove();addAiMsg(cached.gold,true,msg);scroll();setBusy(false);return;}const{key,mid}=getConfig();if(!key){showOnboard();return;}document.getElementById('inp').value='';autoH(document.getElementById('inp'));rmWelcome();addUserMsg(msg);setBusy(true);ac=new AbortController();const ld=document.createElement('div');ld.className='msg msg-ai';ld.id='ldr';ld.innerHTML='<div class="dots"><i></i><i></i><i></i></div>';document.getElementById('chatInner').appendChild(ld);scroll();const hdrs={'Content-Type':'application/json'};try{const body={message:msg,history:hist.slice(-20),language:curLang==='en'?'auto':curLang,depth:'auto',gold_enabled:true,enabled_r_modules:getEnabledR()};if(key)body.provider_key=key;if(mid)body.model_name=mid;if(convId)body.conversation_id=convId;const r=await fetch(`${API}/v1/agent/chat`,{method:'POST',headers:hdrs,body:JSON.stringify(body),signal:ac.signal});ld.remove();if(!r.ok){let e=`Error ${r.status}`;try{e=(await r.json()).detail||e}catch{}addErr(e);return;}const data=await r.json();addAiMsg(data);hist.push({role:'user',content:msg});hist.push({role:'assistant',content:data.response||''});if(data.conversation_id)convId=data.conversation_id;}catch(e){ld.remove();if(e.name!=='AbortError')addErr('Error: '+e.message);}finally{ac=null;setBusy(false);document.getElementById('inp').focus();}}
+function addUserMsg(text){const d=document.createElement('div');d.className='msg msg-user';d.innerHTML=`<div class="msg-user-text">${esc(text)}</div>`;document.getElementById('chatInner').appendChild(d);}
+function addAiMsg(data,isDemo,demoQ){const resp=data.response||data;const text=typeof resp==='string'?resp:resp.response||'';const score=data.score||resp.score||{};const m=score.metrics||{};const gr=score.compliance_class||'?';const num=score.grade!=null?score.grade:'?';const hasScore=gr!=='?';const d=document.createElement('div');d.className='msg msg-ai';const bars=(m.R1!=null||m.R2!=null||m.QD!=null||m.UM!=null)?rBars(m):'';const demoTag=isDemo?'<span class="demo-tag">DEMO</span>':'';d.innerHTML=`<div class="md">${fmt(text)}</div>${hasScore?`<div class="analysis"><span class="grade-badge ${gradeClass(gr)}" style="margin-right:6px">Grade ${gr} · ${num}/10</span>${demoTag}<span class="analysis-toggle" onclick="this.classList.toggle('open');this.parentElement.querySelector('.analysis-body').classList.toggle('open')">${t('analysis')} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></span><div class="analysis-body">${bars}<div class="score-hint">${t('scoreHint')}</div></div></div>`:''}`;document.getElementById('chatInner').appendChild(d);scroll();}
+async function compare(){if(busy)return;const msg=document.getElementById('inp').value.trim();if(!msg)return;document.getElementById('inp').value='';autoH(document.getElementById('inp'));rmWelcome();const cached=_fromDemo?getCached(msg):null;_fromDemo=false;if(cached){const uid='c'+Date.now();const wrap=document.createElement('div');wrap.className='cmp-wrap';wrap.innerHTML=`<div class="cmp-q"><strong>${esc(msg)}</strong> <span class="demo-tag">DEMO</span></div><div class="cmp-grid"><div class="cmp-panel raw" id="${uid}_b"></div><div class="cmp-panel gold" id="${uid}_g"></div></div><div class="cmp-mets" id="${uid}_m" style="display:none"></div>`;document.getElementById('chatInner').appendChild(wrap);setTimeout(()=>{fillPanel(`${uid}_b`,cached.raw,'raw');fillPanel(`${uid}_g`,cached.gold,'gold');showDelta(uid,cached.raw,cached.gold);scroll();},200);return;}const{key,mid}=getConfig();if(!key){showOnboard();return;}setBusy(true);ac=new AbortController();const uid='c'+Date.now();const wrap=document.createElement('div');wrap.className='cmp-wrap';wrap.innerHTML=`<div class="cmp-q"><strong>${esc(msg)}</strong></div><div class="cmp-grid"><div class="cmp-panel raw" id="${uid}_b"><div class="cmp-head"><span class="cmp-label">${t('withoutGold')}</span></div><div class="cmp-body"><div class="dots"><i></i><i></i><i></i></div></div></div><div class="cmp-panel gold" id="${uid}_g"><div class="cmp-head"><span class="cmp-label">${t('withGold')}</span></div><div class="cmp-body"><div class="dots"><i></i><i></i><i></i></div></div></div></div><div class="cmp-mets" id="${uid}_m" style="display:none"></div>`;document.getElementById('chatInner').appendChild(wrap);scroll();const hdrs={'Content-Type':'application/json'};try{const[rawData,goldData]=await Promise.all([apiCall(msg,false,hdrs,ac.signal),apiCall(msg,true,hdrs,ac.signal)]);fillPanel(`${uid}_b`,rawData,'raw');fillPanel(`${uid}_g`,goldData,'gold');showDelta(uid,rawData,goldData);scroll();}catch(e){if(e.name!=='AbortError')addErr('Error: '+e.message);}finally{ac=null;setBusy(false);document.getElementById('inp').focus();}}
+function fillPanel(id,data,type){const el=document.getElementById(id);const s=data.score||{},m=s.metrics||{};const gr=s.compliance_class||'?',num=s.grade!=null?s.grade:'?';const bars=rBars(m);el.innerHTML=`<div class="cmp-head"><span class="cmp-label">${type==='raw'?t('withoutGold'):t('withGold')}</span><span class="grade-badge ${gradeClass(gr)}">Grade ${gr} · ${num}/10</span></div><div class="cmp-body">${fmt(data.response||'')}</div><div class="cmp-bars">${bars}</div>`;}
+function showDelta(uid,raw,gold){const rs=raw.score?.grade,gs=gold.score?.grade;if(rs!=null&&gs!=null){const d=gs-rs,pct=rs>0?Math.round((d/rs)*100):0;const el=document.getElementById(`${uid}_m`);el.style.display='flex';el.innerHTML=`<div class="cmet"><div class="cmet-val" style="color:var(--red)">${rs}</div><div class="cmet-lbl">${t('rawScore')}</div></div><div class="cmet"><div class="cmet-val">${gs}</div><div class="cmet-lbl">${t('goldScore')}</div></div><div class="cmet"><div class="cmet-val">${d>0?'+':''}${d.toFixed(1)}</div><div class="cmet-lbl">${t('improvement')}</div></div><div class="cmet"><div class="cmet-val">${pct>0?'+':''}${pct}%</div><div class="cmet-lbl">${t('change')}</div></div>`;}}
+function showOnboard(){rmWelcome();const d=document.createElement('div');d.className='onboard';d.innerHTML=`<div class="onboard-title">${curLang==='ru'?'Для своих вопросов нужен API ключ':'Enter your AI provider API key'}</div><div class="onboard-sub">${curLang==='ru'?'Вставьте ключ от вашего ИИ-провайдера. ONTO применит эпистемическую дисциплину к ответам бесплатно.':'Paste your AI provider key below. ONTO applies epistemic discipline to responses for free.'}</div><div class="onboard-providers"><div class="onboard-prov">OpenAI <a href="https://platform.openai.com/api-keys" target="_blank">Get key →</a></div><div class="onboard-prov">Anthropic <a href="https://console.anthropic.com/settings/keys" target="_blank">Get key →</a></div><div class="onboard-prov">DeepSeek <a href="https://platform.deepseek.com/api-keys" target="_blank">Get key →</a></div></div><button class="onboard-btn" onclick="openSettings()">Enter API Key</button>`;document.getElementById('chatInner').appendChild(d);scroll();}
+function addErr(t){const d=document.createElement('div');d.className='msg';d.innerHTML=`<div class="msg-err">${esc(t)}</div>`;document.getElementById('chatInner').appendChild(d);scroll();}
+const CFG_KEY='onto_agent_cfg';function loadCfg(){try{const p=new URLSearchParams(location.search);if(p.get('key'))document.getElementById('apiKey').value=p.get('key');const s=localStorage.getItem(CFG_KEY);if(s){const c=JSON.parse(s);if(!document.getElementById('apiKey').value&&c.k)document.getElementById('apiKey').value=c.k;if(c.ui){document.getElementById('uiLang').value=c.ui;curLang=c.ui;}if(c.mid)document.getElementById('modelId').value=c.mid;}if(p.get('key')){history.replaceState(null,'',location.pathname);saveCfg();}}catch{}}
+function saveCfg(){try{localStorage.setItem(CFG_KEY,JSON.stringify({k:document.getElementById('apiKey').value,ui:curLang,mid:document.getElementById('modelId').value}))}catch{}}
+loadCfg();switchLang(curLang);document.getElementById('apiKey').addEventListener('input',()=>{saveCfg();});
+switchLang(curLang);document.getElementById('inp').focus();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/agent/sw.js').catch(()=>{});}
 </script>
 </body>
 </html>
