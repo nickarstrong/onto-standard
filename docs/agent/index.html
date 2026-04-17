@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.ontostandard.org https://api.x.ai https://api.openai.com https://api.anthropic.com https://api.deepseek.com https://api.mistral.ai; frame-ancestors 'none'">
 <title>ONTO</title>
-<!-- UI v2.12 (self-contained: internal modals, no target=_blank exits except onboard provider keys) -->
+<!-- UI v2.13b (streaming + md export + copy-all; fallback to non-streaming preserved) -->
 <meta name="description" content="Ask anything. Every answer is verified, sourced, and scored.">
 <link rel="manifest" href="/agent/manifest.json">
 <meta name="theme-color" content="#18181b">
@@ -256,6 +256,9 @@ button{font-family:var(--sans)}
         <a class="menu-a" onclick="openModal('modalPrivacy');toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span data-en="Privacy" data-ru="Конфиденциальность">Privacy</span></a>
         <a class="menu-a" onclick="openModal('modalTerms');toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-en="Terms" data-ru="Условия">Terms</span></a>
         <div class="menu-sep"></div>
+        <a class="menu-a" onclick="copyConversationAsMarkdown();toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-en="Copy chat · MD" data-ru="Копировать чат · MD">Copy chat · MD</span></a>
+        <a class="menu-a" onclick="downloadConversationAsMarkdown();toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span data-en="Download chat · MD" data-ru="Скачать чат · MD">Download chat · MD</span></a>
+        <div class="menu-sep"></div>
         <a class="menu-a" onclick="openModal('modalFeedback');toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span data-en="Feedback" data-ru="Обратная связь">Feedback</span></a>
       </div>
     </div>
@@ -453,7 +456,7 @@ function toast(msg,kind){const t=document.createElement('div');t.className='toas
 function copyDoi(el){const doi=el.dataset.doi;const url='https://doi.org/'+doi;const ok=curLang==='ru'?'DOI скопирован':'DOI copied';const er=curLang==='ru'?'Не удалось скопировать':'Copy failed';if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(()=>toast(ok)).catch(()=>toast(er,'err'));}else{toast(er,'err');}}
 function copyLink(el){const url=el.dataset.url;const ok=curLang==='ru'?'Ссылка скопирована':'Link copied';const er=curLang==='ru'?'Не удалось скопировать':'Copy failed';if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(()=>toast(ok)).catch(()=>toast(er,'err'));}else{toast(er,'err');}}
 function selectFbCat(btn){document.querySelectorAll('#fbCat button').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
-async function submitFeedback(){const btn=document.getElementById('fbSubmitBtn');const cat=(document.querySelector('#fbCat button.on')||{}).dataset?.cat||'feedback';const text=document.getElementById('fbText').value.trim();const email=document.getElementById('fbEmail').value.trim();if(!text){toast(curLang==='ru'?'Заполните сообщение':'Message required','err');return;}btn.disabled=true;const origBtn=btn.innerHTML;btn.innerHTML=curLang==='ru'?'Отправка…':'Sending…';try{const r=await fetch(`${API}/v1/feedback`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({category:cat,text:text,email:email,ui_version:'v2.12',lang:curLang,user_agent:navigator.userAgent.slice(0,120)})});const data=await r.json().catch(()=>({}));if(r.ok&&data.ok){toast(curLang==='ru'?'Отправлено — спасибо':'Sent — thank you');document.getElementById('fbText').value='';document.getElementById('fbEmail').value='';closeModal('modalFeedback');}else{toast(curLang==='ru'?'Ошибка отправки':'Send failed','err');}}catch(e){toast(curLang==='ru'?'Нет сети':'Network error','err');}finally{btn.disabled=false;btn.innerHTML=origBtn;}}
+async function submitFeedback(){const btn=document.getElementById('fbSubmitBtn');const cat=(document.querySelector('#fbCat button.on')||{}).dataset?.cat||'feedback';const text=document.getElementById('fbText').value.trim();const email=document.getElementById('fbEmail').value.trim();if(!text){toast(curLang==='ru'?'Заполните сообщение':'Message required','err');return;}btn.disabled=true;const origBtn=btn.innerHTML;btn.innerHTML=curLang==='ru'?'Отправка…':'Sending…';try{const r=await fetch(`${API}/v1/feedback`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({category:cat,text:text,email:email,ui_version:'v2.13b',lang:curLang,user_agent:navigator.userAgent.slice(0,120)})});const data=await r.json().catch(()=>({}));if(r.ok&&data.ok){toast(curLang==='ru'?'Отправлено — спасибо':'Sent — thank you');document.getElementById('fbText').value='';document.getElementById('fbEmail').value='';closeModal('modalFeedback');}else{toast(curLang==='ru'?'Ошибка отправки':'Send failed','err');}}catch(e){toast(curLang==='ru'?'Нет сети':'Network error','err');}finally{btn.disabled=false;btn.innerHTML=origBtn;}}
 
 function toggleMenu(e){e.stopPropagation();document.getElementById('menuDd').classList.toggle('open');}
 document.addEventListener('click',e=>{const d=document.getElementById('menuDd');if(d&&!e.target.closest('.menu-wrap'))d.classList.remove('open');});
@@ -463,7 +466,154 @@ function getEnabledR(){return[...document.querySelectorAll('.r-chip.on')].map(c=
 function rBars(m){const L={R1:'Quantify',R2:'Uncertainty',R3:'Counter',R4:'Sources',R5:'Evidence',R6:'Falsifiable',R7:'No Fabrication',R8:'Resolve',R9:'Surprise',R10:'Self-Model',R11:'Integrity',R12:'Drive'};const keys=['R1','R2','R3','R4','R5','R6','R7',...['R8','R9','R10','R11','R12'].filter(k=>m[k]!=null)];return keys.map(k=>{const v=m[k]!=null?m[k]:null;const p=v!=null?Math.round(v*100):0,c=v>=0.7?'good':v>=0.4?'mid':'bad';return`<div class="r-bar"><span class="r-label">${k}</span><span class="r-name">${L[k]||''}</span><div class="r-track"><div class="r-fill ${c}" style="width:${p}%"></div></div><span class="r-val">${v!=null?v.toFixed(2):'—'}</span></div>`;}).join('');}
 function execIndicators(score){if(!score)return'';const flags=Array.isArray(score.r17_flags)?score.r17_flags:[];const ir=Number(score.r18_intron_ratio||0);const ic=Number(score.r18_intron_count||0);if(!flags.length&&ir<=0.3)return'';const items=[];flags.forEach(f=>{const key=(f.match(/^(C[1-5](?:-ext)?)/)||[])[1]||'R17';const txt=f.replace(/^C[1-5](?:-ext)?:\s*/,'');items.push(`<span class="exec-ind r17" title="${esc(f)}"><span class="ei-key">${key}</span>${esc(txt.slice(0,40))}</span>`);});if(ir>0.3){items.push(`<span class="exec-ind" title="R18 epistemic splicing: heavy filler detected"><span class="ei-key">R18</span>${ic} intron${ic===1?'':'s'} · ${(ir*100).toFixed(0)}%</span>`);}return`<div class="exec-indicators">${items.join('')}</div>`;}
 async function apiCall(msg,goldOn,hdrs,signal){const{key,mid}=getConfig();const body={message:msg,history:[],language:curLang==='en'?'auto':curLang,depth:'auto',gold_enabled:goldOn,enabled_r_modules:getEnabledR()};if(key)body.provider_key=key;if(mid)body.model_name=mid;const r=await fetch(`${API}/v1/agent/chat`,{method:'POST',headers:hdrs,body:JSON.stringify(body),signal});if(!r.ok){let e=`Error ${r.status}`;try{e=(await r.json()).detail||e}catch{}throw new Error(e);}return r.json();}
-async function send(){if(busy)return;const msg=document.getElementById('inp').value.trim();if(!msg)return;const cached=_fromDemo?getCached(msg):null;_fromDemo=false;if(cached){document.getElementById('inp').value='';autoH(document.getElementById('inp'));rmWelcome();addUserMsg(msg);setBusy(true);const ld=document.createElement('div');ld.className='msg msg-ai';ld.id='ldr';ld.innerHTML='<div class="dots"><i></i><i></i><i></i></div>';document.getElementById('chatInner').appendChild(ld);scroll();await new Promise(r=>setTimeout(r,1200));ld.remove();addAiMsg(cached.gold,true,msg);scroll();setBusy(false);return;}const{key,mid}=getConfig();if(!key){showOnboard();return;}document.getElementById('inp').value='';autoH(document.getElementById('inp'));rmWelcome();addUserMsg(msg);setBusy(true);ac=new AbortController();const ld=document.createElement('div');ld.className='msg msg-ai';ld.id='ldr';ld.innerHTML='<div class="dots"><i></i><i></i><i></i></div>';document.getElementById('chatInner').appendChild(ld);scroll();const hdrs={'Content-Type':'application/json'};try{const body={message:msg,history:hist.slice(-20),language:curLang==='en'?'auto':curLang,depth:'auto',gold_enabled:true,enabled_r_modules:getEnabledR()};if(key)body.provider_key=key;if(mid)body.model_name=mid;if(convId)body.conversation_id=convId;const r=await fetch(`${API}/v1/agent/chat`,{method:'POST',headers:hdrs,body:JSON.stringify(body),signal:ac.signal});ld.remove();if(!r.ok){let e=`Error ${r.status}`;try{e=(await r.json()).detail||e}catch{}addErr(e);return;}const data=await r.json();addAiMsg(data);hist.push({role:'user',content:msg});hist.push({role:'assistant',content:data.response||''});if(data.conversation_id)convId=data.conversation_id;persistSession();}catch(e){ld.remove();if(e.name!=='AbortError')addErr('Error: '+e.message);}finally{ac=null;setBusy(false);document.getElementById('inp').focus();}}
+/* ── v2.13b: send() split into cached + live(stream→fallback) paths ── */
+async function send(){
+  if(busy)return;
+  const msg=document.getElementById('inp').value.trim();
+  if(!msg)return;
+  /* demo cache branch (unchanged) */
+  const cached=_fromDemo?getCached(msg):null;_fromDemo=false;
+  if(cached){
+    document.getElementById('inp').value='';autoH(document.getElementById('inp'));
+    rmWelcome();addUserMsg(msg);setBusy(true);
+    const ld=document.createElement('div');ld.className='msg msg-ai';ld.id='ldr';
+    ld.innerHTML='<div class="dots"><i></i><i></i><i></i></div>';
+    document.getElementById('chatInner').appendChild(ld);scroll();
+    await new Promise(r=>setTimeout(r,1200));
+    ld.remove();addAiMsg(cached.gold,true,msg);scroll();setBusy(false);return;
+  }
+  const{key,mid}=getConfig();
+  if(!key){showOnboard();return;}
+  /* prep UI once; stream/fallback share this state */
+  document.getElementById('inp').value='';autoH(document.getElementById('inp'));
+  rmWelcome();addUserMsg(msg);setBusy(true);ac=new AbortController();
+  /* try streaming; on endpoint-unavailable fall through to non-streaming */
+  const streamed=await sendStreaming(msg,key,mid);
+  if(!streamed){await sendNonStreaming(msg,key,mid);}
+}
+
+/* v2.13b: SSE streaming path. Returns true if handled (success OR terminal error),
+   false only if the stream endpoint appears unavailable (→ caller should fall back). */
+async function sendStreaming(msg,key,mid){
+  const chatInner=document.getElementById('chatInner');
+  const streamEl=document.createElement('div');
+  streamEl.className='msg msg-ai';streamEl.id='streamMsg';streamEl.dataset.aiText='';
+  streamEl.innerHTML='<div class="md"><span class="typing-cursor"></span></div>';
+  chatInner.appendChild(streamEl);scroll();
+  const body={message:msg,history:hist.slice(-20),language:curLang==='en'?'auto':curLang,
+              depth:'auto',gold_enabled:true,enabled_r_modules:getEnabledR()};
+  if(key)body.provider_key=key;
+  if(mid)body.model_name=mid;
+  if(convId)body.conversation_id=convId;
+  let resp;
+  try{
+    resp=await fetch(`${API}/v1/agent/chat/stream`,{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body),signal:ac.signal});
+  }catch(e){
+    streamEl.remove();
+    if(e.name==='AbortError'){ac=null;setBusy(false);document.getElementById('inp').focus();return true;}
+    /* network error — try fallback */
+    return false;
+  }
+  /* endpoint not deployed yet → fallback */
+  if(resp.status===404||resp.status===405){streamEl.remove();return false;}
+  if(!resp.ok){
+    streamEl.remove();
+    let em=`Error ${resp.status}`;try{em=(await resp.json()).detail||em;}catch{}
+    addErr(em);ac=null;setBusy(false);document.getElementById('inp').focus();return true;
+  }
+  /* must be SSE — if server returned JSON, fallback (old endpoint alias) */
+  const ct=resp.headers.get('content-type')||'';
+  if(!ct.includes('text/event-stream')){streamEl.remove();return false;}
+  const reader=resp.body.getReader();
+  const dec=new TextDecoder();
+  let buf='',streamed='',doneData=null,streamErr=null;
+  const mdEl=streamEl.querySelector('.md');
+  try{
+    while(true){
+      const{done,value}=await reader.read();
+      if(done)break;
+      buf+=dec.decode(value,{stream:true});
+      const parts=buf.split('\n\n');buf=parts.pop();
+      for(const part of parts){
+        let ev='message',data='';
+        for(const line of part.split('\n')){
+          if(line.startsWith('event:'))ev=line.slice(6).trim();
+          else if(line.startsWith('data:'))data+=line.slice(5).trim();
+        }
+        if(!data)continue;
+        let obj;try{obj=JSON.parse(data);}catch{continue;}
+        if(ev==='chunk'){
+          streamed+=obj.text||'';
+          streamEl.dataset.aiText=streamed;
+          mdEl.innerHTML=fmt(streamed)+'<span class="typing-cursor"></span>';
+          scroll();
+        }else if(ev==='done'){doneData=obj;}
+        else if(ev==='error'){streamErr=obj.detail||'Stream error';}
+      }
+    }
+  }catch(e){
+    if(e.name==='AbortError'){
+      /* user pressed Stop — keep what's visible but drop the cursor + mark partial */
+      mdEl.innerHTML=fmt(streamed)+'<em style="color:var(--text3);font-size:12px"> · '+
+        (curLang==='ru'?'остановлено':'stopped')+'</em>';
+      ac=null;setBusy(false);document.getElementById('inp').focus();return true;
+    }
+    streamEl.remove();addErr('Stream error: '+e.message);
+    ac=null;setBusy(false);document.getElementById('inp').focus();return true;
+  }
+  if(streamErr){
+    streamEl.remove();addErr(streamErr);
+    ac=null;setBusy(false);document.getElementById('inp').focus();return true;
+  }
+  if(!doneData){
+    /* stream closed without done event — render what we got as plain msg */
+    streamEl.remove();
+    if(streamed){addAiMsg({response:streamed,score:{}});}
+    else{addErr(curLang==='ru'?'Пустой ответ':'Empty response');}
+    ac=null;setBusy(false);document.getElementById('inp').focus();return true;
+  }
+  /* swap streamed element for fully-rendered addAiMsg (grade, bars, actions) */
+  streamEl.remove();
+  addAiMsg(doneData);
+  hist.push({role:'user',content:msg});
+  hist.push({role:'assistant',content:doneData.response||''});
+  if(doneData.conversation_id)convId=doneData.conversation_id;
+  persistSession();
+  ac=null;setBusy(false);document.getElementById('inp').focus();return true;
+}
+
+/* v2.13b: non-streaming fallback — identical to v2.13 flow, retained for
+   compatibility when /stream is unavailable or returns non-SSE. */
+async function sendNonStreaming(msg,key,mid){
+  const ld=document.createElement('div');ld.className='msg msg-ai';ld.id='ldr';
+  ld.innerHTML='<div class="dots"><i></i><i></i><i></i></div>';
+  document.getElementById('chatInner').appendChild(ld);scroll();
+  const hdrs={'Content-Type':'application/json'};
+  try{
+    const body={message:msg,history:hist.slice(-20),language:curLang==='en'?'auto':curLang,
+                depth:'auto',gold_enabled:true,enabled_r_modules:getEnabledR()};
+    if(key)body.provider_key=key;
+    if(mid)body.model_name=mid;
+    if(convId)body.conversation_id=convId;
+    const r=await fetch(`${API}/v1/agent/chat`,{method:'POST',headers:hdrs,
+      body:JSON.stringify(body),signal:ac.signal});
+    ld.remove();
+    if(!r.ok){let e=`Error ${r.status}`;try{e=(await r.json()).detail||e}catch{}addErr(e);return;}
+    const data=await r.json();
+    addAiMsg(data);
+    hist.push({role:'user',content:msg});
+    hist.push({role:'assistant',content:data.response||''});
+    if(data.conversation_id)convId=data.conversation_id;
+    persistSession();
+  }catch(e){
+    ld.remove();
+    if(e.name!=='AbortError')addErr('Error: '+e.message);
+  }finally{
+    ac=null;setBusy(false);document.getElementById('inp').focus();
+  }
+}
 function addUserMsg(text){const d=document.createElement('div');d.className='msg msg-user';d.dataset.q=text;d.innerHTML=`<div class="msg-user-text">${esc(text)}</div>`;document.getElementById('chatInner').appendChild(d);}
 function addAiMsg(data,isDemo,demoQ){const resp=data.response||data;const text=typeof resp==='string'?resp:resp.response||'';const score=data.score||resp.score||{};const m=score.metrics||{};const gr=score.compliance_class||'?';const num=score.grade!=null?score.grade:'?';const hasScore=gr!=='?';const d=document.createElement('div');d.className='msg msg-ai';d.dataset.aiText=text;const bars=(m.R1!=null||m.R2!=null||m.QD!=null||m.UM!=null)?rBars(m):'';const indicators=execIndicators(score);const demoTag=isDemo?'<span class="demo-tag">DEMO</span>':'';const actions=`<div class="msg-actions"><button class="msg-act" onclick="copyMsg(this)" title="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-en="Copy" data-ru="Копир.">Copy</span></button>${isDemo?'':'<button class="msg-act" onclick="regenerateMsg(this)" title="Regenerate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg><span data-en="Regenerate" data-ru="Заново">Regenerate</span></button>'}</div>`;d.innerHTML=`<div class="md">${fmt(text)}</div>${hasScore?`<div class="analysis"><span class="grade-badge ${gradeClass(gr)}" style="margin-right:6px">Grade ${gr} · ${num}/10</span><span class="help-ico" onclick="openModal('modalScoring')" title="How scoring works">?</span>${demoTag}<span class="analysis-toggle" onclick="this.classList.toggle('open');this.parentElement.querySelector('.analysis-body').classList.toggle('open')">${t('analysis')} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></span><div class="analysis-body">${bars}${indicators}<div class="score-hint">${t('scoreHint')}</div></div></div>`:''}${actions}`;document.getElementById('chatInner').appendChild(d);scroll();}
 async function compare(){if(busy)return;const msg=document.getElementById('inp').value.trim();if(!msg)return;document.getElementById('inp').value='';autoH(document.getElementById('inp'));rmWelcome();const cached=_fromDemo?getCached(msg):null;_fromDemo=false;if(cached){const uid='c'+Date.now();const wrap=document.createElement('div');wrap.className='cmp-wrap';wrap.innerHTML=`<div class="cmp-q"><strong>${esc(msg)}</strong> <span class="demo-tag">DEMO</span></div><div class="cmp-grid"><div class="cmp-panel raw" id="${uid}_b"></div><div class="cmp-panel gold" id="${uid}_g"></div></div><div class="cmp-mets" id="${uid}_m" style="display:none"></div>`;document.getElementById('chatInner').appendChild(wrap);setTimeout(()=>{fillPanel(`${uid}_b`,cached.raw,'raw');fillPanel(`${uid}_g`,cached.gold,'gold');showDelta(uid,cached.raw,cached.gold);scroll();},200);return;}const{key,mid}=getConfig();if(!key){showOnboard();return;}setBusy(true);ac=new AbortController();const uid='c'+Date.now();const wrap=document.createElement('div');wrap.className='cmp-wrap';wrap.innerHTML=`<div class="cmp-q"><strong>${esc(msg)}</strong></div><div class="cmp-grid"><div class="cmp-panel raw" id="${uid}_b"><div class="cmp-head"><span class="cmp-label">${t('withoutGold')}</span></div><div class="cmp-body"><div class="dots"><i></i><i></i><i></i></div></div></div><div class="cmp-panel gold" id="${uid}_g"><div class="cmp-head"><span class="cmp-label">${t('withGold')}</span></div><div class="cmp-body"><div class="dots"><i></i><i></i><i></i></div></div></div></div><div class="cmp-mets" id="${uid}_m" style="display:none"></div>`;document.getElementById('chatInner').appendChild(wrap);scroll();const hdrs={'Content-Type':'application/json'};try{const[rawData,goldData]=await Promise.all([apiCall(msg,false,hdrs,ac.signal),apiCall(msg,true,hdrs,ac.signal)]);fillPanel(`${uid}_b`,rawData,'raw');fillPanel(`${uid}_g`,goldData,'gold');showDelta(uid,rawData,goldData);persistSession();scroll();}catch(e){if(e.name!=='AbortError')addErr('Error: '+e.message);}finally{ac=null;setBusy(false);document.getElementById('inp').focus();}}
@@ -491,7 +641,106 @@ function persistSession(){const inner=document.getElementById('chatInner');if(!i
 function loadSession(id){const sessions=loadSessions();const s=sessions.find(x=>x.id===id);if(!s)return;if(busy){ac?.abort();}currentSessionId=id;hist=s.hist||[];convId=s.convId||null;const inner=document.getElementById('chatInner');inner.innerHTML=s.html||'';/* rebind i18n on loaded content */inner.querySelectorAll('[data-'+curLang+']').forEach(d=>{if(d.tagName==='SPAN'||d.classList.contains('r-desc'))d.textContent=d.getAttribute('data-'+curLang);});scroll();closeDrawer();renderSessionList();document.getElementById('inp').focus();}
 function deleteSession(id,ev){ev&&ev.stopPropagation();const sessions=loadSessions().filter(x=>x.id!==id);saveSessions(sessions);if(currentSessionId===id){newChat();}else{renderSessionList();}}
 function fmtSessionTime(ts){const d=new Date(ts);const now=new Date();const sameDay=d.toDateString()===now.toDateString();if(sameDay)return d.toTimeString().slice(0,5);const yd=new Date(now.getTime()-86400000);if(d.toDateString()===yd.toDateString())return curLang==='ru'?'Вчера':'Yesterday';return d.toLocaleDateString(curLang==='ru'?'ru-RU':'en-US',{month:'short',day:'numeric'});}
-function renderSessionList(){const list=document.getElementById('drawerList');if(!list)return;const sessions=loadSessions();if(!sessions.length){list.innerHTML=`<div class="drawer-empty">${curLang==='ru'?'Нет сохранённых чатов.<br>Начните разговор — он появится здесь.':'No saved chats yet.<br>Start a conversation and it will appear here.'}</div>`;return;}list.innerHTML=sessions.map(s=>`<div class="sess-item ${s.id===currentSessionId?'active':''}" onclick="loadSession('${s.id}')"><div class="sess-body"><div class="sess-title">${esc(s.title)}</div><div class="sess-meta">${fmtSessionTime(s.updatedAt)}</div></div><button class="sess-del" onclick="deleteSession('${s.id}',event)" title="${curLang==='ru'?'Удалить':'Delete'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div>`).join('');}
+function renderSessionList(){const list=document.getElementById('drawerList');if(!list)return;const sessions=loadSessions();if(!sessions.length){list.innerHTML=`<div class="drawer-empty">${curLang==='ru'?'Нет сохранённых чатов.<br>Начните разговор — он появится здесь.':'No saved chats yet.<br>Start a conversation and it will appear here.'}</div>`;return;}list.innerHTML=sessions.map(s=>`<div class="sess-item ${s.id===currentSessionId?'active':''}" onclick="loadSession('${s.id}')"><div class="sess-body"><div class="sess-title">${esc(s.title)}</div><div class="sess-meta">${fmtSessionTime(s.updatedAt)}</div></div><button class="sess-del" onclick="copySessionAsMarkdown('${s.id}',event)" title="${curLang==='ru'?'Копировать как Markdown':'Copy as Markdown'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="sess-del" onclick="deleteSession('${s.id}',event)" title="${curLang==='ru'?'Удалить':'Delete'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div>`).join('');}
+
+/* ── v2.13b: markdown export (single session + open conversation) ── */
+function _mdStripHtml(el){
+  if(!el)return'';
+  /* simplest: rely on dataset.aiText when available, else innerText */
+  return(el.dataset?.aiText||el.innerText||'').trim();
+}
+function exportSessionAsMarkdown(sessionId){
+  let container,title,updatedAt;
+  if(sessionId){
+    const sessions=loadSessions();const s=sessions.find(x=>x.id===sessionId);
+    if(!s)return null;
+    container=document.createElement('div');container.innerHTML=s.html||'';
+    title=s.title||'Untitled';updatedAt=s.updatedAt||Date.now();
+  }else{
+    container=document.getElementById('chatInner');
+    /* reject empty chat */
+    const hasContent=container.querySelector('.msg-user,.cmp-wrap,.msg-ai[data-ai-text]');
+    if(!hasContent)return null;
+    title=sessionTitle();updatedAt=Date.now();
+  }
+  const out=[];
+  out.push('# '+title);
+  const dt=new Date(updatedAt).toISOString().slice(0,19).replace('T',' ')+'Z';
+  out.push('*ONTO · '+dt+'*');
+  out.push('');
+  /* walk top-level entries in chatInner order */
+  const kids=container.querySelectorAll(':scope > .msg, :scope > .cmp-wrap, .msg, .cmp-wrap');
+  /* dedup: if :scope works we'll get direct children; otherwise flat list. Prefer direct. */
+  const direct=container.querySelectorAll(':scope > .msg, :scope > .cmp-wrap');
+  const nodes=direct.length?direct:kids;
+  let n=0;
+  nodes.forEach(el=>{
+    if(el.classList.contains('msg-user')){
+      n++;
+      const q=el.dataset.q||_mdStripHtml(el.querySelector('.msg-user-text'));
+      out.push('## Q'+n+'. '+q);out.push('');
+    }else if(el.classList.contains('msg-ai')){
+      const txt=_mdStripHtml(el);
+      const grade=el.querySelector('.grade-badge');
+      const gtxt=grade?grade.innerText.trim().replace(/\s+/g,' '):'';
+      out.push(gtxt?('### Answer — '+gtxt):'### Answer');out.push('');
+      if(txt)out.push(txt);
+      out.push('');out.push('---');out.push('');
+    }else if(el.classList.contains('cmp-wrap')){
+      n++;
+      const q=el.querySelector('.cmp-q strong')?.innerText||'';
+      out.push('## Q'+n+'. '+q+' _(compare)_');out.push('');
+      el.querySelectorAll('.cmp-panel').forEach(p=>{
+        const lbl=p.querySelector('.cmp-label')?.innerText?.trim()||'';
+        const g=p.querySelector('.grade-badge')?.innerText?.trim().replace(/\s+/g,' ')||'';
+        const body=_mdStripHtml(p.querySelector('.cmp-body'))||p.dataset?.aiText||'';
+        out.push('### '+lbl+(g?' — '+g:''));out.push('');
+        if(body)out.push(body);
+        out.push('');
+      });
+      out.push('---');out.push('');
+    }
+  });
+  return out.join('\n');
+}
+function _mdClipboardToast(text){
+  if(!text){toast(curLang==='ru'?'Пустой чат':'Empty chat','err');return;}
+  const ok=curLang==='ru'?'Скопировано в Markdown':'Copied as Markdown';
+  const er=curLang==='ru'?'Не удалось':'Copy failed';
+  if(navigator.clipboard?.writeText){
+    navigator.clipboard.writeText(text).then(()=>toast(ok)).catch(()=>toast(er,'err'));
+  }else{toast(er,'err');}
+}
+function _mdDownload(text,filename){
+  if(!text){toast(curLang==='ru'?'Пустой чат':'Empty chat','err');return;}
+  const blob=new Blob([text],{type:'text/markdown;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=filename;
+  document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},100);
+  toast(curLang==='ru'?'Скачано':'Downloaded');
+}
+function _mdFilename(title){
+  const safe=(title||'onto-chat').toLowerCase().replace(/[^a-z0-9а-яё\s-]+/gi,'').trim().replace(/\s+/g,'-').slice(0,60)||'onto-chat';
+  const dt=new Date().toISOString().slice(0,10);
+  return`onto-${safe}-${dt}.md`;
+}
+/* open conversation */
+function copyConversationAsMarkdown(){
+  const md=exportSessionAsMarkdown(null);
+  _mdClipboardToast(md);
+}
+function downloadConversationAsMarkdown(){
+  const md=exportSessionAsMarkdown(null);
+  if(!md){toast(curLang==='ru'?'Пустой чат':'Empty chat','err');return;}
+  _mdDownload(md,_mdFilename(sessionTitle()));
+}
+/* single saved session from drawer */
+function copySessionAsMarkdown(sessionId,ev){
+  ev&&ev.stopPropagation();
+  const md=exportSessionAsMarkdown(sessionId);
+  _mdClipboardToast(md);
+}
 
 function openDrawer(){document.getElementById('drawer').classList.add('open');document.getElementById('drawerBg').classList.add('open');renderSessionList();}
 function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('drawerBg').classList.remove('open');}
