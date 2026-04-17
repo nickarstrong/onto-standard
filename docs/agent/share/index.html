@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.ontostandard.org; frame-ancestors 'none'">
+<title>Shared · ONTO</title>
+<!-- Share viewer v1.0 -->
+<meta name="description" content="A shared conversation scored by ONTO — epistemic discipline applied to AI answers.">
+<meta property="og:title" content="Shared conversation · ONTO">
+<meta property="og:description" content="See how ONTO grades AI answers with R1-R18 epistemic scoring.">
+<meta property="og:type" content="article">
+<link rel="icon" type="image/x-icon" href="/agent/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/agent/favicon-32.png">
+<link rel="apple-touch-icon" href="/agent/icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#18181b;--bg2:#1f1f23;--bg3:#27272a;--border:rgba(255,255,255,.08);--text:#f4f4f5;--text2:#d4d4d8;--text3:#a1a1aa;--green:#22c55e;--green-bg:rgba(34,197,94,.12);--red:#f87171;--red-bg:rgba(248,113,113,.1);--orange:#fbbf24;--blue:#60a5fa;--sans:'DM Sans',sans-serif;--mono:'JetBrains Mono',monospace;--max:960px;--radius:16px;--glass:rgba(255,255,255,.04);--glass-border:rgba(255,255,255,.08)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;font-size:16px;line-height:1.7;display:flex;flex-direction:column;min-height:100vh}
+::selection{background:var(--green);color:#000}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:4px}
+a{color:var(--green);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);background:rgba(24,24,27,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);position:sticky;top:0;z-index:10}
+.hdr-brand{display:flex;align-items:center;gap:10px;color:var(--text);font-weight:600;font-size:15px}
+.hdr-brand svg{width:28px;height:28px}
+.hdr-beta{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--green);background:var(--green-bg);border:1px solid rgba(34,197,94,.2);padding:2px 8px;border-radius:4px;letter-spacing:.5px}
+.hdr-cta{font-family:var(--sans);font-size:14px;font-weight:600;background:var(--green);color:#000;border:none;padding:8px 16px;border-radius:10px;cursor:pointer;transition:.15s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.hdr-cta:hover{background:#16a34a;text-decoration:none}
+
+.wrap{max-width:var(--max);width:100%;margin:0 auto;padding:24px 20px 80px;flex:1;display:flex;flex-direction:column;gap:8px}
+
+.share-meta{display:flex;flex-direction:column;gap:6px;padding:20px 0 12px;border-bottom:1px solid var(--border);margin-bottom:16px}
+.share-title{font-size:24px;font-weight:700;letter-spacing:-.3px;color:var(--text);line-height:1.3}
+.share-submeta{display:flex;gap:14px;font-family:var(--mono);font-size:11px;color:var(--text3);flex-wrap:wrap}
+.share-submeta .dot{width:4px;height:4px;border-radius:50%;background:var(--text3);align-self:center}
+.share-banner{background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;padding:12px 16px;font-size:13px;color:var(--text2);display:flex;gap:10px;align-items:flex-start;margin-bottom:16px}
+.share-banner svg{width:16px;height:16px;flex-shrink:0;margin-top:3px;color:var(--green)}
+
+.msg{margin-bottom:8px}
+.msg-user{display:flex;justify-content:flex-end}
+.msg-user-text{background:var(--bg3);color:var(--text);padding:12px 18px;border-radius:20px 20px 6px 20px;max-width:85%;font-size:15px;line-height:1.6;word-break:break-word;white-space:pre-wrap}
+.msg-ai{padding:14px 4px}
+.md{font-size:15px;line-height:1.75;color:var(--text2)}
+.md p{margin-bottom:12px}
+.md strong{color:var(--text);font-weight:600}
+.md ul,.md ol{margin:8px 0 8px 20px;color:var(--text2)}
+.md li{margin-bottom:6px;font-size:14px}
+.md a{color:var(--green)}
+.md code{font-family:var(--mono);font-size:13px;background:var(--bg3);padding:2px 6px;border-radius:5px}
+
+.grade-badge{font-family:var(--mono);font-size:13px;font-weight:600;padding:4px 10px;border-radius:8px;letter-spacing:.3px;display:inline-block}
+.grade-a{background:var(--green-bg);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+.grade-b{background:rgba(96,165,250,.1);color:var(--blue);border:1px solid rgba(96,165,250,.3)}
+.grade-c{background:rgba(251,191,36,.1);color:var(--orange);border:1px solid rgba(251,191,36,.3)}
+.grade-d,.grade-f{background:var(--red-bg);color:var(--red);border:1px solid rgba(248,113,113,.3)}
+
+.analysis{margin-top:12px}
+.analysis-body{padding:16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;margin-top:10px}
+.r-bar{display:grid;grid-template-columns:36px 1fr 110px 36px;gap:10px;align-items:center;margin-bottom:7px;font-size:12px}
+.r-label{font-family:var(--mono);font-size:11px;color:var(--text3);font-weight:600}
+.r-name{color:var(--text3);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r-track{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.r-fill{height:100%;border-radius:3px;transition:width .4s}
+.r-fill.good{background:var(--green)}
+.r-fill.mid{background:var(--orange)}
+.r-fill.bad{background:var(--red)}
+.r-val{font-family:var(--mono);font-size:11px;color:var(--text3);text-align:right}
+.exec-indicators{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.exec-ind{font-family:var(--mono);font-size:10px;color:var(--text3);background:var(--bg3);border:1px solid var(--border);padding:3px 8px;border-radius:5px;display:inline-flex;align-items:center;gap:5px}
+.exec-ind.r17{border-color:rgba(251,191,36,.3);color:var(--orange)}
+.ei-key{font-weight:700;letter-spacing:.3px}
+
+.cmp-wrap{margin-bottom:20px;padding:16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px}
+.cmp-q{font-size:15px;color:var(--text);margin-bottom:12px;line-height:1.5;word-break:break-word}
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cmp-panel{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.cmp-panel.gold{border-color:rgba(34,197,94,.25)}
+.cmp-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cmp-label{font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.cmp-panel.gold .cmp-label{color:var(--green)}
+.cmp-body{font-size:13px;line-height:1.6;color:var(--text2);max-height:420px;overflow-y:auto}
+.cmp-body p{margin-bottom:10px}
+.cmp-bars{padding-top:10px;border-top:1px solid var(--border)}
+@media(max-width:720px){.cmp-grid{grid-template-columns:1fr}.cmp-body{max-height:none}}
+
+.footer{margin-top:40px;padding-top:24px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center}
+.footer-cta{font-size:15px;color:var(--text2);line-height:1.6;max-width:480px}
+.footer-cta strong{color:var(--text)}
+.footer-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.footer-btn{padding:10px 20px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:.15s;border:1px solid var(--border);background:var(--bg2);color:var(--text);text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.footer-btn:hover{background:var(--bg3);text-decoration:none}
+.footer-btn.primary{background:var(--green);color:#000;border-color:var(--green)}
+.footer-btn.primary:hover{background:#16a34a}
+.footer-small{font-family:var(--mono);font-size:11px;color:var(--text3);margin-top:10px}
+.footer-small a{color:var(--text3);text-decoration:underline}
+
+.loader,.error{text-align:center;padding:80px 20px;color:var(--text3)}
+.loader .dots{display:inline-flex;gap:5px;margin-top:12px}
+.loader .dots i{width:7px;height:7px;border-radius:50%;background:var(--text3);animation:dot .9s infinite ease-in-out}
+.loader .dots i:nth-child(2){animation-delay:.15s}.loader .dots i:nth-child(3){animation-delay:.3s}
+@keyframes dot{0%,80%{opacity:.3}40%{opacity:1}}
+.error strong{color:var(--red);display:block;font-size:18px;margin-bottom:8px}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg3);color:var(--text);padding:10px 18px;border-radius:10px;font-size:14px;box-shadow:0 4px 16px rgba(0,0,0,.4);opacity:0;transition:.25s;z-index:100}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast-err{background:var(--red-bg);color:var(--red);border:1px solid rgba(248,113,113,.3)}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <a href="/agent/" class="hdr-brand">
+    <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="#27272a"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="white"/></svg>
+    ONTO
+    <span class="hdr-beta">SHARED</span>
+  </a>
+  <a href="/agent/" class="hdr-cta">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    <span id="ctaOpen">Open ONTO</span>
+  </a>
+</div>
+
+<div class="wrap">
+  <div id="content">
+    <div class="loader" id="loader">
+      <div id="loadTxt">Loading shared conversation…</div>
+      <div class="dots"><i></i><i></i><i></i></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API='https://api.ontostandard.org';
+const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+/* i18n — light: only strings actually shown on share page */
+const L={
+  en:{loading:'Loading shared conversation…',notFound:'Shared conversation not found',errGeneric:'Could not load conversation',askedOn:'Asked on',viewsLabel:'views',view:'view',
+      cta1:'This conversation was scored with ONTO — an epistemic OS that measures if an AI answer is quantified, sourced, and falsifiable.',
+      cta2:'Try it with your own questions. Free.',
+      openBtn:'Open ONTO',copyBtn:'Copy link',reportBtn:'Report',
+      withoutGold:'Without GOLD',withGold:'With ONTO GOLD',
+      analysis:'R1–R7 scoring',copied:'Link copied',copyFailed:'Copy failed',
+      shareFooter:'Powered by ONTO · R1-R18 epistemic discipline · ',shareFooterLink:'Learn more',
+      reportSent:'Reported — thanks',reportFail:'Report failed'},
+  ru:{loading:'Загрузка…',notFound:'Разговор не найден',errGeneric:'Не удалось загрузить разговор',askedOn:'Задан',viewsLabel:'просмотров',view:'просмотр',
+      cta1:'Этот разговор оценён ONTO — эпистемической ОС, которая измеряет квантифицирован ли ответ ИИ, есть ли источники и фальсифицируемость.',
+      cta2:'Задайте свои вопросы. Бесплатно.',
+      openBtn:'Открыть ONTO',copyBtn:'Копировать ссылку',reportBtn:'Жалоба',
+      withoutGold:'Без GOLD',withGold:'С ONTO GOLD',
+      analysis:'Оценка R1–R7',copied:'Ссылка скопирована',copyFailed:'Не удалось',
+      shareFooter:'Сделано с ONTO · R1-R18 эпистемическая дисциплина · ',shareFooterLink:'Подробнее',
+      reportSent:'Отправлено — спасибо',reportFail:'Не удалось'}};
+let curLang='en';
+function t(k){return (L[curLang]&&L[curLang][k])||L.en[k]||k;}
+
+/* Inline markdown → HTML (reuse agent fmt subset). Safe: operates on server-
+   returned payload which the sharer's own client generated. */
+function fmt(md){
+  if(!md)return'';
+  md=esc(md);
+  let h=md.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+          .replace(/\n- /g,'\n• ')
+          .replace(/\n\n/g,'</p><p>')
+          .replace(/\n/g,'<br>')
+          .replace(/^/,'<p>')
+          .replace(/$/,'</p>');
+  h=h.replace(/(DOI:\s*)(10\.\d{4,}\/\S+)/gi,(m,p,d)=>`${p}<span style="font-family:var(--mono);font-size:13px;color:var(--green)">${d}</span>`);
+  h=h.replace(/\b((?:HR|RR|OR|NNT|NNH)\s*[=:]\s*\d+\.?\d*)/g,'<span style="color:var(--green);font-family:var(--mono);font-size:13px">$1</span>');
+  h=h.replace(/(\d+\.?\d*\s*%?\s*CI[\s:,]+\d+\.?\d*\s*[-–]\s*\d+\.?\d*)/g,'<span style="color:var(--green);font-family:var(--mono);font-size:13px">$1</span>');
+  h=h.replace(/\b(N\s*[=:]\s*[\d,]+)/g,'<span style="color:var(--blue);font-family:var(--mono);font-size:13px">$1</span>');
+  h=h.replace(/\b(p\s*[&lt;&gt;=]\s*0?\.\d+)/g,'<span style="color:var(--orange);font-family:var(--mono);font-size:13px">$1</span>');
+  h=h.replace(/\b([A-Z][a-z]+(?:\s+(?:&amp;|and)\s+[A-Z][a-z]+)?\s+et\s+al\.?,?\s+(?:19|20)\d{2})\b/g,'<span style="color:var(--blue)">$1</span>');
+  h=h.replace(/\b(RCT|meta-analysis|systematic review|Cochrane|WHO|CDC|FDA|EMA|NIH|NEJM|Lancet|BMJ|JAMA|Nature|Science|Cell|PNAS|IEEE|ISO|IPCC|NIST|MHRA)\b/gi,'<span style="color:var(--blue)">$1</span>');
+  h=h.replace(/\b(Grade\s+(?:I{1,3}|IV|V|[A-D]))\b/g,'<span style="color:var(--orange)">$1</span>');
+  return h;
+}
+
+function gradeClass(g){return'grade-'+(g==='A'?'a':g==='B'?'b':g==='C'?'c':g==='D'?'d':'f');}
+
+function rBars(m){
+  if(!m)return'';
+  const LBL={R1:'Quantify',R2:'Uncertainty',R3:'Counter',R4:'Sources',R5:'Evidence',R6:'Falsifiable',R7:'No Fabrication',R8:'Resolve',R9:'Surprise',R10:'Self-Model',R11:'Integrity',R12:'Drive'};
+  const keys=['R1','R2','R3','R4','R5','R6','R7',...['R8','R9','R10','R11','R12'].filter(k=>m[k]!=null)];
+  return keys.map(k=>{
+    const v=m[k]!=null?m[k]:null;
+    const p=v!=null?Math.round(v*100):0;
+    const c=v>=0.7?'good':v>=0.4?'mid':'bad';
+    return`<div class="r-bar"><span class="r-label">${k}</span><span class="r-name">${LBL[k]||''}</span><div class="r-track"><div class="r-fill ${c}" style="width:${p}%"></div></div><span class="r-val">${v!=null?v.toFixed(2):'—'}</span></div>`;
+  }).join('');
+}
+
+function execIndicators(score){
+  if(!score)return'';
+  const flags=Array.isArray(score.r17_flags)?score.r17_flags:[];
+  const ir=Number(score.r18_intron_ratio||0);
+  const ic=Number(score.r18_intron_count||0);
+  if(!flags.length&&ir<=0.3)return'';
+  const items=[];
+  flags.forEach(f=>{
+    const key=(String(f).match(/^(C[1-5](?:-ext)?)/)||[])[1]||'R17';
+    const txt=String(f).replace(/^C[1-5](?:-ext)?:\s*/,'');
+    items.push(`<span class="exec-ind r17"><span class="ei-key">${esc(key)}</span>${esc(txt.slice(0,40))}</span>`);
+  });
+  if(ir>0.3){
+    items.push(`<span class="exec-ind"><span class="ei-key">R18</span>${ic} intron${ic===1?'':'s'} · ${(ir*100).toFixed(0)}%</span>`);
+  }
+  return`<div class="exec-indicators">${items.join('')}</div>`;
+}
+
+function renderChatTurn(turn){
+  const s=turn.score||{};
+  const gr=s.compliance_class||'?';
+  const num=s.grade!=null?s.grade:'?';
+  const m=s.metrics||{};
+  const hasScore=gr!=='?';
+  const bars=(m.R1!=null||m.R2!=null)?rBars(m):'';
+  const indicators=execIndicators(s);
+  const userHtml=turn.q?`<div class="msg msg-user"><div class="msg-user-text">${esc(turn.q)}</div></div>`:'';
+  const aiHtml=`<div class="msg msg-ai"><div class="md">${fmt(turn.response||'')}</div>${hasScore?`<div class="analysis"><span class="grade-badge ${gradeClass(gr)}" style="margin-right:6px">Grade ${gr} · ${num}/10</span><div class="analysis-body">${bars}${indicators}</div></div>`:''}</div>`;
+  return userHtml+aiHtml;
+}
+
+function renderCompareTurn(turn){
+  function panel(data,type){
+    if(!data)return'';
+    const s=data.score||{};
+    const gr=s.compliance_class||'?';
+    const num=s.grade!=null?s.grade:'?';
+    const m=s.metrics||{};
+    const bars=rBars(m);
+    const indicators=execIndicators(s);
+    const lbl=type==='raw'?t('withoutGold'):t('withGold');
+    return`<div class="cmp-panel ${type}"><div class="cmp-head"><span class="cmp-label">${lbl}</span><span class="grade-badge ${gradeClass(gr)}">Grade ${gr} · ${num}/10</span></div><div class="cmp-body">${fmt(data.response||'')}</div><div class="cmp-bars">${bars}${indicators}</div></div>`;
+  }
+  return`<div class="cmp-wrap"><div class="cmp-q"><strong>${esc(turn.q||'')}</strong></div><div class="cmp-grid">${panel(turn.raw,'raw')}${panel(turn.gold,'gold')}</div></div>`;
+}
+
+function toast(msg,kind){
+  const t=document.createElement('div');
+  t.className='toast'+(kind==='err'?' toast-err':'');
+  t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.classList.add('show'),10);
+  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),250);},2200);
+}
+
+async function reportShare(shortId){
+  /* Forward as feedback — reuses existing Slack webhook path */
+  try{
+    const r=await fetch(`${API}/v1/feedback`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({category:'bug',text:`Report: shared conversation ${shortId}`,
+        email:'',ui_version:'share-v1',lang:curLang,user_agent:navigator.userAgent.slice(0,120)}),
+    });
+    toast(r.ok?t('reportSent'):t('reportFail'),r.ok?'':'err');
+  }catch{toast(t('reportFail'),'err');}
+}
+
+async function load(){
+  const params=new URLSearchParams(location.search);
+  const id=(params.get('id')||'').trim();
+  const content=document.getElementById('content');
+  if(!id||!/^[a-zA-Z0-9]{10}$/.test(id)){
+    content.innerHTML=`<div class="error"><strong>${t('notFound')}</strong></div>`;
+    return;
+  }
+  try{
+    const r=await fetch(`${API}/v1/share/${id}`);
+    if(r.status===404){
+      content.innerHTML=`<div class="error"><strong>${t('notFound')}</strong></div>`;
+      return;
+    }
+    if(!r.ok){
+      let detail=t('errGeneric');try{detail=(await r.json()).detail||detail;}catch{}
+      content.innerHTML=`<div class="error"><strong>${detail}</strong></div>`;
+      return;
+    }
+    const data=await r.json();
+    const payload=data.payload||{};
+    curLang=payload.lang||'en';
+    if(!['en','ru'].includes(curLang))curLang='en';
+    document.documentElement.lang=curLang;
+    document.getElementById('ctaOpen').textContent=t('openBtn');
+
+    const dt=payload.created_at?new Date(payload.created_at):(data.created_at?new Date(data.created_at):new Date());
+    const dateStr=dt.toLocaleDateString(curLang==='ru'?'ru-RU':'en-US',{year:'numeric',month:'short',day:'numeric'});
+    const views=data.views||1;
+
+    const title=esc(data.title||payload.title||'ONTO shared chat');
+    document.title=title+' · ONTO';
+
+    let bodyHtml=`<div class="share-meta"><h1 class="share-title">${title}</h1><div class="share-submeta"><span>${t('askedOn')} ${dateStr}</span><span class="dot"></span><span>${views} ${views===1?t('view'):t('viewsLabel')}</span><span class="dot"></span><span>ID ${esc(id)}</span></div></div>`;
+    bodyHtml+=`<div class="share-banner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><div>${t('cta1')}</div></div>`;
+
+    const turns=Array.isArray(payload.turns)?payload.turns:[];
+    turns.forEach(tr=>{
+      if(tr.kind==='compare')bodyHtml+=renderCompareTurn(tr);
+      else bodyHtml+=renderChatTurn(tr);
+    });
+
+    bodyHtml+=`<div class="footer"><div class="footer-cta"><strong>${t('cta1')}</strong><br><br>${t('cta2')}</div><div class="footer-btns"><a class="footer-btn primary" href="/agent/">${t('openBtn')}</a><button class="footer-btn" onclick="copyLink()">${t('copyBtn')}</button><button class="footer-btn" onclick="reportShare('${esc(id)}')">${t('reportBtn')}</button></div><div class="footer-small">${t('shareFooter')}<a href="/">${t('shareFooterLink')}</a></div></div>`;
+
+    content.innerHTML=bodyHtml;
+  }catch(e){
+    content.innerHTML=`<div class="error"><strong>${t('errGeneric')}</strong><div style="font-size:12px;margin-top:10px">${esc(e.message||'')}</div></div>`;
+  }
+}
+
+function copyLink(){
+  const url=location.href;
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url).then(()=>toast(t('copied'))).catch(()=>toast(t('copyFailed'),'err'));
+  }else{
+    prompt(t('copyBtn'),url);
+  }
+}
+
+load();
+</script>
+</body>
+</html>

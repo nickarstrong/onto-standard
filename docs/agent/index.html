@@ -259,6 +259,7 @@ button{font-family:var(--sans)}
         <div class="menu-sep"></div>
         <a class="menu-a" onclick="copyConversationAsMarkdown();toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-en="Copy chat · MD" data-ru="Копировать чат · MD">Copy chat · MD</span></a>
         <a class="menu-a" onclick="downloadConversationAsMarkdown();toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span data-en="Download chat · MD" data-ru="Скачать чат · MD">Download chat · MD</span></a>
+        <a class="menu-a" onclick="shareConversation();toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg><span data-en="Share link" data-ru="Поделиться ссылкой">Share link</span></a>
         <div class="menu-sep"></div>
         <a class="menu-a" onclick="openModal('modalFeedback');toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span data-en="Feedback" data-ru="Обратная связь">Feedback</span></a>
       </div>
@@ -616,9 +617,9 @@ async function sendNonStreaming(msg,key,mid){
   }
 }
 function addUserMsg(text){const d=document.createElement('div');d.className='msg msg-user';d.dataset.q=text;d.innerHTML=`<div class="msg-user-text">${esc(text)}</div>`;document.getElementById('chatInner').appendChild(d);}
-function addAiMsg(data,isDemo,demoQ){const resp=data.response||data;const text=typeof resp==='string'?resp:resp.response||'';const score=data.score||resp.score||{};const m=score.metrics||{};const gr=score.compliance_class||'?';const num=score.grade!=null?score.grade:'?';const hasScore=gr!=='?';const d=document.createElement('div');d.className='msg msg-ai';d.dataset.aiText=text;const bars=(m.R1!=null||m.R2!=null||m.QD!=null||m.UM!=null)?rBars(m):'';const indicators=execIndicators(score);const demoTag=isDemo?'<span class="demo-tag">DEMO</span>':'';const actions=`<div class="msg-actions"><button class="msg-act" onclick="copyMsg(this)" title="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-en="Copy" data-ru="Копир.">Copy</span></button>${isDemo?'':'<button class="msg-act" onclick="regenerateMsg(this)" title="Regenerate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg><span data-en="Regenerate" data-ru="Заново">Regenerate</span></button>'}</div>`;d.innerHTML=`<div class="md">${fmt(text)}</div>${hasScore?`<div class="analysis"><span class="grade-badge ${gradeClass(gr)}" style="margin-right:6px">Grade ${gr} · ${num}/10</span><span class="help-ico" onclick="openModal('modalScoring')" title="How scoring works">?</span>${demoTag}<span class="analysis-toggle" onclick="this.classList.toggle('open');this.parentElement.querySelector('.analysis-body').classList.toggle('open')">${t('analysis')} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></span><div class="analysis-body">${bars}${indicators}<div class="score-hint">${t('scoreHint')}</div></div></div>`:''}${actions}`;document.getElementById('chatInner').appendChild(d);scroll();}
+function addAiMsg(data,isDemo,demoQ){const resp=data.response||data;const text=typeof resp==='string'?resp:resp.response||'';const score=data.score||resp.score||{};const m=score.metrics||{};const gr=score.compliance_class||'?';const num=score.grade!=null?score.grade:'?';const hasScore=gr!=='?';const d=document.createElement('div');d.className='msg msg-ai';d.dataset.aiText=text;try{d.dataset.scoreData=JSON.stringify({response:text,score:score});}catch{}const bars=(m.R1!=null||m.R2!=null||m.QD!=null||m.UM!=null)?rBars(m):'';const indicators=execIndicators(score);const demoTag=isDemo?'<span class="demo-tag">DEMO</span>':'';const actions=`<div class="msg-actions"><button class="msg-act" onclick="copyMsg(this)" title="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-en="Copy" data-ru="Копир.">Copy</span></button>${isDemo?'':'<button class="msg-act" onclick="regenerateMsg(this)" title="Regenerate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg><span data-en="Regenerate" data-ru="Заново">Regenerate</span></button>'}</div>`;d.innerHTML=`<div class="md">${fmt(text)}</div>${hasScore?`<div class="analysis"><span class="grade-badge ${gradeClass(gr)}" style="margin-right:6px">Grade ${gr} · ${num}/10</span><span class="help-ico" onclick="openModal('modalScoring')" title="How scoring works">?</span>${demoTag}<span class="analysis-toggle" onclick="this.classList.toggle('open');this.parentElement.querySelector('.analysis-body').classList.toggle('open')">${t('analysis')} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></span><div class="analysis-body">${bars}${indicators}<div class="score-hint">${t('scoreHint')}</div></div></div>`:''}${actions}`;document.getElementById('chatInner').appendChild(d);scroll();}
 async function compare(){if(busy)return;const msg=document.getElementById('inp').value.trim();if(!msg)return;document.getElementById('inp').value='';autoH(document.getElementById('inp'));rmWelcome();const cached=_fromDemo?getCached(msg):null;_fromDemo=false;if(cached){const uid='c'+Date.now();const wrap=document.createElement('div');wrap.className='cmp-wrap';wrap.innerHTML=`<div class="cmp-q"><strong>${esc(msg)}</strong> <span class="demo-tag">DEMO</span></div><div class="cmp-grid"><div class="cmp-panel raw" id="${uid}_b"></div><div class="cmp-panel gold" id="${uid}_g"></div></div><div class="cmp-mets" id="${uid}_m" style="display:none"></div>`;document.getElementById('chatInner').appendChild(wrap);setTimeout(()=>{fillPanel(`${uid}_b`,cached.raw,'raw');fillPanel(`${uid}_g`,cached.gold,'gold');showDelta(uid,cached.raw,cached.gold);scroll();},200);return;}const{key,mid}=getConfig();if(!key){showOnboard();return;}setBusy(true);ac=new AbortController();const uid='c'+Date.now();const wrap=document.createElement('div');wrap.className='cmp-wrap';wrap.innerHTML=`<div class="cmp-q"><strong>${esc(msg)}</strong></div><div class="cmp-grid"><div class="cmp-panel raw" id="${uid}_b"><div class="cmp-head"><span class="cmp-label">${t('withoutGold')}</span></div><div class="cmp-body"><div class="dots"><i></i><i></i><i></i></div></div></div><div class="cmp-panel gold" id="${uid}_g"><div class="cmp-head"><span class="cmp-label">${t('withGold')}</span></div><div class="cmp-body"><div class="dots"><i></i><i></i><i></i></div></div></div></div><div class="cmp-mets" id="${uid}_m" style="display:none"></div>`;document.getElementById('chatInner').appendChild(wrap);scroll();const hdrs={'Content-Type':'application/json'};try{const[rawData,goldData]=await Promise.all([apiCall(msg,false,hdrs,ac.signal),apiCall(msg,true,hdrs,ac.signal)]);fillPanel(`${uid}_b`,rawData,'raw');fillPanel(`${uid}_g`,goldData,'gold');showDelta(uid,rawData,goldData);persistSession();scroll();}catch(e){if(e.name!=='AbortError')addErr('Error: '+e.message);}finally{ac=null;setBusy(false);document.getElementById('inp').focus();}}
-function fillPanel(id,data,type){const el=document.getElementById(id);const s=data.score||{},m=s.metrics||{};const gr=s.compliance_class||'?',num=s.grade!=null?s.grade:'?';const bars=rBars(m);const indicators=execIndicators(s);const respText=data.response||'';el.dataset.aiText=respText;el.innerHTML=`<div class="cmp-head"><span class="cmp-label">${type==='raw'?t('withoutGold'):t('withGold')}</span><span class="grade-badge ${gradeClass(gr)}">Grade ${gr} · ${num}/10</span><span class="help-ico" onclick="openModal('modalScoring')" title="How scoring works">?</span><button class="msg-act" style="margin-left:auto" onclick="copyPanel(this)" title="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-en="Copy" data-ru="Копир.">Copy</span></button></div><div class="cmp-body">${fmt(respText)}</div><div class="cmp-bars">${bars}${indicators}</div>`;}
+function fillPanel(id,data,type){const el=document.getElementById(id);const s=data.score||{},m=s.metrics||{};const gr=s.compliance_class||'?',num=s.grade!=null?s.grade:'?';const bars=rBars(m);const indicators=execIndicators(s);const respText=data.response||'';el.dataset.aiText=respText;try{el.dataset.scoreData=JSON.stringify({response:respText,score:s});}catch{}el.innerHTML=`<div class="cmp-head"><span class="cmp-label">${type==='raw'?t('withoutGold'):t('withGold')}</span><span class="grade-badge ${gradeClass(gr)}">Grade ${gr} · ${num}/10</span><span class="help-ico" onclick="openModal('modalScoring')" title="How scoring works">?</span><button class="msg-act" style="margin-left:auto" onclick="copyPanel(this)" title="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-en="Copy" data-ru="Копир.">Copy</span></button></div><div class="cmp-body">${fmt(respText)}</div><div class="cmp-bars">${bars}${indicators}</div>`;}
 function copyPanel(btn){const panel=btn.closest('.cmp-panel');const text=panel?.dataset?.aiText||'';if(!text){toast(curLang==='ru'?'Нет текста':'No text','err');return;}const ok=curLang==='ru'?'Скопировано':'Copied';const er=curLang==='ru'?'Не удалось':'Copy failed';if(navigator.clipboard?.writeText){navigator.clipboard.writeText(text).then(()=>toast(ok)).catch(()=>toast(er,'err'));}else{toast(er,'err');}}
 function showDelta(uid,raw,gold){const rs=raw.score?.grade,gs=gold.score?.grade;if(rs!=null&&gs!=null){const d=gs-rs,pct=rs>0?Math.round((d/rs)*100):0;const el=document.getElementById(`${uid}_m`);el.style.display='flex';el.innerHTML=`<div class="cmet"><div class="cmet-val" style="color:var(--red)">${rs}</div><div class="cmet-lbl">${t('rawScore')}</div></div><div class="cmet"><div class="cmet-val">${gs}</div><div class="cmet-lbl">${t('goldScore')}</div></div><div class="cmet"><div class="cmet-val">${d>0?'+':''}${d.toFixed(1)}</div><div class="cmet-lbl">${t('improvement')}</div></div><div class="cmet"><div class="cmet-val">${pct>0?'+':''}${pct}%</div><div class="cmet-lbl">${t('change')}</div></div>`;}}
 function showOnboard(){rmWelcome();const d=document.createElement('div');d.className='onboard';d.innerHTML=`<div class="onboard-title">${curLang==='ru'?'Для своих вопросов нужен API ключ':'Enter your AI provider API key'}</div><div class="onboard-sub">${curLang==='ru'?'Вставьте ключ от вашего ИИ-провайдера. ONTO применит эпистемическую дисциплину к ответам бесплатно.':'Paste your AI provider key below. ONTO applies epistemic discipline to responses for free.'}</div><div class="onboard-providers"><div class="onboard-prov">OpenAI <a href="https://platform.openai.com/api-keys" target="_blank">Get key →</a></div><div class="onboard-prov">Anthropic <a href="https://console.anthropic.com/settings/keys" target="_blank">Get key →</a></div><div class="onboard-prov">DeepSeek <a href="https://platform.deepseek.com/api-keys" target="_blank">Get key →</a></div></div><button class="onboard-btn" onclick="openSettings()">Enter API Key</button>`;document.getElementById('chatInner').appendChild(d);scroll();}
@@ -741,6 +742,81 @@ function copySessionAsMarkdown(sessionId,ev){
   ev&&ev.stopPropagation();
   const md=exportSessionAsMarkdown(sessionId);
   _mdClipboardToast(md);
+}
+
+/* ── v2.13c: share-link (viral loop) ── */
+function buildShareSnapshot(){
+  const container=document.getElementById('chatInner');
+  const nodes=container.querySelectorAll(':scope > .msg, :scope > .cmp-wrap');
+  const turns=[];
+  let lastUserQ=null;
+  nodes.forEach(el=>{
+    if(el.classList.contains('msg-user')){
+      lastUserQ=el.dataset.q||(el.querySelector('.msg-user-text')?.innerText||'').trim();
+    }else if(el.classList.contains('msg-ai')){
+      let data={};
+      try{data=JSON.parse(el.dataset.scoreData||'{}');}catch{}
+      const text=el.dataset.aiText||'';
+      turns.push({
+        kind:'chat',
+        q:lastUserQ||'',
+        response:data.response||text,
+        score:data.score||null,
+      });
+      lastUserQ=null;
+    }else if(el.classList.contains('cmp-wrap')){
+      const q=el.querySelector('.cmp-q strong')?.innerText||'';
+      const panels=el.querySelectorAll('.cmp-panel');
+      const turn={kind:'compare',q:q,raw:null,gold:null};
+      panels.forEach(p=>{
+        let data={};
+        try{data=JSON.parse(p.dataset.scoreData||'{}');}catch{}
+        const entry={response:data.response||p.dataset.aiText||'',score:data.score||null};
+        if(p.classList.contains('raw'))turn.raw=entry;
+        else if(p.classList.contains('gold'))turn.gold=entry;
+      });
+      turns.push(turn);
+    }
+  });
+  return{
+    version:'1.0',
+    lang:curLang,
+    created_at:Date.now(),
+    title:sessionTitle(),
+    turns:turns,
+  };
+}
+async function shareConversation(){
+  const snap=buildShareSnapshot();
+  if(!snap.turns.length){
+    toast(curLang==='ru'?'Пустой чат':'Empty chat','err');return;
+  }
+  const sharingMsg=curLang==='ru'?'Создаю ссылку…':'Creating link…';
+  toast(sharingMsg);
+  try{
+    const r=await fetch(`${API}/v1/share`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({title:snap.title,payload:snap}),
+    });
+    if(!r.ok){
+      let msg=curLang==='ru'?'Не удалось создать ссылку':'Share failed';
+      if(r.status===429)msg=curLang==='ru'?'Лимит share: 10/день':'Share limit: 10/day';
+      if(r.status===413)msg=curLang==='ru'?'Чат слишком большой':'Chat too large';
+      try{const e=await r.json();if(e.detail)msg=e.detail;}catch{}
+      toast(msg,'err');return;
+    }
+    const data=await r.json();
+    const url=data.url||`https://ontostandard.org/agent/share/?id=${data.short_id}`;
+    if(navigator.clipboard?.writeText){
+      await navigator.clipboard.writeText(url);
+      toast(curLang==='ru'?'Ссылка скопирована':'Link copied');
+    }else{
+      prompt(curLang==='ru'?'Ссылка:':'Link:',url);
+    }
+  }catch(e){
+    toast((curLang==='ru'?'Ошибка сети: ':'Network error: ')+e.message,'err');
+  }
 }
 
 function openDrawer(){document.getElementById('drawer').classList.add('open');document.getElementById('drawerBg').classList.add('open');renderSessionList();}
