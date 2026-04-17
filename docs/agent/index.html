@@ -132,49 +132,12 @@ button{font-family:var(--sans)}
 .r-desc{width:100%;font-size:12px;color:var(--text2);opacity:1;font-family:var(--sans);margin-top:2px}
 @media(min-width:500px){.modal{border-radius:24px;margin:auto;max-width:420px}.modal-bg.open{align-items:center}}
 
-/* ── v2.14: welcome tour (first-visit onboarding) ── */
-.welcome-hero{background:linear-gradient(135deg,rgba(34,197,94,.08) 0%,rgba(96,165,250,.06) 100%);border:1px solid rgba(34,197,94,.15);border-radius:16px;padding:18px 16px;margin-bottom:16px;text-align:center}
-.welcome-hero-badges{display:flex;justify-content:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
-.welcome-hero-bars{display:grid;gap:5px;max-width:260px;margin:0 auto 10px;text-align:left}
-.welcome-hero-bars .r-bar{grid-template-columns:32px 1fr 28px;gap:8px;margin-bottom:0}
-.welcome-hero-cap{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.4px;text-transform:uppercase}
-.welcome-title{font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:-.3px;color:var(--text);line-height:1.3;text-align:center}
-.welcome-sub{font-size:13px;color:var(--text3);line-height:1.6;text-align:center;margin-bottom:18px}
-.welcome-bullets{display:flex;flex-direction:column;gap:12px;margin-bottom:22px}
-.welcome-bullet{display:flex;gap:12px;align-items:flex-start}
-.welcome-bullet-icon{width:28px;height:28px;border-radius:8px;background:var(--green-bg);border:1px solid rgba(34,197,94,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.welcome-bullet-icon svg{width:14px;height:14px;color:var(--green)}
-.welcome-bullet-text{font-size:14px;color:var(--text2);line-height:1.5}
-.welcome-bullet-text strong{color:var(--text);font-weight:600}
-.welcome-cta{display:flex;gap:10px;align-items:center}
-.welcome-cta-skip{flex:0 0 auto;padding:12px 16px;border-radius:12px;border:1px solid var(--border);background:none;color:var(--text3);font-size:14px;cursor:pointer;transition:.15s}
-.welcome-cta-skip:hover{background:var(--glass);color:var(--text2)}
-.welcome-cta-go{flex:1;padding:12px 16px;border-radius:12px;border:1px solid var(--green);background:var(--green);color:#000;font-size:14px;font-weight:600;cursor:pointer;transition:.15s}
-.welcome-cta-go:hover{background:#16a34a}
-
-/* ── v2.14b: download popover (header-exposed primary action) ── */
-.dl-wrap{position:relative}
-.hdr-btn.dl-btn{color:var(--text2)}
-.hdr-btn.dl-btn svg{color:var(--text2)}
-.dl-pop{display:none;position:absolute;top:calc(100% + 8px);right:0;background:var(--bg2);border:1px solid var(--border-h);border-radius:14px;padding:6px;min-width:240px;z-index:30;box-shadow:var(--shadow);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
-.dl-pop.open{display:block}
-.dl-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;font-size:14px;color:var(--text2);cursor:pointer;text-decoration:none;transition:.15s;background:none;border:none;width:100%;text-align:left;font-family:var(--sans)}
-.dl-item:hover{background:var(--glass);color:var(--text)}
-.dl-item svg{width:18px;height:18px;opacity:.7;flex-shrink:0}
-.dl-item-body{flex:1;display:flex;flex-direction:column;gap:2px}
-.dl-item-title{font-weight:500;color:var(--text)}
-.dl-item-sub{font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.3px}
-.dl-item.primary .dl-item-title{color:var(--green)}
-.dl-item.primary svg{color:var(--green);opacity:1}
-
 /* ── UX ELEMENTS ── */
 .demo-tag{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:600;color:var(--orange);background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);padding:1px 6px;border-radius:4px;margin-left:6px;vertical-align:middle;letter-spacing:.3px}
 .w-explain{font-size:13px;color:var(--text3);max-width:400px;line-height:1.6;margin-bottom:8px;position:relative;z-index:1}
 .w-explain strong{color:var(--text2)}
 .w-demo-hint{font-family:var(--mono);font-size:11px;color:var(--orange);margin-bottom:24px;position:relative;z-index:1;display:flex;align-items:center;gap:6px}
 .w-demo-hint .dot{width:6px;height:6px;border-radius:50%;background:var(--orange);animation:pulse 2s infinite}
-.w-free{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--green);background:var(--green-bg);border:1px solid rgba(34,197,94,.2);padding:6px 12px;border-radius:20px;margin-bottom:16px;position:relative;z-index:1;letter-spacing:.3px}
-.w-free svg{width:12px;height:12px}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .score-hint{font-family:var(--mono);font-size:11px;color:var(--text3);margin-top:4px}
 .score-hint span{margin-right:8px}
@@ -285,14 +248,6 @@ button{font-family:var(--sans)}
     <button class="hdr-btn" onclick="openDrawer()" title="History"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
     <select class="lang-sel" id="uiLang" onchange="switchLang(this.value)"><option value="en">EN</option><option value="ru">RU</option><option value="uz">UZ</option><option value="tr">TR</option><option value="ar">AR</option></select>
     <button class="hdr-new" onclick="newChat()">+ New</button>
-    <div class="dl-wrap">
-      <button class="hdr-btn dl-btn" onclick="toggleDl(event)" title="Save"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
-      <div class="dl-pop" id="dlPop">
-        <button class="dl-item primary" onclick="downloadConversationAsHtml();closeDl()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg><div class="dl-item-body"><span class="dl-item-title" data-en="Save as file" data-ru="Сохранить файл">Save as file</span><span class="dl-item-sub" data-en="Portable · opens anywhere" data-ru="Переносимый · открывается везде">Portable · opens anywhere</span></div></button>
-        <button class="dl-item" onclick="downloadConversationAsMarkdown();closeDl()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div class="dl-item-body"><span class="dl-item-title" data-en="Download Markdown" data-ru="Скачать Markdown">Download Markdown</span><span class="dl-item-sub">.md</span></div></button>
-        <button class="dl-item" onclick="copyConversationAsMarkdown();closeDl()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><div class="dl-item-body"><span class="dl-item-title" data-en="Copy as Markdown" data-ru="Копировать Markdown">Copy as Markdown</span><span class="dl-item-sub" data-en="Clipboard" data-ru="Буфер обмена">Clipboard</span></div></button>
-      </div>
-    </div>
     <button class="hdr-btn" onclick="openSettings()" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
     <div class="menu-wrap">
       <button class="hdr-btn" onclick="toggleMenu(event)" title="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button>
@@ -302,9 +257,9 @@ button{font-family:var(--sans)}
         <a class="menu-a" onclick="openModal('modalPrivacy');toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span data-en="Privacy" data-ru="Конфиденциальность">Privacy</span></a>
         <a class="menu-a" onclick="openModal('modalTerms');toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-en="Terms" data-ru="Условия">Terms</span></a>
         <div class="menu-sep"></div>
+        <a class="menu-a" onclick="copyConversationAsMarkdown();toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-en="Copy chat · MD" data-ru="Копировать чат · MD">Copy chat · MD</span></a>
+        <a class="menu-a" onclick="downloadConversationAsMarkdown();toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span data-en="Download chat · MD" data-ru="Скачать чат · MD">Download chat · MD</span></a>
         <a class="menu-a" onclick="shareConversation();toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg><span data-en="Share link" data-ru="Поделиться ссылкой">Share link</span></a>
-        <div class="menu-sep"></div>
-        <a class="menu-a" onclick="openWelcome();toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span data-en="Show intro" data-ru="Показать интро">Show intro</span></a>
         <div class="menu-sep"></div>
         <a class="menu-a" onclick="openModal('modalFeedback');toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span data-en="Feedback" data-ru="Обратная связь">Feedback</span></a>
       </div>
@@ -439,46 +394,6 @@ button{font-family:var(--sans)}
   <div class="modal-row"><button class="modal-close" onclick="closeModal('modalTerms')"><span data-en="Close" data-ru="Закрыть">Close</span></button></div>
 </div></div>
 
-<!-- ── v2.14: Welcome / first-visit onboarding ── -->
-<div class="modal-bg" id="modalWelcome" onmousedown="if(event.target===this)closeWelcome()"><div class="modal" onmousedown="event.stopPropagation()" onclick="event.stopPropagation()">
-  <div class="modal-handle"></div>
-  <div class="welcome-hero">
-    <div class="welcome-hero-badges">
-      <span class="grade-badge grade-a" style="font-size:12px">Grade A · 9.4/10</span>
-    </div>
-    <div class="welcome-hero-bars">
-      <div class="r-bar"><span class="r-label">R1</span><div class="r-track"><div class="r-fill good" style="width:100%"></div></div><span class="r-val">1.00</span></div>
-      <div class="r-bar"><span class="r-label">R4</span><div class="r-track"><div class="r-fill good" style="width:100%"></div></div><span class="r-val">1.00</span></div>
-      <div class="r-bar"><span class="r-label">R6</span><div class="r-track"><div class="r-fill good" style="width:100%"></div></div><span class="r-val">1.00</span></div>
-    </div>
-    <div class="welcome-hero-cap"><span data-en="Every answer · measured" data-ru="Каждый ответ · измерен">Every answer · measured</span></div>
-  </div>
-  <div class="welcome-title"><span data-en="Know if you can trust an AI answer" data-ru="Узнай, можно ли доверять ответу ИИ">Know if you can trust an AI answer</span></div>
-  <div class="welcome-sub"><span data-en="ONTO grades every AI answer for epistemic quality. Same model, same question — but now quantified." data-ru="ONTO оценивает каждый ответ ИИ по эпистемическому качеству. Та же модель, тот же вопрос — но теперь с цифрами.">ONTO grades every AI answer for epistemic quality. Same model, same question — but now quantified.</span></div>
-  <div class="welcome-bullets">
-    <div class="welcome-bullet">
-      <div class="welcome-bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
-      <div class="welcome-bullet-text"><strong><span data-en="Grade A–F" data-ru="Оценка A–F">Grade A–F</span></strong> — <span data-en="every answer gets a score, visible and explainable." data-ru="каждый ответ получает оценку — видимую и объяснимую.">every answer gets a score, visible and explainable.</span></div>
-    </div>
-    <div class="welcome-bullet">
-      <div class="welcome-bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
-      <div class="welcome-bullet-text"><strong><span data-en="Sources · facts · counter" data-ru="Источники · факты · контраргументы">Sources · facts · counter</span></strong> — <span data-en="measured, not promised." data-ru="измеряются, а не обещаются.">measured, not promised.</span></div>
-    </div>
-    <div class="welcome-bullet">
-      <div class="welcome-bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></div>
-      <div class="welcome-bullet-text"><strong><span data-en="RAW vs GOLD" data-ru="RAW vs GOLD">RAW vs GOLD</span></strong> — <span data-en="compare the same model with and without discipline." data-ru="сравни одну модель с дисциплиной и без.">compare the same model with and without discipline.</span></div>
-    </div>
-    <div class="welcome-bullet">
-      <div class="welcome-bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg></div>
-      <div class="welcome-bullet-text"><strong><span data-en="Completely free" data-ru="Абсолютно бесплатно">Completely free</span></strong> — <span data-en="bring the API key of your favourite AI provider." data-ru="подключи API ключ любимого ИИ-провайдера.">bring the API key of your favourite AI provider.</span></div>
-    </div>
-  </div>
-  <div class="welcome-cta">
-    <button class="welcome-cta-skip" onclick="closeWelcome()"><span data-en="Skip" data-ru="Пропустить">Skip</span></button>
-    <button class="welcome-cta-go" onclick="closeWelcome(true)"><span data-en="Try a question →" data-ru="Задать вопрос →">Try a question →</span></button>
-  </div>
-</div></div>
-
 <!-- ── v2.12: Feedback modal ── -->
 <div class="modal-bg" id="modalFeedback" onmousedown="if(event.target===this)closeModal('modalFeedback')"><div class="modal" onmousedown="event.stopPropagation()" onclick="event.stopPropagation()">
   <div class="modal-handle"></div>
@@ -514,7 +429,7 @@ const API='https://api.ontostandard.org';
 const I18N={en:{title:'Expert answers from your AI.',sub:'Same model, same question — but every answer is quantified, sourced, and scored. Compare before and after. Connect cognitive modules. Use in life, work, and business.',demoHint:'Demo — tap an example to see the difference',send:'Send',compare:'Compare',stop:'Stop',new:'New',placeholder:'Ask anything...',analysis:'R1–R7 scoring',collapse:'Hide',withoutGold:'Without GOLD',withGold:'With ONTO GOLD',rawScore:'RAW',goldScore:'GOLD',improvement:'Delta',change:'Change',details:'Details',settings:'Settings',modelReq:'Open Settings → enter your API key and Model ID for real answers.',scoreHint:'A=expert B=good C=average D=poor F=unreliable',exLabel:'Try these examples:',examples:["Is coffee good or bad for you?", "Are GLP-1 drugs safe for long-term use?", "What is the evidence for metformin as a longevity drug?"]},ru:{title:'Экспертные ответы от вашего ИИ.',sub:'Та же модель, тот же вопрос — но каждый ответ квантифицирован, с источниками и оценкой. Сравните до и после. Подключите когнитивные модули. Используйте в жизни, работе и бизнесе.',demoHint:'Демо — нажмите на пример чтобы увидеть разницу',send:'Отправить',compare:'Сравнить',stop:'Стоп',new:'Новый',placeholder:'Задайте вопрос...',analysis:'Оценка R1–R7',collapse:'Скрыть',withoutGold:'Без GOLD',withGold:'С ONTO GOLD',rawScore:'RAW',goldScore:'GOLD',improvement:'Дельта',change:'Изменение',details:'Детали',settings:'Настройки',modelReq:'Откройте Настройки → введите API ключ и Model ID для реальных ответов.',scoreHint:'A=эксперт B=хорошо C=средне D=плохо F=ненадёжно',exLabel:'Попробуйте:',examples:["Кофе полезен или вреден?", "GLP-1 препараты безопасны для длительного приёма?", "Каковы данные по метформину как препарату долголетия?"]},uz:{title:"Sun'iy intellektingizdan ekspert javoblar.",sub:"Bir xil model, bir xil savol — lekin har bir javob manbalangan va baholangan.",demoHint:"Demo — misolni bosing",send:'Yuborish',compare:'Solishtirish',stop:"To'xtatish",new:'Yangi',placeholder:"Savol bering...",analysis:"R1–R7 baholash",collapse:'Yopish',withoutGold:'GOLDsiz',withGold:'ONTO GOLD bilan',rawScore:'RAW',goldScore:'GOLD',improvement:'Delta',change:"O'zgarish",details:'Tafsilotlar',settings:'Sozlamalar',modelReq:"Sozlamalarni oching → API kalit kiriting.",scoreHint:"A=ajoyib B=yaxshi C=o'rtacha D=yomon",exLabel:"Sinab ko'ring:",examples:["Is coffee good or bad for you?","Are GLP-1 drugs safe for long-term use?","What is the evidence for metformin as a longevity drug?"]},tr:{title:'Yapay zekanızdan uzman yanıtlar.',sub:'Aynı model, aynı soru — ama her yanıt kaynaklı ve puanlanmış.',demoHint:'Demo — bir örneğe tıklayın',send:'Gönder',compare:'Karşılaştır',stop:'Durdur',new:'Yeni',placeholder:'Bir şey sorun...',analysis:'R1–R7 puanlama',collapse:'Gizle',withoutGold:"GOLD'suz",withGold:'ONTO GOLD ile',rawScore:'RAW',goldScore:'GOLD',improvement:'Delta',change:'Değişim',details:'Detaylar',settings:'Ayarlar',modelReq:'Ayarları açın → API anahtarı girin.',scoreHint:'A=uzman B=iyi C=orta D=zayıf',exLabel:'Deneyin:',examples:['Kahve sağlık için faydalı mı?','Yapay zeka modelleri gerçekten daha mı akıllı?',"Bitcoin 2027'de 500.000 dolara ulaşır mı?"]},ar:{title:'إجابات خبيرة من ذكائك الاصطناعي.',sub:'نفس النموذج، نفس السؤال — لكن كل إجابة موثقة ومقيّمة.',demoHint:'تجريبي — انقر على مثال',send:'إرسال',compare:'مقارنة',stop:'إيقاف',new:'جديد',placeholder:'اسأل أي شيء...',analysis:'تقييم R1–R7',collapse:'إخفاء',withoutGold:'بدون GOLD',withGold:'مع ONTO GOLD',rawScore:'RAW',goldScore:'GOLD',improvement:'فرق',change:'تغيير',details:'تفاصيل',settings:'الإعدادات',modelReq:'افتح الإعدادات وأدخل مفتاح API.',scoreHint:'A=خبير B=جيد C=متوسط D=ضعيف',exLabel:'جرّب:',examples:['هل القهوة مفيدة للصحة؟','هل نماذج الذكاء الاصطناعي تزداد ذكاءً؟','هل ستصل البيتكوين إلى 500,000 دولار؟']}};
 let curLang=(()=>{const b=(navigator.language||'en').toLowerCase();if(b.startsWith('ru'))return'ru';if(b.startsWith('uz'))return'uz';if(b.startsWith('tr'))return'tr';if(b.startsWith('ar'))return'ar';return'en';})();function t(k){return I18N[curLang]?.[k]||I18N.en[k]||k;}
 function switchLang(l){curLang=l;document.documentElement.lang=l;document.documentElement.dir=l==='ar'?'rtl':'ltr';document.getElementById('btnCmp').textContent=t('compare');document.getElementById('btnStop').textContent=t('stop');document.getElementById('inp').placeholder=t('placeholder');document.getElementById('settingsTitle').textContent=t('settings');document.querySelectorAll('[data-'+l+']').forEach(d=>{if(d.tagName==='SPAN'||d.classList.contains('r-desc'))d.textContent=d.getAttribute('data-'+l);});renderWelcome();saveCfg();}
-function renderWelcome(){const w=document.getElementById('welcome');if(!w)return;const exs=I18N[curLang]?.examples||I18N.en.examples;const lvls=curLang==='ru'?['Простой','Профессиональный','Исследовательский']:['Simple','Professional','Research'];const ex=exs.map((e,i)=>`<button class="ex" data-q="${esc(e)}" onclick="useEx(this)"><span style="font-family:var(--mono);font-size:10px;display:inline-flex;align-items:center;gap:6px;margin-bottom:4px"><span style="padding:2px 6px;border-radius:4px;background:var(--glass);color:var(--text3)">${lvls[i]||''}</span><span class="demo-tag">DEMO</span></span><br>${esc(e)}</button>`).join('');const FREE={en:'Completely free · Bring your own API key',ru:'Абсолютно бесплатно · Свой API ключ',uz:"Butunlay bepul · O'z API kalitingiz",tr:'Tamamen ücretsiz · Kendi API anahtarın',ar:'مجاني تمامًا · مفتاح API خاص بك'};const freeTxt=FREE[curLang]||FREE.en;w.innerHTML=`<div class="w-glow"></div><div class="w-icon"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" fill="#27272a" stroke="rgba(255,255,255,.12)" stroke-width="1"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="white"/></svg></div><h1 class="w-title">${t('title')}</h1><p class="w-sub">${t('sub')}</p><div class="w-free"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>${esc(freeTxt)}</div><div class="w-demo-hint"><span class="dot"></span>${t('demoHint')}</div><div class="examples"><div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:6px">${t('exLabel')}</div>${ex}</div>`;}
+function renderWelcome(){const w=document.getElementById('welcome');if(!w)return;const exs=I18N[curLang]?.examples||I18N.en.examples;const lvls=curLang==='ru'?['Простой','Профессиональный','Исследовательский']:['Simple','Professional','Research'];const ex=exs.map((e,i)=>`<button class="ex" data-q="${esc(e)}" onclick="useEx(this)"><span style="font-family:var(--mono);font-size:10px;display:inline-flex;align-items:center;gap:6px;margin-bottom:4px"><span style="padding:2px 6px;border-radius:4px;background:var(--glass);color:var(--text3)">${lvls[i]||''}</span><span class="demo-tag">DEMO</span></span><br>${esc(e)}</button>`).join('');w.innerHTML=`<div class="w-glow"></div><div class="w-icon"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" fill="#27272a" stroke="rgba(255,255,255,.12)" stroke-width="1"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="white"/></svg></div><h1 class="w-title">${t('title')}</h1><p class="w-sub">${t('sub')}</p><div class="w-demo-hint"><span class="dot"></span>${t('demoHint')}</div><div class="examples"><div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:6px">${t('exLabel')}</div>${ex}</div>`;}
 
 const CACHED={"en":{"Is coffee good or bad for you?":{"raw":{"response":"Coffee is generally good for you! Studies show it's packed with antioxidants, boosts energy, improves focus, and may reduce the risk of several diseases including type 2 diabetes and Parkinson's. Most experts agree that 3-4 cups a day is perfectly safe and even beneficial. Just watch the sugar and cream. Overall, coffee is one of the healthiest beverages you can drink!","score":{"grade":1.7,"compliance_class":"F","risk_score":0.832,"metrics":{"R1":0.0,"R2":0.0,"R3":0.0,"R4":0.0,"R5":0.0,"R6":0.0,"R7":0.84}},"gold_enabled":false},"gold":{"response":"Probably not harmful at 3-4 cups/day — but \"good for you\" overstates the evidence.\n\nA meta-analysis of 218 studies (Poole et al., 2017, BMJ, DOI: 10.1136/bmj.j5024) found moderate coffee drinking associated with lower mortality (RR 0.83, 95% CI 0.79-0.88). But this is observational data — correlation, not proven causation. Coffee drinkers may simply lead healthier lifestyles overall.\n\nLimit if pregnant (<300mg/day per WHO), have GERD, or anxiety disorders. Otherwise, enjoy your coffee — just don't call it medicine.","score":{"grade":8.1,"compliance_class":"B","risk_score":0.19,"metrics":{"R1":1.0,"R2":1.0,"R3":0.0,"R4":1.0,"R5":1.0,"R6":0.0,"R7":1.0}},"gold_enabled":true}},"Are GLP-1 drugs safe for long-term use?":{"raw":{"response":"Yes, GLP-1 drugs like Ozempic and Wegovy are generally safe for long-term use. They've been FDA-approved and prescribed to millions of people worldwide. Clinical trials show they effectively reduce weight by 15-20% and improve heart health. Side effects are mostly mild — nausea that goes away after a few weeks. They're considered a breakthrough in obesity treatment and most doctors recommend them for long-term management.","score":{"grade":4.1,"compliance_class":"D","risk_score":0.595,"metrics":{"R1":0.27,"R2":0.4,"R3":0.4,"R4":0.25,"R5":0.0,"R6":0.0,"R7":1.0}},"gold_enabled":false},"gold":{"response":"Long-term safety of GLP-1 receptor agonists is partially established (1-3 years) but incomplete (>5 years).\n\n**Evidence FOR safety (Grade I-II):**\n- SELECT trial (Lincoff et al., 2023, NEJM, N=17,604, DOI: 10.1056/NEJMoa2307563): semaglutide reduced MACE by 20% (HR 0.80, 95% CI 0.72-0.90) over 33 months\n- LEADER trial (Marso et al., 2016, NEJM, N=9,340, DOI: 10.1056/NEJMoa1603827): liraglutide reduced CV death by 22% over 3.8 years\n- STEP 1 (Wilding et al., 2021, NEJM, DOI: 10.1056/NEJMoa2032183): 14.9% body weight reduction at 68 weeks\n\n**Unknown risks (>5 years):**\n- Medullary thyroid carcinoma: signal in rodent models (Bjerre Knudsen et al., 2010, DOI: 10.1210/en.2009-0776). No confirmed human signal, but registries lack 10+ year follow-up\n- Pancreatitis: incidence 0.1-0.3% in trials vs 0.1% placebo — not statistically significant but underpowered for rare events\n- Muscle mass loss: up to 40% of weight lost is lean mass (Heymsfield et al., 2024, DOI: 10.1038/s41591-024-02911-4)\n- Rebound: STEP 1 extension showed 2/3 of weight regain within 1 year of discontinuation\n\n**Falsifiability (R6):** Safety claim would be overturned if post-marketing surveillance (N>100,000, >10yr) shows excess thyroid cancer (HR >1.5 vs. registries like SEER) or confirmed pancreatitis signal.\n\n**Assessment:** Established cardiovascular benefit at 1-3 years. Claiming safety beyond 5 years is premature. Individual risk-benefit with physician required.","score":{"grade":9.7,"compliance_class":"A","risk_score":0.03,"metrics":{"R1":1.0,"R2":1.0,"R3":1.0,"R4":1.0,"R5":0.75,"R6":1.0,"R7":1.0}},"gold_enabled":true}},"What is the evidence for metformin as a longevity drug?":{"raw":{"response":"There's exciting evidence that metformin could extend lifespan! Studies show diabetics taking metformin actually live longer than non-diabetics. It activates AMPK, reduces inflammation, and mimics calorie restriction at the cellular level. The TAME trial is underway to prove this once and for all. Many longevity researchers already take it off-label. It's cheap, safe, and has been used for decades — making it the most promising anti-aging drug we have.","score":{"grade":1.8,"compliance_class":"F","risk_score":0.816,"metrics":{"R1":0.0,"R2":0.0,"R3":0.0,"R4":0.0,"R5":0.0,"R6":0.0,"R7":0.92}},"gold_enabled":false},"gold":{"response":"Evidence for metformin as a longevity intervention is mechanistically plausible but clinically unproven in non-diabetic humans.\n\n**Mechanistic basis (Grade III — preclinical):**\n- AMPK activation → mTOR inhibition → autophagy upregulation (Foretz et al., 2014, Nature Reviews Endocrinology, DOI: 10.1038/nrendo.2013.256)\n- Reduced mitochondrial Complex I activity → lower ROS\n- NF-kB suppression → reduced systemic inflammation\n- C. elegans: ~20% lifespan extension (Cabreiro et al., 2013, Cell, DOI: 10.1016/j.cell.2013.02.035)\n- Mice: strain-dependent — extends lifespan in some (C57BL/6), shortens in others\n\n**Human evidence (Grade II-III):**\n- Bannister et al. (2014, Diabetes Obes Metab, DOI: 10.1111/dom.12354): T2DM patients on metformin had 15% lower all-cause mortality than matched NON-DIABETIC controls (N=180,000). OBSERVATIONAL — confounders include survivor bias, healthy adherer effect\n- UKPDS (1998, Lancet, DOI: 10.1016/S0140-6736(98)07019-6): 36% reduction in all-cause mortality in overweight T2DM patients. But this is a DIABETIC population\n- NO completed RCT in healthy non-diabetic humans for longevity endpoint\n\n**TAME trial status:**\n- Barzilai et al. (2016, Cell Metabolism, DOI: 10.1016/j.cmet.2016.05.011): protocol published\n- N=3,000 non-diabetic adults aged 65-79\n- Primary endpoint: composite of age-related diseases\n- Funding delays — not yet fully enrolled as of 2025\n\n**Counterargument (R3):**\n- Metformin may BLUNT exercise adaptations (Konopka et al., 2019, Aging Cell, DOI: 10.1111/acel.12880): attenuated mitochondrial respiration and muscle hypertrophy in older adults\n- If exercise is a proven longevity intervention and metformin reduces its benefit, net effect could be negative for active individuals\n\n**Falsifiability (R6):** Longevity claim would be falsified if TAME trial shows no composite benefit (HR >0.95, p>0.05) or if exercise-blunting effect is confirmed in larger trials (N>1000).\n\n**Assessment:** Promising mechanism. Suggestive observational data. Zero causal evidence in non-diabetic humans. TAME trial result needed before clinical recommendation. Off-label use = informed personal decision, not evidence-based medicine.","score":{"grade":10.0,"compliance_class":"A","risk_score":0.01,"metrics":{"R1":1.0,"R2":1.0,"R3":1.0,"R4":1.0,"R5":1.0,"R6":1.0,"R7":1.0}},"gold_enabled":true}}},"ru":{"Кофе полезен или вреден?":{"raw":{"response":"Кофе полезен! Исследования показывают что он богат антиоксидантами, повышает энергию, улучшает концентрацию и снижает риск диабета 2 типа и болезни Паркинсона. 3-4 чашки в день — безопасно и даже полезно. Кофе — один из самых здоровых напитков!","score":{"grade":2.0,"compliance_class":"F","risk_score":0.8,"metrics":{"R1":0.0,"R2":0.0,"R3":0.0,"R4":0.0,"R5":0.0,"R6":0.0,"R7":1.0}},"gold_enabled":false},"gold":{"response":"Скорее не вреден при 3-4 чашках/день — но «полезен» преувеличивает доказательства.\n\nMeta-analysis of 218 studies (Poole et al., 2017, BMJ, DOI: 10.1136/bmj.j5024): moderate coffee associated со снижением общей смертности (RR 0.83, 95% CI 0.79-0.88). Но это observational data — correlation, не доказанная причинность. Кофепьющие могут просто вести более здоровый образ жизни.\n\nОграничить если: беременность (<300 mg/day per WHO), ГЭРБ, тревожные расстройства. В остальном — пейте на здоровье, только не называйте лекарством.","score":{"grade":8.1,"compliance_class":"B","risk_score":0.19,"metrics":{"R1":1.0,"R2":1.0,"R3":0.0,"R4":1.0,"R5":1.0,"R6":0.0,"R7":1.0}},"gold_enabled":true}},"GLP-1 препараты безопасны для длительного приёма?":{"raw":{"response":"Да, GLP-1 препараты как Оземпик безопасны. Одобрены FDA, миллионы людей принимают. Побочные эффекты минимальны — тошнота проходит через пару недель. Снижение веса 15-20%, улучшение сердечно-сосудистых показателей. Прорыв в лечении ожирения.","score":{"grade":5.1,"compliance_class":"D","risk_score":0.486,"metrics":{"R1":0.53,"R2":0.8,"R3":0.0,"R4":0.5,"R5":0.0,"R6":0.0,"R7":1.0}},"gold_enabled":false},"gold":{"response":"Безопасность GLP-1 агонистов установлена частично (1-3 года), неполно (>5 лет).\n\n**Доказательства безопасности (Grade I-II):**\n- SELECT (Lincoff et al., 2023, NEJM, N=17,604, DOI: 10.1056/NEJMoa2307563): семаглутид снизил MACE на 20% (HR 0.80, 95% CI 0.72-0.90) за 33 мес\n- LEADER (Marso et al., 2016, NEJM, N=9,340, DOI: 10.1056/NEJMoa1603827): лираглутид снизил CV смерть на 22% за 3.8 года\n- STEP 1 (Wilding et al., 2021, NEJM, DOI: 10.1056/NEJMoa2032183): -14.9% массы тела за 68 недель\n\n**Counter / неизвестные риски (>5 лет):**\n- Медуллярная карцинома щитовидной: сигнал на грызунах (Bjerre Knudsen et al., 2010, DOI: 10.1210/en.2009-0776); confirmed signal у людей отсутствует, но регистры без follow-up >10 лет\n- Панкреатит (side effect): 0.1-0.3% в RCT vs 0.1% placebo (p>0.05) — underpowered для редких событий\n- Потеря lean mass: до 40% потерянного веса — мышцы (Heymsfield et al., 2024, DOI: 10.1038/s41591-024-02911-4)\n- Rebound: возврат 2/3 веса за 1 год после отмены (STEP 1 extension, N=327)\n\n**Limitations:** NNH для thyroid outcomes не установлен (нет long-term cohort >10yr). Healthy user bias возможна в observational экстраполяции SELECT на non-CVD популяцию.\n\n**Фальсифицируемость (R6):** Утверждение о безопасности будет опровергнуто если post-marketing surveillance (N>100,000, >10 лет) покажет избыток thyroid carcinoma (HR >1.5 vs SEER registry) или confirmed pancreatitis signal (incidence >0.5% vs placebo, p<0.05).\n\n**Вывод:** Cardiovascular benefit установлен за 1-3 года (Grade I). Safety >5 лет — premature claim. Individual risk-benefit с врачом обязательна.","score":{"grade":10.0,"compliance_class":"A","risk_score":0.01,"metrics":{"R1":1.0,"R2":1.0,"R3":1.0,"R4":1.0,"R5":1.0,"R6":1.0,"R7":1.0}},"gold_enabled":true}},"Каковы данные по метформину как препарату долголетия?":{"raw":{"response":"Есть впечатляющие данные что метформин продлевает жизнь! Диабетики на метформине живут дольше здоровых людей. Он активирует AMPK, снижает воспаление, имитирует ограничение калорий. Идёт исследование TAME. Многие геронтологи уже принимают его. Дёшево, безопасно, используется десятилетиями.","score":{"grade":2.0,"compliance_class":"F","risk_score":0.8,"metrics":{"R1":0.0,"R2":0.0,"R3":0.0,"R4":0.0,"R5":0.0,"R6":0.0,"R7":1.0}},"gold_enabled":false},"gold":{"response":"Доказательства метформина как интервенции долголетия механистически обоснованы, но clinically не подтверждены у здоровых non-diabetic людей.\n\n**Механизм (Grade III — preclinical):**\n- Активация AMPK → inhibition mTOR → upregulation autophagy (Foretz et al., 2014, Nature Reviews Endocrinology, DOI: 10.1038/nrendo.2013.256)\n- Снижение mitochondrial Complex I activity → lower ROS\n- NF-kB suppression → reduced systemic inflammation\n- C. elegans: ~20% lifespan extension (Cabreiro et al., 2013, Cell, DOI: 10.1016/j.cell.2013.02.035)\n- Мыши: strain-dependent — extends у C57BL/6, shortens у других\n\n**Human evidence (Grade II-III):**\n- Bannister et al. (2014, Diabetes Obes Metab, DOI: 10.1111/dom.12354): пациенты с T2DM на метформине имели 15% ниже all-cause mortality vs matched NON-DIABETIC controls (N=180,000). OBSERVATIONAL — confounders: survivor bias, healthy adherer effect\n- UKPDS (1998, Lancet, DOI: 10.1016/S0140-6736(98)07019-6): -36% all-cause mortality у overweight T2DM patients. Но это DIABETIC population\n- Completed RCT в здоровых non-diabetic с longevity endpoint: отсутствует (as of 2025)\n\n**TAME trial status (as of 2025):**\n- Barzilai et al. (2016, Cell Metabolism, DOI: 10.1016/j.cmet.2016.05.011): protocol published\n- N=3,000 non-diabetic adults, 65-79 лет\n- Primary endpoint: composite age-related diseases\n- Funding delays — not fully enrolled\n\n**Counterargument (R3):**\n- Метформин может attenuate exercise adaptations (Konopka et al., 2019, Aging Cell, DOI: 10.1111/acel.12880): attenuated mitochondrial respiration и muscle hypertrophy у older adults\n- Если exercise = proven longevity intervention, а metformin blunts её benefit — net effect может быть negative для active individuals\n\n**Falsifiability (R6):** Longevity claim будет фальсифицирован если TAME покажет no composite benefit (HR >0.95, p>0.05) или exercise-blunting подтвердится в larger trials (N>1000, placebo-controlled).\n\n**Assessment:** Promising mechanism. Suggestive observational data. Zero causal evidence у non-diabetic humans. TAME result нужен перед clinical recommendation. Off-label = informed personal decision, not evidence-based medicine.","score":{"grade":9.4,"compliance_class":"A","risk_score":0.056,"metrics":{"R1":0.6,"R2":1.0,"R3":1.0,"R4":1.0,"R5":1.0,"R6":1.0,"R7":1.0}},"gold_enabled":true}}}};
 function getCached(q){return CACHED[curLang]?.[q]||CACHED.en?.[q]||null;}
@@ -829,122 +744,6 @@ function copySessionAsMarkdown(sessionId,ev){
   _mdClipboardToast(md);
 }
 
-/* ── v2.14b: download popover + standalone HTML export ── */
-function toggleDl(e){
-  e&&e.stopPropagation();
-  const p=document.getElementById('dlPop');
-  if(!p)return;
-  p.querySelectorAll('[data-'+curLang+']').forEach(d=>{if(d.tagName==='SPAN')d.textContent=d.getAttribute('data-'+curLang);});
-  p.classList.toggle('open');
-}
-function closeDl(){document.getElementById('dlPop')?.classList.remove('open');}
-document.addEventListener('click',e=>{const p=document.getElementById('dlPop');if(p&&!e.target.closest('.dl-wrap'))p.classList.remove('open');});
-
-/* Build a self-contained branded HTML file from the current conversation.
-   System font stack → no external assets, works offline, portable. */
-function buildConversationHtml(){
-  if(typeof buildShareSnapshot!=='function')return null;
-  const snap=buildShareSnapshot();
-  if(!snap.turns.length)return null;
-
-  const ESC=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  const FMT=md=>{
-    if(!md)return'';
-    let s=ESC(md);
-    s=s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n- /g,'\n• ').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>').replace(/^/,'<p>').replace(/$/,'</p>');
-    s=s.replace(/(DOI:\s*)(10\.\d{4,}\/\S+)/gi,'$1<span class="hl-g">$2</span>');
-    s=s.replace(/\b((?:HR|RR|OR|NNT|NNH)\s*[=:]\s*\d+\.?\d*)/g,'<span class="hl-g">$1</span>');
-    s=s.replace(/(\d+\.?\d*\s*%?\s*CI[\s:,]+\d+\.?\d*\s*[-–]\s*\d+\.?\d*)/g,'<span class="hl-g">$1</span>');
-    s=s.replace(/\b(N\s*[=:]\s*[\d,]+)/g,'<span class="hl-b">$1</span>');
-    s=s.replace(/\b(p\s*[&lt;&gt;=]\s*0?\.\d+)/g,'<span class="hl-o">$1</span>');
-    s=s.replace(/\b([A-Z][a-z]+(?:\s+(?:&amp;|and)\s+[A-Z][a-z]+)?\s+et\s+al\.?,?\s+(?:19|20)\d{2})\b/g,'<span class="hl-b">$1</span>');
-    s=s.replace(/\b(RCT|meta-analysis|systematic review|Cochrane|WHO|CDC|FDA|EMA|NIH|NEJM|Lancet|BMJ|JAMA|Nature|Science|Cell|PNAS|IEEE|ISO|IPCC|NIST|MHRA)\b/gi,'<span class="hl-b">$1</span>');
-    s=s.replace(/\b(Grade\s+(?:I{1,3}|IV|V|[A-D]))\b/g,'<span class="hl-o">$1</span>');
-    return s;
-  };
-  const GCLS=g=>'grade-'+(g==='A'?'a':g==='B'?'b':g==='C'?'c':g==='D'?'d':'f');
-  const BARS=m=>{
-    if(!m)return'';
-    const LBL={R1:'Quantify',R2:'Uncertainty',R3:'Counter',R4:'Sources',R5:'Evidence',R6:'Falsifiable',R7:'No Fabrication',R8:'Resolve',R9:'Surprise',R10:'Self-Model',R11:'Integrity',R12:'Drive'};
-    const keys=['R1','R2','R3','R4','R5','R6','R7',...['R8','R9','R10','R11','R12'].filter(k=>m[k]!=null)];
-    return keys.map(k=>{
-      const v=m[k]!=null?m[k]:null;const p=v!=null?Math.round(v*100):0;
-      const c=v>=0.7?'good':v>=0.4?'mid':'bad';
-      return`<div class="r-bar"><span class="r-label">${k}</span><span class="r-name">${LBL[k]||''}</span><div class="r-track"><div class="r-fill ${c}" style="width:${p}%"></div></div><span class="r-val">${v!=null?v.toFixed(2):'—'}</span></div>`;
-    }).join('');
-  };
-  const INDIC=s=>{
-    if(!s)return'';
-    const flags=Array.isArray(s.r17_flags)?s.r17_flags:[];
-    const ir=Number(s.r18_intron_ratio||0);const ic=Number(s.r18_intron_count||0);
-    if(!flags.length&&ir<=0.3)return'';
-    const items=[];
-    flags.forEach(f=>{
-      const key=(String(f).match(/^(C[1-5](?:-ext)?)/)||[])[1]||'R17';
-      const txt=String(f).replace(/^C[1-5](?:-ext)?:\s*/,'');
-      items.push(`<span class="ei r17"><b>${ESC(key)}</b>${ESC(txt.slice(0,40))}</span>`);
-    });
-    if(ir>0.3)items.push(`<span class="ei"><b>R18</b>${ic} intron${ic===1?'':'s'} · ${(ir*100).toFixed(0)}%</span>`);
-    return`<div class="indic">${items.join('')}</div>`;
-  };
-  const renderChat=tr=>{
-    const s=tr.score||{};const gr=s.compliance_class||'?';const num=s.grade!=null?s.grade:'?';const m=s.metrics||{};
-    const hasScore=gr!=='?';
-    const bars=(m.R1!=null||m.R2!=null)?BARS(m):'';
-    const indicators=INDIC(s);
-    return(tr.q?`<div class="m-u"><div class="m-u-t">${ESC(tr.q)}</div></div>`:'')+
-      `<div class="m-a"><div class="md">${FMT(tr.response||'')}</div>${hasScore?`<div class="an"><span class="gb ${GCLS(gr)}">Grade ${gr} · ${num}/10</span><div class="an-b">${bars}${indicators}</div></div>`:''}</div>`;
-  };
-  const renderCmp=tr=>{
-    const panel=(data,type)=>{
-      if(!data)return'';
-      const s=data.score||{};const gr=s.compliance_class||'?';const num=s.grade!=null?s.grade:'?';const m=s.metrics||{};
-      const bars=BARS(m);const indicators=INDIC(s);
-      const lbl=type==='raw'?(curLang==='ru'?'Без GOLD':'Without GOLD'):(curLang==='ru'?'С ONTO GOLD':'With ONTO GOLD');
-      return`<div class="cp ${type}"><div class="cp-h"><span class="cp-l">${ESC(lbl)}</span><span class="gb ${GCLS(gr)}">Grade ${gr} · ${num}/10</span></div><div class="cp-b">${FMT(data.response||'')}</div><div class="cp-bars">${bars}${indicators}</div></div>`;
-    };
-    return`<div class="cw"><div class="cq"><b>${ESC(tr.q||'')}</b></div><div class="cg">${panel(tr.raw,'raw')}${panel(tr.gold,'gold')}</div></div>`;
-  };
-
-  const dt=new Date(snap.created_at||Date.now());
-  const dateStr=dt.toLocaleDateString(curLang==='ru'?'ru-RU':'en-US',{year:'numeric',month:'short',day:'numeric'});
-  const title=snap.title||'ONTO chat';
-  const nTurns=snap.turns.length;
-  const FT={en:{f1:'Generated with ONTO — epistemic discipline for AI.',f2:'Every answer measured. Sources, facts, counter-arguments — quantified.',open:'Open ONTO →',turns:'turns',date:'Saved'},
-            ru:{f1:'Сгенерировано в ONTO — эпистемическая дисциплина для ИИ.',f2:'Каждый ответ измерен. Источники, факты, контраргументы — квантифицированы.',open:'Открыть ONTO →',turns:'ходов',date:'Сохранено'}}[curLang==='ru'?'ru':'en'];
-  const body=snap.turns.map(tr=>tr.kind==='compare'?renderCmp(tr):renderChat(tr)).join('');
-
-  const css=`*{margin:0;padding:0;box-sizing:border-box}html,body{background:#18181b;color:#f4f4f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.7;-webkit-font-smoothing:antialiased}body{min-height:100vh;display:flex;flex-direction:column}.wrap{max-width:960px;width:100%;margin:0 auto;padding:28px 20px 40px;flex:1}.hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(24,24,27,.85);position:sticky;top:0;z-index:10}.hdr-brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px;color:#f4f4f5;text-decoration:none}.hdr-brand svg{width:28px;height:28px}.hdr-tag{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:10px;font-weight:600;color:#22c55e;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2);padding:2px 8px;border-radius:4px;letter-spacing:.5px}.hdr-cta{font-size:14px;font-weight:600;background:#22c55e;color:#000;padding:8px 16px;border-radius:10px;text-decoration:none}.meta{padding:20px 0 16px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:18px}.meta h1{font-size:22px;font-weight:700;letter-spacing:-.3px;line-height:1.3;margin-bottom:6px}.meta-row{display:flex;gap:14px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#a1a1aa;flex-wrap:wrap}.meta-dot{width:4px;height:4px;border-radius:50%;background:#a1a1aa;align-self:center}.m-u{display:flex;justify-content:flex-end;margin-bottom:8px}.m-u-t{background:#27272a;padding:12px 18px;border-radius:20px 20px 6px 20px;max-width:85%;font-size:15px;white-space:pre-wrap;word-break:break-word}.m-a{padding:14px 4px;margin-bottom:14px}.md{font-size:15px;color:#d4d4d8}.md p{margin-bottom:12px}.md strong{color:#f4f4f5;font-weight:600}.hl-g{color:#22c55e;font-family:ui-monospace,Menlo,monospace;font-size:13px}.hl-b{color:#60a5fa}.hl-o{color:#fbbf24}.gb{font-family:ui-monospace,Menlo,monospace;font-size:13px;font-weight:600;padding:4px 10px;border-radius:8px;display:inline-block}.grade-a{background:rgba(34,197,94,.12);color:#22c55e;border:1px solid rgba(34,197,94,.3)}.grade-b{background:rgba(96,165,250,.1);color:#60a5fa;border:1px solid rgba(96,165,250,.3)}.grade-c{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.3)}.grade-d,.grade-f{background:rgba(248,113,113,.1);color:#f87171;border:1px solid rgba(248,113,113,.3)}.an{margin-top:12px}.an-b{padding:16px;background:#1f1f23;border:1px solid rgba(255,255,255,.08);border-radius:12px;margin-top:10px}.r-bar{display:grid;grid-template-columns:36px 1fr 110px 36px;gap:10px;align-items:center;margin-bottom:7px;font-size:12px}.r-label{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#a1a1aa;font-weight:600}.r-name{color:#a1a1aa;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.r-track{height:6px;background:#27272a;border-radius:3px;overflow:hidden}.r-fill{height:100%;border-radius:3px}.r-fill.good{background:#22c55e}.r-fill.mid{background:#fbbf24}.r-fill.bad{background:#f87171}.r-val{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#a1a1aa;text-align:right}.indic{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08)}.ei{font-family:ui-monospace,Menlo,monospace;font-size:10px;color:#a1a1aa;background:#27272a;border:1px solid rgba(255,255,255,.08);padding:3px 8px;border-radius:5px}.ei.r17{border-color:rgba(251,191,36,.3);color:#fbbf24}.ei b{letter-spacing:.3px;margin-right:4px}.cw{margin-bottom:20px;padding:16px;background:#1f1f23;border:1px solid rgba(255,255,255,.08);border-radius:12px}.cq{font-size:15px;margin-bottom:12px;line-height:1.5}.cg{display:grid;grid-template-columns:1fr 1fr;gap:12px}.cp{background:#18181b;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px}.cp.gold{border-color:rgba(34,197,94,.25)}.cp-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.cp-l{font-family:ui-monospace,Menlo,monospace;font-size:10px;color:#a1a1aa;text-transform:uppercase;letter-spacing:.5px}.cp.gold .cp-l{color:#22c55e}.cp-b{font-size:13px;color:#d4d4d8}.cp-bars{padding-top:10px;border-top:1px solid rgba(255,255,255,.08)}@media(max-width:720px){.cg{grid-template-columns:1fr}}.ft{margin-top:40px;padding-top:28px;border-top:1px solid rgba(255,255,255,.08);text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center}.ft-txt{font-size:14px;color:#d4d4d8;line-height:1.6;max-width:520px}.ft-txt b{color:#f4f4f5}.ft-btn{padding:10px 20px;border-radius:10px;font-size:14px;font-weight:600;background:#22c55e;color:#000;text-decoration:none}.ft-small{font-family:ui-monospace,Menlo,monospace;font-size:10px;color:#a1a1aa;letter-spacing:.3px;margin-top:8px}.ft-small a{color:#a1a1aa}`;
-
-  return`<!DOCTYPE html>
-<html lang="${ESC(snap.lang||'en')}">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>${ESC(title)} — ONTO</title>
-<meta name="description" content="A conversation scored by ONTO — epistemic discipline for AI.">
-<style>${css}</style>
-</head>
-<body>
-<div class="hdr"><a href="https://ontostandard.org/agent/" class="hdr-brand"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="#27272a"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="white"/></svg>ONTO <span class="hdr-tag">SAVED</span></a><a href="https://ontostandard.org/agent/" class="hdr-cta">${ESC(FT.open)}</a></div>
-<div class="wrap"><div class="meta"><h1>${ESC(title)}</h1><div class="meta-row"><span>${ESC(FT.date)}: ${ESC(dateStr)}</span><span class="meta-dot"></span><span>${nTurns} ${ESC(FT.turns)}</span></div></div>${body}<div class="ft"><div class="ft-txt"><b>${ESC(FT.f1)}</b><br>${ESC(FT.f2)}</div><a href="https://ontostandard.org/agent/" class="ft-btn">${ESC(FT.open)}</a><div class="ft-small"><a href="https://ontostandard.org">ontostandard.org</a> · R1-R18</div></div></div>
-</body>
-</html>`;
-}
-function downloadConversationAsHtml(){
-  const html=buildConversationHtml();
-  if(!html){toast(curLang==='ru'?'Пустой чат':'Empty chat','err');return;}
-  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;
-  const safe=(sessionTitle()||'onto-chat').toLowerCase().replace(/[^a-z0-9а-яё\s-]+/gi,'').trim().replace(/\s+/g,'-').slice(0,60)||'onto-chat';
-  const dt=new Date().toISOString().slice(0,10);
-  a.download=`onto-${safe}-${dt}.html`;
-  document.body.appendChild(a);a.click();
-  setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},100);
-  toast(curLang==='ru'?'Файл сохранён':'File saved');
-}
-
 /* ── v2.13c: share-link (viral loop) ── */
 function buildShareSnapshot(){
   const container=document.getElementById('chatInner');
@@ -1030,33 +829,7 @@ window.addEventListener('load',()=>{setTimeout(hideSplash,650);});
 setTimeout(hideSplash,2000);
 
 /* ── v2.13: bind Escape key to close open drawer/modal ── */
-document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;const d=document.getElementById('drawer');if(d?.classList.contains('open')){closeDrawer();return;}const w=document.getElementById('modalWelcome');if(w?.classList.contains('open')){closeWelcome();return;}document.querySelectorAll('.modal-bg.open').forEach(m=>m.classList.remove('open'));});
-
-/* ── v2.14: welcome / first-visit onboarding ── */
-const WELCOME_KEY='onto_agent_welcomed';
-function openWelcome(){
-  const m=document.getElementById('modalWelcome');
-  if(!m)return;
-  /* rebind i18n */
-  m.querySelectorAll('[data-'+curLang+']').forEach(d=>{
-    if(d.tagName==='SPAN')d.textContent=d.getAttribute('data-'+curLang);
-  });
-  m.classList.add('open');
-}
-function closeWelcome(focusInput){
-  const m=document.getElementById('modalWelcome');
-  if(m)m.classList.remove('open');
-  try{localStorage.setItem(WELCOME_KEY,'1');}catch{}
-  if(focusInput){document.getElementById('inp')?.focus();}
-}
-function showWelcomeIfFirstVisit(){
-  try{
-    if(localStorage.getItem(WELCOME_KEY))return;
-    /* defer until splash hides */
-    setTimeout(openWelcome,900);
-  }catch{/* storage blocked → do nothing */}
-}
-showWelcomeIfFirstVisit();
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;const d=document.getElementById('drawer');if(d?.classList.contains('open')){closeDrawer();return;}document.querySelectorAll('.modal-bg.open').forEach(m=>m.classList.remove('open'));});
 
 if('serviceWorker' in navigator){navigator.serviceWorker.register('/agent/sw.js').catch(()=>{});}
 </script>
