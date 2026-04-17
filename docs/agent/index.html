@@ -132,6 +132,26 @@ button{font-family:var(--sans)}
 .r-desc{width:100%;font-size:12px;color:var(--text2);opacity:1;font-family:var(--sans);margin-top:2px}
 @media(min-width:500px){.modal{border-radius:24px;margin:auto;max-width:420px}.modal-bg.open{align-items:center}}
 
+/* ── v2.14: welcome tour (first-visit onboarding) ── */
+.welcome-hero{background:linear-gradient(135deg,rgba(34,197,94,.08) 0%,rgba(96,165,250,.06) 100%);border:1px solid rgba(34,197,94,.15);border-radius:16px;padding:18px 16px;margin-bottom:16px;text-align:center}
+.welcome-hero-badges{display:flex;justify-content:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.welcome-hero-bars{display:grid;gap:5px;max-width:260px;margin:0 auto 10px;text-align:left}
+.welcome-hero-bars .r-bar{grid-template-columns:32px 1fr 28px;gap:8px;margin-bottom:0}
+.welcome-hero-cap{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.4px;text-transform:uppercase}
+.welcome-title{font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:-.3px;color:var(--text);line-height:1.3;text-align:center}
+.welcome-sub{font-size:13px;color:var(--text3);line-height:1.6;text-align:center;margin-bottom:18px}
+.welcome-bullets{display:flex;flex-direction:column;gap:12px;margin-bottom:22px}
+.welcome-bullet{display:flex;gap:12px;align-items:flex-start}
+.welcome-bullet-icon{width:28px;height:28px;border-radius:8px;background:var(--green-bg);border:1px solid rgba(34,197,94,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.welcome-bullet-icon svg{width:14px;height:14px;color:var(--green)}
+.welcome-bullet-text{font-size:14px;color:var(--text2);line-height:1.5}
+.welcome-bullet-text strong{color:var(--text);font-weight:600}
+.welcome-cta{display:flex;gap:10px;align-items:center}
+.welcome-cta-skip{flex:0 0 auto;padding:12px 16px;border-radius:12px;border:1px solid var(--border);background:none;color:var(--text3);font-size:14px;cursor:pointer;transition:.15s}
+.welcome-cta-skip:hover{background:var(--glass);color:var(--text2)}
+.welcome-cta-go{flex:1;padding:12px 16px;border-radius:12px;border:1px solid var(--green);background:var(--green);color:#000;font-size:14px;font-weight:600;cursor:pointer;transition:.15s}
+.welcome-cta-go:hover{background:#16a34a}
+
 /* ── UX ELEMENTS ── */
 .demo-tag{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:600;color:var(--orange);background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);padding:1px 6px;border-radius:4px;margin-left:6px;vertical-align:middle;letter-spacing:.3px}
 .w-explain{font-size:13px;color:var(--text3);max-width:400px;line-height:1.6;margin-bottom:8px;position:relative;z-index:1}
@@ -260,6 +280,8 @@ button{font-family:var(--sans)}
         <a class="menu-a" onclick="copyConversationAsMarkdown();toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-en="Copy chat · MD" data-ru="Копировать чат · MD">Copy chat · MD</span></a>
         <a class="menu-a" onclick="downloadConversationAsMarkdown();toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span data-en="Download chat · MD" data-ru="Скачать чат · MD">Download chat · MD</span></a>
         <a class="menu-a" onclick="shareConversation();toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg><span data-en="Share link" data-ru="Поделиться ссылкой">Share link</span></a>
+        <div class="menu-sep"></div>
+        <a class="menu-a" onclick="openWelcome();toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span data-en="Show intro" data-ru="Показать интро">Show intro</span></a>
         <div class="menu-sep"></div>
         <a class="menu-a" onclick="openModal('modalFeedback');toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span data-en="Feedback" data-ru="Обратная связь">Feedback</span></a>
       </div>
@@ -392,6 +414,42 @@ button{font-family:var(--sans)}
     </ul>
   </div>
   <div class="modal-row"><button class="modal-close" onclick="closeModal('modalTerms')"><span data-en="Close" data-ru="Закрыть">Close</span></button></div>
+</div></div>
+
+<!-- ── v2.14: Welcome / first-visit onboarding ── -->
+<div class="modal-bg" id="modalWelcome" onmousedown="if(event.target===this)closeWelcome()"><div class="modal" onmousedown="event.stopPropagation()" onclick="event.stopPropagation()">
+  <div class="modal-handle"></div>
+  <div class="welcome-hero">
+    <div class="welcome-hero-badges">
+      <span class="grade-badge grade-a" style="font-size:12px">Grade A · 9.4/10</span>
+    </div>
+    <div class="welcome-hero-bars">
+      <div class="r-bar"><span class="r-label">R1</span><div class="r-track"><div class="r-fill good" style="width:100%"></div></div><span class="r-val">1.00</span></div>
+      <div class="r-bar"><span class="r-label">R4</span><div class="r-track"><div class="r-fill good" style="width:100%"></div></div><span class="r-val">1.00</span></div>
+      <div class="r-bar"><span class="r-label">R6</span><div class="r-track"><div class="r-fill good" style="width:100%"></div></div><span class="r-val">1.00</span></div>
+    </div>
+    <div class="welcome-hero-cap"><span data-en="Every answer · measured" data-ru="Каждый ответ · измерен">Every answer · measured</span></div>
+  </div>
+  <div class="welcome-title"><span data-en="Know if you can trust an AI answer" data-ru="Узнай, можно ли доверять ответу ИИ">Know if you can trust an AI answer</span></div>
+  <div class="welcome-sub"><span data-en="ONTO grades every AI answer for epistemic quality. Same model, same question — but now quantified." data-ru="ONTO оценивает каждый ответ ИИ по эпистемическому качеству. Та же модель, тот же вопрос — но теперь с цифрами.">ONTO grades every AI answer for epistemic quality. Same model, same question — but now quantified.</span></div>
+  <div class="welcome-bullets">
+    <div class="welcome-bullet">
+      <div class="welcome-bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="welcome-bullet-text"><strong><span data-en="Grade A–F" data-ru="Оценка A–F">Grade A–F</span></strong> — <span data-en="every answer gets a score, visible and explainable." data-ru="каждый ответ получает оценку — видимую и объяснимую.">every answer gets a score, visible and explainable.</span></div>
+    </div>
+    <div class="welcome-bullet">
+      <div class="welcome-bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+      <div class="welcome-bullet-text"><strong><span data-en="Sources · facts · counter" data-ru="Источники · факты · контраргументы">Sources · facts · counter</span></strong> — <span data-en="measured, not promised." data-ru="измеряются, а не обещаются.">measured, not promised.</span></div>
+    </div>
+    <div class="welcome-bullet">
+      <div class="welcome-bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></div>
+      <div class="welcome-bullet-text"><strong><span data-en="RAW vs GOLD" data-ru="RAW vs GOLD">RAW vs GOLD</span></strong> — <span data-en="compare the same model with and without discipline." data-ru="сравни одну модель с дисциплиной и без.">compare the same model with and without discipline.</span></div>
+    </div>
+  </div>
+  <div class="welcome-cta">
+    <button class="welcome-cta-skip" onclick="closeWelcome()"><span data-en="Skip" data-ru="Пропустить">Skip</span></button>
+    <button class="welcome-cta-go" onclick="closeWelcome(true)"><span data-en="Try a question →" data-ru="Задать вопрос →">Try a question →</span></button>
+  </div>
 </div></div>
 
 <!-- ── v2.12: Feedback modal ── -->
@@ -829,7 +887,33 @@ window.addEventListener('load',()=>{setTimeout(hideSplash,650);});
 setTimeout(hideSplash,2000);
 
 /* ── v2.13: bind Escape key to close open drawer/modal ── */
-document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;const d=document.getElementById('drawer');if(d?.classList.contains('open')){closeDrawer();return;}document.querySelectorAll('.modal-bg.open').forEach(m=>m.classList.remove('open'));});
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;const d=document.getElementById('drawer');if(d?.classList.contains('open')){closeDrawer();return;}const w=document.getElementById('modalWelcome');if(w?.classList.contains('open')){closeWelcome();return;}document.querySelectorAll('.modal-bg.open').forEach(m=>m.classList.remove('open'));});
+
+/* ── v2.14: welcome / first-visit onboarding ── */
+const WELCOME_KEY='onto_agent_welcomed';
+function openWelcome(){
+  const m=document.getElementById('modalWelcome');
+  if(!m)return;
+  /* rebind i18n */
+  m.querySelectorAll('[data-'+curLang+']').forEach(d=>{
+    if(d.tagName==='SPAN')d.textContent=d.getAttribute('data-'+curLang);
+  });
+  m.classList.add('open');
+}
+function closeWelcome(focusInput){
+  const m=document.getElementById('modalWelcome');
+  if(m)m.classList.remove('open');
+  try{localStorage.setItem(WELCOME_KEY,'1');}catch{}
+  if(focusInput){document.getElementById('inp')?.focus();}
+}
+function showWelcomeIfFirstVisit(){
+  try{
+    if(localStorage.getItem(WELCOME_KEY))return;
+    /* defer until splash hides */
+    setTimeout(openWelcome,900);
+  }catch{/* storage blocked → do nothing */}
+}
+showWelcomeIfFirstVisit();
 
 if('serviceWorker' in navigator){navigator.serviceWorker.register('/agent/sw.js').catch(()=>{});}
 </script>
