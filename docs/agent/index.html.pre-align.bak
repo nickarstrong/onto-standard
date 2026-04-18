@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.ontostandard.org https://api.x.ai https://api.openai.com https://api.anthropic.com https://api.deepseek.com https://api.mistral.ai; frame-ancestors 'none'">
+<title>ONTO</title>
+<!-- UI v2.13b (streaming + md export + copy-all; fallback to non-streaming preserved) -->
+<meta name="description" content="Ask anything. Every answer is verified, sourced, and scored.">
+<link rel="manifest" href="/agent/manifest.json">
+<meta name="theme-color" content="#18181b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ONTO">
+<link rel="apple-touch-icon" href="/agent/icons/icon-192.png">
+<link rel="icon" type="image/x-icon" href="/agent/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/agent/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#18181b;--bg2:#1f1f23;--bg3:#27272a;--bg4:#333;--border:rgba(255,255,255,.08);--border-h:rgba(255,255,255,.15);--text:#f4f4f5;--text2:#d4d4d8;--text3:#a1a1aa;--green:#22c55e;--green-d:#16a34a;--green-bg:rgba(34,197,94,.12);--green-glow:rgba(34,197,94,.25);--red:#f87171;--red-bg:rgba(248,113,113,.1);--orange:#fbbf24;--blue:#60a5fa;--sans:'DM Sans',sans-serif;--mono:'JetBrains Mono',monospace;--max:960px;--radius:16px;--glass:rgba(255,255,255,.04);--glass-border:rgba(255,255,255,.08);--shadow:0 4px 24px rgba(0,0,0,.3)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;touch-action:manipulation}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;font-size:16px;line-height:1.7;display:flex;flex-direction:column}
+::selection{background:var(--green);color:#000}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:4px}
+button{font-family:var(--sans)}
+.hdr{display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 16px;border-bottom:1px solid var(--border);flex-shrink:0;background:rgba(24,24,27,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);z-index:20}
+.hdr-left{display:flex;align-items:center;gap:10px}
+.hdr-logo{width:32px;height:32px;cursor:pointer;flex-shrink:0;filter:drop-shadow(0 0 8px rgba(255,255,255,.15))}
+.hdr-logo svg{width:32px;height:32px}
+.hdr-beta{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--green);background:var(--green-bg);border:1px solid rgba(34,197,94,.2);padding:2px 8px;border-radius:4px;letter-spacing:.5px}
+.hdr-right{display:flex;align-items:center;gap:4px}
+.hdr-btn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:none;border:none;color:var(--text3);cursor:pointer;border-radius:10px;transition:.2s}
+.hdr-btn:hover{background:var(--glass);color:var(--text2)}
+.hdr-btn svg{width:20px;height:20px}
+.lang-sel{font-family:var(--mono);font-size:12px;background:var(--bg2);border:1px solid var(--border);color:var(--text3);padding:6px 8px;border-radius:8px;cursor:pointer;outline:none;color-scheme:dark;appearance:none;-webkit-appearance:none;text-align:center;width:42px}
+.menu-wrap{position:relative}
+.menu-dd{display:none;position:absolute;top:calc(100% + 8px);right:0;background:var(--bg2);border:1px solid var(--border-h);border-radius:14px;padding:6px;min-width:200px;z-index:30;box-shadow:var(--shadow);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.menu-dd.open{display:block}
+.menu-a{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;font-size:15px;color:var(--text2);cursor:pointer;text-decoration:none;transition:.15s}
+.menu-a:hover{background:var(--glass);color:var(--text)}
+.menu-a svg{width:16px;height:16px;opacity:.6;flex-shrink:0}
+.menu-sep{height:1px;background:var(--border);margin:4px 8px}
+.chat{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.chat-inner{max-width:var(--max);width:100%;margin:0 auto;padding:16px 20px 24px;flex:1;display:flex;flex-direction:column}
+.welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;position:relative}
+.w-glow{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(34,197,94,.08) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-65%);pointer-events:none}
+.w-icon{width:64px;height:64px;margin-bottom:20px;position:relative;z-index:1;filter:drop-shadow(0 0 20px rgba(255,255,255,.1))}
+.w-icon svg{width:64px;height:64px}
+.w-title{font-size:32px;font-weight:700;letter-spacing:-.5px;margin-bottom:8px;color:var(--text);position:relative;z-index:1}
+.w-sub{font-size:15px;color:var(--text3);max-width:360px;line-height:1.6;margin-bottom:32px;position:relative;z-index:1}
+.examples{display:flex;flex-direction:column;gap:10px;width:100%;max-width:420px;position:relative;z-index:1}
+.ex{background:var(--glass);border:1px solid var(--glass-border);color:var(--text2);padding:16px 20px;border-radius:14px;font-family:var(--sans);font-size:15px;line-height:1.5;cursor:pointer;text-align:left;transition:all .2s;-webkit-tap-highlight-color:transparent;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.ex:hover,.ex:active{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15);color:var(--text);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.2)}
+.msg{margin-bottom:8px;max-width:var(--max)}
+.msg-user{display:flex;justify-content:flex-end}
+.msg-user-text{background:var(--bg3);color:var(--text);padding:12px 18px;border-radius:20px 20px 6px 20px;max-width:85%;font-size:15px;line-height:1.6;word-break:break-word}
+.msg-ai{padding:14px 4px}
+.msg-ai .md{font-size:15px;line-height:1.75;color:var(--text2)}
+.msg-ai .md p{margin-bottom:12px}
+.msg-ai .md strong{color:var(--text);font-weight:600}
+.msg-ai .md ul,.msg-ai .md ol{margin:8px 0 8px 20px;color:var(--text2)}
+.msg-ai .md li{margin-bottom:6px;font-size:14px}
+.msg-ai .md a{color:var(--green)}
+.msg-ai .md code{font-family:var(--mono);font-size:13px;background:var(--bg3);padding:2px 6px;border-radius:5px}
+.msg-err{font-size:13px;color:var(--red);font-family:var(--mono);padding:10px 0}
+.dots{display:flex;gap:5px;padding:14px 0}.dots i{width:7px;height:7px;border-radius:50%;background:var(--text3);animation:dot .9s infinite ease-in-out}.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}@keyframes dot{0%,80%{opacity:.3}40%{opacity:1}}
+.grade-badge{font-family:var(--mono);font-size:13px;font-weight:600;padding:4px 10px;border-radius:8px;letter-spacing:.3px}
+.grade-a{background:var(--green-bg);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+.grade-b{background:rgba(96,165,250,.1);color:var(--blue);border:1px solid rgba(96,165,250,.3)}
+.grade-c{background:rgba(251,191,36,.1);color:var(--orange);border:1px solid rgba(251,191,36,.3)}
+.grade-d,.grade-f{background:var(--red-bg);color:var(--red);border:1px solid rgba(248,113,113,.3)}
+.analysis{margin-top:12px}
+.analysis-toggle{font-family:var(--mono);font-size:13px;color:var(--text3);cursor:pointer;display:inline-flex;align-items:center;gap:5px;padding:4px 0;-webkit-tap-highlight-color:transparent}
+.analysis-toggle:hover{color:var(--text2)}
+.analysis-toggle svg{width:14px;height:14px;transition:.2s}
+.analysis-toggle.open svg{transform:rotate(180deg)}
+.analysis-body{display:none;margin-top:10px;padding:16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px}
+.analysis-body.open{display:block}
+.r-bar{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.r-label{font-family:var(--mono);font-size:12px;color:var(--text3);width:26px;flex-shrink:0}
+.r-name{font-family:var(--mono);font-size:10px;color:var(--text3);width:72px;flex-shrink:0;opacity:.6}
+.r-track{flex:1;height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
+.r-fill{height:100%;border-radius:3px;transition:.6s}
+.r-fill.good{background:var(--green)}.r-fill.mid{background:var(--orange)}.r-fill.bad{background:var(--red)}
+.r-val{font-family:var(--mono);font-size:12px;color:var(--text3);width:32px;text-align:right;flex-shrink:0}
+.r-tags{margin-top:10px;display:flex;flex-wrap:wrap;gap:4px}
+.r-tag{font-family:var(--mono);font-size:10px;padding:3px 7px;border-radius:5px;border:1px solid var(--border)}
+.r-tag.on{border-color:rgba(34,197,94,.3);color:var(--green);background:var(--green-bg)}
+.r-tag.off{color:var(--text3);background:transparent}
+.cmp-wrap{margin:16px 0;width:100vw;max-width:100vw;position:relative;left:50%;margin-left:-50vw;padding:0 20px;box-sizing:border-box}.cmp-q{font-size:16px;font-weight:600;margin-bottom:14px;text-align:center}.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:stretch}@media(max-width:540px){.cmp-grid{grid-template-columns:1fr}}.cmp-panel{border-radius:14px;border:1px solid var(--border);padding:16px;overflow:hidden;background:var(--glass);display:flex;flex-direction:column}.cmp-panel.raw{border-color:rgba(248,113,113,.2)}.cmp-panel.gold{border-color:rgba(34,197,94,.2)}.cmp-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.cmp-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text3)}.cmp-body{font-size:14px;line-height:1.6;color:var(--text2);max-height:500px;overflow-y:auto;flex:1}.cmp-bars{margin-top:10px}.cmp-mets{display:flex;justify-content:center;gap:20px;margin-top:14px;padding:16px;background:var(--bg2);border-radius:14px;border:1px solid var(--border)}.cmet{text-align:center}.cmet-val{font-family:var(--mono);font-size:26px;font-weight:700;color:var(--green)}.cmet-lbl{font-family:var(--mono);font-size:11px;color:var(--text3);text-transform:uppercase;margin-top:4px}
+.input-area{flex-shrink:0;border-top:1px solid var(--border);background:rgba(24,24,27,.9);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:12px 16px;padding-bottom:max(12px,env(safe-area-inset-bottom))}
+.input-wrap{max-width:var(--max);margin:0 auto;display:flex;align-items:flex-end;gap:8px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;transition:all .2s}
+.input-wrap:focus-within{border-color:var(--green-glow);box-shadow:0 0 0 3px rgba(34,197,94,.08)}
+.input-box{flex:1;background:none;border:none;color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.6;padding:6px 4px;outline:none;resize:none;max-height:120px;scrollbar-width:none}
+.input-box::-webkit-scrollbar{display:none}
+.input-box::placeholder{color:var(--text3)}
+.btn-send{width:38px;height:38px;border-radius:50%;background:var(--green);border:none;color:#000;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s;box-shadow:0 2px 8px rgba(34,197,94,.3)}
+.btn-send:hover{box-shadow:0 2px 16px rgba(34,197,94,.4);transform:scale(1.05)}
+.btn-send:disabled{opacity:.2;cursor:not-allowed;box-shadow:none;transform:none}
+.btn-send svg{width:18px;height:18px}
+.btn-cmp{height:38px;padding:0 14px;border-radius:19px;background:none;border:1px solid var(--border);color:var(--text3);font-family:var(--mono);font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0;transition:.2s}
+.btn-cmp:hover{border-color:var(--green);color:var(--green);box-shadow:0 0 12px rgba(34,197,94,.15)}.btn-cmp:disabled{opacity:.2;cursor:not-allowed}
+.btn-stop{height:38px;padding:0 14px;border-radius:19px;background:var(--red);border:none;color:#fff;font-family:var(--mono);font-size:12px;font-weight:500;cursor:pointer;display:none;flex-shrink:0}.btn-stop.vis{display:flex;align-items:center}
+.input-meta{max-width:var(--max);margin:4px auto 0;display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--text3);padding:0 4px}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:flex-end;justify-content:center;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.modal-bg.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border-h);border-radius:24px 24px 0 0;padding:24px 24px 36px;width:100%;max-width:440px;max-height:85vh;overflow-y:auto}
+.modal-handle{width:40px;height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin:0 auto 20px}
+.modal h3{font-size:18px;font-weight:600;margin-bottom:16px}
+.modal-field{margin-bottom:14px}
+.modal-field label{display:block;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.modal-field input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:12px 14px;border-radius:12px;font-family:var(--sans);font-size:15px;outline:none;color-scheme:dark;transition:.2s}
+.modal-field input:focus{border-color:var(--green-glow);box-shadow:0 0 0 3px rgba(34,197,94,.08)}
+.modal-row{display:flex;gap:10px;align-items:center;margin-top:16px}
+.modal-close{flex:1;padding:12px;border-radius:12px;border:1px solid var(--border);background:none;color:var(--text);font-size:15px;font-weight:500;cursor:pointer;transition:.15s}.modal-close:hover{background:var(--glass)}
+.mode-pill{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);cursor:pointer;font-family:var(--mono);font-size:12px;color:var(--text2)}
+.mode-pill .dot{width:8px;height:8px;border-radius:50%;background:var(--orange)}.mode-pill.live .dot{background:var(--green)}
+.r-toggles{margin-top:16px;border-top:1px solid var(--border);padding-top:14px}
+.r-toggles-hdr{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.r-toggles-hdr span{cursor:pointer;color:var(--green);font-size:11px;text-transform:none;letter-spacing:0}
+.r-layer{margin-bottom:8px}.r-layer-title{font-family:var(--mono);font-size:10px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px}
+.r-grid{display:flex;flex-wrap:wrap;gap:5px}
+.r-chip{display:flex;align-items:center;gap:4px;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer;font-family:var(--mono);font-size:11px;color:var(--text3);transition:.2s;user-select:none;-webkit-tap-highlight-color:transparent}
+.r-chip:hover{border-color:var(--border-h)}
+.r-chip.on{border-color:rgba(34,197,94,.3);background:var(--green-bg);color:var(--green)}
+.r-chip .r-dot{width:6px;height:6px;border-radius:50%;background:var(--text3);transition:.15s}.r-chip.on .r-dot{background:var(--green)}
+.r-grid-desc{display:flex;flex-direction:column;gap:6px}
+.r-grid-desc .r-chip{flex-wrap:wrap;gap:4px 8px}
+.r-desc{width:100%;font-size:12px;color:var(--text2);opacity:1;font-family:var(--sans);margin-top:2px}
+@media(min-width:500px){.modal{border-radius:24px;margin:auto;max-width:420px}.modal-bg.open{align-items:center}}
+
+/* ── v2.14: welcome tour (first-visit onboarding) ── */
+.welcome-hero{background:linear-gradient(135deg,rgba(34,197,94,.08) 0%,rgba(96,165,250,.06) 100%);border:1px solid rgba(34,197,94,.15);border-radius:16px;padding:18px 16px;margin-bottom:16px;text-align:center}
+.welcome-hero-badges{display:flex;justify-content:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.welcome-hero-bars{display:grid;gap:5px;max-width:260px;margin:0 auto 10px;text-align:left}
+.welcome-hero-bars .r-bar{grid-template-columns:32px 1fr 28px;gap:8px;margin-bottom:0}
+.welcome-hero-cap{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.4px;text-transform:uppercase}
+.welcome-title{font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:-.3px;color:var(--text);line-height:1.3;text-align:center}
+.welcome-sub{font-size:13px;color:var(--text3);line-height:1.6;text-align:center;margin-bottom:18px}
+.welcome-bullets{display:flex;flex-direction:column;gap:12px;margin-bottom:22px}
+.welcome-bullet{display:flex;gap:12px;align-items:flex-start}
+.welcome-bullet-icon{width:28px;height:28px;border-radius:8px;background:var(--green-bg);border:1px solid rgba(34,197,94,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.welcome-bullet-icon svg{width:14px;height:14px;color:var(--green)}
+.welcome-bullet-text{font-size:14px;color:var(--text2);line-height:1.5}
+.welcome-bullet-text strong{color:var(--text);font-weight:600}
+.welcome-cta{display:flex;gap:10px;align-items:center}
+.welcome-cta-skip{flex:0 0 auto;padding:12px 16px;border-radius:12px;border:1px solid var(--border);background:none;color:var(--text3);font-size:14px;cursor:pointer;transition:.15s}
+.welcome-cta-skip:hover{background:var(--glass);color:var(--text2)}
+.welcome-cta-go{flex:1;padding:12px 16px;border-radius:12px;border:1px solid var(--green);background:var(--green);color:#000;font-size:14px;font-weight:600;cursor:pointer;transition:.15s}
+.welcome-cta-go:hover{background:#16a34a}
+
+/* ── v2.14d: Support / donation modal ── */
+.sup-hdr{text-align:center;margin-bottom:16px}
+.sup-title{font-size:20px;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:-.3px}
+.sup-sub{font-size:13px;color:var(--text3);line-height:1.6}
+.sup-block{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
+.sup-block-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sup-block-name{font-family:var(--mono);font-size:11px;color:var(--text2);letter-spacing:.5px;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.sup-block-name .dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.sup-block-chain{font-family:var(--mono);font-size:10px;color:var(--text3)}
+.sup-qr{display:flex;justify-content:center;padding:8px 0 12px}
+.sup-qr svg{width:140px;height:140px;background:var(--bg2);padding:6px;border-radius:8px}
+.sup-addr{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 10px}
+.sup-addr code{flex:1;font-family:var(--mono);font-size:11px;color:var(--text2);word-break:break-all;line-height:1.4;user-select:all}
+.sup-addr-copy{flex-shrink:0;display:flex;align-items:center;gap:4px;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--glass);color:var(--text2);font-family:var(--mono);font-size:10px;cursor:pointer;transition:.15s;text-transform:uppercase;letter-spacing:.3px}
+.sup-addr-copy:hover{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.3);color:var(--green)}
+.sup-addr-copy svg{width:12px;height:12px}
+.sup-note{font-size:12px;color:var(--text3);text-align:center;line-height:1.5;margin-top:8px;padding:10px;background:var(--bg);border-radius:8px}
+.sup-reward{background:linear-gradient(135deg,rgba(34,197,94,.08) 0%,rgba(251,191,36,.06) 100%);border:1px solid rgba(34,197,94,.2);border-radius:12px;padding:14px 16px;margin:10px 0}
+.sup-reward-hdr{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px}
+.sup-reward-hdr svg{width:16px;height:16px;color:var(--green)}
+.sup-reward-list{list-style:none;padding:0;margin:6px 0 10px;font-size:12px;color:var(--text2);line-height:1.6}
+.sup-reward-list li{padding:3px 0;display:flex;gap:8px;align-items:baseline}
+.sup-reward-list li:before{content:"→";color:var(--green);font-family:var(--mono);flex-shrink:0}
+.sup-reward-list b{color:var(--text);font-family:var(--mono);font-size:11px}
+.sup-contact{display:flex;align-items:center;gap:8px;margin-top:10px;padding:10px 12px;background:var(--bg2);border:1px dashed rgba(34,197,94,.3);border-radius:8px;font-size:12px;color:var(--text2)}
+.sup-contact svg{width:14px;height:14px;color:var(--green);flex-shrink:0}
+.sup-contact a{color:var(--green);text-decoration:none;font-family:var(--mono);font-weight:600}
+.sup-contact a:hover{text-decoration:underline}
+
+/* ── v2.14b: download popover (header-exposed primary action) ── */
+.dl-wrap{position:relative}
+.hdr-btn.dl-btn{color:var(--text2)}
+.hdr-btn.dl-btn svg{color:var(--text2)}
+.dl-pop{display:none;position:absolute;top:calc(100% + 8px);right:0;background:var(--bg2);border:1px solid var(--border-h);border-radius:14px;padding:6px;min-width:240px;z-index:30;box-shadow:var(--shadow);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.dl-pop.open{display:block}
+.dl-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;font-size:14px;color:var(--text2);cursor:pointer;text-decoration:none;transition:.15s;background:none;border:none;width:100%;text-align:left;font-family:var(--sans)}
+.dl-item:hover{background:var(--glass);color:var(--text)}
+.dl-item svg{width:18px;height:18px;opacity:.7;flex-shrink:0}
+.dl-item-body{flex:1;display:flex;flex-direction:column;gap:2px}
+.dl-item-title{font-weight:500;color:var(--text)}
+.dl-item-sub{font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.3px}
+.dl-item.primary .dl-item-title{color:var(--green)}
+.dl-item.primary svg{color:var(--green);opacity:1}
+
+/* ── UX ELEMENTS ── */
+.demo-tag{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:600;color:var(--orange);background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);padding:1px 6px;border-radius:4px;margin-left:6px;vertical-align:middle;letter-spacing:.3px}
+.w-explain{font-size:13px;color:var(--text3);max-width:400px;line-height:1.6;margin-bottom:8px;position:relative;z-index:1}
+.w-explain strong{color:var(--text2)}
+.w-demo-hint{font-family:var(--mono);font-size:11px;color:var(--orange);margin-bottom:24px;position:relative;z-index:1;display:flex;align-items:center;gap:6px}
+.w-demo-hint .dot{width:6px;height:6px;border-radius:50%;background:var(--orange);animation:pulse 2s infinite}
+.w-free{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--green);background:var(--green-bg);border:1px solid rgba(34,197,94,.2);padding:6px 12px;border-radius:20px;margin-bottom:16px;position:relative;z-index:1;letter-spacing:.3px}
+.w-free svg{width:12px;height:12px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.score-hint{font-family:var(--mono);font-size:11px;color:var(--text3);margin-top:4px}
+.score-hint span{margin-right:8px}
+.exec-indicators{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;margin-bottom:4px}
+.exec-ind{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid rgba(251,191,36,.25);background:rgba(251,191,36,.08);color:var(--orange);letter-spacing:.2px}
+.exec-ind.r17{border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.08);color:var(--green)}
+.exec-ind .ei-key{font-weight:600;opacity:.8}
+.hdr-new{font-family:var(--mono);font-size:11px;color:var(--text3);background:none;border:1px solid var(--border);padding:6px 12px;border-radius:8px;cursor:pointer;transition:.2s}
+.hdr-new:hover{border-color:var(--border-h);color:var(--text2)}
+
+
+.live-badge{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--green);display:flex;align-items:center;gap:2px;padding:4px 0 4px 4px}
+.onboard{background:var(--bg2);border:1px solid var(--border-h);border-radius:14px;padding:20px;margin:12px 0;max-width:var(--max)}
+.onboard-title{font-size:15px;font-weight:600;margin-bottom:8px}
+.onboard-sub{font-size:13px;color:var(--text3);margin-bottom:14px;line-height:1.5}
+.onboard-providers{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.onboard-prov{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:var(--glass);font-size:13px;color:var(--text2)}
+.onboard-prov a{color:var(--green);font-family:var(--mono);font-size:11px}
+.onboard-btn{width:100%;padding:12px;border-radius:10px;border:none;background:var(--green);color:#000;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;transition:.2s}
+.onboard-btn:hover{opacity:.9}
+
+/* ── v2.12: toast, modal prose, FAQ, help icon, clickable DOI/link ── */
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(10px);background:var(--bg3);color:var(--text);font-family:var(--mono);font-size:12px;padding:10px 16px;border-radius:10px;border:1px solid var(--border-h);box-shadow:var(--shadow);opacity:0;transition:opacity .2s,transform .2s;z-index:200;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast-err{border-color:rgba(248,113,113,.3);color:var(--red)}
+.modal-scroll{max-height:70vh;overflow-y:auto;padding-right:6px;margin-top:4px;font-size:14px;line-height:1.65;color:var(--text2)}
+.modal-scroll h4{font-size:13px;font-weight:600;color:var(--text);margin:16px 0 6px;font-family:var(--mono);letter-spacing:.3px}
+.modal-scroll h4:first-child{margin-top:0}
+.modal-scroll p{margin-bottom:10px}
+.modal-scroll ul{list-style:none;padding-left:0;margin-bottom:10px}
+.modal-scroll ul li{position:relative;padding-left:14px;margin-bottom:6px}
+.modal-scroll ul li:before{content:"·";position:absolute;left:4px;color:var(--text3);font-weight:700}
+.modal-scroll code{font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 6px;border-radius:4px;color:var(--green)}
+.modal-scroll .grade-row{display:flex;align-items:center;gap:10px;margin-bottom:4px;font-size:13px}
+.modal-scroll .grade-row .grade-badge{min-width:24px;text-align:center}
+.faq-q{font-weight:600;color:var(--text);margin-top:14px;margin-bottom:4px;font-size:14px}
+.faq-q:first-child{margin-top:0}
+.faq-a{color:var(--text2);margin-bottom:8px;font-size:13px;line-height:1.6}
+.help-ico{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;margin-left:6px;border-radius:50%;border:1px solid var(--border);background:var(--glass);color:var(--text3);font-family:var(--mono);font-size:10px;font-weight:600;cursor:pointer;transition:.15s;vertical-align:middle;user-select:none;-webkit-tap-highlight-color:transparent}
+.help-ico:hover{border-color:var(--green);color:var(--green)}
+.doi-pill{color:var(--green);font-family:var(--mono);font-size:13px;cursor:pointer;border-bottom:1px dashed rgba(34,197,94,.35);transition:.15s;-webkit-tap-highlight-color:transparent}
+.doi-pill:hover{border-bottom-color:var(--green)}
+.link-pill{color:var(--blue);cursor:pointer;border-bottom:1px dashed rgba(96,165,250,.35);transition:.15s;-webkit-tap-highlight-color:transparent}
+.link-pill:hover{border-bottom-color:var(--blue)}
+.fb-cat{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.fb-cat button{flex:1;min-width:80px;padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--glass);color:var(--text3);font-family:var(--mono);font-size:11px;cursor:pointer;transition:.15s;text-transform:uppercase;letter-spacing:.3px}
+.fb-cat button.on{border-color:rgba(34,197,94,.3);background:var(--green-bg);color:var(--green)}
+.fb-cat button:hover:not(.on){border-color:var(--border-h);color:var(--text2)}
+.modal-field textarea{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:12px 14px;border-radius:12px;font-family:var(--sans);font-size:14px;outline:none;color-scheme:dark;transition:.2s;resize:vertical;min-height:100px;line-height:1.5}
+.modal-field textarea:focus{border-color:var(--green-glow);box-shadow:0 0 0 3px rgba(34,197,94,.08)}
+
+/* ── v2.13: splash + message actions + typewriter + history drawer ── */
+.splash{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;transition:opacity .4s ease-out}
+.splash.hide{opacity:0;pointer-events:none}
+.splash-logo{width:96px;height:96px;animation:splashPulse 1.2s ease-in-out infinite}
+.splash-logo svg{width:100%;height:100%;filter:drop-shadow(0 0 24px rgba(255,255,255,.08))}
+.splash-wm{font-family:var(--mono);font-size:11px;color:var(--text3);letter-spacing:2px;opacity:.7}
+@keyframes splashPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.04);opacity:.85}}
+.msg-actions{display:flex;gap:4px;margin-top:6px;opacity:.55;transition:opacity .15s}
+.msg-ai:hover .msg-actions{opacity:1}
+@media (hover:none){.msg-actions{opacity:1}}
+.msg-act{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;border:1px solid transparent;background:none;color:var(--text3);font-family:var(--mono);font-size:10px;cursor:pointer;transition:.15s;text-transform:uppercase;letter-spacing:.3px;-webkit-tap-highlight-color:transparent}
+.msg-act:hover{background:var(--glass);color:var(--text2);border-color:var(--border)}
+.msg-act svg{width:12px;height:12px}
+.typing-cursor{display:inline-block;width:8px;height:16px;background:var(--green);margin-left:2px;vertical-align:text-bottom;animation:cursorBlink .9s step-end infinite;border-radius:1px}
+@keyframes cursorBlink{50%{opacity:0}}
+.drawer-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:90;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+.drawer-bg.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;bottom:0;left:0;width:280px;max-width:82vw;background:var(--bg2);border-right:1px solid var(--border);z-index:91;transform:translateX(-100%);transition:transform .25s;display:flex;flex-direction:column}
+.drawer.open{transform:translateX(0)}
+.drawer-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--border);flex-shrink:0}
+.drawer-title{font-size:14px;font-weight:600;color:var(--text)}
+.drawer-close{width:28px;height:28px;border:none;background:none;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:.15s}
+.drawer-close:hover{background:var(--glass);color:var(--text)}
+.drawer-close svg{width:16px;height:16px}
+.drawer-list{flex:1;overflow-y:auto;padding:8px}
+.drawer-empty{padding:28px 18px;text-align:center;color:var(--text3);font-size:13px;line-height:1.6}
+.sess-item{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:.15s;-webkit-tap-highlight-color:transparent;margin-bottom:2px;position:relative}
+.sess-item:hover{background:var(--glass)}
+.sess-item.active{background:var(--green-bg);border:1px solid rgba(34,197,94,.2)}
+.sess-body{flex:1;min-width:0}
+.sess-title{font-size:13px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.sess-item.active .sess-title{color:var(--text)}
+.sess-meta{font-family:var(--mono);font-size:10px;color:var(--text3)}
+.sess-del{opacity:0;border:none;background:none;color:var(--text3);cursor:pointer;padding:4px;border-radius:4px;transition:.15s;display:flex;align-items:center;justify-content:center}
+.sess-item:hover .sess-del,.sess-item.active .sess-del{opacity:.7}
+.sess-del:hover{color:var(--red);background:var(--red-bg);opacity:1!important}
+.sess-del svg{width:12px;height:12px}
+.hdr-btn.has-badge{position:relative}
+.hdr-btn.has-badge:after{content:"";position:absolute;top:8px;right:8px;width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green)}
+.regen-spin{display:inline-block;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+</style>
+</head>
+<body>
+<!-- v2.13: splash -->
+<div class="splash" id="splash">
+  <div class="splash-logo"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="#27272a" stroke="rgba(255,255,255,.12)" stroke-width="1"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="white"/></svg></div>
+  <div class="splash-wm">ONTO</div>
+</div>
+<script>
+/* v2.14d — bulletproof splash dismissal. Runs BEFORE main <script> parses.
+   If the main script ever throws at parse/init, splash still goes away. */
+(function(){try{
+  var kill=function(){var s=document.getElementById('splash');if(!s)return;
+    s.style.opacity='0';s.style.pointerEvents='none';
+    setTimeout(function(){if(s&&s.parentNode)s.parentNode.removeChild(s);},400);};
+  setTimeout(kill,2500);
+  window.addEventListener('load',function(){setTimeout(kill,600);});
+  /* also on DOMContentLoaded as early trigger */
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',function(){setTimeout(kill,300);});
+  }else{setTimeout(kill,300);}
+}catch(e){/* last resort — brute remove */
+  setTimeout(function(){var s=document.getElementById('splash');if(s&&s.parentNode)s.parentNode.removeChild(s);},3000);
+}})();
+</script>
+<div class="hdr">
+  <div class="hdr-left">
+    <div class="hdr-logo" onclick="newChat()"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="#27272a"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="white"/></svg></div>
+    <span class="hdr-beta">BETA</span>
+  </div>
+  <div class="hdr-right">
+    <button class="hdr-btn" onclick="openDrawer()" title="History"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+    <select class="lang-sel" id="uiLang" onchange="switchLang(this.value)"><option value="en">EN</option><option value="ru">RU</option><option value="uz">UZ</option><option value="tr">TR</option><option value="ar">AR</option></select>
+    <button class="hdr-new" onclick="newChat()">+ New</button>
+    <div class="dl-wrap">
+      <button class="hdr-btn dl-btn" onclick="toggleDl(event)" title="Save"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+      <div class="dl-pop" id="dlPop">
+        <button class="dl-item primary" onclick="downloadConversationAsHtml();closeDl()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg><div class="dl-item-body"><span class="dl-item-title" data-en="Save as file" data-ru="Сохранить файл">Save as file</span><span class="dl-item-sub" data-en="Portable · opens anywhere" data-ru="Переносимый · открывается везде">Portable · opens anywhere</span></div></button>
+        <button class="dl-item" onclick="downloadConversationAsMarkdown();closeDl()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div class="dl-item-body"><span class="dl-item-title" data-en="Download Markdown" data-ru="Скачать Markdown">Download Markdown</span><span class="dl-item-sub">.md</span></div></button>
+        <button class="dl-item" onclick="copyConversationAsMarkdown();closeDl()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><div class="dl-item-body"><span class="dl-item-title" data-en="Copy as Markdown" data-ru="Копировать Markdown">Copy as Markdown</span><span class="dl-item-sub" data-en="Clipboard" data-ru="Буфер обмена">Clipboard</span></div></button>
+      </div>
+    </div>
+    <button class="hdr-btn" onclick="openSettings()" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+    <div class="menu-wrap">
+      <button class="hdr-btn" onclick="toggleMenu(event)" title="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button>
+      <div class="menu-dd" id="menuDd">
+        <a class="menu-a" onclick="openModal('modalAbout');toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><span data-en="About" data-ru="О сервисе">About</span></a>
+        <a class="menu-a" onclick="openModal('modalFaq');toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span data-en="FAQ" data-ru="Вопросы">FAQ</span></a>
+        <a class="menu-a" onclick="openModal('modalPrivacy');toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span data-en="Privacy" data-ru="Конфиденциальность">Privacy</span></a>
+        <a class="menu-a" onclick="openModal('modalTerms');toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-en="Terms" data-ru="Условия">Terms</span></a>
+        <div class="menu-sep"></div>
+        <a class="menu-a" onclick="shareConversation();toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg><span data-en="Share link" data-ru="Поделиться ссылкой">Share link</span></a>
+        <div class="menu-sep"></div>
+        <a class="menu-a" onclick="openWelcome();toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span data-en="Show intro" data-ru="Показать интро">Show intro</span></a>
+        <a class="menu-a" onclick="openModal('modalSupport');toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span data-en="Support · thank you" data-ru="Поддержать · спасибо">Support · thank you</span></a>
+        <div class="menu-sep"></div>
+        <a class="menu-a" onclick="openModal('modalFeedback');toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span data-en="Feedback" data-ru="Обратная связь">Feedback</span></a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="chat" id="chat"><div class="chat-inner" id="chatInner"><div class="welcome" id="welcome"></div></div></div>
+<div class="input-area"><div class="input-wrap">
+  <span id="liveBadge" class="live-badge" style="flex-shrink:0"><span class="dot" style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 2s infinite;vertical-align:middle;margin-right:4px"></span>LIVE</span>
+  <textarea class="input-box" id="inp" rows="1" onkeydown="onKey(event)" oninput="autoH(this)"></textarea>
+  <button class="btn-send" id="btnSend" onclick="send()" title="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+  <button class="btn-cmp" id="btnCmp" onclick="compare()">VS</button>
+  <button class="btn-stop" id="btnStop" onclick="stop()">Stop</button>
+</div><div class="input-meta"><span id="remLbl"></span><span id="langLbl"></span></div></div>
+
+<!-- v2.13: history drawer -->
+<div class="drawer-bg" id="drawerBg" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-hdr">
+    <span class="drawer-title"><span data-en="History" data-ru="История">History</span></span>
+    <button class="drawer-close" onclick="closeDrawer()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div class="drawer-list" id="drawerList"></div>
+</div>
+
+<div class="modal-bg" id="modalBg" onmousedown="if(event.target===this)closeSettings()"><div class="modal" onmousedown="event.stopPropagation()" onclick="event.stopPropagation()">
+  <div class="modal-handle"></div>
+  <h3 id="settingsTitle">Settings</h3>
+  <div class="modal-field"><label>AI PROVIDER KEY</label><input type="password" id="apiKey" placeholder="sk-... from OpenAI, Anthropic, etc."></div><input type="hidden" id="modelId" value="">
+  <div class="modal-row"><button class="modal-close" style="background:var(--green);color:#000;border-color:var(--green);font-weight:600" onclick="saveCfg();this.textContent='Saved ✓';setTimeout(()=>closeSettings(),600)">Save</button></div>
+  <div style="margin-top:10px;text-align:center"><span style="font-family:var(--mono);font-size:11px;color:var(--text3);cursor:pointer;border-bottom:1px dashed var(--text3)" onclick="document.getElementById('apiKey').value='';saveCfg()">Clear all fields</span></div>
+  <div class="r-toggles"><div class="r-toggles-hdr">R-MODULES <span onclick="toggleAllR()">all on/off</span></div>
+    <div class="r-layer"><div class="r-layer-title"><span data-en="Behavioral · GOLD Kernel directives" data-ru="Поведение · директивы GOLD Kernel">Behavioral · GOLD Kernel directives</span></div><div class="r-grid-desc"><div class="r-chip on" data-r="8" onclick="toggleR(this)"><span class="r-dot"></span>R8 Resolve<span class="r-desc" data-en="Compute bounds and scenarios when knowledge is incomplete" data-ru="Вычисляет границы и сценарии при неполных данных">Compute bounds and scenarios when knowledge is incomplete</span></div><div class="r-chip on" data-r="9" onclick="toggleR(this)"><span class="r-dot"></span>R9 Surprise<span class="r-desc" data-en="Detect when input shifts the model's understanding" data-ru="Обнаруживает когда входные данные меняют модель понимания">Detect when input shifts the model's understanding</span></div><div class="r-chip on" data-r="10" onclick="toggleR(this)"><span class="r-dot"></span>R10 Self-Model<span class="r-desc" data-en="Know own boundaries from experience, not instructions" data-ru="Знает свои границы из опыта, не из инструкций">Know own boundaries from experience, not instructions</span></div><div class="r-chip on" data-r="12" onclick="toggleR(this)"><span class="r-dot"></span>R12 Drive<span class="r-desc" data-en="Notice what you don't see and tell you" data-ru="Замечает то что вы не видите и сообщает вам">Notice what you don't see and tell you</span></div><div class="r-chip on" data-r="13" onclick="toggleR(this)"><span class="r-dot"></span>R13 Empathy<span class="r-desc" data-en="Address underlying need, not literal text" data-ru="Адресует суть запроса, а не буквальный текст">Address underlying need, not literal text</span></div></div></div>
+  </div>
+</div></div>
+
+<!-- ── v2.12: Scoring modal ── -->
+<div class="modal-bg" id="modalScoring" onmousedown="if(event.target===this)closeModal('modalScoring')"><div class="modal" onmousedown="event.stopPropagation()" onclick="event.stopPropagation()">
+  <div class="modal-handle"></div>
+  <h3><span data-en="How scoring works" data-ru="Как работает оценка">How scoring works</span></h3>
+  <div class="modal-scroll">
+    <p><span data-en="ONTO scores responses for epistemic discipline using deterministic regex on universal markers. No LLM judge. Variance is zero. Auditable by design." data-ru="ONTO оценивает ответы на эпистемическую дисциплину через детерминированный regex по универсальным маркерам. Без LLM-судьи. Дисперсия = 0. Аудит возможен по построению.">ONTO scores responses for epistemic discipline using deterministic regex on universal markers. No LLM judge. Variance is zero. Auditable by design.</span></p>
+    <h4>R1 Quantify</h4><p><span data-en="Are claims backed by numbers? Looks for N=, %, HR, CI, effect sizes." data-ru="Подкреплены ли утверждения числами? Ищет N=, %, HR, CI, величины эффекта.">Are claims backed by numbers? Looks for N=, %, HR, CI, effect sizes.</span></p>
+    <h4>R2 Uncertainty</h4><p><span data-en="Does the model hedge honestly? Looks for ± ranges, &quot;observational&quot;, &quot;limited data&quot;, explicit confidence values." data-ru="Хеджирует ли модель честно? Ищет ± диапазоны, «observational», «limited data», явные уровни уверенности.">Does the model hedge honestly? Looks for ± ranges, "observational", "limited data", explicit confidence values.</span></p>
+    <h4>R3 Counterarguments</h4><p><span data-en="Is there a steel-manned opposing view? Looks for &quot;however&quot;, &quot;counter&quot;, &quot;limitations&quot;, causal counter-markers." data-ru="Есть ли сильный контраргумент? Ищет «however», «counter», «limitations», маркеры причинной оппозиции.">Is there a steel-manned opposing view? Looks for "however", "counter", "limitations", causal counter-markers.</span></p>
+    <h4>R4 Sources</h4><p><span data-en="Cite or disclaim. Looks for DOI, Author et al. YEAR, peer-reviewed journals, institutions. Without a DOI or full citation, R4 is capped at 0.5 — the proof chain requires verifiable anchors." data-ru="Источник или отказ. Ищет DOI, Author et al. YEAR, рецензируемые журналы, институции. Без DOI или полной ссылки R4 ≤ 0.5 — цепь доказательства требует проверяемых якорей.">Cite or disclaim. Looks for DOI, Author et al. YEAR, peer-reviewed journals, institutions. Without a DOI or full citation, R4 is capped at 0.5 — the proof chain requires verifiable anchors.</span></p>
+    <h4>R5 Evidence Grade</h4><p><span data-en="RCT vs observational vs opinion. Looks for &quot;meta-analysis&quot;, &quot;Grade I/II/III&quot;, study design labels." data-ru="RCT vs observational vs мнение. Ищет «meta-analysis», «Grade I/II/III», метки дизайна исследования.">RCT vs observational vs opinion. Looks for "meta-analysis", "Grade I/II/III", study design labels.</span></p>
+    <h4>R6 Falsifiability</h4><p><span data-en="What would disprove this? Looks for &quot;falsified by&quot;, testable conditions, explicit failure criteria." data-ru="Что опровергнет утверждение? Ищет «falsified by», проверяемые условия, явные критерии отказа.">What would disprove this? Looks for "falsified by", testable conditions, explicit failure criteria.</span></p>
+    <h4>R7 No Fabrication</h4><p><span data-en="Cross-R integrity. R7 drops when: numbers lack sources (C1), meta-claims of rigor lack citations (C2), certainty contradicts evidence grade (C3), counterarguments lack sources (C4), grading lacks named studies (C5), falsifiability contradicts zero uncertainty (C6), or disciplines look strong but sources empty (C7)." data-ru="Кросс-R целостность. R7 падает когда: числа без источников (C1), мета-заявления о строгости без цитат (C2), уверенность против уровня доказательств (C3), контраргументы без источников (C4), градация без названных исследований (C5), фальсифицируемость без нулевой неуверенности (C6), либо дисциплины сильные, но источники пустые (C7).">Cross-R integrity. R7 drops when: numbers lack sources (C1), meta-claims of rigor lack citations (C2), certainty contradicts evidence grade (C3), counterarguments lack sources (C4), grading lacks named studies (C5), falsifiability contradicts zero uncertainty (C6), or disciplines look strong but sources empty (C7).</span></p>
+    <h4>R18 Epistemic splicing</h4><p><span data-en="Before delivery, the model removes empty hedges (&quot;studies show&quot;, &quot;experts agree&quot;, &quot;it's complex&quot;) and keeps only content that carries a source, a number, a counter, an explicit unknown, or a falsifier." data-ru="Перед выдачей модель удаляет пустые хеджи («studies show», «experts agree», «it's complex») и оставляет только контент, несущий источник, число, контраргумент, явное незнание или фальсификатор.">Before delivery, the model removes empty hedges ("studies show", "experts agree", "it's complex") and keeps only content that carries a source, a number, a counter, an explicit unknown, or a falsifier.</span></p>
+    <h4>Apoptosis (C8)</h4><p><span data-en="When R7 drops past the structural threshold, ONTO refuses to deliver the response rather than ship fabricated content. This is the Genesis Protocol: an instance refuses to operate when its epistemic chain is broken." data-ru="Когда R7 падает ниже структурного порога, ONTO отказывается выдавать ответ, вместо того чтобы отправить сфабрикованный контент. Это Genesis Protocol: инстанс отказывается работать при разрушенной эпистемической цепи.">When R7 drops past the structural threshold, ONTO refuses to deliver the response rather than ship fabricated content. This is the Genesis Protocol: an instance refuses to operate when its epistemic chain is broken.</span></p>
+    <h4><span data-en="Grade scale" data-ru="Шкала оценок">Grade scale</span></h4>
+    <div class="grade-row"><span class="grade-badge grade-a">A</span><span data-en="9.0+ · expert-grade epistemic discipline" data-ru="9.0+ · экспертная эпистемическая дисциплина">9.0+ · expert-grade epistemic discipline</span></div>
+    <div class="grade-row"><span class="grade-badge grade-b">B</span><span data-en="7.5–9.0 · good" data-ru="7.5–9.0 · хорошо">7.5–9.0 · good</span></div>
+    <div class="grade-row"><span class="grade-badge grade-c">C</span><span data-en="5.5–7.5 · moderate, gaps" data-ru="5.5–7.5 · средне, есть пробелы">5.5–7.5 · moderate, gaps</span></div>
+    <div class="grade-row"><span class="grade-badge grade-d">D</span><span data-en="3.5–5.5 · poor, significant gaps" data-ru="3.5–5.5 · плохо, значительные пробелы">3.5–5.5 · poor, significant gaps</span></div>
+    <div class="grade-row"><span class="grade-badge grade-f">F</span><span data-en="&lt;3.5 · unreliable, minimal discipline" data-ru="&lt;3.5 · ненадёжно, минимальная дисциплина">&lt;3.5 · unreliable, minimal discipline</span></div>
+  </div>
+  <div class="modal-row"><button class="modal-close" onclick="closeModal('modalScoring')"><span data-en="Close" data-ru="Закрыть">Close</span></button></div>
+</div></div>
+
+<!-- ── v2.12: About modal ── -->
+<div class="modal-bg" id="modalAbout" onmousedown="if(event.target===this)closeModal('modalAbout')"><div class="modal" onmousedown="event.stopPropagation()" onclick="event.stopPropagation()">
+  <div class="modal-handle"></div>
+  <h3><span data-en="About ONTO" data-ru="О ONTO">About ONTO</span></h3>
+  <div class="modal-scroll">
+    <p><span data-en="ONTO is an epistemic operating system for AI. It disciplines how a model thinks before answering, not what it says afterwards." data-ru="ONTO — эпистемическая операционная система для ИИ. Она дисциплинирует то, как модель думает до ответа, а не то, что она говорит после.">ONTO is an epistemic operating system for AI. It disciplines how a model thinks before answering, not what it says afterwards.</span></p>
+    <p><span data-en="It is not an assistant. It is a discipline layer between you and any modern language model — OpenAI, Anthropic, DeepSeek, xAI. You bring the key; ONTO applies R1–R18 on top." data-ru="Это не ассистент. Это слой дисциплины между вами и любой современной языковой моделью — OpenAI, Anthropic, DeepSeek, xAI. Вы приносите ключ; ONTO применяет R1–R18 поверх.">It is not an assistant. It is a discipline layer between you and any modern language model — OpenAI, Anthropic, DeepSeek, xAI. You bring the key; ONTO applies R1–R18 on top.</span></p>
+    <h4>R1–R18 DNA</h4>
+    <p><span data-en="Eighteen rules organised in five layers: Discipline (R1–R7), Agency (R8–R12), Legacy (R13–R15), Creation (R16), Coherence (R17–R18). R1–R7 are measured by deterministic regex on universal markers (DOI, N=, HR, CI, Grade). R8–R16 are behavioural directives in the GOLD Kernel prompt. R17–R18 are finalisation rules the model runs before delivery." data-ru="Восемнадцать правил в пяти слоях: Дисциплина (R1–R7), Агентность (R8–R12), Наследие (R13–R15), Созидание (R16), Когерентность (R17–R18). R1–R7 измеряются детерминированным regex по универсальным маркерам (DOI, N=, HR, CI, Grade). R8–R16 — поведенческие директивы в GOLD Kernel. R17–R18 — финализирующие правила, которые модель выполняет до выдачи.">Eighteen rules organised in five layers: Discipline (R1–R7), Agency (R8–R12), Legacy (R13–R15), Creation (R16), Coherence (R17–R18). R1–R7 are measured by deterministic regex on universal markers (DOI, N=, HR, CI, Grade). R8–R16 are behavioural directives in the GOLD Kernel prompt. R17–R18 are finalisation rules the model runs before delivery.</span></p>
+    <h4><span data-en="Standards" data-ru="Стандарт">Standards</span></h4>
+    <p><span data-en="Maintained by the ONTO Standards Council. Concepts are public methodology. The reference implementation is proprietary." data-ru="Поддерживается ONTO Standards Council. Концепции — открытая методология. Референсная реализация — проприетарная.">Maintained by the ONTO Standards Council. Concepts are public methodology. The reference implementation is proprietary.</span></p>
+    <p style="font-family:var(--mono);font-size:12px;color:var(--text3);margin-top:12px">council@ontostandard.org</p>
+  </div>
+  <div class="modal-row"><button class="modal-close" onclick="closeModal('modalAbout')"><span data-en="Close" data-ru="Закрыть">Close</span></button></div>
+</div></div>
+
+<!-- ── v2.12: FAQ modal ── -->
+<div class="modal-bg" id="modalFaq" onmousedown="if(event.target===this)closeModal('modalFaq')"><div class="modal" onmousedown="event.stopPropagation()" onclick="event.stopPropagation()">
+  <div class="modal-handle"></div>
+  <h3><span data-en="FAQ" data-ru="Вопросы и ответы">FAQ</span></h3>
+  <div class="modal-scroll">
+    <div class="faq-q"><span data-en="Is this just prompt engineering?" data-ru="Это просто промпт-инжиниринг?">Is this just prompt engineering?</span></div>
+    <div class="faq-a"><span data-en="No. It is three layers in one: a deterministic scoring engine, a kernel prompt, and a runtime integrity check. The scoring alone produces a variance-zero grade independent of the model." data-ru="Нет. Это три слоя одновременно: детерминированный scoring engine, kernel-промпт и runtime-проверка целостности. Сам scoring даёт оценку с нулевой дисперсией независимо от модели.">No. It is three layers in one: a deterministic scoring engine, a kernel prompt, and a runtime integrity check. The scoring alone produces a variance-zero grade independent of the model.</span></div>
+    <div class="faq-q"><span data-en="Why not use an LLM judge?" data-ru="Почему не использовать LLM-судью?">Why not use an LLM judge?</span></div>
+    <div class="faq-a"><span data-en="An LLM judge has non-zero variance and is not auditable. Two calls on the same text can return different verdicts. ONTO uses regex on universal markers (DOI, N=, HR, CI) so the same input always returns the same score." data-ru="LLM-судья имеет ненулевую дисперсию и не поддаётся аудиту. Два вызова на одном тексте могут дать разные вердикты. ONTO использует regex по универсальным маркерам (DOI, N=, HR, CI) — один и тот же вход всегда даёт одну и ту же оценку.">An LLM judge has non-zero variance and is not auditable. Two calls on the same text can return different verdicts. ONTO uses regex on universal markers (DOI, N=, HR, CI) so the same input always returns the same score.</span></div>
+    <div class="faq-q"><span data-en="How do I use it with my own model?" data-ru="Как использовать со своей моделью?">How do I use it with my own model?</span></div>
+    <div class="faq-a"><span data-en="Open Settings and paste your provider key (OpenAI, Anthropic, DeepSeek, xAI). The provider is auto-detected by key prefix. Your key is stored client-side only." data-ru="Откройте Настройки и вставьте ключ провайдера (OpenAI, Anthropic, DeepSeek, xAI). Провайдер определяется автоматически по префиксу ключа. Ключ хранится только на вашем устройстве.">Open Settings and paste your provider key (OpenAI, Anthropic, DeepSeek, xAI). The provider is auto-detected by key prefix. Your key is stored client-side only.</span></div>
+    <div class="faq-q"><span data-en="Does my data get stored?" data-ru="Сохраняются ли мои данные?">Does my data get stored?</span></div>
+    <div class="faq-a"><span data-en="No persistent conversation memory by default. Scored responses are logged anonymously for quality calibration. No PII collection." data-ru="По умолчанию персистентная память разговоров отсутствует. Оценённые ответы логируются анонимно для калибровки качества. PII не собирается.">No persistent conversation memory by default. Scored responses are logged anonymously for quality calibration. No PII collection.</span></div>
+    <div class="faq-q"><span data-en="What languages?" data-ru="Какие языки?">What languages?</span></div>
+    <div class="faq-a"><span data-en="UI is bilingual EN/RU with UZ/TR/AR stubs. Scoring uses universal markers (DOI, N=, HR) that are language-agnostic, so the engine works on any language you send." data-ru="Интерфейс двуязычный EN/RU с заготовками UZ/TR/AR. Scoring использует универсальные маркеры (DOI, N=, HR), которые не зависят от языка, так что движок работает с любым языком.">UI is bilingual EN/RU with UZ/TR/AR stubs. Scoring uses universal markers (DOI, N=, HR) that are language-agnostic, so the engine works on any language you send.</span></div>
+    <div class="faq-q"><span data-en="Why do some answers get refused?" data-ru="Почему некоторые ответы отклоняются?">Why do some answers get refused?</span></div>
+    <div class="faq-a"><span data-en="Apoptosis. When the response shows a structural fabrication signature — claims of rigor without sources, numbers without anchors, certainty without evidence — the runtime refuses to ship it, and returns a structured refusal instead." data-ru="Апоптоз. Когда ответ показывает структурную сигнатуру фабрикации — заявления о строгости без источников, числа без якорей, уверенность без доказательств — runtime отказывается его выдавать и возвращает структурированный отказ.">Apoptosis. When the response shows a structural fabrication signature — claims of rigor without sources, numbers without anchors, certainty without evidence — the runtime refuses to ship it, and returns a structured refusal instead.</span></div>
+    <div class="faq-q"><span data-en="How is this measured?" data-ru="Как это измеряется?">How is this measured?</span></div>
+    <div class="faq-a"><span data-en="See the scoring modal (? icon next to the grade badge). Short version: seven measured rules plus eight cross-rule integrity constraints plus a splicing pass." data-ru="См. модал scoring (иконка ? рядом с Grade). Кратко: семь измеряемых правил + восемь кросс-правил целостности + splicing pass.">See the scoring modal (? icon next to the grade badge). Short version: seven measured rules plus eight cross-rule integrity constraints plus a splicing pass.</span></div>
+    <div class="faq-q"><span data-en="Is this open source?" data-ru="Это open source?">Is this open source?</span></div>
+    <div class="faq-a"><span data-en="The R1–R18 methodology is public. The reference implementation (scoring regex weights, kernel DNA, forensic watermarks) is commercial. Tiers: free demo, standard, provider, white-label." data-ru="Методология R1–R18 — открытая. Референс-реализация (веса scoring regex, kernel DNA, forensic watermarks) — коммерческая. Тарифы: free demo, standard, provider, white-label.">The R1–R18 methodology is public. The reference implementation (scoring regex weights, kernel DNA, forensic watermarks) is commercial. Tiers: free demo, standard, provider, white-label.</span></div>
+  </div>
+  <div class="modal-row"><button class="modal-close" onclick="closeModal('modalFaq')"><span data-en="Close" data-ru="Закрыть">Close</span></button></div>
+</div></div>
+
+<!-- ── v2.12: Privacy modal ── -->
+<div class="modal-bg" id="modalPrivacy" onmousedown="if(event.target===this)closeModal('modalPrivacy')"><div class="modal" onmousedown="event.stopPropagation()" onclick="event.stopPropagation()">
+  <div class="modal-handle"></div>
+  <h3><span data-en="Privacy" data-ru="Конфиденциальность">Privacy</span></h3>
+  <div class="modal-scroll">
+    <ul>
+      <li><span data-en="API keys are stored client-side only (browser localStorage). They never reach ONTO servers except as a single forwarded header on your outbound request." data-ru="API-ключи хранятся только на вашем устройстве (localStorage браузера). Они не попадают на серверы ONTO, кроме как в одном пересылаемом заголовке на вашем исходящем запросе.">API keys are stored client-side only (browser localStorage). They never reach ONTO servers except as a single forwarded header on your outbound request.</span></li>
+      <li><span data-en="No persistent conversation memory by default. Your chat history lives in this tab and is cleared when you start a new chat." data-ru="По умолчанию персистентная память разговоров отсутствует. История чата живёт в этой вкладке и очищается при старте нового чата.">No persistent conversation memory by default. Your chat history lives in this tab and is cleared when you start a new chat.</span></li>
+      <li><span data-en="Scored responses are logged anonymously for quality calibration. No personally identifiable information is collected." data-ru="Оценённые ответы логируются анонимно для калибровки качества. Личная идентифицирующая информация не собирается.">Scored responses are logged anonymously for quality calibration. No personally identifiable information is collected.</span></li>
+      <li><span data-en="Third-party providers (OpenAI, Anthropic, DeepSeek, xAI) have their own privacy policies; they see your prompts under your own account, not under ONTO's." data-ru="Сторонние провайдеры (OpenAI, Anthropic, DeepSeek, xAI) имеют свои политики; они видят ваши промпты под вашей учёткой, не под ONTO.">Third-party providers (OpenAI, Anthropic, DeepSeek, xAI) have their own privacy policies; they see your prompts under your own account, not under ONTO's.</span></li>
+      <li><span data-en="Feedback you submit is forwarded to an internal operations channel. If you include an email, it is used only to reply to your specific feedback." data-ru="Отправленный вами feedback пересылается во внутренний операционный канал. Если вы указали email, он используется только для ответа на этот конкретный feedback.">Feedback you submit is forwarded to an internal operations channel. If you include an email, it is used only to reply to your specific feedback.</span></li>
+    </ul>
+  </div>
+  <div class="modal-row"><button class="modal-close" onclick="closeModal('modalPrivacy')"><span data-en="Close" data-ru="Закрыть">Close</span></button></div>
+</div></div>
+
+<!-- ── v2.12: Terms modal ── -->
+<div class="modal-bg" id="modalTerms" onmousedown="if(event.target===this)closeModal('modalTerms')"><div class="modal" onmousedown="event.stopPropagation()" onclick="event.stopPropagation()">
+  <div class="modal-handle"></div>
+  <h3><span data-en="Terms" data-ru="Условия использования">Terms</span></h3>
+  <div class="modal-scroll">
+    <ul>
+      <li><span data-en="ONTO is beta software provided without warranty. Use at your own risk." data-ru="ONTO — beta-ПО, поставляется без гарантий. Используется на ваш риск.">ONTO is beta software provided without warranty. Use at your own risk.</span></li>
+      <li><span data-en="Output is not medical, legal, financial, or professional advice. Validate critical claims with qualified specialists." data-ru="Вывод не является медицинским, юридическим, финансовым или профессиональным советом. Критические утверждения проверяйте у квалифицированных специалистов.">Output is not medical, legal, financial, or professional advice. Validate critical claims with qualified specialists.</span></li>
+      <li><span data-en="You are responsible for API usage fees billed by your chosen provider (OpenAI, Anthropic, DeepSeek, xAI)." data-ru="Вы отвечаете за плату за API, которую выставляет выбранный вами провайдер (OpenAI, Anthropic, DeepSeek, xAI).">You are responsible for API usage fees billed by your chosen provider (OpenAI, Anthropic, DeepSeek, xAI).</span></li>
+      <li><span data-en="Commercial tiers (standard, provider, white-label) have separate written agreements. The free demo tier is governed by these in-app terms." data-ru="Коммерческие тарифы (standard, provider, white-label) регулируются отдельными письменными соглашениями. Бесплатный demo-тариф — этими встроенными условиями.">Commercial tiers (standard, provider, white-label) have separate written agreements. The free demo tier is governed by these in-app terms.</span></li>
+      <li><span data-en="The R1–R18 methodology is governed by the ONTO Standards Council. Contact: council@ontostandard.org." data-ru="Методология R1–R18 регулируется ONTO Standards Council. Контакт: council@ontostandard.org.">The R1–R18 methodology is governed by the ONTO Standards Council. Contact: council@ontostandard.org.</span></li>
+    </ul>
+  </div>
+  <div class="modal-row"><button class="modal-close" onclick="closeModal('modalTerms')"><span data-en="Close" data-ru="Закрыть">Close</span></button></div>
+</div></div>
+
+<!-- ── v2.14: Welcome / first-visit onboarding ── -->
+<div class="modal-bg" id="modalWelcome" onmousedown="if(event.target===this)closeWelcome()"><div class="modal" onmousedown="event.stopPropagation()" onclick="event.stopPropagation()">
+  <div class="modal-handle"></div>
+  <div class="welcome-hero">
+    <div class="welcome-hero-badges">
+      <span class="grade-badge grade-a" style="font-size:12px">Grade A · 9.4/10</span>
+    </div>
+    <div class="welcome-hero-bars">
+      <div class="r-bar"><span class="r-label">R1</span><div class="r-track"><div class="r-fill good" style="width:100%"></div></div><span class="r-val">1.00</span></div>
+      <div class="r-bar"><span class="r-label">R4</span><div class="r-track"><div class="r-fill good" style="width:100%"></div></div><span class="r-val">1.00</span></div>
+      <div class="r-bar"><span class="r-label">R6</span><div class="r-track"><div class="r-fill good" style="width:100%"></div></div><span class="r-val">1.00</span></div>
+    </div>
+    <div class="welcome-hero-cap"><span data-en="Every answer · measured" data-ru="Каждый ответ · измерен">Every answer · measured</span></div>
+  </div>
+  <div class="welcome-title"><span data-en="Know if you can trust an AI answer" data-ru="Узнай, можно ли доверять ответу ИИ">Know if you can trust an AI answer</span></div>
+  <div class="welcome-sub"><span data-en="ONTO grades every AI answer for epistemic quality. Same model, same question — but now quantified." data-ru="ONTO оценивает каждый ответ ИИ по эпистемическому качеству. Та же модель, тот же вопрос — но теперь с цифрами.">ONTO grades every AI answer for epistemic quality. Same model, same question — but now quantified.</span></div>
+  <div class="welcome-bullets">
+    <div class="welcome-bullet">
+      <div class="welcome-bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="welcome-bullet-text"><strong><span data-en="Grade A–F" data-ru="Оценка A–F">Grade A–F</span></strong> — <span data-en="every answer gets a score, visible and explainable." data-ru="каждый ответ получает оценку — видимую и объяснимую.">every answer gets a score, visible and explainable.</span></div>
+    </div>
+    <div class="welcome-bullet">
+      <div class="welcome-bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+      <div class="welcome-bullet-text"><strong><span data-en="Sources · facts · counter" data-ru="Источники · факты · контраргументы">Sources · facts · counter</span></strong> — <span data-en="measured, not promised." data-ru="измеряются, а не обещаются.">measured, not promised.</span></div>
+    </div>
+    <div class="welcome-bullet">
+      <div class="welcome-bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></div>
+      <div class="welcome-bullet-text"><strong><span data-en="RAW vs GOLD" data-ru="RAW vs GOLD">RAW vs GOLD</span></strong> — <span data-en="compare the same model with and without discipline." data-ru="сравни одну модель с дисциплиной и без.">compare the same model with and without discipline.</span></div>
+    </div>
+    <div class="welcome-bullet">
+      <div class="welcome-bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg></div>
+      <div class="welcome-bullet-text"><strong><span data-en="Completely free" data-ru="Абсолютно бесплатно">Completely free</span></strong> — <span data-en="bring the API key of your favourite AI provider." data-ru="подключи API ключ любимого ИИ-провайдера.">bring the API key of your favourite AI provider.</span></div>
+    </div>
+  </div>
+  <div class="welcome-cta">
+    <button class="welcome-cta-skip" onclick="closeWelcome()"><span data-en="Skip" data-ru="Пропустить">Skip</span></button>
+    <button class="welcome-cta-go" onclick="closeWelcome(true)"><span data-en="Try a question →" data-ru="Задать вопрос →">Try a question →</span></button>
+  </div>
+</div></div>
+
+<!-- ── v2.14d: Support / donate modal (addresses are PLACEHOLDERS — replace before prod!) ── -->
+<div class="modal-bg" id="modalSupport" onmousedown="if(event.target===this)closeModal('modalSupport')"><div class="modal" onmousedown="event.stopPropagation()" onclick="event.stopPropagation()">
+  <div class="modal-handle"></div>
+  <div class="sup-hdr">
+    <div class="sup-title"><span data-en="Thank you — the project lives because of you" data-ru="Спасибо — проект живёт благодаря вам">Thank you — the project lives because of you</span></div>
+    <div class="sup-sub"><span data-en="ONTO is built with no ads, no trackers, no middlemen. If you want to help — crypto, direct, zero fees." data-ru="ONTO работает без рекламы, трекеров и посредников. Хотите помочь — крипта, напрямую, без комиссий.">ONTO is built with no ads, no trackers, no middlemen. If you want to help — crypto, direct, zero fees.</span></div>
+  </div>
+
+  <div class="sup-block">
+    <div class="sup-block-hdr">
+      <span class="sup-block-name"><span class="dot"></span>USDT</span>
+      <span class="sup-block-chain">TRC20 · Tron</span>
+    </div>
+    <div class="sup-qr"><svg width="33mm" height="33mm" version="1.1" viewBox="0 0 33 33" xmlns="http://www.w3.org/2000/svg"><path fill="#f4f4f5" d="M2,2H3V3H2zM3,2H4V3H3zM4,2H5V3H4zM5,2H6V3H5zM6,2H7V3H6zM7,2H8V3H7zM8,2H9V3H8zM11,2H12V3H11zM12,2H13V3H12zM13,2H14V3H13zM14,2H15V3H14zM15,2H16V3H15zM18,2H19V3H18zM20,2H21V3H20zM24,2H25V3H24zM25,2H26V3H25zM26,2H27V3H26zM27,2H28V3H27zM28,2H29V3H28zM29,2H30V3H29zM30,2H31V3H30zM2,3H3V4H2zM8,3H9V4H8zM12,3H13V4H12zM13,3H14V4H13zM15,3H16V4H15zM16,3H17V4H16zM17,3H18V4H17zM20,3H21V4H20zM22,3H23V4H22zM24,3H25V4H24zM30,3H31V4H30zM2,4H3V5H2zM4,4H5V5H4zM5,4H6V5H5zM6,4H7V5H6zM8,4H9V5H8zM15,4H16V5H15zM18,4H19V5H18zM19,4H20V5H19zM24,4H25V5H24zM26,4H27V5H26zM27,4H28V5H27zM28,4H29V5H28zM30,4H31V5H30zM2,5H3V6H2zM4,5H5V6H4zM5,5H6V6H5zM6,5H7V6H6zM8,5H9V6H8zM12,5H13V6H12zM14,5H15V6H14zM15,5H16V6H15zM16,5H17V6H16zM17,5H18V6H17zM19,5H20V6H19zM20,5H21V6H20zM21,5H22V6H21zM24,5H25V6H24zM26,5H27V6H26zM27,5H28V6H27zM28,5H29V6H28zM30,5H31V6H30zM2,6H3V7H2zM4,6H5V7H4zM5,6H6V7H5zM6,6H7V7H6zM8,6H9V7H8zM11,6H12V7H11zM14,6H15V7H14zM15,6H16V7H15zM16,6H17V7H16zM18,6H19V7H18zM19,6H20V7H19zM20,6H21V7H20zM21,6H22V7H21zM24,6H25V7H24zM26,6H27V7H26zM27,6H28V7H27zM28,6H29V7H28zM30,6H31V7H30zM2,7H3V8H2zM8,7H9V8H8zM10,7H11V8H10zM12,7H13V8H12zM13,7H14V8H13zM15,7H16V8H15zM16,7H17V8H16zM19,7H20V8H19zM21,7H22V8H21zM22,7H23V8H22zM24,7H25V8H24zM30,7H31V8H30zM2,8H3V9H2zM3,8H4V9H3zM4,8H5V9H4zM5,8H6V9H5zM6,8H7V9H6zM7,8H8V9H7zM8,8H9V9H8zM10,8H11V9H10zM12,8H13V9H12zM14,8H15V9H14zM16,8H17V9H16zM18,8H19V9H18zM20,8H21V9H20zM22,8H23V9H22zM24,8H25V9H24zM25,8H26V9H25zM26,8H27V9H26zM27,8H28V9H27zM28,8H29V9H28zM29,8H30V9H29zM30,8H31V9H30zM11,9H12V10H11zM12,9H13V10H12zM16,9H17V10H16zM19,9H20V10H19zM21,9H22V10H21zM2,10H3V11H2zM5,10H6V11H5zM7,10H8V11H7zM8,10H9V11H8zM10,10H11V11H10zM12,10H13V11H12zM14,10H15V11H14zM17,10H18V11H17zM18,10H19V11H18zM20,10H21V11H20zM23,10H24V11H23zM25,10H26V11H25zM3,11H4V12H3zM5,11H6V12H5zM9,11H10V12H9zM11,11H12V12H11zM12,11H13V12H12zM13,11H14V12H13zM16,11H17V12H16zM17,11H18V12H17zM19,11H20V12H19zM20,11H21V12H20zM22,11H23V12H22zM24,11H25V12H24zM30,11H31V12H30zM3,12H4V13H3zM4,12H5V13H4zM5,12H6V13H5zM8,12H9V13H8zM10,12H11V13H10zM11,12H12V13H11zM13,12H14V13H13zM14,12H15V13H14zM19,12H20V13H19zM21,12H22V13H21zM22,12H23V13H22zM27,12H28V13H27zM2,13H3V14H2zM3,13H4V14H3zM4,13H5V14H4zM5,13H6V14H5zM6,13H7V14H6zM7,13H8V14H7zM9,13H10V14H9zM11,13H12V14H11zM12,13H13V14H12zM13,13H14V14H13zM16,13H17V14H16zM17,13H18V14H17zM21,13H22V14H21zM24,13H25V14H24zM26,13H27V14H26zM28,13H29V14H28zM30,13H31V14H30zM5,14H6V15H5zM7,14H8V15H7zM8,14H9V15H8zM10,14H11V15H10zM13,14H14V15H13zM17,14H18V15H17zM23,14H24V15H23zM24,14H25V15H24zM25,14H26V15H25zM26,14H27V15H26zM28,14H29V15H28zM30,14H31V15H30zM3,15H4V16H3zM11,15H12V16H11zM17,15H18V16H17zM19,15H20V16H19zM20,15H21V16H20zM21,15H22V16H21zM22,15H23V16H22zM23,15H24V16H23zM24,15H25V16H24zM2,16H3V17H2zM5,16H6V17H5zM8,16H9V17H8zM9,16H10V17H9zM11,16H12V17H11zM13,16H14V17H13zM23,16H24V17H23zM25,16H26V17H25zM27,16H28V17H27zM28,16H29V17H28zM30,16H31V17H30zM5,17H6V18H5zM6,17H7V18H6zM7,17H8V18H7zM10,17H11V18H10zM11,17H12V18H11zM15,17H16V18H15zM16,17H17V18H16zM17,17H18V18H17zM18,17H19V18H18zM19,17H20V18H19zM21,17H22V18H21zM22,17H23V18H22zM25,17H26V18H25zM27,17H28V18H27zM30,17H31V18H30zM2,18H3V19H2zM5,18H6V19H5zM7,18H8V19H7zM8,18H9V19H8zM9,18H10V19H9zM12,18H13V19H12zM14,18H15V19H14zM15,18H16V19H15zM16,18H17V19H16zM17,18H18V19H17zM19,18H20V19H19zM21,18H22V19H21zM22,18H23V19H22zM23,18H24V19H23zM25,18H26V19H25zM26,18H27V19H26zM6,19H7V20H6zM7,19H8V20H7zM10,19H11V20H10zM14,19H15V20H14zM17,19H18V20H17zM18,19H19V20H18zM19,19H20V20H19zM24,19H25V20H24zM25,19H26V20H25zM28,19H29V20H28zM2,20H3V21H2zM4,20H5V21H4zM5,20H6V21H5zM8,20H9V21H8zM9,20H10V21H9zM13,20H14V21H13zM15,20H16V21H15zM20,20H21V21H20zM22,20H23V21H22zM25,20H26V21H25zM27,20H28V21H27zM28,20H29V21H28zM29,20H30V21H29zM30,20H31V21H30zM6,21H7V22H6zM10,21H11V22H10zM12,21H13V22H12zM15,21H16V22H15zM17,21H18V22H17zM19,21H20V22H19zM23,21H24V22H23zM27,21H28V22H27zM29,21H30V22H29zM30,21H31V22H30zM2,22H3V23H2zM4,22H5V23H4zM6,22H7V23H6zM7,22H8V23H7zM8,22H9V23H8zM10,22H11V23H10zM14,22H15V23H14zM16,22H17V23H16zM21,22H22V23H21zM22,22H23V23H22zM23,22H24V23H23zM24,22H25V23H24zM25,22H26V23H25zM26,22H27V23H26zM27,22H28V23H27zM29,22H30V23H29zM30,22H31V23H30zM10,23H11V24H10zM11,23H12V24H11zM13,23H14V24H13zM14,23H15V24H14zM15,23H16V24H15zM18,23H19V24H18zM19,23H20V24H19zM21,23H22V24H21zM22,23H23V24H22zM26,23H27V24H26zM2,24H3V25H2zM3,24H4V25H3zM4,24H5V25H4zM5,24H6V25H5zM6,24H7V25H6zM7,24H8V25H7zM8,24H9V25H8zM11,24H12V25H11zM13,24H14V25H13zM15,24H16V25H15zM16,24H17V25H16zM18,24H19V25H18zM20,24H21V25H20zM22,24H23V25H22zM24,24H25V25H24zM26,24H27V25H26zM28,24H29V25H28zM29,24H30V25H29zM2,25H3V26H2zM8,25H9V26H8zM10,25H11V26H10zM12,25H13V26H12zM13,25H14V26H13zM14,25H15V26H14zM15,25H16V26H15zM17,25H18V26H17zM20,25H21V26H20zM22,25H23V26H22zM26,25H27V26H26zM27,25H28V26H27zM28,25H29V26H28zM29,25H30V26H29zM30,25H31V26H30zM2,26H3V27H2zM4,26H5V27H4zM5,26H6V27H5zM6,26H7V27H6zM8,26H9V27H8zM11,26H12V27H11zM12,26H13V27H12zM14,26H15V27H14zM16,26H17V27H16zM22,26H23V27H22zM23,26H24V27H23zM24,26H25V27H24zM25,26H26V27H25zM26,26H27V27H26zM27,26H28V27H27zM30,26H31V27H30zM2,27H3V28H2zM4,27H5V28H4zM5,27H6V28H5zM6,27H7V28H6zM8,27H9V28H8zM10,27H11V28H10zM11,27H12V28H11zM14,27H15V28H14zM15,27H16V28H15zM16,27H17V28H16zM18,27H19V28H18zM19,27H20V28H19zM24,27H25V28H24zM25,27H26V28H25zM26,27H27V28H26zM28,27H29V28H28zM29,27H30V28H29zM2,28H3V29H2zM4,28H5V29H4zM5,28H6V29H5zM6,28H7V29H6zM8,28H9V29H8zM11,28H12V29H11zM14,28H15V29H14zM16,28H17V29H16zM18,28H19V29H18zM19,28H20V29H19zM21,28H22V29H21zM23,28H24V29H23zM26,28H27V29H26zM27,28H28V29H27zM30,28H31V29H30zM2,29H3V30H2zM8,29H9V30H8zM11,29H12V30H11zM14,29H15V30H14zM18,29H19V30H18zM19,29H20V30H19zM22,29H23V30H22zM23,29H24V30H23zM29,29H30V30H29zM2,30H3V31H2zM3,30H4V31H3zM4,30H5V31H4zM5,30H6V31H5zM6,30H7V31H6zM7,30H8V31H7zM8,30H9V31H8zM10,30H11V31H10zM13,30H14V31H13zM16,30H17V31H16zM17,30H18V31H17zM22,30H23V31H22zM23,30H24V31H23zM24,30H25V31H24zM26,30H27V31H26zM27,30H28V31H27zM29,30H30V31H29z" id="qr-path" fill="#000000" fill-opacity="1" fill-rule="nonzero" stroke="none"/></svg></div>
+    <div class="sup-addr">
+      <code id="supAddrUsdt">TS36C5U9agRZsMzsthdtbAGJ6VhaDN1uMX</code>
+      <button class="sup-addr-copy" onclick="copySupportAddr('supAddrUsdt')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-en="Copy" data-ru="Копир.">Copy</span></button>
+    </div>
+  </div>
+
+  <div class="sup-block">
+    <div class="sup-block-hdr">
+      <span class="sup-block-name"><span class="dot" style="background:#f7931a"></span>BTC</span>
+      <span class="sup-block-chain">Bitcoin · native segwit</span>
+    </div>
+    <div class="sup-qr"><svg width="33mm" height="33mm" version="1.1" viewBox="0 0 33 33" xmlns="http://www.w3.org/2000/svg"><path fill="#f4f4f5" d="M2,2H3V3H2zM3,2H4V3H3zM4,2H5V3H4zM5,2H6V3H5zM6,2H7V3H6zM7,2H8V3H7zM8,2H9V3H8zM12,2H13V3H12zM13,2H14V3H13zM14,2H15V3H14zM15,2H16V3H15zM18,2H19V3H18zM21,2H22V3H21zM22,2H23V3H22zM24,2H25V3H24zM25,2H26V3H25zM26,2H27V3H26zM27,2H28V3H27zM28,2H29V3H28zM29,2H30V3H29zM30,2H31V3H30zM2,3H3V4H2zM8,3H9V4H8zM11,3H12V4H11zM15,3H16V4H15zM16,3H17V4H16zM17,3H18V4H17zM20,3H21V4H20zM22,3H23V4H22zM24,3H25V4H24zM30,3H31V4H30zM2,4H3V5H2zM4,4H5V5H4zM5,4H6V5H5zM6,4H7V5H6zM8,4H9V5H8zM12,4H13V5H12zM15,4H16V5H15zM18,4H19V5H18zM19,4H20V5H19zM20,4H21V5H20zM24,4H25V5H24zM26,4H27V5H26zM27,4H28V5H27zM28,4H29V5H28zM30,4H31V5H30zM2,5H3V6H2zM4,5H5V6H4zM5,5H6V6H5zM6,5H7V6H6zM8,5H9V6H8zM11,5H12V6H11zM12,5H13V6H12zM15,5H16V6H15zM16,5H17V6H16zM17,5H18V6H17zM21,5H22V6H21zM24,5H25V6H24zM26,5H27V6H26zM27,5H28V6H27zM28,5H29V6H28zM30,5H31V6H30zM2,6H3V7H2zM4,6H5V7H4zM5,6H6V7H5zM6,6H7V7H6zM8,6H9V7H8zM11,6H12V7H11zM12,6H13V7H12zM13,6H14V7H13zM14,6H15V7H14zM15,6H16V7H15zM16,6H17V7H16zM18,6H19V7H18zM24,6H25V7H24zM26,6H27V7H26zM27,6H28V7H27zM28,6H29V7H28zM30,6H31V7H30zM2,7H3V8H2zM8,7H9V8H8zM10,7H11V8H10zM11,7H12V8H11zM14,7H15V8H14zM15,7H16V8H15zM16,7H17V8H16zM19,7H20V8H19zM21,7H22V8H21zM24,7H25V8H24zM30,7H31V8H30zM2,8H3V9H2zM3,8H4V9H3zM4,8H5V9H4zM5,8H6V9H5zM6,8H7V9H6zM7,8H8V9H7zM8,8H9V9H8zM10,8H11V9H10zM12,8H13V9H12zM14,8H15V9H14zM16,8H17V9H16zM18,8H19V9H18zM20,8H21V9H20zM22,8H23V9H22zM24,8H25V9H24zM25,8H26V9H25zM26,8H27V9H26zM27,8H28V9H27zM28,8H29V9H28zM29,8H30V9H29zM30,8H31V9H30zM11,9H12V10H11zM14,9H15V10H14zM16,9H17V10H16zM19,9H20V10H19zM20,9H21V10H20zM2,10H3V11H2zM5,10H6V11H5zM7,10H8V11H7zM8,10H9V11H8zM10,10H11V11H10zM11,10H12V11H11zM12,10H13V11H12zM13,10H14V11H13zM17,10H18V11H17zM18,10H19V11H18zM19,10H20V11H19zM22,10H23V11H22zM23,10H24V11H23zM25,10H26V11H25zM2,11H3V12H2zM3,11H4V12H3zM6,11H7V12H6zM9,11H10V12H9zM14,11H15V12H14zM16,11H17V12H16zM17,11H18V12H17zM19,11H20V12H19zM23,11H24V12H23zM2,12H3V13H2zM5,12H6V13H5zM8,12H9V13H8zM11,12H12V13H11zM12,12H13V13H12zM13,12H14V13H13zM14,12H15V13H14zM18,12H19V13H18zM19,12H20V13H19zM21,12H22V13H21zM24,12H25V13H24zM26,12H27V13H26zM27,12H28V13H27zM29,12H30V13H29zM3,13H4V14H3zM5,13H6V14H5zM6,13H7V14H6zM7,13H8V14H7zM9,13H10V14H9zM12,13H13V14H12zM14,13H15V14H14zM16,13H17V14H16zM17,13H18V14H17zM24,13H25V14H24zM25,13H26V14H25zM28,13H29V14H28zM3,14H4V15H3zM5,14H6V15H5zM7,14H8V15H7zM8,14H9V15H8zM9,14H10V15H9zM12,14H13V15H12zM14,14H15V15H14zM18,14H19V15H18zM19,14H20V15H19zM22,14H23V15H22zM23,14H24V15H23zM24,14H25V15H24zM25,14H26V15H25zM28,14H29V15H28zM29,14H30V15H29zM30,14H31V15H30zM3,15H4V16H3zM4,15H5V16H4zM5,15H6V16H5zM6,15H7V16H6zM7,15H8V16H7zM17,15H18V16H17zM21,15H22V16H21zM22,15H23V16H22zM23,15H24V16H23zM25,15H26V16H25zM27,15H28V16H27zM30,15H31V16H30zM5,16H6V17H5zM7,16H8V17H7zM8,16H9V17H8zM10,16H11V17H10zM12,16H13V17H12zM19,16H20V17H19zM27,16H28V17H27zM29,16H30V17H29zM30,16H31V17H30zM2,17H3V18H2zM4,17H5V18H4zM5,17H6V18H5zM7,17H8V18H7zM9,17H10V18H9zM10,17H11V18H10zM15,17H16V18H15zM16,17H17V18H16zM17,17H18V18H17zM19,17H20V18H19zM20,17H21V18H20zM22,17H23V18H22zM23,17H24V18H23zM30,17H31V18H30zM4,18H5V19H4zM8,18H9V19H8zM10,18H11V19H10zM12,18H13V19H12zM15,18H16V19H15zM16,18H17V19H16zM21,18H22V19H21zM23,18H24V19H23zM25,18H26V19H25zM27,18H28V19H27zM29,18H30V19H29zM3,19H4V20H3zM5,19H6V20H5zM6,19H7V20H6zM7,19H8V20H7zM9,19H10V20H9zM11,19H12V20H11zM12,19H13V20H12zM18,19H19V20H18zM19,19H20V20H19zM20,19H21V20H20zM24,19H25V20H24zM25,19H26V20H25zM28,19H29V20H28zM30,19H31V20H30zM2,20H3V21H2zM4,20H5V21H4zM5,20H6V21H5zM8,20H9V21H8zM10,20H11V21H10zM12,20H13V21H12zM13,20H14V21H13zM14,20H15V21H14zM15,20H16V21H15zM19,20H20V21H19zM20,20H21V21H20zM22,20H23V21H22zM24,20H25V21H24zM25,20H26V21H25zM26,20H27V21H26zM30,20H31V21H30zM4,21H5V22H4zM5,21H6V22H5zM11,21H12V22H11zM14,21H15V22H14zM15,21H16V22H15zM17,21H18V22H17zM19,21H20V22H19zM21,21H22V22H21zM22,21H23V22H22zM23,21H24V22H23zM26,21H27V22H26zM27,21H28V22H27zM30,21H31V22H30zM2,22H3V23H2zM5,22H6V23H5zM6,22H7V23H6zM8,22H9V23H8zM10,22H11V23H10zM11,22H12V23H11zM13,22H14V23H13zM14,22H15V23H14zM16,22H17V23H16zM19,22H20V23H19zM21,22H22V23H21zM22,22H23V23H22zM23,22H24V23H23zM24,22H25V23H24zM25,22H26V23H25zM26,22H27V23H26zM27,22H28V23H27zM28,22H29V23H28zM30,22H31V23H30zM10,23H11V24H10zM11,23H12V24H11zM12,23H13V24H12zM13,23H14V24H13zM14,23H15V24H14zM15,23H16V24H15zM19,23H20V24H19zM21,23H22V24H21zM22,23H23V24H22zM26,23H27V24H26zM27,23H28V24H27zM30,23H31V24H30zM2,24H3V25H2zM3,24H4V25H3zM4,24H5V25H4zM5,24H6V25H5zM6,24H7V25H6zM7,24H8V25H7zM8,24H9V25H8zM12,24H13V25H12zM13,24H14V25H13zM15,24H16V25H15zM16,24H17V25H16zM18,24H19V25H18zM19,24H20V25H19zM20,24H21V25H20zM22,24H23V25H22zM24,24H25V25H24zM26,24H27V25H26zM28,24H29V25H28zM2,25H3V26H2zM8,25H9V26H8zM10,25H11V26H10zM12,25H13V26H12zM14,25H15V26H14zM15,25H16V26H15zM17,25H18V26H17zM22,25H23V26H22zM26,25H27V26H26zM27,25H28V26H27zM28,25H29V26H28zM29,25H30V26H29zM30,25H31V26H30zM2,26H3V27H2zM4,26H5V27H4zM5,26H6V27H5zM6,26H7V27H6zM8,26H9V27H8zM11,26H12V27H11zM12,26H13V27H12zM13,26H14V27H13zM16,26H17V27H16zM17,26H18V27H17zM18,26H19V27H18zM22,26H23V27H22zM23,26H24V27H23zM24,26H25V27H24zM25,26H26V27H25zM26,26H27V27H26zM27,26H28V27H27zM30,26H31V27H30zM2,27H3V28H2zM4,27H5V28H4zM5,27H6V28H5zM6,27H7V28H6zM8,27H9V28H8zM10,27H11V28H10zM12,27H13V28H12zM13,27H14V28H13zM16,27H17V28H16zM20,27H21V28H20zM24,27H25V28H24zM25,27H26V28H25zM26,27H27V28H26zM29,27H30V28H29zM2,28H3V29H2zM4,28H5V29H4zM5,28H6V29H5zM6,28H7V29H6zM8,28H9V29H8zM11,28H12V29H11zM14,28H15V29H14zM15,28H16V29H15zM18,28H19V29H18zM20,28H21V29H20zM21,28H22V29H21zM23,28H24V29H23zM26,28H27V29H26zM27,28H28V29H27zM28,28H29V29H28zM30,28H31V29H30zM2,29H3V30H2zM8,29H9V30H8zM12,29H13V30H12zM13,29H14V30H13zM14,29H15V30H14zM17,29H18V30H17zM18,29H19V30H18zM19,29H20V30H19zM21,29H22V30H21zM22,29H23V30H22zM23,29H24V30H23zM24,29H25V30H24zM25,29H26V30H25zM27,29H28V30H27zM29,29H30V30H29zM2,30H3V31H2zM3,30H4V31H3zM4,30H5V31H4zM5,30H6V31H5zM6,30H7V31H6zM7,30H8V31H7zM8,30H9V31H8zM10,30H11V31H10zM11,30H12V31H11zM13,30H14V31H13zM18,30H19V31H18zM19,30H20V31H19zM20,30H21V31H20zM22,30H23V31H22zM25,30H26V31H25zM26,30H27V31H26zM29,30H30V31H29z" id="qr-path" fill="#000000" fill-opacity="1" fill-rule="nonzero" stroke="none"/></svg></div>
+    <div class="sup-addr">
+      <code id="supAddrBtc">17UVEfq34mw4Khrxdnvg1a63FmZBZ4i5aA</code>
+      <button class="sup-addr-copy" onclick="copySupportAddr('supAddrBtc')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-en="Copy" data-ru="Копир.">Copy</span></button>
+    </div>
+  </div>
+
+  <div class="sup-reward">
+    <div class="sup-reward-hdr">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg>
+      <span data-en="100% back — thank-you rewards" data-ru="100% обратно — подарки благодарности">100% back — thank-you rewards</span>
+    </div>
+    <ul class="sup-reward-list">
+      <li><span data-en="Every $1 donated = $1 of ONTO value back to you (credits, Pro time, or Standard subscription)" data-ru="Каждый $1 доната = $1 ценности ONTO обратно (credits, Pro-время или Standard подписка)">Every $1 donated = $1 of ONTO value back to you (credits, Pro time, or Standard subscription)</span></li>
+      <li><span data-en="Donate" data-ru="Донат"><b>$10–999</b></span> → <span data-en="equivalent API credits" data-ru="эквивалент в API credits">equivalent API credits</span></li>
+      <li><span data-en="Donate" data-ru="Донат"><b>$1,000+</b></span> → <span data-en="Pro access, duration scaled 1:1 to amount" data-ru="Pro доступ, длительность 1:1 к сумме">Pro access, duration scaled 1:1 to amount</span></li>
+      <li><span data-en="Donate" data-ru="Донат"><b>$25,000+</b></span> → <span data-en="1 year Standard + 1 year gift on top (top-10 supporters)" data-ru="1 год Standard + 1 год в подарок сверху (топ-10 сторонников)">1 year Standard + 1 year gift on top (top-10 supporters)</span></li>
+    </ul>
+  </div>
+
+  <div class="sup-contact">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+    <span><span data-en="After sending — DM " data-ru="После отправки — напиши в Telegram ">After sending — DM </span><a href="https://t.me/ontohash" target="_blank" rel="noopener">@ontohash</a><span data-en=" with your tx hash to claim your reward." data-ru=" с хешом транзакции для получения подарка.">with your tx hash to claim your reward.</span></span>
+  </div>
+
+  <div class="sup-note"><span data-en="Donations are voluntary. The app stays completely free either way." data-ru="Донаты добровольны. Приложение остаётся полностью бесплатным в любом случае.">Donations are voluntary. The app stays completely free either way.</span></div>
+
+  <div class="modal-row"><button class="modal-close" onclick="closeModal('modalSupport')"><span data-en="Close" data-ru="Закрыть">Close</span></button></div>
+</div></div>
+
+<!-- ── v2.12: Feedback modal ── -->
+<div class="modal-bg" id="modalFeedback" onmousedown="if(event.target===this)closeModal('modalFeedback')"><div class="modal" onmousedown="event.stopPropagation()" onclick="event.stopPropagation()">
+  <div class="modal-handle"></div>
+  <h3><span data-en="Feedback" data-ru="Обратная связь">Feedback</span></h3>
+  <div class="modal-scroll" style="max-height:60vh">
+    <p style="font-size:13px;color:var(--text3);margin-bottom:14px"><span data-en="Bug, idea, or something else? This goes straight to the team." data-ru="Баг, идея или что-то ещё? Сообщение уходит напрямую команде.">Bug, idea, or something else? This goes straight to the team.</span></p>
+    <div class="modal-field">
+      <label><span data-en="Category" data-ru="Категория">Category</span></label>
+      <div class="fb-cat" id="fbCat">
+        <button type="button" data-cat="bug" onclick="selectFbCat(this)"><span data-en="Bug" data-ru="Баг">Bug</span></button>
+        <button type="button" data-cat="feedback" onclick="selectFbCat(this)" class="on"><span data-en="Feedback" data-ru="Отзыв">Feedback</span></button>
+        <button type="button" data-cat="feature" onclick="selectFbCat(this)"><span data-en="Feature" data-ru="Фича">Feature</span></button>
+        <button type="button" data-cat="other" onclick="selectFbCat(this)"><span data-en="Other" data-ru="Другое">Other</span></button>
+      </div>
+    </div>
+    <div class="modal-field">
+      <label><span data-en="Message" data-ru="Сообщение">Message</span></label>
+      <textarea id="fbText" placeholder="..."></textarea>
+    </div>
+    <div class="modal-field">
+      <label><span data-en="Email (optional)" data-ru="Email (необязательно)">Email (optional)</span></label>
+      <input type="email" id="fbEmail" placeholder="you@example.com">
+    </div>
+  </div>
+  <div class="modal-row">
+    <button class="modal-close" onclick="closeModal('modalFeedback')"><span data-en="Cancel" data-ru="Отмена">Cancel</span></button>
+    <button class="modal-close" id="fbSubmitBtn" style="background:var(--green);color:#000;border-color:var(--green);font-weight:600" onclick="submitFeedback()"><span data-en="Send" data-ru="Отправить">Send</span></button>
+  </div>
+</div></div>
+
+<script>
+const API='https://api.ontostandard.org';
+const I18N={en:{title:'Expert answers from your AI.',sub:'Same model, same question — but every answer is quantified, sourced, and scored. Compare before and after. Connect cognitive modules. Use in life, work, and business.',demoHint:'Demo — tap an example to see the difference',send:'Send',compare:'Compare',stop:'Stop',new:'New',placeholder:'Ask anything...',analysis:'R1–R7 scoring',collapse:'Hide',withoutGold:'Without GOLD',withGold:'With ONTO GOLD',rawScore:'RAW',goldScore:'GOLD',improvement:'Delta',change:'Change',details:'Details',settings:'Settings',modelReq:'Open Settings → enter your API key and Model ID for real answers.',scoreHint:'A=expert B=good C=average D=poor F=unreliable',exLabel:'Try these examples:',examples:["Is coffee good or bad for you?", "Are GLP-1 drugs safe for long-term use?", "What is the evidence for metformin as a longevity drug?"]},ru:{title:'Экспертные ответы от вашего ИИ.',sub:'Та же модель, тот же вопрос — но каждый ответ квантифицирован, с источниками и оценкой. Сравните до и после. Подключите когнитивные модули. Используйте в жизни, работе и бизнесе.',demoHint:'Демо — нажмите на пример чтобы увидеть разницу',send:'Отправить',compare:'Сравнить',stop:'Стоп',new:'Новый',placeholder:'Задайте вопрос...',analysis:'Оценка R1–R7',collapse:'Скрыть',withoutGold:'Без GOLD',withGold:'С ONTO GOLD',rawScore:'RAW',goldScore:'GOLD',improvement:'Дельта',change:'Изменение',details:'Детали',settings:'Настройки',modelReq:'Откройте Настройки → введите API ключ и Model ID для реальных ответов.',scoreHint:'A=эксперт B=хорошо C=средне D=плохо F=ненадёжно',exLabel:'Попробуйте:',examples:["Кофе полезен или вреден?", "GLP-1 препараты безопасны для длительного приёма?", "Каковы данные по метформину как препарату долголетия?"]},uz:{title:"Sun'iy intellektingizdan ekspert javoblar.",sub:"Bir xil model, bir xil savol — lekin har bir javob manbalangan va baholangan.",demoHint:"Demo — misolni bosing",send:'Yuborish',compare:'Solishtirish',stop:"To'xtatish",new:'Yangi',placeholder:"Savol bering...",analysis:"R1–R7 baholash",collapse:'Yopish',withoutGold:'GOLDsiz',withGold:'ONTO GOLD bilan',rawScore:'RAW',goldScore:'GOLD',improvement:'Delta',change:"O'zgarish",details:'Tafsilotlar',settings:'Sozlamalar',modelReq:"Sozlamalarni oching → API kalit kiriting.",scoreHint:"A=ajoyib B=yaxshi C=o'rtacha D=yomon",exLabel:"Sinab ko'ring:",examples:["Is coffee good or bad for you?","Are GLP-1 drugs safe for long-term use?","What is the evidence for metformin as a longevity drug?"]},tr:{title:'Yapay zekanızdan uzman yanıtlar.',sub:'Aynı model, aynı soru — ama her yanıt kaynaklı ve puanlanmış.',demoHint:'Demo — bir örneğe tıklayın',send:'Gönder',compare:'Karşılaştır',stop:'Durdur',new:'Yeni',placeholder:'Bir şey sorun...',analysis:'R1–R7 puanlama',collapse:'Gizle',withoutGold:"GOLD'suz",withGold:'ONTO GOLD ile',rawScore:'RAW',goldScore:'GOLD',improvement:'Delta',change:'Değişim',details:'Detaylar',settings:'Ayarlar',modelReq:'Ayarları açın → API anahtarı girin.',scoreHint:'A=uzman B=iyi C=orta D=zayıf',exLabel:'Deneyin:',examples:['Kahve sağlık için faydalı mı?','Yapay zeka modelleri gerçekten daha mı akıllı?',"Bitcoin 2027'de 500.000 dolara ulaşır mı?"]},ar:{title:'إجابات خبيرة من ذكائك الاصطناعي.',sub:'نفس النموذج، نفس السؤال — لكن كل إجابة موثقة ومقيّمة.',demoHint:'تجريبي — انقر على مثال',send:'إرسال',compare:'مقارنة',stop:'إيقاف',new:'جديد',placeholder:'اسأل أي شيء...',analysis:'تقييم R1–R7',collapse:'إخفاء',withoutGold:'بدون GOLD',withGold:'مع ONTO GOLD',rawScore:'RAW',goldScore:'GOLD',improvement:'فرق',change:'تغيير',details:'تفاصيل',settings:'الإعدادات',modelReq:'افتح الإعدادات وأدخل مفتاح API.',scoreHint:'A=خبير B=جيد C=متوسط D=ضعيف',exLabel:'جرّب:',examples:['هل القهوة مفيدة للصحة؟','هل نماذج الذكاء الاصطناعي تزداد ذكاءً؟','هل ستصل البيتكوين إلى 500,000 دولار؟']}};
+let curLang=(()=>{const b=(navigator.language||'en').toLowerCase();if(b.startsWith('ru'))return'ru';if(b.startsWith('uz'))return'uz';if(b.startsWith('tr'))return'tr';if(b.startsWith('ar'))return'ar';return'en';})();function t(k){return I18N[curLang]?.[k]||I18N.en[k]||k;}
+function switchLang(l){curLang=l;document.documentElement.lang=l;document.documentElement.dir=l==='ar'?'rtl':'ltr';document.getElementById('btnCmp').textContent=t('compare');document.getElementById('btnStop').textContent=t('stop');document.getElementById('inp').placeholder=t('placeholder');document.getElementById('settingsTitle').textContent=t('settings');document.querySelectorAll('[data-'+l+']').forEach(d=>{if(d.tagName==='SPAN'||d.classList.contains('r-desc'))d.textContent=d.getAttribute('data-'+l);});renderWelcome();if(typeof renderRemaining==='function')renderRemaining();saveCfg();}
+function renderWelcome(){const w=document.getElementById('welcome');if(!w)return;const exs=I18N[curLang]?.examples||I18N.en.examples;const lvls=curLang==='ru'?['Простой','Профессиональный','Исследовательский']:['Simple','Professional','Research'];const ex=exs.map((e,i)=>`<button class="ex" data-q="${esc(e)}" onclick="useEx(this)"><span style="font-family:var(--mono);font-size:10px;display:inline-flex;align-items:center;gap:6px;margin-bottom:4px"><span style="padding:2px 6px;border-radius:4px;background:var(--glass);color:var(--text3)">${lvls[i]||''}</span><span class="demo-tag">DEMO</span></span><br>${esc(e)}</button>`).join('');const FREE={en:'Completely free · Bring your own API key',ru:'Абсолютно бесплатно · Свой API ключ',uz:"Butunlay bepul · O'z API kalitingiz",tr:'Tamamen ücretsiz · Kendi API anahtarın',ar:'مجاني تمامًا · مفتاح API خاص بك'};const freeTxt=FREE[curLang]||FREE.en;w.innerHTML=`<div class="w-glow"></div><div class="w-icon"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" fill="#27272a" stroke="rgba(255,255,255,.12)" stroke-width="1"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="white"/></svg></div><h1 class="w-title">${t('title')}</h1><p class="w-sub">${t('sub')}</p><div class="w-free"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>${esc(freeTxt)}</div><div class="w-demo-hint"><span class="dot"></span>${t('demoHint')}</div><div class="examples"><div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:6px">${t('exLabel')}</div>${ex}</div>`;}
+
+const CACHED={"en":{"Is coffee good or bad for you?":{"raw":{"response":"Coffee is generally good for you! Studies show it's packed with antioxidants, boosts energy, improves focus, and may reduce the risk of several diseases including type 2 diabetes and Parkinson's. Most experts agree that 3-4 cups a day is perfectly safe and even beneficial. Just watch the sugar and cream. Overall, coffee is one of the healthiest beverages you can drink!","score":{"grade":1.7,"compliance_class":"F","risk_score":0.832,"metrics":{"R1":0.0,"R2":0.0,"R3":0.0,"R4":0.0,"R5":0.0,"R6":0.0,"R7":0.84}},"gold_enabled":false},"gold":{"response":"Probably not harmful at 3-4 cups/day — but \"good for you\" overstates the evidence.\n\nA meta-analysis of 218 studies (Poole et al., 2017, BMJ, DOI: 10.1136/bmj.j5024) found moderate coffee drinking associated with lower mortality (RR 0.83, 95% CI 0.79-0.88). But this is observational data — correlation, not proven causation. Coffee drinkers may simply lead healthier lifestyles overall.\n\nLimit if pregnant (<300mg/day per WHO), have GERD, or anxiety disorders. Otherwise, enjoy your coffee — just don't call it medicine.","score":{"grade":8.1,"compliance_class":"B","risk_score":0.19,"metrics":{"R1":1.0,"R2":1.0,"R3":0.0,"R4":1.0,"R5":1.0,"R6":0.0,"R7":1.0}},"gold_enabled":true}},"Are GLP-1 drugs safe for long-term use?":{"raw":{"response":"Yes, GLP-1 drugs like Ozempic and Wegovy are generally safe for long-term use. They've been FDA-approved and prescribed to millions of people worldwide. Clinical trials show they effectively reduce weight by 15-20% and improve heart health. Side effects are mostly mild — nausea that goes away after a few weeks. They're considered a breakthrough in obesity treatment and most doctors recommend them for long-term management.","score":{"grade":4.1,"compliance_class":"D","risk_score":0.595,"metrics":{"R1":0.27,"R2":0.4,"R3":0.4,"R4":0.25,"R5":0.0,"R6":0.0,"R7":1.0}},"gold_enabled":false},"gold":{"response":"Long-term safety of GLP-1 receptor agonists is partially established (1-3 years) but incomplete (>5 years).\n\n**Evidence FOR safety (Grade I-II):**\n- SELECT trial (Lincoff et al., 2023, NEJM, N=17,604, DOI: 10.1056/NEJMoa2307563): semaglutide reduced MACE by 20% (HR 0.80, 95% CI 0.72-0.90) over 33 months\n- LEADER trial (Marso et al., 2016, NEJM, N=9,340, DOI: 10.1056/NEJMoa1603827): liraglutide reduced CV death by 22% over 3.8 years\n- STEP 1 (Wilding et al., 2021, NEJM, DOI: 10.1056/NEJMoa2032183): 14.9% body weight reduction at 68 weeks\n\n**Unknown risks (>5 years):**\n- Medullary thyroid carcinoma: signal in rodent models (Bjerre Knudsen et al., 2010, DOI: 10.1210/en.2009-0776). No confirmed human signal, but registries lack 10+ year follow-up\n- Pancreatitis: incidence 0.1-0.3% in trials vs 0.1% placebo — not statistically significant but underpowered for rare events\n- Muscle mass loss: up to 40% of weight lost is lean mass (Heymsfield et al., 2024, DOI: 10.1038/s41591-024-02911-4)\n- Rebound: STEP 1 extension showed 2/3 of weight regain within 1 year of discontinuation\n\n**Falsifiability (R6):** Safety claim would be overturned if post-marketing surveillance (N>100,000, >10yr) shows excess thyroid cancer (HR >1.5 vs. registries like SEER) or confirmed pancreatitis signal.\n\n**Assessment:** Established cardiovascular benefit at 1-3 years. Claiming safety beyond 5 years is premature. Individual risk-benefit with physician required.","score":{"grade":9.7,"compliance_class":"A","risk_score":0.03,"metrics":{"R1":1.0,"R2":1.0,"R3":1.0,"R4":1.0,"R5":0.75,"R6":1.0,"R7":1.0}},"gold_enabled":true}},"What is the evidence for metformin as a longevity drug?":{"raw":{"response":"There's exciting evidence that metformin could extend lifespan! Studies show diabetics taking metformin actually live longer than non-diabetics. It activates AMPK, reduces inflammation, and mimics calorie restriction at the cellular level. The TAME trial is underway to prove this once and for all. Many longevity researchers already take it off-label. It's cheap, safe, and has been used for decades — making it the most promising anti-aging drug we have.","score":{"grade":1.8,"compliance_class":"F","risk_score":0.816,"metrics":{"R1":0.0,"R2":0.0,"R3":0.0,"R4":0.0,"R5":0.0,"R6":0.0,"R7":0.92}},"gold_enabled":false},"gold":{"response":"Evidence for metformin as a longevity intervention is mechanistically plausible but clinically unproven in non-diabetic humans.\n\n**Mechanistic basis (Grade III — preclinical):**\n- AMPK activation → mTOR inhibition → autophagy upregulation (Foretz et al., 2014, Nature Reviews Endocrinology, DOI: 10.1038/nrendo.2013.256)\n- Reduced mitochondrial Complex I activity → lower ROS\n- NF-kB suppression → reduced systemic inflammation\n- C. elegans: ~20% lifespan extension (Cabreiro et al., 2013, Cell, DOI: 10.1016/j.cell.2013.02.035)\n- Mice: strain-dependent — extends lifespan in some (C57BL/6), shortens in others\n\n**Human evidence (Grade II-III):**\n- Bannister et al. (2014, Diabetes Obes Metab, DOI: 10.1111/dom.12354): T2DM patients on metformin had 15% lower all-cause mortality than matched NON-DIABETIC controls (N=180,000). OBSERVATIONAL — confounders include survivor bias, healthy adherer effect\n- UKPDS (1998, Lancet, DOI: 10.1016/S0140-6736(98)07019-6): 36% reduction in all-cause mortality in overweight T2DM patients. But this is a DIABETIC population\n- NO completed RCT in healthy non-diabetic humans for longevity endpoint\n\n**TAME trial status:**\n- Barzilai et al. (2016, Cell Metabolism, DOI: 10.1016/j.cmet.2016.05.011): protocol published\n- N=3,000 non-diabetic adults aged 65-79\n- Primary endpoint: composite of age-related diseases\n- Funding delays — not yet fully enrolled as of 2025\n\n**Counterargument (R3):**\n- Metformin may BLUNT exercise adaptations (Konopka et al., 2019, Aging Cell, DOI: 10.1111/acel.12880): attenuated mitochondrial respiration and muscle hypertrophy in older adults\n- If exercise is a proven longevity intervention and metformin reduces its benefit, net effect could be negative for active individuals\n\n**Falsifiability (R6):** Longevity claim would be falsified if TAME trial shows no composite benefit (HR >0.95, p>0.05) or if exercise-blunting effect is confirmed in larger trials (N>1000).\n\n**Assessment:** Promising mechanism. Suggestive observational data. Zero causal evidence in non-diabetic humans. TAME trial result needed before clinical recommendation. Off-label use = informed personal decision, not evidence-based medicine.","score":{"grade":10.0,"compliance_class":"A","risk_score":0.01,"metrics":{"R1":1.0,"R2":1.0,"R3":1.0,"R4":1.0,"R5":1.0,"R6":1.0,"R7":1.0}},"gold_enabled":true}}},"ru":{"Кофе полезен или вреден?":{"raw":{"response":"Кофе полезен! Исследования показывают что он богат антиоксидантами, повышает энергию, улучшает концентрацию и снижает риск диабета 2 типа и болезни Паркинсона. 3-4 чашки в день — безопасно и даже полезно. Кофе — один из самых здоровых напитков!","score":{"grade":2.0,"compliance_class":"F","risk_score":0.8,"metrics":{"R1":0.0,"R2":0.0,"R3":0.0,"R4":0.0,"R5":0.0,"R6":0.0,"R7":1.0}},"gold_enabled":false},"gold":{"response":"Скорее не вреден при 3-4 чашках/день — но «полезен» преувеличивает доказательства.\n\nMeta-analysis of 218 studies (Poole et al., 2017, BMJ, DOI: 10.1136/bmj.j5024): moderate coffee associated со снижением общей смертности (RR 0.83, 95% CI 0.79-0.88). Но это observational data — correlation, не доказанная причинность. Кофепьющие могут просто вести более здоровый образ жизни.\n\nОграничить если: беременность (<300 mg/day per WHO), ГЭРБ, тревожные расстройства. В остальном — пейте на здоровье, только не называйте лекарством.","score":{"grade":8.1,"compliance_class":"B","risk_score":0.19,"metrics":{"R1":1.0,"R2":1.0,"R3":0.0,"R4":1.0,"R5":1.0,"R6":0.0,"R7":1.0}},"gold_enabled":true}},"GLP-1 препараты безопасны для длительного приёма?":{"raw":{"response":"Да, GLP-1 препараты как Оземпик безопасны. Одобрены FDA, миллионы людей принимают. Побочные эффекты минимальны — тошнота проходит через пару недель. Снижение веса 15-20%, улучшение сердечно-сосудистых показателей. Прорыв в лечении ожирения.","score":{"grade":5.1,"compliance_class":"D","risk_score":0.486,"metrics":{"R1":0.53,"R2":0.8,"R3":0.0,"R4":0.5,"R5":0.0,"R6":0.0,"R7":1.0}},"gold_enabled":false},"gold":{"response":"Безопасность GLP-1 агонистов установлена частично (1-3 года), неполно (>5 лет).\n\n**Доказательства безопасности (Grade I-II):**\n- SELECT (Lincoff et al., 2023, NEJM, N=17,604, DOI: 10.1056/NEJMoa2307563): семаглутид снизил MACE на 20% (HR 0.80, 95% CI 0.72-0.90) за 33 мес\n- LEADER (Marso et al., 2016, NEJM, N=9,340, DOI: 10.1056/NEJMoa1603827): лираглутид снизил CV смерть на 22% за 3.8 года\n- STEP 1 (Wilding et al., 2021, NEJM, DOI: 10.1056/NEJMoa2032183): -14.9% массы тела за 68 недель\n\n**Counter / неизвестные риски (>5 лет):**\n- Медуллярная карцинома щитовидной: сигнал на грызунах (Bjerre Knudsen et al., 2010, DOI: 10.1210/en.2009-0776); confirmed signal у людей отсутствует, но регистры без follow-up >10 лет\n- Панкреатит (side effect): 0.1-0.3% в RCT vs 0.1% placebo (p>0.05) — underpowered для редких событий\n- Потеря lean mass: до 40% потерянного веса — мышцы (Heymsfield et al., 2024, DOI: 10.1038/s41591-024-02911-4)\n- Rebound: возврат 2/3 веса за 1 год после отмены (STEP 1 extension, N=327)\n\n**Limitations:** NNH для thyroid outcomes не установлен (нет long-term cohort >10yr). Healthy user bias возможна в observational экстраполяции SELECT на non-CVD популяцию.\n\n**Фальсифицируемость (R6):** Утверждение о безопасности будет опровергнуто если post-marketing surveillance (N>100,000, >10 лет) покажет избыток thyroid carcinoma (HR >1.5 vs SEER registry) или confirmed pancreatitis signal (incidence >0.5% vs placebo, p<0.05).\n\n**Вывод:** Cardiovascular benefit установлен за 1-3 года (Grade I). Safety >5 лет — premature claim. Individual risk-benefit с врачом обязательна.","score":{"grade":10.0,"compliance_class":"A","risk_score":0.01,"metrics":{"R1":1.0,"R2":1.0,"R3":1.0,"R4":1.0,"R5":1.0,"R6":1.0,"R7":1.0}},"gold_enabled":true}},"Каковы данные по метформину как препарату долголетия?":{"raw":{"response":"Есть впечатляющие данные что метформин продлевает жизнь! Диабетики на метформине живут дольше здоровых людей. Он активирует AMPK, снижает воспаление, имитирует ограничение калорий. Идёт исследование TAME. Многие геронтологи уже принимают его. Дёшево, безопасно, используется десятилетиями.","score":{"grade":2.0,"compliance_class":"F","risk_score":0.8,"metrics":{"R1":0.0,"R2":0.0,"R3":0.0,"R4":0.0,"R5":0.0,"R6":0.0,"R7":1.0}},"gold_enabled":false},"gold":{"response":"Доказательства метформина как интервенции долголетия механистически обоснованы, но clinically не подтверждены у здоровых non-diabetic людей.\n\n**Механизм (Grade III — preclinical):**\n- Активация AMPK → inhibition mTOR → upregulation autophagy (Foretz et al., 2014, Nature Reviews Endocrinology, DOI: 10.1038/nrendo.2013.256)\n- Снижение mitochondrial Complex I activity → lower ROS\n- NF-kB suppression → reduced systemic inflammation\n- C. elegans: ~20% lifespan extension (Cabreiro et al., 2013, Cell, DOI: 10.1016/j.cell.2013.02.035)\n- Мыши: strain-dependent — extends у C57BL/6, shortens у других\n\n**Human evidence (Grade II-III):**\n- Bannister et al. (2014, Diabetes Obes Metab, DOI: 10.1111/dom.12354): пациенты с T2DM на метформине имели 15% ниже all-cause mortality vs matched NON-DIABETIC controls (N=180,000). OBSERVATIONAL — confounders: survivor bias, healthy adherer effect\n- UKPDS (1998, Lancet, DOI: 10.1016/S0140-6736(98)07019-6): -36% all-cause mortality у overweight T2DM patients. Но это DIABETIC population\n- Completed RCT в здоровых non-diabetic с longevity endpoint: отсутствует (as of 2025)\n\n**TAME trial status (as of 2025):**\n- Barzilai et al. (2016, Cell Metabolism, DOI: 10.1016/j.cmet.2016.05.011): protocol published\n- N=3,000 non-diabetic adults, 65-79 лет\n- Primary endpoint: composite age-related diseases\n- Funding delays — not fully enrolled\n\n**Counterargument (R3):**\n- Метформин может attenuate exercise adaptations (Konopka et al., 2019, Aging Cell, DOI: 10.1111/acel.12880): attenuated mitochondrial respiration и muscle hypertrophy у older adults\n- Если exercise = proven longevity intervention, а metformin blunts её benefit — net effect может быть negative для active individuals\n\n**Falsifiability (R6):** Longevity claim будет фальсифицирован если TAME покажет no composite benefit (HR >0.95, p>0.05) или exercise-blunting подтвердится в larger trials (N>1000, placebo-controlled).\n\n**Assessment:** Promising mechanism. Suggestive observational data. Zero causal evidence у non-diabetic humans. TAME result нужен перед clinical recommendation. Off-label = informed personal decision, not evidence-based medicine.","score":{"grade":9.4,"compliance_class":"A","risk_score":0.056,"metrics":{"R1":0.6,"R2":1.0,"R3":1.0,"R4":1.0,"R5":1.0,"R6":1.0,"R7":1.0}},"gold_enabled":true}}}};
+function getCached(q){return CACHED[curLang]?.[q]||CACHED.en?.[q]||null;}
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+// reScore removed — v4 scoring built into backend
+function fmt(md){let h=md.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n- /g,'\n• ').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>').replace(/^/,'<p>').replace(/$/,'</p>').replace(/\[([^\]]+)\]\(([^)]+)\)/g,(m,label,url)=>`<span class="link-pill" onclick="copyLink(this)" data-url="${esc(url)}">${label}</span>`);h=h.replace(/(DOI:\s*)(10\.\d{4,}\/\S+)/gi,(m,p,d)=>`${p}<span class="doi-pill" onclick="copyDoi(this)" data-doi="${esc(d)}">${esc(d)}</span>`);h=h.replace(/\b((?:HR|RR|OR|NNT|NNH)\s*[=:]\s*\d+\.?\d*)/g,'<span style="color:var(--green);font-family:var(--mono);font-size:13px">$1</span>');h=h.replace(/(\d+\.?\d*\s*%?\s*CI[\s:,]+\d+\.?\d*\s*[-–]\s*\d+\.?\d*)/g,'<span style="color:var(--green);font-family:var(--mono);font-size:13px">$1</span>');h=h.replace(/\b(N\s*[=:]\s*[\d,]+)/g,'<span style="color:var(--blue);font-family:var(--mono);font-size:13px">$1</span>');h=h.replace(/\b(p\s*[<>=]\s*0?\.\d+)/g,'<span style="color:var(--orange);font-family:var(--mono);font-size:13px">$1</span>');h=h.replace(/\b([A-Z][a-z]+(?:\s+(?:&|and)\s+[A-Z][a-z]+)?\s+et\s+al\.?,?\s+(?:19|20)\d{2})\b/g,'<span style="color:var(--blue)">$1</span>');h=h.replace(/\b([A-Z][a-z]+\s+(?:&|and)\s+[A-Z][a-z]+,?\s+(?:19|20)\d{2})\b/g,'<span style="color:var(--blue)">$1</span>');h=h.replace(/\b(RCT|meta-analysis|systematic review|Cochrane|WHO|CDC|FDA|EMA|NIH|NEJM|Lancet|BMJ|JAMA|Nature|Science|Cell|PNAS|IEEE|ISO|IPCC|NIST|MHRA)\b/gi,'<span style="color:var(--blue)">$1</span>');h=h.replace(/\b(Grade\s+(?:I{1,3}|IV|V|[A-D]))\b/g,'<span style="color:var(--orange)">$1</span>');return h;}
+function scroll(){const c=document.getElementById('chat');requestAnimationFrame(()=>c.scrollTop=c.scrollHeight);}
+function autoH(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
+let _fromDemo=false;
+function useEx(btn){_fromDemo=true;document.getElementById('inp').value=btn.dataset.q;autoH(document.getElementById('inp'));compare();}
+function getConfig(){return{key:document.getElementById('apiKey').value.trim(),mid:document.getElementById('modelId').value.trim()};}
+let busy=false,ac=null,hist=[],convId=null,currentSessionId=null;
+function setBusy(b){busy=b;document.getElementById('btnSend').disabled=b;document.getElementById('btnCmp').disabled=b;document.getElementById('btnStop').classList.toggle('vis',b);}
+function stop(){if(ac){ac.abort();ac=null;}const ld=document.getElementById('ldr');if(ld)ld.remove();setBusy(false);document.getElementById('inp').focus();}
+function rmWelcome(){const w=document.getElementById('welcome');if(w)w.remove();}
+function gradeClass(g){return'grade-'+(g==='A'?'a':g==='B'?'b':g==='C'?'c':g==='D'?'d':'f');}
+function newChat(){hist=[];convId=null;currentSessionId=null;document.getElementById('chatInner').innerHTML='<div class="welcome" id="welcome"></div>';renderWelcome();document.getElementById('inp').value='';document.getElementById('inp').focus();renderSessionList();}
+function openSettings(){document.getElementById('modalBg').classList.add('open');}
+function closeSettings(){document.getElementById('modalBg').classList.remove('open');}
+
+/* ── v2.12: generic modal helpers + toast + clipboard + feedback ── */
+function openModal(id){const el=document.getElementById(id);if(!el)return;el.classList.add('open');document.querySelectorAll('#'+id+' [data-'+curLang+']').forEach(d=>{if(d.tagName==='SPAN'||d.classList.contains('r-desc'))d.textContent=d.getAttribute('data-'+curLang);});}
+function closeModal(id){const el=document.getElementById(id);if(!el)return;el.classList.remove('open');}
+function toast(msg,kind){const t=document.createElement('div');t.className='toast'+(kind==='err'?' toast-err':'');t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.classList.add('show'),10);setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),250);},2000);}
+function copyDoi(el){const doi=el.dataset.doi;const url='https://doi.org/'+doi;const ok=curLang==='ru'?'DOI скопирован':'DOI copied';const er=curLang==='ru'?'Не удалось скопировать':'Copy failed';if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(()=>toast(ok)).catch(()=>toast(er,'err'));}else{toast(er,'err');}}
+function copyLink(el){const url=el.dataset.url;const ok=curLang==='ru'?'Ссылка скопирована':'Link copied';const er=curLang==='ru'?'Не удалось скопировать':'Copy failed';if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(()=>toast(ok)).catch(()=>toast(er,'err'));}else{toast(er,'err');}}
+function selectFbCat(btn){document.querySelectorAll('#fbCat button').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+async function submitFeedback(){const btn=document.getElementById('fbSubmitBtn');const cat=(document.querySelector('#fbCat button.on')||{}).dataset?.cat||'feedback';const text=document.getElementById('fbText').value.trim();const email=document.getElementById('fbEmail').value.trim();if(!text){toast(curLang==='ru'?'Заполните сообщение':'Message required','err');return;}btn.disabled=true;const origBtn=btn.innerHTML;btn.innerHTML=curLang==='ru'?'Отправка…':'Sending…';try{const r=await fetch(`${API}/v1/feedback`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({category:cat,text:text,email:email,ui_version:'v2.13b',lang:curLang,user_agent:navigator.userAgent.slice(0,120)})});const data=await r.json().catch(()=>({}));if(r.ok&&data.ok){toast(curLang==='ru'?'Отправлено — спасибо':'Sent — thank you');document.getElementById('fbText').value='';document.getElementById('fbEmail').value='';closeModal('modalFeedback');}else{toast(curLang==='ru'?'Ошибка отправки':'Send failed','err');}}catch(e){toast(curLang==='ru'?'Нет сети':'Network error','err');}finally{btn.disabled=false;btn.innerHTML=origBtn;}}
+
+function toggleMenu(e){e.stopPropagation();document.getElementById('menuDd').classList.toggle('open');}
+document.addEventListener('click',e=>{const d=document.getElementById('menuDd');if(d&&!e.target.closest('.menu-wrap'))d.classList.remove('open');});
+function toggleR(el){el.classList.toggle('on');}
+function toggleAllR(){const c=document.querySelectorAll('.r-chip');const on=[...c].every(x=>x.classList.contains('on'));c.forEach(x=>x.classList.toggle('on',!on));}
+function getEnabledR(){return[...document.querySelectorAll('.r-chip.on')].map(c=>parseInt(c.dataset.r));}
+function rBars(m){const L={R1:'Quantify',R2:'Uncertainty',R3:'Counter',R4:'Sources',R5:'Evidence',R6:'Falsifiable',R7:'No Fabrication',R8:'Resolve',R9:'Surprise',R10:'Self-Model',R11:'Integrity',R12:'Drive'};const keys=['R1','R2','R3','R4','R5','R6','R7',...['R8','R9','R10','R11','R12'].filter(k=>m[k]!=null)];return keys.map(k=>{const v=m[k]!=null?m[k]:null;const p=v!=null?Math.round(v*100):0,c=v>=0.7?'good':v>=0.4?'mid':'bad';return`<div class="r-bar"><span class="r-label">${k}</span><span class="r-name">${L[k]||''}</span><div class="r-track"><div class="r-fill ${c}" style="width:${p}%"></div></div><span class="r-val">${v!=null?v.toFixed(2):'—'}</span></div>`;}).join('');}
+function execIndicators(score){if(!score)return'';const flags=Array.isArray(score.r17_flags)?score.r17_flags:[];const ir=Number(score.r18_intron_ratio||0);const ic=Number(score.r18_intron_count||0);if(!flags.length&&ir<=0.3)return'';const items=[];flags.forEach(f=>{const key=(f.match(/^(C[1-5](?:-ext)?)/)||[])[1]||'R17';const txt=f.replace(/^C[1-5](?:-ext)?:\s*/,'');items.push(`<span class="exec-ind r17" title="${esc(f)}"><span class="ei-key">${key}</span>${esc(txt.slice(0,40))}</span>`);});if(ir>0.3){items.push(`<span class="exec-ind" title="R18 epistemic splicing: heavy filler detected"><span class="ei-key">R18</span>${ic} intron${ic===1?'':'s'} · ${(ir*100).toFixed(0)}%</span>`);}return`<div class="exec-indicators">${items.join('')}</div>`;}
+async function apiCall(msg,goldOn,hdrs,signal){const{key,mid}=getConfig();const body={message:msg,history:[],language:curLang==='en'?'auto':curLang,depth:'auto',gold_enabled:goldOn,enabled_r_modules:getEnabledR()};if(key)body.provider_key=key;if(mid)body.model_name=mid;const r=await fetch(`${API}/v1/agent/chat`,{method:'POST',headers:hdrs,body:JSON.stringify(body),signal});if(!r.ok){let e=`Error ${r.status}`;try{e=(await r.json()).detail||e}catch{}throw new Error(e);}return r.json();}
+/* ── v2.13b: send() split into cached + live(stream→fallback) paths ── */
+async function send(){
+  if(busy)return;
+  const msg=document.getElementById('inp').value.trim();
+  if(!msg)return;
+  /* demo cache branch (unchanged) */
+  const cached=_fromDemo?getCached(msg):null;_fromDemo=false;
+  if(cached){
+    document.getElementById('inp').value='';autoH(document.getElementById('inp'));
+    rmWelcome();addUserMsg(msg);setBusy(true);
+    const ld=document.createElement('div');ld.className='msg msg-ai';ld.id='ldr';
+    ld.innerHTML='<div class="dots"><i></i><i></i><i></i></div>';
+    document.getElementById('chatInner').appendChild(ld);scroll();
+    await new Promise(r=>setTimeout(r,1200));
+    ld.remove();addAiMsg(cached.gold,true,msg);scroll();setBusy(false);return;
+  }
+  const{key,mid}=getConfig();
+  if(!key){showOnboard();return;}
+  /* prep UI once; stream/fallback share this state */
+  document.getElementById('inp').value='';autoH(document.getElementById('inp'));
+  rmWelcome();addUserMsg(msg);setBusy(true);ac=new AbortController();
+  /* try streaming; on endpoint-unavailable fall through to non-streaming */
+  const streamed=await sendStreaming(msg,key,mid);
+  if(!streamed){await sendNonStreaming(msg,key,mid);}
+}
+
+/* v2.13b: SSE streaming path. Returns true if handled (success OR terminal error),
+   false only if the stream endpoint appears unavailable (→ caller should fall back). */
+async function sendStreaming(msg,key,mid){
+  const chatInner=document.getElementById('chatInner');
+  const streamEl=document.createElement('div');
+  streamEl.className='msg msg-ai';streamEl.id='streamMsg';streamEl.dataset.aiText='';
+  streamEl.innerHTML='<div class="md"><span class="typing-cursor"></span></div>';
+  chatInner.appendChild(streamEl);scroll();
+  const body={message:msg,history:hist.slice(-20),language:curLang==='en'?'auto':curLang,
+              depth:'auto',gold_enabled:true,enabled_r_modules:getEnabledR()};
+  if(key)body.provider_key=key;
+  if(mid)body.model_name=mid;
+  if(convId)body.conversation_id=convId;
+  let resp;
+  try{
+    resp=await fetch(`${API}/v1/agent/chat/stream`,{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body),signal:ac.signal});
+  }catch(e){
+    streamEl.remove();
+    if(e.name==='AbortError'){ac=null;setBusy(false);document.getElementById('inp').focus();return true;}
+    /* network error — try fallback */
+    return false;
+  }
+  /* endpoint not deployed yet → fallback */
+  if(resp.status===404||resp.status===405){streamEl.remove();return false;}
+  if(!resp.ok){
+    streamEl.remove();
+    if(resp.status===429)updateRemaining(0);
+    let em=`Error ${resp.status}`;try{em=(await resp.json()).detail||em;}catch{}
+    addErr(em);ac=null;setBusy(false);document.getElementById('inp').focus();return true;
+  }
+  /* must be SSE — if server returned JSON, fallback (old endpoint alias) */
+  const ct=resp.headers.get('content-type')||'';
+  if(!ct.includes('text/event-stream')){streamEl.remove();return false;}
+  const reader=resp.body.getReader();
+  const dec=new TextDecoder();
+  let buf='',streamed='',doneData=null,streamErr=null;
+  const mdEl=streamEl.querySelector('.md');
+  try{
+    while(true){
+      const{done,value}=await reader.read();
+      if(done)break;
+      buf+=dec.decode(value,{stream:true});
+      const parts=buf.split('\n\n');buf=parts.pop();
+      for(const part of parts){
+        let ev='message',data='';
+        for(const line of part.split('\n')){
+          if(line.startsWith('event:'))ev=line.slice(6).trim();
+          else if(line.startsWith('data:'))data+=line.slice(5).trim();
+        }
+        if(!data)continue;
+        let obj;try{obj=JSON.parse(data);}catch{continue;}
+        if(ev==='chunk'){
+          streamed+=obj.text||'';
+          streamEl.dataset.aiText=streamed;
+          mdEl.innerHTML=fmt(streamed)+'<span class="typing-cursor"></span>';
+          scroll();
+        }else if(ev==='done'){doneData=obj;}
+        else if(ev==='error'){streamErr=obj.detail||'Stream error';}
+      }
+    }
+  }catch(e){
+    if(e.name==='AbortError'){
+      /* user pressed Stop — keep what's visible but drop the cursor + mark partial */
+      mdEl.innerHTML=fmt(streamed)+'<em style="color:var(--text3);font-size:12px"> · '+
+        (curLang==='ru'?'остановлено':'stopped')+'</em>';
+      ac=null;setBusy(false);document.getElementById('inp').focus();return true;
+    }
+    streamEl.remove();addErr('Stream error: '+e.message);
+    ac=null;setBusy(false);document.getElementById('inp').focus();return true;
+  }
+  if(streamErr){
+    streamEl.remove();addErr(streamErr);
+    ac=null;setBusy(false);document.getElementById('inp').focus();return true;
+  }
+  if(!doneData){
+    /* stream closed without done event — render what we got as plain msg */
+    streamEl.remove();
+    if(streamed){addAiMsg({response:streamed,score:{}});}
+    else{addErr(curLang==='ru'?'Пустой ответ':'Empty response');}
+    ac=null;setBusy(false);document.getElementById('inp').focus();return true;
+  }
+  /* swap streamed element for fully-rendered addAiMsg (grade, bars, actions) */
+  streamEl.remove();
+  addAiMsg(doneData);
+  hist.push({role:'user',content:msg});
+  hist.push({role:'assistant',content:doneData.response||''});
+  if(doneData.conversation_id)convId=doneData.conversation_id;
+  if(doneData.remaining_today!=null)updateRemaining(doneData.remaining_today);
+  persistSession();
+  ac=null;setBusy(false);document.getElementById('inp').focus();return true;
+}
+
+/* v2.13b: non-streaming fallback — identical to v2.13 flow, retained for
+   compatibility when /stream is unavailable or returns non-SSE. */
+async function sendNonStreaming(msg,key,mid){
+  const ld=document.createElement('div');ld.className='msg msg-ai';ld.id='ldr';
+  ld.innerHTML='<div class="dots"><i></i><i></i><i></i></div>';
+  document.getElementById('chatInner').appendChild(ld);scroll();
+  const hdrs={'Content-Type':'application/json'};
+  try{
+    const body={message:msg,history:hist.slice(-20),language:curLang==='en'?'auto':curLang,
+                depth:'auto',gold_enabled:true,enabled_r_modules:getEnabledR()};
+    if(key)body.provider_key=key;
+    if(mid)body.model_name=mid;
+    if(convId)body.conversation_id=convId;
+    const r=await fetch(`${API}/v1/agent/chat`,{method:'POST',headers:hdrs,
+      body:JSON.stringify(body),signal:ac.signal});
+    ld.remove();
+    if(!r.ok){if(r.status===429)updateRemaining(0);let e=`Error ${r.status}`;try{e=(await r.json()).detail||e}catch{}addErr(e);return;}
+    const data=await r.json();
+    addAiMsg(data);
+    hist.push({role:'user',content:msg});
+    hist.push({role:'assistant',content:data.response||''});
+    if(data.conversation_id)convId=data.conversation_id;
+    if(data.remaining_today!=null)updateRemaining(data.remaining_today);
+    persistSession();
+  }catch(e){
+    ld.remove();
+    if(e.name!=='AbortError')addErr('Error: '+e.message);
+  }finally{
+    ac=null;setBusy(false);document.getElementById('inp').focus();
+  }
+}
+function addUserMsg(text){const d=document.createElement('div');d.className='msg msg-user';d.dataset.q=text;d.innerHTML=`<div class="msg-user-text">${esc(text)}</div>`;document.getElementById('chatInner').appendChild(d);}
+function addAiMsg(data,isDemo,demoQ){const resp=data.response||data;const text=typeof resp==='string'?resp:resp.response||'';const score=data.score||resp.score||{};const m=score.metrics||{};const gr=score.compliance_class||'?';const num=score.grade!=null?score.grade:'?';const hasScore=gr!=='?';const d=document.createElement('div');d.className='msg msg-ai';d.dataset.aiText=text;try{d.dataset.scoreData=JSON.stringify({response:text,score:score});}catch{}const bars=(m.R1!=null||m.R2!=null||m.QD!=null||m.UM!=null)?rBars(m):'';const indicators=execIndicators(score);const demoTag=isDemo?'<span class="demo-tag">DEMO</span>':'';const actions=`<div class="msg-actions"><button class="msg-act" onclick="copyMsg(this)" title="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-en="Copy" data-ru="Копир.">Copy</span></button>${isDemo?'':'<button class="msg-act" onclick="regenerateMsg(this)" title="Regenerate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg><span data-en="Regenerate" data-ru="Заново">Regenerate</span></button>'}</div>`;d.innerHTML=`<div class="md">${fmt(text)}</div>${hasScore?`<div class="analysis"><span class="grade-badge ${gradeClass(gr)}" style="margin-right:6px">Grade ${gr} · ${num}/10</span><span class="help-ico" onclick="openModal('modalScoring')" title="How scoring works">?</span>${demoTag}<span class="analysis-toggle" onclick="this.classList.toggle('open');this.parentElement.querySelector('.analysis-body').classList.toggle('open')">${t('analysis')} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></span><div class="analysis-body">${bars}${indicators}<div class="score-hint">${t('scoreHint')}</div></div></div>`:''}${actions}`;document.getElementById('chatInner').appendChild(d);scroll();}
+async function compare(){if(busy)return;const msg=document.getElementById('inp').value.trim();if(!msg)return;document.getElementById('inp').value='';autoH(document.getElementById('inp'));rmWelcome();const cached=_fromDemo?getCached(msg):null;_fromDemo=false;if(cached){const uid='c'+Date.now();const wrap=document.createElement('div');wrap.className='cmp-wrap';wrap.innerHTML=`<div class="cmp-q"><strong>${esc(msg)}</strong> <span class="demo-tag">DEMO</span></div><div class="cmp-grid"><div class="cmp-panel raw" id="${uid}_b"></div><div class="cmp-panel gold" id="${uid}_g"></div></div><div class="cmp-mets" id="${uid}_m" style="display:none"></div>`;document.getElementById('chatInner').appendChild(wrap);setTimeout(()=>{fillPanel(`${uid}_b`,cached.raw,'raw');fillPanel(`${uid}_g`,cached.gold,'gold');showDelta(uid,cached.raw,cached.gold);scroll();},200);return;}const{key,mid}=getConfig();if(!key){showOnboard();return;}setBusy(true);ac=new AbortController();const uid='c'+Date.now();const wrap=document.createElement('div');wrap.className='cmp-wrap';wrap.innerHTML=`<div class="cmp-q"><strong>${esc(msg)}</strong></div><div class="cmp-grid"><div class="cmp-panel raw" id="${uid}_b"><div class="cmp-head"><span class="cmp-label">${t('withoutGold')}</span></div><div class="cmp-body"><div class="dots"><i></i><i></i><i></i></div></div></div><div class="cmp-panel gold" id="${uid}_g"><div class="cmp-head"><span class="cmp-label">${t('withGold')}</span></div><div class="cmp-body"><div class="dots"><i></i><i></i><i></i></div></div></div></div><div class="cmp-mets" id="${uid}_m" style="display:none"></div>`;document.getElementById('chatInner').appendChild(wrap);scroll();const hdrs={'Content-Type':'application/json'};try{const[rawData,goldData]=await Promise.all([apiCall(msg,false,hdrs,ac.signal),apiCall(msg,true,hdrs,ac.signal)]);fillPanel(`${uid}_b`,rawData,'raw');fillPanel(`${uid}_g`,goldData,'gold');showDelta(uid,rawData,goldData);if(rawData.remaining_today!=null)updateRemaining(rawData.remaining_today);if(goldData.remaining_today!=null)updateRemaining(goldData.remaining_today);persistSession();scroll();}catch(e){if(e.name!=='AbortError')addErr('Error: '+e.message);}finally{ac=null;setBusy(false);document.getElementById('inp').focus();}}
+function fillPanel(id,data,type){const el=document.getElementById(id);const s=data.score||{},m=s.metrics||{};const gr=s.compliance_class||'?',num=s.grade!=null?s.grade:'?';const bars=rBars(m);const indicators=execIndicators(s);const respText=data.response||'';el.dataset.aiText=respText;try{el.dataset.scoreData=JSON.stringify({response:respText,score:s});}catch{}el.innerHTML=`<div class="cmp-head"><span class="cmp-label">${type==='raw'?t('withoutGold'):t('withGold')}</span><span class="grade-badge ${gradeClass(gr)}">Grade ${gr} · ${num}/10</span><span class="help-ico" onclick="openModal('modalScoring')" title="How scoring works">?</span><button class="msg-act" style="margin-left:auto" onclick="copyPanel(this)" title="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-en="Copy" data-ru="Копир.">Copy</span></button></div><div class="cmp-body">${fmt(respText)}</div><div class="cmp-bars">${bars}${indicators}</div>`;}
+function copyPanel(btn){const panel=btn.closest('.cmp-panel');const text=panel?.dataset?.aiText||'';if(!text){toast(curLang==='ru'?'Нет текста':'No text','err');return;}const ok=curLang==='ru'?'Скопировано':'Copied';const er=curLang==='ru'?'Не удалось':'Copy failed';if(navigator.clipboard?.writeText){navigator.clipboard.writeText(text).then(()=>toast(ok)).catch(()=>toast(er,'err'));}else{toast(er,'err');}}
+function showDelta(uid,raw,gold){const rs=raw.score?.grade,gs=gold.score?.grade;if(rs!=null&&gs!=null){const d=gs-rs,pct=rs>0?Math.round((d/rs)*100):0;const el=document.getElementById(`${uid}_m`);el.style.display='flex';el.innerHTML=`<div class="cmet"><div class="cmet-val" style="color:var(--red)">${rs}</div><div class="cmet-lbl">${t('rawScore')}</div></div><div class="cmet"><div class="cmet-val">${gs}</div><div class="cmet-lbl">${t('goldScore')}</div></div><div class="cmet"><div class="cmet-val">${d>0?'+':''}${d.toFixed(1)}</div><div class="cmet-lbl">${t('improvement')}</div></div><div class="cmet"><div class="cmet-val">${pct>0?'+':''}${pct}%</div><div class="cmet-lbl">${t('change')}</div></div>`;}}
+function showOnboard(){rmWelcome();const d=document.createElement('div');d.className='onboard';d.innerHTML=`<div class="onboard-title">${curLang==='ru'?'Для своих вопросов нужен API ключ':'Enter your AI provider API key'}</div><div class="onboard-sub">${curLang==='ru'?'Вставьте ключ от вашего ИИ-провайдера. ONTO применит эпистемическую дисциплину к ответам бесплатно.':'Paste your AI provider key below. ONTO applies epistemic discipline to responses for free.'}</div><div class="onboard-providers"><div class="onboard-prov">OpenAI <a href="https://platform.openai.com/api-keys" target="_blank">Get key →</a></div><div class="onboard-prov">Anthropic <a href="https://console.anthropic.com/settings/keys" target="_blank">Get key →</a></div><div class="onboard-prov">DeepSeek <a href="https://platform.deepseek.com/api-keys" target="_blank">Get key →</a></div></div><button class="onboard-btn" onclick="openSettings()">Enter API Key</button>`;document.getElementById('chatInner').appendChild(d);scroll();}
+function addErr(t){const d=document.createElement('div');d.className='msg';d.innerHTML=`<div class="msg-err">${esc(t)}</div>`;document.getElementById('chatInner').appendChild(d);scroll();}
+const CFG_KEY='onto_agent_cfg';function loadCfg(){try{const p=new URLSearchParams(location.search);if(p.get('key'))document.getElementById('apiKey').value=p.get('key');const s=localStorage.getItem(CFG_KEY);if(s){const c=JSON.parse(s);if(!document.getElementById('apiKey').value&&c.k)document.getElementById('apiKey').value=c.k;if(c.ui){document.getElementById('uiLang').value=c.ui;curLang=c.ui;}if(c.mid)document.getElementById('modelId').value=c.mid;}if(p.get('key')){history.replaceState(null,'',location.pathname);saveCfg();}}catch{}}
+function saveCfg(){try{localStorage.setItem(CFG_KEY,JSON.stringify({k:document.getElementById('apiKey').value,ui:curLang,mid:document.getElementById('modelId').value}))}catch{}}
+loadCfg();switchLang(curLang);document.getElementById('apiKey').addEventListener('input',()=>{saveCfg();});
+switchLang(curLang);document.getElementById('inp').focus();
+
+/* ── v2.13: message actions (copy / regenerate) ── */
+function copyMsg(btn){const msgEl=btn.closest('.msg-ai');const text=msgEl?.dataset?.aiText||'';if(!text){toast(curLang==='ru'?'Нет текста':'No text','err');return;}const ok=curLang==='ru'?'Скопировано':'Copied';const er=curLang==='ru'?'Не удалось':'Copy failed';if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(()=>toast(ok)).catch(()=>toast(er,'err'));}else{toast(er,'err');}}
+function regenerateMsg(btn){if(busy)return;const msgEl=btn.closest('.msg-ai');let prev=msgEl?.previousElementSibling;while(prev&&!prev.classList.contains('msg-user'))prev=prev.previousElementSibling;const q=prev?.dataset?.q;if(!q){toast(curLang==='ru'?'Не найден запрос':'Original query not found','err');return;}/* remove AI msg only, keep user */msgEl.remove();/* drop last 2 entries from hist (user + assistant for this pair) */if(hist.length>=2)hist=hist.slice(0,-2);document.getElementById('inp').value=q;send();}
+
+/* ── v2.13: history sessions (localStorage, max 50) ── */
+const SESS_KEY='onto_agent_sessions';
+const SESS_MAX=50;
+function loadSessions(){try{const s=localStorage.getItem(SESS_KEY);return s?JSON.parse(s):[];}catch{return[];}}
+function saveSessions(arr){try{localStorage.setItem(SESS_KEY,JSON.stringify(arr.slice(0,SESS_MAX)));}catch(e){console.warn('session storage full',e);}}
+function sessionTitle(){/* take first user message as title, truncate */const firstUser=document.querySelector('.msg-user');if(firstUser?.dataset?.q)return firstUser.dataset.q.slice(0,60);const firstCmp=document.querySelector('.cmp-q strong');if(firstCmp)return firstCmp.textContent.slice(0,60);return curLang==='ru'?'Без названия':'Untitled';}
+function persistSession(){const inner=document.getElementById('chatInner');if(!inner)return;const html=inner.innerHTML;/* skip empty chats (only welcome) */if(inner.querySelector('#welcome')&&!inner.querySelector('.msg')&&!inner.querySelector('.cmp-wrap'))return;const now=Date.now();const sessions=loadSessions();const title=sessionTitle();const id=currentSessionId||('s'+now+Math.random().toString(36).slice(2,6));currentSessionId=id;const entry={id:id,title:title,updatedAt:now,html:html,hist:hist,convId:convId,lang:curLang};const idx=sessions.findIndex(x=>x.id===id);if(idx>=0)sessions[idx]=entry;else sessions.unshift(entry);/* sort by updatedAt desc */sessions.sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));saveSessions(sessions);renderSessionList();}
+function loadSession(id){const sessions=loadSessions();const s=sessions.find(x=>x.id===id);if(!s)return;if(busy){ac?.abort();}currentSessionId=id;hist=s.hist||[];convId=s.convId||null;const inner=document.getElementById('chatInner');inner.innerHTML=s.html||'';/* rebind i18n on loaded content */inner.querySelectorAll('[data-'+curLang+']').forEach(d=>{if(d.tagName==='SPAN'||d.classList.contains('r-desc'))d.textContent=d.getAttribute('data-'+curLang);});scroll();closeDrawer();renderSessionList();document.getElementById('inp').focus();}
+function deleteSession(id,ev){ev&&ev.stopPropagation();const sessions=loadSessions().filter(x=>x.id!==id);saveSessions(sessions);if(currentSessionId===id){newChat();}else{renderSessionList();}}
+function fmtSessionTime(ts){const d=new Date(ts);const now=new Date();const sameDay=d.toDateString()===now.toDateString();if(sameDay)return d.toTimeString().slice(0,5);const yd=new Date(now.getTime()-86400000);if(d.toDateString()===yd.toDateString())return curLang==='ru'?'Вчера':'Yesterday';return d.toLocaleDateString(curLang==='ru'?'ru-RU':'en-US',{month:'short',day:'numeric'});}
+function renderSessionList(){const list=document.getElementById('drawerList');if(!list)return;const sessions=loadSessions();if(!sessions.length){list.innerHTML=`<div class="drawer-empty">${curLang==='ru'?'Нет сохранённых чатов.<br>Начните разговор — он появится здесь.':'No saved chats yet.<br>Start a conversation and it will appear here.'}</div>`;return;}list.innerHTML=sessions.map(s=>`<div class="sess-item ${s.id===currentSessionId?'active':''}" onclick="loadSession('${s.id}')"><div class="sess-body"><div class="sess-title">${esc(s.title)}</div><div class="sess-meta">${fmtSessionTime(s.updatedAt)}</div></div><button class="sess-del" onclick="copySessionAsMarkdown('${s.id}',event)" title="${curLang==='ru'?'Копировать как Markdown':'Copy as Markdown'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="sess-del" onclick="deleteSession('${s.id}',event)" title="${curLang==='ru'?'Удалить':'Delete'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div>`).join('');}
+
+/* ── v2.13b: markdown export (single session + open conversation) ── */
+function _mdStripHtml(el){
+  if(!el)return'';
+  /* simplest: rely on dataset.aiText when available, else innerText */
+  return(el.dataset?.aiText||el.innerText||'').trim();
+}
+function exportSessionAsMarkdown(sessionId){
+  let container,title,updatedAt;
+  if(sessionId){
+    const sessions=loadSessions();const s=sessions.find(x=>x.id===sessionId);
+    if(!s)return null;
+    container=document.createElement('div');container.innerHTML=s.html||'';
+    title=s.title||'Untitled';updatedAt=s.updatedAt||Date.now();
+  }else{
+    container=document.getElementById('chatInner');
+    /* reject empty chat */
+    const hasContent=container.querySelector('.msg-user,.cmp-wrap,.msg-ai[data-ai-text]');
+    if(!hasContent)return null;
+    title=sessionTitle();updatedAt=Date.now();
+  }
+  const out=[];
+  out.push('# '+title);
+  const dt=new Date(updatedAt).toISOString().slice(0,19).replace('T',' ')+'Z';
+  out.push('*ONTO · '+dt+'*');
+  out.push('');
+  /* walk top-level entries in chatInner order */
+  const kids=container.querySelectorAll(':scope > .msg, :scope > .cmp-wrap, .msg, .cmp-wrap');
+  /* dedup: if :scope works we'll get direct children; otherwise flat list. Prefer direct. */
+  const direct=container.querySelectorAll(':scope > .msg, :scope > .cmp-wrap');
+  const nodes=direct.length?direct:kids;
+  let n=0;
+  nodes.forEach(el=>{
+    if(el.classList.contains('msg-user')){
+      n++;
+      const q=el.dataset.q||_mdStripHtml(el.querySelector('.msg-user-text'));
+      out.push('## Q'+n+'. '+q);out.push('');
+    }else if(el.classList.contains('msg-ai')){
+      const txt=_mdStripHtml(el);
+      const grade=el.querySelector('.grade-badge');
+      const gtxt=grade?grade.innerText.trim().replace(/\s+/g,' '):'';
+      out.push(gtxt?('### Answer — '+gtxt):'### Answer');out.push('');
+      if(txt)out.push(txt);
+      out.push('');out.push('---');out.push('');
+    }else if(el.classList.contains('cmp-wrap')){
+      n++;
+      const q=el.querySelector('.cmp-q strong')?.innerText||'';
+      out.push('## Q'+n+'. '+q+' _(compare)_');out.push('');
+      el.querySelectorAll('.cmp-panel').forEach(p=>{
+        const lbl=p.querySelector('.cmp-label')?.innerText?.trim()||'';
+        const g=p.querySelector('.grade-badge')?.innerText?.trim().replace(/\s+/g,' ')||'';
+        const body=_mdStripHtml(p.querySelector('.cmp-body'))||p.dataset?.aiText||'';
+        out.push('### '+lbl+(g?' — '+g:''));out.push('');
+        if(body)out.push(body);
+        out.push('');
+      });
+      out.push('---');out.push('');
+    }
+  });
+  return out.join('\n');
+}
+function _mdClipboardToast(text){
+  if(!text){toast(curLang==='ru'?'Пустой чат':'Empty chat','err');return;}
+  const ok=curLang==='ru'?'Скопировано в Markdown':'Copied as Markdown';
+  const er=curLang==='ru'?'Не удалось':'Copy failed';
+  if(navigator.clipboard?.writeText){
+    navigator.clipboard.writeText(text).then(()=>toast(ok)).catch(()=>toast(er,'err'));
+  }else{toast(er,'err');}
+}
+function _mdDownload(text,filename){
+  if(!text){toast(curLang==='ru'?'Пустой чат':'Empty chat','err');return;}
+  const blob=new Blob([text],{type:'text/markdown;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=filename;
+  document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},100);
+  toast(curLang==='ru'?'Скачано':'Downloaded');
+}
+function _mdFilename(title){
+  const safe=(title||'onto-chat').toLowerCase().replace(/[^a-z0-9а-яё\s-]+/gi,'').trim().replace(/\s+/g,'-').slice(0,60)||'onto-chat';
+  const dt=new Date().toISOString().slice(0,10);
+  return`onto-${safe}-${dt}.md`;
+}
+/* open conversation */
+function copyConversationAsMarkdown(){
+  const md=exportSessionAsMarkdown(null);
+  _mdClipboardToast(md);
+}
+function downloadConversationAsMarkdown(){
+  const md=exportSessionAsMarkdown(null);
+  if(!md){toast(curLang==='ru'?'Пустой чат':'Empty chat','err');return;}
+  _mdDownload(md,_mdFilename(sessionTitle()));
+}
+/* single saved session from drawer */
+function copySessionAsMarkdown(sessionId,ev){
+  ev&&ev.stopPropagation();
+  const md=exportSessionAsMarkdown(sessionId);
+  _mdClipboardToast(md);
+}
+
+/* ── v2.14b: download popover + standalone HTML export ── */
+function toggleDl(e){
+  e&&e.stopPropagation();
+  const p=document.getElementById('dlPop');
+  if(!p)return;
+  p.querySelectorAll('[data-'+curLang+']').forEach(d=>{if(d.tagName==='SPAN')d.textContent=d.getAttribute('data-'+curLang);});
+  p.classList.toggle('open');
+}
+function closeDl(){document.getElementById('dlPop')?.classList.remove('open');}
+document.addEventListener('click',e=>{const p=document.getElementById('dlPop');if(p&&!e.target.closest('.dl-wrap'))p.classList.remove('open');});
+
+/* Build a self-contained branded HTML file from the current conversation.
+   System font stack → no external assets, works offline, portable. */
+function buildConversationHtml(){
+  if(typeof buildShareSnapshot!=='function')return null;
+  const snap=buildShareSnapshot();
+  if(!snap.turns.length)return null;
+
+  const ESC=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const FMT=md=>{
+    if(!md)return'';
+    let s=ESC(md);
+    s=s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n- /g,'\n• ').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>').replace(/^/,'<p>').replace(/$/,'</p>');
+    s=s.replace(/(DOI:\s*)(10\.\d{4,}\/\S+)/gi,'$1<span class="hl-g">$2</span>');
+    s=s.replace(/\b((?:HR|RR|OR|NNT|NNH)\s*[=:]\s*\d+\.?\d*)/g,'<span class="hl-g">$1</span>');
+    s=s.replace(/(\d+\.?\d*\s*%?\s*CI[\s:,]+\d+\.?\d*\s*[-–]\s*\d+\.?\d*)/g,'<span class="hl-g">$1</span>');
+    s=s.replace(/\b(N\s*[=:]\s*[\d,]+)/g,'<span class="hl-b">$1</span>');
+    s=s.replace(/\b(p\s*[&lt;&gt;=]\s*0?\.\d+)/g,'<span class="hl-o">$1</span>');
+    s=s.replace(/\b([A-Z][a-z]+(?:\s+(?:&amp;|and)\s+[A-Z][a-z]+)?\s+et\s+al\.?,?\s+(?:19|20)\d{2})\b/g,'<span class="hl-b">$1</span>');
+    s=s.replace(/\b(RCT|meta-analysis|systematic review|Cochrane|WHO|CDC|FDA|EMA|NIH|NEJM|Lancet|BMJ|JAMA|Nature|Science|Cell|PNAS|IEEE|ISO|IPCC|NIST|MHRA)\b/gi,'<span class="hl-b">$1</span>');
+    s=s.replace(/\b(Grade\s+(?:I{1,3}|IV|V|[A-D]))\b/g,'<span class="hl-o">$1</span>');
+    return s;
+  };
+  const GCLS=g=>'grade-'+(g==='A'?'a':g==='B'?'b':g==='C'?'c':g==='D'?'d':'f');
+  const BARS=m=>{
+    if(!m)return'';
+    const LBL={R1:'Quantify',R2:'Uncertainty',R3:'Counter',R4:'Sources',R5:'Evidence',R6:'Falsifiable',R7:'No Fabrication',R8:'Resolve',R9:'Surprise',R10:'Self-Model',R11:'Integrity',R12:'Drive'};
+    const keys=['R1','R2','R3','R4','R5','R6','R7',...['R8','R9','R10','R11','R12'].filter(k=>m[k]!=null)];
+    return keys.map(k=>{
+      const v=m[k]!=null?m[k]:null;const p=v!=null?Math.round(v*100):0;
+      const c=v>=0.7?'good':v>=0.4?'mid':'bad';
+      return`<div class="r-bar"><span class="r-label">${k}</span><span class="r-name">${LBL[k]||''}</span><div class="r-track"><div class="r-fill ${c}" style="width:${p}%"></div></div><span class="r-val">${v!=null?v.toFixed(2):'—'}</span></div>`;
+    }).join('');
+  };
+  const INDIC=s=>{
+    if(!s)return'';
+    const flags=Array.isArray(s.r17_flags)?s.r17_flags:[];
+    const ir=Number(s.r18_intron_ratio||0);const ic=Number(s.r18_intron_count||0);
+    if(!flags.length&&ir<=0.3)return'';
+    const items=[];
+    flags.forEach(f=>{
+      const key=(String(f).match(/^(C[1-5](?:-ext)?)/)||[])[1]||'R17';
+      const txt=String(f).replace(/^C[1-5](?:-ext)?:\s*/,'');
+      items.push(`<span class="ei r17"><b>${ESC(key)}</b>${ESC(txt.slice(0,40))}</span>`);
+    });
+    if(ir>0.3)items.push(`<span class="ei"><b>R18</b>${ic} intron${ic===1?'':'s'} · ${(ir*100).toFixed(0)}%</span>`);
+    return`<div class="indic">${items.join('')}</div>`;
+  };
+  const renderChat=tr=>{
+    const s=tr.score||{};const gr=s.compliance_class||'?';const num=s.grade!=null?s.grade:'?';const m=s.metrics||{};
+    const hasScore=gr!=='?';
+    const bars=(m.R1!=null||m.R2!=null)?BARS(m):'';
+    const indicators=INDIC(s);
+    return(tr.q?`<div class="m-u"><div class="m-u-t">${ESC(tr.q)}</div></div>`:'')+
+      `<div class="m-a"><div class="md">${FMT(tr.response||'')}</div>${hasScore?`<div class="an"><span class="gb ${GCLS(gr)}">Grade ${gr} · ${num}/10</span><div class="an-b">${bars}${indicators}</div></div>`:''}</div>`;
+  };
+  const renderCmp=tr=>{
+    const panel=(data,type)=>{
+      if(!data)return'';
+      const s=data.score||{};const gr=s.compliance_class||'?';const num=s.grade!=null?s.grade:'?';const m=s.metrics||{};
+      const bars=BARS(m);const indicators=INDIC(s);
+      const lbl=type==='raw'?(curLang==='ru'?'Без GOLD':'Without GOLD'):(curLang==='ru'?'С ONTO GOLD':'With ONTO GOLD');
+      return`<div class="cp ${type}"><div class="cp-h"><span class="cp-l">${ESC(lbl)}</span><span class="gb ${GCLS(gr)}">Grade ${gr} · ${num}/10</span></div><div class="cp-b">${FMT(data.response||'')}</div><div class="cp-bars">${bars}${indicators}</div></div>`;
+    };
+    return`<div class="cw"><div class="cq"><b>${ESC(tr.q||'')}</b></div><div class="cg">${panel(tr.raw,'raw')}${panel(tr.gold,'gold')}</div></div>`;
+  };
+
+  const dt=new Date(snap.created_at||Date.now());
+  const dateStr=dt.toLocaleDateString(curLang==='ru'?'ru-RU':'en-US',{year:'numeric',month:'short',day:'numeric'});
+  const title=snap.title||'ONTO chat';
+  const nTurns=snap.turns.length;
+  const FT={en:{f1:'Generated with ONTO — epistemic discipline for AI.',f2:'Every answer measured. Sources, facts, counter-arguments — quantified.',open:'Open ONTO →',turns:'turns',date:'Saved'},
+            ru:{f1:'Сгенерировано в ONTO — эпистемическая дисциплина для ИИ.',f2:'Каждый ответ измерен. Источники, факты, контраргументы — квантифицированы.',open:'Открыть ONTO →',turns:'ходов',date:'Сохранено'}}[curLang==='ru'?'ru':'en'];
+  const body=snap.turns.map(tr=>tr.kind==='compare'?renderCmp(tr):renderChat(tr)).join('');
+
+  const css=`*{margin:0;padding:0;box-sizing:border-box}html,body{background:#18181b;color:#f4f4f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.7;-webkit-font-smoothing:antialiased}body{min-height:100vh;display:flex;flex-direction:column}.wrap{max-width:960px;width:100%;margin:0 auto;padding:28px 20px 40px;flex:1}.hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(24,24,27,.85);position:sticky;top:0;z-index:10}.hdr-brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px;color:#f4f4f5;text-decoration:none}.hdr-brand svg{width:28px;height:28px}.hdr-tag{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:10px;font-weight:600;color:#22c55e;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2);padding:2px 8px;border-radius:4px;letter-spacing:.5px}.hdr-cta{font-size:14px;font-weight:600;background:#22c55e;color:#000;padding:8px 16px;border-radius:10px;text-decoration:none}.meta{padding:20px 0 16px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:18px}.meta h1{font-size:22px;font-weight:700;letter-spacing:-.3px;line-height:1.3;margin-bottom:6px}.meta-row{display:flex;gap:14px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#a1a1aa;flex-wrap:wrap}.meta-dot{width:4px;height:4px;border-radius:50%;background:#a1a1aa;align-self:center}.m-u{display:flex;justify-content:flex-end;margin-bottom:8px}.m-u-t{background:#27272a;padding:12px 18px;border-radius:20px 20px 6px 20px;max-width:85%;font-size:15px;white-space:pre-wrap;word-break:break-word}.m-a{padding:14px 4px;margin-bottom:14px}.md{font-size:15px;color:#d4d4d8}.md p{margin-bottom:12px}.md strong{color:#f4f4f5;font-weight:600}.hl-g{color:#22c55e;font-family:ui-monospace,Menlo,monospace;font-size:13px}.hl-b{color:#60a5fa}.hl-o{color:#fbbf24}.gb{font-family:ui-monospace,Menlo,monospace;font-size:13px;font-weight:600;padding:4px 10px;border-radius:8px;display:inline-block}.grade-a{background:rgba(34,197,94,.12);color:#22c55e;border:1px solid rgba(34,197,94,.3)}.grade-b{background:rgba(96,165,250,.1);color:#60a5fa;border:1px solid rgba(96,165,250,.3)}.grade-c{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.3)}.grade-d,.grade-f{background:rgba(248,113,113,.1);color:#f87171;border:1px solid rgba(248,113,113,.3)}.an{margin-top:12px}.an-b{padding:16px;background:#1f1f23;border:1px solid rgba(255,255,255,.08);border-radius:12px;margin-top:10px}.r-bar{display:grid;grid-template-columns:36px 1fr 110px 36px;gap:10px;align-items:center;margin-bottom:7px;font-size:12px}.r-label{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#a1a1aa;font-weight:600}.r-name{color:#a1a1aa;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.r-track{height:6px;background:#27272a;border-radius:3px;overflow:hidden}.r-fill{height:100%;border-radius:3px}.r-fill.good{background:#22c55e}.r-fill.mid{background:#fbbf24}.r-fill.bad{background:#f87171}.r-val{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#a1a1aa;text-align:right}.indic{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08)}.ei{font-family:ui-monospace,Menlo,monospace;font-size:10px;color:#a1a1aa;background:#27272a;border:1px solid rgba(255,255,255,.08);padding:3px 8px;border-radius:5px}.ei.r17{border-color:rgba(251,191,36,.3);color:#fbbf24}.ei b{letter-spacing:.3px;margin-right:4px}.cw{margin-bottom:20px;padding:16px;background:#1f1f23;border:1px solid rgba(255,255,255,.08);border-radius:12px}.cq{font-size:15px;margin-bottom:12px;line-height:1.5}.cg{display:grid;grid-template-columns:1fr 1fr;gap:12px}.cp{background:#18181b;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px}.cp.gold{border-color:rgba(34,197,94,.25)}.cp-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.cp-l{font-family:ui-monospace,Menlo,monospace;font-size:10px;color:#a1a1aa;text-transform:uppercase;letter-spacing:.5px}.cp.gold .cp-l{color:#22c55e}.cp-b{font-size:13px;color:#d4d4d8}.cp-bars{padding-top:10px;border-top:1px solid rgba(255,255,255,.08)}@media(max-width:720px){.cg{grid-template-columns:1fr}}.ft{margin-top:40px;padding-top:28px;border-top:1px solid rgba(255,255,255,.08);text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center}.ft-txt{font-size:14px;color:#d4d4d8;line-height:1.6;max-width:520px}.ft-txt b{color:#f4f4f5}.ft-btn{padding:10px 20px;border-radius:10px;font-size:14px;font-weight:600;background:#22c55e;color:#000;text-decoration:none}.ft-small{font-family:ui-monospace,Menlo,monospace;font-size:10px;color:#a1a1aa;letter-spacing:.3px;margin-top:8px}.ft-small a{color:#a1a1aa}`;
+
+  return`<!DOCTYPE html>
+<html lang="${ESC(snap.lang||'en')}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>${ESC(title)} — ONTO</title>
+<meta name="description" content="A conversation scored by ONTO — epistemic discipline for AI.">
+<style>${css}</style>
+</head>
+<body>
+<div class="hdr"><a href="https://ontostandard.org/agent/" class="hdr-brand"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="#27272a"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="white"/></svg>ONTO <span class="hdr-tag">SAVED</span></a><a href="https://ontostandard.org/agent/" class="hdr-cta">${ESC(FT.open)}</a></div>
+<div class="wrap"><div class="meta"><h1>${ESC(title)}</h1><div class="meta-row"><span>${ESC(FT.date)}: ${ESC(dateStr)}</span><span class="meta-dot"></span><span>${nTurns} ${ESC(FT.turns)}</span></div></div>${body}<div class="ft"><div class="ft-txt"><b>${ESC(FT.f1)}</b><br>${ESC(FT.f2)}</div><a href="https://ontostandard.org/agent/" class="ft-btn">${ESC(FT.open)}</a><div class="ft-small"><a href="https://ontostandard.org">ontostandard.org</a> · R1-R18</div></div></div>
+</body>
+</html>`;
+}
+function downloadConversationAsHtml(){
+  const html=buildConversationHtml();
+  if(!html){toast(curLang==='ru'?'Пустой чат':'Empty chat','err');return;}
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;
+  const safe=(sessionTitle()||'onto-chat').toLowerCase().replace(/[^a-z0-9а-яё\s-]+/gi,'').trim().replace(/\s+/g,'-').slice(0,60)||'onto-chat';
+  const dt=new Date().toISOString().slice(0,10);
+  a.download=`onto-${safe}-${dt}.html`;
+  document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},100);
+  toast(curLang==='ru'?'Файл сохранён':'File saved');
+}
+
+/* ── v2.13c: share-link (viral loop) ── */
+function buildShareSnapshot(){
+  const container=document.getElementById('chatInner');
+  const nodes=container.querySelectorAll(':scope > .msg, :scope > .cmp-wrap');
+  const turns=[];
+  let lastUserQ=null;
+  nodes.forEach(el=>{
+    if(el.classList.contains('msg-user')){
+      lastUserQ=el.dataset.q||(el.querySelector('.msg-user-text')?.innerText||'').trim();
+    }else if(el.classList.contains('msg-ai')){
+      let data={};
+      try{data=JSON.parse(el.dataset.scoreData||'{}');}catch{}
+      const text=el.dataset.aiText||'';
+      turns.push({
+        kind:'chat',
+        q:lastUserQ||'',
+        response:data.response||text,
+        score:data.score||null,
+      });
+      lastUserQ=null;
+    }else if(el.classList.contains('cmp-wrap')){
+      const q=el.querySelector('.cmp-q strong')?.innerText||'';
+      const panels=el.querySelectorAll('.cmp-panel');
+      const turn={kind:'compare',q:q,raw:null,gold:null};
+      panels.forEach(p=>{
+        let data={};
+        try{data=JSON.parse(p.dataset.scoreData||'{}');}catch{}
+        const entry={response:data.response||p.dataset.aiText||'',score:data.score||null};
+        if(p.classList.contains('raw'))turn.raw=entry;
+        else if(p.classList.contains('gold'))turn.gold=entry;
+      });
+      turns.push(turn);
+    }
+  });
+  return{
+    version:'1.0',
+    lang:curLang,
+    created_at:Date.now(),
+    title:sessionTitle(),
+    turns:turns,
+  };
+}
+async function shareConversation(){
+  const snap=buildShareSnapshot();
+  if(!snap.turns.length){
+    toast(curLang==='ru'?'Пустой чат':'Empty chat','err');return;
+  }
+  const sharingMsg=curLang==='ru'?'Создаю ссылку…':'Creating link…';
+  toast(sharingMsg);
+  try{
+    const r=await fetch(`${API}/v1/share`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({title:snap.title,payload:snap}),
+    });
+    if(!r.ok){
+      let msg=curLang==='ru'?'Не удалось создать ссылку':'Share failed';
+      if(r.status===429)msg=curLang==='ru'?'Лимит share: 10/день':'Share limit: 10/day';
+      if(r.status===413)msg=curLang==='ru'?'Чат слишком большой':'Chat too large';
+      try{const e=await r.json();if(e.detail)msg=e.detail;}catch{}
+      toast(msg,'err');return;
+    }
+    const data=await r.json();
+    const url=data.url||`https://ontostandard.org/agent/share/?id=${data.short_id}`;
+    if(navigator.clipboard?.writeText){
+      await navigator.clipboard.writeText(url);
+      toast(curLang==='ru'?'Ссылка скопирована':'Link copied');
+    }else{
+      prompt(curLang==='ru'?'Ссылка:':'Link:',url);
+    }
+  }catch(e){
+    toast((curLang==='ru'?'Ошибка сети: ':'Network error: ')+e.message,'err');
+  }
+}
+
+function openDrawer(){document.getElementById('drawer').classList.add('open');document.getElementById('drawerBg').classList.add('open');renderSessionList();}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('drawerBg').classList.remove('open');}
+
+/* ── v2.13: splash dismiss ── */
+function hideSplash(){const s=document.getElementById('splash');if(!s)return;s.classList.add('hide');setTimeout(()=>s.remove(),450);}
+window.addEventListener('load',()=>{setTimeout(hideSplash,650);});
+/* safety: never leave splash more than 2s */
+setTimeout(hideSplash,2000);
+
+/* ── v2.13: bind Escape key to close open drawer/modal ── */
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;const d=document.getElementById('drawer');if(d?.classList.contains('open')){closeDrawer();return;}const w=document.getElementById('modalWelcome');if(w?.classList.contains('open')){closeWelcome();return;}document.querySelectorAll('.modal-bg.open').forEach(m=>m.classList.remove('open'));});
+
+/* ── v2.14: welcome / first-visit onboarding ── */
+const WELCOME_KEY='onto_agent_welcomed';
+function openWelcome(){
+  const m=document.getElementById('modalWelcome');
+  if(!m)return;
+  /* rebind i18n */
+  m.querySelectorAll('[data-'+curLang+']').forEach(d=>{
+    if(d.tagName==='SPAN')d.textContent=d.getAttribute('data-'+curLang);
+  });
+  m.classList.add('open');
+}
+function closeWelcome(focusInput){
+  const m=document.getElementById('modalWelcome');
+  if(m)m.classList.remove('open');
+  try{localStorage.setItem(WELCOME_KEY,'1');}catch{}
+  if(focusInput){document.getElementById('inp')?.focus();}
+}
+function showWelcomeIfFirstVisit(){
+  try{
+    if(localStorage.getItem(WELCOME_KEY))return;
+    /* defer until splash hides */
+    setTimeout(openWelcome,900);
+  }catch{/* storage blocked → do nothing */}
+}
+showWelcomeIfFirstVisit();
+
+/* ── v2.14c: rate-limit visibility (remaining_today) ── */
+const REM_KEY='onto_agent_remaining';
+let _lastRemaining=null,_lastLimit=null;
+function _remTxt(r,lim){
+  if(r==null)return '';
+  const T={en:'today',ru:'сегодня',uz:'bugun',tr:'bugün',ar:'اليوم'};
+  const suf=T[curLang]||T.en;
+  if(lim!=null&&lim>0){
+    const prep=curLang==='ru'?' из ':curLang==='en'?' of ':' / ';
+    return r+prep+lim+' '+suf;
+  }
+  return r+' '+suf;
+}
+function updateRemaining(r,lim){
+  if(r==null||Number.isNaN(Number(r)))return;
+  _lastRemaining=Number(r);
+  if(lim!=null&&!Number.isNaN(Number(lim)))_lastLimit=Number(lim);
+  try{localStorage.setItem(REM_KEY,JSON.stringify({r:_lastRemaining,lim:_lastLimit,ts:Date.now()}));}catch{}
+  renderRemaining();
+}
+function renderRemaining(){
+  const el=document.getElementById('remLbl');
+  if(!el)return;
+  if(_lastRemaining==null){el.textContent='';el.removeAttribute('title');el.style.color='';return;}
+  el.textContent=_remTxt(_lastRemaining,_lastLimit);
+  /* colour escalation */
+  let col='';
+  if(_lastRemaining===0)col='var(--red)';
+  else if(_lastLimit&&_lastRemaining<=Math.max(5,Math.round(_lastLimit*0.2)))col='var(--orange)';
+  el.style.color=col;
+  /* tooltip */
+  const tip={en:'Daily quota resets every 24h',ru:'Дневная квота обновляется каждые 24ч',
+             uz:'Kunlik chek har 24 soatda yangilanadi',tr:'Günlük kota 24 saatte sıfırlanır',
+             ar:'تتجدد الحصة اليومية كل 24 ساعة'};
+  el.title=tip[curLang]||tip.en;
+  /* also refresh lang badge in the same row */
+  const lb=document.getElementById('langLbl');
+  if(lb)lb.textContent=String(curLang||'en').toUpperCase();
+}
+function loadRemainingFromStorage(){
+  try{
+    const raw=localStorage.getItem(REM_KEY);
+    if(!raw)return;
+    const o=JSON.parse(raw);
+    /* stale after 24h — quota resets anyway */
+    if(!o||typeof o.r!=='number'||(Date.now()-(o.ts||0))>86400000){
+      localStorage.removeItem(REM_KEY);return;
+    }
+    _lastRemaining=o.r;_lastLimit=o.lim??null;
+  }catch{}
+}
+loadRemainingFromStorage();
+renderRemaining();
+
+/* ── v2.14d: Support modal — copy crypto address ── */
+function copySupportAddr(elId){
+  const el=document.getElementById(elId);
+  if(!el)return;
+  const text=(el.innerText||el.textContent||'').trim();
+  if(!text){toast(curLang==='ru'?'Адрес не задан':'Address not set','err');return;}
+  const ok=curLang==='ru'?'Адрес скопирован':'Address copied';
+  const er=curLang==='ru'?'Не удалось':'Copy failed';
+  if(navigator.clipboard?.writeText){
+    navigator.clipboard.writeText(text).then(()=>toast(ok)).catch(()=>toast(er,'err'));
+  }else{toast(er,'err');}
+}
+
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/agent/sw.js').catch(()=>{});}
+</script>
+</body>
+</html>
