@@ -1,46 +1,95 @@
+/**
+ * ONTO Agent · Service Worker v1.0
+ * 
+ * Strategy:
+ *   - App shell cached on install (offline splash works)
+ *   - Network-first for HTML (always latest UI)
+ *   - Cache-first for static assets (icons, fonts, manifest)
+ *   - API calls pass through untouched (never cache AI responses)
+ * 
+ * Cache versioning: bump CACHE_NAME on UI release to force refresh.
+ */
+
 const CACHE_NAME = 'onto-agent-v1';
-const STATIC_ASSETS = [
+
+const APP_SHELL = [
   '/agent/',
   '/agent/index.html',
-  '/agent/manifest.json'
+  '/agent/manifest.json',
+  '/agent/favicon.ico',
+  '/agent/favicon-32.png',
+  '/agent/icons/icon-192.png',
+  '/agent/icons/icon-512.png',
+  '/agent/icons/icon-maskable-512.png',
 ];
 
+// ─── install: prime cache with app shell ─────────────────────────
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(APP_SHELL).catch(() => {}))
+      .then(() => self.skipWaiting())
   );
-  self.skipWaiting();
 });
 
+// ─── activate: drop old caches ───────────────────────────────────
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
-    )
+    caches.keys()
+      .then((names) => Promise.all(
+        names.filter((n) => n !== CACHE_NAME).map((n) => caches.delete(n))
+      ))
+      .then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
+// ─── fetch: route by request type ────────────────────────────────
 self.addEventListener('fetch', (event) => {
-  const url = new URL(event.request.url);
+  const req = event.request;
+  const url = new URL(req.url);
 
-  // Network-first for API calls
-  if (url.pathname.startsWith('/v1/') || url.hostname !== location.hostname) {
+  // Skip non-GET
+  if (req.method !== 'GET') return;
+
+  // Skip cross-origin (API, Google Fonts) — let network handle
+  if (url.origin !== self.location.origin) return;
+
+  // Skip API paths even if same-origin
+  if (url.pathname.startsWith('/v1/')) return;
+
+  // HTML: network-first (always fresh UI)
+  if (req.mode === 'navigate' || req.destination === 'document') {
     event.respondWith(
-      fetch(event.request).catch(() => caches.match(event.request))
+      fetch(req)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((c) => c.put(req, copy)).catch(() => {});
+          return res;
+        })
+        .catch(() => caches.match(req).then((hit) => hit || caches.match('/agent/')))
     );
     return;
   }
 
-  // Cache-first for static assets
+  // Static assets: cache-first
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      const fetched = fetch(event.request).then((response) => {
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-        return response;
-      });
-      return cached || fetched;
+    caches.match(req).then((hit) => {
+      if (hit) return hit;
+      return fetch(req).then((res) => {
+        if (res && res.status === 200 && res.type === 'basic') {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((c) => c.put(req, copy)).catch(() => {});
+        }
+        return res;
+      }).catch(() => hit);
     })
   );
+});
+
+// ─── message: allow manual cache clear from app ──────────────────
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
+  if (event.data && event.data.type === 'CLEAR_CACHE') {
+    caches.delete(CACHE_NAME);
+  }
 });
