@@ -54,17 +54,27 @@ button{font-family:var(--sans)}
 .examples{display:flex;flex-direction:column;gap:10px;width:100%;max-width:420px;position:relative;z-index:1}
 .ex{background:var(--glass);border:1px solid var(--glass-border);color:var(--text2);padding:16px 20px;border-radius:14px;font-family:var(--sans);font-size:15px;line-height:1.5;cursor:pointer;text-align:left;transition:all .2s;-webkit-tap-highlight-color:transparent;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .ex:hover,.ex:active{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15);color:var(--text);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.2)}
-.msg{margin-bottom:8px;max-width:var(--max)}
+.msg{margin-bottom:18px;max-width:var(--max);animation:msgFadeIn .35s cubic-bezier(.2,.8,.2,1) both}
+@keyframes msgFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .msg-user{display:flex;justify-content:flex-end}
-.msg-user-text{background:var(--bg3);color:var(--text);padding:12px 18px;border-radius:20px 20px 6px 20px;max-width:85%;font-size:15px;line-height:1.6;word-break:break-word}
-.msg-ai{padding:14px 4px}
-.msg-ai .md{font-size:15px;line-height:1.75;color:var(--text2)}
-.msg-ai .md p{margin-bottom:12px}
-.msg-ai .md strong{color:var(--text);font-weight:600}
-.msg-ai .md ul,.msg-ai .md ol{margin:8px 0 8px 20px;color:var(--text2)}
-.msg-ai .md li{margin-bottom:6px;font-size:14px}
-.msg-ai .md a{color:var(--green)}
-.msg-ai .md code{font-family:var(--mono);font-size:13px;background:var(--bg3);padding:2px 6px;border-radius:5px}
+.msg-user-text{background:rgba(255,255,255,.06);color:var(--text);padding:11px 16px;border-radius:18px 18px 6px 18px;max-width:80%;font-size:14.5px;line-height:1.55;letter-spacing:-.1px;word-break:break-word;border:1px solid var(--border)}
+.msg-ai{padding:6px 2px}
+.msg-ai .md{font-size:15px;line-height:1.7;color:var(--text2);letter-spacing:-.1px}
+.msg-ai .md p{margin-bottom:14px}
+.msg-ai .md p:last-child{margin-bottom:0}
+.msg-ai .md strong{color:var(--text);font-weight:500}
+.msg-ai .md ul,.msg-ai .md ol{margin:10px 0 14px 20px;color:var(--text2)}
+.msg-ai .md li{margin-bottom:6px;font-size:14.5px;line-height:1.65}
+.msg-ai .md a{color:var(--green);text-decoration:none;border-bottom:1px solid rgba(34,197,94,.25);transition:.15s}
+.msg-ai .md a:hover{border-bottom-color:var(--green)}
+.msg-ai .md code{font-family:var(--mono);font-size:13px;background:rgba(255,255,255,.05);color:var(--text);padding:2px 7px;border-radius:5px;border:1px solid var(--border)}
+.msg-ai .md pre{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin:14px 0;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.5;color:var(--text)}
+.msg-ai .md pre code{background:none;border:none;padding:0;font-size:inherit}
+.msg-ai .md h1,.msg-ai .md h2,.msg-ai .md h3{font-weight:500;letter-spacing:-.3px;margin:20px 0 10px;color:var(--text)}
+.msg-ai .md h1{font-size:20px}
+.msg-ai .md h2{font-size:17px}
+.msg-ai .md h3{font-size:15px}
+.msg-ai .md blockquote{border-left:2px solid rgba(34,197,94,.3);padding-left:14px;margin:12px 0;color:var(--text3);font-style:normal}
 .msg-err{font-size:13px;color:var(--red);font-family:var(--mono);padding:10px 0}
 .dots{display:flex;gap:5px;padding:14px 0}.dots i{width:7px;height:7px;border-radius:50%;background:var(--text3);animation:dot .9s infinite ease-in-out}.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}@keyframes dot{0%,80%{opacity:.3}40%{opacity:1}}
 .grade-badge{font-family:var(--mono);font-size:13px;font-weight:600;padding:4px 10px;border-radius:8px;letter-spacing:.3px}
@@ -287,12 +297,13 @@ button{font-family:var(--sans)}
 .splash-logo svg{width:100%;height:100%;filter:drop-shadow(0 0 24px rgba(255,255,255,.08))}
 .splash-wm{font-family:var(--mono);font-size:11px;color:var(--text3);letter-spacing:2px;opacity:.7}
 @keyframes splashPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.04);opacity:.85}}
-.msg-actions{display:flex;gap:4px;margin-top:6px;opacity:.55;transition:opacity .15s}
+.msg-actions{display:flex;gap:4px;margin-top:10px;opacity:.4;transition:opacity .2s}
 .msg-ai:hover .msg-actions{opacity:1}
-@media (hover:none){.msg-actions{opacity:1}}
-.msg-act{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;border:1px solid transparent;background:none;color:var(--text3);font-family:var(--mono);font-size:10px;cursor:pointer;transition:.15s;text-transform:uppercase;letter-spacing:.3px;-webkit-tap-highlight-color:transparent}
-.msg-act:hover{background:var(--glass);color:var(--text2);border-color:var(--border)}
-.msg-act svg{width:12px;height:12px}
+@media (hover:none){.msg-actions{opacity:.75}}
+.msg-act{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:7px;border:1px solid transparent;background:none;color:var(--text3);font-family:var(--mono);font-size:10px;cursor:pointer;transition:.15s;text-transform:uppercase;letter-spacing:.4px;-webkit-tap-highlight-color:transparent;font-weight:500}
+.msg-act:hover{background:var(--glass);color:var(--text);border-color:var(--border)}
+.msg-act:active{transform:scale(.97)}
+.msg-act svg{width:12px;height:12px;opacity:.7}
 .typing-cursor{display:inline-block;width:8px;height:16px;background:var(--green);margin-left:2px;vertical-align:text-bottom;animation:cursorBlink .9s step-end infinite;border-radius:1px}
 @keyframes cursorBlink{50%{opacity:0}}
 .drawer-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:90;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
