@@ -109,17 +109,27 @@ button{font-family:var(--sans)}
 .btn-cmp:hover{border-color:var(--green);color:var(--green);box-shadow:0 0 12px rgba(34,197,94,.15)}.btn-cmp:disabled{opacity:.2;cursor:not-allowed}
 .btn-stop{height:38px;padding:0 14px;border-radius:19px;background:var(--red);border:none;color:#fff;font-family:var(--mono);font-size:12px;font-weight:500;cursor:pointer;display:none;flex-shrink:0}.btn-stop.vis{display:flex;align-items:center}
 .input-meta{max-width:var(--max);margin:4px auto 0;display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--text3);padding:0 4px}
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:flex-end;justify-content:center;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .modal-bg.open{display:flex}
-.modal{background:var(--bg2);border:1px solid var(--border-h);border-radius:24px 24px 0 0;padding:24px 24px 36px;width:100%;max-width:440px;max-height:85vh;overflow-y:auto}
-.modal-handle{width:40px;height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin:0 auto 20px}
-.modal h3{font-size:18px;font-weight:600;margin-bottom:16px}
+.modal{background:var(--bg2);border:1px solid var(--border-h);border-radius:24px 24px 0 0;padding:28px 28px 36px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;box-sizing:border-box}
+.modal:has(.modal-scroll){overflow:hidden;display:flex;flex-direction:column}
+.modal::-webkit-scrollbar{width:6px}
+.modal::-webkit-scrollbar-track{background:transparent}
+.modal::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:3px}
+.modal::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.2)}
+.modal{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent}
+.modal-handle{width:40px;height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin:0 auto 24px}
+.modal h3{font-size:22px;font-weight:500;letter-spacing:-.5px;line-height:1.2;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.modal h4{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin:24px 0 10px;padding-top:4px}
+.modal-scroll p{font-size:14.5px;line-height:1.65;letter-spacing:-.1px;color:var(--text2);margin-bottom:14px}
+.modal-scroll p:last-child{margin-bottom:0}
+.modal-scroll code,.modal-scroll b{font-family:var(--mono);color:var(--text)}
 .modal-field{margin-bottom:14px}
-.modal-field label{display:block;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.modal-field label{display:block;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
 .modal-field input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:12px 14px;border-radius:12px;font-family:var(--sans);font-size:15px;outline:none;color-scheme:dark;transition:.2s}
 .modal-field input:focus{border-color:var(--green-glow);box-shadow:0 0 0 3px rgba(34,197,94,.08)}
-.modal-row{display:flex;gap:10px;align-items:center;margin-top:16px}
-.modal-close{flex:1;padding:12px;border-radius:12px;border:1px solid var(--border);background:none;color:var(--text);font-size:15px;font-weight:500;cursor:pointer;transition:.15s}.modal-close:hover{background:var(--glass)}
+.modal-row{display:flex;gap:10px;align-items:center;margin-top:18px}
+.modal-close{flex:1;padding:13px;border-radius:14px;border:1px solid var(--border);background:none;color:var(--text);font-size:15px;font-weight:500;cursor:pointer;transition:.15s;letter-spacing:-.1px}.modal-close:hover{background:var(--glass)}
 .mode-pill{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);cursor:pointer;font-family:var(--mono);font-size:12px;color:var(--text2)}
 .mode-pill .dot{width:8px;height:8px;border-radius:50%;background:var(--orange)}.mode-pill.live .dot{background:var(--green)}
 .r-toggles{margin-top:16px;border-top:1px solid var(--border);padding-top:14px}
@@ -239,7 +249,12 @@ button{font-family:var(--sans)}
 .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(10px);background:var(--bg3);color:var(--text);font-family:var(--mono);font-size:12px;padding:10px 16px;border-radius:10px;border:1px solid var(--border-h);box-shadow:var(--shadow);opacity:0;transition:opacity .2s,transform .2s;z-index:200;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast-err{border-color:rgba(248,113,113,.3);color:var(--red)}
-.modal-scroll{max-height:70vh;overflow-y:auto;padding-right:6px;margin-top:4px;font-size:14px;line-height:1.65;color:var(--text2)}
+.modal-scroll{flex:1;min-height:0;max-height:none;overflow-y:auto;padding-right:8px;margin-top:4px;font-size:14.5px;line-height:1.65;color:var(--text2)}
+.modal-scroll::-webkit-scrollbar{width:6px}
+.modal-scroll::-webkit-scrollbar-track{background:transparent}
+.modal-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:3px}
+.modal-scroll::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.2)}
+.modal-scroll{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent}
 .modal-scroll h4{font-size:13px;font-weight:600;color:var(--text);margin:16px 0 6px;font-family:var(--mono);letter-spacing:.3px}
 .modal-scroll h4:first-child{margin-top:0}
 .modal-scroll p{margin-bottom:10px}
@@ -249,9 +264,9 @@ button{font-family:var(--sans)}
 .modal-scroll code{font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 6px;border-radius:4px;color:var(--green)}
 .modal-scroll .grade-row{display:flex;align-items:center;gap:10px;margin-bottom:4px;font-size:13px}
 .modal-scroll .grade-row .grade-badge{min-width:24px;text-align:center}
-.faq-q{font-weight:600;color:var(--text);margin-top:14px;margin-bottom:4px;font-size:14px}
-.faq-q:first-child{margin-top:0}
-.faq-a{color:var(--text2);margin-bottom:8px;font-size:13px;line-height:1.6}
+.faq-q{font-weight:500;color:var(--text);margin-top:24px;margin-bottom:8px;font-size:15px;letter-spacing:-.15px;padding-left:12px;border-left:2px solid rgba(34,197,94,.3);line-height:1.4}
+.faq-q:first-child{margin-top:4px}
+.faq-a{color:var(--text2);margin-bottom:4px;font-size:14px;line-height:1.65;padding-left:12px}
 .help-ico{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;margin-left:6px;border-radius:50%;border:1px solid var(--border);background:var(--glass);color:var(--text3);font-family:var(--mono);font-size:10px;font-weight:600;cursor:pointer;transition:.15s;vertical-align:middle;user-select:none;-webkit-tap-highlight-color:transparent}
 .help-ico:hover{border-color:var(--green);color:var(--green)}
 .doi-pill{color:var(--green);font-family:var(--mono);font-size:13px;cursor:pointer;border-bottom:1px dashed rgba(34,197,94,.35);transition:.15s;-webkit-tap-highlight-color:transparent}
@@ -817,6 +832,7 @@ button{font-family:var(--sans)}
 <div class="modal-bg" id="modalBg" onmousedown="if(event.target===this)closeSettings()"><div class="modal" onmousedown="event.stopPropagation()" onclick="event.stopPropagation()">
   <div class="modal-handle"></div>
   <h3 id="settingsTitle">Settings</h3>
+  <div class="modal-scroll">
   <div class="modal-field">
     <label><span data-en="LANGUAGE" data-ru="ЯЗЫК" data-uz="TIL" data-tr="DİL" data-ar="اللغة">LANGUAGE</span></label>
     <select id="settingsLang" onchange="switchLang(this.value)" style="width:100%;padding:11px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--sans);font-size:14px;cursor:pointer"><option value="en">English</option><option value="ru">Русский</option><option value="uz">O'zbekcha</option><option value="tr">Türkçe</option><option value="ar">العربية</option></select>
@@ -826,6 +842,7 @@ button{font-family:var(--sans)}
   <div style="margin-top:10px;text-align:center"><span style="font-family:var(--mono);font-size:11px;color:var(--text3);cursor:pointer;border-bottom:1px dashed var(--text3)" onclick="document.getElementById('apiKey').value='';saveCfg()"><span data-en="Clear all fields" data-ru="Очистить все поля" data-uz="Hammasini tozalash" data-tr="Tümünü temizle" data-ar="مسح الكل">Clear all fields</span></span></div>
   <div class="r-toggles"><div class="r-toggles-hdr">R-MODULES <button id="allRBtn" class="r-all-btn" onclick="toggleAllR()">Disable all</button></div>
     <div class="r-layer"><div class="r-layer-title"><span data-en="Behavioral · GOLD Kernel directives" data-ru="Поведение · директивы GOLD Kernel" data-uz="Xatti-harakat · GOLD Kernel direktivalari" data-tr="Davranış · GOLD Kernel direktifleri" data-ar="سلوكي · توجيهات GOLD Kernel">Behavioral · GOLD Kernel directives</span></div><div class="r-grid-desc"><div class="r-chip on" data-r="8" onclick="toggleR(this)"><span class="r-dot"></span>R8 Resolve<span class="r-desc" data-en="Compute bounds and scenarios when knowledge is incomplete" data-ru="Вычисляет границы и сценарии при неполных данных">Compute bounds and scenarios when knowledge is incomplete</span></div><div class="r-chip on" data-r="9" onclick="toggleR(this)"><span class="r-dot"></span>R9 Surprise<span class="r-desc" data-en="Detect when input shifts the model's understanding" data-ru="Обнаруживает когда входные данные меняют модель понимания">Detect when input shifts the model's understanding</span></div><div class="r-chip on" data-r="10" onclick="toggleR(this)"><span class="r-dot"></span>R10 Self-Model<span class="r-desc" data-en="Know own boundaries from experience, not instructions" data-ru="Знает свои границы из опыта, не из инструкций">Know own boundaries from experience, not instructions</span></div><div class="r-chip on" data-r="12" onclick="toggleR(this)"><span class="r-dot"></span>R12 Drive<span class="r-desc" data-en="Notice what you don't see and tell you" data-ru="Замечает то что вы не видите и сообщает вам">Notice what you don't see and tell you</span></div><div class="r-chip on" data-r="13" onclick="toggleR(this)"><span class="r-dot"></span>R13 Empathy<span class="r-desc" data-en="Address underlying need, not literal text" data-ru="Адресует суть запроса, а не буквальный текст">Address underlying need, not literal text</span></div></div></div>
+  </div>
   </div>
 </div></div>
 
@@ -1080,12 +1097,12 @@ function stop(){if(ac){ac.abort();ac=null;}const ld=document.getElementById('ldr
 function rmWelcome(){const w=document.getElementById('welcome');if(w)w.remove();}
 function gradeClass(g){return'grade-'+(g==='A'?'a':g==='B'?'b':g==='C'?'c':g==='D'?'d':'f');}
 function newChat(){hist=[];convId=null;currentSessionId=null;document.getElementById('chatInner').innerHTML='<div class="welcome" id="welcome"></div>';renderWelcome();document.getElementById('inp').value='';document.getElementById('inp').focus();renderSessionList();}
-function openSettings(){const ls=document.getElementById('settingsLang');if(ls)ls.value=curLang;updateAllRBtn();document.getElementById('modalBg').classList.add('open');}
-function closeSettings(){document.getElementById('modalBg').classList.remove('open');}
+function openSettings(){const ls=document.getElementById('settingsLang');if(ls)ls.value=curLang;updateAllRBtn();const el=document.getElementById('modalBg');el.classList.add('open');document.body.style.overflow='hidden';const sc=el.querySelector('.modal-scroll');if(sc)sc.scrollTop=0;}
+function closeSettings(){document.getElementById('modalBg').classList.remove('open');document.body.style.overflow='';}
 
 /* ── v2.12: generic modal helpers + toast + clipboard + feedback ── */
-function openModal(id){const el=document.getElementById(id);if(!el)return;el.classList.add('open');document.querySelectorAll('#'+id+' [data-'+curLang+']').forEach(d=>{if(d.tagName==='SPAN'||d.classList.contains('r-desc'))d.textContent=d.getAttribute('data-'+curLang);});}
-function closeModal(id){const el=document.getElementById(id);if(!el)return;el.classList.remove('open');}
+function openModal(id){const el=document.getElementById(id);if(!el)return;el.classList.add('open');document.body.style.overflow='hidden';const sc=el.querySelector('.modal-scroll');if(sc)sc.scrollTop=0;document.querySelectorAll('#'+id+' [data-'+curLang+']').forEach(d=>{if(d.tagName==='SPAN'||d.classList.contains('r-desc'))d.textContent=d.getAttribute('data-'+curLang);});}
+function closeModal(id){const el=document.getElementById(id);if(!el)return;el.classList.remove('open');document.body.style.overflow='';}
 function toast(msg,kind){const t=document.createElement('div');t.className='toast'+(kind==='err'?' toast-err':'');t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.classList.add('show'),10);setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),250);},2000);}
 function copyDoi(el){const doi=el.dataset.doi;const url='https://doi.org/'+doi;const ok=curLang==='ru'?'DOI скопирован':'DOI copied';const er=curLang==='ru'?'Не удалось скопировать':'Copy failed';if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(()=>toast(ok)).catch(()=>toast(er,'err'));}else{toast(er,'err');}}
 function copyLink(el){const url=el.dataset.url;const ok=curLang==='ru'?'Ссылка скопирована':'Link copied';const er=curLang==='ru'?'Не удалось скопировать':'Copy failed';if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(()=>toast(ok)).catch(()=>toast(er,'err'));}else{toast(er,'err');}}
@@ -1615,10 +1632,12 @@ function openWelcome(){
     if(d.tagName==='SPAN')d.textContent=d.getAttribute('data-'+curLang);
   });
   m.classList.add('open');
+  document.body.style.overflow='hidden';
 }
 function closeWelcome(focusInput){
   const m=document.getElementById('modalWelcome');
   if(m)m.classList.remove('open');
+  document.body.style.overflow='';
   try{localStorage.setItem(WELCOME_KEY,'1');}catch{}
   if(focusInput){document.getElementById('inp')?.focus();}
 }
