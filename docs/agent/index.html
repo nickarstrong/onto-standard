@@ -305,6 +305,23 @@ button{font-family:var(--sans)}
   <div class="splash-logo"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="#27272a" stroke="rgba(255,255,255,.12)" stroke-width="1"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="white"/></svg></div>
   <div class="splash-wm">ONTO</div>
 </div>
+<script>
+/* v2.14d — bulletproof splash dismissal. Runs BEFORE main <script> parses.
+   If the main script ever throws at parse/init, splash still goes away. */
+(function(){try{
+  var kill=function(){var s=document.getElementById('splash');if(!s)return;
+    s.style.opacity='0';s.style.pointerEvents='none';
+    setTimeout(function(){if(s&&s.parentNode)s.parentNode.removeChild(s);},400);};
+  setTimeout(kill,2500);
+  window.addEventListener('load',function(){setTimeout(kill,600);});
+  /* also on DOMContentLoaded as early trigger */
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',function(){setTimeout(kill,300);});
+  }else{setTimeout(kill,300);}
+}catch(e){/* last resort — brute remove */
+  setTimeout(function(){var s=document.getElementById('splash');if(s&&s.parentNode)s.parentNode.removeChild(s);},3000);
+}})();
+</script>
 <div class="hdr">
   <div class="hdr-left">
     <div class="hdr-logo" onclick="newChat()"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="#27272a"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="white"/></svg></div>
