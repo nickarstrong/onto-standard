@@ -12,9 +12,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="ONTO">
-<link rel="apple-touch-icon" href="/agent/icons/icon-192.png">
-<link rel="icon" type="image/x-icon" href="/agent/favicon.ico">
+<link rel="apple-touch-icon" href="/agent/icons/icon-180.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/agent/icons/icon-152.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/agent/icons/icon-192.png">
+<link rel="icon" type="image/svg+xml" href="/agent/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="/agent/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/agent/favicon-16.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -28,7 +31,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font
 button{font-family:var(--sans)}
 .hdr{display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 16px;border-bottom:1px solid var(--border);flex-shrink:0;background:rgba(24,24,27,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);z-index:20}
 .hdr-left{display:flex;align-items:center;gap:10px}
-.hdr-logo{width:32px;height:32px;cursor:pointer;flex-shrink:0;filter:drop-shadow(0 0 8px rgba(255,255,255,.15))}
+.hdr-logo{width:32px;height:32px;cursor:pointer;flex-shrink:0;color:var(--text)}
 .hdr-logo svg{width:32px;height:32px}
 .hdr-beta{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--green);background:var(--green-bg);border:1px solid rgba(34,197,94,.2);padding:2px 8px;border-radius:4px;letter-spacing:.5px}
 .hdr-right{display:flex;align-items:center;gap:4px}
@@ -294,7 +297,7 @@ button{font-family:var(--sans)}
 .splash{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;transition:opacity .4s ease-out}
 .splash.hide{opacity:0;pointer-events:none}
 .splash-logo{width:96px;height:96px;animation:splashPulse 1.2s ease-in-out infinite}
-.splash-logo svg{width:100%;height:100%;filter:drop-shadow(0 0 24px rgba(255,255,255,.08))}
+.splash-logo svg{width:100%;height:100%}
 .splash-wm{font-family:var(--mono);font-size:11px;color:var(--text3);letter-spacing:2px;opacity:.7}
 @keyframes splashPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.04);opacity:.85}}
 .msg-actions{display:flex;gap:4px;margin-top:10px;opacity:.4;transition:opacity .2s}
@@ -767,7 +770,7 @@ button{font-family:var(--sans)}
 <body>
 <!-- v2.13: splash -->
 <div class="splash" id="splash">
-  <div class="splash-logo"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="#27272a" stroke="rgba(255,255,255,.12)" stroke-width="1"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="white"/></svg></div>
+  <div class="splash-logo"><svg viewBox="0 0 400 400"><circle cx="200" cy="200" r="190" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="2"/><circle cx="200" cy="105" r="22" fill="#fff"/><rect x="158" y="150" width="84" height="16" fill="#fff"/><rect x="178" y="150" width="44" height="180" fill="#fff"/><rect x="148" y="316" width="104" height="18" fill="#fff"/></svg></div>
   <div class="splash-wm">ONTO</div>
 </div>
 <script>
@@ -790,7 +793,7 @@ button{font-family:var(--sans)}
 <div class="hdr">
   <div class="hdr-left">
     <button class="hdr-btn" onclick="openDrawer()" title="History"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
-    <div class="hdr-logo" onclick="newChat()"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="#27272a"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="white"/></svg></div>
+    <div class="hdr-logo" onclick="newChat()"><svg viewBox="0 0 400 400"><circle cx="200" cy="200" r="190" fill="none" stroke="currentColor" stroke-width="10" opacity=".25"/><circle cx="200" cy="105" r="22" fill="currentColor"/><rect x="158" y="150" width="84" height="16" fill="currentColor"/><rect x="178" y="150" width="44" height="180" fill="currentColor"/><rect x="148" y="316" width="104" height="18" fill="currentColor"/></svg></div>
     <button class="hdr-btn hdr-compose" onclick="newChat()" title="New chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></button>
   </div>
   <div class="hdr-right">
@@ -1523,7 +1526,7 @@ function buildConversationHtml(){
 <style>${css}</style>
 </head>
 <body>
-<div class="hdr"><a href="https://ontostandard.org/agent/" class="hdr-brand"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="#27272a"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="white"/></svg>ONTO <span class="hdr-tag">SAVED</span></a><a href="https://ontostandard.org/agent/" class="hdr-cta">${ESC(FT.open)}</a></div>
+<div class="hdr"><a href="https://ontostandard.org/agent/" class="hdr-brand"><svg viewBox="0 0 400 400" style="width:28px;height:28px"><circle cx="200" cy="200" r="190" fill="none" stroke="#f4f4f5" stroke-width="10" opacity=".25"/><circle cx="200" cy="105" r="22" fill="#f4f4f5"/><rect x="158" y="150" width="84" height="16" fill="#f4f4f5"/><rect x="178" y="150" width="44" height="180" fill="#f4f4f5"/><rect x="148" y="316" width="104" height="18" fill="#f4f4f5"/></svg>ONTO <span class="hdr-tag">SAVED</span></a><a href="https://ontostandard.org/agent/" class="hdr-cta">${ESC(FT.open)}</a></div>
 <div class="wrap"><div class="meta"><h1>${ESC(title)}</h1><div class="meta-row"><span>${ESC(FT.date)}: ${ESC(dateStr)}</span><span class="meta-dot"></span><span>${nTurns} ${ESC(FT.turns)}</span></div></div>${body}<div class="ft"><div class="ft-txt"><b>${ESC(FT.f1)}</b><br>${ESC(FT.f2)}</div><a href="https://ontostandard.org/agent/" class="ft-btn">${ESC(FT.open)}</a><div class="ft-small"><a href="https://ontostandard.org">ontostandard.org</a> · R1-R18</div></div></div>
 </body>
 </html>`;
