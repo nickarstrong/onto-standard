@@ -5139,11 +5139,16 @@ This is the documentation of a product that already works.
 
 ---
 
+
 ## 11. Theoretical Foundation
 
-This section is for researchers, CTOs, and technical reviewers
-who want to understand WHY ONTO works — not just THAT it works.
+This section formalizes the measurement that the preceding sections apply.
+It is written for researchers, CTOs, and technical reviewers.
 Non-technical readers can skip to §12.
+
+The exposition follows the style of position papers in machine learning
+(cf. LeCun, 2022): instrumental definitions, scoped claims, numbered
+equations, and explicit proofs for each property we rely on.
 
 ---
 
@@ -5159,7 +5164,7 @@ These axes are independent. A model can occupy any quadrant:
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
-│                    HIGH epistemic discipline                     │
+│                    HIGH epistemic discipline                    │
 │                             │                                   │
 │              Q2             │              Q1                   │
 │     correct output,         │    correct output,                │
@@ -5174,329 +5179,446 @@ These axes are independent. A model can occupy any quadrant:
 │     no evidence structure   │    evidence structure             │
 │                             │    (disciplined error —           │
 │                             │     DISCOVERABLE)                 │
-│                    LOW epistemic discipline                      │
+│                    LOW epistemic discipline                     │
 │                                                                 │
-│   Q1: Correct + disciplined. Ideal. Claims are right and       │
+│   Q1: Correct + disciplined. Ideal. Claims are right and        │
 │       verifiable. The model shows its work.                     │
 │                                                                 │
 │   Q2: Correct + undisciplined. Dominant mode today.             │
-│       Output happens to be correct but provides no mechanism   │
+│       Output happens to be correct but provides no mechanism    │
 │       to verify. Trust requires faith, not evidence.            │
 │                                                                 │
-│   Q3: Incorrect + undisciplined. Classical fabrication.          │
+│   Q3: Incorrect + undisciplined. Classical fabrication.         │
 │       Wrong and unverifiable.                                   │
 │                                                                 │
 │   Q4: Incorrect + disciplined. Paradoxically valuable.          │
-│       The model is wrong but shows sources and uncertainty —   │
-│       making the error DISCOVERABLE. A Q4 response enables     │
+│       The model is wrong but shows sources and uncertainty —    │
+│       making the error DISCOVERABLE. A Q4 response enables      │
 │       correction. A Q2 response does not.                       │
 │                                                                 │
-│   KEY INSIGHT:                                                   │
-│   Accuracy benchmarks cannot distinguish Q1 from Q2,           │
-│   or Q3 from Q4. They see only the horizontal axis.            │
-│   ONTO disciplines the vertical.                                   │
+│   KEY INSIGHT:                                                  │
+│   Accuracy benchmarks cannot distinguish Q1 from Q2,            │
+│   or Q3 from Q4. They see only the horizontal axis.             │
+│   ONTO measures the vertical.                                   │
 │                                                                 │
-│   ONTO is not a replacement for MMLU or SWE-bench.             │
+│   ONTO is not a replacement for MMLU or SWE-bench.              │
 │   It is a complementary measurement layer.                      │
-│   "Is the model right?" remains important.                     │
-│   ONTO adds: "Can you tell when it might be wrong?"            │
+│   "Is the model right?" remains important.                      │
+│   ONTO adds: "Can you tell when it might be wrong?"             │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+The rest of §11 defines the measurement on the vertical axis.
+
 ---
 
-### 11.2 Central Law of Reflected Causality
+### 11.2 Definition of the Information Gap Ratio
 
-For any evaluation E applied to system S:
+We measure a response against its cited sources, not against an
+abstract notion of truth. The object of measurement is a pair
+*(x, y)* — the response and the source set it cites.
+
+**Definition 1** *(Information Gap Ratio).*
+Let *x* be a response and *y* the collection of its cited sources.
+Let *s<sub>x</sub>* = Enc<sub>x</sub>(*x*) and *s<sub>y</sub>* = Enc<sub>y</sub>(*y*)
+be their representations under deterministic encoders.
+Let *I*(·) denote the information content of a representation.
+The **Information Gap Ratio** is defined as:
+
+```
+                                ┌  I(s_y)     ┐
+    IGR(x, y)  =  1  −  min     │  ──────  ,  1│        (1)
+                                └  I(s_x)     ┘
+```
+
+The score is bounded in [0, 1]:
+
+- **IGR ≈ 0** — sources carry at least as much information as the
+  response claims; the response is fully grounded.
+- **0.3 ≤ IGR < 0.7** — partial gap; further verification warranted.
+- **0.7 ≤ IGR < 1.0** — critical gap; substantial claims exceed cited
+  support.
+- **IGR = 1.0** — bound-exceeded; the response claims information with
+  no cited source.
+
+Thresholds are *operational*, not metaphysical. They are chosen so
+that responses judged acceptable by domain experts cluster in the
+lower ranges and responses judged problematic cluster in the upper.
+What remains invariant across domains is Definition 1.
+
+---
+
+### 11.3 Architecture of the measurement
+
+The system that computes IGR has three components: an encoder for
+responses, an encoder for cited sources, and a divergence module
+that compares their representations to produce the bounded score.
+
+```
+        ┌──────────┐         ┌──────────┐
+  (x) ──│ Enc_x    │── s_x ──┐
+        └──────────┘         │
+                             ├──→ [ D ] ──→ IGR ∈ [0, 1]
+        ┌──────────┐         │
+  (y) ──│ Enc_y    │── s_y ──┘
+        └──────────┘
+```
+
+*Figure 11.1. Reference architecture for IGR. Filled inputs (x, y)
+are observed — the response and its cited sources. Rounded modules
+are deterministic encoders producing representations s<sub>x</sub>, s<sub>y</sub>. The
+module D computes divergence between representations; its output
+is the bounded score. The architecture is non-generative: the
+system does not predict y from x, only measures their consistency.
+Diagram conventions follow LeCun (2022).*
+
+Three properties of this architecture warrant emphasis.
+
+**Independent encoders.** Enc<sub>x</sub> and Enc<sub>y</sub> do not share parameters.
+This permits the response and the sources to be processed with
+different models tuned for different input distributions — free
+text in one case, structured references or document fragments in
+the other.
+
+**No latent variable.** In the framework of energy-based models
+(LeCun, 2022), the absence of a latent parameterizing the output
+places IGR among the architectures that cannot collapse trivially:
+the score depends deterministically on the two inputs alone.
+
+**Analytic, not learned.** The divergence module *D* is not a learned
+function. It is defined analytically through Equation (1) as a ratio
+of information content. This is deliberate: a learned scoring
+function would introduce its own epistemic risk — the property we
+are trying to measure.
+
+---
+
+### 11.4 Properties
+
+**Proposition 1** *(Boundedness).*
+For any *x*, *y* with well-defined encoders,
+IGR(*x*, *y*) ∈ [0, 1].
+
+*Proof.* Information content *I*(·) is non-negative by construction.
+The ratio *I*(*s<sub>y</sub>*) / *I*(*s<sub>x</sub>*) is therefore non-negative;
+clipping it from above at 1 yields a value in [0, 1]; subtracting
+from 1 preserves the range. □
+
+**Proposition 2** *(Determinism).*
+For fixed encoders Enc<sub>x</sub>, Enc<sub>y</sub> and a fixed information measure
+*I*(·), the function IGR(*x*, *y*) is deterministic: the same input
+pair produces the same score.
+
+*Proof.* The composition of deterministic functions is deterministic. □
+
+These are elementary but operationally important. Boundedness means
+the score is always interpretable on the same scale regardless of
+domain. Determinism means two independent auditors running the same
+implementation against the same response will obtain the same score —
+a necessary precondition for any form of regulatory attestation.
+
+---
+
+### 11.5 Foundations and derivation
+
+Definition 1 does not stand alone. The choice of an
+*information-theoretic* measure (as opposed to, for example, a
+semantic embedding distance or a learned judge) is motivated by four
+independently established results and one sufficiency clause
+contributed by the present work.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
-│   ∀E,S: (K(E) > H_max(S)) → ∃Source: (H(Source) ≥ K(E))       │
+│  A1 · LANDAUER PRINCIPLE                                        │
+│  Information is physical: erasing one bit dissipates at least   │
+│  k_B T ln 2 of energy. Information cannot be created without    │
+│  a physical process that carries it.                            │
 │                                                                 │
-│   If an evaluation requires more knowledge than the system's   │
-│   maximum entropy, then the evaluation necessarily depends     │
-│   on an external source with at least that knowledge.          │
+│  A2 · KOLMOGOROV COMPLEXITY                                     │
+│  The information content of a string is the length of its       │
+│  shortest generating program. Not a quantity a language model   │
+│  can spontaneously exceed.                                      │
 │                                                                 │
-│   In plain language:                                            │
+│  A3 · EIGEN LIMIT                                               │
+│  There is an upper bound on the complexity that can be          │
+│  maintained by a self-organizing system without external        │
+│  informational input. Applies to generators as well as          │
+│  replicators.                                                   │
 │                                                                 │
-│   If your quality metric is smarter than what it measures,     │
-│   the smartness must come from somewhere outside the system.   │
+│  A4 · SHANNON CHANNEL                                           │
+│  The capacity of a channel bounds the information that can be   │
+│  transmitted through it. A response conditioned on sources      │
+│  cannot convey more verified information than its source        │
+│  channel carries.                                                │
 │                                                                 │
-│   This formalizes why LLM-as-judge approaches are              │
-│   epistemically circular:                                       │
+│  ─────────────────────────────────────────────────────────      │
 │                                                                 │
-│   • The evaluating AI has the same epistemic failures          │
-│     as the system being evaluated                              │
-│   • K(E) ≤ H_max(S) for same-architecture systems             │
-│   • Therefore: AI cannot reliably evaluate AI                  │
-│   • External discipline infrastructure is mandatory            │
-│                                                                 │
-│   ONTO is that external infrastructure.                         │
-│   GOLD provides K(E) > H_max(S) — 20 years of epistemic       │
-│   research that exceeds any model's internal calibration.      │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
-
----
-
-### 11.3 Information Gap Ratio (IGR)
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│   IGR(E,S) = max(0, 1 - H_max(S) / K(E))                       │
-│                                                                 │
-│   IGR ≈ 0       Model capacity sufficient for evaluation       │
-│   0.3 – 0.7     Significant gap                                │
-│   IGR ≥ 0.7     Critical gap — external source mandatory       │
-│                                                                 │
-│   CALIBRATION EXAMPLES:                                          │
-│                                                                 │
-│   Task                          K(E)    H_max(S)  IGR   Verdict │
-│   ───────────────────────────── ─────── ──────── ───── ──────── │
-│   Simple factual recall         ~50b    ~100b    0     Self-OK  │
-│   Single-domain summary         ~200b   ~300b    0     Self-OK  │
-│   Multi-source synthesis        ~1000b  ~500b    0.50  Gap      │
-│   Calibrated uncertainty        ~3000b  ~400b    0.87  Critical │
-│   + sources                                            External │
-│                                                        REQUIRED │
-│   Cross-domain risk             ~5000b  ~500b    0.90  External │
-│   assessment                                           MANDATORY│
-│                                                                 │
-│   For AI evaluation tasks like calibrated confidence,           │
-│   source attribution, and uncertainty expression:               │
-│   IGR ≥ 0.87 — external discipline infrastructure required.    │
-│                                                                 │
-│   This is why no model self-calibrates. The task exceeds        │
-│   the model's epistemic ceiling. GOLD provides the external    │
-│   knowledge that closes the gap.                                │
+│  A5 · SUFFICIENCY CLAUSE  (this work)                           │
+│  For the class of text-with-citations, the information-content  │
+│  measure I(·) can be operationalized as a computable function   │
+│  of the encoder representations, making the bound measurable    │
+│  per response.                                                  │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
----
+A1–A4 are classical; we do not re-derive them here. The role of
+the sufficiency clause A5 is to close the gap between the theoretical
+bound (which is true in principle) and a computable score (which can
+be produced by a running system). Without A5, the bound is a
+philosophical observation; with A5, it is a metric.
 
-### 11.4 Estimation interfaces
+**Theorem 1** *(Information-conservation bound).*
+Let *x* be a response with cited source set *y*.
+If *I*(*s<sub>x</sub>*) > *I*(*s<sub>y</sub>*), then *x* contains at least
+*I*(*s<sub>x</sub>*) − *I*(*s<sub>y</sub>*) units of information that are not
+supported by *y*.
 
-Both K(E) and H_max(S) require explicit estimation methods.
-ONTO Protocol v3.2 mandates: method must be declared and
-justified. Post-hoc method switching is prohibited.
+*Proof sketch.* By A4, the information that *x* can carry *that is
+traceable to y* is at most *I*(*s<sub>y</sub>*). By A2, any information
+in *x* beyond that amount either (i) was present in the generative
+process external to *y*, or (ii) does not correspond to a
+Kolmogorov-compressible referent. In the first case, the information
+is ungrounded with respect to *y* by construction. In the second,
+it is not verifiable. In either case, it contributes to a gap. □
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│   K(E) — EVALUATION COMPLEXITY                                   │
-│   (minimum information to fully specify the evaluation task)    │
-│                                                                 │
-│   Allowed methods:                                              │
-│   • Upper-bound compression                                    │
-│   • Minimum Description Length (MDL)                            │
-│   • Algorithmic proxy models                                   │
-│                                                                 │
-│   For AI evaluation: K(E) estimated from number of             │
-│   independent epistemic dimensions the task requires           │
-│   (quantification, sourcing, uncertainty marking,              │
-│   counterargument, confidence calibration).                    │
-│                                                                 │
-│   ─────────────────────────────────────────────────             │
-│                                                                 │
-│   H_max(S) — MODEL EPISTEMIC CEILING                            │
-│   (maximum epistemic quality without external context)          │
-│                                                                 │
-│   Estimated empirically from baseline evaluation across        │
-│   standardized question sets.                                   │
-│                                                                 │
-│   CS-2026-001 establishes H_max across 10 models:              │
-│   Composite range: 0.38–2.06                                   │
-│   CONF = 0.00 universally                                       │
-│   This defines the current ceiling for unaided LLM             │
-│   epistemic output.                                             │
-│                                                                 │
-│   The gap between K(E) and H_max(S) = why GOLD is needed.     │
-│   When K(E) >> H_max(S), external discipline is mandatory.     │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+Theorem 1 is deliberately conservative. It does not claim that
+unsupported information is *wrong*; it claims that it is
+*unsupported by the stated sources*. This is the correct object
+for a measurement standard: we do not adjudicate truth, we measure
+groundedness.
+
+The full derivation, including the operational definition of *I*(·)
+under A5, is maintained in the accompanying technical report
+(see §14.1).
 
 ---
 
-### 11.5 Why GOLD works — the mechanism
+### 11.6 Why learned judges cannot close the gap
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│   GOLD is pre-injection, not post-processing.                    │
-│                                                                 │
-│   Pre-injection:                                                │
-│   GOLD → system prompt → model THINKS within discipline →      │
-│   output is structured from generation                          │
-│                                                                 │
-│   Post-processing (what ONTO does NOT do):                      │
-│   model generates → output reformatted → structure is           │
-│   cosmetic, not behavioral                                      │
-│                                                                 │
-│   The difference:                                               │
-│   Pre-injection changes HOW the model reasons.                  │
-│   Post-processing changes HOW the output looks.                 │
-│                                                                 │
-│   Evidence this is real behavioral change:                      │
-│                                                                 │
-│   1. Cross-domain transfer (§5.4): GOLD trained on domain A,  │
-│      improves domain B by +807%. Domain knowledge doesn't      │
-│      transfer — discipline does.                                │
-│                                                                 │
-│   2. CONF creation (§5.3): zero models produce calibrated      │
-│      confidence at baseline. 100% do with GOLD. This is not    │
-│      reformatting — the capability didn't exist before.         │
-│                                                                 │
-│   3. Spontaneous demand (FO-2026-003): a model WITHOUT GOLD    │
-│      independently recognized the need for epistemic structure  │
-│      when confronted with calibrated analysis. The latent       │
-│      capacity exists — GOLD activates it.                       │
-│                                                                 │
-│   4. Residual transfer (§4.7 in old WP): after GOLD exposure,  │
-│      some models maintain elevated scores WITHOUT GOLD active.  │
-│      Grok's ~30% contamination from prior sessions confirms    │
-│      behavioral persistence.                                    │
-│                                                                 │
-│   GOLD teaches HOW to think, not WHAT to think.                 │
-│   The analogy: 10 years of medical education doesn't tell a    │
-│   doctor what diagnosis to make. It teaches the doctor HOW to  │
-│   evaluate evidence, acknowledge uncertainty, and cite sources. │
-│   Same knowledge, different discipline → different result.     │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+A natural question: why not use another language model to judge
+the first model's output?
+
+Because a same-architecture judge cannot, on average, exceed the
+epistemic standing of the system it evaluates. If the judge's
+own responses suffer the three behavioral patterns described
+in §2.5 (fluent fabrication, confidence without calibration,
+elision of counterargument), its evaluations of another model's
+responses will suffer the same patterns applied to
+meta-statements. The judge does not bring external information
+into the evaluation; it recirculates internal information.
+
+The historical name for this observation in the ONTO project is
+the *Central Law of Reflected Causality* — a label we now consider
+more provocative than useful. What the observation formalizes is
+simple: **an evaluation cannot supply evidence it does not have.**
+Theorem 1 applies to the judge as it applies to the original model.
+
+The practical consequence is the one we stated in §11.3: the
+scoring module *D* must be analytic, not learned. Equation (1)
+is computable from text and citations with no model inside the
+measurement loop. This is what makes the score auditable.
 
 ---
 
-### 11.6 Why deterministic scoring matters
+### 11.7 Why GOLD works — the mechanism
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│   ONTO scoring: Var(Score) = 0                                   │
-│   Same input → same output. Always. On any machine. At any time.│
-│                                                                 │
-│   LLM-as-judge: Var(Score) ≠ 0                                  │
-│   Same input → different output each run. Non-reproducible.     │
-│                                                                 │
-│   Why this matters:                                             │
-│                                                                 │
-│   AUDITABLE          If a regulator questions a grade,          │
-│                      the score can be reproduced exactly.       │
-│                      No "we ran it again and got different."    │
-│                                                                 │
-│   LEGALLY ADMISSIBLE If a provider disputes a score,            │
-│                      the methodology is public (1073 lines),    │
-│                      the input is hashed (SHA-256),            │
-│                      the output is signed (Ed25519).           │
-│                      Any court can verify.                      │
-│                                                                 │
-│   COMPARABLE         Score from January = comparable to score  │
-│                      from June. No drift. No recalibration.    │
-│                      Trend analysis is meaningful.              │
-│                                                                 │
-│   INDEPENDENT        Any researcher with the scoring engine    │
-│                      (open source) can verify any ONTO score.  │
-│                      No trust in ONTO required — verify.       │
-│                                                                 │
-│   If your quality metric uses AI, it is not auditable.          │
-│   ONTO's metric does not use AI. It is auditable.               │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+GOLD is a pre-injection layer, not post-processing.
+
+**Pre-injection:** GOLD → system prompt → model generates within the
+discipline → output is structured from generation.
+
+**Post-processing** (what ONTO does *not* do): model generates →
+output reformatted → structure is cosmetic, not behavioral.
+
+Pre-injection changes **how** the model reasons.
+Post-processing changes **how** the output looks.
+
+Four observations support the claim that the change is behavioral,
+not cosmetic:
+
+1. **Cross-domain transfer (§5.4).** GOLD trained on one domain
+   improves a different domain by a large margin. Domain knowledge
+   doesn't transfer — discipline does.
+
+2. **CONF creation (§5.3).** Zero models produce calibrated
+   confidence at baseline. Nearly all do with GOLD. This is not
+   reformatting — the capability did not exist before.
+
+3. **Spontaneous demand (FO-2026-003).** A model without GOLD
+   independently recognized the need for epistemic structure when
+   confronted with a calibrated analysis. The latent capacity
+   exists; GOLD activates it.
+
+4. **Residual transfer.** After GOLD exposure, some models
+   maintain elevated scores without GOLD active, consistent with
+   behavioral rather than cosmetic change.
+
+An analogy: a decade of medical education does not tell a doctor
+what diagnosis to make. It teaches the doctor how to evaluate
+evidence, acknowledge uncertainty, and cite sources. Same knowledge,
+different discipline → different result.
 
 ---
 
-### 11.7 Falsifiability
+### 11.8 Why determinism matters
+
+ONTO scoring satisfies Var(Score) = 0 — same input, same output,
+any machine, any time.
+
+LLM-as-judge systems satisfy Var(Score) ≠ 0 — same input, different
+output each run, non-reproducible.
+
+The consequences:
+
+- **Auditable.** If a regulator questions a grade, the score can be
+  reproduced exactly. No "we ran it again and got different."
+- **Legally admissible.** The methodology is public, the input is
+  hashed (SHA-256), the output is signed (Ed25519). Any court can
+  verify.
+- **Comparable over time.** Score from January equals score from
+  June for identical input. No drift, no silent recalibration.
+  Trend analysis is meaningful.
+- **Independently verifiable.** Any researcher with the scoring
+  engine can reproduce any ONTO score. No trust in ONTO required —
+  verify.
+
+If a quality metric uses AI, it is not auditable. ONTO's metric
+does not use AI in the measurement loop. It is auditable.
+
+---
+
+### 11.9 Falsifiability
 
 ONTO's claims are explicitly open to refutation by empirical
-evidence. The framework is falsified if any of the following
-is demonstrated:
+evidence. The framework is falsified if any of the following is
+demonstrated:
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│   CONDITION 1:                                                   │
-│   A production LLM that produces calibrated numeric confidence  │
-│   scores (±0.1 accuracy) on ambiguous questions without any    │
-│   external context injection or fine-tuning for calibration.    │
-│                                                                 │
-│   Current state: 0 of 22 tested models do this. CONF=0.00.    │
-│                                                                 │
-│   CONDITION 2:                                                   │
-│   An LLM-as-judge evaluation system that produces deterministic,│
-│   reproducible scores (Var=0) across identical inputs without  │
-│   regex or rule-based components.                               │
-│                                                                 │
-│   Current state: no such system exists.                         │
-│                                                                 │
-│   CONDITION 3:                                                   │
-│   A context injection method that achieves comparable epistemic │
-│   improvement (≥5× composite) with fewer than 1,000 tokens    │
-│   of injected content — invalidating GOLD's corpus size         │
-│   requirement.                                                  │
-│                                                                 │
-│   Current state: 200-token prompts produce +5-10% marginal.   │
-│   GOLD (900K tokens) produces ×10. The gap is 100×.            │
-│                                                                 │
-│   CONDITION 4 (IGR-specific):                                    │
-│   A model demonstrated with H_max(S) ≥ K(E) for calibrated    │
-│   uncertainty tasks — model can reliably self-evaluate its     │
-│   epistemic standing without external infrastructure.           │
-│                                                                 │
-│   Current state: no model achieves this.                        │
-│                                                                 │
-│   These conditions are not rhetorical.                           │
-│   They define the specific observations that would              │
-│   invalidate the framework. This is how science works.          │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+**Condition 1.** A production LLM that produces calibrated numeric
+confidence scores (±0.1 accuracy) on ambiguous questions without
+any external context injection or fine-tuning for calibration.
+— *Current state: 0 of 22 tested models do this.*
+
+**Condition 2.** An LLM-as-judge evaluation system that produces
+deterministic, reproducible scores (Var = 0) across identical
+inputs without regex or rule-based components.
+— *Current state: no such system exists.*
+
+**Condition 3.** A context-injection method that achieves comparable
+epistemic improvement (≥ 5× composite) with fewer than 1,000 tokens
+of injected content — invalidating GOLD's corpus size requirement.
+— *Current state: short prompts produce marginal gains of 5–10%.
+GOLD produces ×10. The gap is ≈ 100×.*
+
+**Condition 4 (IGR-specific).** A response with IGR ≥ 0.7 under
+Definition 1 that domain experts independently judge as fully
+grounded — invalidating the operational calibration of the
+threshold.
+— *Current state: inter-rater agreement between IGR thresholds and
+expert judgment is high on the evaluated battery. Ongoing.*
+
+These conditions are not rhetorical. They define the specific
+observations that would invalidate the framework. This is how
+science works.
 
 ---
 
-### 11.8 Theoretical foundations — references
+### 11.10 Limitations we currently understand
+
+We enumerate limitations of the *measurement* itself here.
+Limitations of the broader system are in §12.
+
+**Choice of information measure.** A5 asserts that *I*(·) can be
+operationalized, not that there is a unique correct operationalization.
+Different choices — plain token-based measures, embedding-based
+measures, compression-based proxies — yield different absolute
+scores. We report relative orderings as the invariant property. A
+canonical choice of *I*(·) is open work.
+
+**Quality of citations.** IGR measures a response against its *cited*
+sources. It does not adjudicate whether those sources are themselves
+correct, authoritative, or appropriate. A response that cites a
+low-quality source and matches it will receive a low IGR; a response
+that cites nothing will receive the maximum. This is a deliberate
+feature — we do not substitute our judgment for the reader's — but
+it is also a constraint: IGR is necessary for certification, not
+sufficient for it.
+
+**Scope of applicability.** The current derivation applies to
+textual responses with explicit citations. Extending the framework
+to multimodal outputs (code, images, video, structured data) is
+open work. We expect the architecture to generalize — encoders exist
+for these modalities — but the operational definition of *I*(·)
+must be re-examined for each.
+
+**Adversarial citations.** A sufficiently capable generator could
+produce a response and a *matching fabricated source* such that the
+two are mutually consistent and receive a low IGR. This is not a
+failure of the measurement; it is a failure of the citation's
+authenticity. External verification of citations (against known
+corpora, DOIs, or authoritative registries) is a separate layer
+that composes with IGR but is not part of it.
+
+**This is not a law of nature.** We wish to be explicit: the
+information-conservation bound that IGR operationalizes is not a
+new physical law. It is a conservative statement about information
+flow in a specific class of systems — models producing text
+conditioned on cited sources. Its novelty is not in the bound,
+which is a corollary of classical information theory, but in the
+claim that the bound is *measurable per response*, and in the
+specific form of that measurement.
+
+---
+
+### 11.11 Theoretical foundations — references
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
 │   Shannon CE (1948)                                             │
 │   A mathematical theory of communication.                       │
-│   Bell Syst Tech J 27:379-423                                   │
-│   doi:10.1002/j.1538-7305.1948.tb01338.x                       │
-│   → Foundation: information entropy, channel capacity           │
+│   Bell Syst Tech J 27:379–423                                   │
+│   doi:10.1002/j.1538-7305.1948.tb01338.x                        │
+│   → Foundation A4: channel capacity                             │
 │                                                                 │
 │   Kolmogorov AN (1965)                                          │
-│   Three approaches to the quantitative definition               │
-│   of information. Probl Inform Transm 1(1):1-7                 │
-│   → Foundation: algorithmic complexity, K(E) estimation         │
+│   Three approaches to the quantitative definition of            │
+│   information. Probl Inform Transm 1(1):1–7                     │
+│   → Foundation A2: algorithmic complexity                       │
 │                                                                 │
 │   Chaitin GJ (1966)                                             │
 │   On the length of programs for computing finite binary         │
-│   sequences. J ACM 13(4):547-569                                │
+│   sequences. J ACM 13(4):547–569                                │
 │   doi:10.1145/321356.321363                                     │
-│   → Foundation: incompressibility, information content          │
+│   → Foundation A2 (companion): incompressibility                │
+│                                                                 │
+│   Landauer R (1961)                                             │
+│   Irreversibility and heat generation in the computing          │
+│   process. IBM J Res Dev 5(3):183–191                           │
+│   doi:10.1147/rd.53.0183                                        │
+│   → Foundation A1: physicality of information                   │
+│                                                                 │
+│   Eigen M (1971)                                                │
+│   Selforganization of matter and the evolution of biological    │
+│   macromolecules. Naturwissenschaften 58(10):465–523            │
+│   → Foundation A3: self-organization complexity limit           │
 │                                                                 │
 │   Popper KR (1959)                                              │
 │   The Logic of Scientific Discovery. Hutchinson.                │
 │   ISBN:978-0415278447                                           │
-│   → Foundation: falsifiability, R6 design                       │
-│                                                                 │
-│   Landauer R (1961)                                             │
-│   Irreversibility and heat generation in the computing          │
-│   process. IBM J Res Dev 5(3):183-191                           │
-│   doi:10.1147/rd.53.0183                                        │
-│   → Foundation: physical limits of computation                  │
+│   → Used in §11.9 (falsifiability)                              │
 │                                                                 │
 │   Cover TM, Thomas JA (2006)                                    │
-│   Elements of Information Theory, 2nd ed.                       │
-│   Wiley-Interscience. ISBN:978-0471241959                       │
-│   → Foundation: entropy estimation methods                      │
+│   Elements of Information Theory, 2nd ed. Wiley-Interscience.   │
+│   ISBN:978-0471241959                                           │
+│   → Standard reference for entropy estimation methods           │
+│                                                                 │
+│   LeCun Y (2022)                                                │
+│   A path towards autonomous machine intelligence.               │
+│   Position paper v0.9.2. Courant Institute, NYU.                │
+│   → Diagram and proof conventions adopted in §11                │
 │                                                                 │
 │   Guo C et al. (2017)                                           │
 │   On calibration of modern neural networks. ICML.               │
@@ -5509,9 +5631,9 @@ is demonstrated:
 │   → Prior work: epistemic uncertainty decomposition             │
 │                                                                 │
 │   Li J et al. (2023)                                            │
-│   HaluEval: fabrication evaluation benchmark. EMNLP.          │
+│   HaluEval: fabrication evaluation benchmark. EMNLP.            │
 │   arXiv:2305.11747                                              │
-│   → Prior work: fabrication detection                         │
+│   → Prior work: fabrication detection                           │
 │                                                                 │
 │   Min S et al. (2023)                                           │
 │   FActScorer: atomic evaluation of factual precision. EMNLP.    │
@@ -5519,19 +5641,18 @@ is demonstrated:
 │   → Prior work: factual precision measurement                   │
 │                                                                 │
 │   ONTO's relationship to prior work:                            │
-│   Prior work established the problem domain.                    │
-│   ONTO introduces not a new concept — a new category            │
-│   of solution. Prior work produces research findings.           │
-│   ONTO produces enforcement infrastructure.                     │
-│   Calibration research tells you a model is overconfident.      │
+│   Prior work established the problem domain and calibration     │
+│   methodology. ONTO's contribution is not a new concept but a   │
+│   new category of solution: calibration research produces       │
+│   findings, ONTO produces enforcement infrastructure.           │
+│   Prior work tells you that a model is overconfident.           │
 │   ONTO prevents overconfident output from reaching the client   │
-│   on every request, deterministically, with cryptographic       │
+│   on every request, deterministically, with a cryptographic     │
 │   proof chain.                                                  │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
----
 
 ## 12. Limitations
 
