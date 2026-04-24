@@ -5341,11 +5341,14 @@ contributed by the present work.
 │  shortest generating program. Not a quantity a language model   │
 │  can spontaneously exceed.                                      │
 │                                                                 │
-│  A3 · EIGEN LIMIT                                               │
+│  A3 · EIGEN LIMIT  (background, by analogy)                     │
 │  There is an upper bound on the complexity that can be          │
 │  maintained by a self-organizing system without external        │
-│  informational input. Applies to generators as well as          │
-│  replicators.                                                   │
+│  informational input. Originally established for replicators    │
+│  (quasi-species). We invoke it by analogy for generators whose  │
+│  output is conditioned on a bounded source set — the analogy    │
+│  motivates the information-theoretic framing but is not a       │
+│  load-bearing step in the proof below.                          │
 │                                                                 │
 │  A4 · SHANNON CHANNEL                                           │
 │  The capacity of a channel bounds the information that can be   │
@@ -5364,27 +5367,41 @@ contributed by the present work.
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-A1–A4 are classical; we do not re-derive them here. The role of
-the sufficiency clause A5 is to close the gap between the theoretical
+A1–A4 are classical; we do not re-derive them here. Their role in
+§11 is motivational: they establish that information measures are
+physically constrained (A1), objectively defined (A2), bounded in
+self-organizing systems (A3), and channel-limited in transmission
+(A4). This motivates the choice of an information-theoretic measure
+over, for example, a learned semantic distance. The load-bearing
+step in the proof below is A4 alone.
+
+The sufficiency clause A5 closes the gap between the theoretical
 bound (which is true in principle) and a computable score (which can
 be produced by a running system). Without A5, the bound is a
 philosophical observation; with A5, it is a metric.
 
-**Theorem 1** *(Information-conservation bound).*
-Let *x* be a response with cited source set *y*.
-If *I*(*s<sub>x</sub>*) > *I*(*s<sub>y</sub>*), then *x* contains at least
-*I*(*s<sub>x</sub>*) − *I*(*s<sub>y</sub>*) units of information that are not
-supported by *y*.
+**Proposition 3** *(Information-conservation bound).*
+Let *x* be a response with cited source set *y*, and let
+*s<sub>x</sub>* = Enc<sub>x</sub>(*x*), *s<sub>y</sub>* = Enc<sub>y</sub>(*y*)
+be their encoder representations. Let *I*(·) denote the information
+content of a representation, as fixed in §11.2. If
+*I*(*s<sub>x</sub>*) > *I*(*s<sub>y</sub>*), then the residual
+*I*(*s<sub>x</sub>*) − *I*(*s<sub>y</sub>*) is the amount of information
+claimed by *x* that is not attributable to *y* through the source
+channel.
 
-*Proof sketch.* By A4, the information that *x* can carry *that is
-traceable to y* is at most *I*(*s<sub>y</sub>*). By A2, any information
-in *x* beyond that amount either (i) was present in the generative
-process external to *y*, or (ii) does not correspond to a
-Kolmogorov-compressible referent. In the first case, the information
-is ungrounded with respect to *y* by construction. In the second,
-it is not verifiable. In either case, it contributes to a gap. □
+*Proof.* By A4 (Shannon), the information in *x* attributable to
+*y* through the source channel is bounded by the channel's capacity.
+Under the deterministic encoder pair fixed in §11.2, this capacity
+is *I*(*s<sub>y</sub>*). Hence any claimed information in *x*
+exceeding *I*(*s<sub>y</sub>*) — that is, the residual
+*I*(*s<sub>x</sub>*) − *I*(*s<sub>y</sub>*) > 0 — cannot be attributed
+to *y* under the measurement's own definitions. Whether this residual
+is correct, incorrect, fabricated, or derivable from an external
+source lies outside the scope of Definition 1; the measurement
+reports only that it is unsupported by *y*. □
 
-Theorem 1 is deliberately conservative. It does not claim that
+Proposition 3 is deliberately conservative. It does not claim that
 unsupported information is *wrong*; it claims that it is
 *unsupported by the stated sources*. This is the correct object
 for a measurement standard: we do not adjudicate truth, we measure
@@ -5414,7 +5431,7 @@ The historical name for this observation in the ONTO project is
 the *Central Law of Reflected Causality* — a label we now consider
 more provocative than useful. What the observation formalizes is
 simple: **an evaluation cannot supply evidence it does not have.**
-Theorem 1 applies to the judge as it applies to the original model.
+Proposition 3 applies to the judge as it applies to the original model.
 
 The practical consequence is the one we stated in §11.3: the
 scoring module *D* must be analytic, not learned. Equation (1)
