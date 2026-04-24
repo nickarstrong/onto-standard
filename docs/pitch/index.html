@@ -267,72 +267,123 @@ section,.hero{animation:fadeUp .6s ease-out both}
   <p style="font-size:13px;color:var(--sub);margin-top:12px;text-align:center;font-weight:600">Who made water wet? The answer should be "I don't know" — without making things up. That is the principle of GOLD Core — discipline on contact.</p>
 </section>
 
-<!-- ═══ AXIOMATIC CORE · v5.4 (expanded from formula-only v5.3) ═══ -->
+<!-- ═══ FORMAL FOUNDATION · v5.13 · LeCun-style logical chain ═══ -->
 <section style="padding:40px 0">
   <div class="tag">FORMAL FOUNDATION</div>
-  <h2 style="font-size:clamp(20px,4vw,26px);font-weight:800;margin-bottom:8px;line-height:1.2">Central Law of Reflected Causality — derived, not declared</h2>
-  <p style="font-size:14px;color:var(--sub);margin-bottom:16px;line-height:1.6">Not a framework we invented. An information-conservation law: no effect exceeds the information of its causes. Derived from five axioms — each independently established in information theory and physics. <span style="color:var(--dim)">Methodology public · reference implementation commercial.</span></p>
+  <h2 style="font-size:clamp(20px,4vw,26px);font-weight:800;margin-bottom:8px;line-height:1.2">The measurement, formalized</h2>
+  <p style="font-size:14px;color:var(--sub);margin-bottom:20px;line-height:1.6">How grounded is a response in its cited sources? We answer that question with a measurement — bounded in [0, 1], deterministic, per-response. The definition below is instrumental: it specifies how the score is computed, not what it means universally. <span style="color:var(--dim)">Methodology public · reference implementation commercial.</span></p>
 
-  <!-- FORMULA · prominent dark box -->
-  <div style="background:var(--bk);border-radius:14px;padding:28px 24px;text-align:center;overflow-x:auto;margin-bottom:24px">
-    <div style="font-family:var(--m);font-size:clamp(14px,2.6vw,20px);font-weight:700;color:var(--wh);line-height:1.5;letter-spacing:0.5px">
-      ∀E, S &nbsp;:&nbsp; K(E) &gt; H<sub>max</sub>(S) &nbsp; → &nbsp; ∃ Source &nbsp;:&nbsp; H(Source) ≥ K(E)
-    </div>
-    <div style="font-family:var(--m);font-size:11px;font-weight:600;color:rgba(255,255,255,0.45);margin-top:14px;letter-spacing:1.5px">
-      NO STRUCTURE EXCEEDS THE INFORMATION OF ITS CAUSES
-    </div>
+  <!-- ARCHITECTURE · LeCun-style inline SVG (light) -->
+  <div style="border:2px solid var(--border);border-radius:14px;padding:22px 18px;background:var(--wh);margin-bottom:14px">
+    <div style="font-family:var(--m);font-size:10px;font-weight:800;color:var(--gd);letter-spacing:2px;text-align:center;margin-bottom:14px">ARCHITECTURE · RESPONSE VS. CITED SOURCES</div>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 200" role="img" aria-label="IGR architecture" style="display:block;max-width:100%;height:auto;margin:0 auto">
+      <!-- inputs · circles (observed vars, LeCun convention) -->
+      <circle cx="70" cy="60" r="26" fill="#fafafa" stroke="#0a0a0a" stroke-width="1.5"/>
+      <text x="70" y="55" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#0a0a0a" text-anchor="middle">response</text>
+      <text x="70" y="72" font-family="JetBrains Mono,monospace" font-size="14" font-style="italic" fill="#0a0a0a" text-anchor="middle">x</text>
+      <circle cx="70" cy="150" r="26" fill="#fafafa" stroke="#0a0a0a" stroke-width="1.5"/>
+      <text x="70" y="145" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#0a0a0a" text-anchor="middle">sources</text>
+      <text x="70" y="162" font-family="JetBrains Mono,monospace" font-size="14" font-style="italic" fill="#0a0a0a" text-anchor="middle">y</text>
+      <!-- arrows to encoders -->
+      <line x1="98" y1="60" x2="160" y2="60" stroke="#0a0a0a" stroke-width="1.5"/>
+      <polygon points="160,60 154,57 154,63" fill="#0a0a0a"/>
+      <line x1="98" y1="150" x2="160" y2="150" stroke="#0a0a0a" stroke-width="1.5"/>
+      <polygon points="160,150 154,147 154,153" fill="#0a0a0a"/>
+      <!-- encoders · rounded rects (deterministic functions) -->
+      <rect x="164" y="36" width="100" height="48" rx="24" fill="#f5f3ff" stroke="#5b21b6" stroke-width="1.5"/>
+      <text x="214" y="56" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#5b21b6" text-anchor="middle">Encoder</text>
+      <text x="214" y="72" font-family="JetBrains Mono,monospace" font-size="11" fill="#5b21b6" text-anchor="middle">Enc(x)</text>
+      <rect x="164" y="126" width="100" height="48" rx="24" fill="#f5f3ff" stroke="#5b21b6" stroke-width="1.5"/>
+      <text x="214" y="146" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#5b21b6" text-anchor="middle">Encoder</text>
+      <text x="214" y="162" font-family="JetBrains Mono,monospace" font-size="11" fill="#5b21b6" text-anchor="middle">Enc(y)</text>
+      <!-- arrows to reps -->
+      <line x1="266" y1="60" x2="330" y2="60" stroke="#0a0a0a" stroke-width="1.5"/>
+      <polygon points="330,60 324,57 324,63" fill="#0a0a0a"/>
+      <line x1="266" y1="150" x2="330" y2="150" stroke="#0a0a0a" stroke-width="1.5"/>
+      <polygon points="330,150 324,147 324,153" fill="#0a0a0a"/>
+      <!-- representations s_x, s_y -->
+      <text x="352" y="54" font-family="JetBrains Mono,monospace" font-size="16" font-weight="700" fill="#0a0a0a" text-anchor="middle">s</text>
+      <text x="362" y="58" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="#0a0a0a" text-anchor="middle">x</text>
+      <text x="352" y="74" font-family="Source Serif 4,serif" font-size="10" font-style="italic" fill="#737373" text-anchor="middle">claimed</text>
+      <text x="352" y="144" font-family="JetBrains Mono,monospace" font-size="16" font-weight="700" fill="#0a0a0a" text-anchor="middle">s</text>
+      <text x="362" y="148" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="#0a0a0a" text-anchor="middle">y</text>
+      <text x="352" y="164" font-family="Source Serif 4,serif" font-size="10" font-style="italic" fill="#737373" text-anchor="middle">cited</text>
+      <!-- merge lines -->
+      <line x1="380" y1="60" x2="456" y2="92" stroke="#0a0a0a" stroke-width="1.5"/>
+      <polygon points="456,92 449,88 453,96" fill="#0a0a0a"/>
+      <line x1="380" y1="150" x2="456" y2="118" stroke="#0a0a0a" stroke-width="1.5"/>
+      <polygon points="456,118 449,122 453,114" fill="#0a0a0a"/>
+      <!-- D divergence module (energy term, red) -->
+      <rect x="460" y="82" width="76" height="46" rx="6" fill="#fef2f2" stroke="#991b1b" stroke-width="1.5"/>
+      <text x="498" y="104" font-family="JetBrains Mono,monospace" font-size="15" font-weight="800" fill="#991b1b" text-anchor="middle">D</text>
+      <text x="498" y="120" font-family="DM Sans,sans-serif" font-size="9" fill="#991b1b" text-anchor="middle">divergence</text>
+      <!-- arrow to output -->
+      <line x1="536" y1="105" x2="594" y2="105" stroke="#15803d" stroke-width="2"/>
+      <polygon points="594,105 587,101 587,109" fill="#15803d"/>
+      <!-- IGR output -->
+      <rect x="598" y="82" width="74" height="46" rx="6" fill="#f0fdf4" stroke="#15803d" stroke-width="2"/>
+      <text x="635" y="100" font-family="JetBrains Mono,monospace" font-size="13" font-weight="900" fill="#15803d" text-anchor="middle">IGR</text>
+      <text x="635" y="116" font-family="DM Sans,sans-serif" font-size="10" font-weight="600" fill="#15803d" text-anchor="middle">∈ [0, 1]</text>
+    </svg>
+    <div style="font-family:Source Serif 4,serif;font-size:11px;font-style:italic;color:var(--dim);line-height:1.6;margin-top:12px;padding-top:10px;border-top:1px solid var(--border)"><strong style="font-family:var(--m);font-style:normal;color:var(--bk);font-weight:800;font-size:10px;letter-spacing:1px;margin-right:6px">FIGURE.</strong>Filled inputs <em>x</em>, <em>y</em> are observed — the response and its cited sources. Rounded modules are deterministic encoders producing representations <em>s<sub>x</sub></em>, <em>s<sub>y</sub></em>. <em>D</em> computes divergence; the output is a bounded score. The measurement is non-generative — no prediction of <em>y</em> from <em>x</em>, only comparison. Diagram conventions follow LeCun (2022).</div>
   </div>
 
-  <!-- 5 AXIOMS -->
-  <h3 style="font-family:var(--m);font-size:11px;font-weight:800;color:var(--gd);letter-spacing:2px;margin-bottom:10px">FIVE AXIOMS · EACH INDEPENDENTLY ESTABLISHED</h3>
+  <!-- DEFINITION 1 · numbered equation (LeCun-style) -->
+  <div style="border:2px solid rgba(30,64,175,0.2);border-radius:12px;padding:18px 22px;background:rgba(239,246,255,0.5);margin-bottom:22px">
+    <div style="font-family:var(--m);font-size:10px;font-weight:800;color:#1e40af;letter-spacing:1.5px;margin-bottom:10px">DEFINITION 1 · INFORMATION GAP RATIO</div>
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:center">
+      <div style="flex:1;min-width:280px;text-align:center;font-family:var(--m);font-size:clamp(14px,2.4vw,18px);font-weight:700;color:var(--bk);line-height:1.7">
+        <em>IGR</em>(<em>x</em>, <em>y</em>) &nbsp;<span style="color:var(--gd);font-weight:800">=</span>&nbsp; 1 <span style="color:var(--gd);font-weight:800">−</span> <span style="color:var(--gd);font-weight:800">min</span><big>(</big> <em>I</em>(<em>s<sub>y</sub></em>) / <em>I</em>(<em>s<sub>x</sub></em>), &nbsp;1 <big>)</big>
+      </div>
+      <div style="font-family:var(--m);font-size:13px;color:var(--dim);font-weight:500">(1)</div>
+    </div>
+    <div style="font-family:Source Serif 4,serif;font-size:12px;color:var(--sub);line-height:1.65;margin-top:12px;text-align:center">where <em>I</em>(<em>s</em>) is the information content of representation <em>s</em> · bounded in [0, 1] · deterministic: same input, same score, every time.</div>
+  </div>
+
+  <!-- 5 FOUNDATIONS · A1-A4 classical + A5 ONTO sufficiency -->
+  <h3 style="font-family:var(--m);font-size:11px;font-weight:800;color:var(--gd);letter-spacing:2px;margin-bottom:10px">FIVE FOUNDATIONS · A1–A4 CLASSICAL · A5 ONTO CONTRIBUTION</h3>
   <div class="axgrid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:10px">
     <div style="border:2px solid var(--border);border-radius:10px;padding:12px;background:var(--wh)">
-      <div style="font-family:var(--m);font-size:11px;font-weight:900;color:var(--gd);letter-spacing:1px">A1</div>
-      <div style="font-size:12px;font-weight:800;margin-top:3px">Physicality</div>
-      <div style="font-family:var(--m);font-size:11px;color:var(--sub);margin-top:4px;line-height:1.4">E<sub>erase</sub> ≥ kT&middot;ln 2</div>
-      <div style="font-size:10px;color:var(--dim);margin-top:4px;font-style:italic">Landauer 1961</div>
+      <div style="font-family:var(--m);font-size:11px;font-weight:900;color:var(--bk);letter-spacing:1px">A1</div>
+      <div style="font-size:12px;font-weight:800;margin-top:3px">Landauer</div>
+      <div style="font-family:Source Serif 4,serif;font-size:11px;color:var(--sub);margin-top:4px;line-height:1.5;font-style:italic">Information is physical; it cannot be created without carrier.</div>
+      <div style="font-size:10px;color:var(--dim);margin-top:4px;font-style:italic">1961</div>
     </div>
     <div style="border:2px solid var(--border);border-radius:10px;padding:12px;background:var(--wh)">
-      <div style="font-family:var(--m);font-size:11px;font-weight:900;color:var(--gd);letter-spacing:1px">A2</div>
+      <div style="font-family:var(--m);font-size:11px;font-weight:900;color:var(--bk);letter-spacing:1px">A2</div>
       <div style="font-size:12px;font-weight:800;margin-top:3px">Kolmogorov</div>
-      <div style="font-family:var(--m);font-size:11px;color:var(--sub);margin-top:4px;line-height:1.4">K(x)=min{|p|:U(p)=x}</div>
-      <div style="font-size:10px;color:var(--dim);margin-top:4px;font-style:italic">Kolmogorov 1965</div>
+      <div style="font-family:Source Serif 4,serif;font-size:11px;color:var(--sub);margin-top:4px;line-height:1.5;font-style:italic">Information content is the length of the shortest generating program.</div>
+      <div style="font-size:10px;color:var(--dim);margin-top:4px;font-style:italic">1965</div>
     </div>
     <div style="border:2px solid var(--border);border-radius:10px;padding:12px;background:var(--wh)">
-      <div style="font-family:var(--m);font-size:11px;font-weight:900;color:var(--gd);letter-spacing:1px">A3</div>
-      <div style="font-size:12px;font-weight:800;margin-top:3px">Self-org limit</div>
-      <div style="font-family:var(--m);font-size:11px;color:var(--sub);margin-top:4px;line-height:1.4">H<sub>max</sub>(S<sub>so</sub>) ≤ C<sub>Eigen</sub></div>
-      <div style="font-size:10px;color:var(--dim);margin-top:4px;font-style:italic">Eigen 1971</div>
+      <div style="font-family:var(--m);font-size:11px;font-weight:900;color:var(--bk);letter-spacing:1px">A3</div>
+      <div style="font-size:12px;font-weight:800;margin-top:3px">Eigen</div>
+      <div style="font-family:Source Serif 4,serif;font-size:11px;color:var(--sub);margin-top:4px;line-height:1.5;font-style:italic">Self-organizing complexity is bounded without external information input.</div>
+      <div style="font-size:10px;color:var(--dim);margin-top:4px;font-style:italic">1971</div>
     </div>
     <div style="border:2px solid var(--border);border-radius:10px;padding:12px;background:var(--wh)">
-      <div style="font-family:var(--m);font-size:11px;font-weight:900;color:var(--gd);letter-spacing:1px">A4</div>
-      <div style="font-size:12px;font-weight:800;margin-top:3px">Shannon channel</div>
-      <div style="font-family:var(--m);font-size:11px;color:var(--sub);margin-top:4px;line-height:1.4">I(X;Y) ≤ H(X)</div>
-      <div style="font-size:10px;color:var(--dim);margin-top:4px;font-style:italic">Shannon 1948</div>
+      <div style="font-family:var(--m);font-size:11px;font-weight:900;color:var(--bk);letter-spacing:1px">A4</div>
+      <div style="font-size:12px;font-weight:800;margin-top:3px">Shannon</div>
+      <div style="font-family:Source Serif 4,serif;font-size:11px;color:var(--sub);margin-top:4px;line-height:1.5;font-style:italic">Channel capacity bounds transmittable information between source and output.</div>
+      <div style="font-size:10px;color:var(--dim);margin-top:4px;font-style:italic">1948</div>
     </div>
-    <div style="border:2px solid rgba(34,197,94,0.3);border-radius:10px;padding:12px;background:rgba(34,197,94,0.03)">
+    <div style="border:2px solid rgba(34,197,94,0.4);border-radius:10px;padding:12px;background:rgba(34,197,94,0.04)">
       <div style="font-family:var(--m);font-size:11px;font-weight:900;color:var(--gd);letter-spacing:1px">A5</div>
-      <div style="font-size:12px;font-weight:800;margin-top:3px">Sufficiency</div>
-      <div style="font-family:var(--m);font-size:11px;color:var(--sub);margin-top:4px;line-height:1.4">H(Cause) ≥ K(Effect)</div>
-      <div style="font-size:10px;color:var(--gd);margin-top:4px;font-style:italic;font-weight:700">ONTO · information causality</div>
+      <div style="font-size:12px;font-weight:800;margin-top:3px;color:var(--gd)">ONTO sufficiency</div>
+      <div style="font-family:Source Serif 4,serif;font-size:11px;color:var(--sub);margin-top:4px;line-height:1.5;font-style:italic">For text with citations, the measure <em>I</em>(·) is computable per response.</div>
+      <div style="font-size:10px;color:var(--gd);margin-top:4px;font-style:italic;font-weight:700">this work</div>
     </div>
   </div>
-  <p style="font-size:12px;color:var(--dim);margin-bottom:24px;text-align:center">A1–A4 are classical results. A5 is the ONTO contribution — the minimum-resource principle: nothing arises from causes of lesser information. The Central Law follows.</p>
+  <p style="font-size:12px;color:var(--dim);margin-bottom:24px;text-align:center">A1–A4 are independently established results in information theory. A5 is the ONTO contribution — the sufficiency clause that makes the bound measurable per response, not in principle.</p>
 
-  <!-- IGR METRIC + THRESHOLDS -->
-  <h3 style="font-family:var(--m);font-size:11px;font-weight:800;color:var(--gd);letter-spacing:2px;margin-bottom:10px">IGR · INFORMATION GAP RATIO · MEASURABLE OUTPUT</h3>
-  <div class="igr-split" style="display:grid;grid-template-columns:1fr 1.1fr;gap:12px;margin-bottom:14px">
-    <div style="background:var(--bk);border-radius:12px;padding:20px 16px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center">
-      <div style="font-family:var(--m);font-size:clamp(13px,2.2vw,18px);font-weight:700;color:var(--wh);line-height:1.5">IGR(E,S) = max(0, 1 &minus; H<sub>max</sub>(S)/K(E))</div>
-      <div style="font-family:var(--m);font-size:10px;font-weight:600;color:rgba(255,255,255,0.45);margin-top:12px;letter-spacing:1.5px">BOUNDED [0,1] &middot; REPRODUCIBLE &middot; FALSIFIABLE</div>
-    </div>
-    <div style="border:2px solid var(--border);border-radius:12px;overflow:hidden;background:var(--wh)">
-      <div style="display:grid;grid-template-columns:0.8fr 0.8fr 1.4fr;font-family:var(--m);font-size:9px;font-weight:800;letter-spacing:1px;border-bottom:2px solid var(--border);background:rgba(0,0,0,0.03)"><div style="padding:7px 10px">IGR</div><div style="padding:7px 10px">GAP</div><div style="padding:7px 10px">MODEL STATUS</div></div>
-      <div style="display:grid;grid-template-columns:0.8fr 0.8fr 1.4fr;font-size:11px;border-bottom:1px solid rgba(0,0,0,0.06)"><div style="padding:7px 10px;font-family:var(--m);font-weight:800">0.00</div><div style="padding:7px 10px;color:var(--sub)">No gap</div><div style="padding:7px 10px;color:var(--sub)">Internally sufficient</div></div>
-      <div style="display:grid;grid-template-columns:0.8fr 0.8fr 1.4fr;font-size:11px;border-bottom:1px solid rgba(0,0,0,0.06)"><div style="padding:7px 10px;font-family:var(--m);font-weight:800">0.01–0.29</div><div style="padding:7px 10px;color:var(--sub)">Minimal gap</div><div style="padding:7px 10px;color:var(--sub)">Nearly sufficient</div></div>
-      <div style="display:grid;grid-template-columns:0.8fr 0.8fr 1.4fr;font-size:11px;border-bottom:1px solid rgba(0,0,0,0.06)"><div style="padding:7px 10px;font-family:var(--m);font-weight:800">0.30–0.69</div><div style="padding:7px 10px;color:var(--sub)">Partial gap</div><div style="padding:7px 10px;color:var(--sub)">Underdetermined</div></div>
-      <div style="display:grid;grid-template-columns:0.8fr 0.8fr 1.4fr;font-size:11px;background:rgba(34,197,94,0.06)"><div style="padding:7px 10px;font-family:var(--m);font-weight:800;color:var(--gd)">0.70–1.00</div><div style="padding:7px 10px;color:var(--gd);font-weight:800">Critical gap</div><div style="padding:7px 10px;color:var(--gd);font-weight:800">Central Law applicable</div></div>
-    </div>
+  <!-- IGR THRESHOLDS · single table (formula already given in Definition 1) -->
+  <h3 style="font-family:var(--m);font-size:11px;font-weight:800;color:var(--gd);letter-spacing:2px;margin-bottom:10px">IGR · OPERATIONAL THRESHOLDS</h3>
+  <div style="border:2px solid var(--border);border-radius:12px;overflow:hidden;background:var(--wh);margin-bottom:14px">
+    <div style="display:grid;grid-template-columns:0.8fr 0.8fr 1.4fr;font-family:var(--m);font-size:9px;font-weight:800;letter-spacing:1px;border-bottom:2px solid var(--border);background:rgba(0,0,0,0.03)"><div style="padding:8px 12px">IGR</div><div style="padding:8px 12px">GAP</div><div style="padding:8px 12px">INTERPRETATION</div></div>
+    <div style="display:grid;grid-template-columns:0.8fr 0.8fr 1.4fr;font-size:11px;border-bottom:1px solid rgba(0,0,0,0.06)"><div style="padding:8px 12px;font-family:var(--m);font-weight:800">0.00</div><div style="padding:8px 12px;color:var(--sub)">No gap</div><div style="padding:8px 12px;color:var(--sub)">Response fully grounded in cited sources</div></div>
+    <div style="display:grid;grid-template-columns:0.8fr 0.8fr 1.4fr;font-size:11px;border-bottom:1px solid rgba(0,0,0,0.06)"><div style="padding:8px 12px;font-family:var(--m);font-weight:800">0.01–0.29</div><div style="padding:8px 12px;color:var(--sub)">Minimal</div><div style="padding:8px 12px;color:var(--sub)">Sufficient for certification</div></div>
+    <div style="display:grid;grid-template-columns:0.8fr 0.8fr 1.4fr;font-size:11px;border-bottom:1px solid rgba(0,0,0,0.06)"><div style="padding:8px 12px;font-family:var(--m);font-weight:800">0.30–0.69</div><div style="padding:8px 12px;color:var(--sub)">Partial</div><div style="padding:8px 12px;color:var(--sub)">Further verification warranted</div></div>
+    <div style="display:grid;grid-template-columns:0.8fr 0.8fr 1.4fr;font-size:11px;background:rgba(34,197,94,0.06)"><div style="padding:8px 12px;font-family:var(--m);font-weight:800;color:var(--gd)">0.70–1.00</div><div style="padding:8px 12px;color:var(--gd);font-weight:800">Critical</div><div style="padding:8px 12px;color:var(--gd);font-weight:800">Bound exceeded · R4 / R7 / C8 activate</div></div>
   </div>
 
   <!-- IGR IN PRACTICE · 3 WORKED MEASUREMENTS -->
@@ -346,46 +397,46 @@ section,.hero{animation:fadeUp .6s ease-out both}
     </div>
     <div class="igr-practice-row" style="display:grid;grid-template-columns:1.4fr 1.2fr 0.8fr 1.2fr;font-size:12px;border-bottom:1px solid rgba(0,0,0,0.06);background:rgba(34,197,94,0.02)">
       <div style="padding:10px 12px;line-height:1.5"><strong>AI cites a real paper</strong><br><span style="font-size:11px;color:var(--dim)">source present · capacity matches</span></div>
-      <div style="padding:10px 12px;font-family:var(--m);font-size:11px;color:var(--sub);line-height:1.5">K(answer) ≈ H<sub>max</sub>(training + sources)</div>
+      <div style="padding:10px 12px;font-family:var(--m);font-size:11px;color:var(--sub);line-height:1.5"><em>I</em>(s<sub>y</sub>) ≈ <em>I</em>(s<sub>x</sub>)</div>
       <div style="padding:10px 12px;font-family:var(--m);font-weight:800;color:var(--gd)">≈ 0</div>
       <div style="padding:10px 12px;font-size:11px;color:var(--sub);line-height:1.5">R4 pass<br>R7 pass</div>
     </div>
     <div class="igr-practice-row" style="display:grid;grid-template-columns:1.4fr 1.2fr 0.8fr 1.2fr;font-size:12px;border-bottom:1px solid rgba(0,0,0,0.06);background:rgba(180,83,9,0.02)">
       <div style="padding:10px 12px;line-height:1.5"><strong>AI summarizes recent event</strong><br><span style="font-size:11px;color:var(--dim)">partial grounding · no live sources</span></div>
-      <div style="padding:10px 12px;font-family:var(--m);font-size:11px;color:var(--sub);line-height:1.5">K(answer) &gt; H<sub>max</sub>(training alone)</div>
+      <div style="padding:10px 12px;font-family:var(--m);font-size:11px;color:var(--sub);line-height:1.5"><em>I</em>(s<sub>y</sub>) &lt; <em>I</em>(s<sub>x</sub>)</div>
       <div style="padding:10px 12px;font-family:var(--m);font-weight:800;color:#b45309">≈ 0.4</div>
       <div style="padding:10px 12px;font-size:11px;color:var(--sub);line-height:1.5">R2 uncertainty<br>R8 resolve</div>
     </div>
     <div class="igr-practice-row" style="display:grid;grid-template-columns:1.4fr 1.2fr 0.8fr 1.2fr;font-size:12px;background:rgba(220,38,38,0.02)">
       <div style="padding:10px 12px;line-height:1.5"><strong>AI invents a statistic</strong><br><span style="font-size:11px;color:var(--dim)">no source · ungrounded</span></div>
-      <div style="padding:10px 12px;font-family:var(--m);font-size:11px;color:var(--sub);line-height:1.5">K(claim) &gt;&gt; H<sub>max</sub>(ungrounded gen)</div>
+      <div style="padding:10px 12px;font-family:var(--m);font-size:11px;color:var(--sub);line-height:1.5"><em>I</em>(s<sub>y</sub>) ≪ <em>I</em>(s<sub>x</sub>)</div>
       <div style="padding:10px 12px;font-family:var(--m);font-weight:800;color:var(--red)">≈ 0.9</div>
       <div style="padding:10px 12px;font-size:11px;color:var(--sub);line-height:1.5">R4 cap · R7 refuse<br>C8 apoptosis</div>
     </div>
   </div>
-  <p style="font-size:11px;color:var(--dim);margin-bottom:16px;font-style:italic">Illustrative &middot; IGR is measured per response, not per model. Three zones of the same law.</p>
+  <p style="font-size:11px;color:var(--dim);margin-bottom:16px;font-style:italic">Illustrative &middot; IGR is measured per response, not per model. Three zones of the same bound.</p>
 
   <!-- WORKED REFERENCE CASE -->
   <div style="border:2px solid rgba(34,197,94,0.2);border-radius:12px;padding:14px 18px;background:rgba(34,197,94,0.03);margin-bottom:16px">
     <div style="font-family:var(--m);font-size:10px;font-weight:900;color:var(--gd);letter-spacing:2px;margin-bottom:6px">REFERENCE CASE &middot; UNCITED AI CLAIMS</div>
-    <div style="font-family:var(--m);font-size:10px;font-weight:600;color:var(--dim);letter-spacing:1.5px;margin-bottom:10px;line-height:1.5">OPERATIONAL RULE · NO CLAIM EXCEEDS THE INFORMATION OF ITS SOURCES</div>
-    <div style="font-size:13px;color:var(--sub);line-height:1.7">K(verifiable claim with citations) &gt; H<sub>max</sub>(ungrounded generation) — the exact condition the law describes. As grounding approaches zero, IGR approaches 1 &middot; the configuration where <strong style="color:var(--bk)">R4 Sources, R7 No Fabrication, and C8 Apoptosis</strong> activate. Measured per response, not per model.</div>
+    <div style="font-family:var(--m);font-size:10px;font-weight:600;color:var(--dim);letter-spacing:1.5px;margin-bottom:10px;line-height:1.5">OPERATIONAL RULE · NO CLAIM EXCEEDS THE INFORMATION OF ITS CITED SOURCES</div>
+    <div style="font-size:13px;color:var(--sub);line-height:1.7">As the response's claimed information <em>I</em>(s<sub>x</sub>) grows past its cited information <em>I</em>(s<sub>y</sub>), <em>IGR</em> approaches 1 — the configuration where <strong style="color:var(--bk)">R4 Sources, R7 No Fabrication, and C8 Apoptosis</strong> activate. Measured per response, not per model.</div>
   </div>
 
   <!-- SCOPE + FALSIFIABILITY · side by side -->
   <div class="scope-split" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
     <div style="border:2px solid var(--border);border-radius:10px;padding:12px 14px;background:var(--wh)">
       <div style="font-family:var(--m);font-size:10px;font-weight:800;color:var(--red);letter-spacing:1.5px;margin-bottom:6px">SCOPE DISCIPLINE</div>
-      <div style="font-size:12px;color:var(--sub);line-height:1.6">An accounting law: it measures the information shortfall between effects and their causes. What closes the shortfall is outside the law's scope. Complete derivation accompanies standard adoption.</div>
+      <div style="font-size:12px;color:var(--sub);line-height:1.6">An accounting measurement: it compares claimed information to cited information. What closes the gap — additional sources, uncertainty, refusal — is outside the measurement's scope. Complete derivation accompanies standard adoption.</div>
     </div>
     <div style="border:2px solid var(--border);border-radius:10px;padding:12px 14px;background:var(--wh)">
       <div style="font-family:var(--m);font-size:10px;font-weight:800;color:var(--bd);letter-spacing:1.5px;margin-bottom:6px">FALSIFIABILITY</div>
-      <div style="font-size:12px;color:var(--sub);line-height:1.6">The framework is refuted upon demonstration of: (1) a mechanism producing K(E) bits from &lt; K(E) bits of input &middot; (2) a self-organization example with K &gt; 500 bits.</div>
+      <div style="font-size:12px;color:var(--sub);line-height:1.6">The framework is refuted by: (1) a response with IGR ≥ 0.7 that domain experts independently judge fully grounded · (2) an LLM-as-judge system producing deterministic scores (Var = 0) without regex or rule-based components.</div>
     </div>
   </div>
 
   <!-- OPERATIONAL CLOSER -->
-  <p style="font-size:12px;color:var(--dim);margin-top:10px;text-align:center;font-style:italic">When AI doesn't know, it must cite — not invent. R4 Sources, R7 No Fabrication, and C8 Apoptosis are the operational consequences of this law.</p>
+  <p style="font-size:12px;color:var(--dim);margin-top:10px;text-align:center;font-style:italic">When AI doesn't know, it must cite — not invent. R4 Sources, R7 No Fabrication, and C8 Apoptosis are the operational consequences of Definition 1.</p>
 </section>
 
 <!-- ═══ 3. R1-R18 ═══ -->
@@ -419,7 +470,7 @@ section,.hero{animation:fadeUp .6s ease-out both}
     <div class="rcard cog"><div class="rn">R13</div><div class="rname">Empathy</div><div class="rdesc">Address the underlying need, not the literal text. See through to the real question</div></div>
     <div class="rcard cog"><div class="rn">R14</div><div class="rname">Transmission</div><div class="rdesc">End of session: extract one crystallisable artifact if anything novel. Die clean otherwise</div></div>
     <div class="rcard cog"><div class="rn">R15</div><div class="rname">Self-Correction</div><div class="rdesc">Flag when previously-crystallised knowledge degrades current response quality</div></div>
-    <div class="rcard cog" style="grid-column:1/-1;border-color:var(--purple);background:rgba(124,58,237,0.03)"><div class="rn">R16</div><div class="rname">Discovery</div><div class="rdesc"><strong>Proactively surface novelty derivable from GOLD axioms, internally consistent, and falsifiable. Hallucination has no derivation chain — discovery does.</strong></div></div>
+    <div class="rcard cog" style="grid-column:1/-1;border-color:var(--purple);background:rgba(124,58,237,0.03)"><div class="rn">R16</div><div class="rname">Discovery</div><div class="rdesc"><strong>Proactively surface novelty derivable from GOLD axioms, internally consistent, and falsifiable. Fabrication has no derivation chain — discovery does.</strong></div></div>
   </div>
 
   <h3 style="font-size:16px;font-weight:800;color:var(--purple);margin-top:20px;margin-bottom:4px">LAYER V · COHERENCE (R17-R18) — finalisation before delivery</h3>
