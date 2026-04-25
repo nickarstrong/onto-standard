@@ -2689,6 +2689,108 @@ client = OpenAI(
     </div>
 </div>
 
+<!-- ============== EDIT MODAL ============== -->
+<div class="pv-overlay" id="pv-edit-overlay">
+    <div class="pv-modal" role="dialog">
+        <div class="pv-mhead">
+            <h3 id="pv-edit-title">Edit · Model</h3>
+            <button class="pv-mclose" onclick="closeProviderEdit()" aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="pv-mbody">
+            <input type="hidden" id="pv-edit-id">
+
+            <div class="pv-row">
+                <span class="lab">Display name</span>
+                <span class="val" id="pv-edit-name">—</span>
+            </div>
+            <div class="pv-row">
+                <span class="lab">Provider</span>
+                <span class="val" id="pv-edit-ptype">—</span>
+            </div>
+            <div class="pv-row">
+                <span class="lab">Channel</span>
+                <span class="val" id="pv-edit-channel">—</span>
+            </div>
+            <div class="pv-row">
+                <span class="lab">Model ID</span>
+                <span class="val" id="pv-edit-mid">—</span>
+                <button class="btn-mini" onclick="pvCopyEl('pv-edit-mid', this)">Copy</button>
+            </div>
+            <div class="pv-row">
+                <span class="lab">Created</span>
+                <span class="val" id="pv-edit-created">—</span>
+            </div>
+
+            <div class="pv-danger-zone" id="pv-edit-sse-block" style="display:none">
+                <div class="lab">Attestation channel · SSE</div>
+                <div class="pv-row">
+                    <span class="lab">Status</span>
+                    <span class="val" id="pv-edit-conn">—</span>
+                </div>
+                <div class="pv-row">
+                    <span class="lab">Last heartbeat</span>
+                    <span class="val" id="pv-edit-hb">—</span>
+                </div>
+                <div class="pv-row">
+                    <span class="lab">Heartbeat URL</span>
+                    <span class="val" id="pv-edit-hb-url" style="font-size:11px">—</span>
+                    <button class="btn-mini" onclick="pvCopyEl('pv-edit-hb-url', this)">Copy</button>
+                </div>
+                <div class="pv-row">
+                    <span class="lab">GOLD stream</span>
+                    <span class="val" id="pv-edit-gold-url" style="font-size:11px">—</span>
+                    <button class="btn-mini" onclick="pvCopyEl('pv-edit-gold-url', this)">Copy</button>
+                </div>
+                <div class="help" style="margin-top:8px">Provider's server posts heartbeat every 30-60s and subscribes to the GOLD stream. Both calls authenticate with your ONTO account API key.</div>
+            </div>
+
+            <div class="pv-danger-zone">
+                <div class="lab">Stats</div>
+                <div class="pv-row">
+                    <span class="lab">Total evals</span>
+                    <span class="val" id="pv-edit-evals">—</span>
+                </div>
+                <div class="pv-row">
+                    <span class="lab">Avg score</span>
+                    <span class="val" id="pv-edit-score">—</span>
+                </div>
+                <div class="pv-row">
+                    <span class="lab">Cert</span>
+                    <span class="val" id="pv-edit-cert">—</span>
+                </div>
+            </div>
+
+            <div class="pv-danger-zone">
+                <div class="lab">Code · Quick start</div>
+                <div class="pv-tabs" style="margin:0 0 10px">
+                    <button class="pv-tab on" data-elang="curl" onclick="pvEditShowLang('curl', this)">cURL</button>
+                    <button class="pv-tab" data-elang="python" onclick="pvEditShowLang('python', this)">Python</button>
+                </div>
+                <div class="pv-code" id="pv-edit-code"></div>
+                <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
+                    <button class="btn-mini" onclick="pvEditCopyCode(this)">Copy</button>
+                    <button class="btn-mini" onclick="pvEditTestNow()" id="pv-edit-test-btn" style="background:var(--accent-subtle);color:var(--accent);border-color:var(--accent-border)">Test now</button>
+                    <span style="font-size:11px;color:var(--text-muted)">Sends one question through GOLD · counts toward daily limit</span>
+                </div>
+                <div id="pv-edit-test-result" style="margin-top:10px"></div>
+            </div>
+        </div>
+        <div class="pv-mfoot">
+            <div class="left">
+                <button class="btn-mini danger" onclick="pvEditUnregister()">Unregister</button>
+            </div>
+            <div class="right">
+                <button class="btn-mini" id="pv-edit-toggle" onclick="pvEditToggle()">Disable</button>
+                <button class="btn-mini" id="pv-edit-conn-btn" onclick="pvEditConnect()" style="display:none">Connect SSE</button>
+                <button class="btn-mini" id="pv-edit-disc-btn" onclick="pvEditDisconnect()" style="display:none">Disconnect SSE</button>
+                <button class="btn-mini" onclick="closeProviderEdit()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script>
 // === API CONFIG ===
@@ -4026,344 +4128,266 @@ function testInAgent(modelId, providerType) {
 function renderModelCard(m) {
     const id = escHtml(m.id);
     const name = escHtml(m.name);
-    const ptype = escHtml(m.provider_type || '');
+    const ptype = escHtml(m.provider_type || '—');
     const channel = (m.channel || 'proxy').toLowerCase();
     const isOn = m.is_enabled !== false;
     const online = pvIsOnline(m);
     const cert = pvCertState(m);
 
-    // Last activity string (sse: last_heartbeat, proxy: last_eval_ago)
     const lastAct = (channel === 'sse')
-        ? (m.last_heartbeat || 'never')
-        : (m.last_eval_ago || 'never');
-    const lastLabel = (channel === 'sse') ? 'last heartbeat' : 'last eval';
-
-    // 24h count = eval_count (backend total · honest)
+        ? (m.last_heartbeat ? 'last heartbeat ' + m.last_heartbeat : 'awaiting heartbeat')
+        : (m.last_eval_ago ? 'last eval ' + m.last_eval_ago : 'no evals yet');
     const evalCount = (m.eval_count != null) ? Number(m.eval_count).toLocaleString() : '—';
+    const scoreText = (m.avg_score != null && m.avg_score > 0) ? Number(m.avg_score).toFixed(2) : '—';
+    const grade = m.grade ? ' · ' + m.grade : '';
 
-    // Score · single number
-    const scoreText = (m.avg_score != null && m.avg_score > 0) ? Number(m.avg_score).toFixed(1) : '—';
-    const grade = m.grade ? ' ' + m.grade : '';
-
-    // Cert pill 4-state
     const certMap = {
-        verified:  { txt: 'Verified',  cls: '',        ico: '<polyline points="20 6 9 17 4 12"/>' },
-        active:    { txt: 'Active',    cls: '',        ico: '<polyline points="20 6 9 17 4 12"/>' },
-        suspended: { txt: 'Suspended', cls: 'frozen',  ico: '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>' },
-        inactive:  { txt: 'Inactive',  cls: 'private', ico: '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>' }
+        verified:  { txt: 'Verified',  cls: '' },
+        active:    { txt: 'Active',    cls: '' },
+        suspended: { txt: 'Suspended', cls: 'frozen' },
+        inactive:  { txt: 'Inactive',  cls: 'private' }
     };
     const cm = certMap[cert] || certMap.inactive;
-    const certPillHtml = '<span class="mc-cert ' + cm.cls + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">' + cm.ico + '</svg>' + cm.txt + '</span>';
+    const certPill = '<span class="mc-cert ' + cm.cls + '" style="font-size:9px;padding:3px 8px">' + cm.txt + '</span>';
 
-    // ON/OFF toggle (segmented · proxy & sse both)
-    const togHtml =
-        '<div class="mc-seg">' +
-            '<button class="' + (isOn ? 'on' : '') + '" onclick="setModelEnabled(\'' + id + '\')">ON</button>' +
-            '<button class="' + (!isOn ? 'on muted-on' : '') + '" onclick="setModelEnabled(\'' + id + '\')">OFF</button>' +
-        '</div>';
-
-    // Channel badge
-    const chBadge = '<span class="mc-conn ' + (online ? '' : 'off') + '">' +
-        '<span class="dotmini"></span>' +
-        '<span class="label">' + channel + '</span>' +
-    '</span>';
+    const channelPill = channel === 'sse'
+        ? '<span class="mc-conn ' + (online ? '' : 'off') + '" style="font-size:9.5px;padding:3px 8px"><span class="dotmini"></span><span class="label">SSE</span>' + (m.last_heartbeat ? ' <span class="rate">' + escHtml(m.last_heartbeat) + '</span>' : '') + '</span>'
+        : '<span class="mc-conn" style="font-size:9.5px;padding:3px 8px;color:var(--text-secondary)"><span class="label">PROXY</span></span>';
 
     const cardClass = 'model-card' + (online ? '' : ' disconnected') + (isOn ? '' : ' disabled');
 
     return '<div class="' + cardClass + '" data-model="' + id + '">' +
-        '<div class="mc-top">' +
+        '<div class="mc-top" style="grid-template-columns: auto 1fr auto auto auto auto auto">' +
             '<div class="mc-dot"><div class="core"></div><div class="ring"></div></div>' +
             '<div class="mc-info">' +
-                '<div class="mc-name">' + name + '</div>' +
+                '<div class="mc-name">' + name + ' <span style="font-family:var(--mono);font-size:11.5px;color:var(--text-faint);font-weight:500;letter-spacing:.5px;margin-left:6px">' + ptype + '</span></div>' +
                 '<div class="mc-meta">' +
-                    '<span>' + ptype + '</span><span class="sep">·</span>' +
-                    '<span>' + lastLabel + ' ' + escHtml(lastAct) + '</span>' +
+                    '<span>' + evalCount + ' evals</span><span class="sep">·</span>' +
+                    '<span>' + scoreText + grade + '</span><span class="sep">·</span>' +
+                    '<span>' + escHtml(lastAct) + '</span>' +
                 '</div>' +
             '</div>' +
-            '<div class="mc-signals" style="min-width:80px">' +
-                '<span class="n">' + scoreText + '<span style="font-size:11px;color:var(--text-muted);font-weight:400">' + grade + '</span></span>' +
-                '<span class="l">avg score</span>' +
-            '</div>' +
-            '<div class="mc-signals">' +
-                '<span class="n">' + evalCount + '</span>' +
-                '<span class="l">evals</span>' +
-            '</div>' +
-            '<button class="mc-iconbtn is-agent" onclick="testInAgent(\'' + id + '\',\'' + ptype + '\')" title="Test in Agent">' +
+            channelPill +
+            certPill +
+            '<button class="mc-iconbtn is-agent" onclick="testInAgent(\'' + id + '\',\'' + ptype + '\')" title="Open in Agent">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>' +
             '</button>' +
-            '<button class="mc-iconbtn" onclick="pvOpenManage(\'' + id + '\')" title="Manage">' +
+            '<button class="mc-iconbtn" onclick="pvOpenEdit(\'' + id + '\')" title="Edit">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' +
             '</button>' +
-        '</div>' +
-        '<div class="mc-mid">' +
-            togHtml +
-            chBadge +
-            certPillHtml +
-        '</div>' +
-        '<div class="mc-drawer-toggle" onclick="pvToggleDrawer(\'' + id + '\', this)">' +
-            '<span>How to use this model</span>' +
-            '<span class="arr">▾</span>' +
-        '</div>' +
-        '<div class="mc-drawer" id="drawer-' + id + '">' +
-            '<div class="mc-tabs">' +
-                '<button class="mc-tab on" data-pane="curl" onclick="pvSwitchPane(\'' + id + '\',\'curl\',this)">cURL</button>' +
-                '<button class="mc-tab" data-pane="python" onclick="pvSwitchPane(\'' + id + '\',\'python\',this)">Python</button>' +
-                '<button class="mc-tab" data-pane="test" onclick="pvSwitchPane(\'' + id + '\',\'test\',this)">Test now</button>' +
-                '<button class="mc-tab" data-pane="manage" onclick="pvSwitchPane(\'' + id + '\',\'manage\',this)">Manage</button>' +
-            '</div>' +
-            '<div class="mc-pane on" data-pane="curl" id="pane-curl-' + id + '"></div>' +
-            '<div class="mc-pane" data-pane="python" id="pane-python-' + id + '"></div>' +
-            '<div class="mc-pane" data-pane="test" id="pane-test-' + id + '"></div>' +
-            '<div class="mc-pane" data-pane="manage" id="pane-manage-' + id + '"></div>' +
         '</div>' +
     '</div>';
 }
 
 function editModel(modelId) {
-    return pvOpenManage(modelId);
+    return pvOpenEdit(modelId);
+}
+function pvOpenManage(modelId) {
+    return pvOpenEdit(modelId);
 }
 
-// === MODEL DRAWER · How to use + Test (Phase 6) =======================
-function pvToggleDrawer(modelId, toggleEl) {
-    const drawer = document.getElementById('drawer-' + modelId);
-    if (!drawer) return;
-    const opening = !drawer.classList.contains('open');
-    drawer.classList.toggle('open');
-    if (toggleEl) toggleEl.classList.toggle('open');
-    if (opening) {
-        pvRenderDrawerCode(modelId);
+// === EDIT MODAL · real backend (clean) =================================
+let _pvEditModel = null;
+let _pvEditLang = 'curl';
+
+function pvOpenEdit(modelId) {
+    const m = (window._lastModels || []).find(x => String(x.id) === String(modelId));
+    if (!m) { showToast('Model not found · refresh', 'error'); return; }
+    _pvEditModel = m;
+    _pvEditLang = 'curl';
+
+    const $ = id => document.getElementById(id);
+    $('pv-edit-title').textContent = 'Edit · ' + (m.name || 'Model');
+    $('pv-edit-id').value = m.id;
+    $('pv-edit-name').textContent = m.name || '—';
+    $('pv-edit-ptype').textContent = m.provider_type || '—';
+    $('pv-edit-channel').textContent = (m.channel || 'proxy').toUpperCase();
+    $('pv-edit-mid').textContent = m.id;
+    $('pv-edit-created').textContent = m.created_at ? new Date(m.created_at).toLocaleString() : '—';
+    $('pv-edit-evals').textContent = (m.eval_count != null) ? m.eval_count : '—';
+    $('pv-edit-score').textContent = (m.avg_score != null && m.avg_score > 0)
+        ? (Number(m.avg_score).toFixed(2) + (m.grade ? ' · ' + m.grade : ''))
+        : '—';
+
+    const cs = m.cert_status || 'inactive';
+    $('pv-edit-cert').textContent = cs.charAt(0).toUpperCase() + cs.slice(1);
+    $('pv-edit-cert').style.color = (cs === 'verified' || cs === 'active') ? 'var(--accent)' : 'var(--text-muted)';
+
+    const isSSE = (m.channel || 'proxy').toLowerCase() === 'sse';
+    const isConn = m.connection_status === 'connected';
+    const isOn = m.is_enabled !== false;
+
+    if (isSSE) {
+        $('pv-edit-sse-block').style.display = 'block';
+        $('pv-edit-conn').textContent = isConn ? 'Connected' : 'Disconnected';
+        $('pv-edit-conn').style.color = isConn ? 'var(--accent)' : 'var(--text-faint)';
+        $('pv-edit-hb').textContent = m.last_heartbeat || 'never';
+        $('pv-edit-hb-url').textContent = API_BASE + '/v1/models/' + m.id + '/heartbeat';
+        $('pv-edit-gold-url').textContent = API_BASE + '/v1/gold/stream';
+        $('pv-edit-conn-btn').style.display = isConn ? 'none' : 'inline-flex';
+        $('pv-edit-disc-btn').style.display = isConn ? 'inline-flex' : 'none';
+    } else {
+        $('pv-edit-sse-block').style.display = 'none';
+        $('pv-edit-conn-btn').style.display = 'none';
+        $('pv-edit-disc-btn').style.display = 'none';
     }
+
+    $('pv-edit-toggle').textContent = isOn ? 'Disable' : 'Enable';
+    $('pv-edit-test-result').innerHTML = '';
+
+    pvEditShowLang('curl', document.querySelector('#pv-edit-overlay [data-elang="curl"]'));
+    document.getElementById('pv-edit-overlay').classList.add('active');
 }
 
-function pvSwitchPane(modelId, pane, btn) {
-    const drawer = document.getElementById('drawer-' + modelId);
-    if (!drawer) return;
-    drawer.querySelectorAll('.mc-tab').forEach(t => t.classList.remove('on'));
-    drawer.querySelectorAll('.mc-pane').forEach(p => p.classList.remove('on'));
+function closeProviderEdit() {
+    document.getElementById('pv-edit-overlay').classList.remove('active');
+    _pvEditModel = null;
+}
+
+function pvEditShowLang(lang, btn) {
+    _pvEditLang = lang;
+    document.querySelectorAll('#pv-edit-overlay [data-elang]').forEach(b => b.classList.remove('on'));
     if (btn) btn.classList.add('on');
-    const target = document.getElementById('pane-' + pane + '-' + modelId);
-    if (target) target.classList.add('on');
+    pvEditRenderCode();
 }
 
-function pvFindModel(modelId) {
-    const models = window._lastModels || [];
-    return models.find(x => String(x.id) === String(modelId));
-}
-
-function pvRenderDrawerCode(modelId) {
-    const m = pvFindModel(modelId);
+function pvEditRenderCode() {
+    const m = _pvEditModel;
     if (!m) return;
     const ontoKey = localStorage.getItem('onto_first_api_key') || 'YOUR_ONTO_KEY';
-    const ptype = (m.provider_type || 'openai').toLowerCase();
     const channel = (m.channel || 'proxy').toLowerCase();
-
-    // For proxy channel: route through ONTO proxy
-    // For sse channel: explain heartbeat + GOLD stream
-    const curlEl = document.getElementById('pane-curl-' + modelId);
-    const pyEl = document.getElementById('pane-python-' + modelId);
-    const testEl = document.getElementById('pane-test-' + modelId);
+    const ptype = (m.provider_type || 'openai').toLowerCase();
+    const codeEl = document.getElementById('pv-edit-code');
+    let code = '';
 
     if (channel === 'proxy') {
-        // Use OpenAI-compatible proxy endpoint (works for OpenAI/xAI/DeepSeek/Mistral)
-        const proxyEndpoint = (ptype === 'anthropic')
-            ? '/v1/proxy/anthropic/messages'
-            : '/v1/proxy/chat/completions';
-        const modelArg = m.name || ptype;
-
-        const curlCode = (ptype === 'anthropic')
-            ? '<span class="c"># Anthropic-compatible proxy</span>\ncurl -X POST <span class="s">"' + API_BASE + proxyEndpoint + '"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span> \\\n  -H <span class="s">"Content-Type: application/json"</span> \\\n  -d <span class="s">\'{\n    "model": "' + modelArg + '",\n    "max_tokens": 512,\n    "messages": [{"role": "user", "content": "Explain quantum entanglement"}]\n  }\'</span>'
-            : '<span class="c"># OpenAI-compatible proxy</span>\ncurl -X POST <span class="s">"' + API_BASE + proxyEndpoint + '"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span> \\\n  -H <span class="s">"Content-Type: application/json"</span> \\\n  -d <span class="s">\'{\n    "model": "' + modelArg + '",\n    "messages": [{"role": "user", "content": "Explain quantum entanglement"}]\n  }\'</span>';
-
-        const pyCode = (ptype === 'anthropic')
-            ? '<span class="c"># pip install anthropic</span>\nimport anthropic\nclient = anthropic.Anthropic(\n    api_key=<span class="s">"' + ontoKey + '"</span>,\n    base_url=<span class="s">"' + API_BASE + '/v1/proxy"</span>\n)\nmsg = client.messages.create(\n    model=<span class="s">"' + modelArg + '"</span>,\n    max_tokens=512,\n    messages=[{<span class="s">"role"</span>: <span class="s">"user"</span>, <span class="s">"content"</span>: <span class="s">"Explain quantum entanglement"</span>}]\n)\nprint(msg.content[0].text)'
-            : '<span class="c"># pip install openai</span>\nfrom openai import OpenAI\nclient = OpenAI(\n    api_key=<span class="s">"' + ontoKey + '"</span>,\n    base_url=<span class="s">"' + API_BASE + '/v1/proxy"</span>\n)\nresp = client.chat.completions.create(\n    model=<span class="s">"' + modelArg + '"</span>,\n    messages=[{<span class="s">"role"</span>: <span class="s">"user"</span>, <span class="s">"content"</span>: <span class="s">"Explain quantum entanglement"</span>}]\n)\nprint(resp.choices[0].message.content)';
-
-        if (curlEl) curlEl.innerHTML = pvCodeBlock(curlCode, modelId, 'curl');
-        if (pyEl) pyEl.innerHTML = pvCodeBlock(pyCode, modelId, 'python');
+        const path = (ptype === 'anthropic') ? '/v1/proxy/anthropic/messages' : '/v1/proxy/chat/completions';
+        if (_pvEditLang === 'curl') {
+            code = '<span class="c"># Business app calls your model through ONTO</span>\ncurl -X POST <span class="s">"' + API_BASE + path + '"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span> \\\n  -H <span class="s">"Content-Type: application/json"</span> \\\n  -d <span class="s">\'{"model":"' + escHtml(m.name) + '","messages":[{"role":"user","content":"Test"}]}\'</span>';
+        } else {
+            code = '<span class="c"># pip install openai</span>\nfrom openai import OpenAI\nclient = OpenAI(\n    api_key=<span class="s">"' + ontoKey + '"</span>,\n    base_url=<span class="s">"' + API_BASE + '/v1/proxy"</span>\n)\nresp = client.chat.completions.create(\n    model=<span class="s">"' + escHtml(m.name) + '"</span>,\n    messages=[{<span class="s">"role"</span>: <span class="s">"user"</span>, <span class="s">"content"</span>: <span class="s">"Test"</span>}]\n)\nprint(resp.choices[0].message.content)';
+        }
     } else {
-        // SSE channel
-        const curlCode = '<span class="c"># 1. Mark model connected (your server starts heartbeat loop)</span>\ncurl -X POST <span class="s">"' + API_BASE + '/v1/models/' + m.id + '/connect"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span>\n\n<span class="c"># 2. Heartbeat every 30-60s from your server</span>\ncurl -X POST <span class="s">"' + API_BASE + '/v1/models/' + m.id + '/heartbeat"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span>\n\n<span class="c"># 3. Pull GOLD corpus stream</span>\ncurl -N <span class="s">"' + API_BASE + '/v1/gold/stream"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span>';
-
-        const pyCode = '<span class="c"># SSE provider integration</span>\nimport asyncio, httpx\n\n<span class="k">ONTO_KEY</span>  = <span class="s">"' + ontoKey + '"</span>\n<span class="k">MODEL_ID</span> = <span class="s">"' + m.id + '"</span>\n<span class="k">BASE</span>     = <span class="s">"' + API_BASE + '"</span>\n\nasync def heartbeat_loop():\n    async with httpx.AsyncClient() as c:\n        await c.post(f<span class="s">"{BASE}/v1/models/{MODEL_ID}/connect"</span>,\n                     headers={<span class="s">"x-api-key"</span>: ONTO_KEY})\n        while True:\n            await c.post(f<span class="s">"{BASE}/v1/models/{MODEL_ID}/heartbeat"</span>,\n                         headers={<span class="s">"x-api-key"</span>: ONTO_KEY})\n            await asyncio.sleep(30)\n\nasyncio.run(heartbeat_loop())';
-
-        if (curlEl) curlEl.innerHTML = pvCodeBlock(curlCode, modelId, 'curl');
-        if (pyEl) pyEl.innerHTML = pvCodeBlock(pyCode, modelId, 'python');
+        // SSE channel · provider integration
+        if (_pvEditLang === 'curl') {
+            code = '<span class="c"># 1. Heartbeat every 30-60s from your server</span>\ncurl -X POST <span class="s">"' + API_BASE + '/v1/models/' + m.id + '/heartbeat"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span>\n\n<span class="c"># 2. Subscribe to GOLD corpus stream (SSE)</span>\ncurl -N <span class="s">"' + API_BASE + '/v1/gold/stream"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span>';
+        } else {
+            code = '<span class="c"># Provider-side integration</span>\nimport asyncio, httpx\n\n<span class="k">KEY</span> = <span class="s">"' + ontoKey + '"</span>\n<span class="k">MID</span> = <span class="s">"' + m.id + '"</span>\n<span class="k">BASE</span> = <span class="s">"' + API_BASE + '"</span>\n\nasync def heartbeat():\n    async with httpx.AsyncClient() as c:\n        while True:\n            await c.post(f<span class="s">"{BASE}/v1/models/{MID}/heartbeat"</span>,\n                         headers={<span class="s">"x-api-key"</span>: KEY})\n            await asyncio.sleep(30)\n\nasync def gold_stream():\n    async with httpx.AsyncClient(timeout=None) as c:\n        async with c.stream(<span class="s">"GET"</span>, f<span class="s">"{BASE}/v1/gold/stream"</span>,\n                            headers={<span class="s">"x-api-key"</span>: KEY}) as r:\n            async for chunk in r.aiter_text():\n                print(chunk)  <span class="c"># inject into your inference</span>\n\nasyncio.run(asyncio.gather(heartbeat(), gold_stream()))';
+        }
     }
+    codeEl.innerHTML = code;
+}
 
-    // Test pane
-    if (testEl) {
-        testEl.innerHTML =
-            '<textarea class="mc-test-q" id="testq-' + modelId + '" placeholder="Ask your model anything · e.g. Explain CRISPR limitations">Explain how vaccines work, including known risks.</textarea>' +
-            '<div style="display:flex;gap:8px;margin-top:10px;align-items:center">' +
-                '<button class="btn-mini" onclick="pvRunTest(\'' + modelId + '\')" id="testbtn-' + modelId + '" style="background:var(--accent-subtle);color:var(--accent);border-color:var(--accent-border)">Test now</button>' +
-                '<span style="font-size:11px;color:var(--text-muted)">Routes through GOLD · 1 evaluation counts toward daily limit</span>' +
+function pvEditCopyCode(btn) {
+    const codeEl = document.getElementById('pv-edit-code');
+    if (!codeEl) return;
+    const text = codeEl.innerText || codeEl.textContent;
+    navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(() => { btn.textContent = orig; }, 1500);
+    });
+}
+
+async function pvEditTestNow() {
+    if (!_pvEditModel) return;
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    const btn = document.getElementById('pv-edit-test-btn');
+    const resEl = document.getElementById('pv-edit-test-result');
+    btn.disabled = true; btn.textContent = 'Testing…';
+    resEl.innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:var(--text-muted);padding:10px;border:1px dashed var(--border);border-radius:3px">Calling provider through GOLD…</div>';
+    try {
+        const res = await fetch(`${API_BASE}/v1/models/${_pvEditModel.id}/test`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+            body: JSON.stringify({ question: 'Explain how vaccines work, including known risks.' })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+            resEl.innerHTML = '<div class="mc-test-err">Error ' + res.status + ' · ' + escHtml(data.detail || 'failed') + '</div>';
+            return;
+        }
+        const score = (data.score != null) ? Number(data.score).toFixed(2) : '—';
+        const grade = data.grade || '—';
+        resEl.innerHTML =
+            '<div class="mc-test-meta">' +
+                '<div class="it"><span class="l">Score</span><span class="v">' + score + '</span></div>' +
+                '<div class="it"><span class="l">Grade</span><span class="v">' + escHtml(grade) + '</span></div>' +
+                '<div class="it"><span class="l">GOLD</span><span class="v">' + escHtml(data.gold_mode || 'off') + '</span></div>' +
             '</div>' +
-            '<div class="mc-test-result" id="testres-' + modelId + '"></div>';
-    }
-
-    // Manage pane
-    const manageEl = document.getElementById('pane-manage-' + modelId);
-    if (manageEl) {
-        const isSSE = (m.channel || 'proxy').toLowerCase() === 'sse';
-        const isConn = m.connection_status === 'connected';
-        const isOn = m.is_enabled !== false;
-
-        let rows =
-            '<div class="pv-row"><span class="lab">Model ID</span><span class="val">' + escHtml(m.id) + '</span><button class="btn-mini" onclick="navigator.clipboard.writeText(\'' + m.id + '\').then(()=>showToast(\'Copied\',\'success\'))">Copy</button></div>' +
-            '<div class="pv-row"><span class="lab">Provider</span><span class="val">' + escHtml(m.provider_type || '—') + '</span></div>' +
-            '<div class="pv-row"><span class="lab">Channel</span><span class="val">' + (m.channel || 'proxy').toUpperCase() + '</span></div>' +
-            '<div class="pv-row"><span class="lab">Created</span><span class="val">' + (m.created_at ? new Date(m.created_at).toLocaleString() : '—') + '</span></div>' +
-            '<div class="pv-row"><span class="lab">Evaluations</span><span class="val">' + (m.eval_count != null ? m.eval_count : '—') + '</span></div>' +
-            '<div class="pv-row"><span class="lab">Avg score</span><span class="val">' + (m.avg_score != null ? m.avg_score + (m.grade ? ' · ' + m.grade : '') : '—') + '</span></div>';
-
-        if (isSSE) {
-            rows += '<div class="pv-row"><span class="lab">Connection</span><span class="val" style="color:' + (isConn ? 'var(--accent)' : 'var(--text-faint)') + '">' + (m.connection_status || 'disconnected') + '</span></div>';
-            rows += '<div class="pv-row"><span class="lab">Last heartbeat</span><span class="val">' + escHtml(m.last_heartbeat || 'never') + '</span></div>';
-        }
-
-        let actions = '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px dashed var(--border)">';
-        actions += '<button class="btn-mini" onclick="pvAct_toggle(\'' + m.id + '\')">' + (isOn ? 'Disable' : 'Enable') + '</button>';
-        if (isSSE) {
-            if (isConn) {
-                actions += '<button class="btn-mini" onclick="pvAct_disconnect(\'' + m.id + '\')">Disconnect SSE</button>';
-            } else {
-                actions += '<button class="btn-mini" onclick="pvAct_connect(\'' + m.id + '\')">Connect SSE</button>';
-            }
-        }
-        actions += '<button class="btn-mini danger" onclick="pvAct_unregister(\'' + m.id + '\',\'' + escHtml(m.name).replace(/\'/g,"\\\\'") + '\')" style="margin-left:auto">Unregister</button>';
-        actions += '</div>';
-
-        manageEl.innerHTML = rows + actions;
+            '<div class="mc-test-resp">' + escHtml(data.response || '(empty)') + '</div>';
+    } catch (e) {
+        resEl.innerHTML = '<div class="mc-test-err">Network error</div>';
+    } finally {
+        btn.disabled = false; btn.textContent = 'Test now';
     }
 }
 
-function pvOpenManage(modelId) {
-    const drawer = document.getElementById('drawer-' + modelId);
-    const toggle = drawer ? drawer.previousElementSibling : null;
-    if (!drawer) return;
-    if (!drawer.classList.contains('open')) {
-        drawer.classList.add('open');
-        if (toggle) toggle.classList.add('open');
-        pvRenderDrawerCode(modelId);
-    }
-    const manageBtn = drawer.querySelector('.mc-tab[data-pane="manage"]');
-    if (manageBtn) pvSwitchPane(modelId, 'manage', manageBtn);
-    drawer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-
-async function pvAct_toggle(id) {
+async function pvEditToggle() {
+    if (!_pvEditModel) return;
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API_BASE}/v1/models/${id}/toggle`, { method: 'PUT', headers: { 'x-api-key': apiKey } });
+        const res = await fetch(`${API_BASE}/v1/models/${_pvEditModel.id}/toggle`, { method: 'PUT', headers: { 'x-api-key': apiKey } });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) { showToast(data.detail || 'Toggle failed', 'error'); return; }
         showToast(data.is_enabled ? 'Enabled' : 'Disabled', 'success');
-        loadModels();
+        closeProviderEdit(); loadModels();
     } catch (e) { showToast('Network error', 'error'); }
 }
-async function pvAct_connect(id) {
+
+async function pvEditConnect() {
+    if (!_pvEditModel) return;
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API_BASE}/v1/models/${id}/connect`, { method: 'POST', headers: { 'x-api-key': apiKey } });
+        const res = await fetch(`${API_BASE}/v1/models/${_pvEditModel.id}/connect`, { method: 'POST', headers: { 'x-api-key': apiKey } });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) { showToast(data.detail || 'Connect failed', 'error'); return; }
         showToast('SSE connected', 'success');
-        loadModels();
+        closeProviderEdit(); loadModels();
     } catch (e) { showToast('Network error', 'error'); }
 }
-async function pvAct_disconnect(id) {
+
+async function pvEditDisconnect() {
+    if (!_pvEditModel) return;
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API_BASE}/v1/models/${id}/disconnect`, { method: 'POST', headers: { 'x-api-key': apiKey } });
+        const res = await fetch(`${API_BASE}/v1/models/${_pvEditModel.id}/disconnect`, { method: 'POST', headers: { 'x-api-key': apiKey } });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) { showToast(data.detail || 'Disconnect failed', 'error'); return; }
         showToast('SSE disconnected', 'success');
-        loadModels();
+        closeProviderEdit(); loadModels();
     } catch (e) { showToast('Network error', 'error'); }
 }
-async function pvAct_unregister(id, name) {
-    if (!confirm('Unregister "' + name + '"?\n\nThis stops attestation and removes the model.')) return;
+
+async function pvEditUnregister() {
+    if (!_pvEditModel) return;
+    const m = _pvEditModel;
+    if (!confirm('Unregister "' + m.name + '"?\n\nStops attestation and removes the model.')) return;
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API_BASE}/v1/models/${id}`, { method: 'DELETE', headers: { 'x-api-key': apiKey } });
+        const res = await fetch(`${API_BASE}/v1/models/${m.id}`, { method: 'DELETE', headers: { 'x-api-key': apiKey } });
         if (!res.ok && res.status !== 204) {
             const data = await res.json().catch(() => ({}));
             showToast(data.detail || 'Unregister failed', 'error');
             return;
         }
         showToast('Unregistered', 'success');
-        loadModels();
+        closeProviderEdit(); loadModels();
     } catch (e) { showToast('Network error', 'error'); }
 }
 
-function pvCodeBlock(html, modelId, kind) {
-    return '<div class="mc-code-wrap">' +
-        '<button class="mc-copy" onclick="pvCopyCode(\'' + modelId + '\',\'' + kind + '\',this)">Copy</button>' +
-        '<pre class="mc-code">' + html + '</pre>' +
-    '</div>';
-}
-
-function pvCopyCode(modelId, kind, btn) {
-    const pane = document.getElementById('pane-' + kind + '-' + modelId);
-    if (!pane) return;
-    const pre = pane.querySelector('.mc-code');
-    if (!pre) return;
-    const text = pre.innerText || pre.textContent;
+function pvCopyEl(id, btn) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const text = (el.textContent || '').trim();
+    if (!text || text === '—') { showToast('Nothing to copy', 'info'); return; }
     navigator.clipboard.writeText(text).then(() => {
-        btn.classList.add('done');
         const orig = btn.textContent;
         btn.textContent = 'Copied';
-        setTimeout(() => { btn.classList.remove('done'); btn.textContent = orig; }, 1500);
+        setTimeout(() => { btn.textContent = orig; }, 1500);
     });
 }
 
-async function pvRunTest(modelId) {
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    if (!apiKey) { showToast('No API key — sign in', 'error'); return; }
-    const qEl = document.getElementById('testq-' + modelId);
-    const btn = document.getElementById('testbtn-' + modelId);
-    const resEl = document.getElementById('testres-' + modelId);
-    const question = (qEl?.value || '').trim();
-    if (!question) { showToast('Type a question first', 'info'); qEl?.focus(); return; }
-
-    btn.disabled = true;
-    btn.textContent = 'Running…';
-    resEl.classList.add('on');
-    resEl.innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:var(--text-muted);padding:10px 12px;border:1px dashed var(--border);border-radius:3px">Calling provider through GOLD proxy…</div>';
-
-    try {
-        const res = await fetch(`${API_BASE}/v1/models/${modelId}/test`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
-            body: JSON.stringify({ question: question })
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) {
-            resEl.innerHTML = '<div class="mc-test-err">Error ' + res.status + ' · ' + escHtml(data.detail || data.message || 'request failed') + '</div>';
-            return;
-        }
-        const score = (data.score != null) ? Number(data.score).toFixed(2) : '—';
-        const grade = data.grade || '—';
-        const risk = (data.risk_score != null) ? Number(data.risk_score).toFixed(3) : '—';
-        const goldMode = data.gold_mode || (data.gold_active ? 'active' : 'off');
-        const proof = data.proof_hash ? data.proof_hash.slice(0, 16) + '…' : '—';
-        const resp = data.response || '(empty response)';
-        resEl.innerHTML =
-            '<div class="mc-test-meta">' +
-                '<div class="it"><span class="l">Score</span><span class="v">' + score + '</span></div>' +
-                '<div class="it"><span class="l">Grade</span><span class="v">' + escHtml(grade) + '</span></div>' +
-                '<div class="it"><span class="l">Risk</span><span class="v">' + risk + '</span></div>' +
-                '<div class="it"><span class="l">GOLD</span><span class="v">' + escHtml(goldMode) + '</span></div>' +
-                '<div class="it"><span class="l">Proof</span><span class="v" style="font-size:11px">' + escHtml(proof) + '</span></div>' +
-            '</div>' +
-            '<div class="mc-test-resp">' + escHtml(resp) + '</div>';
-    } catch (e) {
-        resEl.innerHTML = '<div class="mc-test-err">Network error · ' + escHtml(String(e.message || e)) + '</div>';
-    } finally {
-        btn.disabled = false;
-        btn.textContent = 'Test now';
-    }
-}
 
 // === PROVIDER MODALS · Phase 5 (real backend) ==========================
 function openProviderAdd() {
