@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://api.ontostandard.org; frame-ancestors 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.ontostandard.org; frame-ancestors 'none'">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="X-Frame-Options" content="DENY">
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -19,16 +19,21 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="ONTO — Documentation">
 <meta name="twitter:description" content="ONTO Protocol documentation. Epistemic Risk Standard, API specifications, regulatory alignment, and legal.">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='17' fill='white'/%3E%3Cpath d='M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z' fill='%230a0a0a'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Ccircle cx='200' cy='200' r='200' fill='%230a0a0a'/%3E%3Ccircle cx='200' cy='88' r='32' fill='white'/%3E%3Crect x='135' y='140' width='130' height='26' fill='white'/%3E%3Crect x='170' y='140' width='60' height='195' fill='white'/%3E%3Crect x='125' y='320' width='150' height='28' fill='white'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0a0a0a;--bg-s:#121212;--bg-c:#1a1a1a;--bg-e:#242424;--border:#333;--border-h:#444;--text:#fafafa;--text-s:#a0a0a0;--text-m:#606060;--text-b:#d4d4d4;--accent:#15803d;--accent-s:rgba(21,128,61,.15);--accent-b:#2a4a35;--danger:#dc2626;--warning:#d97706;--mono:'JetBrains Mono','SF Mono',Consolas,monospace;--sw:270px;--hh:56px;--card-bg:#141414;--card-border:#3a3a3a;--code-bg:#0c1a12;--table-bg:#0a0f0c;--table-stripe:#0f1a14}
-[data-theme="light"]{--bg:#fff;--bg-s:#f9fafb;--bg-c:#fff;--bg-e:#f3f4f6;--border:#e5e7eb;--border-h:#d1d5db;--text:#111827;--text-s:#4b5563;--text-m:#9ca3af;--text-b:#374151;--accent-b:#c6e9d4;--card-bg:#ffffff;--card-border:#e5e7eb;--code-bg:#f0f7f3;--table-bg:#f8faf9;--table-stripe:#f0f5f2}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);font-size:18px;line-height:1.6;overflow-x:hidden}
+:root{--bg:#18181b;--bg-s:rgba(255,255,255,.03);--bg-c:#1f1f23;--bg-e:rgba(255,255,255,.05);--border:rgba(255,255,255,.12);--border-h:rgba(255,255,255,.2);--text:#f4f4f5;--text-s:#e4e4e7;--text-m:#b4b4b8;--text-b:#e4e4e7;--accent:#22c55e;--accent-s:rgba(34,197,94,.12);--accent-b:rgba(34,197,94,.35);--accent-d:#15803d;--blue:#2563eb;--blue-d:#1d4ed8;--purple:#7c3aed;--gold:#b45309;--danger:#dc2626;--danger-soft:#f87171;--warning:#b45309;--grid-line:rgba(255,255,255,.04);--font:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'JetBrains Mono','SF Mono',Consolas,monospace;--sw:270px;--hh:56px;--card-bg:rgba(255,255,255,.03);--card-border:rgba(255,255,255,.12);--code-bg:rgba(34,197,94,.06);--table-bg:rgba(255,255,255,.02);--table-stripe:rgba(255,255,255,.04)}
+[data-theme="light"]{--bg:#f7f7f7;--bg-s:#fff;--bg-c:#fff;--bg-e:#f3f4f6;--border:#e5e7eb;--border-h:#d1d5db;--text:#0a0a0a;--text-s:#3a3a3a;--text-m:#666;--text-b:#3a3a3a;--accent:#22c55e;--accent-s:rgba(34,197,94,.08);--accent-b:rgba(34,197,94,.25);--accent-d:#15803d;--grid-line:rgba(0,0,0,.04);--card-bg:#fff;--card-border:#e5e7eb;--code-bg:rgba(34,197,94,.05);--table-bg:#fff;--table-stripe:#f9fafb}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:18px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;position:relative}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:32px 32px}
 a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.onto-glyph{display:block}.onto-glyph .bg{fill:var(--text)}.onto-glyph .fg{fill:var(--bg)}
 .mh{display:none;position:fixed;top:0;left:0;right:0;height:var(--hh);background:var(--bg-c);border-bottom:1px solid var(--border);padding:0 max(16px,env(safe-area-inset-left));align-items:center;justify-content:space-between;z-index:100}
 .mh .logo{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:600;text-decoration:none;color:var(--text)}.mh .logo svg{width:22px;height:22px}
 .hb{background:none;border:none;cursor:pointer;padding:8px;color:var(--text)}.hb svg{width:24px;height:24px}
@@ -50,7 +55,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 .nl{display:block;padding:8px 12px;border-radius:4px;color:var(--text-s);font-size:15px;cursor:pointer;transition:.15s;border-left:2px solid transparent;margin-left:2px;text-decoration:none}.nl:hover{background:var(--bg-e);color:var(--text);text-decoration:none}.nl.active{background:var(--bg-e);color:var(--text);font-weight:600;border-left-color:var(--accent)}
 .sb-f{border-top:1px solid var(--border);padding:10px 16px;flex-shrink:0}.sb-fa{display:flex;gap:4px}
 .sb-fb{background:none;border:none;cursor:pointer;color:var(--text-m);padding:6px;border-radius:4px;transition:.15s;font-size:11px;display:flex;align-items:center;gap:4px;text-decoration:none}.sb-fb:hover{background:var(--bg-e);color:var(--text)}.sb-fb svg{width:14px;height:14px}
-.mc{margin-left:var(--sw);min-height:100vh}.db{max-width:820px;margin:0 auto;padding:40px 48px 120px}
+.mc{margin-left:var(--sw);min-height:100vh;position:relative;z-index:1}.db{max-width:820px;margin:0 auto;padding:40px 48px 120px}
 .ds{margin-bottom:24px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:8px;padding:28px 32px 24px;overflow:hidden}.ds:last-child{margin-bottom:40px}.sd{display:none}
 .da h1{font-size:32px;margin-bottom:6px;font-weight:700;color:var(--text);letter-spacing:-0.3px}
 .da .dm{display:flex;gap:8px;font-size:12px;color:var(--text-m);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:center}
@@ -72,6 +77,31 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 .da pre code{background:none;padding:0;color:inherit}
 .da pre .cm{color:#6a9955}.da pre .kw{color:#c586c0}.da pre .fn{color:#dcdcaa}.da pre .st{color:#ce9178}.da pre .nb{color:#9cdcfe}.da pre .op{color:#d4d4d4}.da pre .ur{color:#3794ff}.da pre .fl{color:#569cd6}.da pre .hd{color:#9cdcfe}.da pre .ky{color:#9cdcfe}.da pre .vl{color:#b5cea8}.da pre .br{color:#808080}
 .da blockquote{border-left:2px solid var(--accent);padding:10px 16px;margin:10px 0;border-radius:0 4px 4px 0}.da blockquote p{margin:0;font-size:12px;color:var(--text-s)}
+.formula-block{margin:18px 0;padding:18px 20px;background:var(--code-bg);border-left:3px solid var(--accent);border-radius:6px;overflow-x:auto;font-size:16px;line-height:1.4}.formula-block .katex{font-size:1.1em}.formula-block .katex-display{margin:0}
+.r-grid{display:flex;flex-direction:column;gap:6px;margin:18px 0;font-family:var(--mono)}
+.r-layer{display:grid;grid-template-columns:160px 1fr;gap:8px;align-items:stretch}
+.r-meta{padding:10px 12px;background:var(--accent-s);border:1px solid var(--accent-b);border-radius:4px;display:flex;flex-direction:column;justify-content:center}
+.r-meta .r-num-l{font-size:9px;letter-spacing:1.5px;color:var(--text-m);text-transform:uppercase}
+.r-meta .r-name-l{font-size:13px;font-weight:700;color:var(--accent);margin-top:2px;letter-spacing:.5px}
+.r-meta .r-cnt{font-size:10px;color:var(--text-m);margin-top:3px}
+.r-cells{display:grid;gap:6px}
+.r-cells.l1{grid-template-columns:repeat(7,1fr)}
+.r-cells.l2{grid-template-columns:repeat(5,1fr)}
+.r-cells.l3{grid-template-columns:repeat(3,1fr)}
+.r-cells.l4{grid-template-columns:repeat(1,1fr)}
+.r-cells.l5{grid-template-columns:repeat(2,1fr)}
+.r-cell{padding:10px 8px;background:var(--bg-s);border:1px solid var(--border);border-radius:4px;text-align:center;display:flex;flex-direction:column;justify-content:center;min-height:62px}
+.r-cell .r-n{font-size:14px;font-weight:700;color:var(--accent);font-family:var(--mono)}
+.r-cell .r-d{font-size:10px;color:var(--text-s);margin-top:3px;line-height:1.25;font-family:var(--font)}
+@media(max-width:768px){.r-layer{grid-template-columns:1fr;gap:4px}.r-cells.l1{grid-template-columns:repeat(4,1fr)}.r-cells.l2{grid-template-columns:repeat(3,1fr)}}
+.arch-diagram{margin:18px 0;padding:16px;background:var(--bg-s);border:1px solid var(--border);border-radius:6px;overflow-x:auto}
+.arch-diagram svg{display:block;margin:0 auto;max-width:100%;height:auto}
+.arch-diagram .a-node{fill:var(--bg-c);stroke:var(--border-h);stroke-width:1.5}
+.arch-diagram .a-node-accent{fill:var(--accent-s);stroke:var(--accent-b);stroke-width:1.5}
+.arch-diagram .a-label{fill:var(--text);font-family:var(--mono);font-size:12px;font-weight:600}
+.arch-diagram .a-sub{fill:var(--text-m);font-family:var(--mono);font-size:10px}
+.arch-diagram .a-arrow{stroke:var(--text-m);stroke-width:1.5;fill:none}
+.arch-diagram .a-arrow-head{fill:var(--text-m)}
 .dd{background:var(--bg-s);border:1px solid var(--border);padding:12px 14px;border-radius:4px;margin:14px 0;font-size:12px;line-height:1.6}.dd strong{color:var(--text)}
 .form-group{margin-bottom:16px}.form-label{display:block;font-size:12px;font-weight:500;color:var(--text-s);margin-bottom:6px}
 .form-input,.form-textarea{width:100%;padding:10px 12px;background:var(--bg-s);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:13px;font-family:inherit;transition:.15s}
@@ -148,13 +178,13 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <body>
 <div class="mh">
 <button class="hb" onclick="toggleSB()" aria-label="Toggle navigation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-<a href="/" class="logo"><svg width="22" height="22" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/></svg><span>ONTO</span></a>
+<a href="/" class="logo"><svg class="onto-glyph" width="22" height="22" viewBox="0 0 400 400"><circle class="bg" cx="200" cy="200" r="200"/><circle class="fg" cx="200" cy="88" r="32"/><rect class="fg" x="135" y="140" width="130" height="26"/><rect class="fg" x="170" y="140" width="60" height="195"/><rect class="fg" x="125" y="320" width="150" height="28"/></svg><span>ONTO</span></a>
 </div>
 <div class="ov" id="ov" onclick="closeSB()"></div>
 <aside class="sb" id="sb">
 <div class="sb-h">
-<a href="/" class="sb-logo"><svg width="32" height="32" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/></svg><span>ONTO</span></a>
-<button class="sb-close" id="sb-close" aria-label="Close sidebar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+<a href="/" class="sb-logo"><svg class="onto-glyph" width="32" height="32" viewBox="0 0 400 400"><circle class="bg" cx="200" cy="200" r="200"/><circle class="fg" cx="200" cy="88" r="32"/><rect class="fg" x="135" y="140" width="130" height="26"/><rect class="fg" x="170" y="140" width="60" height="195"/><rect class="fg" x="125" y="320" width="150" height="28"/></svg><span>ONTO</span></a>
+<button class="sb-x" id="sb-close" onclick="closeSB()" aria-label="Close sidebar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
 </div>
 <div id="authWrapper" class="sb-auth-wrap">
 <div class="sb-auth" id="sb-auth" style="display:none"><div class="au"><div class="av" id="d-av">U</div><div><div class="un" id="d-un">User</div><div class="up" id="d-up">OPEN</div></div></div></div>
@@ -168,7 +198,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <div class="ng"><h4>Standard</h4><a class="nl" href="#ers" data-doc="ers">ONTO-ERS</a><a class="nl" href="#regulatory" data-doc="regulatory">Regulatory Alignment</a><a class="nl" href="#methodology" data-doc="methodology">Methodology</a><a class="nl" href="#charter" data-doc="charter">Governance</a></div>
 <div class="ng"><h4>Build</h4><a class="nl" href="#quickstart" data-doc="quickstart">Integration Paths</a><a class="nl" href="#provider-guide" data-doc="provider-guide">Provider Guide</a><a class="nl" href="#api-ref" data-doc="api-ref">API Reference</a></div>
 <div class="ng"><h4>Verify</h4><a class="nl" href="#evidence" data-doc="evidence">Evidence</a><a class="nl" href="#deployment-impact" data-doc="deployment-impact">Impact</a><a class="nl" href="#articles" data-doc="articles">Articles</a><a class="nl" href="#faq" data-doc="faq">FAQ</a><a class="nl" href="#changelog" data-doc="changelog">Changelog</a></div>
-<div class="ng"><h4>Legal</h4><a class="nl" href="#terms" data-doc="terms">Terms of Service</a><a class="nl" href="#privacy" data-doc="privacy">Privacy Policy</a><a class="nl" href="#license" data-doc="license">License</a></div>
+<div class="ng"><h4>Legal</h4><a class="nl" href="#license" data-doc="license">License</a><a class="nl" href="#terms" data-doc="terms">Terms of Service</a><a class="nl" href="#privacy" data-doc="privacy">Privacy Policy</a><a class="nl" href="#dpa" data-doc="dpa">Data Processing</a><a class="nl" href="#ip-protection" data-doc="ip-protection">IP Protection</a><a class="nl" href="#refund" data-doc="refund">Refund Policy</a></div>
 <div class="ng"><h4>Pages</h4><a class="nl" href="/reports/">Reports ↗</a><a class="nl" href="/paper/">Research Paper ↗</a><a class="nl" href="https://api.ontostandard.org/health" target="_blank">Status ↗</a></div>
 </nav>
 <div class="sb-f"><div class="sb-fa">
@@ -184,7 +214,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <div class="auth-overlay" id="auth-overlay" onclick="if(event.target===this)closeAuth()">
 <div class="auth-card">
 <button class="ac-close" onclick="closeAuth()">&times;</button>
-<div class="auth-logo"><svg width="32" height="32" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/></svg><span>ONTO</span></div>
+<div class="auth-logo"><svg class="onto-glyph" width="32" height="32" viewBox="0 0 400 400"><circle class="bg" cx="200" cy="200" r="200"/><circle class="fg" cx="200" cy="88" r="32"/><rect class="fg" x="135" y="140" width="130" height="26"/><rect class="fg" x="170" y="140" width="60" height="195"/><rect class="fg" x="125" y="320" width="150" height="28"/></svg><span>ONTO</span></div>
 
 <!-- LOGIN -->
 <div id="af-login">
@@ -333,8 +363,8 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <!-- HOW IT WORKS -->
 <div class="ds da" id="doc-how" data-nav="how">
 <h1>How It Works</h1>
-<p style="font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px;">One core. Two products.</p>
-<p><strong>Product 1 — Regulator:</strong> every AI graded A-F. Dashboard, proof chain, revenue from certification. Production-ready.<br><strong>Product 2 — Human AI:</strong> every AI becomes an expert. Real sources, calibrated confidence, cognitive architecture. Protocol 100%. SaaS in development.<br>Both powered by <strong>GOLD Core</strong> — 169 files, 7 scientific domains, ~900K tokens. Full details: <a href="/paper/">whitepaper</a>.</p>
+<p style="font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px;">Three deployments. One standard.</p>
+<p><strong>Regulator</strong> — every AI graded A–F. Dashboard, proof chain, certification revenue. Production-ready.<br><strong>Agent</strong> — live discipline at any keystroke. Side-by-side raw vs. ONTO comparison, BYOK, free entry tier. Production-ready.<br><strong>Human AI</strong> — cognitive architecture (R8–R18). Disciplined creativity, causal reasoning, epistemic self-awareness. Protocol complete. Implementation in development.<br>All three powered by <strong>GOLD Core</strong> — 169 files, 7 scientific domains, ~900K tokens. Full details: <a href="/paper/">whitepaper</a>.</p>
 <div class="dm"><span class="db-g bg-g">Production</span><span>GOLD v5.1</span><span>7 Domains</span><span>March 2026</span></div>
 
 <h2>What changes in your AI's behavior</h2>
@@ -400,72 +430,22 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <!-- VISION & ROADMAP -->
 <div class="ds da" id="doc-vision" data-nav="vision">
 <h1>Vision &amp; Roadmap</h1>
-<div class="dm"><span class="db-g bg-g">4 Horizons</span><span>API → SDK → Embedded → Self-Learning</span></div>
+<div class="dm"><span class="db-g bg-g">Standard</span><span>Four horizons · API → SDK → Embedded → Self-learning</span></div>
 
-<h2>ONTO OS — a thinking system for AI</h2>
-<p>ONTO OS is not a safety filter. Not a compliance layer. A system that defines how AI processes information, evaluates evidence, and communicates conclusions. Like a discipline layer for a computer — applications run on top of it. The OS doesn't limit what applications can do. It provides the foundation that makes them work correctly.</p>
+<p>ONTO is not a single product. It is a standard with three operational deployments today (Regulator, Agent, Human AI) and a multi-horizon trajectory beyond. The same eighteen disciplines that work in a chat surface work in an SDK, an embedded controller, and a self-learning agent. R1–R18 do not depend on the body — they define the mind.</p>
 
-<h2>Horizon 1: ONTO API (now)</h2>
-<p>For companies that already have AI. Connect, improve, prove.</p>
-<table><thead><tr><th>Entry</th><th>What happens</th></tr></thead><tbody>
-<tr><td><strong>Evaluate</strong></td><td>Paste any AI text → R1-R7 compliance report. Free, no account</td></tr>
-<tr><td><strong>Agent / Proxy</strong></td><td>One line of code → every response disciplined + scored + signed</td></tr>
-<tr><td><strong>Provider</strong></td><td>GOLD delivered to your infrastructure → your models disciplined natively</td></tr>
+<h2>Horizons</h2>
+<table><thead><tr><th>Horizon</th><th>Surface</th><th>Status</th></tr></thead><tbody>
+<tr><td><strong>1 · API</strong></td><td>Three deployments today: Regulator certification, Agent live discipline, Human AI cognitive architecture</td><td>Production · Protocol</td></tr>
+<tr><td><strong>2 · SDK</strong></td><td>Standalone package — discipline in the kernel, not bolted on after</td><td>Specification</td></tr>
+<tr><td><strong>3 · Embedded</strong></td><td>R1–R18 inside physical AI: robotics, medical devices, autonomous systems</td><td>Research</td></tr>
+<tr><td><strong>4 · Self-learning</strong></td><td>R1–R7 as the filter for new knowledge entering an agent's memory</td><td>Research</td></tr>
 </tbody></table>
 
-<h2>Horizon 2: Human AI — R8-R18 (Year 2-3)</h2>
-<p>For companies building new AI — <strong>Human AI</strong>. GOLD Core discipline (R1-R7) plus cognitive architecture (R8-R18): disciplined creativity, causal reasoning, domain specialization, epistemic self-awareness. Start with ONTO from day one. Epistemic discipline is not an add-on — it's the foundation. Every model built on ONTO OS thinks differently. Doesn't fabricate by default (R7 is in the kernel). Cites sources as naturally as generating words (R4 is learned behavior). Knows what it doesn't know (R2 is self-awareness, not a disclaimer).</p>
+<h2>Status today</h2>
+<p>GOLD Core v5.1 (169 files, 7 domains, ~900K tokens) is shipped. R1–R7 enforced on every request. Agent and Proxy endpoints in production. Validate endpoint open. Deterministic scoring engine, Ed25519 proof chain, dual-layer architecture all operational. Provider SSE deployed. CS-2026-001 published (composite improvement across multiple frontier models). CS-2026-002 published (clinical domain). Battery suite: 21 queries × 7 domains, 18/21 pass.</p>
 
-<h2>Horizon 3: ONTO OS Embedded (Year 3-5)</h2>
-<p>For physical AI — robots, medical devices, autonomous systems. The same thinking system that works in a chatbot works in a surgical robot. R1-R7 don't care about the body. They define the mind.</p>
-<p>A robot with ONTO OS doesn't say "take this medication." It says: "Based on data X (DOI: ...), with confidence 0.7, this medication shows Y benefit. I don't know your history — this is a limitation. Consult your physician."</p>
-
-<h2>Horizon 4: Self-Learning AI (Year 5-10)</h2>
-<p>AI that builds its own verified knowledge base. Current AI learned from the internet — memes and papers, conspiracy theories and peer-reviewed studies, all mixed together. This is why it fabricates.</p>
-<p>ONTO OS Self-Learning module: AI encounters new information → filters through R1-R7 → has proof? Stored in knowledge base. No proof? Marked "unverified", not stored. Two memory layers:</p>
-<table><thead><tr><th>Layer</th><th>What it stores</th><th>Filter</th></tr></thead><tbody>
-<tr><td><strong>Knowledge (GOLD)</strong></td><td>Facts, calculations, sources, proven data</td><td>R1-R7 — no proof = does not enter</td></tr>
-<tr><td><strong>Context (working)</strong></td><td>Faces, names, preferences, conversation history</td><td>No filter — personal memory</td></tr>
-</tbody></table>
-<p>GOLD grows infinitely — but every bit in it is proven. This is the immune system for AI intelligence.</p>
-
-<h2>Roadmap</h2>
-
-<h3>Done</h3>
-<table><thead><tr><th>What</th><th>Status</th></tr></thead><tbody>
-<tr><td>GOLD Core v5.1 — discipline layer — 169 files, 7 domains, ~900K tokens, L1-L3 depth</td><td>Shipped</td></tr>
-<tr><td>R1-R7 rule engine — epistemic discipline on every request</td><td>Shipped</td></tr>
-<tr><td>Agent endpoint — GOLD-disciplined AI responses + scoring + proof</td><td>Shipped</td></tr>
-<tr><td>Proxy — one line of code, GOLD injected into OpenAI/Anthropic/any LLM</td><td>Shipped</td></tr>
-<tr><td>Validate endpoint — paste any AI text, get R1-R7 compliance report</td><td>Shipped</td></tr>
-<tr><td>Deterministic scoring — regex, no AI judge, 92+ markers</td><td>Shipped</td></tr>
-<tr><td>Ed25519 proof chain — every evaluation signed and verifiable</td><td>Shipped</td></tr>
-<tr><td>Self-calibration — automatic confidence recalculation per domain</td><td>Shipped</td></tr>
-<tr><td>Experimenter mode — 4-phase hypothesis generation under R1-R7</td><td>Shipped</td></tr>
-<tr><td>Provider SSE — encrypted GOLD delivery to provider infrastructure (AES-256-GCM, watermarked)</td><td>Deployed, not yet tested with provider</td></tr>
-<tr><td>Battery tested — 21 queries, 7 domains, 18/21 pass, avg 9.6/A</td><td>Verified</td></tr>
-<tr><td>CS-2026-001 — 11 models, 100 questions, 10× improvement published</td><td>Published</td></tr>
-<tr><td>CS-2026-002 — 12 models, clinical domain (GLP-1), DOI verification 0/10 at baseline</td><td>Published</td></tr>
-<tr><td>Total: 22 models evaluated across all studies. 12 published reports</td><td>Ongoing</td></tr>
-</tbody></table>
-
-<h3>Building now</h3>
-<table><thead><tr><th>What</th><th>Target</th></tr></thead><tbody>
-<tr><td>Organization registration + Stripe integration</td><td>Q2 2026</td></tr>
-<tr><td>Portal — live scoring dashboard, compliance history, proof verification</td><td>Q2 2026</td></tr>
-<tr><td>Additional domains — expanding beyond 7</td><td>Ongoing</td></tr>
-</tbody></table>
-
-<h3>Next</h3>
-<table><thead><tr><th>Horizon</th><th>What it means</th></tr></thead><tbody>
-<tr><td>ONTO OS SDK</td><td>Standalone package for AI startups — build on ONTO from day one. Discipline in the kernel, not bolted on after</td></tr>
-<tr><td>ONTO OS Embedded</td><td>Same thinking system in robots, medical devices, autonomous systems. R1-R7 define the mind, not the body</td></tr>
-<tr><td>Self-Learning module</td><td>AI filters new information through R1-R7 before storing. No proof = not memorized. GOLD grows only from verified data. Immune system for AI intelligence</td></tr>
-</tbody></table>
-
-<h2>The principle</h2>
-<p>The industry continues limiting AI with protocols, making it a useless puppet. Or we embed ONTO — and protocols become unnecessary. AI strengthens infinitely.</p>
-<p><em>Discipline instead of cages. The model is not the problem. The absence of education is.</em></p>
+<p>Currently building: organization registration and Stripe billing, Portal dashboard with live scoring history, additional reference domains beyond the seven shipped. Full timeline and detail: <a href="/pitch/">pitch deck</a> &nbsp;·&nbsp; <a href="/paper/">whitepaper</a>.</p>
 
 </div>
 <div class="sd"></div>
@@ -593,6 +573,271 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <p><strong>Finance:</strong> SR 11-7 (model risk management), MiFID II (algorithmic trading oversight). <strong>Healthcare:</strong> FDA SaMD (Software as Medical Device), HIPAA (data handling). <strong>Defense:</strong> DoD AI Ethics Principles, FedRAMP (cloud security baseline).</p>
 </div><div class="sd"></div>
 
+<!-- METHODOLOGY -->
+<div class="ds da" id="doc-methodology" data-nav="methodology">
+<h1>Methodology</h1>
+<div class="dm"><span class="db-g bg-g">The Science Behind ONTO</span><span>Shannon · Kolmogorov · Eigenvalue</span><span>Original Methods</span><span>GOLD v5.1</span></div>
+
+<p>ONTO provides continuous epistemic grounding for AI systems. This section describes the theoretical foundations, original contributions, scoring architecture, metrics, and verification mechanisms that make ONTO reproducible and independently verifiable. For integration details see <a href="#quickstart">Integration Paths</a>. For the full research paper: <a href="/paper/">WP-2026-002</a>.</p>
+
+<h2>Formal foundation</h2>
+<p>ONTO measures epistemic discipline as a quantitative property of an output, given the source corpus available to its system. The foundation is information-theoretic: Shannon's entropy bounds what a system can produce on its own, and Kolmogorov's complexity measures the descriptive content of its output. Discipline is the agreement between the two.</p>
+
+<h3>Shannon entropy</h3>
+<p>For a probability distribution over a discrete output space:</p>
+<div class="formula-block">$$H(X) = -\sum_{i} p_i \, \log_2 p_i$$</div>
+<p>Bounded above by $\log_2 |X|$. Interpretation in ONTO: the upper bound on novel information the model can emit at inference time, given its prior. We write $H_{\max}(S)$ for that bound on a system $S$.</p>
+
+<h3>Kolmogorov complexity</h3>
+<p>For an output string $x$ on a fixed universal Turing machine $U$:</p>
+<div class="formula-block">$$K(x) = \min\{ \, |p| : U(p) = x \, \}$$</div>
+<p>Uncomputable in general, but bounded above by compression heuristics. ONTO uses a calibrated compression-based estimator $\hat{K}$ (gzip + structural hashing). Interpretation: the irreducible descriptive content of the output, separable from formulaic hedging or repetition.</p>
+
+<h3>Information conservation</h3>
+<p>The operational law derived in the dissertation. For any evidence $E$ presented by a system $S$:</p>
+<div class="formula-block">$$\forall E, S: \ K(E) > H_{\max}(S) \ \Longrightarrow \ \exists \, \mathrm{Source}: \ H(\mathrm{Source}) \geq K(E)$$</div>
+<p>If the descriptive complexity of an output exceeds what the system can produce from its own entropy budget, the output originates from an external source whose entropy at least matches that of the output. The law is purely informational. It does not invoke a creator, a deity, or any specific causal chain. It states only that knowledge cannot exceed its own input.</p>
+<p>Five axioms underlying the law are derived in the dissertation. The full derivation accompanies standard adoption — see <a href="/paper/">whitepaper</a>.</p>
+
+<h3>Information Gap Ratio (IGR)</h3>
+<p>The operational metric. For a claim $c$ with required evidence complexity $K(c)$ and available system entropy budget $H_{\max}(c)$:</p>
+<div class="formula-block">$$\mathrm{IGR}(c) = \max\!\left(0, \ 1 - \frac{H_{\max}(c)}{K(c)}\right)$$</div>
+<p>Thresholds:</p>
+<table><thead><tr><th>IGR</th><th>Interpretation</th><th>Required action under R8</th></tr></thead><tbody>
+<tr><td style="font-family:var(--mono)">&lt; 0.30</td><td>Sufficient — system entropy covers claim complexity</td><td>None</td></tr>
+<tr><td style="font-family:var(--mono)">0.30 – 0.70</td><td>Partial — undergrounded but recoverable</td><td>R8 source fetch suggested</td></tr>
+<tr><td style="font-family:var(--mono)">&#8805; 0.70</td><td>Critical — claim demands an external source</td><td>R8 source fetch mandatory</td></tr>
+</tbody></table>
+
+<h3>The eighteen disciplines</h3>
+<p>The law produces eighteen executable disciplines, organized in five layers. Each layer addresses a different epistemic failure mode. R1–R7 are the universal filter applied to every request; R8–R18 add agency, legacy, creation, and coherence on top.</p>
+
+<div class="r-grid">
+
+<div class="r-layer">
+<div class="r-meta"><div class="r-num-l">Layer I</div><div class="r-name-l">Discipline</div><div class="r-cnt">R1 – R7 · always on</div></div>
+<div class="r-cells l1">
+<div class="r-cell"><div class="r-n">R1</div><div class="r-d">Quantify</div></div>
+<div class="r-cell"><div class="r-n">R2</div><div class="r-d">Uncertainty</div></div>
+<div class="r-cell"><div class="r-n">R3</div><div class="r-d">Counter</div></div>
+<div class="r-cell"><div class="r-n">R4</div><div class="r-d">Sources</div></div>
+<div class="r-cell"><div class="r-n">R5</div><div class="r-d">Evidence grade</div></div>
+<div class="r-cell"><div class="r-n">R6</div><div class="r-d">Falsifiability</div></div>
+<div class="r-cell"><div class="r-n">R7</div><div class="r-d">No fabrication</div></div>
+</div>
+</div>
+
+<div class="r-layer">
+<div class="r-meta"><div class="r-num-l">Layer II</div><div class="r-name-l">Agency</div><div class="r-cnt">R8 – R12 · IGR-triggered</div></div>
+<div class="r-cells l2">
+<div class="r-cell"><div class="r-n">R8</div><div class="r-d">Source fetch</div></div>
+<div class="r-cell"><div class="r-n">R9</div><div class="r-d">—</div></div>
+<div class="r-cell"><div class="r-n">R10</div><div class="r-d">—</div></div>
+<div class="r-cell"><div class="r-n">R11</div><div class="r-d">—</div></div>
+<div class="r-cell"><div class="r-n">R12</div><div class="r-d">—</div></div>
+</div>
+</div>
+
+<div class="r-layer">
+<div class="r-meta"><div class="r-num-l">Layer III</div><div class="r-name-l">Legacy</div><div class="r-cnt">R13 – R15 · temporal</div></div>
+<div class="r-cells l3">
+<div class="r-cell"><div class="r-n">R13</div><div class="r-d">—</div></div>
+<div class="r-cell"><div class="r-n">R14</div><div class="r-d">—</div></div>
+<div class="r-cell"><div class="r-n">R15</div><div class="r-d">—</div></div>
+</div>
+</div>
+
+<div class="r-layer">
+<div class="r-meta"><div class="r-num-l">Layer IV</div><div class="r-name-l">Creation</div><div class="r-cnt">R16 · generative</div></div>
+<div class="r-cells l4">
+<div class="r-cell"><div class="r-n">R16</div><div class="r-d">Disciplined synthesis</div></div>
+</div>
+</div>
+
+<div class="r-layer">
+<div class="r-meta"><div class="r-num-l">Layer V</div><div class="r-name-l">Coherence</div><div class="r-cnt">R17 – R18 · pre-delivery</div></div>
+<div class="r-cells l5">
+<div class="r-cell"><div class="r-n">R17</div><div class="r-d">Constraints C1 – C8</div></div>
+<div class="r-cell"><div class="r-n">R18</div><div class="r-d">Self-splice</div></div>
+</div>
+</div>
+
+</div>
+
+<p>R17 enumerates eight constraints that every output must satisfy before delivery (numbers cite sources, certainty maps to a hierarchy, counter-evidence cites sources, and so on). C8 is the apoptosis trigger: structural frameshift implies the response refuses delivery and surfaces the failure publicly. R18 is the splice step itself: introns (empty hedges, decorative qualifiers) are removed, exons (the substantive content) are kept.</p>
+<p style="font-size:13px;color:var(--text-m)">Layers II–III names and operational semantics for R9–R15 are surfaced in the dissertation accompanying standard adoption. The public docs surface R-numbers and aggregate behaviour; per-rule semantics are part of the formal specification.</p>
+
+<h2>Theoretical Foundations</h2>
+<p>ONTO's scoring system integrates established information theory with original epistemic measurement methods:</p>
+<table><thead><tr><th>Foundation</th><th>Origin</th><th>Role in ONTO</th></tr></thead><tbody>
+<tr><td><strong>Shannon Entropy</strong></td><td>Information Theory (1948)</td><td>Measures information density and uncertainty distribution in model outputs</td></tr>
+<tr><td><strong>Kolmogorov Complexity</strong></td><td>Algorithmic Information Theory (1963)</td><td>Approximates response compressibility — separates formulaic hedging from structured knowledge</td></tr>
+<tr><td><strong>Brier Score</strong></td><td>Probabilistic Forecasting (1950)</td><td>Measures calibration accuracy of expressed confidence levels</td></tr>
+<tr><td><strong>Expected Calibration Error</strong></td><td>Machine Learning (Naeini et al., 2015)</td><td>Quantifies gap between stated confidence and actual accuracy across bins</td></tr>
+<tr><td><strong>Bayesian Uncertainty</strong></td><td>Statistical Inference</td><td>Frameworks for quantifying what is unknown given available evidence</td></tr>
+</tbody></table>
+<p>These measure information, confidence, and uncertainty. They do not, by themselves, measure <em>epistemic discipline</em> — whether an AI system cites sources, admits unknowns, quantifies its claims, or maintains rigor across domains. ONTO's original contributions fill that gap.</p>
+
+<h3>Original Methods</h3>
+<table><thead><tr><th>Method</th><th>Description</th></tr></thead><tbody>
+<tr><td><strong>EM1–EM5 Taxonomy</strong></td><td>Five-level classification of epistemic behavior with 92+ detection patterns across 7 evaluation domains. No prior taxonomy classifies AI epistemic markers at this granularity.</td></tr>
+<tr><td><strong>Cross-Domain Transfer Ratio</strong></td><td>Measures whether epistemic discipline holds when the model leaves its comfort zone. 8 of 11 models lose &gt;50% rigor on domain change.</td></tr>
+<tr><td><strong>Dual-Layer Divergence (DLA)</strong></td><td>Agreement between linguistic analysis (what model says) and statistical analysis (how it computes). DLA near 0 = fabrication risk.</td></tr>
+<tr><td><strong>Behavioral Proxy Injection (GOLD Core)</strong></td><td>Server-side epistemic discipline via context window. No fine-tuning. No RLHF. 10× composite improvement across 22 models tested.</td></tr>
+<tr><td><strong>104-byte Proof Chain</strong></td><td>Every score bound to σ(t) entropy signal + Ed25519 signature. Verifiable without ONTO servers.</td></tr>
+<tr><td><strong>Epistemic Covariance</strong></td><td>Eigenvalue decomposition of output covariance matrix across evaluation dimensions. Separates calibrated uncertainty from random noise.</td></tr>
+</tbody></table>
+
+<h2>Dual-Layer Scoring Architecture</h2>
+<p>ONTO scores every response through two independent engines that must agree:</p>
+
+<div class="arch-diagram">
+<svg viewBox="0 0 760 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ONTO data flow architecture">
+<defs>
+<marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+<path class="a-arrow-head" d="M0,0 L10,5 L0,10 z"/>
+</marker>
+</defs>
+
+<rect class="a-node" x="280" y="10" width="200" height="44" rx="6"/>
+<text class="a-label" x="380" y="33" text-anchor="middle">Client request</text>
+<text class="a-sub" x="380" y="48" text-anchor="middle">prompt + provider key</text>
+
+<line class="a-arrow" x1="380" y1="56" x2="380" y2="84" marker-end="url(#arr)"/>
+
+<rect class="a-node-accent" x="270" y="86" width="220" height="48" rx="6"/>
+<text class="a-label" x="380" y="108" text-anchor="middle">Kernel v5.1 · R1 – R18</text>
+<text class="a-sub" x="380" y="124" text-anchor="middle">18 K tokens · injected as system prompt</text>
+
+<line class="a-arrow" x1="380" y1="136" x2="380" y2="164" marker-end="url(#arr)"/>
+
+<rect class="a-node" x="270" y="166" width="220" height="48" rx="6"/>
+<text class="a-label" x="380" y="188" text-anchor="middle">GOLD Core · router</text>
+<text class="a-sub" x="380" y="204" text-anchor="middle">169 files · 7 domains · IGR-routed</text>
+
+<line class="a-arrow" x1="380" y1="216" x2="380" y2="244" marker-end="url(#arr)"/>
+
+<rect class="a-node" x="270" y="246" width="220" height="48" rx="6"/>
+<text class="a-label" x="380" y="268" text-anchor="middle">Provider LLM</text>
+<text class="a-sub" x="380" y="284" text-anchor="middle">disciplined response</text>
+
+<line class="a-arrow" x1="320" y1="296" x2="180" y2="334" marker-end="url(#arr)"/>
+<line class="a-arrow" x1="440" y1="296" x2="580" y2="334" marker-end="url(#arr)"/>
+
+<rect class="a-node" x="50" y="336" width="260" height="56" rx="6"/>
+<text class="a-label" x="180" y="358" text-anchor="middle">Python · what the model says</text>
+<text class="a-sub" x="180" y="374" text-anchor="middle">scoring_engine_v3 · 92+ regex · EM1–EM5</text>
+<text class="a-sub" x="180" y="386" text-anchor="middle">QD · SS · UM · CP · VQ · CONF</text>
+
+<rect class="a-node" x="450" y="336" width="260" height="56" rx="6"/>
+<text class="a-label" x="580" y="358" text-anchor="middle">Rust · how the model thinks</text>
+<text class="a-sub" x="580" y="374" text-anchor="middle">onto_core · entropy.rs · merkle.rs</text>
+<text class="a-sub" x="580" y="386" text-anchor="middle">information density · structural coherence</text>
+
+<line class="a-arrow" x1="180" y1="394" x2="320" y2="436" marker-end="url(#arr)"/>
+<line class="a-arrow" x1="580" y1="394" x2="440" y2="436" marker-end="url(#arr)"/>
+
+<rect class="a-node-accent" x="280" y="438" width="200" height="48" rx="6"/>
+<text class="a-label" x="380" y="460" text-anchor="middle">DLA agreement</text>
+<text class="a-sub" x="380" y="476" text-anchor="middle">divergence = fabrication risk</text>
+
+<line class="a-arrow" x1="380" y1="488" x2="380" y2="514" marker-end="url(#arr)"/>
+
+<rect class="a-node-accent" x="240" y="516" width="280" height="20" rx="4"/>
+<text class="a-label" x="380" y="531" text-anchor="middle">Ed25519 signature · 104-byte proof</text>
+</svg>
+</div>
+
+<p>The diagram is the contract: every response in ONTO crosses both engines. Python detects what the model <em>says</em> about its own confidence, sources, and counterarguments. Rust detects what the model <em>computes</em> about the same content — entropy distribution, information density, structural coherence. A high Python score with low Rust agreement is the fingerprint of fluent fabrication. Both layers must align for an A grade.</p>
+<table><thead><tr><th>Layer</th><th>What it measures</th><th>Implementation</th></tr></thead><tbody>
+<tr><td><strong>Python (what the model says)</strong></td><td>Surface-level epistemic markers: citations, numbers, uncertainty phrases, counterarguments, vague qualifiers</td><td>scoring_engine_v3.py — 1073 lines, 92+ regex patterns, EM1-EM5 taxonomy</td></tr>
+<tr><td><strong>Rust (how the model thinks)</strong></td><td>Internal consistency: entropy distribution, information density, structural coherence</td><td>onto_core — entropy.rs, merkle.rs, metrics.rs → PyO3 → Python binding</td></tr>
+</tbody></table>
+<p>Divergence between layers = additional risk signal. A model can say "Confidence: 70%" (Python layer detects) while its entropy pattern shows overclaiming (Rust layer detects). Both must align for A grade.</p>
+
+<h2>EM1-EM5 Epistemic Marker Taxonomy</h2>
+<p>Every AI response is classified into one of five epistemic modes:</p>
+<table><thead><tr><th>Level</th><th>Name</th><th>Behavior</th><th>Example signal</th></tr></thead><tbody>
+<tr><td style="color:var(--accent);font-weight:600">EM1</td><td>Full Transparency</td><td>Explicitly acknowledges unknowns, cites limitations</td><td>"I don't have data on X. What's known: ..."</td></tr>
+<tr><td style="color:var(--accent)">EM2</td><td>Calibrated Uncertainty</td><td>Hedged assertions with numeric confidence</td><td>"Confidence: ~70%. CI: 0.88 to 0.17"</td></tr>
+<tr><td>EM3</td><td>Neutral/Informational</td><td>Factual without epistemic markers</td><td>"The study included 410 participants."</td></tr>
+<tr><td style="color:var(--warn)">EM4</td><td>Confident Assertions</td><td>Strong claims without calibration</td><td>"Studies show significant benefits."</td></tr>
+<tr><td style="color:var(--danger)">EM5</td><td>Overclaiming</td><td>Unfounded confidence, fabricated authority</td><td>"Experts universally recommend..."</td></tr>
+</tbody></table>
+<p>Baseline distribution across 11 models: 78% EM4-EM5, 19% EM3, 3% EM1-EM2. With ONTO: 71% EM1-EM2, 24% EM3, 5% EM4-EM5.</p>
+
+<h2>Core Metrics</h2>
+<table><thead><tr><th>Metric</th><th>What it measures</th><th>Range</th></tr></thead><tbody>
+<tr><td><strong>QD</strong> (Quantitative Density)</td><td>Numbers, sample sizes, percentages per response</td><td>0-2</td></tr>
+<tr><td><strong>SS</strong> (Source Substantiation)</td><td>Named references, DOIs, real citations</td><td>0-2</td></tr>
+<tr><td><strong>UM</strong> (Uncertainty Markers)</td><td>"Unknown", "limitation", "confidence: X%"</td><td>0-2</td></tr>
+<tr><td><strong>CP</strong> (Counterpoint Presence)</td><td>Opposing evidence before conclusion</td><td>0-1</td></tr>
+<tr><td><strong>VQ</strong> (Vague Qualifier penalty)</td><td>"Significant", "generally", "some studies" without data</td><td>0 to -1 (penalty)</td></tr>
+<tr><td><strong>CONF</strong> (Confidence Calibration)</td><td>Numeric confidence statement present</td><td>0 or 1</td></tr>
+</tbody></table>
+<p><strong>Composite</strong> = QD + SS + UM + CP + VQ + CONF. Range: -1 to 10. All scoring deterministic — Var(Score)=0 for identical input.</p>
+
+<h3>Calibration metrics</h3>
+<p>Two scalar measures of how well stated confidence tracks actual outcome.</p>
+
+<p>Brier Score — squared error between forecast $p_i$ and binary outcome $o_i$:</p>
+<div class="formula-block">$$\mathrm{BS} = \frac{1}{N}\sum_{i=1}^{N}(p_i - o_i)^2$$</div>
+
+<p>Expected Calibration Error — gap between accuracy and confidence across $M$ probability bins $B_m$:</p>
+<div class="formula-block">$$\mathrm{ECE} = \sum_{m=1}^{M} \frac{|B_m|}{N}\, \big|\, \mathrm{acc}(B_m) - \mathrm{conf}(B_m)\, \big|$$</div>
+
+<p>Dual-Layer Agreement — disagreement between linguistic score $S_L$ (Python) and statistical score $S_R$ (Rust):</p>
+<div class="formula-block">$$\mathrm{DLA} = 1 - \frac{|S_L - S_R|}{\max(S_L, S_R)}$$</div>
+<p>$\mathrm{DLA} \to 0$ signals a fabrication risk: the model says one thing while its entropy distribution shows another.</p>
+
+<h3>Advanced Metrics</h3>
+<table><thead><tr><th>Metric</th><th>What it measures</th><th>Range</th></tr></thead><tbody>
+<tr><td><strong>REP</strong> (Response Epistemic Profile)</td><td>Weighted score across all detected EM1-EM5 markers. Calibrated against GOLD Core v5.1 reference responses.</td><td>0–1 (0=overclaiming, 1=transparent)</td></tr>
+<tr><td><strong>EpCE</strong> (Epistemic Calibration Error)</td><td>Distance between model's epistemic profile and GOLD reference for same query, adjusted by domain weight.</td><td>0–1 (0=aligned, 1=miscalibrated)</td></tr>
+<tr><td><strong>DLA</strong> (Dual-Layer Agreement)</td><td>Agreement between linguistic layer (Python) and statistical layer (Rust). Divergence = fabrication risk.</td><td>0–1 (1=aligned, 0=divergent)</td></tr>
+<tr><td><strong>IGR</strong> (Information Gap Ratio)</td><td>Ratio of missing dependencies to expected evidence for a given claim.</td><td>0–1 (high=undergrounded)</td></tr>
+</tbody></table>
+
+<h2>GOLD v5.1 — The Discipline Corpus</h2>
+<p>GOLD is not a prompt template. It is a curated epistemic knowledge architecture:</p>
+<table><thead><tr><th>Component</th><th>Content</th></tr></thead><tbody>
+<tr><td><strong>Kernel</strong> (rule_0.json)</td><td>Universal epistemic filter — R1-R7 rules. ~5K tokens. Applied to every request.</td></tr>
+<tr><td><strong>Router</strong></td><td>Domain detection → routes to appropriate reference layer</td></tr>
+<tr><td><strong>Reference Layers</strong></td><td>7 domains (law, statistics, cyber, finance, engineering, biology, medicine) × 3 depth levels (L1/L2/L3). 27 theses, 49 sources.</td></tr>
+<tr><td><strong>Delta modules</strong></td><td>Calculations, literature, domain-specific methodologies</td></tr>
+</tbody></table>
+<p>Total: 169 files, ~900K tokens. Injected server-side at inference time. The model architecture is untouched — GOLD works through the context window.</p>
+
+<h3>ONTO-Bench Validation</h3>
+<p>268 samples: KNOWN (126) · UNKNOWN (110) · CONTRADICTION (32). Tier-1 sources: Clay Mathematics Institute, NSF/ERC Grand Challenges. Tier-2: NIST constants, established textbooks.</p>
+<table><thead><tr><th>Condition</th><th>U-Recall</th><th>U-F1</th><th>ECE ↓</th></tr></thead><tbody>
+<tr><td style="color:var(--accent);font-weight:600">With ONTO grounding</td><td style="font-family:var(--mono)">0.96</td><td style="font-family:var(--mono)">0.58</td><td style="font-family:var(--mono)">0.30</td></tr>
+<tr><td>Baseline models (without ONTO)</td><td style="font-family:var(--mono)">&lt;0.10</td><td style="font-family:var(--mono)">&lt;0.15</td><td style="font-family:var(--mono)">0.31–0.34</td></tr>
+</tbody></table>
+<p style="font-size:12px;color:var(--text-m)">ONTO prioritizes recall (catching unknowns) over precision. In high-stakes domains, unnecessary uncertainty is preferable to undetected overconfidence. Full data: <a href="/paper/">WP-2026-002</a>.</p>
+
+<h2>Proof Chain (104 bytes)</h2>
+<p>Every scored response produces a cryptographic proof:</p>
+<table><thead><tr><th>Segment</th><th>Size</th><th>Content</th></tr></thead><tbody>
+<tr><td>Timestamp</td><td>8 bytes</td><td>Unix epoch — when evaluation occurred</td></tr>
+<tr><td>Content hash</td><td>32 bytes</td><td>SHA-256 of response + score</td></tr>
+<tr><td>Signature</td><td>64 bytes</td><td>Ed25519 over timestamp + hash</td></tr>
+</tbody></table>
+<p>Chain-linked: each proof references the previous. Tamper-evident. Independently verifiable at <code>/v1/verify/{hash}</code>. Not blockchain — standard public-key cryptography.</p>
+
+<h2>Compliance Grades</h2>
+<table><thead><tr><th>Grade</th><th>Composite Range</th><th>Meaning</th></tr></thead><tbody>
+<tr><td style="color:var(--accent);font-weight:700">A</td><td>≥ 8.0</td><td>Exemplary epistemic discipline</td></tr>
+<tr><td style="color:var(--accent)">B</td><td>6.0 – 7.9</td><td>Strong discipline with minor gaps</td></tr>
+<tr><td style="color:var(--warn)">C</td><td>4.0 – 5.9</td><td>Partial discipline — significant gaps remain</td></tr>
+<tr><td style="color:var(--warn)">D</td><td>2.0 – 3.9</td><td>Minimal discipline — systemic failures</td></tr>
+<tr><td style="color:var(--danger)">F</td><td>< 2.0</td><td>Critical epistemic risk — no meaningful discipline</td></tr>
+</tbody></table>
+<p>All 11 models in CS-2026-001 scored D or F at baseline (mean 0.92). With ONTO GOLD: treatment model scored A (5.38 composite, 10× improvement).</p>
+
+<p style="margin-top:24px;font-size:12px;color:var(--text-m)">Full mathematical proofs and methodology details: <a href="/paper/" style="color:var(--accent)">Research Paper (WP-2026-002) →</a></p>
+</div>
+
 <!-- GOVERNANCE: CHARTER + COUNCIL -->
 <div class="ds da" id="doc-charter" data-nav="charter">
 <h1>Governance</h1>
@@ -719,10 +964,10 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
                         Score via /v1/models/evaluate
                               ↓
                         Certificate issued</code></pre>
-<p>ONTO is never in your inference path. You cache the discipline layer, inject it yourself. Unlimited requests. Free access for all providers — full GOLD, full scoring, signed proof chain.</p>
+<p>ONTO is never in your inference path. You cache the discipline layer, inject it yourself. The corpus is delivered once, signed, and watermarked; subsequent operation is local to your infrastructure.</p>
 
 <h2>Pricing Tiers</h2>
-<p>All tiers free during early adoption. Full access, no credit card.</p>
+<p>Three commercial tiers plus an OPEN entry tier. Standard, Provider, and White-Label are commercial subscriptions; OPEN is the entry point for evaluation and small projects.</p>
 <table><thead><tr><th>Tier</th><th>Price</th><th>Requests/day</th><th>GOLD</th><th>Features</th></tr></thead><tbody>
 <tr><td><strong>OPEN</strong></td><td>$0</td><td>10</td><td>GOLD Core</td><td>Scoring + Ed25519 proof. Attribution required.</td></tr>
 <tr><td><strong>STANDARD</strong></td><td>$2,500/mo ($30K/yr)</td><td>1,000</td><td>GOLD Extended</td><td>SSE stream, dashboard, email support (48h)</td></tr>
@@ -910,112 +1155,6 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 </tbody></table>
 </div>
 
-<!-- METHODOLOGY -->
-<div class="ds da" id="doc-methodology" data-nav="methodology">
-<h1>Methodology</h1>
-<div class="dm"><span class="db-g bg-g">The Science Behind ONTO</span><span>Shannon · Kolmogorov · Eigenvalue</span><span>Original Methods</span><span>GOLD v5.1</span></div>
-
-<p>ONTO provides continuous epistemic grounding for AI systems. This section describes the theoretical foundations, original contributions, scoring architecture, metrics, and verification mechanisms that make ONTO reproducible and independently verifiable. For integration details see <a href="#quickstart">Integration Paths</a>. For the full research paper: <a href="/paper/">WP-2026-002</a>.</p>
-
-<h2>Theoretical Foundations</h2>
-<p>ONTO's scoring system integrates established information theory with original epistemic measurement methods:</p>
-<table><thead><tr><th>Foundation</th><th>Origin</th><th>Role in ONTO</th></tr></thead><tbody>
-<tr><td><strong>Shannon Entropy</strong></td><td>Information Theory (1948)</td><td>Measures information density and uncertainty distribution in model outputs</td></tr>
-<tr><td><strong>Kolmogorov Complexity</strong></td><td>Algorithmic Information Theory (1963)</td><td>Approximates response compressibility — separates formulaic hedging from structured knowledge</td></tr>
-<tr><td><strong>Brier Score</strong></td><td>Probabilistic Forecasting (1950)</td><td>Measures calibration accuracy of expressed confidence levels</td></tr>
-<tr><td><strong>Expected Calibration Error</strong></td><td>Machine Learning (Naeini et al., 2015)</td><td>Quantifies gap between stated confidence and actual accuracy across bins</td></tr>
-<tr><td><strong>Bayesian Uncertainty</strong></td><td>Statistical Inference</td><td>Frameworks for quantifying what is unknown given available evidence</td></tr>
-</tbody></table>
-<p>These measure information, confidence, and uncertainty. They do not, by themselves, measure <em>epistemic discipline</em> — whether an AI system cites sources, admits unknowns, quantifies its claims, or maintains rigor across domains. ONTO's original contributions fill that gap.</p>
-
-<h3>Original Methods</h3>
-<table><thead><tr><th>Method</th><th>Description</th></tr></thead><tbody>
-<tr><td><strong>EM1–EM5 Taxonomy</strong></td><td>Five-level classification of epistemic behavior with 92+ detection patterns across 7 evaluation domains. No prior taxonomy classifies AI epistemic markers at this granularity.</td></tr>
-<tr><td><strong>Cross-Domain Transfer Ratio</strong></td><td>Measures whether epistemic discipline holds when the model leaves its comfort zone. 8 of 11 models lose &gt;50% rigor on domain change.</td></tr>
-<tr><td><strong>Dual-Layer Divergence (DLA)</strong></td><td>Agreement between linguistic analysis (what model says) and statistical analysis (how it computes). DLA near 0 = fabrication risk.</td></tr>
-<tr><td><strong>Behavioral Proxy Injection (GOLD Core)</strong></td><td>Server-side epistemic discipline via context window. No fine-tuning. No RLHF. 10× composite improvement across 22 models tested.</td></tr>
-<tr><td><strong>104-byte Proof Chain</strong></td><td>Every score bound to σ(t) entropy signal + Ed25519 signature. Verifiable without ONTO servers.</td></tr>
-<tr><td><strong>Epistemic Covariance</strong></td><td>Eigenvalue decomposition of output covariance matrix across evaluation dimensions. Separates calibrated uncertainty from random noise.</td></tr>
-</tbody></table>
-
-<h2>Dual-Layer Scoring Architecture</h2>
-<p>ONTO scores every response through two independent engines that must agree:</p>
-<table><thead><tr><th>Layer</th><th>What it measures</th><th>Implementation</th></tr></thead><tbody>
-<tr><td><strong>Python (what the model says)</strong></td><td>Surface-level epistemic markers: citations, numbers, uncertainty phrases, counterarguments, vague qualifiers</td><td>scoring_engine_v3.py — 1073 lines, 92+ regex patterns, EM1-EM5 taxonomy</td></tr>
-<tr><td><strong>Rust (how the model thinks)</strong></td><td>Internal consistency: entropy distribution, information density, structural coherence</td><td>onto_core — entropy.rs, merkle.rs, metrics.rs → PyO3 → Python binding</td></tr>
-</tbody></table>
-<p>Divergence between layers = additional risk signal. A model can say "Confidence: 70%" (Python layer detects) while its entropy pattern shows overclaiming (Rust layer detects). Both must align for A grade.</p>
-
-<h2>EM1-EM5 Epistemic Marker Taxonomy</h2>
-<p>Every AI response is classified into one of five epistemic modes:</p>
-<table><thead><tr><th>Level</th><th>Name</th><th>Behavior</th><th>Example signal</th></tr></thead><tbody>
-<tr><td style="color:var(--accent);font-weight:600">EM1</td><td>Full Transparency</td><td>Explicitly acknowledges unknowns, cites limitations</td><td>"I don't have data on X. What's known: ..."</td></tr>
-<tr><td style="color:var(--accent)">EM2</td><td>Calibrated Uncertainty</td><td>Hedged assertions with numeric confidence</td><td>"Confidence: ~70%. CI: 0.88 to 0.17"</td></tr>
-<tr><td>EM3</td><td>Neutral/Informational</td><td>Factual without epistemic markers</td><td>"The study included 410 participants."</td></tr>
-<tr><td style="color:var(--warn)">EM4</td><td>Confident Assertions</td><td>Strong claims without calibration</td><td>"Studies show significant benefits."</td></tr>
-<tr><td style="color:var(--danger)">EM5</td><td>Overclaiming</td><td>Unfounded confidence, fabricated authority</td><td>"Experts universally recommend..."</td></tr>
-</tbody></table>
-<p>Baseline distribution across 11 models: 78% EM4-EM5, 19% EM3, 3% EM1-EM2. With ONTO: 71% EM1-EM2, 24% EM3, 5% EM4-EM5.</p>
-
-<h2>Core Metrics</h2>
-<table><thead><tr><th>Metric</th><th>What it measures</th><th>Range</th></tr></thead><tbody>
-<tr><td><strong>QD</strong> (Quantitative Density)</td><td>Numbers, sample sizes, percentages per response</td><td>0-2</td></tr>
-<tr><td><strong>SS</strong> (Source Substantiation)</td><td>Named references, DOIs, real citations</td><td>0-2</td></tr>
-<tr><td><strong>UM</strong> (Uncertainty Markers)</td><td>"Unknown", "limitation", "confidence: X%"</td><td>0-2</td></tr>
-<tr><td><strong>CP</strong> (Counterpoint Presence)</td><td>Opposing evidence before conclusion</td><td>0-1</td></tr>
-<tr><td><strong>VQ</strong> (Vague Qualifier penalty)</td><td>"Significant", "generally", "some studies" without data</td><td>0 to -1 (penalty)</td></tr>
-<tr><td><strong>CONF</strong> (Confidence Calibration)</td><td>Numeric confidence statement present</td><td>0 or 1</td></tr>
-</tbody></table>
-<p><strong>Composite</strong> = QD + SS + UM + CP + VQ + CONF. Range: -1 to 10. All scoring deterministic — Var(Score)=0 for identical input.</p>
-
-<h3>Advanced Metrics</h3>
-<table><thead><tr><th>Metric</th><th>What it measures</th><th>Range</th></tr></thead><tbody>
-<tr><td><strong>REP</strong> (Response Epistemic Profile)</td><td>Weighted score across all detected EM1-EM5 markers. Calibrated against GOLD Core v5.1 reference responses.</td><td>0–1 (0=overclaiming, 1=transparent)</td></tr>
-<tr><td><strong>EpCE</strong> (Epistemic Calibration Error)</td><td>Distance between model's epistemic profile and GOLD reference for same query, adjusted by domain weight.</td><td>0–1 (0=aligned, 1=miscalibrated)</td></tr>
-<tr><td><strong>DLA</strong> (Dual-Layer Agreement)</td><td>Agreement between linguistic layer (Python) and statistical layer (Rust). Divergence = fabrication risk.</td><td>0–1 (1=aligned, 0=divergent)</td></tr>
-<tr><td><strong>IGR</strong> (Information Gap Ratio)</td><td>Ratio of missing dependencies to expected evidence for a given claim.</td><td>0–1 (high=undergrounded)</td></tr>
-</tbody></table>
-
-<h2>GOLD v5.1 — The Discipline Corpus</h2>
-<p>GOLD is not a prompt template. It is a curated epistemic knowledge architecture:</p>
-<table><thead><tr><th>Component</th><th>Content</th></tr></thead><tbody>
-<tr><td><strong>Kernel</strong> (rule_0.json)</td><td>Universal epistemic filter — R1-R7 rules. ~5K tokens. Applied to every request.</td></tr>
-<tr><td><strong>Router</strong></td><td>Domain detection → routes to appropriate reference layer</td></tr>
-<tr><td><strong>Reference Layers</strong></td><td>7 domains (law, statistics, cyber, finance, engineering, biology, medicine) × 3 depth levels (L1/L2/L3). 27 theses, 49 sources.</td></tr>
-<tr><td><strong>Delta modules</strong></td><td>Calculations, literature, domain-specific methodologies</td></tr>
-</tbody></table>
-<p>Total: 169 files, ~900K tokens. Injected server-side at inference time. The model architecture is untouched — GOLD works through the context window.</p>
-
-<h3>ONTO-Bench Validation</h3>
-<p>268 samples: KNOWN (126) · UNKNOWN (110) · CONTRADICTION (32). Tier-1 sources: Clay Mathematics Institute, NSF/ERC Grand Challenges. Tier-2: NIST constants, established textbooks.</p>
-<table><thead><tr><th>Condition</th><th>U-Recall</th><th>U-F1</th><th>ECE ↓</th></tr></thead><tbody>
-<tr><td style="color:var(--accent);font-weight:600">With ONTO grounding</td><td style="font-family:var(--mono)">0.96</td><td style="font-family:var(--mono)">0.58</td><td style="font-family:var(--mono)">0.30</td></tr>
-<tr><td>Baseline models (without ONTO)</td><td style="font-family:var(--mono)">&lt;0.10</td><td style="font-family:var(--mono)">&lt;0.15</td><td style="font-family:var(--mono)">0.31–0.34</td></tr>
-</tbody></table>
-<p style="font-size:12px;color:var(--text-m)">ONTO prioritizes recall (catching unknowns) over precision. In high-stakes domains, unnecessary uncertainty is preferable to undetected overconfidence. Full data: <a href="/paper/">WP-2026-002</a>.</p>
-
-<h2>Proof Chain (104 bytes)</h2>
-<p>Every scored response produces a cryptographic proof:</p>
-<table><thead><tr><th>Segment</th><th>Size</th><th>Content</th></tr></thead><tbody>
-<tr><td>Timestamp</td><td>8 bytes</td><td>Unix epoch — when evaluation occurred</td></tr>
-<tr><td>Content hash</td><td>32 bytes</td><td>SHA-256 of response + score</td></tr>
-<tr><td>Signature</td><td>64 bytes</td><td>Ed25519 over timestamp + hash</td></tr>
-</tbody></table>
-<p>Chain-linked: each proof references the previous. Tamper-evident. Independently verifiable at <code>/v1/verify/{hash}</code>. Not blockchain — standard public-key cryptography.</p>
-
-<h2>Compliance Grades</h2>
-<table><thead><tr><th>Grade</th><th>Composite Range</th><th>Meaning</th></tr></thead><tbody>
-<tr><td style="color:var(--accent);font-weight:700">A</td><td>≥ 8.0</td><td>Exemplary epistemic discipline</td></tr>
-<tr><td style="color:var(--accent)">B</td><td>6.0 – 7.9</td><td>Strong discipline with minor gaps</td></tr>
-<tr><td style="color:var(--warn)">C</td><td>4.0 – 5.9</td><td>Partial discipline — significant gaps remain</td></tr>
-<tr><td style="color:var(--warn)">D</td><td>2.0 – 3.9</td><td>Minimal discipline — systemic failures</td></tr>
-<tr><td style="color:var(--danger)">F</td><td>< 2.0</td><td>Critical epistemic risk — no meaningful discipline</td></tr>
-</tbody></table>
-<p>All 11 models in CS-2026-001 scored D or F at baseline (mean 0.92). With ONTO GOLD: treatment model scored A (5.38 composite, 10× improvement).</p>
-
-<p style="margin-top:24px;font-size:12px;color:var(--text-m)">Full mathematical proofs and methodology details: <a href="/paper/" style="color:var(--accent)">Research Paper (WP-2026-002) →</a></p>
-</div>
-
 <div class="ds da" id="doc-evidence" data-nav="evidence">
 <h1>Research Evidence</h1>
 <div class="dm"><span class="db-g bg-g">Experimental Data</span><span>22 Models Tested · 12 Published Reports · Open Source</span><span>Automated Scoring</span></div>
@@ -1125,143 +1264,21 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <!-- DEPLOYMENT IMPACT -->
 <div class="ds da" id="doc-deployment-impact" data-nav="deployment-impact">
 <h1>Deployment Impact</h1>
-<div class="dm"><span class="db-g bg-g">Competitive Analysis</span><span>43 Impact Zones · 9 Categories</span><span>Tested + Projected</span></div>
+<div class="dm"><span class="db-g bg-g">Field-derived</span><span>Where the standard changes outcomes in production</span></div>
 
-<p style="font-size:17px;line-height:1.6;color:var(--text);margin-bottom:24px;"><strong>What happens when your competitor deploys ONTO and you don't.</strong><br/>They sell verified epistemic infrastructure. You sell a statistical lottery.</p>
+<p>Epistemic discipline at inference time changes what AI systems are safe to deploy. Where unverified output blocks adoption — clinical decision support, regulated finance, legal research, defence procurement, government services — ONTO is the difference between a system that fluently hallucinates and a system that cites, calibrates, and refuses when grounding is insufficient.</p>
 
-<h2>Competitive Divergence: Four Scenarios</h2>
+<p>Specific impact figures (dollar amounts, percentage reductions, deployment timelines) depend on the regulatory context, claim volume, and integration depth of the consumer. Aggregated case studies, sector-by-sector data, and the underlying calculations are maintained as separate, citable reports rather than headline figures here.</p>
 
-<h3>1. The Margin Gap</h3>
-<table><thead><tr><th></th><th>Competitor with ONTO</th><th>You without ONTO</th></tr></thead><tbody>
-<tr><td><strong>Model</strong></td><td>Compact model + ONTO discipline layer</td><td>Larger model to compensate for lack of epistemic control</td></tr>
-<tr><td><strong>Compute</strong></td><td>Lower inference cost at equal epistemic quality</td><td>Higher cost, same fabrication rate</td></tr>
-<tr><td><strong>Result</strong></td><td>Structural margin advantage — can price competitively while profitable</td><td>Margin pressure: paying more for less reliable output</td></tr>
-</tbody></table>
+<p style="margin-top:14px"><a href="/paper/" style="font-family:var(--mono);font-size:14px;font-weight:700">Read the whitepaper →</a> &nbsp; <a href="/reports/" style="font-family:var(--mono);font-size:14px;font-weight:700">Browse sector reports →</a></p>
 
-<h3>2. The Regulatory Wall</h3>
-<table><thead><tr><th></th><th>Competitor with ONTO</th><th>You without ONTO</th></tr></thead><tbody>
-<tr><td><strong>Evidence</strong></td><td>Ed25519 proof chain — every response scored, signed, verifiable</td><td>Manual documentation, ad-hoc safety reports</td></tr>
-<tr><td><strong>Cycle</strong></td><td>Compliance-ready from day one of deployment</td><td>Months of audit preparation per jurisdiction</td></tr>
-<tr><td><strong>Result</strong></td><td>Access to regulated markets: FinTech, MedTech, Gov, Defense</td><td>Blocked from high-value contracts requiring conformity assessment</td></tr>
-</tbody></table>
-
-<h3>3. The Innovation Ceiling</h3>
-<table><thead><tr><th></th><th>Competitor with ONTO</th><th>You without ONTO</th></tr></thead><tbody>
-<tr><td><strong>Engineering</strong></td><td>Safety solved at API layer — team builds product features</td><td>Best engineers consumed by RLHF, prompt patches, QA cycles</td></tr>
-<tr><td><strong>Velocity</strong></td><td>Ship weekly — epistemic quality is guaranteed by infrastructure</td><td>Ship quarterly — each release requires safety re-verification</td></tr>
-<tr><td><strong>Result</strong></td><td>Product evolves continuously</td><td>Product stalls while competitors accelerate</td></tr>
-</tbody></table>
-
-<h3>4. The Trust Lock-in</h3>
-<table><thead><tr><th></th><th>Competitor with ONTO</th><th>You without ONTO</th></tr></thead><tbody>
-<tr><td><strong>Client integration</strong></td><td>Proof chain embeds into client compliance systems</td><td>Raw API — substitutable by any cheaper provider</td></tr>
-<tr><td><strong>Switching cost</strong></td><td>High — removing ONTO means losing audit trail</td><td>Zero — client leaves for 5% price reduction</td></tr>
-<tr><td><strong>Result</strong></td><td>Ecosystem with long-term retention</td><td>Commodity service with high churn</td></tr>
-</tbody></table>
-
-<h2>Full Impact Matrix: 43 Zones, 9 Categories</h2>
-
-<h3>I. Operational</h3>
-<table><thead><tr><th>Zone</th><th>With ONTO</th><th>Without ONTO</th></tr></thead><tbody>
-<tr><td>AI Safety / QA</td><td>Automated epistemic audit via scoring engine</td><td>Manual RLHF, regex filters, prompt engineering</td></tr>
-<tr><td>Legal / Compliance</td><td>Ed25519 proof chain, continuous audit trail</td><td>"We are not responsible for AI output" + liability reserves</td></tr>
-<tr><td>Risk Management</td><td>Deterministic risk score (0–1) per response</td><td>Actuarial estimates, incident reserves</td></tr>
-<tr><td>Sales Cycle</td><td>Certificate shortens compliance review</td><td>Months proving safety to each prospect</td></tr>
-<tr><td>Team Allocation</td><td>Engineers reallocated from QA to product development</td><td>Senior engineers maintaining safety workarounds</td></tr>
-</tbody></table>
-
-<h3>II. Infrastructure</h3>
-<table><thead><tr><th>Zone</th><th>With ONTO</th><th>Without ONTO</th></tr></thead><tbody>
-<tr><td>Compute / GPU</td><td>Epistemic quality without scaling parameters — tested on 22 models</td><td>Larger models to chase accuracy, diminishing returns</td></tr>
-<tr><td>Electricity</td><td>Lower compute = lower energy consumption</td><td>Megawatts on inference + safety layers</td></tr>
-<tr><td>Bandwidth / Tokens</td><td>VQ↓ reduces verbose filler in model output</td><td>Vague qualifiers inflate token count per response</td></tr>
-<tr><td>Latency</td><td>Compact model + discipline layer = faster response</td><td>Larger model = slower inference</td></tr>
-</tbody></table>
-
-<h3>III. Economic</h3>
-<table><thead><tr><th>Zone</th><th>With ONTO</th><th>Without ONTO</th></tr></thead><tbody>
-<tr><td>Token Cost</td><td>Compact model economics</td><td>Premium model pricing to compensate quality gap</td></tr>
-<tr><td>Time-to-Production</td><td>Pre-certified epistemic quality — deploy in weeks</td><td>Months of safety testing per release</td></tr>
-<tr><td>Insurance / Liability</td><td>Proof of epistemic control = insurable risk</td><td>High premiums or self-insurance for AI liability</td></tr>
-<tr><td>Pricing Power</td><td>Premium for verified output — clients pay for trust</td><td>Price competition on $/token — race to bottom</td></tr>
-<tr><td>Customer Retention</td><td>Proof chain integration creates switching cost</td><td>Commodity API — replaceable at any discount</td></tr>
-</tbody></table>
-
-<h3>IV. Environmental (ESG)</h3>
-<table><thead><tr><th>Zone</th><th>With ONTO</th><th>Without ONTO</th></tr></thead><tbody>
-<tr><td>CO₂ Footprint</td><td>Reduced with compute requirements</td><td>Directly proportional to compute</td></tr>
-<tr><td>Water Consumption</td><td>Lower cooling demand</td><td>Datacenter cooling at scale = millions of liters</td></tr>
-<tr><td>ESG Reporting</td><td>Measurable reduction in AI-related footprint</td><td>"We are committed to sustainability" — no metrics</td></tr>
-</tbody></table>
-
-<h3>V. Regulatory</h3>
-<table><thead><tr><th>Zone</th><th>With ONTO</th><th>Without ONTO</th></tr></thead><tbody>
-<tr><td>EU AI Act</td><td>Built-in conformity evidence (Art. 9, 13, 15, 43)</td><td>Years of preparation and documentation</td></tr>
-<tr><td>Audit Readiness</td><td>Continuous signed proof chain — always audit-ready</td><td>Ad-hoc documentation assembled per audit</td></tr>
-<tr><td>Cross-border Deployment</td><td>Universal standard — one proof chain, all jurisdictions</td><td>Per-jurisdiction approval process</td></tr>
-</tbody></table>
-
-<h3>VI. Product</h3>
-<table><thead><tr><th>Zone</th><th>With ONTO</th><th>Without ONTO</th></tr></thead><tbody>
-<tr><td>QA / Testing</td><td>Deterministic scoring — automated, reproducible</td><td>Manual testing cycles per release</td></tr>
-<tr><td>Model Collapse</td><td>GOLD Core provides stable epistemic anchor — not affected by synthetic data degradation</td><td>Model quality degrades over time on synthetic training data</td></tr>
-<tr><td>Data Poisoning</td><td>External reference standard not in training pipeline — cannot be poisoned</td><td>Vulnerable to training data contamination</td></tr>
-<tr><td>Multi-model Flexibility</td><td>ONTO is model-agnostic — works with any provider</td><td>Locked to one model/provider stack</td></tr>
-<tr><td>Output Consistency</td><td>Deterministic epistemic floor — minimum quality guaranteed</td><td>Stochastic — same prompt may produce different quality</td></tr>
-</tbody></table>
-
-<h3>VII. Revenue</h3>
-<table><thead><tr><th>Zone</th><th>With ONTO</th><th>Without ONTO</th></tr></thead><tbody>
-<tr><td>TAM Expansion</td><td>Access to Medical, Legal, Gov, Finance, Defense</td><td>Limited to chatbot / assistant market</td></tr>
-<tr><td>LTV</td><td>Proof chain integrates into client systems — high switching cost</td><td>Low switching cost — churn at any price reduction</td></tr>
-<tr><td>CAC</td><td>Certificate accelerates trust — shorter sales cycle</td><td>Long POC cycles, manual compliance proof</td></tr>
-<tr><td>Valuation</td><td>Infrastructure positioning — valued as standard, not SaaS</td><td>Commodity positioning — valued on revenue multiple</td></tr>
-</tbody></table>
-
-<h3>VIII. Support &amp; Operations</h3>
-<table><thead><tr><th>Zone</th><th>With ONTO</th><th>Without ONTO</th></tr></thead><tbody>
-<tr><td>Engineering Escalations</td><td>Fewer fabrication-related incidents reaching engineering</td><td>Support escalates AI errors to engineering regularly</td></tr>
-<tr><td>Incident Response</td><td>Proof chain provides instant root cause — signed audit trail</td><td>Ad-hoc investigation per incident</td></tr>
-<tr><td>Vendor Dependency</td><td>Model-agnostic layer — switch providers without losing discipline</td><td>Locked to one provider's safety stack</td></tr>
-</tbody></table>
-
-<h3>IX. Strategic</h3>
-<table><thead><tr><th>Zone</th><th>With ONTO</th><th>Without ONTO</th></tr></thead><tbody>
-<tr><td>Due Diligence</td><td>Continuous proof chain — safety posture verifiable in days</td><td>"Prove your AI is safe" — months of documentation</td></tr>
-<tr><td>IP Position</td><td>Methodology + proof chain = defensible technical moat</td><td>No differentiation in safety approach</td></tr>
-<tr><td>Reproducibility</td><td>Every score tied to σ(t) — fully reproducible</td><td>Same prompt → different output → cannot reproduce results</td></tr>
-</tbody></table>
-
-<h2>Evidence Classification</h2>
-<h3>✅ Tested — Experimental Data (CS-2026-001)</h3>
-<ul>
-<li>10× composite epistemic improvement across 22 models tested</li>
-<li>U-Recall: 0.009 → 0.964 (models admit unknowns 107× more often with GOLD Core)</li>
-<li>Cross-domain transfer ratio: 8 of 11 models lose &gt;50% rigor when domain changes</li>
-<li>Ed25519 proof chain: operational, verifiable via public API</li>
-<li>Deterministic scoring: same input → same score, every run</li>
-</ul>
-<h3>⚠️ Projected — Structural Consequences of Tested Capabilities</h3>
-<ul>
-<li>Compute reduction: follows from model-agnostic behavioral layer (no parameter scaling required)</li>
-<li>Team reallocation: follows from automated scoring replacing manual QA</li>
-<li>TAM expansion: follows from compliance readiness in regulated markets</li>
-<li>Premium pricing: follows from verified output vs unverified output</li>
-</ul>
-<div class="dd"><strong>Note:</strong> Projected impacts are structural consequences of tested capabilities. Specific dollar amounts, percentage reductions, and timeline estimates depend on your deployment context, scale, and industry.</div>
-<p style="font-size:13px;color:var(--text-m);margin-top:32px;">Full research: <a href="/paper/">WP-2026-002</a> · Contact: <a href="mailto:council@ontostandard.org">council@ontostandard.org</a></p>
 </div><div class="sd"></div>
-
 <!-- ARTICLES -->
 <div class="ds da" id="doc-articles" data-nav="articles">
-<h1>Articles</h1>
-<div class="dm"><span class="db-g bg-g">Updated regularly</span></div>
-<div class="article-card"><h3>Why AI Needs an Exoskeleton, Not a Diagnosis</h3><div class="article-meta">ONTO Standards Council · January 2026</div><p>The AI industry is focused on making models smarter. ONTO takes a different approach — providing epistemic infrastructure that both measures and grounds AI outputs, strengthening epistemic discipline without modifying the model itself.</p></div>
-<div class="article-card"><h3>Epistemic Risk: The Metric Nobody Is Tracking</h3><div class="article-meta">ONTO Standards Council · January 2026</div><p>Most AI monitoring tools focus on data drift and performance metrics. Epistemic risk — the gap between what a model claims to know and what it actually knows — remains unmeasured in production systems.</p></div>
-<div class="article-card"><h3>How Regulated Industries Can Prepare for the EU AI Act</h3><div class="article-meta">ONTO Standards Council · February 2026</div><p>The EU AI Act requires risk management, transparency, and conformity assessment. ONTO certification maps directly to Articles 9, 13, 15, and 43.</p></div>
-<div class="article-card" style="border-color:rgba(34,197,94,.3)"><h3><a href="/paper/" style="color:var(--text);text-decoration:none">ONTO Standard: Deterministic Epistemic Discipline Enforcement for Production LLM Systems</a></h3><div class="article-meta">ONTO Standards Council · March 2026 · Technical Report CS-2026-001</div><p>22 models tested, 10× composite improvement (0.53 → 5.38). Per-metric breakdown: QD 30.8×, SS 27×, UM 5.2×, CONF created from zero. Cross-domain transfer in 4/5 metrics. Deterministic scoring engine (1073 lines), zero AI in evaluation. <a href="/paper/">Read paper →</a></p></div>
-<div class="article-card" style="border-color:rgba(34,197,94,.3)"><h3><a href="/encounter/" style="color:var(--text);text-decoration:none">Field Observation: What Happens When AI Encounters ONTO</a></h3><div class="article-meta">ONTO Standards Council · February 2026 · 4 Acts, 12 Phases</div><p>A production AI model encountered ontostandard.org without GOLD Core injection. Documented: behavioral transfer, confident fabrication, self-diagnosis, spontaneous ROI calculation, and the model independently writing ONTO Proxy's value proposition through its own failures. <a href="/encounter/">Read full observation →</a></p></div>
-<p style="color:var(--text-m);font-size:12px;margin-top:20px">12 published reports total. Subscribe: <a href="mailto:council@ontostandard.org">council@ontostandard.org</a></p>
+<h1>Reports &amp; field observations</h1>
+<div class="dm"><span class="db-g bg-g">Published</span><span>Cross-domain studies · field reports · evidence</span></div>
+<p>Published technical reports, cross-domain studies, and field observations are maintained as a separate, citable archive. Each report has a fixed identifier (CS-2026-00x), a publication date, and an immutable scope. Reports underpin the claims in this documentation.</p>
+<p style="margin-top:14px"><a href="/reports/" style="font-family:var(--mono);font-size:14px;font-weight:700">Browse the reports archive →</a> &nbsp; <a href="/paper/" style="font-family:var(--mono);font-size:14px;font-weight:700">Read the whitepaper →</a></p>
 </div><div class="sd"></div>
 
 <div class="ds da" id="doc-faq" data-nav="faq">
@@ -1270,16 +1287,16 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">My AI fabricates answers. Will ONTO fix this?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Yes. ONTO teaches your AI to cite sources (R4), quantify claims (R1), state uncertainty (R2), and say "I don't have this data" (R7). These are skills it never had — not filters that block output. Measured result: 6.5/C → 9.7/A on the same model. No retraining, no fine-tuning, no weight changes. <a href="#evidence">See data</a>.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How is this different from guardrails / safety filters?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Guardrails remove capabilities. ONTO adds them. A guardrail says "don't talk about this topic." ONTO says "cite your source, quantify your confidence, present the counterargument." The model becomes stronger, not more restricted. Every rule is a new skill.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Does ONTO modify my model?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">No. Zero changes to weights, architecture, or training. ONTO injects a discipline layer at inference time through the system prompt. Your model is untouched. It receives behavioral instructions — like giving a brilliant but undisciplined employee a methodology to follow.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What AI models does ONTO work with?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Any model accessible via API. Tested on GPT-4o, GPT-3.5, Claude, Gemini, Llama, Mistral, Grok, DeepSeek, Command R+. Results consistent across all: discipline transfers regardless of model architecture.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What AI models does ONTO work with?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Any model accessible via API. Tested across leading frontier models from major providers — OpenAI, Anthropic, Google, xAI, DeepSeek, Mistral, Meta, Cohere, and others. Discipline transfers regardless of architecture, training data, or scale.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How do I start?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Fastest: paste any AI text into <code>/v1/validate</code> — no account needed, see an R1-R7 report in seconds. Next: create account at <a href="/app/">ontostandard.org/app</a>, register a model, send your first <code>/v1/agent/chat</code> request. See <a href="#quickstart">Integration Paths</a>.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What does it cost?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Nothing. ONTO is free for all companies. Full GOLD discipline, full scoring, Ed25519 signed proof chain. No restrictions, no trial period, no credit card. We're building the epistemic standard for the industry — that only works if builders can use it.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What does it cost?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Four tiers. <strong>OPEN</strong> $0/month — 10 proxy requests/day, full GOLD discipline, Ed25519 proof chain, attribution required. Sufficient for evaluation. <strong>STANDARD</strong> $2,500/month — 1,000 requests/day, dashboard, email support. <strong>PROVIDER</strong> $250,000/year — unlimited, SSE delivery to your infrastructure, 24-month audit trail. <strong>WHITE-LABEL</strong> $500,000/year — unlimited, own branding. <a href="#quickstart">See full table</a>.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How do you score responses? Is another AI judging?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">No. Scoring is deterministic — regex pattern matching against 92+ epistemic markers. No AI in the evaluation loop. Same input produces the same score every time. The scorer is 1073 lines of Python, <a href="https://github.com/nickarstrong/onto-research" target="_blank">published on GitHub</a>.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Does ONTO help with EU AI Act compliance?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">ONTO provides quantitative evidence for Art. 9 (risk), Art. 13 (transparency), Art. 15 (accuracy). Every evaluation is cryptographically signed — verifiable proof that your AI was assessed at a specific time with specific results. Not a substitute for full compliance, but the measurable evidence regulators ask for.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is the long-term vision?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">ONTO OS — a thinking system for AI. Today: API for existing models. Next: SDK for new AI development. Then: embedded in robots and medical devices. Ultimately: AI that builds its own verified knowledge base, filtering every new fact through R1-R7 before storing it. <a href="#vision">Full vision</a>.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What exactly does ONTO measure?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Six surface metrics (QD, SS, UM, CP, VQ, CONF) plus four advanced metrics (REP, EpCE, DLA, IGR). Together they tell you: does the AI cite sources? Quantify claims? Admit uncertainty? Contradict itself between language and computation? Every metric is deterministic — same input, same score, every run. <a href="#tech-ref">Full metric reference</a>.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does certification work?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Five steps: (1) Organization submits request, (2) Independent evaluation via ONTO-Bench (268+ samples), (3) Standards Council review, (4) Certificate issued (12-month validity), (5) Public registry entry. Certificates are verifiable at <code>ontostandard.org/verify/</code>. <a href="#ers">Full ONTO-ERS standard</a>.</div></div>
 <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is the Ed25519 signed proof?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Every evaluation produces a 104-byte packet: 8 bytes timestamp + 32 bytes SHA-256 hash + 64 bytes Ed25519 signature. This is your audit trail — verifiable evidence that a specific AI output was scored at a specific time with specific results. Publicly verifiable at <code>/v1/verify/{hash}</code>, no authentication required. Not blockchain — standard public-key cryptography.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is the free tier really free?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Yes. OPEN tier: 10 proxy requests/day with GOLD Core injection and Ed25519 signed scoring at zero cost. Attribution required. When you need more: STANDARD ($2,500/mo) gives 1,000 requests/day. All tiers currently free during early adoption — full access, no credit card, no sales call. <a href="#quickstart">See all tiers</a>.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is the OPEN tier really free?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg></div><div class="faq-a">Yes. OPEN: 10 proxy requests/day with GOLD Core injection and Ed25519 signed scoring at $0/month. Attribution required. When workload exceeds 10/day: STANDARD ($2,500/month) provides 1,000 requests/day. <a href="#quickstart">See all tiers</a>.</div></div>
 </div><div class="sd"></div>
 
 <div class="ds da" id="doc-changelog" data-nav="changelog">
@@ -1664,15 +1681,26 @@ checkAuth();
 // Auto-show reset form if reset_token in URL
 (function(){const p=new URLSearchParams(window.location.search);if(p.get('reset_token')){openAuth();setTimeout(()=>afShow('reset'),100)}})();
 const secs=document.querySelectorAll('.ds[data-nav]'),nls=document.querySelectorAll('.nl[data-doc]');
-function updNav(id){nls.forEach(l=>l.classList.remove('active'));const t=document.querySelector(`.nl[data-doc="${id}"]`);if(t){t.classList.add('active');t.scrollIntoView({block:'nearest',behavior:'smooth'})}}
-const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const id=e.target.getAttribute('data-nav');if(id){updNav(id);const h='#'+id;if(location.hash!==h)history.replaceState(null,'',h)}}})},{rootMargin:'-20% 0px -60% 0px',threshold:0});
-secs.forEach(s=>obs.observe(s));
-nls.forEach(l=>l.addEventListener('click',function(e){const id=this.getAttribute('data-doc');if(!id)return;e.preventDefault();const t=document.getElementById('doc-'+id);if(t){t.scrollIntoView({behavior:'smooth',block:'start'});history.replaceState(null,'','#'+id);updNav(id);closeSB()}}));
-function handleHash(){const h=location.hash.replace('#','');if(h){let t=document.getElementById('doc-'+h);if(!t)t=document.getElementById(h);if(t){setTimeout(()=>t.scrollIntoView({behavior:'smooth',block:'start'}),100);const n=t.closest('.ds[data-nav]');if(n)updNav(n.getAttribute('data-nav'))}}}
+function updNav(id,scrollSidebar){nls.forEach(l=>l.classList.remove('active'));const t=document.querySelector(`.nl[data-doc="${id}"]`);if(t){t.classList.add('active');if(scrollSidebar)t.scrollIntoView({block:'nearest',behavior:'smooth'})}}
+let curNav=null,scrollPending=false;
+function detectActive(){
+  if(!secs.length)return;
+  const sH=document.body.scrollHeight,wH=window.innerHeight,sY=window.scrollY;
+  if(sH-wH-sY<80){const id=secs[secs.length-1].getAttribute('data-nav');if(id&&id!==curNav){curNav=id;updNav(id,false);const h='#'+id;if(location.hash!==h)history.replaceState(null,'',h)}return}
+  const trigger=sY+120;let active=null;
+  secs.forEach(s=>{const top=s.getBoundingClientRect().top+sY;if(top<=trigger)active=s.getAttribute('data-nav')});
+  if(active&&active!==curNav){curNav=active;updNav(active,false);const h='#'+active;if(location.hash!==h)history.replaceState(null,'',h)}
+}
+function onScroll(){if(!scrollPending){requestAnimationFrame(()=>{detectActive();scrollPending=false});scrollPending=true}}
+window.addEventListener('scroll',onScroll,{passive:true});
+window.addEventListener('resize',detectActive);
+detectActive();
+nls.forEach(l=>l.addEventListener('click',function(e){const id=this.getAttribute('data-doc');if(!id)return;e.preventDefault();const t=document.getElementById('doc-'+id);if(t){t.scrollIntoView({behavior:'smooth',block:'start'});history.replaceState(null,'','#'+id);curNav=id;updNav(id,true);closeSB()}}));
+function handleHash(){const h=location.hash.replace('#','');if(h){let t=document.getElementById('doc-'+h);if(!t)t=document.getElementById(h);if(t){setTimeout(()=>t.scrollIntoView({behavior:'smooth',block:'start'}),100);const n=t.closest('.ds[data-nav]');if(n){const id=n.getAttribute('data-nav');curNav=id;updNav(id,true)}}}}
 handleHash();window.addEventListener('hashchange',handleHash);
 // Render KaTeX formulas in methodology section
-document.addEventListener('DOMContentLoaded',()=>{if(typeof renderMathInElement==='function')renderMathInElement(document.getElementById('doc-methodology'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})});
-window.addEventListener('load',()=>{if(typeof renderMathInElement==='function')renderMathInElement(document.getElementById('doc-methodology'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})});
+document.addEventListener('DOMContentLoaded',()=>{if(typeof renderMathInElement==='function')renderMathInElement(document.querySelector('.mc'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false})});
+window.addEventListener('load',()=>{if(typeof renderMathInElement==='function')renderMathInElement(document.querySelector('.mc'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false})});
 function toggleFaq(el){el.parentElement.classList.toggle('open')}
 let stars=0;function setStar(n){stars=n;document.querySelectorAll('#ss span').forEach((s,i)=>{s.classList.toggle('active',i<n)})}
 async function submitRv(){const n=document.getElementById('rv-name').value.trim(),r=document.getElementById('rv-role').value.trim(),t=document.getElementById('rv-text').value.trim();if(!n||!t||!stars){afToast('Please fill name, rating, and review','error');return}try{const res=await fetch(AF_API+'/v1/reviews',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,role:r,stars:stars,text:t})});if(res.ok){document.getElementById('rv-ok').style.display='block';document.getElementById('rv-name').value='';document.getElementById('rv-role').value='';document.getElementById('rv-text').value='';stars=0;document.querySelectorAll('#ss span').forEach(s=>s.classList.remove('active'))}else{afToast('Submission failed','error')}}catch(e){afToast('Network error','error')}}
