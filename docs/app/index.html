@@ -1,50 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://api.ontostandard.org; frame-ancestors 'none'">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ONTO — Client Portal</title>
-<meta name="description" content="ONTO Client Portal — Connect your AI model, measure epistemic discipline, get scored and certified. 10× measured improvement.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.ontostandard.org; frame-ancestors 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ONTO — Provider Console</title>
+<meta name="description" content="ONTO Standards Council · Provider Console. Continuous attestation framework. Stream your model, sign signals, publish certificates.">
 <meta name="robots" content="noindex, nofollow">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='17' fill='white'/%3E%3Cpath d='M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z' fill='%230a0a0a'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Ccircle cx='200' cy='200' r='200' fill='%230a0a0a'/%3E%3Ccircle cx='200' cy='88' r='32' fill='white'/%3E%3Crect x='135' y='140' width='130' height='26' fill='white'/%3E%3Crect x='170' y='140' width='60' height='195' fill='white'/%3E%3Crect x='125' y='320' width='150' height='28' fill='white'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
     color-scheme: dark;
-    --bg: #0a0a0a;
-    --bg-secondary: #121212;
-    --bg-card: #1a1a1a;
-    --bg-elevated: #242424;
-    --border: #333333;
-    --border-hover: #444444;
-    --text: #fafafa;
-    --text-secondary: #a0a0a0;
-    --text-muted: #606060;
-    --accent: #15803d;
-    --accent-hover: #166534;
-    --accent-subtle: rgba(21, 128, 61, 0.1);
+    --bg: #18181b;
+    --bg-secondary: #1c1c20;
+    --bg-card: #1f1f23;
+    --bg-elevated: rgba(255,255,255,.05);
+    --border: rgba(255,255,255,.18);
+    --border-hover: rgba(255,255,255,.28);
+    --text: #f4f4f5;
+    --text-secondary: #e4e4e7;
+    --text-muted: #b4b4b8;
+    --text-faint: #71717a;
+    --accent: #22c55e;
+    --accent-hover: #15803d;
+    --accent-subtle: rgba(34,197,94,.12);
+    --accent-border: rgba(34,197,94,.35);
     --danger: #dc2626;
-    --danger-subtle: rgba(220, 38, 38, 0.1);
-    --blue: #64748b;
-    --blue-subtle: rgba(59, 130, 246, 0.1);
+    --danger-subtle: rgba(220,38,38,.12);
+    --danger-soft: #f87171;
+    --blue: #2563eb;
+    --blue-subtle: rgba(37,99,235,.12);
+    --purple: #7c3aed;
+    --gold: #b45309;
+    --grid-line: rgba(255,255,255,.04);
+    --font: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
 }
 
 /* === LIGHT THEME === */
 [data-theme="light"] {
     color-scheme: light;
-    --bg: #ffffff;
-    --bg-secondary: #fafafa;
+    --bg: #f7f7f7;
+    --bg-secondary: #ffffff;
     --bg-card: #ffffff;
-    --bg-elevated: #f5f5f5;
+    --bg-elevated: #f3f4f6;
     --border: #e5e7eb;
     --border-hover: #d1d5db;
-    --text: #111827;
-    --text-secondary: #6b7280;
-    --text-muted: #9ca3af;
+    --text: #0a0a0a;
+    --text-secondary: #3a3a3a;
+    --text-muted: #666666;
+    --accent: #22c55e;
+    --accent-hover: #15803d;
+    --accent-subtle: rgba(34,197,94,.08);
+    --accent-border: rgba(34,197,94,.25);
+    --grid-line: rgba(0,0,0,.04);
 }
+
+/* === ONTO GLYPH (canonical logo helper · auto-inverts per theme) === */
+.onto-glyph { display: block; }
+.onto-glyph .bg { fill: var(--text); }
+.onto-glyph .fg { fill: var(--bg); }
 [data-theme="light"] select,
 [data-theme="light"] select option,
 [data-theme="light"] select optgroup {
@@ -69,28 +90,80 @@
     }
 }
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6; color: var(--text); background: var(--bg-secondary); }
+body {
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh; min-height: 100dvh;
+}
+body::before {
+    content: '';
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0;
+    background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 32px 32px;
+}
+.auth-container, .dashboard, .auth-menu, .modal-overlay, .toast-container { position: relative; z-index: 1; }
 
 /* === AUTH === */
-.auth-container { min-height: 100vh; display: flex; align-items: stretch; }
-.auth-hero { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 48px 56px; background: var(--bg); border-right: 1px solid var(--border); }
-.auth-hero h1 { font-size: 28px; font-weight: 700; line-height: 1.25; margin-bottom: 16px; letter-spacing: -0.5px; }
-.auth-hero p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; max-width: 400px; }
-.auth-hero-stats { display: flex; gap: 32px; margin-top: 40px; padding-top: 32px; border-top: 1px solid var(--border); }
-.auth-hero-stat { display: flex; flex-direction: column; }
-.auth-hero-stat strong { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.auth-hero-stat span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
-.auth-form-side { width: 480px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 24px 40px; background: var(--bg-card); }
-.auth-card { background: none; border: none; border-radius: 0; padding: 0; width: 100%; max-width: 380px; }
-.auth-title { font-size: 15px; font-weight: 600; text-align: center; margin-bottom: 4px; }
-.auth-subtitle { color: var(--text-secondary); text-align: center; margin-bottom: 24px; font-size: 12px; }
+.auth-container {
+    min-height: 100vh; min-height: 100dvh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 32px 20px;
+    padding-top: max(32px, env(safe-area-inset-top));
+    padding-bottom: max(32px, env(safe-area-inset-bottom));
+}
+.auth-brand {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 32px;
+}
+.auth-brand .name-block { display: flex; flex-direction: column; line-height: 1; gap: 4px; }
+.auth-brand .name { font-size: 17px; font-weight: 700; letter-spacing: .8px; color: var(--text); }
+.auth-brand .role-tag {
+    font-family: var(--mono); font-size: 9.5px; color: var(--text-faint);
+    letter-spacing: 1.6px; text-transform: uppercase; font-weight: 600;
+}
+.auth-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 32px 28px;
+    width: 100%; max-width: 440px;
+}
+.auth-title {
+    font-size: 22px; font-weight: 700; color: var(--text);
+    text-align: left;
+    letter-spacing: -.4px; margin-bottom: 6px;
+}
+.auth-subtitle {
+    color: var(--text-muted); text-align: left;
+    margin-bottom: 22px; font-size: 13.5px; line-height: 1.55;
+}
+.auth-foot {
+    text-align: center;
+    font-family: var(--mono); font-size: 10px;
+    color: var(--text-faint);
+    letter-spacing: 1.2px; text-transform: uppercase;
+    padding: 24px 16px 12px;
+}
+.auth-foot .links { margin-top: 8px; }
+.auth-foot .links a { color: var(--text-muted); margin: 0 6px; text-decoration: none; }
+.auth-foot .links a:hover { color: var(--accent); }
 
 /* === FORMS === */
-.form-group { margin-bottom: 14px; }
-.form-label { display: block; font-size: 11px; font-weight: 500; margin-bottom: 4px; text-transform: uppercase; letter-spacing: .3px; color: var(--text-muted); }
-.form-input { width: 100%; padding: 8px 10px; font-size: 13px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-elevated); color: var(--text); transition: all 0.15s; }
-.form-input::placeholder { color: var(--text-muted); opacity: 0.7; }
-.form-input:focus { outline: none; border-color: var(--accent); }
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-family: var(--mono); font-size: 10px; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1.3px; color: var(--text-faint); }
+.form-input { width: 100%; padding: 12px 14px; font-size: 14px; font-family: var(--font); border: 1px solid var(--border); border-radius: 3px; background: var(--bg-secondary); color: var(--text); outline: none; transition: .15s; }
+.form-input::placeholder { color: var(--text-faint); }
+.form-input:hover:not(:focus) { border-color: var(--border-hover); }
+.form-input:focus { border-color: var(--accent); background: var(--bg); box-shadow: 0 0 0 3px rgba(34,197,94,.10); }
 .form-input.error { border-color: var(--danger); }
 .form-input.error:focus { box-shadow: none; }
 
@@ -109,19 +182,46 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Ar
 .form-inst select.form-input option { background: var(--bg-card); color: var(--text); padding: 8px; }
 .form-inst select.form-input optgroup { background: var(--bg-elevated); color: var(--text-secondary); font-weight: 600; }
 .form-inst select.form-input.valid { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); }
+/* === PASSWORD TOGGLE · v6 === */
 .password-wrapper { position: relative; }
-.password-toggle { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted); }
+.password-wrapper .form-input { padding-right: 44px; }
+.password-toggle {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  width: 32px; height: 32px;
+  background: transparent; border: 0;
+  color: var(--text-muted); border-radius: 3px;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: .15s;
+}
+.password-toggle:hover { color: var(--text); background: var(--bg-elevated); }
+.password-toggle svg { width: 16px; height: 16px; }
 
-/* === TERMS SCROLL === */
-.terms-container { border: 1px solid var(--border); border-radius: 4px; height: 160px; overflow-y: auto; padding: 12px; margin-bottom: 12px; background: var(--bg); font-size: 12px; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
-.terms-container h3 { font-size: 12px; margin: 12px 0 4px; color: var(--text); }
+/* === TERMS SCROLL · v6 === */
+.terms-container {
+  margin: 14px 0 4px;
+  padding: 14px 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  max-height: 160px;
+  overflow-y: auto;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.terms-container h3 {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 1.3px;
+  text-transform: uppercase; color: var(--text-faint); font-weight: 600;
+  margin: 10px 0 6px;
+}
 .terms-container h3:first-child { margin-top: 0; }
-.terms-container p { margin-bottom: 4px; color: var(--text-secondary); }
-.terms-container ul { margin: 4px 0 4px 16px; }
-.terms-container li { margin-bottom: 2px; color: var(--text-secondary); }
-.terms-container table { width: 100%; margin: 4px 0; font-size: 11px; border-collapse: collapse; }
-.terms-container th, .terms-container td { padding: 4px 6px; border: 1px solid var(--border); text-align: left; }
-.terms-container th { background: var(--bg-elevated); font-weight: 500; }
+.terms-container p { margin-bottom: 6px; }
+.terms-container strong { color: var(--text-secondary); font-weight: 600; }
+.terms-container a { color: var(--accent); }
+.terms-container a:hover { color: var(--accent-hover); }
 
 .checkbox-group { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 16px; }
 .agreement-notice { font-size: 11px; color: var(--text-secondary); margin-bottom: 10px; line-height: 1.5; }
@@ -134,16 +234,62 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Ar
 .checkbox-group label { font-size: 12px; color: var(--text-secondary); cursor: pointer; }
 .checkbox-group a { color: var(--accent); text-decoration: none; }
 
-/* === BUTTONS === */
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 16px; font-size: 13px; font-weight: 500; border-radius: 6px; border: none; cursor: pointer; transition: all 0.15s; text-decoration: none; width: 100%; }
-.btn-primary { background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--accent); }
-.btn-primary:hover { background: var(--accent); color: white; }
-.btn-primary:disabled { background: var(--bg-elevated); color: var(--text-muted); cursor: not-allowed; transform: none; pointer-events: none; border-color: var(--border); }
-.btn-secondary { background: transparent; color: var(--text-secondary); border: 1px solid var(--border); }
-.btn-secondary:hover { background: var(--bg-elevated); color: var(--text); }
+/* === BUTTONS · v6 === */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 13px 18px;
+  font-family: var(--mono); font-size: 12px; font-weight: 700;
+  letter-spacing: 1.3px; text-transform: uppercase;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  cursor: pointer; transition: .15s;
+  text-decoration: none;
+  width: 100%; min-height: 48px;
+}
+.btn-primary {
+  background: var(--accent); color: var(--bg);
+  border-color: var(--accent);
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-hover); border-color: var(--accent-hover);
+}
+.btn-primary:disabled {
+  background: var(--bg-elevated); color: var(--text-faint);
+  border-color: var(--border); cursor: not-allowed; pointer-events: none;
+}
+.btn-secondary {
+  background: transparent; color: var(--text-secondary);
+  border-color: var(--border);
+}
+.btn-secondary:hover {
+  border-color: var(--border-hover); color: var(--text);
+  background: var(--bg-elevated);
+}
 
-.auth-switch { text-align: center; margin-top: 20px; font-size: 12px; color: var(--text-secondary); }
-.auth-switch a { color: var(--accent); text-decoration: none; font-weight: 500; cursor: pointer; }
+/* === AUTH-SWITCH · v6 === */
+.auth-switch {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+}
+.auth-switch a {
+  font-weight: 600;
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: none;
+}
+.auth-switch a:hover { color: var(--accent-hover); }
+
+/* === LINKS-ROW · v6 (forgot password link) === */
+.links-row {
+  display: flex; justify-content: flex-end; align-items: center;
+  margin-top: 14px; font-size: 13px;
+}
+.links-row a { color: var(--text-muted); cursor: pointer; text-decoration: none; }
+.links-row a:hover { color: var(--accent); }
 
 /* === AUTH MENU (mobile burger) === */
 .auth-menu { display: none; position: fixed; top: 0; left: 0; width: 280px; height: 100vh; background: var(--bg-card); border-right: 1px solid var(--border); z-index: 102; flex-direction: column; transform: translateX(-100%); transition: transform 0.2s ease; }
@@ -160,9 +306,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Ar
 .auth-menu-sub:hover { color: var(--text); }
 .auth-menu-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 101; }
 .auth-menu-overlay.visible { display: block; }
-.otp-input { width: 40px; height: 46px; text-align: center; font-size: 18px; font-weight: 600; font-family: 'JetBrains Mono', monospace; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 4px; color: var(--text); outline: none; transition: border-color 0.2s; }
-.otp-input:focus { border-color: var(--accent); }
-.otp-input.error { border-color: #ef4444; }
+.otp-input { width: 44px; height: 52px; text-align: center; font-size: 22px; font-weight: 700; font-family: var(--mono); background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 3px; color: var(--text); outline: none; transition: .15s; -webkit-appearance: none; }
+.otp-input:hover:not(:focus) { border-color: var(--border-hover); }
+.otp-input:focus { border-color: var(--accent); background: var(--bg); box-shadow: 0 0 0 3px rgba(34,197,94,.12); }
+.otp-input:not(:placeholder-shown):not(:focus) { border-color: var(--accent-border); background: var(--bg); color: var(--accent); }
+.otp-input.error { border-color: var(--danger-soft); }
 
 /* === DASHBOARD === */
 .dashboard { display: none; min-height: 100vh; }
@@ -617,19 +765,17 @@ a.info-val:hover { color: var(--text); }
 
 @media (max-width: 639px) {
     .auth-title { font-size: 20px; }
-    .otp-input { width: 38px; height: 46px; font-size: 20px; }
+    .otp-input { width: 40px; height: 48px; font-size: 20px; }
+    .auth-container { padding: 24px 16px; }
+    .auth-card { padding: 26px 22px; }
+    .auth-brand { margin-bottom: 24px; }
     .signal-metrics { grid-template-columns: repeat(3, 1fr); }
     .signal-main-row { flex-direction: column; gap: 12px; }
     .signal-countdown-block { text-align: left; }
 }
 
 @media (max-width: 900px) {
-    .auth-container { flex-direction: column; }
-    .auth-hero { padding: 32px 24px 24px; border-right: none; border-bottom: 1px solid var(--border); }
-    .auth-hero h1 { font-size: 22px; }
-    .auth-hero-stats { gap: 24px; margin-top: 24px; padding-top: 20px; }
-    .auth-hero-stat strong { font-size: 18px; }
-    .auth-form-side { width: 100%; padding: 24px; }
+    /* auth layout is now centered single-column at all sizes · no overrides needed */
 }
 
 @media (min-width: 640px) {
@@ -719,7 +865,7 @@ a.info-val:hover { color: var(--text); }
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
     <div class="logo">
-        <svg width="22" height="22" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/></svg>
+        <svg class="onto-glyph" width="22" height="22" viewBox="0 0 400 400"><circle class="bg" cx="200" cy="200" r="200"/><circle class="fg" cx="200" cy="88" r="32"/><rect class="fg" x="135" y="140" width="130" height="26"/><rect class="fg" x="170" y="140" width="60" height="195"/><rect class="fg" x="125" y="320" width="150" height="28"/></svg>
         <span>ONTO</span>
     </div>
     <div style="width: 40px;"></div>
@@ -728,7 +874,7 @@ a.info-val:hover { color: var(--text); }
 <!-- AUTH MENU (burger on login/register screen) -->
 <div class="auth-menu" id="auth-menu">
     <div class="auth-menu-header">
-        <svg width="24" height="24" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" fill="white"/><path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/></svg>
+        <svg class="onto-glyph" width="24" height="24" viewBox="0 0 400 400"><circle class="bg" cx="200" cy="200" r="200"/><circle class="fg" cx="200" cy="88" r="32"/><rect class="fg" x="135" y="140" width="130" height="26"/><rect class="fg" x="170" y="140" width="60" height="195"/><rect class="fg" x="125" y="320" width="150" height="28"/></svg>
         <span style="font-weight: 700; font-size: 18px;">ONTO</span>
         <button class="auth-menu-close" onclick="closeAuthMenu()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -764,29 +910,23 @@ a.info-val:hover { color: var(--text); }
 
 <!-- AUTH SCREEN -->
 <div class="auth-container" id="auth-screen">
-    <div class="auth-hero">
-        <h1>Make your AI<br>epistemically disciplined.</h1>
-        <p>ONTO reduces epistemic error in production LLM systems through deterministic discipline enforcement and auditable scoring.</p>
-        <div class="auth-hero-stats">
-            <div class="auth-hero-stat">
-                <strong>10×</strong>
-                <span>Measured Improvement</span>
-            </div>
-            <div class="auth-hero-stat">
-                <strong>11</strong>
-                <span>Models Tested</span>
-            </div>
-            <div class="auth-hero-stat">
-                <strong>100</strong>
-                <span>Questions Scored</span>
-            </div>
+    <div class="auth-brand">
+        <svg class="onto-glyph" width="36" height="36" viewBox="0 0 400 400">
+            <circle class="bg" cx="200" cy="200" r="200"/>
+            <circle class="fg" cx="200" cy="88" r="32"/>
+            <rect class="fg" x="135" y="140" width="130" height="26"/>
+            <rect class="fg" x="170" y="140" width="60" height="195"/>
+            <rect class="fg" x="125" y="320" width="150" height="28"/>
+        </svg>
+        <div class="name-block">
+            <span class="name">ONTO</span>
+            <span class="role-tag">Provider Console</span>
         </div>
     </div>
-    <div class="auth-form-side">
     <div class="auth-card"><!-- LOGIN FORM -->
         <div id="login-form">
-            <h1 class="auth-title">Welcome back</h1>
-            <p class="auth-subtitle">Sign in to your account</p>
+            <h1 class="auth-title">Sign in</h1>
+            <p class="auth-subtitle">Continue to your provider dashboard.</p>
             
             <div class="form-group">
                 <label class="form-label">Email</label>
@@ -800,21 +940,23 @@ a.info-val:hover { color: var(--text); }
                 </div>
             </div>
             <button class="btn btn-primary" id="login-btn" onclick="handleLogin(this)">Sign In</button>
-            <p style="text-align:right;margin-top:8px"><a onclick="showForgotPassword()" style="color:#8b95a5;font-size:13px;cursor:pointer">Forgot password?</a></p>
-            <p class="auth-switch">Don't have an account? <a onclick="showRegister()">Create one</a></p>
+            <div class="links-row">
+                <a onclick="showForgotPassword()">Forgot password?</a>
+            </div>
+            <p class="auth-switch">Don't have an account? <a onclick="showRegister()">Register</a></p>
         </div>
         
         <!-- REGISTER FORM -->
         <div id="register-form" class="hidden">
-            <h1 class="auth-title">Create Account</h1>
-            <p class="auth-subtitle">Free tier — no credit card required</p>
+            <h1 class="auth-title">Register your account</h1>
+            <p class="auth-subtitle">Stream your model into the ONTO Standards Council registry. Continuous attestation begins on first signal.</p>
             
             <div class="form-group">
-                <label class="form-label">Full Name</label>
-                <input type="text" class="form-input" id="reg-name" placeholder="John Doe">
+                <label class="form-label">Full name</label>
+                <input type="text" class="form-input" id="reg-name" placeholder="Your name">
             </div>
             <div class="form-group">
-                <label class="form-label">Email</label>
+                <label class="form-label">Work email</label>
                 <input type="email" class="form-input" id="reg-email" placeholder="you@company.com">
             </div>
             <div class="form-group">
@@ -823,16 +965,16 @@ a.info-val:hover { color: var(--text); }
                     <input type="password" class="form-input" id="reg-password" placeholder="Min 8 characters">
                     <button type="button" class="password-toggle" onclick="togglePassword('reg-password', this)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
                 </div>
+                <p class="form-help" style="font-size: 11.5px; color: var(--text-faint); margin-top: 6px; line-height: 1.5;">Used to sign in. Choose a strong, unique password.</p>
             </div>
             
             <!-- TERMS SCROLL -->
             <div class="terms-container">
                 <h3>Terms of Service</h3>
-                <p>By creating an account, you agree to the following:</p>
-                <p><strong>Service.</strong> ONTO provides AI evaluation and epistemic risk scoring as a hosted service. Your evaluation data, API keys, and account credentials are stored securely and never shared with third parties.</p>
-                <p><strong>Acceptable Use.</strong> You may use the ONTO platform to evaluate AI model outputs, track risk scores, and obtain certifications for your organization. Automated abuse, reverse engineering of scoring algorithms, and redistribution of evaluation results without attribution are prohibited.</p>
-                <p><strong>Data &amp; Privacy.</strong> We collect email, name, and usage metrics necessary to provide the service. Data is processed in accordance with GDPR. We never sell your data. You may request deletion at any time.</p>
-                <p><strong>Billing.</strong> Open tier includes limited evaluations. Standard billed monthly or annually. AI Provider licensing by agreement. Refund policy applies within 30 days of first payment.</p>
+                <p><strong>Service.</strong> ONTO Standards Council operates a continuous attestation framework for AI models. Registered models stream signed signals (Ed25519) per inference. The Council records signal metadata only — never inference content. Public certificates are derived from signal aggregates and published at <code>ontostandard.org/cert/{provider}</code>.</p>
+                <p><strong>Acceptable use.</strong> Registration is for genuine model attestation. Forging signatures, replaying signals, redistributing other accounts' signal streams, or representing the Council's certificate as a legal entity certification of your company is prohibited.</p>
+                <p><strong>Privacy.</strong> Account fields (email, name, company) and signal metadata are stored under GDPR. Inference content is never transmitted to or stored by the Council. Account deletion removes records within 30 days; published certificates remain immutable in the public ledger.</p>
+                <p><strong>Billing.</strong> Open tier baseline is always-on. Standard, AI Provider, and White-label tier rights are acquired per year and accumulate. Effective limits are computed across all active grants. No automatic renewals; expiry returns the account to Open baseline.</p>
                 <p style="margin-top: 12px;"><strong>Full terms:</strong> <a href="/legal" target="_blank">ontostandard.org/legal</a></p>
             </div>
             
@@ -841,8 +983,8 @@ a.info-val:hover { color: var(--text); }
                 <label for="terms-agree">I agree to the <a href="/docs/#terms" target="_blank">Terms of Service</a> and <a href="/docs/#privacy" target="_blank">Privacy Policy</a></label>
             </div>
             
-            <button class="btn btn-primary" id="register-btn" onclick="handleRegister(this)" disabled>Create Account</button>
-            <p class="auth-switch">Already have an account? <a onclick="showLogin()">Sign in</a></p>
+            <button class="btn btn-primary" id="register-btn" onclick="handleRegister(this)" disabled>Register</button>
+            <p class="auth-switch">Already registered? <a onclick="showLogin()">Sign in</a></p>
         </div>
         
         <!-- OTP VERIFICATION -->
@@ -873,7 +1015,7 @@ a.info-val:hover { color: var(--text); }
                 <p style="color: var(--text-muted); font-size: 13px;">Didn't receive the code?</p>
                 <button class="btn btn-secondary" style="margin-top: 12px;" onclick="resendVerification()">Resend code</button>
             </div>
-            <p style="color: var(--text-muted); font-size: 12px; margin-top: 16px;">Code expires in 15 minutes</p>
+            <p style="color: var(--text-muted); font-size: 12px; margin-top: 16px;">Code expires in 15 minutes · check spam folder if not received</p>
             <p class="auth-switch" style="margin-top: 16px;"><a onclick="showLogin()">Back to sign in</a></p>
         </div>
         
@@ -885,15 +1027,15 @@ a.info-val:hover { color: var(--text); }
                     <polyline points="22 4 12 14.01 9 11.01"/>
                 </svg>
             </div>
-            <h1 class="auth-title">Email verified!</h1>
-            <p class="auth-subtitle">Your account is ready. You can now sign in.</p>
+            <h1 class="auth-title">Email verified</h1>
+            <p class="auth-subtitle">Your account is active. You can sign in now and register your first model.</p>
             <button class="btn btn-primary" style="margin-top: 24px;" onclick="showLogin()">Sign In</button>
         </div>
         
         <!-- FORGOT PASSWORD -->
         <div id="forgot-form" class="hidden">
-            <h1 class="auth-title">Reset password</h1>
-            <p class="auth-subtitle">Enter your email and we'll send a reset link</p>
+            <h1 class="auth-title">Reset your password</h1>
+            <p class="auth-subtitle">Enter your email. If an account exists, we'll send a reset link.</p>
             <div class="form-group">
                 <label class="form-label">Email</label>
                 <input type="email" class="form-input" id="forgot-email" placeholder="you@company.com">
@@ -905,7 +1047,7 @@ a.info-val:hover { color: var(--text); }
         <!-- RESET PASSWORD (from email link) -->
         <div id="reset-form" class="hidden">
             <h1 class="auth-title">Set new password</h1>
-            <p class="auth-subtitle">Choose a strong password</p>
+            <p class="auth-subtitle">Choose a strong password. You'll be signed in after.</p>
             <div class="form-group">
                 <label class="form-label">New Password</label>
                 <div class="password-wrapper">
@@ -916,6 +1058,13 @@ a.info-val:hover { color: var(--text); }
             <button class="btn btn-primary" id="reset-btn" onclick="handleResetPassword(this)">Reset Password</button>
         </div>
     </div>
+    <div class="auth-foot">
+        ONTO Standards Council · Continuous attestation
+        <div class="links">
+            <a href="/docs/" target="_blank">Docs</a>
+            <a href="/legal/" target="_blank">Legal</a>
+            <a href="mailto:council@ontostandard.org">Contact</a>
+        </div>
     </div>
 </div>
 
@@ -924,9 +1073,12 @@ a.info-val:hover { color: var(--text); }
     <aside class="sidebar">
         <div class="sidebar-header">
             <a href="#" onclick="showPage('monitor', null); return false;" class="sidebar-logo" style="text-decoration: none; color: inherit;">
-                <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
-                    <circle cx="18" cy="18" r="17" fill="white"/>
-                    <path d="M16 10L20 10L20 26L16 26L16 14L13 14L13 10L16 10Z" fill="#0a0a0a"/>
+                <svg class="onto-glyph" width="32" height="32" viewBox="0 0 400 400">
+                    <circle class="bg" cx="200" cy="200" r="200"/>
+                    <circle class="fg" cx="200" cy="88" r="32"/>
+                    <rect class="fg" x="135" y="140" width="130" height="26"/>
+                    <rect class="fg" x="170" y="140" width="60" height="195"/>
+                    <rect class="fg" x="125" y="320" width="150" height="28"/>
                 </svg>
                 <span>ONTO</span>
             </a>
@@ -2682,7 +2834,7 @@ async function handleLogin(btn) {
         localStorage.setItem('onto_logged_in', 'true');
         
         setLoading(btn, false);
-        showToast('Welcome back!', 'success');
+        showToast('Signed in', 'success');
         showDashboard();
     } catch (error) {
         setLoading(btn, false);
@@ -2861,7 +3013,7 @@ async function handleVerifyOTP(btn) {
         localStorage.setItem('onto_logged_in', 'true');
         
         setLoading(btn, false);
-        showToast('Email verified! Welcome to ONTO', 'success');
+        showToast('Email verified · account active', 'success');
         showDashboard();
     } catch (error) {
         setLoading(btn, false);
