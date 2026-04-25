@@ -678,6 +678,100 @@ body::before {
   border: 1px dashed var(--border); border-radius: 4px;
 }
 
+/* === DRAWER · How to use + Test (Phase 6) === */
+.mc-drawer-toggle {
+  margin-top: 10px; padding-top: 10px;
+  border-top: 1px dashed var(--border);
+  font-family: var(--mono); font-size: 10.5px; font-weight: 600;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  color: var(--text-muted); cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: .15s; user-select: none;
+}
+.mc-drawer-toggle:hover { color: var(--text); }
+.mc-drawer-toggle .arr { transition: transform .15s; display: inline-block; }
+.mc-drawer-toggle.open .arr { transform: rotate(180deg); }
+
+.mc-drawer { display: none; margin-top: 12px; }
+.mc-drawer.open { display: block; }
+
+.mc-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+.mc-tab {
+  font-family: var(--mono); font-size: 10.5px; font-weight: 600;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  padding: 8px 14px;
+  background: transparent; border: 0; cursor: pointer;
+  color: var(--text-muted); transition: .15s;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  min-height: auto; width: auto;
+}
+.mc-tab:hover { color: var(--text); }
+.mc-tab.on { color: var(--accent); border-bottom-color: var(--accent); }
+
+.mc-pane { display: none; }
+.mc-pane.on { display: block; }
+
+.mc-code-wrap { position: relative; }
+.mc-code-wrap .mc-copy {
+  position: absolute; top: 8px; right: 8px;
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: 1.1px; text-transform: uppercase;
+  padding: 5px 9px; border-radius: 3px;
+  background: var(--bg-card); color: var(--text-secondary);
+  border: 1px solid var(--border);
+  cursor: pointer; transition: .15s;
+}
+.mc-code-wrap .mc-copy:hover { border-color: var(--border-hover); color: var(--text); }
+.mc-code-wrap .mc-copy.done { background: var(--accent-subtle); color: var(--accent); border-color: var(--accent-border); }
+.mc-code {
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: 3px; padding: 14px 16px;
+  font-family: var(--mono); font-size: 11.5px; line-height: 1.6;
+  color: var(--text-secondary);
+  overflow-x: auto; white-space: pre;
+}
+.mc-code .k { color: var(--accent); }
+.mc-code .s { color: var(--text); }
+.mc-code .c { color: var(--text-faint); font-style: italic; }
+
+.mc-test-q {
+  width: 100%; min-height: 64px; resize: vertical;
+  padding: 10px 12px;
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: 3px; color: var(--text);
+  font-family: var(--font); font-size: 13px;
+  outline: none; transition: .15s;
+  box-sizing: border-box;
+}
+.mc-test-q:focus { border-color: var(--accent); background: var(--bg); box-shadow: 0 0 0 3px rgba(34,197,94,.10); }
+
+.mc-test-result { margin-top: 12px; display: none; }
+.mc-test-result.on { display: block; }
+.mc-test-meta {
+  display: flex; gap: 14px; flex-wrap: wrap;
+  padding: 10px 12px; margin-bottom: 10px;
+  background: var(--accent-subtle); border: 1px solid var(--accent-border);
+  border-radius: 3px;
+  font-family: var(--mono); font-size: 11px;
+}
+.mc-test-meta .it { display: flex; flex-direction: column; gap: 2px; }
+.mc-test-meta .it .l { font-size: 9px; color: var(--text-faint); letter-spacing: 1.3px; text-transform: uppercase; font-weight: 600; }
+.mc-test-meta .it .v { color: var(--accent); font-weight: 700; font-size: 13px; }
+.mc-test-resp {
+  padding: 12px 14px;
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: 3px;
+  font-size: 12.5px; line-height: 1.55; color: var(--text-secondary);
+  white-space: pre-wrap; max-height: 240px; overflow-y: auto;
+}
+.mc-test-err {
+  padding: 10px 12px;
+  background: rgba(220,38,38,.08); border: 1px solid var(--danger-soft);
+  border-radius: 3px;
+  font-size: 12px; color: var(--danger-soft);
+}
+
 /* === BUTTONS · v6 === */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
@@ -1873,10 +1967,10 @@ client = OpenAI(
                 <div class="apikey-card">
                     <div class="label">ONTO API key · used to authenticate this account</div>
                     <div class="row">
-                        <input type="password" class="key masked" id="acc-api-key" value="" readonly placeholder="Loading…">
+                        <input type="text" class="key" id="acc-api-key" value="" readonly placeholder="Loading…" style="font-family:var(--mono)">
                         <button class="btn-mini" onclick="toggleAccountKey(this)" id="acc-key-toggle">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                            <span>Show</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                            <span>Hide</span>
                         </button>
                         <button class="btn-mini" onclick="copyAccountKey(this)">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
@@ -1892,22 +1986,9 @@ client = OpenAI(
                 </div>
             </div>
             
-            <!-- ===== PUBLIC ATTESTATION (Phase 2C) ===== -->
+            <!-- ===== FORKS · interactive vs production (Phase 5) ===== -->
             <div class="section-block" style="padding: 0; border: 0; background: transparent;">
-                <div class="section-label" style="margin-bottom: 10px; padding-bottom: 0; border-bottom: 0;">Public attestation</div>
-                <div class="url-card">
-                    <div class="label">Provider URL · public · no login required</div>
-                    <div class="row">
-                        <div class="url" id="cert-url">ontostandard.org/cert/—</div>
-                        <button class="btn-mini" id="cert-copy" onclick="copyCertUrl(this)">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-                            Copy
-                        </button>
-                    </div>
-                    <div class="count">Lists <b id="cert-count">0</b> models you have published</div>
-                    <div class="helper">Verifiable offline against the Standards Council Ed25519 registry. Does not certify the account holder as a legal entity, nor any model not listed.</div>
-                </div>
-
+                <div class="section-label" style="margin-bottom: 10px; padding-bottom: 0; border-bottom: 0;">Two ways to use ONTO</div>
                 <div class="forks">
                     <div class="fork">
                         <span class="fork-ic">
@@ -2546,158 +2627,136 @@ client = OpenAI(
     </div>
 </div>
 
-<!-- ============== PROVIDER ADD MODAL · 2-step (Phase 3) ============== -->
+<!-- ============== PROVIDER ADD MODAL · 1-step (Phase 5) ============== -->
 <div class="pv-overlay" id="pv-add-overlay">
     <div class="pv-modal" role="dialog" aria-labelledby="pv-add-title">
         <div class="pv-mhead">
-            <div style="display:flex;align-items:center;min-width:0;flex:1">
-                <h3 id="pv-add-title">Register a model</h3>
-                <span class="pv-step-counter" id="pv-add-counter">Step 1 · Details</span>
-            </div>
+            <h3 id="pv-add-title">Register a model</h3>
             <button class="pv-mclose" onclick="closeProviderAdd()" aria-label="Close">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
         </div>
         <div class="pv-mbody">
-            <!-- STEP 1 · DETAILS -->
-            <div class="pv-step active" id="pv-add-step1">
-                <div class="pv-field">
-                    <label>Display name</label>
-                    <input type="text" id="pv-add-name" placeholder="e.g. GLM-5.1" autocomplete="off">
-                    <div class="help">Shown on your dashboard and on the public certificate page.</div>
-                </div>
-                <div class="pv-field mono">
-                    <label>Model identifier</label>
-                    <input type="text" id="pv-add-ident" placeholder="e.g. glm-5.1-chat" autocomplete="off">
-                    <div class="help"><strong>Immutable</strong> after registration. Changing it later requires registering a new model with a new fingerprint.</div>
-                </div>
-                <div class="pv-field mono">
-                    <label>Endpoint URL</label>
-                    <input type="text" id="pv-add-endpoint" placeholder="https://api.example.com/v1/chat/completions" autocomplete="off">
-                </div>
-                <div class="pv-field mono">
-                    <label>Endpoint API key</label>
-                    <div class="pv-pwrap">
-                        <input type="password" id="pv-add-apikey" placeholder="sk-..." autocomplete="off" data-1p-ignore data-lpignore="true">
-                        <button type="button" class="pv-eye" onclick="togglePvPassword('pv-add-apikey', this)">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                        </button>
-                    </div>
-                    <div class="help">Stored encrypted (AES-256). Used only when this model is reached through the proxy fork.</div>
-                </div>
-                <div class="pv-field mono">
-                    <label>Public key (Ed25519)</label>
-                    <textarea id="pv-add-pubkey" rows="3" placeholder="ed25519:..." spellcheck="false"></textarea>
-                    <div class="help">Used to verify each signal you stream. <strong>No ONTO-side rate limit</strong> — bounded by your signing hardware (~30K-100K sig/sec) and network egress.</div>
-                </div>
+            <div class="pv-field">
+                <label>Display name</label>
+                <input type="text" id="pv-add-name" placeholder="e.g. GLM-5.1" autocomplete="off">
+                <div class="help">Shown on your dashboard and in attestation records.</div>
             </div>
-            <!-- STEP 2 · CONNECT SSE -->
-            <div class="pv-step" id="pv-add-step2">
-                <div class="pv-success">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                    <div>
-                        <div class="t">Model registered</div>
-                        <div class="id" id="pv-add-mid">—</div>
-                    </div>
+            <div class="pv-field">
+                <label>Provider</label>
+                <select id="pv-add-ptype" class="form-input" style="width:100%;padding:10px 12px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:3px;color:var(--text);font-family:var(--font);font-size:13.5px;outline:none;cursor:pointer">
+                    <option value="openai">OpenAI</option>
+                    <option value="anthropic">Anthropic</option>
+                    <option value="xai">xAI</option>
+                    <option value="deepseek">DeepSeek</option>
+                    <option value="google">Google</option>
+                    <option value="mistral">Mistral</option>
+                    <option value="meta">Meta</option>
+                    <option value="zhipu">Zhipu</option>
+                    <option value="custom">Custom</option>
+                </select>
+            </div>
+            <div class="pv-field">
+                <label>Channel</label>
+                <div class="mc-seg" style="font-family:var(--mono)">
+                    <button type="button" class="on" data-ch="proxy" onclick="pvAddSetChannel('proxy', this)">
+                        Proxy
+                    </button>
+                    <button type="button" data-ch="sse" onclick="pvAddSetChannel('sse', this)">
+                        SSE
+                    </button>
                 </div>
-                <div class="pv-row">
-                    <span class="lab">SSE endpoint</span>
-                    <span class="val" id="pv-add-sse-url">wss://api.ontostandard.org/sse/—</span>
-                    <button class="btn-mini" onclick="pvCopyEl('pv-add-sse-url', this)">Copy</button>
+                <div class="help" id="pv-add-channel-help"><strong>Proxy</strong> · ONTO sits in the request path · GOLD injected per call · suitable for testing &amp; small workloads.</div>
+            </div>
+            <div class="pv-field mono">
+                <label>Provider API key</label>
+                <div class="pv-pwrap">
+                    <input type="password" id="pv-add-apikey" placeholder="sk-..." autocomplete="off" data-1p-ignore data-lpignore="true">
+                    <button type="button" class="pv-eye" onclick="togglePvPassword('pv-add-apikey', this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
                 </div>
-                <div class="pv-row">
-                    <span class="lab">Auth token</span>
-                    <span class="val" id="pv-add-sse-token">onto_sse_…</span>
-                    <button class="btn-mini" onclick="pvCopyEl('pv-add-sse-token', this)">Copy</button>
-                </div>
-                <div class="pv-tabs" role="tablist">
-                    <button class="pv-tab on" data-lang="python" onclick="pvShowCode('python', this)">Python</button>
-                    <button class="pv-tab" data-lang="node" onclick="pvShowCode('node', this)">Node.js</button>
-                    <button class="pv-tab" data-lang="curl" onclick="pvShowCode('curl', this)">cURL</button>
-                    <button class="pv-tab" data-lang="go" onclick="pvShowCode('go', this)">Go</button>
-                </div>
-                <div class="pv-code" id="pv-add-code"></div>
-                <div class="pv-await">
-                    <span class="pv-pulse"></span>
-                    <span>Awaiting first heartbeat from your model…</span>
-                </div>
-                <div class="help" style="margin-top:12px;font-size:11.5px;color:var(--text-faint)">Read the full <a href="/docs/#sse" target="_blank" style="color:var(--accent)">SSE protocol reference</a>. Your model starts as <strong style="color:var(--text-secondary)">Private</strong> — attestation runs immediately, but the model is not listed on your <code style="font-family:var(--mono);font-size:11px;color:var(--accent);background:var(--bg-secondary);padding:1px 5px;border-radius:2px">/cert/</code> directory until you publish it.</div>
+                <div class="help">Stored encrypted (AES-256). Used to reach your model on attested inference.</div>
             </div>
         </div>
         <div class="pv-mfoot">
-            <div class="left">
-                <button class="btn-mini" id="pv-add-back" onclick="pvAddBack()" style="display:none">← Back</button>
-            </div>
+            <div class="left"></div>
             <div class="right">
                 <button class="btn-mini" onclick="closeProviderAdd()">Cancel</button>
-                <button class="btn btn-primary" id="pv-add-submit" onclick="pvAddSubmit()" style="width:auto;min-width:200px;padding:11px 18px;min-height:auto">Register &amp; generate SSE</button>
-                <button class="btn btn-primary" id="pv-add-done" onclick="closeProviderAdd()" style="display:none;width:auto;min-width:120px;padding:11px 18px;min-height:auto">Done</button>
+                <button class="btn btn-primary" id="pv-add-submit" onclick="pvAddSubmit()" style="width:auto;min-width:140px;padding:11px 18px;min-height:auto">Register</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ============== PROVIDER EDIT MODAL (Phase 3) ============== -->
+<!-- ============== MODEL DETAILS MODAL · readonly + actions (Phase 5) ============== -->
 <div class="pv-overlay" id="pv-edit-overlay">
     <div class="pv-modal" role="dialog" aria-labelledby="pv-edit-title">
         <div class="pv-mhead">
-            <h3 id="pv-edit-title">Edit model</h3>
+            <h3 id="pv-edit-title">Model details</h3>
             <button class="pv-mclose" onclick="closeProviderEdit()" aria-label="Close">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
         </div>
         <div class="pv-mbody">
             <input type="hidden" id="pv-edit-id">
-            <div class="pv-field">
-                <label>Display name</label>
-                <input type="text" id="pv-edit-name" data-pv-track="name" oninput="pvEditTrackChange()">
+            <div class="pv-row">
+                <span class="lab">Name</span>
+                <span class="val" id="pv-edit-name">—</span>
             </div>
-            <div class="pv-field mono">
-                <label>Endpoint URL</label>
-                <input type="text" id="pv-edit-endpoint" data-pv-track="endpoint" oninput="pvEditTrackChange()" placeholder="Not configured · paste endpoint">
+            <div class="pv-row">
+                <span class="lab">Provider</span>
+                <span class="val" id="pv-edit-ptype">—</span>
             </div>
-            <div class="pv-field mono">
-                <label>Endpoint API key</label>
-                <div class="pv-pwrap">
-                    <input type="password" id="pv-edit-apikey" placeholder="•••••••• (unchanged)" data-pv-track="apikey" oninput="pvEditTrackChange()" autocomplete="off">
-                    <button type="button" class="pv-eye" onclick="togglePvPassword('pv-edit-apikey', this)">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                    </button>
-                </div>
-                <div class="help">Leave empty to keep current key. Type a new value to replace.</div>
+            <div class="pv-row">
+                <span class="lab">Channel</span>
+                <span class="val" id="pv-edit-channel">—</span>
             </div>
-            <div class="pv-field mono">
-                <label>Model identifier</label>
-                <input type="text" id="pv-edit-ident" readonly>
-                <div class="help">Read-only · immutable after registration.</div>
+            <div class="pv-row">
+                <span class="lab">Model ID</span>
+                <span class="val" id="pv-edit-id-display">—</span>
+                <button class="btn-mini" onclick="pvCopyEl('pv-edit-id-display', this)">Copy</button>
             </div>
-            <div class="pv-field mono">
-                <label>Fingerprint</label>
-                <input type="text" id="pv-edit-fp" readonly>
-                <div class="help">Read-only · derived from public key.</div>
+            <div class="pv-row">
+                <span class="lab">Created</span>
+                <span class="val" id="pv-edit-created">—</span>
+            </div>
+            <div class="pv-row">
+                <span class="lab">Evaluations</span>
+                <span class="val" id="pv-edit-evals">—</span>
+            </div>
+            <div class="pv-row">
+                <span class="lab">Avg score</span>
+                <span class="val" id="pv-edit-score">—</span>
+            </div>
+            <div class="pv-row">
+                <span class="lab">Cert status</span>
+                <span class="val" id="pv-edit-cert">—</span>
             </div>
 
-            <div class="pv-danger-zone">
+            <div class="pv-danger-zone" id="pv-edit-sse-block" style="display:none">
                 <div class="lab">SSE Connection</div>
                 <div class="pv-row">
-                    <span class="lab">Endpoint</span>
-                    <span class="val" id="pv-edit-sse-url">—</span>
-                    <button class="btn-mini" onclick="pvCopyEl('pv-edit-sse-url', this)">Copy</button>
+                    <span class="lab">Status</span>
+                    <span class="val" id="pv-edit-conn-status">—</span>
                 </div>
                 <div class="pv-row">
-                    <span class="lab">Throughput</span>
-                    <span class="val" id="pv-edit-tp">— / s</span>
+                    <span class="lab">Last heartbeat</span>
+                    <span class="val" id="pv-edit-hb">—</span>
                 </div>
-                <div class="pv-row">
-                    <span class="lab">Verified</span>
-                    <span class="val" id="pv-edit-verified">—</span>
+                <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap">
+                    <button class="btn-mini" id="pv-edit-connect-btn" onclick="pvSseConnect()">Mark connected</button>
+                    <button class="btn-mini" id="pv-edit-disconnect-btn" onclick="pvSseDisconnect()">Mark disconnected</button>
                 </div>
-                <button class="btn-mini" onclick="pvRotateSseToken()" style="margin-top:6px">Rotate auth token</button>
+                <div class="help" style="margin-top:10px">Heartbeat is sent by your server every 30-60s. After 5 minutes without heartbeat, status auto-flips to disconnected.</div>
             </div>
 
             <div class="pv-danger-zone">
-                <div class="lab">Visibility</div>
-                <div class="help" id="pv-edit-vis-help">Currently <strong>Private</strong>. Toggle from the model card to publish or hide.</div>
+                <div class="lab">Lifecycle</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <button class="btn-mini" id="pv-edit-toggle-btn" onclick="pvToggleEnabled()">Toggle on/off</button>
+                </div>
+                <div class="help" style="margin-top:8px">Currently <strong id="pv-edit-enabled-state">—</strong>. Disabled models do not receive attestation signals.</div>
             </div>
         </div>
         <div class="pv-mfoot">
@@ -2705,8 +2764,7 @@ client = OpenAI(
                 <button class="btn-mini danger" onclick="pvUnregister()">Unregister</button>
             </div>
             <div class="right">
-                <button class="btn-mini" onclick="pvEditDiscard()">Cancel</button>
-                <button class="btn btn-primary" id="pv-edit-save" onclick="pvEditSave()" disabled style="width:auto;min-width:160px;padding:11px 18px;min-height:auto">Save</button>
+                <button class="btn-mini" onclick="closeProviderEdit()">Close</button>
             </div>
         </div>
     </div>
@@ -3605,7 +3663,7 @@ function showPage(page, el) {
         });
     }
     if (page === 'monitor') { /* Phase 4: legacy DOM stripped · no-op */ }
-    if (page === 'settings') { populateAccountKeyUI(); populateCertUrlUI(); }
+    if (page === 'settings') { populateAccountKeyUI(); }
     if (page === 'sdk') updateSdkPage();
 }
 
@@ -4002,110 +4060,39 @@ async function testStandardProxy() {
 }
 
 // === MODEL CARD HELPERS · Phase 2B ===================================
-function fmtLastSignal(model) {
-    const ts = model.last_signal_at || model.last_eval_at || null;
-    if (!ts) return 'never';
-    const t = new Date(ts).getTime();
-    if (isNaN(t)) return model.last_eval_ago || 'never';
-    const diffSec = Math.floor((Date.now() - t) / 1000);
-    if (diffSec < 0) return 'just now';
-    if (diffSec < 60) return diffSec + 's ago';
-    if (diffSec < 3600) return Math.floor(diffSec / 60) + 'm ago';
-    if (diffSec < 86400) return Math.floor(diffSec / 3600) + 'h ago';
-    return Math.floor(diffSec / 86400) + 'd ago';
+// === MODEL CARD HELPERS · Phase 5 (real backend) =====================
+function pvCertState(m) {
+    // backend already returns: 'verified' | 'active' | 'suspended' | 'inactive'
+    return (m.cert_status || 'inactive').toLowerCase();
 }
 
-function deriveCertState(model) {
-    // private (default) → private
-    // published + recent signal → active
-    // published + no signal ever → awaiting
-    // published + stale signal → frozen
-    const isPublished = model.is_published === true || model.cert_status === 'active';
-    if (!isPublished) return 'private';
-    const ts = model.last_signal_at || model.last_eval_at || null;
-    if (!ts) return 'awaiting';
-    const ageMs = Date.now() - new Date(ts).getTime();
-    return ageMs < 24 * 60 * 60 * 1000 ? 'active' : 'frozen';
-}
-
-function deriveStreamState(model) {
-    // online if signal in last 30s window (mock)
-    const ts = model.last_signal_at || model.last_eval_at || null;
-    if (!ts) return { online: false, rate: '—' };
-    const ageMs = Date.now() - new Date(ts).getTime();
-    const online = ageMs < 30000;
-    const rate = model.signal_rate ? model.signal_rate + '/s' : (online ? '—' : 'off');
-    return { online, rate };
-}
-
-function genSparkPath(modelId, scores) {
-    // scores: array of 0..10 numbers OR null → flat dash (no real data)
-    const W = 90, H = 28, pad = 2;
-    const pts = (Array.isArray(scores) && scores.length) ? scores.slice(-12) : null;
-    if (!pts) {
-        // honest flat at midline · no fake wave
-        const mid = H / 2;
-        return {
-            line: `M${pad},${mid.toFixed(1)} L${(W - pad).toFixed(1)},${mid.toFixed(1)}`,
-            fill: '',
-            lastX: (W - pad).toFixed(1),
-            lastY: mid.toFixed(1)
-        };
+function pvIsOnline(m) {
+    if ((m.channel || 'proxy') === 'sse') {
+        return m.connection_status === 'connected';
     }
-    return genSparkPath._build(pts, W, H, pad);
+    // proxy: online if enabled
+    return m.is_enabled !== false;
 }
-genSparkPath._build = function(pts, W, H, pad) {
-    const max = 10, min = 0;
-    const stepX = (W - pad * 2) / Math.max(1, pts.length - 1);
-    const yOf = v => H - pad - ((Math.max(min, Math.min(max, v)) - min) / (max - min)) * (H - pad * 2);
-    let line = '';
-    pts.forEach((v, i) => {
-        const x = pad + i * stepX;
-        const y = yOf(v);
-        line += (i === 0 ? 'M' : ' L') + x.toFixed(1) + ',' + y.toFixed(1);
-    });
-    const last = pts[pts.length - 1];
-    const lastX = pad + (pts.length - 1) * stepX;
-    const lastY = yOf(last);
-    const fill = line + ` L${lastX.toFixed(1)},${(H - pad).toFixed(1)} L${pad},${(H - pad).toFixed(1)} Z`;
-    return { line, fill, lastX: lastX.toFixed(1), lastY: lastY.toFixed(1) };
-};
 
 function escHtml(s) {
     if (s == null) return '';
-    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    return String(s).replace(/[&<>"\']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"\'":'&#39;'}[c]));
 }
 
-async function setModelVisibility(modelId, vis) {
-    // vis: 'public' | 'private'
+async function setModelEnabled(modelId) {
+    // single-source toggle via PUT /v1/models/{id}/toggle
     const apiKey = localStorage.getItem('onto_first_api_key');
     if (!apiKey) return;
-    const endpoint = vis === 'public' ? 'publish' : 'unpublish';
     try {
-        const res = await fetch(`${API_BASE}/v1/models/${modelId}/${endpoint}`, {
-            method: 'POST', headers: { 'x-api-key': apiKey }
+        const res = await fetch(`${API_BASE}/v1/models/${modelId}/toggle`, {
+            method: 'PUT', headers: { 'x-api-key': apiKey }
         });
-        if (res.ok) {
-            showToast('Visibility · ' + vis, 'success');
-            loadModels();
-        } else if (res.status === 404) {
-            // Endpoint not yet on backend (Phase 2 mock mode)
-            showToast('Visibility toggle pending backend · UI updated locally', 'info');
-            // Update DOM optimistically
-            const card = document.querySelector('[data-model="' + modelId + '"]');
-            if (card) {
-                const seg = card.querySelector('.mc-seg');
-                if (seg) {
-                    seg.querySelectorAll('button').forEach(b => b.classList.remove('on'));
-                    const btn = seg.querySelector(`[data-vis="${vis}"]`);
-                    if (btn) btn.classList.add('on');
-                }
-            }
-        } else {
-            showToast('Visibility update failed', 'error');
-        }
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) { showToast(data.detail || 'Toggle failed', 'error'); return; }
+        showToast(data.is_enabled ? 'Enabled' : 'Disabled', 'success');
+        loadModels();
     } catch (e) {
-        console.error('setModelVisibility:', e);
+        console.error('setModelEnabled:', e);
         showToast('Network error', 'error');
     }
 }
@@ -4120,121 +4107,285 @@ function renderModelCard(m) {
     const id = escHtml(m.id);
     const name = escHtml(m.name);
     const ptype = escHtml(m.provider_type || '');
+    const channel = (m.channel || 'proxy').toLowerCase();
     const isOn = m.is_enabled !== false;
-    const stream = deriveStreamState(m);
-    const cert = deriveCertState(m);
-    const isPublic = cert !== 'private';
-    const lastSignal = fmtLastSignal(m);
-    const signal24h = (m.signal_count_24h != null)
-        ? Number(m.signal_count_24h).toLocaleString()
-        : '—';
-    const sp = genSparkPath(id, m.spark_data);
+    const online = pvIsOnline(m);
+    const cert = pvCertState(m);
 
-    const certPillHtml = (cert === 'active')
-        ? '<span class="mc-cert"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Active</span>'
-        : (cert === 'awaiting')
-            ? '<span class="mc-cert frozen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Awaiting first signal</span>'
-            : (cert === 'frozen')
-                ? '<span class="mc-cert frozen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Frozen</span>'
-                : '<span class="mc-cert private"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Private</span>';
+    // Last activity string (sse: last_heartbeat, proxy: last_eval_ago)
+    const lastAct = (channel === 'sse')
+        ? (m.last_heartbeat || 'never')
+        : (m.last_eval_ago || 'never');
+    const lastLabel = (channel === 'sse') ? 'last heartbeat' : 'last eval';
 
-    const cardClass = 'model-card' + (stream.online ? '' : ' disconnected') + (isOn ? '' : ' disabled');
+    // 24h count = eval_count (backend total · honest)
+    const evalCount = (m.eval_count != null) ? Number(m.eval_count).toLocaleString() : '—';
 
-    return `<div class="${cardClass}" data-model="${id}">
-        <div class="mc-top">
-            <div class="mc-dot"><div class="core"></div><div class="ring"></div></div>
-            <div class="mc-info">
-                <div class="mc-name">${name}</div>
-                <div class="mc-meta">
-                    <span>${ptype}</span><span class="sep">·</span>
-                    <span>last signal ${escHtml(lastSignal)}</span>
-                </div>
-            </div>
-            <svg class="mc-spark" viewBox="0 0 90 28" preserveAspectRatio="none">
-                <path class="fill" d="${sp.fill}"/>
-                <path class="line" d="${sp.line}"/>
-                <circle class="latest" cx="${sp.lastX}" cy="${sp.lastY}" r="2"/>
-            </svg>
-            <div class="mc-signals">
-                <span class="n">${signal24h}</span>
-                <span class="l">24h</span>
-            </div>
-            <button class="mc-iconbtn is-agent" onclick="testInAgent('${id}','${ptype}')" title="Test in Agent">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-            </button>
-            <button class="mc-iconbtn" onclick="editModel('${id}')" title="Edit">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-            </button>
-        </div>
-        <div class="mc-mid">
-            <div class="mc-seg">
-                <button class="${isPublic ? 'on' : ''}" data-vis="public" onclick="setModelVisibility('${id}','public')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-                    Public
-                </button>
-                <button class="${!isPublic ? 'on muted-on' : ''}" data-vis="private" onclick="setModelVisibility('${id}','private')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-                    Private
-                </button>
-            </div>
-            <div class="mc-conn ${stream.online ? '' : 'off'}">
-                <span class="dotmini"></span>
-                <span class="label">Stream</span>
-                <span class="rate">${escHtml(stream.rate)}</span>
-            </div>
-            ${certPillHtml}
-        </div>
-    </div>`;
+    // Score · single number
+    const scoreText = (m.avg_score != null && m.avg_score > 0) ? Number(m.avg_score).toFixed(1) : '—';
+    const grade = m.grade ? ' ' + m.grade : '';
+
+    // Cert pill 4-state
+    const certMap = {
+        verified:  { txt: 'Verified',  cls: '',        ico: '<polyline points="20 6 9 17 4 12"/>' },
+        active:    { txt: 'Active',    cls: '',        ico: '<polyline points="20 6 9 17 4 12"/>' },
+        suspended: { txt: 'Suspended', cls: 'frozen',  ico: '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>' },
+        inactive:  { txt: 'Inactive',  cls: 'private', ico: '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>' }
+    };
+    const cm = certMap[cert] || certMap.inactive;
+    const certPillHtml = '<span class="mc-cert ' + cm.cls + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">' + cm.ico + '</svg>' + cm.txt + '</span>';
+
+    // ON/OFF toggle (segmented · proxy & sse both)
+    const togHtml =
+        '<div class="mc-seg">' +
+            '<button class="' + (isOn ? 'on' : '') + '" onclick="setModelEnabled(\'' + id + '\')">ON</button>' +
+            '<button class="' + (!isOn ? 'on muted-on' : '') + '" onclick="setModelEnabled(\'' + id + '\')">OFF</button>' +
+        '</div>';
+
+    // Channel badge
+    const chBadge = '<span class="mc-conn ' + (online ? '' : 'off') + '">' +
+        '<span class="dotmini"></span>' +
+        '<span class="label">' + channel + '</span>' +
+    '</span>';
+
+    const cardClass = 'model-card' + (online ? '' : ' disconnected') + (isOn ? '' : ' disabled');
+
+    return '<div class="' + cardClass + '" data-model="' + id + '">' +
+        '<div class="mc-top">' +
+            '<div class="mc-dot"><div class="core"></div><div class="ring"></div></div>' +
+            '<div class="mc-info">' +
+                '<div class="mc-name">' + name + '</div>' +
+                '<div class="mc-meta">' +
+                    '<span>' + ptype + '</span><span class="sep">·</span>' +
+                    '<span>' + lastLabel + ' ' + escHtml(lastAct) + '</span>' +
+                '</div>' +
+            '</div>' +
+            '<div class="mc-signals" style="min-width:80px">' +
+                '<span class="n">' + scoreText + '<span style="font-size:11px;color:var(--text-muted);font-weight:400">' + grade + '</span></span>' +
+                '<span class="l">avg score</span>' +
+            '</div>' +
+            '<div class="mc-signals">' +
+                '<span class="n">' + evalCount + '</span>' +
+                '<span class="l">evals</span>' +
+            '</div>' +
+            '<button class="mc-iconbtn is-agent" onclick="testInAgent(\'' + id + '\',\'' + ptype + '\')" title="Test in Agent">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>' +
+            '</button>' +
+            '<button class="mc-iconbtn" onclick="editModel(\'' + id + '\')" title="Details">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' +
+            '</button>' +
+        '</div>' +
+        '<div class="mc-mid">' +
+            togHtml +
+            chBadge +
+            certPillHtml +
+        '</div>' +
+        '<div class="mc-drawer-toggle" onclick="pvToggleDrawer(\'' + id + '\', this)">' +
+            '<span>How to use this model</span>' +
+            '<span class="arr">▾</span>' +
+        '</div>' +
+        '<div class="mc-drawer" id="drawer-' + id + '">' +
+            '<div class="mc-tabs">' +
+                '<button class="mc-tab on" data-pane="curl" onclick="pvSwitchPane(\'' + id + '\',\'curl\',this)">cURL</button>' +
+                '<button class="mc-tab" data-pane="python" onclick="pvSwitchPane(\'' + id + '\',\'python\',this)">Python</button>' +
+                '<button class="mc-tab" data-pane="test" onclick="pvSwitchPane(\'' + id + '\',\'test\',this)">Test now</button>' +
+            '</div>' +
+            '<div class="mc-pane on" data-pane="curl" id="pane-curl-' + id + '"></div>' +
+            '<div class="mc-pane" data-pane="python" id="pane-python-' + id + '"></div>' +
+            '<div class="mc-pane" data-pane="test" id="pane-test-' + id + '"></div>' +
+        '</div>' +
+    '</div>';
 }
 
 function editModel(modelId) {
     return openProviderEdit(modelId);
 }
 
-// === PROVIDER MODALS · Phase 3 =========================================
-let _pvEditOriginal = null;
+// === MODEL DRAWER · How to use + Test (Phase 6) =======================
+function pvToggleDrawer(modelId, toggleEl) {
+    const drawer = document.getElementById('drawer-' + modelId);
+    if (!drawer) return;
+    const opening = !drawer.classList.contains('open');
+    drawer.classList.toggle('open');
+    if (toggleEl) toggleEl.classList.toggle('open');
+    if (opening) {
+        pvRenderDrawerCode(modelId);
+    }
+}
 
+function pvSwitchPane(modelId, pane, btn) {
+    const drawer = document.getElementById('drawer-' + modelId);
+    if (!drawer) return;
+    drawer.querySelectorAll('.mc-tab').forEach(t => t.classList.remove('on'));
+    drawer.querySelectorAll('.mc-pane').forEach(p => p.classList.remove('on'));
+    if (btn) btn.classList.add('on');
+    const target = document.getElementById('pane-' + pane + '-' + modelId);
+    if (target) target.classList.add('on');
+}
+
+function pvFindModel(modelId) {
+    const models = window._lastModels || [];
+    return models.find(x => String(x.id) === String(modelId));
+}
+
+function pvRenderDrawerCode(modelId) {
+    const m = pvFindModel(modelId);
+    if (!m) return;
+    const ontoKey = localStorage.getItem('onto_first_api_key') || 'YOUR_ONTO_KEY';
+    const ptype = (m.provider_type || 'openai').toLowerCase();
+    const channel = (m.channel || 'proxy').toLowerCase();
+
+    // For proxy channel: route through ONTO proxy
+    // For sse channel: explain heartbeat + GOLD stream
+    const curlEl = document.getElementById('pane-curl-' + modelId);
+    const pyEl = document.getElementById('pane-python-' + modelId);
+    const testEl = document.getElementById('pane-test-' + modelId);
+
+    if (channel === 'proxy') {
+        // Use OpenAI-compatible proxy endpoint (works for OpenAI/xAI/DeepSeek/Mistral)
+        const proxyEndpoint = (ptype === 'anthropic')
+            ? '/v1/proxy/anthropic/messages'
+            : '/v1/proxy/chat/completions';
+        const modelArg = m.name || ptype;
+
+        const curlCode = (ptype === 'anthropic')
+            ? '<span class="c"># Anthropic-compatible proxy</span>\ncurl -X POST <span class="s">"' + API_BASE + proxyEndpoint + '"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span> \\\n  -H <span class="s">"Content-Type: application/json"</span> \\\n  -d <span class="s">\'{\n    "model": "' + modelArg + '",\n    "max_tokens": 512,\n    "messages": [{"role": "user", "content": "Explain quantum entanglement"}]\n  }\'</span>'
+            : '<span class="c"># OpenAI-compatible proxy</span>\ncurl -X POST <span class="s">"' + API_BASE + proxyEndpoint + '"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span> \\\n  -H <span class="s">"Content-Type: application/json"</span> \\\n  -d <span class="s">\'{\n    "model": "' + modelArg + '",\n    "messages": [{"role": "user", "content": "Explain quantum entanglement"}]\n  }\'</span>';
+
+        const pyCode = (ptype === 'anthropic')
+            ? '<span class="c"># pip install anthropic</span>\nimport anthropic\nclient = anthropic.Anthropic(\n    api_key=<span class="s">"' + ontoKey + '"</span>,\n    base_url=<span class="s">"' + API_BASE + '/v1/proxy"</span>\n)\nmsg = client.messages.create(\n    model=<span class="s">"' + modelArg + '"</span>,\n    max_tokens=512,\n    messages=[{<span class="s">"role"</span>: <span class="s">"user"</span>, <span class="s">"content"</span>: <span class="s">"Explain quantum entanglement"</span>}]\n)\nprint(msg.content[0].text)'
+            : '<span class="c"># pip install openai</span>\nfrom openai import OpenAI\nclient = OpenAI(\n    api_key=<span class="s">"' + ontoKey + '"</span>,\n    base_url=<span class="s">"' + API_BASE + '/v1/proxy"</span>\n)\nresp = client.chat.completions.create(\n    model=<span class="s">"' + modelArg + '"</span>,\n    messages=[{<span class="s">"role"</span>: <span class="s">"user"</span>, <span class="s">"content"</span>: <span class="s">"Explain quantum entanglement"</span>}]\n)\nprint(resp.choices[0].message.content)';
+
+        if (curlEl) curlEl.innerHTML = pvCodeBlock(curlCode, modelId, 'curl');
+        if (pyEl) pyEl.innerHTML = pvCodeBlock(pyCode, modelId, 'python');
+    } else {
+        // SSE channel
+        const curlCode = '<span class="c"># 1. Mark model connected (your server starts heartbeat loop)</span>\ncurl -X POST <span class="s">"' + API_BASE + '/v1/models/' + m.id + '/connect"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span>\n\n<span class="c"># 2. Heartbeat every 30-60s from your server</span>\ncurl -X POST <span class="s">"' + API_BASE + '/v1/models/' + m.id + '/heartbeat"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span>\n\n<span class="c"># 3. Pull GOLD corpus stream</span>\ncurl -N <span class="s">"' + API_BASE + '/v1/gold/stream"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span>';
+
+        const pyCode = '<span class="c"># SSE provider integration</span>\nimport asyncio, httpx\n\n<span class="k">ONTO_KEY</span>  = <span class="s">"' + ontoKey + '"</span>\n<span class="k">MODEL_ID</span> = <span class="s">"' + m.id + '"</span>\n<span class="k">BASE</span>     = <span class="s">"' + API_BASE + '"</span>\n\nasync def heartbeat_loop():\n    async with httpx.AsyncClient() as c:\n        await c.post(f<span class="s">"{BASE}/v1/models/{MODEL_ID}/connect"</span>,\n                     headers={<span class="s">"x-api-key"</span>: ONTO_KEY})\n        while True:\n            await c.post(f<span class="s">"{BASE}/v1/models/{MODEL_ID}/heartbeat"</span>,\n                         headers={<span class="s">"x-api-key"</span>: ONTO_KEY})\n            await asyncio.sleep(30)\n\nasyncio.run(heartbeat_loop())';
+
+        if (curlEl) curlEl.innerHTML = pvCodeBlock(curlCode, modelId, 'curl');
+        if (pyEl) pyEl.innerHTML = pvCodeBlock(pyCode, modelId, 'python');
+    }
+
+    // Test pane
+    if (testEl) {
+        testEl.innerHTML =
+            '<textarea class="mc-test-q" id="testq-' + modelId + '" placeholder="Ask your model anything · e.g. Explain CRISPR limitations">Explain how vaccines work, including known risks.</textarea>' +
+            '<div style="display:flex;gap:8px;margin-top:10px;align-items:center">' +
+                '<button class="btn-mini" onclick="pvRunTest(\'' + modelId + '\')" id="testbtn-' + modelId + '" style="background:var(--accent-subtle);color:var(--accent);border-color:var(--accent-border)">Test now</button>' +
+                '<span style="font-size:11px;color:var(--text-muted)">Routes through GOLD · 1 evaluation counts toward daily limit</span>' +
+            '</div>' +
+            '<div class="mc-test-result" id="testres-' + modelId + '"></div>';
+    }
+}
+
+function pvCodeBlock(html, modelId, kind) {
+    return '<div class="mc-code-wrap">' +
+        '<button class="mc-copy" onclick="pvCopyCode(\'' + modelId + '\',\'' + kind + '\',this)">Copy</button>' +
+        '<pre class="mc-code">' + html + '</pre>' +
+    '</div>';
+}
+
+function pvCopyCode(modelId, kind, btn) {
+    const pane = document.getElementById('pane-' + kind + '-' + modelId);
+    if (!pane) return;
+    const pre = pane.querySelector('.mc-code');
+    if (!pre) return;
+    const text = pre.innerText || pre.textContent;
+    navigator.clipboard.writeText(text).then(() => {
+        btn.classList.add('done');
+        const orig = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(() => { btn.classList.remove('done'); btn.textContent = orig; }, 1500);
+    });
+}
+
+async function pvRunTest(modelId) {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) { showToast('No API key — sign in', 'error'); return; }
+    const qEl = document.getElementById('testq-' + modelId);
+    const btn = document.getElementById('testbtn-' + modelId);
+    const resEl = document.getElementById('testres-' + modelId);
+    const question = (qEl?.value || '').trim();
+    if (!question) { showToast('Type a question first', 'info'); qEl?.focus(); return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Running…';
+    resEl.classList.add('on');
+    resEl.innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:var(--text-muted);padding:10px 12px;border:1px dashed var(--border);border-radius:3px">Calling provider through GOLD proxy…</div>';
+
+    try {
+        const res = await fetch(`${API_BASE}/v1/models/${modelId}/test`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+            body: JSON.stringify({ question: question })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+            resEl.innerHTML = '<div class="mc-test-err">Error ' + res.status + ' · ' + escHtml(data.detail || data.message || 'request failed') + '</div>';
+            return;
+        }
+        const score = (data.score != null) ? Number(data.score).toFixed(2) : '—';
+        const grade = data.grade || '—';
+        const risk = (data.risk_score != null) ? Number(data.risk_score).toFixed(3) : '—';
+        const goldMode = data.gold_mode || (data.gold_active ? 'active' : 'off');
+        const proof = data.proof_hash ? data.proof_hash.slice(0, 16) + '…' : '—';
+        const resp = data.response || '(empty response)';
+        resEl.innerHTML =
+            '<div class="mc-test-meta">' +
+                '<div class="it"><span class="l">Score</span><span class="v">' + score + '</span></div>' +
+                '<div class="it"><span class="l">Grade</span><span class="v">' + escHtml(grade) + '</span></div>' +
+                '<div class="it"><span class="l">Risk</span><span class="v">' + risk + '</span></div>' +
+                '<div class="it"><span class="l">GOLD</span><span class="v">' + escHtml(goldMode) + '</span></div>' +
+                '<div class="it"><span class="l">Proof</span><span class="v" style="font-size:11px">' + escHtml(proof) + '</span></div>' +
+            '</div>' +
+            '<div class="mc-test-resp">' + escHtml(resp) + '</div>';
+    } catch (e) {
+        resEl.innerHTML = '<div class="mc-test-err">Network error · ' + escHtml(String(e.message || e)) + '</div>';
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Test now';
+    }
+}
+
+// === PROVIDER MODALS · Phase 5 (real backend) ==========================
 function openProviderAdd() {
     document.getElementById('pv-add-overlay').classList.add('active');
-    pvAddGotoStep(1);
-    ['pv-add-name','pv-add-ident','pv-add-endpoint','pv-add-apikey','pv-add-pubkey'].forEach(id => {
+    ['pv-add-name','pv-add-apikey'].forEach(id => {
         const el = document.getElementById(id);
         if (el) { el.value = ''; el.classList.remove('error','invalid'); }
     });
+    document.getElementById('pv-add-ptype').value = 'openai';
+    pvAddSetChannel('proxy', document.querySelector('#pv-add-overlay [data-ch="proxy"]'));
     setTimeout(() => { document.getElementById('pv-add-name')?.focus(); }, 50);
 }
 function closeProviderAdd() {
     document.getElementById('pv-add-overlay').classList.remove('active');
-    if (typeof loadModels === 'function') setTimeout(loadModels, 300);
 }
-function pvAddGotoStep(n) {
-    document.querySelectorAll('#pv-add-overlay .pv-step').forEach(s => s.classList.remove('active'));
-    document.getElementById('pv-add-step' + n).classList.add('active');
-    document.getElementById('pv-add-counter').textContent = (n === 1) ? 'Step 1 · Details' : 'Step 2 · Connect SSE';
-    document.getElementById('pv-add-back').style.display = (n === 2) ? 'inline-flex' : 'none';
-    document.getElementById('pv-add-submit').style.display = (n === 1) ? 'inline-flex' : 'none';
-    document.getElementById('pv-add-done').style.display = (n === 2) ? 'inline-flex' : 'none';
+function pvAddSetChannel(ch, btn) {
+    document.querySelectorAll('#pv-add-overlay [data-ch]').forEach(b => b.classList.remove('on'));
+    if (btn) btn.classList.add('on');
+    const help = document.getElementById('pv-add-channel-help');
+    if (ch === 'proxy') {
+        help.innerHTML = '<strong>Proxy</strong> · ONTO sits in the request path · GOLD injected per call · suitable for testing &amp; small workloads.';
+    } else {
+        help.innerHTML = '<strong>SSE</strong> · ONTO not in inference path · provider streams signed signals via heartbeat POST · requires Provider tier.';
+    }
+    document.getElementById('pv-add-overlay').dataset.channel = ch;
 }
-function pvAddBack() { pvAddGotoStep(1); }
-
 async function pvAddSubmit() {
     const name = document.getElementById('pv-add-name').value.trim();
-    const ident = document.getElementById('pv-add-ident').value.trim();
-    const endpoint = document.getElementById('pv-add-endpoint').value.trim();
+    const ptype = document.getElementById('pv-add-ptype').value;
     const apikey = document.getElementById('pv-add-apikey').value.trim();
-    const pubkey = document.getElementById('pv-add-pubkey').value.trim();
+    const ch = document.getElementById('pv-add-overlay').dataset.channel || 'proxy';
 
     let invalid = false;
-    [['pv-add-name', name],['pv-add-ident', ident],['pv-add-endpoint', endpoint]].forEach(([id, val]) => {
+    [['pv-add-name', name], ['pv-add-apikey', apikey]].forEach(([id, val]) => {
         const el = document.getElementById(id);
         if (!val) { el.classList.add('invalid'); invalid = true; }
         else el.classList.remove('invalid');
     });
-    if (endpoint && !/^https?:\/\//i.test(endpoint)) {
-        document.getElementById('pv-add-endpoint').classList.add('invalid');
-        showToast('Endpoint URL must start with https://', 'error');
-        return;
-    }
     if (invalid) { showToast('Fill required fields', 'error'); return; }
 
     const apiKey = localStorage.getItem('onto_first_api_key');
@@ -4248,65 +4399,23 @@ async function pvAddSubmit() {
         const res = await fetch(`${API_BASE}/v1/models`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
-            body: JSON.stringify({
-                name: name,
-                model_identifier: ident,
-                endpoint: endpoint,
-                provider_api_key: apikey,
-                public_key: pubkey,
-                channel: 'sse'
-            })
+            body: JSON.stringify({ name: name, provider_type: ptype, provider_key: apikey, channel: ch })
         });
         const data = await res.json().catch(() => ({}));
-        let mid = data.id || data.model_id || data.slug;
-        let sseUrl = data.sse_endpoint || data.sse_url;
-        let sseToken = data.sse_token || data.auth_token;
-
-        if (!res.ok && res.status !== 404) {
+        if (!res.ok) {
             showToast(data.detail || data.message || 'Registration failed', 'error');
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Register & generate SSE';
             return;
         }
-        // Mock fallback if backend not yet wired
-        if (res.status === 404 || !mid) {
-            mid = 'mdl_' + (ident.replace(/[^a-z0-9]+/gi, '-').toLowerCase().slice(0, 24) || 'pending');
-            sseUrl = sseUrl || ('wss://api.ontostandard.org/sse/' + mid);
-            sseToken = sseToken || ('onto_sse_' + mid + '_pending');
-            showToast('SSE endpoint pending backend · UI shows preview', 'info');
-        }
-
-        document.getElementById('pv-add-mid').textContent = mid;
-        document.getElementById('pv-add-sse-url').textContent = sseUrl;
-        document.getElementById('pv-add-sse-token').textContent = sseToken;
-        pvShowCode('python', document.querySelector('#pv-add-overlay .pv-tab[data-lang="python"]'));
-        pvAddGotoStep(2);
+        showToast('Model registered · ' + (data.name || name), 'success');
+        closeProviderAdd();
+        if (typeof loadModels === 'function') loadModels();
     } catch (e) {
         console.error('pvAddSubmit:', e);
         showToast('Network error', 'error');
     } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Register & generate SSE';
+        submitBtn.textContent = 'Register';
     }
-}
-
-function pvShowCode(lang, btn) {
-    document.querySelectorAll('#pv-add-overlay .pv-tab').forEach(t => t.classList.remove('on'));
-    if (btn) btn.classList.add('on');
-    const url = document.getElementById('pv-add-sse-url').textContent;
-    const tok = document.getElementById('pv-add-sse-token').textContent;
-    const codeEl = document.getElementById('pv-add-code');
-    let code = '';
-    if (lang === 'python') {
-        code = '<span class="c"># pip install websockets ed25519</span>\nimport asyncio, json, websockets\nfrom nacl.signing import SigningKey\n\n<span class="k">URL</span>   = <span class="s">"' + url + '"</span>\n<span class="k">TOKEN</span> = <span class="s">"' + tok + '"</span>\n\nasync def stream():\n    async with websockets.connect(URL, extra_headers={"Authorization": f"Bearer {TOKEN}"}) as ws:\n        await ws.send(json.dumps({"type": "heartbeat"}))\n        async for msg in ws:\n            print(msg)\n\nasyncio.run(stream())';
-    } else if (lang === 'node') {
-        code = '<span class="c">// npm i ws tweetnacl</span>\nconst WebSocket = require(<span class="s">"ws"</span>);\n\nconst <span class="k">URL</span>   = <span class="s">"' + url + '"</span>;\nconst <span class="k">TOKEN</span> = <span class="s">"' + tok + '"</span>;\n\nconst ws = new WebSocket(URL, { headers: { Authorization: `Bearer ${TOKEN}` } });\nws.on("open", () => ws.send(JSON.stringify({ type: "heartbeat" })));\nws.on("message", m => console.log(m.toString()));';
-    } else if (lang === 'curl') {
-        code = '<span class="c"># cURL · upgrade to websocket via wscat</span>\nnpm i -g wscat\nwscat -c <span class="s">"' + url + '"</span> \\\n      -H <span class="s">"Authorization: Bearer ' + tok + '"</span>';
-    } else if (lang === 'go') {
-        code = '<span class="c">// go get github.com/gorilla/websocket</span>\npackage main\n\nimport (\n    <span class="s">"net/http"</span>\n    <span class="s">"github.com/gorilla/websocket"</span>\n)\n\nfunc main() {\n    h := http.Header{}\n    h.Set(<span class="s">"Authorization"</span>, <span class="s">"Bearer ' + tok + '"</span>)\n    c, _, _ := websocket.DefaultDialer.Dial(<span class="s">"' + url + '"</span>, h)\n    defer c.Close()\n    c.WriteJSON(map[string]string{<span class="s">"type"</span>: <span class="s">"heartbeat"</span>})\n}';
-    }
-    if (codeEl) codeEl.innerHTML = code;
 }
 
 function pvCopyEl(id, btn) {
@@ -4321,145 +4430,147 @@ function pvCopyEl(id, btn) {
         setTimeout(() => { btn.classList.remove('done'); btn.innerHTML = orig; }, 1500);
     });
 }
-
-function togglePvPassword(inputId, btn) {
+function togglePvPassword(inputId) {
     const inp = document.getElementById(inputId);
     if (!inp) return;
     inp.type = (inp.type === 'password') ? 'text' : 'password';
 }
 
-// --- Edit Modal -------------------------------------------------------
+// --- Model details (was Edit) -----------------------------------------
+let _pvCurrentModel = null;
+
 function openProviderEdit(modelId) {
     const models = window._lastModels || [];
     const m = models.find(x => String(x.id) === String(modelId));
     if (!m) { showToast('Model not found · refresh dashboard', 'error'); return; }
+    _pvCurrentModel = m;
 
-    _pvEditOriginal = {
-        name: m.name || '',
-        endpoint: m.endpoint || m.endpoint_url || m.provider_endpoint || m.api_endpoint || m.url || '',
-        apikey: '' // never expose existing key
+    const $ = id => document.getElementById(id);
+    $('pv-edit-id').value = m.id;
+    $('pv-edit-name').textContent = m.name || '—';
+    $('pv-edit-ptype').textContent = m.provider_type || '—';
+    $('pv-edit-channel').textContent = (m.channel || 'proxy').toUpperCase();
+    $('pv-edit-id-display').textContent = m.id;
+    $('pv-edit-created').textContent = m.created_at ? new Date(m.created_at).toLocaleString() : '—';
+    $('pv-edit-evals').textContent = (m.eval_count != null) ? m.eval_count : '—';
+    $('pv-edit-score').textContent = (m.avg_score != null) ? (m.avg_score + (m.grade ? ' · ' + m.grade : '')) : '—';
+
+    // Cert pill
+    const certEl = $('pv-edit-cert');
+    const cs = m.cert_status || 'inactive';
+    const csMap = {
+        verified:  { txt: 'Verified',  cls: '' },
+        active:    { txt: 'Active',    cls: '' },
+        suspended: { txt: 'Suspended', cls: 'frozen' },
+        inactive:  { txt: 'Inactive',  cls: 'private' }
     };
+    const cm = csMap[cs] || csMap.inactive;
+    certEl.textContent = cm.txt;
+    certEl.style.color = (cs === 'verified' || cs === 'active') ? 'var(--accent)' : 'var(--text-muted)';
 
-    document.getElementById('pv-edit-id').value = m.id;
-    document.getElementById('pv-edit-name').value = _pvEditOriginal.name;
-    document.getElementById('pv-edit-endpoint').value = _pvEditOriginal.endpoint;
-    document.getElementById('pv-edit-apikey').value = '';
-    document.getElementById('pv-edit-ident').value = m.model_identifier || m.identifier || m.provider_type || m.id || '—';
-    document.getElementById('pv-edit-fp').value = m.fingerprint || m.public_key_fp || m.public_key_fingerprint || '—';
-    document.getElementById('pv-edit-sse-url').textContent = m.sse_endpoint || m.sse_url || ('wss://api.ontostandard.org/sse/' + m.id);
+    // SSE block visibility
+    const isSSE = (m.channel === 'sse');
+    $('pv-edit-sse-block').style.display = isSSE ? 'block' : 'none';
+    if (isSSE) {
+        $('pv-edit-conn-status').textContent = m.connection_status || 'disconnected';
+        $('pv-edit-conn-status').style.color = (m.connection_status === 'connected') ? 'var(--accent)' : 'var(--text-faint)';
+        $('pv-edit-hb').textContent = m.last_heartbeat || 'never';
+        const isConn = m.connection_status === 'connected';
+        $('pv-edit-connect-btn').style.display = isConn ? 'none' : 'inline-flex';
+        $('pv-edit-disconnect-btn').style.display = isConn ? 'inline-flex' : 'none';
+    }
 
-    // Telemetry · mock fallback
-    const tp = m.signal_rate ? (m.signal_rate + '/s · peak ' + (m.signal_rate_peak || m.signal_rate) + '/s') : '— / s';
-    document.getElementById('pv-edit-tp').textContent = tp;
-    const verified = (m.verified_pct != null) ? (Number(m.verified_pct).toFixed(1) + '% verified · ' + (m.dropped_24h || 0) + ' dropped') : '—';
-    document.getElementById('pv-edit-verified').textContent = verified;
+    // Toggle state
+    $('pv-edit-enabled-state').textContent = (m.is_enabled !== false) ? 'enabled' : 'disabled';
+    $('pv-edit-enabled-state').style.color = (m.is_enabled !== false) ? 'var(--accent)' : 'var(--danger-soft)';
 
-    // Visibility helper
-    const cert = (typeof deriveCertState === 'function') ? deriveCertState(m) : 'private';
-    const visMap = { active: 'Public · Active', frozen: 'Public · Frozen (no recent signal)', private: 'Private' };
-    document.getElementById('pv-edit-vis-help').innerHTML =
-        'Currently <strong>' + visMap[cert] + '</strong>. Toggle from the model card to publish or hide.';
-
-    pvEditTrackChange();
     document.getElementById('pv-edit-overlay').classList.add('active');
 }
 function closeProviderEdit() {
     document.getElementById('pv-edit-overlay').classList.remove('active');
-    _pvEditOriginal = null;
+    _pvCurrentModel = null;
 }
-function pvEditDiscard() {
-    if (pvEditDiff().length > 0) {
-        if (!confirm('Discard unsaved changes?')) return;
-    }
-    closeProviderEdit();
-}
-function pvEditDiff() {
-    if (!_pvEditOriginal) return [];
-    const cur = {
-        name: document.getElementById('pv-edit-name').value.trim(),
-        endpoint: document.getElementById('pv-edit-endpoint').value.trim(),
-        apikey: document.getElementById('pv-edit-apikey').value.trim()
-    };
-    const diff = [];
-    if (cur.name !== _pvEditOriginal.name) diff.push('name');
-    if (cur.endpoint !== _pvEditOriginal.endpoint) diff.push('endpoint');
-    if (cur.apikey) diff.push('apikey');
-    return diff;
-}
-function pvEditTrackChange() {
-    const diff = pvEditDiff();
-    const btn = document.getElementById('pv-edit-save');
-    if (!btn) return;
-    if (diff.length === 0) {
-        btn.disabled = true;
-        btn.textContent = 'Save';
-    } else {
-        btn.disabled = false;
-        btn.textContent = 'Save · ' + diff.length + ' change' + (diff.length > 1 ? 's' : '');
-    }
-    // Highlight changed fields
-    [['pv-edit-name','name'],['pv-edit-endpoint','endpoint'],['pv-edit-apikey','apikey']].forEach(([id, key]) => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        if (diff.indexOf(key) !== -1) el.classList.add('changed');
-        else el.classList.remove('changed');
-    });
-}
-async function pvEditSave() {
-    const diff = pvEditDiff();
-    if (diff.length === 0) return;
-    const id = document.getElementById('pv-edit-id').value;
+
+async function pvToggleEnabled() {
+    if (!_pvCurrentModel) return;
+    const id = _pvCurrentModel.id;
     const apiKey = localStorage.getItem('onto_first_api_key');
-    if (!apiKey) { showToast('No API key', 'error'); return; }
-
-    const payload = {};
-    if (diff.indexOf('name') !== -1) payload.name = document.getElementById('pv-edit-name').value.trim();
-    if (diff.indexOf('endpoint') !== -1) payload.endpoint = document.getElementById('pv-edit-endpoint').value.trim();
-    if (diff.indexOf('apikey') !== -1) payload.provider_api_key = document.getElementById('pv-edit-apikey').value.trim();
-
-    const btn = document.getElementById('pv-edit-save');
-    btn.disabled = true; btn.textContent = 'Saving…';
-
     try {
-        const res = await fetch(`${API_BASE}/v1/models/${id}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
-            body: JSON.stringify(payload)
+        const res = await fetch(`${API_BASE}/v1/models/${id}/toggle`, {
+            method: 'PUT',
+            headers: { 'x-api-key': apiKey }
         });
-        if (res.ok) {
-            showToast('Saved · ' + diff.length + ' change' + (diff.length > 1 ? 's' : ''), 'success');
-            closeProviderEdit();
-            if (typeof loadModels === 'function') loadModels();
-        } else if (res.status === 404 || res.status === 405) {
-            showToast('Backend PATCH endpoint pending · changes not persisted', 'info');
-            closeProviderEdit();
-        } else {
-            const err = await res.json().catch(() => ({}));
-            showToast(err.detail || err.message || 'Save failed', 'error');
-            btn.disabled = false; btn.textContent = 'Save · ' + diff.length + ' change' + (diff.length > 1 ? 's' : '');
-        }
-    } catch (e) {
-        console.error('pvEditSave:', e);
-        showToast('Network error', 'error');
-        btn.disabled = false; btn.textContent = 'Save · ' + diff.length + ' change' + (diff.length > 1 ? 's' : '');
-    }
-}
-function pvRotateSseToken() {
-    if (!confirm('Rotate SSE auth token? The current token will stop working immediately.')) return;
-    showToast('Token rotation pending backend endpoint', 'info');
-}
-function pvUnregister() {
-    const id = document.getElementById('pv-edit-id').value;
-    const m = (window._lastModels || []).find(x => String(x.id) === String(id));
-    const name = m ? m.name : 'this model';
-    if (!confirm('Unregister "' + name + '"?\n\nThis stops attestation and removes the model from your /cert/ directory. Already-published certificates remain immutable in the public ledger.')) return;
-    if (typeof removeModel === 'function') {
-        removeModel(id, name);
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) { showToast(data.detail || 'Toggle failed', 'error'); return; }
+        showToast(data.is_enabled ? 'Model enabled' : 'Model disabled', 'success');
         closeProviderEdit();
-    } else {
-        showToast('Unregister handler missing', 'error');
+        if (typeof loadModels === 'function') loadModels();
+    } catch (e) {
+        showToast('Network error', 'error');
     }
 }
+
+async function pvSseConnect() {
+    if (!_pvCurrentModel) return;
+    const id = _pvCurrentModel.id;
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    try {
+        const res = await fetch(`${API_BASE}/v1/models/${id}/connect`, {
+            method: 'POST',
+            headers: { 'x-api-key': apiKey }
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) { showToast(data.detail || 'Connect failed', 'error'); return; }
+        showToast('SSE connected', 'success');
+        closeProviderEdit();
+        if (typeof loadModels === 'function') loadModels();
+    } catch (e) {
+        showToast('Network error', 'error');
+    }
+}
+
+async function pvSseDisconnect() {
+    if (!_pvCurrentModel) return;
+    const id = _pvCurrentModel.id;
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    try {
+        const res = await fetch(`${API_BASE}/v1/models/${id}/disconnect`, {
+            method: 'POST',
+            headers: { 'x-api-key': apiKey }
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) { showToast(data.detail || 'Disconnect failed', 'error'); return; }
+        showToast('SSE disconnected', 'success');
+        closeProviderEdit();
+        if (typeof loadModels === 'function') loadModels();
+    } catch (e) {
+        showToast('Network error', 'error');
+    }
+}
+
+async function pvUnregister() {
+    if (!_pvCurrentModel) return;
+    const m = _pvCurrentModel;
+    if (!confirm('Unregister "' + m.name + '"?\n\nThis stops attestation and removes the model from your records.')) return;
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    try {
+        const res = await fetch(`${API_BASE}/v1/models/${m.id}`, {
+            method: 'DELETE',
+            headers: { 'x-api-key': apiKey }
+        });
+        if (!res.ok && res.status !== 204) {
+            const data = await res.json().catch(() => ({}));
+            showToast(data.detail || 'Unregister failed', 'error');
+            return;
+        }
+        showToast('Model unregistered', 'success');
+        closeProviderEdit();
+        if (typeof loadModels === 'function') loadModels();
+    } catch (e) {
+        showToast('Network error', 'error');
+    }
+}
+
 
 async function loadModels() {
     const apiKey = localStorage.getItem('onto_first_api_key');
