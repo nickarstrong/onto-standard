@@ -787,19 +787,14 @@ body::before {
 
 .main-content { flex: 1; margin-left: 0; padding: 12px; padding-top: 64px; overflow-x: hidden; }
 
-/* === DASH HEADER · v6 (Phase 2A) === */
+/* === DASH HEADER · v6 (Phase 2A · Phase 4.1: non-sticky) === */
 .dash-header {
-  position: sticky; top: 0;
-  background: rgba(24,24,27,.92);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: transparent;
   border-bottom: 1px solid var(--border);
   padding: 14px 24px;
   display: flex; align-items: center; gap: 16px;
-  z-index: 50;
-  margin: -12px -12px 16px;
+  margin: -12px -12px 24px;
 }
-[data-theme="light"] .dash-header { background: rgba(247,247,247,.92); }
 .dash-header .who { display: flex; flex-direction: column; line-height: 1.2; gap: 3px; min-width: 0; }
 .dash-header .who .role-tag {
   font-family: var(--mono); font-size: 9.5px; color: var(--text-faint);
@@ -2659,7 +2654,7 @@ client = OpenAI(
             </div>
             <div class="pv-field mono">
                 <label>Endpoint URL</label>
-                <input type="text" id="pv-edit-endpoint" data-pv-track="endpoint" oninput="pvEditTrackChange()">
+                <input type="text" id="pv-edit-endpoint" data-pv-track="endpoint" oninput="pvEditTrackChange()" placeholder="Not configured · paste endpoint">
             </div>
             <div class="pv-field mono">
                 <label>Endpoint API key</label>
@@ -4021,13 +4016,14 @@ function fmtLastSignal(model) {
 }
 
 function deriveCertState(model) {
-    // public + recent signal → active
-    // public + stale signal → frozen
     // private (default) → private
+    // published + recent signal → active
+    // published + no signal ever → awaiting
+    // published + stale signal → frozen
     const isPublished = model.is_published === true || model.cert_status === 'active';
     if (!isPublished) return 'private';
     const ts = model.last_signal_at || model.last_eval_at || null;
-    if (!ts) return 'frozen';
+    if (!ts) return 'awaiting';
     const ageMs = Date.now() - new Date(ts).getTime();
     return ageMs < 24 * 60 * 60 * 1000 ? 'active' : 'frozen';
 }
@@ -4043,15 +4039,18 @@ function deriveStreamState(model) {
 }
 
 function genSparkPath(modelId, scores) {
-    // scores: array of 0..10 numbers OR null → mock 12-point flat
+    // scores: array of 0..10 numbers OR null → flat dash (no real data)
     const W = 90, H = 28, pad = 2;
     const pts = (Array.isArray(scores) && scores.length) ? scores.slice(-12) : null;
     if (!pts) {
-        // mock subtle wave
-        const seed = (modelId || '').charCodeAt(0) || 7;
-        const mock = [];
-        for (let i = 0; i < 12; i++) mock.push(6 + Math.sin((i + seed) * 0.7) * 1.4 + Math.cos(seed + i) * 0.5);
-        return genSparkPath._build(mock, W, H, pad);
+        // honest flat at midline · no fake wave
+        const mid = H / 2;
+        return {
+            line: `M${pad},${mid.toFixed(1)} L${(W - pad).toFixed(1)},${mid.toFixed(1)}`,
+            fill: '',
+            lastX: (W - pad).toFixed(1),
+            lastY: mid.toFixed(1)
+        };
     }
     return genSparkPath._build(pts, W, H, pad);
 }
@@ -4128,14 +4127,16 @@ function renderModelCard(m) {
     const lastSignal = fmtLastSignal(m);
     const signal24h = (m.signal_count_24h != null)
         ? Number(m.signal_count_24h).toLocaleString()
-        : ((m.avg_score != null && m.avg_score > 0) ? m.avg_score.toFixed(1) : '—');
+        : '—';
     const sp = genSparkPath(id, m.spark_data);
 
     const certPillHtml = (cert === 'active')
         ? '<span class="mc-cert"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Active</span>'
-        : (cert === 'frozen')
-            ? '<span class="mc-cert frozen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Frozen</span>'
-            : '<span class="mc-cert private"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Private</span>';
+        : (cert === 'awaiting')
+            ? '<span class="mc-cert frozen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Awaiting first signal</span>'
+            : (cert === 'frozen')
+                ? '<span class="mc-cert frozen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Frozen</span>'
+                : '<span class="mc-cert private"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Private</span>';
 
     const cardClass = 'model-card' + (stream.online ? '' : ' disconnected') + (isOn ? '' : ' disabled');
 
@@ -4335,7 +4336,7 @@ function openProviderEdit(modelId) {
 
     _pvEditOriginal = {
         name: m.name || '',
-        endpoint: m.endpoint || m.endpoint_url || '',
+        endpoint: m.endpoint || m.endpoint_url || m.provider_endpoint || m.api_endpoint || m.url || '',
         apikey: '' // never expose existing key
     };
 
@@ -4343,9 +4344,9 @@ function openProviderEdit(modelId) {
     document.getElementById('pv-edit-name').value = _pvEditOriginal.name;
     document.getElementById('pv-edit-endpoint').value = _pvEditOriginal.endpoint;
     document.getElementById('pv-edit-apikey').value = '';
-    document.getElementById('pv-edit-ident').value = m.model_identifier || m.provider_type || m.id || '—';
-    document.getElementById('pv-edit-fp').value = m.fingerprint || m.public_key_fp || '—';
-    document.getElementById('pv-edit-sse-url').textContent = m.sse_endpoint || ('wss://api.ontostandard.org/sse/' + m.id);
+    document.getElementById('pv-edit-ident').value = m.model_identifier || m.identifier || m.provider_type || m.id || '—';
+    document.getElementById('pv-edit-fp').value = m.fingerprint || m.public_key_fp || m.public_key_fingerprint || '—';
+    document.getElementById('pv-edit-sse-url').textContent = m.sse_endpoint || m.sse_url || ('wss://api.ontostandard.org/sse/' + m.id);
 
     // Telemetry · mock fallback
     const tp = m.signal_rate ? (m.signal_rate + '/s · peak ' + (m.signal_rate_peak || m.signal_rate) + '/s') : '— / s';
