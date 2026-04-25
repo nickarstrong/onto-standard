@@ -1967,10 +1967,10 @@ client = OpenAI(
                 <div class="apikey-card">
                     <div class="label">ONTO API key · used to authenticate this account</div>
                     <div class="row">
-                        <input type="text" class="key" id="acc-api-key" value="" readonly placeholder="Loading…" style="font-family:var(--mono)">
+                        <input type="password" class="key masked" id="acc-api-key" value="" readonly placeholder="Loading…" style="font-family:var(--mono);letter-spacing:2px">
                         <button class="btn-mini" onclick="toggleAccountKey(this)" id="acc-key-toggle">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-                            <span>Hide</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            <span>Show</span>
                         </button>
                         <button class="btn-mini" onclick="copyAccountKey(this)">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
@@ -2689,86 +2689,6 @@ client = OpenAI(
     </div>
 </div>
 
-<!-- ============== MODEL DETAILS MODAL · readonly + actions (Phase 5) ============== -->
-<div class="pv-overlay" id="pv-edit-overlay">
-    <div class="pv-modal" role="dialog" aria-labelledby="pv-edit-title">
-        <div class="pv-mhead">
-            <h3 id="pv-edit-title">Model details</h3>
-            <button class="pv-mclose" onclick="closeProviderEdit()" aria-label="Close">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-        </div>
-        <div class="pv-mbody">
-            <input type="hidden" id="pv-edit-id">
-            <div class="pv-row">
-                <span class="lab">Name</span>
-                <span class="val" id="pv-edit-name">—</span>
-            </div>
-            <div class="pv-row">
-                <span class="lab">Provider</span>
-                <span class="val" id="pv-edit-ptype">—</span>
-            </div>
-            <div class="pv-row">
-                <span class="lab">Channel</span>
-                <span class="val" id="pv-edit-channel">—</span>
-            </div>
-            <div class="pv-row">
-                <span class="lab">Model ID</span>
-                <span class="val" id="pv-edit-id-display">—</span>
-                <button class="btn-mini" onclick="pvCopyEl('pv-edit-id-display', this)">Copy</button>
-            </div>
-            <div class="pv-row">
-                <span class="lab">Created</span>
-                <span class="val" id="pv-edit-created">—</span>
-            </div>
-            <div class="pv-row">
-                <span class="lab">Evaluations</span>
-                <span class="val" id="pv-edit-evals">—</span>
-            </div>
-            <div class="pv-row">
-                <span class="lab">Avg score</span>
-                <span class="val" id="pv-edit-score">—</span>
-            </div>
-            <div class="pv-row">
-                <span class="lab">Cert status</span>
-                <span class="val" id="pv-edit-cert">—</span>
-            </div>
-
-            <div class="pv-danger-zone" id="pv-edit-sse-block" style="display:none">
-                <div class="lab">SSE Connection</div>
-                <div class="pv-row">
-                    <span class="lab">Status</span>
-                    <span class="val" id="pv-edit-conn-status">—</span>
-                </div>
-                <div class="pv-row">
-                    <span class="lab">Last heartbeat</span>
-                    <span class="val" id="pv-edit-hb">—</span>
-                </div>
-                <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap">
-                    <button class="btn-mini" id="pv-edit-connect-btn" onclick="pvSseConnect()">Mark connected</button>
-                    <button class="btn-mini" id="pv-edit-disconnect-btn" onclick="pvSseDisconnect()">Mark disconnected</button>
-                </div>
-                <div class="help" style="margin-top:10px">Heartbeat is sent by your server every 30-60s. After 5 minutes without heartbeat, status auto-flips to disconnected.</div>
-            </div>
-
-            <div class="pv-danger-zone">
-                <div class="lab">Lifecycle</div>
-                <div style="display:flex;gap:8px;flex-wrap:wrap">
-                    <button class="btn-mini" id="pv-edit-toggle-btn" onclick="pvToggleEnabled()">Toggle on/off</button>
-                </div>
-                <div class="help" style="margin-top:8px">Currently <strong id="pv-edit-enabled-state">—</strong>. Disabled models do not receive attestation signals.</div>
-            </div>
-        </div>
-        <div class="pv-mfoot">
-            <div class="left">
-                <button class="btn-mini danger" onclick="pvUnregister()">Unregister</button>
-            </div>
-            <div class="right">
-                <button class="btn-mini" onclick="closeProviderEdit()">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script>
 // === API CONFIG ===
@@ -4171,7 +4091,7 @@ function renderModelCard(m) {
             '<button class="mc-iconbtn is-agent" onclick="testInAgent(\'' + id + '\',\'' + ptype + '\')" title="Test in Agent">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>' +
             '</button>' +
-            '<button class="mc-iconbtn" onclick="editModel(\'' + id + '\')" title="Details">' +
+            '<button class="mc-iconbtn" onclick="pvOpenManage(\'' + id + '\')" title="Manage">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' +
             '</button>' +
         '</div>' +
@@ -4189,16 +4109,18 @@ function renderModelCard(m) {
                 '<button class="mc-tab on" data-pane="curl" onclick="pvSwitchPane(\'' + id + '\',\'curl\',this)">cURL</button>' +
                 '<button class="mc-tab" data-pane="python" onclick="pvSwitchPane(\'' + id + '\',\'python\',this)">Python</button>' +
                 '<button class="mc-tab" data-pane="test" onclick="pvSwitchPane(\'' + id + '\',\'test\',this)">Test now</button>' +
+                '<button class="mc-tab" data-pane="manage" onclick="pvSwitchPane(\'' + id + '\',\'manage\',this)">Manage</button>' +
             '</div>' +
             '<div class="mc-pane on" data-pane="curl" id="pane-curl-' + id + '"></div>' +
             '<div class="mc-pane" data-pane="python" id="pane-python-' + id + '"></div>' +
             '<div class="mc-pane" data-pane="test" id="pane-test-' + id + '"></div>' +
+            '<div class="mc-pane" data-pane="manage" id="pane-manage-' + id + '"></div>' +
         '</div>' +
     '</div>';
 }
 
 function editModel(modelId) {
-    return openProviderEdit(modelId);
+    return pvOpenManage(modelId);
 }
 
 // === MODEL DRAWER · How to use + Test (Phase 6) =======================
@@ -4278,6 +4200,100 @@ function pvRenderDrawerCode(modelId) {
             '</div>' +
             '<div class="mc-test-result" id="testres-' + modelId + '"></div>';
     }
+
+    // Manage pane
+    const manageEl = document.getElementById('pane-manage-' + modelId);
+    if (manageEl) {
+        const isSSE = (m.channel || 'proxy').toLowerCase() === 'sse';
+        const isConn = m.connection_status === 'connected';
+        const isOn = m.is_enabled !== false;
+
+        let rows =
+            '<div class="pv-row"><span class="lab">Model ID</span><span class="val">' + escHtml(m.id) + '</span><button class="btn-mini" onclick="navigator.clipboard.writeText(\'' + m.id + '\').then(()=>showToast(\'Copied\',\'success\'))">Copy</button></div>' +
+            '<div class="pv-row"><span class="lab">Provider</span><span class="val">' + escHtml(m.provider_type || '—') + '</span></div>' +
+            '<div class="pv-row"><span class="lab">Channel</span><span class="val">' + (m.channel || 'proxy').toUpperCase() + '</span></div>' +
+            '<div class="pv-row"><span class="lab">Created</span><span class="val">' + (m.created_at ? new Date(m.created_at).toLocaleString() : '—') + '</span></div>' +
+            '<div class="pv-row"><span class="lab">Evaluations</span><span class="val">' + (m.eval_count != null ? m.eval_count : '—') + '</span></div>' +
+            '<div class="pv-row"><span class="lab">Avg score</span><span class="val">' + (m.avg_score != null ? m.avg_score + (m.grade ? ' · ' + m.grade : '') : '—') + '</span></div>';
+
+        if (isSSE) {
+            rows += '<div class="pv-row"><span class="lab">Connection</span><span class="val" style="color:' + (isConn ? 'var(--accent)' : 'var(--text-faint)') + '">' + (m.connection_status || 'disconnected') + '</span></div>';
+            rows += '<div class="pv-row"><span class="lab">Last heartbeat</span><span class="val">' + escHtml(m.last_heartbeat || 'never') + '</span></div>';
+        }
+
+        let actions = '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px dashed var(--border)">';
+        actions += '<button class="btn-mini" onclick="pvAct_toggle(\'' + m.id + '\')">' + (isOn ? 'Disable' : 'Enable') + '</button>';
+        if (isSSE) {
+            if (isConn) {
+                actions += '<button class="btn-mini" onclick="pvAct_disconnect(\'' + m.id + '\')">Disconnect SSE</button>';
+            } else {
+                actions += '<button class="btn-mini" onclick="pvAct_connect(\'' + m.id + '\')">Connect SSE</button>';
+            }
+        }
+        actions += '<button class="btn-mini danger" onclick="pvAct_unregister(\'' + m.id + '\',\'' + escHtml(m.name).replace(/\'/g,"\\\\'") + '\')" style="margin-left:auto">Unregister</button>';
+        actions += '</div>';
+
+        manageEl.innerHTML = rows + actions;
+    }
+}
+
+function pvOpenManage(modelId) {
+    const drawer = document.getElementById('drawer-' + modelId);
+    const toggle = drawer ? drawer.previousElementSibling : null;
+    if (!drawer) return;
+    if (!drawer.classList.contains('open')) {
+        drawer.classList.add('open');
+        if (toggle) toggle.classList.add('open');
+        pvRenderDrawerCode(modelId);
+    }
+    const manageBtn = drawer.querySelector('.mc-tab[data-pane="manage"]');
+    if (manageBtn) pvSwitchPane(modelId, 'manage', manageBtn);
+    drawer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+async function pvAct_toggle(id) {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    try {
+        const res = await fetch(`${API_BASE}/v1/models/${id}/toggle`, { method: 'PUT', headers: { 'x-api-key': apiKey } });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) { showToast(data.detail || 'Toggle failed', 'error'); return; }
+        showToast(data.is_enabled ? 'Enabled' : 'Disabled', 'success');
+        loadModels();
+    } catch (e) { showToast('Network error', 'error'); }
+}
+async function pvAct_connect(id) {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    try {
+        const res = await fetch(`${API_BASE}/v1/models/${id}/connect`, { method: 'POST', headers: { 'x-api-key': apiKey } });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) { showToast(data.detail || 'Connect failed', 'error'); return; }
+        showToast('SSE connected', 'success');
+        loadModels();
+    } catch (e) { showToast('Network error', 'error'); }
+}
+async function pvAct_disconnect(id) {
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    try {
+        const res = await fetch(`${API_BASE}/v1/models/${id}/disconnect`, { method: 'POST', headers: { 'x-api-key': apiKey } });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) { showToast(data.detail || 'Disconnect failed', 'error'); return; }
+        showToast('SSE disconnected', 'success');
+        loadModels();
+    } catch (e) { showToast('Network error', 'error'); }
+}
+async function pvAct_unregister(id, name) {
+    if (!confirm('Unregister "' + name + '"?\n\nThis stops attestation and removes the model.')) return;
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    try {
+        const res = await fetch(`${API_BASE}/v1/models/${id}`, { method: 'DELETE', headers: { 'x-api-key': apiKey } });
+        if (!res.ok && res.status !== 204) {
+            const data = await res.json().catch(() => ({}));
+            showToast(data.detail || 'Unregister failed', 'error');
+            return;
+        }
+        showToast('Unregistered', 'success');
+        loadModels();
+    } catch (e) { showToast('Network error', 'error'); }
 }
 
 function pvCodeBlock(html, modelId, kind) {
@@ -4438,138 +4454,6 @@ function togglePvPassword(inputId) {
 
 // --- Model details (was Edit) -----------------------------------------
 let _pvCurrentModel = null;
-
-function openProviderEdit(modelId) {
-    const models = window._lastModels || [];
-    const m = models.find(x => String(x.id) === String(modelId));
-    if (!m) { showToast('Model not found · refresh dashboard', 'error'); return; }
-    _pvCurrentModel = m;
-
-    const $ = id => document.getElementById(id);
-    $('pv-edit-id').value = m.id;
-    $('pv-edit-name').textContent = m.name || '—';
-    $('pv-edit-ptype').textContent = m.provider_type || '—';
-    $('pv-edit-channel').textContent = (m.channel || 'proxy').toUpperCase();
-    $('pv-edit-id-display').textContent = m.id;
-    $('pv-edit-created').textContent = m.created_at ? new Date(m.created_at).toLocaleString() : '—';
-    $('pv-edit-evals').textContent = (m.eval_count != null) ? m.eval_count : '—';
-    $('pv-edit-score').textContent = (m.avg_score != null) ? (m.avg_score + (m.grade ? ' · ' + m.grade : '')) : '—';
-
-    // Cert pill
-    const certEl = $('pv-edit-cert');
-    const cs = m.cert_status || 'inactive';
-    const csMap = {
-        verified:  { txt: 'Verified',  cls: '' },
-        active:    { txt: 'Active',    cls: '' },
-        suspended: { txt: 'Suspended', cls: 'frozen' },
-        inactive:  { txt: 'Inactive',  cls: 'private' }
-    };
-    const cm = csMap[cs] || csMap.inactive;
-    certEl.textContent = cm.txt;
-    certEl.style.color = (cs === 'verified' || cs === 'active') ? 'var(--accent)' : 'var(--text-muted)';
-
-    // SSE block visibility
-    const isSSE = (m.channel === 'sse');
-    $('pv-edit-sse-block').style.display = isSSE ? 'block' : 'none';
-    if (isSSE) {
-        $('pv-edit-conn-status').textContent = m.connection_status || 'disconnected';
-        $('pv-edit-conn-status').style.color = (m.connection_status === 'connected') ? 'var(--accent)' : 'var(--text-faint)';
-        $('pv-edit-hb').textContent = m.last_heartbeat || 'never';
-        const isConn = m.connection_status === 'connected';
-        $('pv-edit-connect-btn').style.display = isConn ? 'none' : 'inline-flex';
-        $('pv-edit-disconnect-btn').style.display = isConn ? 'inline-flex' : 'none';
-    }
-
-    // Toggle state
-    $('pv-edit-enabled-state').textContent = (m.is_enabled !== false) ? 'enabled' : 'disabled';
-    $('pv-edit-enabled-state').style.color = (m.is_enabled !== false) ? 'var(--accent)' : 'var(--danger-soft)';
-
-    document.getElementById('pv-edit-overlay').classList.add('active');
-}
-function closeProviderEdit() {
-    document.getElementById('pv-edit-overlay').classList.remove('active');
-    _pvCurrentModel = null;
-}
-
-async function pvToggleEnabled() {
-    if (!_pvCurrentModel) return;
-    const id = _pvCurrentModel.id;
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    try {
-        const res = await fetch(`${API_BASE}/v1/models/${id}/toggle`, {
-            method: 'PUT',
-            headers: { 'x-api-key': apiKey }
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) { showToast(data.detail || 'Toggle failed', 'error'); return; }
-        showToast(data.is_enabled ? 'Model enabled' : 'Model disabled', 'success');
-        closeProviderEdit();
-        if (typeof loadModels === 'function') loadModels();
-    } catch (e) {
-        showToast('Network error', 'error');
-    }
-}
-
-async function pvSseConnect() {
-    if (!_pvCurrentModel) return;
-    const id = _pvCurrentModel.id;
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    try {
-        const res = await fetch(`${API_BASE}/v1/models/${id}/connect`, {
-            method: 'POST',
-            headers: { 'x-api-key': apiKey }
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) { showToast(data.detail || 'Connect failed', 'error'); return; }
-        showToast('SSE connected', 'success');
-        closeProviderEdit();
-        if (typeof loadModels === 'function') loadModels();
-    } catch (e) {
-        showToast('Network error', 'error');
-    }
-}
-
-async function pvSseDisconnect() {
-    if (!_pvCurrentModel) return;
-    const id = _pvCurrentModel.id;
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    try {
-        const res = await fetch(`${API_BASE}/v1/models/${id}/disconnect`, {
-            method: 'POST',
-            headers: { 'x-api-key': apiKey }
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) { showToast(data.detail || 'Disconnect failed', 'error'); return; }
-        showToast('SSE disconnected', 'success');
-        closeProviderEdit();
-        if (typeof loadModels === 'function') loadModels();
-    } catch (e) {
-        showToast('Network error', 'error');
-    }
-}
-
-async function pvUnregister() {
-    if (!_pvCurrentModel) return;
-    const m = _pvCurrentModel;
-    if (!confirm('Unregister "' + m.name + '"?\n\nThis stops attestation and removes the model from your records.')) return;
-    const apiKey = localStorage.getItem('onto_first_api_key');
-    try {
-        const res = await fetch(`${API_BASE}/v1/models/${m.id}`, {
-            method: 'DELETE',
-            headers: { 'x-api-key': apiKey }
-        });
-        if (!res.ok && res.status !== 204) {
-            const data = await res.json().catch(() => ({}));
-            showToast(data.detail || 'Unregister failed', 'error');
-            return;
-        }
-        showToast('Model unregistered', 'success');
-        closeProviderEdit();
-        if (typeof loadModels === 'function') loadModels();
-    } catch (e) {
-        showToast('Network error', 'error');
-    }
-}
 
 
 async function loadModels() {
