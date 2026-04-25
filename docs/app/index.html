@@ -326,9 +326,10 @@ body::before {
 .sidebar-close:hover { color: var(--text); }
 .sidebar.mobile-open .sidebar-close { display: block; }
 .sidebar-nav { padding: 12px 8px; flex: 1; overflow-y: auto; min-height: 0; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
-.nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 4px; color: var(--text-secondary); cursor: pointer; transition: all 0.15s; font-size: 12px; font-weight: 500; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 4px; color: var(--text-secondary); cursor: pointer; transition: all 0.15s; font-size: 12px; font-weight: 500; position: relative; }
 .nav-item:hover { background: var(--bg-elevated); color: var(--text); }
 .nav-item.active { background: var(--accent-subtle); color: var(--accent); }
+.nav-item.active::before { content: ''; position: absolute; left: -8px; top: 6px; bottom: 6px; width: 3px; background: var(--accent); border-radius: 0 2px 2px 0; }
 .nav-item svg { width: 16px; height: 16px; }
 .nav-divider { height: 1px; background: var(--border); margin: 8px 12px; }
 .sidebar-footer { border-top: 1px solid var(--border); padding: 8px 12px; margin-top: auto; flex-shrink: 0; }
@@ -341,6 +342,56 @@ body::before {
 .tier-badge { font-size: 10px; color: var(--text-muted); }
 
 .main-content { flex: 1; margin-left: 0; padding: 12px; padding-top: 64px; overflow-x: hidden; }
+
+/* === DASH HEADER · v6 (Phase 2A) === */
+.dash-header {
+  position: sticky; top: 0;
+  background: rgba(24,24,27,.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 24px;
+  display: flex; align-items: center; gap: 16px;
+  z-index: 50;
+  margin: -12px -12px 16px;
+}
+[data-theme="light"] .dash-header { background: rgba(247,247,247,.92); }
+.dash-header .who { display: flex; flex-direction: column; line-height: 1.2; gap: 3px; min-width: 0; }
+.dash-header .who .role-tag {
+  font-family: var(--mono); font-size: 9.5px; color: var(--text-faint);
+  letter-spacing: 1.6px; text-transform: uppercase; font-weight: 600;
+}
+.dash-header .who .org-name {
+  font-size: 14px; font-weight: 600; color: var(--text);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.dash-header .divider { width: 1px; height: 22px; background: var(--border); flex-shrink: 0; }
+.dash-header .spacer { flex: 1; }
+.dash-header .nav-link {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 1.2px;
+  color: var(--text-muted); text-transform: uppercase; font-weight: 600;
+  padding: 6px 10px; border-radius: 3px; transition: .15s;
+  display: inline-flex; align-items: center; gap: 6px;
+  text-decoration: none; cursor: pointer; flex-shrink: 0;
+}
+.dash-header .nav-link:hover { color: var(--text); background: var(--bg-elevated); }
+.dash-header .nav-link svg { width: 13px; height: 13px; }
+
+.rights-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 5px 11px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--bg-secondary);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  cursor: help;
+  flex-shrink: 0;
+}
+.rights-badge .rb-item { display: inline-flex; align-items: baseline; gap: 5px; }
+.rights-badge .rb-tier { color: var(--accent); font-weight: 700; letter-spacing: .5px; }
+.rights-badge .rb-years { color: var(--text-muted); font-weight: 600; letter-spacing: .8px; }
+.rights-badge .rb-plus { color: var(--text-faint); font-weight: 600; }
 .page { display: none; overflow-x: hidden; }
 .page.active { display: block; }
 .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; gap: 16px; }
@@ -422,6 +473,7 @@ a.info-val:hover { color: var(--text); }
 
 /* Compact model list */
 @media (max-width: 768px) { #dash-demo-grid { grid-template-columns: 1fr !important; } #dash-detail-expanded > div:last-child { grid-template-columns: 1fr !important; } }
+@media (max-width: 768px) { .dash-header { padding: 12px 16px; gap: 10px; flex-wrap: wrap; margin: -12px -12px 14px; } .dash-header .nav-link { padding: 5px 8px; } .dash-header .who .org-name { font-size: 13px; } }
 @media (max-width: 768px) { #dash-status-bar { flex-wrap:wrap;gap:8px; } #dash-status-bar > div[style*="width:1px"] { display:none; } }
 @media (max-width: 768px) { #audit-stats-bar { grid-template-columns: repeat(2, 1fr) !important; } }
 
@@ -802,6 +854,7 @@ a.info-val:hover { color: var(--text); }
     .sidebar-close { display: none !important; }
     .main-content { margin-left: 240px; padding: 28px 36px; padding-top: 28px; }
     .mobile-header { display: none; }
+    .dash-header { margin: -28px -36px 24px; padding: 14px 32px; }
     
     
     .metric-val { font-size: 16px; }
@@ -816,6 +869,7 @@ a.info-val:hover { color: var(--text); }
 
 @media (min-width: 1200px) {
     .main-content { padding: 32px 40px; }
+    .dash-header { margin: -32px -40px 28px; padding: 14px 36px; }
     
     .metric-val { font-size: 16px; }
     
@@ -1132,6 +1186,25 @@ a.info-val:hover { color: var(--text); }
     </aside>
     
     <main class="main-content">
+        <header class="dash-header">
+            <div class="who">
+                <span class="role-tag" id="dh-role-tag">Account</span>
+                <span class="org-name" id="dh-org-name">—</span>
+            </div>
+            <div class="divider"></div>
+            <div class="rights-badge" id="dh-rights" title="Active tier rights">
+                <span class="rb-item"><span class="rb-tier">Open</span> <span class="rb-years">∞</span></span>
+            </div>
+            <div class="spacer"></div>
+            <a class="nav-link" href="/docs/" target="_blank" title="Documentation">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                Docs
+            </a>
+            <a class="nav-link" href="/agent/" target="_blank" title="Agent" style="color:var(--accent)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                Agent
+            </a>
+        </header>
         <!-- ========== AUDIT PAGE ========== -->
         <div class="page active" id="page-monitor">
 
@@ -3088,6 +3161,59 @@ function showAuthScreen() {
     document.getElementById('dashboard').classList.remove('active');
 }
 
+// === DASH HEADER · Phase 2A ===========================================
+function renderDashHeader() {
+    if (!currentUser) return;
+    const roleTagEl = document.getElementById('dh-role-tag');
+    const orgEl = document.getElementById('dh-org-name');
+    const rightsEl = document.getElementById('dh-rights');
+    if (!roleTagEl || !orgEl || !rightsEl) return;
+
+    // Role tag · derive from layer + role
+    const layer = (currentUser.layer || 'open').toLowerCase();
+    const isAdmin = currentUser.role === 'admin' && currentUser.email
+        && (currentUser.email.indexOf('dexterrion') !== -1
+            || currentUser.email.indexOf('@ontostandard.org') !== -1);
+    let roleLabel = 'Account';
+    if (isAdmin) roleLabel = 'Admin';
+    else if (layer === 'provider' || layer === 'white_label') roleLabel = 'Provider';
+    else if (layer === 'standard') roleLabel = 'Standard';
+    roleTagEl.textContent = roleLabel;
+
+    // Org name · prefer company.name → organization_name → user name
+    const orgName = (currentUser.company && currentUser.company.name)
+        || currentUser.organization_name
+        || currentUser.name
+        || '—';
+    orgEl.textContent = orgName;
+
+    // Rights badge · derive from layer + subscription expiry
+    let yearsLeft = null;
+    if (currentUser.subscription && currentUser.subscription.expires_at) {
+        const expires = new Date(currentUser.subscription.expires_at);
+        const diffMs = expires.getTime() - Date.now();
+        if (!isNaN(diffMs) && diffMs > 0) {
+            yearsLeft = diffMs / (1000 * 60 * 60 * 24 * 365.25);
+        }
+    }
+    const yLabel = (() => {
+        if (yearsLeft == null) return '—';
+        if (yearsLeft >= 1) return Math.floor(yearsLeft) + 'y';
+        const months = Math.max(1, Math.round(yearsLeft * 12));
+        return months + 'mo';
+    })();
+
+    let rightsHtml = '';
+    if (layer === 'open' || !layer) {
+        rightsHtml = '<span class="rb-item"><span class="rb-tier">Open</span> <span class="rb-years">∞</span></span>';
+    } else {
+        const tierMap = { standard: 'Standard', provider: 'Provider', white_label: 'White-label' };
+        const tierLabel = tierMap[layer] || layer;
+        rightsHtml = '<span class="rb-item"><span class="rb-tier">' + tierLabel + '</span> <span class="rb-years">' + yLabel + '</span></span>';
+    }
+    rightsEl.innerHTML = rightsHtml;
+}
+
 function showDashboard() {
     document.getElementById('auth-screen').style.display = 'none';
     document.getElementById('dashboard').classList.add('active');
@@ -3102,6 +3228,7 @@ function showDashboard() {
     if (currentUser) {
         document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
         document.getElementById('user-name').textContent = currentUser.name;
+        renderDashHeader();
         // Plan name updated by loadProxyUsage with real data
         // Expiry updated by loadProxyUsage / checkBillingStatus
         document.getElementById('settings-name').textContent = currentUser.name;
