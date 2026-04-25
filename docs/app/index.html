@@ -234,6 +234,450 @@ body::before {
 .checkbox-group label { font-size: 12px; color: var(--text-secondary); cursor: pointer; }
 .checkbox-group a { color: var(--accent); text-decoration: none; }
 
+/* === PROVIDER MODALS · v6 (Phase 3 · Add 2-step + Edit) === */
+.pv-overlay {
+  position: fixed; inset: 0; z-index: 1100;
+  background: rgba(0,0,0,.62);
+  backdrop-filter: blur(3px);
+  display: none; align-items: flex-start; justify-content: center;
+  padding: 32px 16px;
+  overflow-y: auto;
+}
+.pv-overlay.active { display: flex; }
+.pv-modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  width: 100%; max-width: 540px;
+  display: flex; flex-direction: column;
+  max-height: calc(100vh - 64px);
+}
+.pv-mhead {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.pv-mhead h3 { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -.1px; }
+.pv-mhead .pv-step-counter {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: 1.4px; text-transform: uppercase;
+  color: var(--text-faint); font-weight: 600;
+  margin-left: 12px;
+}
+.pv-mclose {
+  width: 28px; height: 28px;
+  border: 1px solid var(--border);
+  background: transparent;
+  border-radius: 3px;
+  color: var(--text-muted);
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: .15s; flex-shrink: 0;
+}
+.pv-mclose:hover { border-color: var(--border-hover); color: var(--text); background: var(--bg-elevated); }
+.pv-mclose svg { width: 14px; height: 14px; }
+.pv-mbody { padding: 18px 20px; overflow-y: auto; flex: 1; }
+.pv-mfoot {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; flex-wrap: wrap;
+}
+.pv-mfoot .left { display: flex; align-items: center; gap: 8px; }
+.pv-mfoot .right { display: flex; align-items: center; gap: 8px; }
+
+.pv-step { display: none; }
+.pv-step.active { display: block; }
+
+.pv-field { margin-bottom: 14px; }
+.pv-field > label {
+  display: block;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 1.3px;
+  text-transform: uppercase; color: var(--text-faint);
+  font-weight: 600; margin-bottom: 6px;
+}
+.pv-field input,
+.pv-field textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 13.5px;
+  outline: none;
+  transition: .15s;
+}
+.pv-field.mono input,
+.pv-field.mono textarea { font-family: var(--mono); font-size: 12.5px; }
+.pv-field input:hover:not(:focus),
+.pv-field textarea:hover:not(:focus) { border-color: var(--border-hover); }
+.pv-field input:focus,
+.pv-field textarea:focus {
+  border-color: var(--accent);
+  background: var(--bg);
+  box-shadow: 0 0 0 3px rgba(34,197,94,.10);
+}
+.pv-field input.error,
+.pv-field input.invalid { border-color: var(--danger-soft); }
+.pv-field input[readonly] { background: var(--bg-elevated); color: var(--text-muted); cursor: default; }
+.pv-field input.changed { border-color: var(--accent-border); background: var(--accent-subtle); }
+.pv-field .help { font-size: 11.5px; color: var(--text-faint); margin-top: 6px; line-height: 1.55; }
+.pv-field .help strong { color: var(--text-secondary); font-weight: 600; }
+.pv-field .help code { font-family: var(--mono); font-size: 11px; color: var(--text-secondary); background: var(--bg-secondary); padding: 1px 5px; border-radius: 2px; }
+
+.pv-pwrap { position: relative; }
+.pv-pwrap .pv-eye {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  width: 30px; height: 30px;
+  background: transparent; border: 0;
+  color: var(--text-muted); border-radius: 3px;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: .15s;
+}
+.pv-pwrap .pv-eye:hover { color: var(--text); background: var(--bg-elevated); }
+.pv-pwrap .pv-eye svg { width: 14px; height: 14px; }
+.pv-pwrap input { padding-right: 42px; }
+
+.pv-success {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  border-radius: 3px;
+  margin-bottom: 16px;
+}
+.pv-success svg { width: 18px; height: 18px; color: var(--accent); flex-shrink: 0; }
+.pv-success .t { font-size: 12.5px; color: var(--text); font-weight: 600; }
+.pv-success .id { font-family: var(--mono); font-size: 11.5px; color: var(--accent); margin-top: 2px; }
+
+.pv-row {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 10px;
+}
+.pv-row .lab {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: 1.3px;
+  text-transform: uppercase; color: var(--text-faint); font-weight: 600;
+  min-width: 90px;
+}
+.pv-row .val {
+  flex: 1; min-width: 0;
+  font-family: var(--mono); font-size: 12px; color: var(--accent);
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: 3px; padding: 8px 10px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.pv-tabs {
+  display: flex; gap: 0;
+  border-bottom: 1px solid var(--border);
+  margin: 14px 0 0;
+}
+.pv-tab {
+  font-family: var(--mono); font-size: 10.5px; font-weight: 600;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  padding: 8px 14px;
+  background: transparent; border: 0; cursor: pointer;
+  color: var(--text-muted); transition: .15s;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  min-height: auto;
+  width: auto;
+}
+.pv-tab:hover { color: var(--text); }
+.pv-tab.on { color: var(--accent); border-bottom-color: var(--accent); }
+
+.pv-code {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-top: 0;
+  border-radius: 0 0 3px 3px;
+  padding: 14px;
+  font-family: var(--mono); font-size: 11.5px; line-height: 1.6;
+  color: var(--text-secondary);
+  overflow-x: auto;
+  white-space: pre;
+  margin-bottom: 14px;
+}
+.pv-code .k { color: var(--accent); }
+.pv-code .s { color: #f4f4f5; }
+.pv-code .c { color: var(--text-faint); font-style: italic; }
+
+.pv-await {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  background: var(--bg-secondary); border: 1px dashed var(--border);
+  border-radius: 3px;
+  font-size: 12px; color: var(--text-muted);
+  margin-top: 14px;
+}
+.pv-await .pv-pulse {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent); animation: pulse-dot 2s infinite;
+  flex-shrink: 0;
+}
+
+.pv-danger-zone {
+  margin-top: 18px; padding-top: 14px;
+  border-top: 1px dashed var(--border);
+}
+.pv-danger-zone .lab {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: 1.3px;
+  text-transform: uppercase; color: var(--text-faint); font-weight: 600;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 760px) {
+  .pv-overlay { padding: 16px 8px; }
+  .pv-modal { max-height: calc(100vh - 32px); }
+  .pv-mbody { padding: 14px 16px; }
+  .pv-mfoot { padding: 12px 16px; }
+  .pv-row { flex-direction: column; align-items: stretch; gap: 4px; }
+  .pv-row .lab { min-width: 0; }
+}
+
+/* === API KEY · ATTESTATION · FORKS · v6 (Phase 2C) === */
+.apikey-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 18px 20px;
+}
+.apikey-card .label {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 1.4px;
+  color: var(--text-faint); text-transform: uppercase; font-weight: 600;
+}
+.apikey-card .row {
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.apikey-card .key {
+  flex: 1; min-width: 0;
+  font-family: var(--mono); font-size: 12.5px; color: var(--text);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  padding: 9px 12px; background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: 3px;
+  letter-spacing: 0.5px;
+}
+.apikey-card .key.masked { color: var(--text-muted); letter-spacing: 2px; }
+.apikey-card .helper { font-size: 12px; color: var(--text-muted); margin-top: 10px; line-height: 1.55; }
+.apikey-card .scopes { font-family: var(--mono); font-size: 10px; color: var(--text-faint); letter-spacing: 1.2px; text-transform: uppercase; margin-top: 6px; }
+.apikey-card .scopes b { color: var(--accent); font-weight: 600; }
+
+.btn-mini {
+  font-family: var(--mono); font-size: 10.5px; font-weight: 700;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  padding: 9px 14px; border-radius: 3px;
+  background: transparent; color: var(--text-secondary);
+  border: 1px solid var(--border);
+  display: inline-flex; align-items: center; gap: 7px;
+  transition: .15s; flex-shrink: 0; cursor: pointer;
+  min-height: auto; width: auto;
+}
+.btn-mini:hover { border-color: var(--border-hover); color: var(--text); background: var(--bg-elevated); }
+.btn-mini.done { background: var(--accent-subtle); color: var(--accent); border-color: var(--accent-border); }
+.btn-mini.danger:hover { border-color: var(--danger-soft); color: var(--danger-soft); }
+.btn-mini svg { width: 12px; height: 12px; }
+
+.url-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 18px 20px;
+}
+.url-card .label {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 1.4px;
+  color: var(--text-faint); text-transform: uppercase; font-weight: 600;
+}
+.url-card .row {
+  display: flex; align-items: center; gap: 12px;
+  margin-top: 10px; flex-wrap: wrap;
+}
+.url-card .url {
+  flex: 1; min-width: 0;
+  font-family: var(--mono); font-size: 13.5px; color: var(--accent);
+  font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  padding: 9px 12px; background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: 3px;
+}
+.url-card .helper { font-size: 12px; color: var(--text-muted); margin-top: 10px; line-height: 1.55; }
+.url-card .count { font-family: var(--mono); font-size: 11px; color: var(--text-faint); letter-spacing: 1.2px; text-transform: uppercase; margin-top: 6px; }
+.url-card .count b { color: var(--text-secondary); font-weight: 600; }
+
+.forks { margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.fork {
+  padding: 14px 16px;
+  border: 1px dashed var(--border);
+  border-radius: 3px;
+  display: flex; gap: 12px; align-items: flex-start;
+  transition: .15s;
+}
+.fork:hover { border-color: var(--border-hover); border-style: solid; }
+.fork-ic {
+  color: var(--text-faint);
+  flex-shrink: 0;
+  width: 28px; height: 28px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.fork-ic svg { width: 14px; height: 14px; }
+.fork-title {
+  font-size: 12.5px; font-weight: 600; color: var(--text);
+  margin-bottom: 4px; letter-spacing: -.05px;
+}
+.fork-desc { font-size: 11.5px; color: var(--text-muted); line-height: 1.55; }
+.fork-desc a { font-weight: 600; }
+.fork-desc strong { color: var(--accent); font-weight: 600; }
+@media (max-width: 760px) { .forks { grid-template-columns: 1fr; } }
+
+/* === MODEL CARDS · v6 (Phase 2B · provider parity) === */
+.model-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 16px 20px;
+  transition: .15s;
+  margin-bottom: 10px;
+}
+.model-card:hover { border-color: var(--border-hover); }
+.model-card.disabled { opacity: 0.5; }
+
+.mc-top {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto auto auto;
+  gap: 18px;
+  align-items: center;
+}
+@media (max-width: 768px) {
+  .mc-top { grid-template-columns: auto 1fr auto auto; gap: 12px; }
+  .mc-top .spark { display: none; }
+  .mc-top .signals { display: none; }
+}
+
+.mc-dot { position: relative; width: 10px; height: 10px; flex-shrink: 0; }
+.mc-dot .core { position: absolute; inset: 0; border-radius: 50%; background: var(--accent); }
+.mc-dot .ring { position: absolute; inset: -4px; border-radius: 50%; border: 1.5px solid var(--accent); animation: pulse-ring 2s infinite; }
+.model-card.disconnected .mc-dot .core { background: var(--text-faint); }
+.model-card.disconnected .mc-dot .ring { display: none; }
+@keyframes pulse-ring {
+  0% { transform: scale(.8); opacity: 1; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+
+.mc-info { min-width: 0; }
+.mc-name { font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: -.1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mc-meta { font-family: var(--mono); font-size: 10.5px; color: var(--text-muted); margin-top: 4px; }
+.mc-meta .sep { color: var(--border-hover); margin: 0 7px; }
+
+.mc-spark { width: 90px; height: 28px; flex-shrink: 0; }
+.mc-spark path.line { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+.mc-spark path.fill { fill: var(--accent-subtle); stroke: none; }
+.mc-spark .latest { fill: var(--accent); }
+.model-card.disconnected .mc-spark path.line { stroke: var(--text-faint); }
+.model-card.disconnected .mc-spark path.fill { fill: rgba(255,255,255,.04); }
+.model-card.disconnected .mc-spark .latest { fill: var(--text-faint); }
+
+.mc-signals { display: flex; flex-direction: column; align-items: flex-end; font-family: var(--mono); min-width: 60px; flex-shrink: 0; }
+.mc-signals .n { font-size: 15px; font-weight: 600; color: var(--text); }
+.mc-signals .l { font-size: 9.5px; color: var(--text-faint); letter-spacing: 1.3px; text-transform: uppercase; margin-top: 2px; }
+
+.mc-iconbtn {
+  width: 30px; height: 30px;
+  border: 1px solid var(--border);
+  background: transparent;
+  border-radius: 3px;
+  color: var(--text-muted);
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: .15s; padding: 0;
+  flex-shrink: 0;
+}
+.mc-iconbtn:hover { border-color: var(--border-hover); color: var(--text); background: var(--bg-elevated); }
+.mc-iconbtn svg { width: 14px; height: 14px; }
+.mc-iconbtn.is-agent { color: var(--accent); border-color: var(--accent-border); }
+.mc-iconbtn.is-agent:hover { background: var(--accent-subtle); color: var(--accent); border-color: var(--accent); }
+
+.mc-mid {
+  display: grid;
+  grid-template-columns: auto auto auto 1fr;
+  gap: 14px;
+  align-items: center;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border);
+}
+@media (max-width: 768px) {
+  .mc-mid { grid-template-columns: 1fr; gap: 8px; }
+  .mc-mid .mc-cert { justify-self: start; }
+}
+
+.mc-seg {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--bg-secondary);
+  padding: 2px;
+  font-family: var(--mono);
+}
+.mc-seg button {
+  border: 0; background: transparent;
+  padding: 5px 11px;
+  font-size: 10px; font-weight: 600; letter-spacing: 1.3px;
+  text-transform: uppercase; color: var(--text-muted);
+  border-radius: 2px;
+  transition: .12s;
+  display: inline-flex; align-items: center; gap: 5px;
+  cursor: pointer; min-height: auto; font-family: var(--mono);
+}
+.mc-seg button:hover { color: var(--text); }
+.mc-seg button.on { background: var(--accent-subtle); color: var(--accent); }
+.mc-seg button.on.muted-on { background: var(--bg-elevated); color: var(--text-secondary); }
+.mc-seg button svg { width: 10px; height: 10px; }
+
+.mc-conn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 11px;
+  color: var(--text-muted);
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--bg-secondary);
+}
+.mc-conn .dotmini {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent);
+  animation: pulse-dot 2s infinite;
+}
+.mc-conn.off .dotmini { background: var(--text-faint); animation: none; }
+.mc-conn.off { color: var(--text-faint); }
+.mc-conn .label { letter-spacing: 1px; text-transform: uppercase; font-size: 10px; color: var(--text-faint); }
+.mc-conn .rate { font-size: 11.5px; color: var(--text); font-weight: 600; }
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .35; }
+}
+
+.mc-cert {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: 1.4px; text-transform: uppercase;
+  padding: 5px 11px; border-radius: 3px;
+  background: var(--accent-subtle); color: var(--accent);
+  border: 1px solid var(--accent-border);
+  display: inline-flex; align-items: center; gap: 6px;
+  justify-self: end;
+}
+.mc-cert.frozen { background: var(--bg-elevated); color: var(--text-muted); border-color: var(--border-hover); }
+.mc-cert.private { background: var(--bg-elevated); color: var(--text-secondary); border: 1px dashed var(--border-hover); }
+.mc-cert svg { width: 10px; height: 10px; }
+
+.mc-empty {
+  text-align: center; padding: 32px 16px;
+  font-family: var(--mono); font-size: 11px;
+  color: var(--text-muted); letter-spacing: 1.2px; text-transform: uppercase;
+  border: 1px dashed var(--border); border-radius: 4px;
+}
+
 /* === BUTTONS · v6 === */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
@@ -1480,6 +1924,7 @@ a.info-val:hover { color: var(--text); }
                                     <span style="font-size:12px;font-weight:600">SSE</span><span style="font-size:10px;color:var(--text-muted);margin-left:6px">— GOLD cached on your server, zero latency, continuous push</span>
                                     <span style="font-size:9px;color:#0a0a0a;background:var(--accent);padding:1px 6px;border-radius:3px;font-weight:600">Production</span>
                                 </div>
+                                <button class="btn-minimal" onclick="openProviderAdd()" style="font-size:10px;padding:3px 10px;background:var(--accent);color:#0c0f14;border-color:var(--accent);font-weight:600">+ Register</button>
                                 <button class="btn-minimal" onclick="showAddSSEModel()" style="font-size:10px;padding:3px 10px">+ Add</button>
                             </div>
 
@@ -1879,6 +2324,69 @@ client = OpenAI(
                         <span class="info-val" id="sub-total">—</span>
                     </div>
                     <button class="btn-minimal" onclick="showPage('billing')" style="margin-top: 12px;">Extend Subscription</button>
+                </div>
+            </div>
+            
+            <!-- ===== ACCOUNT API KEY (Phase 2C) ===== -->
+            <div class="section-block" style="padding: 0; border: 0; background: transparent;">
+                <div class="section-label" style="margin-bottom: 10px; padding-bottom: 0; border-bottom: 0;">Account API key</div>
+                <div class="apikey-card">
+                    <div class="label">ONTO API key · used to authenticate this account</div>
+                    <div class="row">
+                        <input type="password" class="key masked" id="acc-api-key" value="" readonly placeholder="Loading…">
+                        <button class="btn-mini" onclick="toggleAccountKey(this)" id="acc-key-toggle">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            <span>Show</span>
+                        </button>
+                        <button class="btn-mini" onclick="copyAccountKey(this)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                            Copy
+                        </button>
+                        <button class="btn-mini danger" onclick="rotateAccountKey()" title="Generate new key · old key invalidated">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+                            Rotate
+                        </button>
+                    </div>
+                    <div class="scopes">Scope · <b>read</b> · <b>write</b> · <b>manage</b></div>
+                    <div class="helper">Last used <span id="acc-key-last-used">—</span>. Rotation invalidates the previous key. Update integrations before rotating.</div>
+                </div>
+            </div>
+            
+            <!-- ===== PUBLIC ATTESTATION (Phase 2C) ===== -->
+            <div class="section-block" style="padding: 0; border: 0; background: transparent;">
+                <div class="section-label" style="margin-bottom: 10px; padding-bottom: 0; border-bottom: 0;">Public attestation</div>
+                <div class="url-card">
+                    <div class="label">Provider URL · public · no login required</div>
+                    <div class="row">
+                        <div class="url" id="cert-url">ontostandard.org/cert/—</div>
+                        <button class="btn-mini" id="cert-copy" onclick="copyCertUrl(this)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                            Copy
+                        </button>
+                    </div>
+                    <div class="count">Lists <b id="cert-count">0</b> models you have published</div>
+                    <div class="helper">Verifiable offline against the Standards Council Ed25519 registry. Does not certify the account holder as a legal entity, nor any model not listed.</div>
+                </div>
+
+                <div class="forks">
+                    <div class="fork">
+                        <span class="fork-ic">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                        </span>
+                        <div>
+                            <div class="fork-title">Interactive testing</div>
+                            <div class="fork-desc">Test your own model with full traffic, your API key, your limits. No ONTO involvement. <a href="/agent/" target="_blank">ontostandard.org/agent</a></div>
+                        </div>
+                    </div>
+                    <div class="fork">
+                        <span class="fork-ic">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+                        </span>
+                        <div>
+                            <div class="fork-title">Production proxy</div>
+                            <div class="fork-desc">Consume attested models through ONTO with rate-limited daily quotas. Acquire <strong>Standard</strong> tier rights from <a onclick="showPage('billing')" style="cursor:pointer">Billing</a>.</div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -2494,6 +3002,172 @@ client = OpenAI(
         <div class="modal-footer">
             <button class="btn-minimal" onclick="closeModal('register-model-modal')">Cancel</button>
             <button class="btn-minimal" onclick="submitModelRegistration()" style="background: var(--accent); color: white; border-color: var(--accent);">Connect · Start Trial</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============== PROVIDER ADD MODAL · 2-step (Phase 3) ============== -->
+<div class="pv-overlay" id="pv-add-overlay">
+    <div class="pv-modal" role="dialog" aria-labelledby="pv-add-title">
+        <div class="pv-mhead">
+            <div style="display:flex;align-items:center;min-width:0;flex:1">
+                <h3 id="pv-add-title">Register a model</h3>
+                <span class="pv-step-counter" id="pv-add-counter">Step 1 · Details</span>
+            </div>
+            <button class="pv-mclose" onclick="closeProviderAdd()" aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="pv-mbody">
+            <!-- STEP 1 · DETAILS -->
+            <div class="pv-step active" id="pv-add-step1">
+                <div class="pv-field">
+                    <label>Display name</label>
+                    <input type="text" id="pv-add-name" placeholder="e.g. GLM-5.1" autocomplete="off">
+                    <div class="help">Shown on your dashboard and on the public certificate page.</div>
+                </div>
+                <div class="pv-field mono">
+                    <label>Model identifier</label>
+                    <input type="text" id="pv-add-ident" placeholder="e.g. glm-5.1-chat" autocomplete="off">
+                    <div class="help"><strong>Immutable</strong> after registration. Changing it later requires registering a new model with a new fingerprint.</div>
+                </div>
+                <div class="pv-field mono">
+                    <label>Endpoint URL</label>
+                    <input type="text" id="pv-add-endpoint" placeholder="https://api.example.com/v1/chat/completions" autocomplete="off">
+                </div>
+                <div class="pv-field mono">
+                    <label>Endpoint API key</label>
+                    <div class="pv-pwrap">
+                        <input type="password" id="pv-add-apikey" placeholder="sk-..." autocomplete="off" data-1p-ignore data-lpignore="true">
+                        <button type="button" class="pv-eye" onclick="togglePvPassword('pv-add-apikey', this)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                    <div class="help">Stored encrypted (AES-256). Used only when this model is reached through the proxy fork.</div>
+                </div>
+                <div class="pv-field mono">
+                    <label>Public key (Ed25519)</label>
+                    <textarea id="pv-add-pubkey" rows="3" placeholder="ed25519:..." spellcheck="false"></textarea>
+                    <div class="help">Used to verify each signal you stream. <strong>No ONTO-side rate limit</strong> — bounded by your signing hardware (~30K-100K sig/sec) and network egress.</div>
+                </div>
+            </div>
+            <!-- STEP 2 · CONNECT SSE -->
+            <div class="pv-step" id="pv-add-step2">
+                <div class="pv-success">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <div>
+                        <div class="t">Model registered</div>
+                        <div class="id" id="pv-add-mid">—</div>
+                    </div>
+                </div>
+                <div class="pv-row">
+                    <span class="lab">SSE endpoint</span>
+                    <span class="val" id="pv-add-sse-url">wss://api.ontostandard.org/sse/—</span>
+                    <button class="btn-mini" onclick="pvCopyEl('pv-add-sse-url', this)">Copy</button>
+                </div>
+                <div class="pv-row">
+                    <span class="lab">Auth token</span>
+                    <span class="val" id="pv-add-sse-token">onto_sse_…</span>
+                    <button class="btn-mini" onclick="pvCopyEl('pv-add-sse-token', this)">Copy</button>
+                </div>
+                <div class="pv-tabs" role="tablist">
+                    <button class="pv-tab on" data-lang="python" onclick="pvShowCode('python', this)">Python</button>
+                    <button class="pv-tab" data-lang="node" onclick="pvShowCode('node', this)">Node.js</button>
+                    <button class="pv-tab" data-lang="curl" onclick="pvShowCode('curl', this)">cURL</button>
+                    <button class="pv-tab" data-lang="go" onclick="pvShowCode('go', this)">Go</button>
+                </div>
+                <div class="pv-code" id="pv-add-code"></div>
+                <div class="pv-await">
+                    <span class="pv-pulse"></span>
+                    <span>Awaiting first heartbeat from your model…</span>
+                </div>
+                <div class="help" style="margin-top:12px;font-size:11.5px;color:var(--text-faint)">Read the full <a href="/docs/#sse" target="_blank" style="color:var(--accent)">SSE protocol reference</a>. Your model starts as <strong style="color:var(--text-secondary)">Private</strong> — attestation runs immediately, but the model is not listed on your <code style="font-family:var(--mono);font-size:11px;color:var(--accent);background:var(--bg-secondary);padding:1px 5px;border-radius:2px">/cert/</code> directory until you publish it.</div>
+            </div>
+        </div>
+        <div class="pv-mfoot">
+            <div class="left">
+                <button class="btn-mini" id="pv-add-back" onclick="pvAddBack()" style="display:none">← Back</button>
+            </div>
+            <div class="right">
+                <button class="btn-mini" onclick="closeProviderAdd()">Cancel</button>
+                <button class="btn btn-primary" id="pv-add-submit" onclick="pvAddSubmit()" style="width:auto;min-width:200px;padding:11px 18px;min-height:auto">Register &amp; generate SSE</button>
+                <button class="btn btn-primary" id="pv-add-done" onclick="closeProviderAdd()" style="display:none;width:auto;min-width:120px;padding:11px 18px;min-height:auto">Done</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============== PROVIDER EDIT MODAL (Phase 3) ============== -->
+<div class="pv-overlay" id="pv-edit-overlay">
+    <div class="pv-modal" role="dialog" aria-labelledby="pv-edit-title">
+        <div class="pv-mhead">
+            <h3 id="pv-edit-title">Edit model</h3>
+            <button class="pv-mclose" onclick="closeProviderEdit()" aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="pv-mbody">
+            <input type="hidden" id="pv-edit-id">
+            <div class="pv-field">
+                <label>Display name</label>
+                <input type="text" id="pv-edit-name" data-pv-track="name" oninput="pvEditTrackChange()">
+            </div>
+            <div class="pv-field mono">
+                <label>Endpoint URL</label>
+                <input type="text" id="pv-edit-endpoint" data-pv-track="endpoint" oninput="pvEditTrackChange()">
+            </div>
+            <div class="pv-field mono">
+                <label>Endpoint API key</label>
+                <div class="pv-pwrap">
+                    <input type="password" id="pv-edit-apikey" placeholder="•••••••• (unchanged)" data-pv-track="apikey" oninput="pvEditTrackChange()" autocomplete="off">
+                    <button type="button" class="pv-eye" onclick="togglePvPassword('pv-edit-apikey', this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                </div>
+                <div class="help">Leave empty to keep current key. Type a new value to replace.</div>
+            </div>
+            <div class="pv-field mono">
+                <label>Model identifier</label>
+                <input type="text" id="pv-edit-ident" readonly>
+                <div class="help">Read-only · immutable after registration.</div>
+            </div>
+            <div class="pv-field mono">
+                <label>Fingerprint</label>
+                <input type="text" id="pv-edit-fp" readonly>
+                <div class="help">Read-only · derived from public key.</div>
+            </div>
+
+            <div class="pv-danger-zone">
+                <div class="lab">SSE Connection</div>
+                <div class="pv-row">
+                    <span class="lab">Endpoint</span>
+                    <span class="val" id="pv-edit-sse-url">—</span>
+                    <button class="btn-mini" onclick="pvCopyEl('pv-edit-sse-url', this)">Copy</button>
+                </div>
+                <div class="pv-row">
+                    <span class="lab">Throughput</span>
+                    <span class="val" id="pv-edit-tp">— / s</span>
+                </div>
+                <div class="pv-row">
+                    <span class="lab">Verified</span>
+                    <span class="val" id="pv-edit-verified">—</span>
+                </div>
+                <button class="btn-mini" onclick="pvRotateSseToken()" style="margin-top:6px">Rotate auth token</button>
+            </div>
+
+            <div class="pv-danger-zone">
+                <div class="lab">Visibility</div>
+                <div class="help" id="pv-edit-vis-help">Currently <strong>Private</strong>. Toggle from the model card to publish or hide.</div>
+            </div>
+        </div>
+        <div class="pv-mfoot">
+            <div class="left">
+                <button class="btn-mini danger" onclick="pvUnregister()">Unregister</button>
+            </div>
+            <div class="right">
+                <button class="btn-mini" onclick="pvEditDiscard()">Cancel</button>
+                <button class="btn btn-primary" id="pv-edit-save" onclick="pvEditSave()" disabled style="width:auto;min-width:160px;padding:11px 18px;min-height:auto">Save</button>
+            </div>
         </div>
     </div>
 </div>
@@ -3391,6 +4065,7 @@ function showPage(page, el) {
         });
     }
     if (page === 'monitor') { loadUserSignal(); initERM(); initErmCert(); }
+    if (page === 'settings') { populateAccountKeyUI(); populateCertUrlUI(); }
     if (page === 'sdk') updateSdkPage();
 }
 
@@ -3786,6 +4461,460 @@ async function testStandardProxy() {
     setTimeout(loadProxyUsage, 500);
 }
 
+// === MODEL CARD HELPERS · Phase 2B ===================================
+function fmtLastSignal(model) {
+    const ts = model.last_signal_at || model.last_eval_at || null;
+    if (!ts) return 'never';
+    const t = new Date(ts).getTime();
+    if (isNaN(t)) return model.last_eval_ago || 'never';
+    const diffSec = Math.floor((Date.now() - t) / 1000);
+    if (diffSec < 0) return 'just now';
+    if (diffSec < 60) return diffSec + 's ago';
+    if (diffSec < 3600) return Math.floor(diffSec / 60) + 'm ago';
+    if (diffSec < 86400) return Math.floor(diffSec / 3600) + 'h ago';
+    return Math.floor(diffSec / 86400) + 'd ago';
+}
+
+function deriveCertState(model) {
+    // public + recent signal → active
+    // public + stale signal → frozen
+    // private (default) → private
+    const isPublished = model.is_published === true || model.cert_status === 'active';
+    if (!isPublished) return 'private';
+    const ts = model.last_signal_at || model.last_eval_at || null;
+    if (!ts) return 'frozen';
+    const ageMs = Date.now() - new Date(ts).getTime();
+    return ageMs < 24 * 60 * 60 * 1000 ? 'active' : 'frozen';
+}
+
+function deriveStreamState(model) {
+    // online if signal in last 30s window (mock)
+    const ts = model.last_signal_at || model.last_eval_at || null;
+    if (!ts) return { online: false, rate: '—' };
+    const ageMs = Date.now() - new Date(ts).getTime();
+    const online = ageMs < 30000;
+    const rate = model.signal_rate ? model.signal_rate + '/s' : (online ? '—' : 'off');
+    return { online, rate };
+}
+
+function genSparkPath(modelId, scores) {
+    // scores: array of 0..10 numbers OR null → mock 12-point flat
+    const W = 90, H = 28, pad = 2;
+    const pts = (Array.isArray(scores) && scores.length) ? scores.slice(-12) : null;
+    if (!pts) {
+        // mock subtle wave
+        const seed = (modelId || '').charCodeAt(0) || 7;
+        const mock = [];
+        for (let i = 0; i < 12; i++) mock.push(6 + Math.sin((i + seed) * 0.7) * 1.4 + Math.cos(seed + i) * 0.5);
+        return genSparkPath._build(mock, W, H, pad);
+    }
+    return genSparkPath._build(pts, W, H, pad);
+}
+genSparkPath._build = function(pts, W, H, pad) {
+    const max = 10, min = 0;
+    const stepX = (W - pad * 2) / Math.max(1, pts.length - 1);
+    const yOf = v => H - pad - ((Math.max(min, Math.min(max, v)) - min) / (max - min)) * (H - pad * 2);
+    let line = '';
+    pts.forEach((v, i) => {
+        const x = pad + i * stepX;
+        const y = yOf(v);
+        line += (i === 0 ? 'M' : ' L') + x.toFixed(1) + ',' + y.toFixed(1);
+    });
+    const last = pts[pts.length - 1];
+    const lastX = pad + (pts.length - 1) * stepX;
+    const lastY = yOf(last);
+    const fill = line + ` L${lastX.toFixed(1)},${(H - pad).toFixed(1)} L${pad},${(H - pad).toFixed(1)} Z`;
+    return { line, fill, lastX: lastX.toFixed(1), lastY: lastY.toFixed(1) };
+};
+
+function escHtml(s) {
+    if (s == null) return '';
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+async function setModelVisibility(modelId, vis) {
+    // vis: 'public' | 'private'
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) return;
+    const endpoint = vis === 'public' ? 'publish' : 'unpublish';
+    try {
+        const res = await fetch(`${API_BASE}/v1/models/${modelId}/${endpoint}`, {
+            method: 'POST', headers: { 'x-api-key': apiKey }
+        });
+        if (res.ok) {
+            showToast('Visibility · ' + vis, 'success');
+            loadModels();
+        } else if (res.status === 404) {
+            // Endpoint not yet on backend (Phase 2 mock mode)
+            showToast('Visibility toggle pending backend · UI updated locally', 'info');
+            // Update DOM optimistically
+            const card = document.querySelector('[data-model="' + modelId + '"]');
+            if (card) {
+                const seg = card.querySelector('.mc-seg');
+                if (seg) {
+                    seg.querySelectorAll('button').forEach(b => b.classList.remove('on'));
+                    const btn = seg.querySelector(`[data-vis="${vis}"]`);
+                    if (btn) btn.classList.add('on');
+                }
+            }
+        } else {
+            showToast('Visibility update failed', 'error');
+        }
+    } catch (e) {
+        console.error('setModelVisibility:', e);
+        showToast('Network error', 'error');
+    }
+}
+
+function testInAgent(modelId, providerType) {
+    const url = '/agent/?model=' + encodeURIComponent(modelId || '')
+              + '&provider=' + encodeURIComponent(providerType || '');
+    window.open(url, '_blank');
+}
+
+function renderModelCard(m) {
+    const id = escHtml(m.id);
+    const name = escHtml(m.name);
+    const ptype = escHtml(m.provider_type || '');
+    const isOn = m.is_enabled !== false;
+    const stream = deriveStreamState(m);
+    const cert = deriveCertState(m);
+    const isPublic = cert !== 'private';
+    const lastSignal = fmtLastSignal(m);
+    const signal24h = (m.signal_count_24h != null)
+        ? Number(m.signal_count_24h).toLocaleString()
+        : ((m.avg_score != null && m.avg_score > 0) ? m.avg_score.toFixed(1) : '—');
+    const sp = genSparkPath(id, m.spark_data);
+
+    const certPillHtml = (cert === 'active')
+        ? '<span class="mc-cert"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Active</span>'
+        : (cert === 'frozen')
+            ? '<span class="mc-cert frozen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Frozen</span>'
+            : '<span class="mc-cert private"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Private</span>';
+
+    const cardClass = 'model-card' + (stream.online ? '' : ' disconnected') + (isOn ? '' : ' disabled');
+
+    return `<div class="${cardClass}" data-model="${id}">
+        <div class="mc-top">
+            <div class="mc-dot"><div class="core"></div><div class="ring"></div></div>
+            <div class="mc-info">
+                <div class="mc-name">${name}</div>
+                <div class="mc-meta">
+                    <span>${ptype}</span><span class="sep">·</span>
+                    <span>last signal ${escHtml(lastSignal)}</span>
+                </div>
+            </div>
+            <svg class="mc-spark" viewBox="0 0 90 28" preserveAspectRatio="none">
+                <path class="fill" d="${sp.fill}"/>
+                <path class="line" d="${sp.line}"/>
+                <circle class="latest" cx="${sp.lastX}" cy="${sp.lastY}" r="2"/>
+            </svg>
+            <div class="mc-signals">
+                <span class="n">${signal24h}</span>
+                <span class="l">24h</span>
+            </div>
+            <button class="mc-iconbtn is-agent" onclick="testInAgent('${id}','${ptype}')" title="Test in Agent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </button>
+            <button class="mc-iconbtn" onclick="editModel('${id}')" title="Edit">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+        </div>
+        <div class="mc-mid">
+            <div class="mc-seg">
+                <button class="${isPublic ? 'on' : ''}" data-vis="public" onclick="setModelVisibility('${id}','public')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                    Public
+                </button>
+                <button class="${!isPublic ? 'on muted-on' : ''}" data-vis="private" onclick="setModelVisibility('${id}','private')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                    Private
+                </button>
+            </div>
+            <div class="mc-conn ${stream.online ? '' : 'off'}">
+                <span class="dotmini"></span>
+                <span class="label">Stream</span>
+                <span class="rate">${escHtml(stream.rate)}</span>
+            </div>
+            ${certPillHtml}
+        </div>
+    </div>`;
+}
+
+function editModel(modelId) {
+    return openProviderEdit(modelId);
+}
+
+// === PROVIDER MODALS · Phase 3 =========================================
+let _pvEditOriginal = null;
+
+function openProviderAdd() {
+    document.getElementById('pv-add-overlay').classList.add('active');
+    pvAddGotoStep(1);
+    ['pv-add-name','pv-add-ident','pv-add-endpoint','pv-add-apikey','pv-add-pubkey'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.value = ''; el.classList.remove('error','invalid'); }
+    });
+    setTimeout(() => { document.getElementById('pv-add-name')?.focus(); }, 50);
+}
+function closeProviderAdd() {
+    document.getElementById('pv-add-overlay').classList.remove('active');
+    if (typeof loadModels === 'function') setTimeout(loadModels, 300);
+}
+function pvAddGotoStep(n) {
+    document.querySelectorAll('#pv-add-overlay .pv-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('pv-add-step' + n).classList.add('active');
+    document.getElementById('pv-add-counter').textContent = (n === 1) ? 'Step 1 · Details' : 'Step 2 · Connect SSE';
+    document.getElementById('pv-add-back').style.display = (n === 2) ? 'inline-flex' : 'none';
+    document.getElementById('pv-add-submit').style.display = (n === 1) ? 'inline-flex' : 'none';
+    document.getElementById('pv-add-done').style.display = (n === 2) ? 'inline-flex' : 'none';
+}
+function pvAddBack() { pvAddGotoStep(1); }
+
+async function pvAddSubmit() {
+    const name = document.getElementById('pv-add-name').value.trim();
+    const ident = document.getElementById('pv-add-ident').value.trim();
+    const endpoint = document.getElementById('pv-add-endpoint').value.trim();
+    const apikey = document.getElementById('pv-add-apikey').value.trim();
+    const pubkey = document.getElementById('pv-add-pubkey').value.trim();
+
+    let invalid = false;
+    [['pv-add-name', name],['pv-add-ident', ident],['pv-add-endpoint', endpoint]].forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (!val) { el.classList.add('invalid'); invalid = true; }
+        else el.classList.remove('invalid');
+    });
+    if (endpoint && !/^https?:\/\//i.test(endpoint)) {
+        document.getElementById('pv-add-endpoint').classList.add('invalid');
+        showToast('Endpoint URL must start with https://', 'error');
+        return;
+    }
+    if (invalid) { showToast('Fill required fields', 'error'); return; }
+
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) { showToast('No API key — sign in again', 'error'); return; }
+
+    const submitBtn = document.getElementById('pv-add-submit');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Registering…';
+
+    try {
+        const res = await fetch(`${API_BASE}/v1/models`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+            body: JSON.stringify({
+                name: name,
+                model_identifier: ident,
+                endpoint: endpoint,
+                provider_api_key: apikey,
+                public_key: pubkey,
+                channel: 'sse'
+            })
+        });
+        const data = await res.json().catch(() => ({}));
+        let mid = data.id || data.model_id || data.slug;
+        let sseUrl = data.sse_endpoint || data.sse_url;
+        let sseToken = data.sse_token || data.auth_token;
+
+        if (!res.ok && res.status !== 404) {
+            showToast(data.detail || data.message || 'Registration failed', 'error');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Register & generate SSE';
+            return;
+        }
+        // Mock fallback if backend not yet wired
+        if (res.status === 404 || !mid) {
+            mid = 'mdl_' + (ident.replace(/[^a-z0-9]+/gi, '-').toLowerCase().slice(0, 24) || 'pending');
+            sseUrl = sseUrl || ('wss://api.ontostandard.org/sse/' + mid);
+            sseToken = sseToken || ('onto_sse_' + mid + '_pending');
+            showToast('SSE endpoint pending backend · UI shows preview', 'info');
+        }
+
+        document.getElementById('pv-add-mid').textContent = mid;
+        document.getElementById('pv-add-sse-url').textContent = sseUrl;
+        document.getElementById('pv-add-sse-token').textContent = sseToken;
+        pvShowCode('python', document.querySelector('#pv-add-overlay .pv-tab[data-lang="python"]'));
+        pvAddGotoStep(2);
+    } catch (e) {
+        console.error('pvAddSubmit:', e);
+        showToast('Network error', 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Register & generate SSE';
+    }
+}
+
+function pvShowCode(lang, btn) {
+    document.querySelectorAll('#pv-add-overlay .pv-tab').forEach(t => t.classList.remove('on'));
+    if (btn) btn.classList.add('on');
+    const url = document.getElementById('pv-add-sse-url').textContent;
+    const tok = document.getElementById('pv-add-sse-token').textContent;
+    const codeEl = document.getElementById('pv-add-code');
+    let code = '';
+    if (lang === 'python') {
+        code = '<span class="c"># pip install websockets ed25519</span>\nimport asyncio, json, websockets\nfrom nacl.signing import SigningKey\n\n<span class="k">URL</span>   = <span class="s">"' + url + '"</span>\n<span class="k">TOKEN</span> = <span class="s">"' + tok + '"</span>\n\nasync def stream():\n    async with websockets.connect(URL, extra_headers={"Authorization": f"Bearer {TOKEN}"}) as ws:\n        await ws.send(json.dumps({"type": "heartbeat"}))\n        async for msg in ws:\n            print(msg)\n\nasyncio.run(stream())';
+    } else if (lang === 'node') {
+        code = '<span class="c">// npm i ws tweetnacl</span>\nconst WebSocket = require(<span class="s">"ws"</span>);\n\nconst <span class="k">URL</span>   = <span class="s">"' + url + '"</span>;\nconst <span class="k">TOKEN</span> = <span class="s">"' + tok + '"</span>;\n\nconst ws = new WebSocket(URL, { headers: { Authorization: `Bearer ${TOKEN}` } });\nws.on("open", () => ws.send(JSON.stringify({ type: "heartbeat" })));\nws.on("message", m => console.log(m.toString()));';
+    } else if (lang === 'curl') {
+        code = '<span class="c"># cURL · upgrade to websocket via wscat</span>\nnpm i -g wscat\nwscat -c <span class="s">"' + url + '"</span> \\\n      -H <span class="s">"Authorization: Bearer ' + tok + '"</span>';
+    } else if (lang === 'go') {
+        code = '<span class="c">// go get github.com/gorilla/websocket</span>\npackage main\n\nimport (\n    <span class="s">"net/http"</span>\n    <span class="s">"github.com/gorilla/websocket"</span>\n)\n\nfunc main() {\n    h := http.Header{}\n    h.Set(<span class="s">"Authorization"</span>, <span class="s">"Bearer ' + tok + '"</span>)\n    c, _, _ := websocket.DefaultDialer.Dial(<span class="s">"' + url + '"</span>, h)\n    defer c.Close()\n    c.WriteJSON(map[string]string{<span class="s">"type"</span>: <span class="s">"heartbeat"</span>})\n}';
+    }
+    if (codeEl) codeEl.innerHTML = code;
+}
+
+function pvCopyEl(id, btn) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const text = (el.textContent || el.value || '').trim();
+    if (!text || text === '—') { showToast('Nothing to copy', 'info'); return; }
+    navigator.clipboard.writeText(text).then(() => {
+        btn.classList.add('done');
+        const orig = btn.innerHTML;
+        btn.innerHTML = '✓ Copied';
+        setTimeout(() => { btn.classList.remove('done'); btn.innerHTML = orig; }, 1500);
+    });
+}
+
+function togglePvPassword(inputId, btn) {
+    const inp = document.getElementById(inputId);
+    if (!inp) return;
+    inp.type = (inp.type === 'password') ? 'text' : 'password';
+}
+
+// --- Edit Modal -------------------------------------------------------
+function openProviderEdit(modelId) {
+    const models = window._lastModels || [];
+    const m = models.find(x => String(x.id) === String(modelId));
+    if (!m) { showToast('Model not found · refresh dashboard', 'error'); return; }
+
+    _pvEditOriginal = {
+        name: m.name || '',
+        endpoint: m.endpoint || m.endpoint_url || '',
+        apikey: '' // never expose existing key
+    };
+
+    document.getElementById('pv-edit-id').value = m.id;
+    document.getElementById('pv-edit-name').value = _pvEditOriginal.name;
+    document.getElementById('pv-edit-endpoint').value = _pvEditOriginal.endpoint;
+    document.getElementById('pv-edit-apikey').value = '';
+    document.getElementById('pv-edit-ident').value = m.model_identifier || m.provider_type || m.id || '—';
+    document.getElementById('pv-edit-fp').value = m.fingerprint || m.public_key_fp || '—';
+    document.getElementById('pv-edit-sse-url').textContent = m.sse_endpoint || ('wss://api.ontostandard.org/sse/' + m.id);
+
+    // Telemetry · mock fallback
+    const tp = m.signal_rate ? (m.signal_rate + '/s · peak ' + (m.signal_rate_peak || m.signal_rate) + '/s') : '— / s';
+    document.getElementById('pv-edit-tp').textContent = tp;
+    const verified = (m.verified_pct != null) ? (Number(m.verified_pct).toFixed(1) + '% verified · ' + (m.dropped_24h || 0) + ' dropped') : '—';
+    document.getElementById('pv-edit-verified').textContent = verified;
+
+    // Visibility helper
+    const cert = (typeof deriveCertState === 'function') ? deriveCertState(m) : 'private';
+    const visMap = { active: 'Public · Active', frozen: 'Public · Frozen (no recent signal)', private: 'Private' };
+    document.getElementById('pv-edit-vis-help').innerHTML =
+        'Currently <strong>' + visMap[cert] + '</strong>. Toggle from the model card to publish or hide.';
+
+    pvEditTrackChange();
+    document.getElementById('pv-edit-overlay').classList.add('active');
+}
+function closeProviderEdit() {
+    document.getElementById('pv-edit-overlay').classList.remove('active');
+    _pvEditOriginal = null;
+}
+function pvEditDiscard() {
+    if (pvEditDiff().length > 0) {
+        if (!confirm('Discard unsaved changes?')) return;
+    }
+    closeProviderEdit();
+}
+function pvEditDiff() {
+    if (!_pvEditOriginal) return [];
+    const cur = {
+        name: document.getElementById('pv-edit-name').value.trim(),
+        endpoint: document.getElementById('pv-edit-endpoint').value.trim(),
+        apikey: document.getElementById('pv-edit-apikey').value.trim()
+    };
+    const diff = [];
+    if (cur.name !== _pvEditOriginal.name) diff.push('name');
+    if (cur.endpoint !== _pvEditOriginal.endpoint) diff.push('endpoint');
+    if (cur.apikey) diff.push('apikey');
+    return diff;
+}
+function pvEditTrackChange() {
+    const diff = pvEditDiff();
+    const btn = document.getElementById('pv-edit-save');
+    if (!btn) return;
+    if (diff.length === 0) {
+        btn.disabled = true;
+        btn.textContent = 'Save';
+    } else {
+        btn.disabled = false;
+        btn.textContent = 'Save · ' + diff.length + ' change' + (diff.length > 1 ? 's' : '');
+    }
+    // Highlight changed fields
+    [['pv-edit-name','name'],['pv-edit-endpoint','endpoint'],['pv-edit-apikey','apikey']].forEach(([id, key]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (diff.indexOf(key) !== -1) el.classList.add('changed');
+        else el.classList.remove('changed');
+    });
+}
+async function pvEditSave() {
+    const diff = pvEditDiff();
+    if (diff.length === 0) return;
+    const id = document.getElementById('pv-edit-id').value;
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    if (!apiKey) { showToast('No API key', 'error'); return; }
+
+    const payload = {};
+    if (diff.indexOf('name') !== -1) payload.name = document.getElementById('pv-edit-name').value.trim();
+    if (diff.indexOf('endpoint') !== -1) payload.endpoint = document.getElementById('pv-edit-endpoint').value.trim();
+    if (diff.indexOf('apikey') !== -1) payload.provider_api_key = document.getElementById('pv-edit-apikey').value.trim();
+
+    const btn = document.getElementById('pv-edit-save');
+    btn.disabled = true; btn.textContent = 'Saving…';
+
+    try {
+        const res = await fetch(`${API_BASE}/v1/models/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+            body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+            showToast('Saved · ' + diff.length + ' change' + (diff.length > 1 ? 's' : ''), 'success');
+            closeProviderEdit();
+            if (typeof loadModels === 'function') loadModels();
+        } else if (res.status === 404 || res.status === 405) {
+            showToast('Backend PATCH endpoint pending · changes not persisted', 'info');
+            closeProviderEdit();
+        } else {
+            const err = await res.json().catch(() => ({}));
+            showToast(err.detail || err.message || 'Save failed', 'error');
+            btn.disabled = false; btn.textContent = 'Save · ' + diff.length + ' change' + (diff.length > 1 ? 's' : '');
+        }
+    } catch (e) {
+        console.error('pvEditSave:', e);
+        showToast('Network error', 'error');
+        btn.disabled = false; btn.textContent = 'Save · ' + diff.length + ' change' + (diff.length > 1 ? 's' : '');
+    }
+}
+function pvRotateSseToken() {
+    if (!confirm('Rotate SSE auth token? The current token will stop working immediately.')) return;
+    showToast('Token rotation pending backend endpoint', 'info');
+}
+function pvUnregister() {
+    const id = document.getElementById('pv-edit-id').value;
+    const m = (window._lastModels || []).find(x => String(x.id) === String(id));
+    const name = m ? m.name : 'this model';
+    if (!confirm('Unregister "' + name + '"?\n\nThis stops attestation and removes the model from your /cert/ directory. Already-published certificates remain immutable in the public ledger.')) return;
+    if (typeof removeModel === 'function') {
+        removeModel(id, name);
+        closeProviderEdit();
+    } else {
+        showToast('Unregister handler missing', 'error');
+    }
+}
+
 async function loadModels() {
     const apiKey = localStorage.getItem('onto_first_api_key');
     if (!apiKey) return;
@@ -3793,11 +4922,12 @@ async function loadModels() {
     try {
         const res = await fetch(`${API_BASE}/v1/models`, { headers: { 'x-api-key': apiKey } });
         const data = await res.json();
+        window._lastModels = data.models || [];
         const list = document.getElementById('models-list');
         const testSelect = document.getElementById('test-model-select');
         
         if (!data.models || data.models.length === 0) {
-            if (list) list.innerHTML = '<div style="color:var(--text-muted);font-size:11px;padding:12px 0;text-align:center">No models registered yet</div>';
+            if (list) list.innerHTML = '<div class="mc-empty">No models registered yet</div>';
             return;
         }
         
@@ -3805,45 +4935,9 @@ async function loadModels() {
         let testSelectHtml = '<option value="">Select model...</option>';
         
         for (const m of data.models) {
+            listHtml += renderModelCard(m);
             const isOn = m.is_enabled !== false;
-            const cert = m.cert_status || 'inactive';
-            const certColor = cert === 'active' ? 'var(--accent)' : '#ef4444';
-            const certLabel = cert === 'active' ? 'CERTIFIED' : 'INACTIVE';
-            const certUrl = m.cert_url || '';
-            const lastEval = m.last_eval_ago || 'never';
-            const scoreText = (m.avg_score !== null && m.avg_score !== undefined && m.avg_score > 0) ? m.avg_score.toFixed(1) : '—';
-            const gradeText = m.grade || '';
-            const scoreColor = m.avg_score >= 7 ? 'var(--accent)' : m.avg_score >= 5 ? '#f59e0b' : m.avg_score > 0 ? '#ef4444' : 'var(--text-muted)';
-            
-            listHtml += `<div style="padding:10px 0;border-bottom:1px solid var(--border);${!isOn ? 'opacity:0.5' : ''}">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-                    <div style="display:flex;align-items:center;gap:10px;flex:1">
-                        <!-- ON/OFF Toggle -->
-                        <div onclick="toggleModel('${m.id}')" style="width:36px;height:20px;border-radius:10px;background:${isOn ? 'var(--accent)' : '#4a5568'};cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0" title="${isOn ? 'Enabled — click to disable' : 'Disabled — click to enable'}">
-                            <div style="width:16px;height:16px;border-radius:50%;background:white;position:absolute;top:2px;${isOn ? 'right:2px' : 'left:2px'};transition:all 0.2s"></div>
-                        </div>
-                        <div style="min-width:0">
-                            <div style="font-size:13px;font-weight:600;color:var(--text)">${m.name}</div>
-                            <div style="font-size:10px;color:var(--text-muted)">${m.provider_type || ''} · last eval: ${lastEval}</div>
-                        </div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
-                        <!-- Score -->
-                        <div style="text-align:right">
-                            <div style="font-size:16px;font-weight:700;color:${scoreColor}">${scoreText}</div>
-                            <div style="font-size:9px;color:var(--text-muted)">${gradeText}</div>
-                        </div>
-                        <!-- Cert badge -->
-                        <div style="display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:4px;border:1px solid ${certColor};cursor:pointer" onclick="navigator.clipboard.writeText('${certUrl}');showToast('Certificate URL copied','success')" title="Copy certificate link">
-                            <div style="width:6px;height:6px;border-radius:50%;background:${certColor}"></div>
-                            <span style="font-size:9px;font-weight:600;color:${certColor}">${certLabel}</span>
-                        </div>
-                        <button onclick="removeModel('${m.id}','${m.name}')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;padding:2px" title="Remove">×</button>
-                    </div>
-                </div>
-            </div>`;
-            
-            if (isOn) testSelectHtml += `<option value="${m.id}" data-ptype="${m.provider_type}">${m.name} (${m.provider_type})</option>`;
+            if (isOn) testSelectHtml += `<option value="${escHtml(m.id)}" data-ptype="${escHtml(m.provider_type)}">${escHtml(m.name)} (${escHtml(m.provider_type)})</option>`;
         }
         testSelectHtml += '<option value="__manual__">↳ Enter API key manually</option>';
         
@@ -5318,6 +6412,94 @@ function copyDashKey(btn) {
     });
 }
 
+// === ACCOUNT KEY · CERT URL · Phase 2C =================================
+function toggleAccountKey(btn) {
+    const inp = document.getElementById('acc-api-key');
+    if (!inp) return;
+    const span = btn.querySelector('span');
+    if (inp.type === 'password') {
+        inp.type = 'text';
+        inp.classList.remove('masked');
+        if (span) span.textContent = 'Hide';
+    } else {
+        inp.type = 'password';
+        inp.classList.add('masked');
+        if (span) span.textContent = 'Show';
+    }
+}
+function copyAccountKey(btn) {
+    const inp = document.getElementById('acc-api-key');
+    if (!inp || !inp.value) return;
+    navigator.clipboard.writeText(inp.value).then(() => {
+        btn.classList.add('done');
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied';
+        setTimeout(() => { btn.classList.remove('done'); btn.innerHTML = orig; }, 1500);
+    });
+}
+function rotateAccountKey() {
+    if (!confirm('Rotate API key? The current key will stop working immediately. Update integrations before confirming.')) return;
+    if (typeof regenerateApiKey === 'function') {
+        regenerateApiKey();
+        setTimeout(populateAccountKeyUI, 600);
+    } else {
+        showToast('Rotation requires backend endpoint · pending', 'info');
+    }
+}
+function populateAccountKeyUI() {
+    const inp = document.getElementById('acc-api-key');
+    if (!inp) return;
+    const key = localStorage.getItem('onto_first_api_key') || '';
+    inp.value = key;
+    inp.placeholder = key ? '' : 'No key on file';
+    const last = document.getElementById('acc-key-last-used');
+    if (last) {
+        const ts = localStorage.getItem('onto_key_last_used');
+        last.textContent = ts ? fmtLastSignal({ last_signal_at: ts }) : '—';
+    }
+}
+
+function deriveCertSlug() {
+    if (typeof currentUser === 'undefined' || !currentUser) return null;
+    const name = (currentUser.company && currentUser.company.name)
+        || currentUser.organization_name
+        || currentUser.name
+        || '';
+    if (!name) return null;
+    return name.toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .slice(0, 40) || null;
+}
+function populateCertUrlUI() {
+    const urlEl = document.getElementById('cert-url');
+    const countEl = document.getElementById('cert-count');
+    if (!urlEl) return;
+    const slug = deriveCertSlug();
+    urlEl.textContent = slug
+        ? ('ontostandard.org/cert/' + slug)
+        : 'ontostandard.org/cert/— (register organization)';
+    if (countEl) {
+        // honest count · only published models
+        const published = (window._lastModels || []).filter(m =>
+            m.is_published === true || m.cert_status === 'active'
+        ).length;
+        countEl.textContent = published;
+    }
+}
+function copyCertUrl(btn) {
+    const urlEl = document.getElementById('cert-url');
+    if (!urlEl) return;
+    const text = urlEl.textContent.replace(/^ontostandard\.org/i, 'https://ontostandard.org').trim();
+    if (text.indexOf('—') !== -1) { showToast('Register organization first', 'info'); return; }
+    navigator.clipboard.writeText(text).then(() => {
+        btn.classList.add('done');
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied';
+        setTimeout(() => { btn.classList.remove('done'); btn.innerHTML = orig; }, 1500);
+    });
+}
+
 // === INIT ===
 async function loadOrgFromAPI() {
     try {
@@ -5574,6 +6756,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.modal-overlay.active').forEach(modal => {
                 modal.classList.remove('active');
             });
+            document.querySelectorAll('.pv-overlay.active').forEach(m => m.classList.remove('active'));
             const sidebar = document.querySelector('.sidebar');
             if (sidebar) sidebar.classList.remove('open');
         }
