@@ -532,6 +532,150 @@ body::before {
 .fork-desc strong { color: var(--accent); font-weight: 600; }
 @media (max-width: 760px) { .forks { grid-template-columns: 1fr; } }
 
+/* === PRODUCT · Provider Console (final) === */
+.kpi-strip {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 10px; margin-bottom: 20px;
+}
+@media (max-width: 760px) { .kpi-strip { grid-template-columns: repeat(2, 1fr); } }
+.kpi {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 4px; padding: 14px 16px;
+}
+.kpi .l { font-family: var(--mono); font-size: 9.5px; letter-spacing: 1.4px; text-transform: uppercase; color: var(--text-faint); font-weight: 600; }
+.kpi .v { font-size: 22px; font-weight: 700; color: var(--text); margin-top: 4px; letter-spacing: -.5px; }
+.kpi .v small { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-left: 4px; }
+.kpi .s { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+.demo-banner {
+  position: absolute; top: 10px; right: 10px;
+  font-family: var(--mono); font-size: 9px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 3px;
+  background: rgba(180,83,9,.15); color: #b45309;
+  border: 1px solid rgba(180,83,9,.4);
+}
+.model-card.is-demo { position: relative; opacity: .92; border-style: dashed; }
+.model-card.is-demo:hover { border-color: var(--border-hover); }
+
+.setup-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--mono); font-size: 10px; font-weight: 600;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 3px;
+  border: 1px dashed var(--border-hover); color: var(--text-muted);
+}
+.setup-pill.warn { color: #b45309; border-color: rgba(180,83,9,.4); background: rgba(180,83,9,.08); }
+.setup-pill.ok { display: none; }
+
+/* Detail page */
+.detail-head {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 18px; flex-wrap: wrap;
+}
+.detail-back {
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  padding: 7px 12px; border-radius: 3px;
+  background: transparent; color: var(--text-muted);
+  border: 1px solid var(--border);
+  cursor: pointer; transition: .15s;
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: auto; width: auto;
+}
+.detail-back:hover { color: var(--text); border-color: var(--border-hover); background: var(--bg-elevated); }
+.detail-title { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -.4px; }
+.detail-meta { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
+
+.detail-section { margin-bottom: 28px; }
+.detail-section .h {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 1.4px;
+  text-transform: uppercase; color: var(--text-faint); font-weight: 600;
+  margin-bottom: 10px; padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.detail-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+@media (max-width: 760px) { .detail-grid { grid-template-columns: repeat(2, 1fr); } }
+.detail-stat {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 3px; padding: 12px 14px;
+}
+.detail-stat .l { font-family: var(--mono); font-size: 9.5px; letter-spacing: 1.3px; text-transform: uppercase; color: var(--text-faint); font-weight: 600; }
+.detail-stat .v { font-size: 18px; font-weight: 700; color: var(--text); margin-top: 4px; }
+
+.step {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 16px 18px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 3px; margin-bottom: 10px;
+}
+.step .step-num {
+  flex-shrink: 0;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 12px; font-weight: 700;
+  color: var(--text-muted);
+}
+.step.done .step-num { background: var(--accent-subtle); border-color: var(--accent); color: var(--accent); }
+.step.warn .step-num { background: rgba(180,83,9,.12); border-color: rgba(180,83,9,.5); color: #b45309; }
+.step .step-body { flex: 1; min-width: 0; }
+.step .step-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.step .step-status {
+  font-family: var(--mono); font-size: 10.5px; font-weight: 600;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  margin-top: 4px; color: var(--text-muted);
+}
+.step.done .step-status { color: var(--accent); }
+.step.warn .step-status { color: #b45309; }
+.step .step-desc { font-size: 12.5px; color: var(--text-muted); margin-top: 6px; line-height: 1.55; }
+
+.code-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin: 10px 0 0; }
+.code-tab {
+  font-family: var(--mono); font-size: 10.5px; font-weight: 600;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  padding: 8px 14px; background: transparent; border: 0; cursor: pointer;
+  color: var(--text-muted); transition: .15s;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+  min-height: auto; width: auto;
+}
+.code-tab:hover { color: var(--text); }
+.code-tab.on { color: var(--accent); border-bottom-color: var(--accent); }
+.code-pane { display: none; position: relative; margin-top: 0; }
+.code-pane.on { display: block; }
+.code-pane pre {
+  background: var(--bg-secondary); border: 1px solid var(--border); border-top: 0;
+  border-radius: 0 0 3px 3px; padding: 14px 16px; margin: 0;
+  font-family: var(--mono); font-size: 11.5px; line-height: 1.6;
+  color: var(--text-secondary); overflow-x: auto; white-space: pre;
+}
+.code-pane pre .k { color: var(--accent); }
+.code-pane pre .s { color: var(--text); }
+.code-pane pre .c { color: var(--text-faint); font-style: italic; }
+.code-pane .copy-btn {
+  position: absolute; top: 10px; right: 10px;
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: 1.1px; text-transform: uppercase;
+  padding: 5px 9px; border-radius: 3px;
+  background: var(--bg-card); color: var(--text-secondary);
+  border: 1px solid var(--border); cursor: pointer;
+}
+.code-pane .copy-btn:hover { color: var(--text); border-color: var(--border-hover); }
+.code-pane .copy-btn.done { background: var(--accent-subtle); color: var(--accent); border-color: var(--accent-border); }
+
+.detail-actions {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  padding: 16px 18px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 3px;
+}
+.detail-actions .spacer { flex: 1; }
+
+.disabled-btn { opacity: .4; pointer-events: none; }
+
 /* === MODEL CARDS · v6 (Phase 2B · provider parity) === */
 .model-card {
   background: var(--bg-card);
@@ -1741,23 +1885,135 @@ a.info-val:hover { color: var(--text); }
         <!-- ========== AUDIT PAGE ========== -->
         <div class="page active" id="page-monitor">
 
-            <!-- ══════════ MY MODELS · v6 (Phase 4 · clean provider surface) ══════════ -->
-            <div class="dash-section" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px">
-                <div>
-                    <div style="font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-secondary)">My Models</div>
-                </div>
+            <!-- KPI strip -->
+            <div class="kpi-strip" id="kpi-strip">
+                <div class="kpi"><div class="l">Total signals today</div><div class="v" id="kpi-signals">—</div></div>
+                <div class="kpi"><div class="l">Active models</div><div class="v" id="kpi-active">—<small id="kpi-active-of"></small></div></div>
+                <div class="kpi"><div class="l">Avg score</div><div class="v" id="kpi-score">—</div></div>
+                <div class="kpi"><div class="l">Verified</div><div class="v" id="kpi-verified">—<small>%</small></div></div>
+            </div>
+
+            <!-- My Models header -->
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px">
+                <div style="font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-secondary)">My Models</div>
                 <button class="btn-mini" onclick="openProviderAdd()" style="background:var(--accent-subtle);color:var(--accent);border-color:var(--accent-border)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                    Add Model
+                    Register a model
                 </button>
             </div>
 
             <div id="models-list">
-                <div class="mc-empty">No models registered yet · click <strong style="color:var(--accent)">Add Model</strong> to register one</div>
+                <div class="mc-empty">No models registered yet</div>
             </div>
 
             <div style="margin-top:42px;padding-top:18px;border-top:1px solid var(--border);font-family:var(--mono);font-size:10.5px;color:var(--text-faint);letter-spacing:1.4px;text-transform:uppercase;text-align:center;font-weight:600">
                 ONTO Standards Council &middot; Continuous attestation &middot; Ed25519 proof chain
+            </div>
+        </div>
+
+        <!-- ========== MODEL DETAIL PAGE ========== -->
+        <div class="page" id="page-detail">
+            <div class="detail-head">
+                <button class="detail-back" onclick="closeDetail()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><polyline points="15 18 9 12 15 6"/></svg>
+                    Back
+                </button>
+                <div style="flex:1;min-width:0">
+                    <div class="detail-title" id="d-title">—</div>
+                    <div class="detail-meta" id="d-meta">—</div>
+                </div>
+                <button class="btn-mini" onclick="d_reconnect()" id="d-reconnect" style="display:none">Reconnect SSE</button>
+                <button class="btn-mini" onclick="d_toggle()" id="d-toggle">Disable</button>
+                <button class="btn-mini danger" onclick="d_unregister()">Unregister</button>
+            </div>
+
+            <div id="d-demo-banner" style="display:none;padding:10px 14px;margin-bottom:18px;background:rgba(180,83,9,.08);border:1px dashed rgba(180,83,9,.4);border-radius:3px;font-family:var(--mono);font-size:11px;color:#b45309;letter-spacing:1px">
+                DEMO MODEL · synthetic data · actions disabled
+            </div>
+
+            <!-- STATUS -->
+            <div class="detail-section">
+                <div class="h">Status</div>
+                <div class="detail-grid">
+                    <div class="detail-stat"><div class="l">Connection</div><div class="v" id="d-conn">—</div></div>
+                    <div class="detail-stat"><div class="l">Last heartbeat</div><div class="v" id="d-hb">—</div></div>
+                    <div class="detail-stat"><div class="l">Signals 24h</div><div class="v" id="d-signals">—</div></div>
+                    <div class="detail-stat"><div class="l">Avg score</div><div class="v" id="d-score">—</div></div>
+                </div>
+            </div>
+
+            <!-- HOW SSE WORKS -->
+            <div class="detail-section">
+                <div class="h">How SSE works</div>
+                <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:3px;padding:16px 18px;font-size:13px;color:var(--text-secondary);line-height:1.65">
+                    Your server keeps two channels with ONTO:<br>
+                    <strong style="color:var(--text)">1. Heartbeat</strong> · you POST <code style="font-family:var(--mono);background:var(--bg-secondary);padding:1px 6px;border-radius:2px;color:var(--accent)">/v1/models/{id}/heartbeat</code> every 30-60s · we mark you live<br>
+                    <strong style="color:var(--text)">2. GOLD stream</strong> · you GET <code style="font-family:var(--mono);background:var(--bg-secondary);padding:1px 6px;border-radius:2px;color:var(--accent)">/v1/gold/stream</code> · we push corpus updates · you cache &amp; inject into your inferences<br>
+                    <span style="color:var(--text-muted);font-size:12px">Throughput · bounded by your hardware (~30K-100K sig/sec typical) · No ONTO-side rate limit · No cost on your provider key</span>
+                </div>
+            </div>
+
+            <!-- SETUP CHECKLIST -->
+            <div class="detail-section">
+                <div class="h">Setup · 3 steps</div>
+                <div id="d-step1" class="step">
+                    <div class="step-num">1</div>
+                    <div class="step-body">
+                        <div class="step-title">Heartbeat loop</div>
+                        <div class="step-status" id="d-step1-status">awaiting first heartbeat</div>
+                        <div class="step-desc">Your server posts to the heartbeat URL every 30-60 seconds. ONTO marks you live · 5 minutes without a heartbeat auto-flips to disconnected.</div>
+                        <div class="code-tabs">
+                            <button class="code-tab on" data-step="1" data-lang="curl" onclick="d_codeTab(1,'curl',this)">cURL</button>
+                            <button class="code-tab" data-step="1" data-lang="python" onclick="d_codeTab(1,'python',this)">Python</button>
+                        </div>
+                        <div class="code-pane on" id="d-code-1-curl"></div>
+                        <div class="code-pane" id="d-code-1-python"></div>
+                    </div>
+                </div>
+                <div id="d-step2" class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-body">
+                        <div class="step-title">GOLD stream subscription</div>
+                        <div class="step-status" id="d-step2-status">subscribe via long-poll SSE</div>
+                        <div class="step-desc">Open a long-lived GET on the GOLD stream. Server pushes corpus updates. Cache locally and apply on every inference.</div>
+                        <div class="code-tabs">
+                            <button class="code-tab on" data-step="2" data-lang="curl" onclick="d_codeTab(2,'curl',this)">cURL</button>
+                            <button class="code-tab" data-step="2" data-lang="python" onclick="d_codeTab(2,'python',this)">Python</button>
+                        </div>
+                        <div class="code-pane on" id="d-code-2-curl"></div>
+                        <div class="code-pane" id="d-code-2-python"></div>
+                    </div>
+                </div>
+                <div id="d-step3" class="step">
+                    <div class="step-num">3</div>
+                    <div class="step-body">
+                        <div class="step-title">Apply GOLD prefix to inferences</div>
+                        <div class="step-status">your responsibility</div>
+                        <div class="step-desc">Inject the GOLD corpus as a system prompt prefix in your inference pipeline. ONTO cannot detect this client-side · attestation trusts your declared application.</div>
+                        <div class="code-tabs">
+                            <button class="code-tab on" data-step="3" data-lang="python" onclick="d_codeTab(3,'python',this)">Python (pseudo)</button>
+                        </div>
+                        <div class="code-pane on" id="d-code-3-python"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROVIDER KEY SANITY -->
+            <div class="detail-section">
+                <div class="h">Provider key · sanity check</div>
+                <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:3px;padding:16px 18px">
+                    <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;line-height:1.55">Sends <strong style="color:var(--text)">one message</strong> through your stored provider API key · validates the key works · NOT a live business call · counts toward your daily limit.</div>
+                    <button class="btn-mini" onclick="d_testKey()" id="d-test-btn" style="background:var(--accent-subtle);color:var(--accent);border-color:var(--accent-border)">Test provider key</button>
+                    <div id="d-test-result" style="margin-top:12px"></div>
+                </div>
+            </div>
+
+            <!-- EVALUATIONS HISTORY -->
+            <div class="detail-section">
+                <div class="h">Recent evaluations</div>
+                <div id="d-history">
+                    <div style="font-family:var(--mono);font-size:11px;color:var(--text-muted);padding:14px;text-align:center;border:1px dashed var(--border);border-radius:3px">No evaluations yet</div>
+                </div>
             </div>
         </div>
 
@@ -2657,16 +2913,11 @@ client = OpenAI(
                 </select>
             </div>
             <div class="pv-field">
-                <label>Channel</label>
-                <div class="mc-seg" style="font-family:var(--mono)">
-                    <button type="button" class="on" data-ch="proxy" onclick="pvAddSetChannel('proxy', this)">
-                        Proxy
-                    </button>
-                    <button type="button" data-ch="sse" onclick="pvAddSetChannel('sse', this)">
-                        SSE
-                    </button>
+                <label>Attestation channel</label>
+                <div style="display:flex;gap:8px;align-items:center;padding:10px 12px;background:var(--accent-subtle);border:1px solid var(--accent-border);border-radius:3px">
+                    <span style="font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:1.4px;color:var(--accent);text-transform:uppercase">SSE Streaming</span>
                 </div>
-                <div class="help" id="pv-add-channel-help"><strong>Proxy</strong> · ONTO sits in the request path · GOLD injected per call · suitable for testing &amp; small workloads.</div>
+                <div class="help">Your server posts heartbeats every 30-60s and subscribes to the GOLD corpus stream. ONTO is not in your request path · no rate limit · no cost on your provider key. Setup steps appear after registration.</div>
             </div>
             <div class="pv-field mono">
                 <label>Provider API key</label>
@@ -2688,109 +2939,6 @@ client = OpenAI(
         </div>
     </div>
 </div>
-
-<!-- ============== EDIT MODAL ============== -->
-<div class="pv-overlay" id="pv-edit-overlay">
-    <div class="pv-modal" role="dialog">
-        <div class="pv-mhead">
-            <h3 id="pv-edit-title">Edit · Model</h3>
-            <button class="pv-mclose" onclick="closeProviderEdit()" aria-label="Close">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-        </div>
-        <div class="pv-mbody">
-            <input type="hidden" id="pv-edit-id">
-
-            <div class="pv-row">
-                <span class="lab">Display name</span>
-                <span class="val" id="pv-edit-name">—</span>
-            </div>
-            <div class="pv-row">
-                <span class="lab">Provider</span>
-                <span class="val" id="pv-edit-ptype">—</span>
-            </div>
-            <div class="pv-row">
-                <span class="lab">Channel</span>
-                <span class="val" id="pv-edit-channel">—</span>
-            </div>
-            <div class="pv-row">
-                <span class="lab">Model ID</span>
-                <span class="val" id="pv-edit-mid">—</span>
-                <button class="btn-mini" onclick="pvCopyEl('pv-edit-mid', this)">Copy</button>
-            </div>
-            <div class="pv-row">
-                <span class="lab">Created</span>
-                <span class="val" id="pv-edit-created">—</span>
-            </div>
-
-            <div class="pv-danger-zone" id="pv-edit-sse-block" style="display:none">
-                <div class="lab">Attestation channel · SSE</div>
-                <div class="pv-row">
-                    <span class="lab">Status</span>
-                    <span class="val" id="pv-edit-conn">—</span>
-                </div>
-                <div class="pv-row">
-                    <span class="lab">Last heartbeat</span>
-                    <span class="val" id="pv-edit-hb">—</span>
-                </div>
-                <div class="pv-row">
-                    <span class="lab">Heartbeat URL</span>
-                    <span class="val" id="pv-edit-hb-url" style="font-size:11px">—</span>
-                    <button class="btn-mini" onclick="pvCopyEl('pv-edit-hb-url', this)">Copy</button>
-                </div>
-                <div class="pv-row">
-                    <span class="lab">GOLD stream</span>
-                    <span class="val" id="pv-edit-gold-url" style="font-size:11px">—</span>
-                    <button class="btn-mini" onclick="pvCopyEl('pv-edit-gold-url', this)">Copy</button>
-                </div>
-                <div class="help" style="margin-top:8px">Provider's server posts heartbeat every 30-60s and subscribes to the GOLD stream. Both calls authenticate with your ONTO account API key.</div>
-            </div>
-
-            <div class="pv-danger-zone">
-                <div class="lab">Stats</div>
-                <div class="pv-row">
-                    <span class="lab">Total evals</span>
-                    <span class="val" id="pv-edit-evals">—</span>
-                </div>
-                <div class="pv-row">
-                    <span class="lab">Avg score</span>
-                    <span class="val" id="pv-edit-score">—</span>
-                </div>
-                <div class="pv-row">
-                    <span class="lab">Cert</span>
-                    <span class="val" id="pv-edit-cert">—</span>
-                </div>
-            </div>
-
-            <div class="pv-danger-zone">
-                <div class="lab">Code · Quick start</div>
-                <div class="pv-tabs" style="margin:0 0 10px">
-                    <button class="pv-tab on" data-elang="curl" onclick="pvEditShowLang('curl', this)">cURL</button>
-                    <button class="pv-tab" data-elang="python" onclick="pvEditShowLang('python', this)">Python</button>
-                </div>
-                <div class="pv-code" id="pv-edit-code"></div>
-                <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
-                    <button class="btn-mini" onclick="pvEditCopyCode(this)">Copy</button>
-                    <button class="btn-mini" onclick="pvEditTestNow()" id="pv-edit-test-btn" style="background:var(--accent-subtle);color:var(--accent);border-color:var(--accent-border)">Test now</button>
-                    <span style="font-size:11px;color:var(--text-muted)">Sends one question through GOLD · counts toward daily limit</span>
-                </div>
-                <div id="pv-edit-test-result" style="margin-top:10px"></div>
-            </div>
-        </div>
-        <div class="pv-mfoot">
-            <div class="left">
-                <button class="btn-mini danger" onclick="pvEditUnregister()">Unregister</button>
-            </div>
-            <div class="right">
-                <button class="btn-mini" id="pv-edit-toggle" onclick="pvEditToggle()">Disable</button>
-                <button class="btn-mini" id="pv-edit-conn-btn" onclick="pvEditConnect()" style="display:none">Connect SSE</button>
-                <button class="btn-mini" id="pv-edit-disc-btn" onclick="pvEditDisconnect()" style="display:none">Disconnect SSE</button>
-                <button class="btn-mini" onclick="closeProviderEdit()">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 
 <script>
 // === API CONFIG ===
@@ -4125,182 +4273,240 @@ function testInAgent(modelId, providerType) {
     window.open(url, '_blank');
 }
 
+// === Demo card ========================================================
+const DEMO_MODEL = {
+    id: 'demo-glm-5_1',
+    name: 'Demo · GLM-5.1',
+    provider_type: 'zhipu',
+    channel: 'sse',
+    is_enabled: true,
+    is_active: true,
+    is_demo: true,
+    connection_status: 'connected',
+    last_heartbeat: '12s ago',
+    eval_count: 1247,
+    avg_score: 9.4,
+    grade: 'A',
+    cert_status: 'verified',
+    last_eval_ago: 'just now',
+    created_at: '2026-01-15T10:00:00Z'
+};
+function isDemoHidden() { return localStorage.getItem('onto_demo_hidden') === '1'; }
+function hideDemo() { localStorage.setItem('onto_demo_hidden', '1'); loadModels(); }
+
+// === Setup state from real model ======================================
+function modelSetupState(m) {
+    if (m.is_demo) return { step1: 'done', step2: 'done', step3: 'done', complete: true };
+    const isSSE = (m.channel || 'proxy').toLowerCase() === 'sse';
+    const conn = m.connection_status === 'connected';
+    const hb = m.last_heartbeat;
+    const step1 = conn ? 'done' : (hb ? 'warn' : 'todo');
+    const step2 = conn ? 'done' : 'todo';   // backend doesn't track gold subscription · assume tied to heartbeat
+    const step3 = (m.eval_count != null && m.eval_count > 0) ? 'done' : 'todo';
+    const complete = step1 === 'done' && step2 === 'done' && step3 === 'done';
+    return { step1, step2, step3, complete, isSSE };
+}
+
 function renderModelCard(m) {
     const id = escHtml(m.id);
+    const isDemo = !!m.is_demo;
     const name = escHtml(m.name);
     const ptype = escHtml(m.provider_type || '—');
     const channel = (m.channel || 'proxy').toLowerCase();
     const isOn = m.is_enabled !== false;
     const online = pvIsOnline(m);
     const cert = pvCertState(m);
+    const setup = modelSetupState(m);
 
-    const lastAct = (channel === 'sse')
-        ? (m.last_heartbeat ? 'last heartbeat ' + m.last_heartbeat : 'awaiting heartbeat')
-        : (m.last_eval_ago ? 'last eval ' + m.last_eval_ago : 'no evals yet');
-    const evalCount = (m.eval_count != null) ? Number(m.eval_count).toLocaleString() : '—';
-    const scoreText = (m.avg_score != null && m.avg_score > 0) ? Number(m.avg_score).toFixed(2) : '—';
-    const grade = m.grade ? ' · ' + m.grade : '';
+    const statusLine = (channel === 'sse')
+        ? (online
+            ? '<span style="color:var(--accent)">● Connected</span> · last heartbeat ' + escHtml(m.last_heartbeat || '—')
+            : (m.last_heartbeat
+                ? '<span style="color:var(--text-faint)">○ Offline</span> · last heartbeat ' + escHtml(m.last_heartbeat)
+                : '<span style="color:var(--text-faint)">○ Awaiting first heartbeat</span>'))
+        : (online
+            ? '<span style="color:var(--accent)">● Active</span> · last eval ' + escHtml(m.last_eval_ago || 'never')
+            : '<span style="color:var(--text-faint)">○ Disabled</span>');
 
-    const certMap = {
-        verified:  { txt: 'Verified',  cls: '' },
-        active:    { txt: 'Active',    cls: '' },
-        suspended: { txt: 'Suspended', cls: 'frozen' },
-        inactive:  { txt: 'Inactive',  cls: 'private' }
-    };
-    const cm = certMap[cert] || certMap.inactive;
-    const certPill = '<span class="mc-cert ' + cm.cls + '" style="font-size:9px;padding:3px 8px">' + cm.txt + '</span>';
+    const evalCount = (m.eval_count != null) ? Number(m.eval_count).toLocaleString() : '0';
+    const score = (m.avg_score != null && m.avg_score > 0) ? Number(m.avg_score).toFixed(2) : '—';
+    const grade = m.grade || '';
 
-    const channelPill = channel === 'sse'
-        ? '<span class="mc-conn ' + (online ? '' : 'off') + '" style="font-size:9.5px;padding:3px 8px"><span class="dotmini"></span><span class="label">SSE</span>' + (m.last_heartbeat ? ' <span class="rate">' + escHtml(m.last_heartbeat) + '</span>' : '') + '</span>'
-        : '<span class="mc-conn" style="font-size:9.5px;padding:3px 8px;color:var(--text-secondary)"><span class="label">PROXY</span></span>';
+    const certMap = { verified: 'Verified', active: 'Active', suspended: 'Suspended', inactive: 'Inactive' };
+    const certColor = (cert === 'verified' || cert === 'active') ? 'var(--accent)' : 'var(--text-faint)';
+    const certPill = '<span class="mc-cert" style="font-size:9.5px;padding:3px 9px;color:' + certColor + ';border-color:' + (certColor === 'var(--accent)' ? 'var(--accent-border)' : 'var(--border-hover)') + ';background:transparent">' + (certMap[cert] || 'Inactive') + '</span>';
 
-    const cardClass = 'model-card' + (online ? '' : ' disconnected') + (isOn ? '' : ' disabled');
+    const setupPill = setup.complete
+        ? ''
+        : '<span class="setup-pill warn">Setup incomplete</span>';
 
-    return '<div class="' + cardClass + '" data-model="' + id + '">' +
-        '<div class="mc-top" style="grid-template-columns: auto 1fr auto auto auto auto auto">' +
-            '<div class="mc-dot"><div class="core"></div><div class="ring"></div></div>' +
-            '<div class="mc-info">' +
-                '<div class="mc-name">' + name + ' <span style="font-family:var(--mono);font-size:11.5px;color:var(--text-faint);font-weight:500;letter-spacing:.5px;margin-left:6px">' + ptype + '</span></div>' +
-                '<div class="mc-meta">' +
-                    '<span>' + evalCount + ' evals</span><span class="sep">·</span>' +
-                    '<span>' + scoreText + grade + '</span><span class="sep">·</span>' +
-                    '<span>' + escHtml(lastAct) + '</span>' +
+    const cardClass = 'model-card' + (online ? '' : ' disconnected') + (isOn ? '' : ' disabled') + (isDemo ? ' is-demo' : '');
+
+    const hideBtn = isDemo
+        ? '<button class="btn-mini" onclick="hideDemo()" title="Hide demo">Hide</button>'
+        : '<button class="btn-mini danger" onclick="event.stopPropagation();pvAct_unregister(\'' + id + '\',\'' + escHtml(m.name).replace(/\'/g,"\\'") + '\')">Unregister</button>';
+
+    return '<div class="' + cardClass + '" onclick="openDetail(\'' + id + '\')" style="cursor:pointer;margin-bottom:10px">' +
+        (isDemo ? '<div class="demo-banner">Demo</div>' : '') +
+        '<div style="display:flex;align-items:flex-start;gap:14px">' +
+            '<div class="mc-dot" style="margin-top:6px;flex-shrink:0"><div class="core" style="background:' + (online ? 'var(--accent)' : 'var(--text-faint)') + '"></div>' + (online ? '<div class="ring"></div>' : '') + '</div>' +
+            '<div style="flex:1;min-width:0">' +
+                '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px">' +
+                    '<span style="font-size:15px;font-weight:600;color:var(--text)">' + name + '</span>' +
+                    '<span style="font-family:var(--mono);font-size:11px;color:var(--text-faint);letter-spacing:.5px">' + ptype + '</span>' +
+                    '<span class="mc-conn" style="font-size:9.5px;padding:3px 9px"><span class="label">' + channel.toUpperCase() + '</span></span>' +
+                    certPill +
+                    setupPill +
+                '</div>' +
+                '<div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">' + statusLine + '</div>' +
+                '<div style="font-family:var(--mono);font-size:11px;color:var(--text-faint);letter-spacing:.3px">' +
+                    evalCount + ' signals today · avg ' + score + (grade ? ' · ' + grade : '') +
                 '</div>' +
             '</div>' +
-            channelPill +
-            certPill +
-            '<button class="mc-iconbtn is-agent" onclick="testInAgent(\'' + id + '\',\'' + ptype + '\')" title="Open in Agent">' +
-                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>' +
-            '</button>' +
-            '<button class="mc-iconbtn" onclick="pvOpenEdit(\'' + id + '\')" title="Edit">' +
-                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' +
-            '</button>' +
+            '<div style="display:flex;gap:8px;align-items:center" onclick="event.stopPropagation()">' +
+                '<button class="btn-mini" onclick="openDetail(\'' + id + '\')">' + (setup.complete ? 'Open' : 'Continue setup') + '</button>' +
+                hideBtn +
+            '</div>' +
         '</div>' +
     '</div>';
 }
 
-function editModel(modelId) {
-    return pvOpenEdit(modelId);
-}
-function pvOpenManage(modelId) {
-    return pvOpenEdit(modelId);
-}
+function editModel(modelId) { return openDetail(modelId); }
+function pvOpenManage(modelId) { return openDetail(modelId); }
+function pvOpenEdit(modelId) { return openDetail(modelId); }
 
-// === EDIT MODAL · real backend (clean) =================================
-let _pvEditModel = null;
-let _pvEditLang = 'curl';
 
-function pvOpenEdit(modelId) {
-    const m = (window._lastModels || []).find(x => String(x.id) === String(modelId));
-    if (!m) { showToast('Model not found · refresh', 'error'); return; }
-    _pvEditModel = m;
-    _pvEditLang = 'curl';
 
-    const $ = id => document.getElementById(id);
-    $('pv-edit-title').textContent = 'Edit · ' + (m.name || 'Model');
-    $('pv-edit-id').value = m.id;
-    $('pv-edit-name').textContent = m.name || '—';
-    $('pv-edit-ptype').textContent = m.provider_type || '—';
-    $('pv-edit-channel').textContent = (m.channel || 'proxy').toUpperCase();
-    $('pv-edit-mid').textContent = m.id;
-    $('pv-edit-created').textContent = m.created_at ? new Date(m.created_at).toLocaleString() : '—';
-    $('pv-edit-evals').textContent = (m.eval_count != null) ? m.eval_count : '—';
-    $('pv-edit-score').textContent = (m.avg_score != null && m.avg_score > 0)
-        ? (Number(m.avg_score).toFixed(2) + (m.grade ? ' · ' + m.grade : ''))
+// === KPI ===============================================================
+function renderKPI(models) {
+    models = models || [];
+    const totalSignals = models.reduce((a, m) => a + (m.eval_count || 0), 0);
+    const active = models.filter(m => m.is_enabled !== false && (m.connection_status === 'connected' || (m.channel || 'proxy') === 'proxy')).length;
+    const total = models.length;
+    const scored = models.filter(m => m.avg_score != null && m.avg_score > 0);
+    const avgScore = scored.length
+        ? (scored.reduce((a, m) => a + Number(m.avg_score), 0) / scored.length).toFixed(2)
         : '—';
+    const verifiedCount = models.filter(m => m.cert_status === 'verified' || m.cert_status === 'active').length;
+    const verifiedPct = total ? Math.round((verifiedCount / total) * 100) : 0;
+    const $ = id => document.getElementById(id);
+    if ($('kpi-signals')) $('kpi-signals').textContent = Number(totalSignals).toLocaleString();
+    if ($('kpi-active')) { $('kpi-active').textContent = active; $('kpi-active-of').textContent = total ? ' / ' + total : ''; }
+    if ($('kpi-score')) $('kpi-score').textContent = avgScore;
+    if ($('kpi-verified')) $('kpi-verified').textContent = total ? verifiedPct : '—';
+}
 
-    const cs = m.cert_status || 'inactive';
-    $('pv-edit-cert').textContent = cs.charAt(0).toUpperCase() + cs.slice(1);
-    $('pv-edit-cert').style.color = (cs === 'verified' || cs === 'active') ? 'var(--accent)' : 'var(--text-muted)';
+// === DETAIL PAGE =======================================================
+let _dCurrentId = null;
 
+function openDetail(modelId) {
+    _dCurrentId = modelId;
+    const m = (modelId === DEMO_MODEL.id) ? DEMO_MODEL : (window._lastModels || []).find(x => String(x.id) === String(modelId));
+    if (!m) { showToast('Model not found · refresh', 'error'); return; }
+    showPage('detail');
+    renderDetail(m);
+}
+function closeDetail() { _dCurrentId = null; showPage('monitor'); }
+
+function renderDetail(m) {
+    const $ = id => document.getElementById(id);
+    const isDemo = !!m.is_demo;
     const isSSE = (m.channel || 'proxy').toLowerCase() === 'sse';
-    const isConn = m.connection_status === 'connected';
     const isOn = m.is_enabled !== false;
+    const conn = m.connection_status === 'connected';
 
-    if (isSSE) {
-        $('pv-edit-sse-block').style.display = 'block';
-        $('pv-edit-conn').textContent = isConn ? 'Connected' : 'Disconnected';
-        $('pv-edit-conn').style.color = isConn ? 'var(--accent)' : 'var(--text-faint)';
-        $('pv-edit-hb').textContent = m.last_heartbeat || 'never';
-        $('pv-edit-hb-url').textContent = API_BASE + '/v1/models/' + m.id + '/heartbeat';
-        $('pv-edit-gold-url').textContent = API_BASE + '/v1/gold/stream';
-        $('pv-edit-conn-btn').style.display = isConn ? 'none' : 'inline-flex';
-        $('pv-edit-disc-btn').style.display = isConn ? 'inline-flex' : 'none';
-    } else {
-        $('pv-edit-sse-block').style.display = 'none';
-        $('pv-edit-conn-btn').style.display = 'none';
-        $('pv-edit-disc-btn').style.display = 'none';
-    }
+    $('d-title').innerHTML = escHtml(m.name) + (isDemo ? ' <span style="font-family:var(--mono);font-size:11px;color:#b45309;letter-spacing:1.4px">DEMO</span>' : '');
+    $('d-meta').textContent = (m.provider_type || '—') + ' · ' + (m.channel || 'proxy').toUpperCase() + ' · ID ' + m.id;
+    $('d-demo-banner').style.display = isDemo ? 'block' : 'none';
 
-    $('pv-edit-toggle').textContent = isOn ? 'Disable' : 'Enable';
-    $('pv-edit-test-result').innerHTML = '';
+    $('d-conn').textContent = isSSE ? (conn ? 'Connected' : 'Disconnected') : (isOn ? 'Active' : 'Disabled');
+    $('d-conn').style.color = (conn || (!isSSE && isOn)) ? 'var(--accent)' : 'var(--text-faint)';
+    $('d-hb').textContent = m.last_heartbeat || '—';
+    $('d-signals').textContent = (m.eval_count != null) ? Number(m.eval_count).toLocaleString() : '—';
+    $('d-score').textContent = (m.avg_score != null && m.avg_score > 0) ? Number(m.avg_score).toFixed(2) + (m.grade ? ' · ' + m.grade : '') : '—';
 
-    pvEditShowLang('curl', document.querySelector('#pv-edit-overlay [data-elang="curl"]'));
-    document.getElementById('pv-edit-overlay').classList.add('active');
+    const setup = modelSetupState(m);
+    [['d-step1', setup.step1], ['d-step2', setup.step2], ['d-step3', setup.step3]].forEach(p => {
+        const el = $(p[0]);
+        if (!el) return;
+        el.classList.remove('done', 'warn');
+        if (p[1] === 'done') el.classList.add('done');
+        else if (p[1] === 'warn') el.classList.add('warn');
+    });
+    if ($('d-step1-status')) $('d-step1-status').textContent = setup.step1 === 'done' ? 'Live · last hb ' + (m.last_heartbeat || '—') : (setup.step1 === 'warn' ? 'Stale · last hb ' + (m.last_heartbeat || '—') : 'Awaiting first heartbeat');
+    if ($('d-step2-status')) $('d-step2-status').textContent = setup.step2 === 'done' ? 'Subscribed' : 'Subscribe via SSE long-poll';
+
+    d_renderCode(m);
+
+    $('d-toggle').textContent = isOn ? 'Disable' : 'Enable';
+    $('d-reconnect').style.display = (isSSE && !conn && !isDemo) ? 'inline-flex' : 'none';
+
+    ['d-toggle', 'd-reconnect', 'd-test-btn'].forEach(id => {
+        const el = $(id);
+        if (el) el.classList.toggle('disabled-btn', isDemo);
+    });
+
+    if (!isDemo) loadDetailHistory(m.id);
+    else $('d-history').innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:var(--text-muted);padding:14px;text-align:center;border:1px dashed var(--border);border-radius:3px">Demo · no real history</div>';
+
+    $('d-test-result').innerHTML = '';
 }
 
-function closeProviderEdit() {
-    document.getElementById('pv-edit-overlay').classList.remove('active');
-    _pvEditModel = null;
-}
-
-function pvEditShowLang(lang, btn) {
-    _pvEditLang = lang;
-    document.querySelectorAll('#pv-edit-overlay [data-elang]').forEach(b => b.classList.remove('on'));
-    if (btn) btn.classList.add('on');
-    pvEditRenderCode();
-}
-
-function pvEditRenderCode() {
-    const m = _pvEditModel;
-    if (!m) return;
+function d_renderCode(m) {
     const ontoKey = localStorage.getItem('onto_first_api_key') || 'YOUR_ONTO_KEY';
-    const channel = (m.channel || 'proxy').toLowerCase();
-    const ptype = (m.provider_type || 'openai').toLowerCase();
-    const codeEl = document.getElementById('pv-edit-code');
-    let code = '';
+    const id = m.id;
 
-    if (channel === 'proxy') {
-        const path = (ptype === 'anthropic') ? '/v1/proxy/anthropic/messages' : '/v1/proxy/chat/completions';
-        if (_pvEditLang === 'curl') {
-            code = '<span class="c"># Business app calls your model through ONTO</span>\ncurl -X POST <span class="s">"' + API_BASE + path + '"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span> \\\n  -H <span class="s">"Content-Type: application/json"</span> \\\n  -d <span class="s">\'{"model":"' + escHtml(m.name) + '","messages":[{"role":"user","content":"Test"}]}\'</span>';
-        } else {
-            code = '<span class="c"># pip install openai</span>\nfrom openai import OpenAI\nclient = OpenAI(\n    api_key=<span class="s">"' + ontoKey + '"</span>,\n    base_url=<span class="s">"' + API_BASE + '/v1/proxy"</span>\n)\nresp = client.chat.completions.create(\n    model=<span class="s">"' + escHtml(m.name) + '"</span>,\n    messages=[{<span class="s">"role"</span>: <span class="s">"user"</span>, <span class="s">"content"</span>: <span class="s">"Test"</span>}]\n)\nprint(resp.choices[0].message.content)';
-        }
-    } else {
-        // SSE channel · provider integration
-        if (_pvEditLang === 'curl') {
-            code = '<span class="c"># 1. Heartbeat every 30-60s from your server</span>\ncurl -X POST <span class="s">"' + API_BASE + '/v1/models/' + m.id + '/heartbeat"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span>\n\n<span class="c"># 2. Subscribe to GOLD corpus stream (SSE)</span>\ncurl -N <span class="s">"' + API_BASE + '/v1/gold/stream"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span>';
-        } else {
-            code = '<span class="c"># Provider-side integration</span>\nimport asyncio, httpx\n\n<span class="k">KEY</span> = <span class="s">"' + ontoKey + '"</span>\n<span class="k">MID</span> = <span class="s">"' + m.id + '"</span>\n<span class="k">BASE</span> = <span class="s">"' + API_BASE + '"</span>\n\nasync def heartbeat():\n    async with httpx.AsyncClient() as c:\n        while True:\n            await c.post(f<span class="s">"{BASE}/v1/models/{MID}/heartbeat"</span>,\n                         headers={<span class="s">"x-api-key"</span>: KEY})\n            await asyncio.sleep(30)\n\nasync def gold_stream():\n    async with httpx.AsyncClient(timeout=None) as c:\n        async with c.stream(<span class="s">"GET"</span>, f<span class="s">"{BASE}/v1/gold/stream"</span>,\n                            headers={<span class="s">"x-api-key"</span>: KEY}) as r:\n            async for chunk in r.aiter_text():\n                print(chunk)  <span class="c"># inject into your inference</span>\n\nasyncio.run(asyncio.gather(heartbeat(), gold_stream()))';
-        }
-    }
-    codeEl.innerHTML = code;
+    const hbCurl = '<span class="c"># Send every 30-60 seconds from your server</span>\ncurl -X POST <span class="s">"' + API_BASE + '/v1/models/' + id + '/heartbeat"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span>';
+    const hbPy = '<span class="c"># Heartbeat every 30s</span>\nimport asyncio, httpx\n\nasync def heartbeat():\n    async with httpx.AsyncClient() as c:\n        while True:\n            await c.post(\n                f<span class="s">"' + API_BASE + '/v1/models/' + id + '/heartbeat"</span>,\n                headers={<span class="s">"x-api-key"</span>: <span class="s">"' + ontoKey + '"</span>}\n            )\n            await asyncio.sleep(30)\n\nasyncio.run(heartbeat())';
+
+    const goldCurl = '<span class="c"># Long-lived SSE stream · keep this open</span>\ncurl -N <span class="s">"' + API_BASE + '/v1/gold/stream"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span>';
+    const goldPy = '<span class="c"># Subscribe and cache GOLD corpus updates</span>\nimport httpx\n\nasync def gold_stream():\n    async with httpx.AsyncClient(timeout=None) as c:\n        async with c.stream(\n            <span class="s">"GET"</span>,\n            <span class="s">"' + API_BASE + '/v1/gold/stream"</span>,\n            headers={<span class="s">"x-api-key"</span>: <span class="s">"' + ontoKey + '"</span>}\n        ) as r:\n            async for chunk in r.aiter_text():\n                update_local_gold_cache(chunk)';
+
+    const applyPy = '<span class="c"># In your inference handler</span>\nfrom your_model import infer\n\ndef inference(user_message: str):\n    gold_prefix = get_local_gold_cache()  <span class="c"># cached from step 2</span>\n    full_prompt = gold_prefix + <span class="s">"\\n\\n"</span> + user_message\n    response = infer(full_prompt)\n    return response';
+
+    const wrap = (paneId, content) =>
+        '<button class="copy-btn" onclick="d_copyCode(\'' + paneId + '\',this)">Copy</button><pre>' + content + '</pre>';
+
+    document.getElementById('d-code-1-curl').innerHTML = wrap('d-code-1-curl', hbCurl);
+    document.getElementById('d-code-1-python').innerHTML = wrap('d-code-1-python', hbPy);
+    document.getElementById('d-code-2-curl').innerHTML = wrap('d-code-2-curl', goldCurl);
+    document.getElementById('d-code-2-python').innerHTML = wrap('d-code-2-python', goldPy);
+    document.getElementById('d-code-3-python').innerHTML = wrap('d-code-3-python', applyPy);
 }
 
-function pvEditCopyCode(btn) {
-    const codeEl = document.getElementById('pv-edit-code');
-    if (!codeEl) return;
-    const text = codeEl.innerText || codeEl.textContent;
-    navigator.clipboard.writeText(text).then(() => {
+function d_codeTab(step, lang, btn) {
+    document.querySelectorAll('#d-step' + step + ' .code-tab').forEach(b => b.classList.remove('on'));
+    document.querySelectorAll('#d-step' + step + ' .code-pane').forEach(p => p.classList.remove('on'));
+    if (btn) btn.classList.add('on');
+    const target = document.getElementById('d-code-' + step + '-' + lang);
+    if (target) target.classList.add('on');
+}
+
+function d_copyCode(paneId, btn) {
+    const pane = document.getElementById(paneId);
+    if (!pane) return;
+    const pre = pane.querySelector('pre');
+    if (!pre) return;
+    navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
+        btn.classList.add('done');
         const orig = btn.textContent;
         btn.textContent = 'Copied';
-        setTimeout(() => { btn.textContent = orig; }, 1500);
+        setTimeout(() => { btn.classList.remove('done'); btn.textContent = orig; }, 1500);
     });
 }
 
-async function pvEditTestNow() {
-    if (!_pvEditModel) return;
+async function d_testKey() {
+    if (!_dCurrentId || _dCurrentId === DEMO_MODEL.id) return;
     const apiKey = localStorage.getItem('onto_first_api_key');
-    const btn = document.getElementById('pv-edit-test-btn');
-    const resEl = document.getElementById('pv-edit-test-result');
+    const btn = document.getElementById('d-test-btn');
+    const resEl = document.getElementById('d-test-result');
     btn.disabled = true; btn.textContent = 'Testing…';
-    resEl.innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:var(--text-muted);padding:10px;border:1px dashed var(--border);border-radius:3px">Calling provider through GOLD…</div>';
+    resEl.innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:var(--text-muted);padding:10px 12px;border:1px dashed var(--border);border-radius:3px">Calling provider through GOLD…</div>';
     try {
-        const res = await fetch(`${API_BASE}/v1/models/${_pvEditModel.id}/test`, {
+        const res = await fetch(`${API_BASE}/v1/models/${_dCurrentId}/test`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
-            body: JSON.stringify({ question: 'Explain how vaccines work, including known risks.' })
+            body: JSON.stringify({ question: 'Briefly explain how vaccines work.' })
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
@@ -4308,86 +4514,116 @@ async function pvEditTestNow() {
             return;
         }
         const score = (data.score != null) ? Number(data.score).toFixed(2) : '—';
-        const grade = data.grade || '—';
         resEl.innerHTML =
             '<div class="mc-test-meta">' +
                 '<div class="it"><span class="l">Score</span><span class="v">' + score + '</span></div>' +
-                '<div class="it"><span class="l">Grade</span><span class="v">' + escHtml(grade) + '</span></div>' +
+                '<div class="it"><span class="l">Grade</span><span class="v">' + escHtml(data.grade || '—') + '</span></div>' +
                 '<div class="it"><span class="l">GOLD</span><span class="v">' + escHtml(data.gold_mode || 'off') + '</span></div>' +
             '</div>' +
             '<div class="mc-test-resp">' + escHtml(data.response || '(empty)') + '</div>';
     } catch (e) {
         resEl.innerHTML = '<div class="mc-test-err">Network error</div>';
     } finally {
-        btn.disabled = false; btn.textContent = 'Test now';
+        btn.disabled = false; btn.textContent = 'Test provider key';
     }
 }
 
-async function pvEditToggle() {
-    if (!_pvEditModel) return;
+async function loadDetailHistory(modelId) {
     const apiKey = localStorage.getItem('onto_first_api_key');
+    const el = document.getElementById('d-history');
+    if (!el) return;
+    el.innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:var(--text-muted);padding:14px;text-align:center">Loading…</div>';
     try {
-        const res = await fetch(`${API_BASE}/v1/models/${_pvEditModel.id}/toggle`, { method: 'PUT', headers: { 'x-api-key': apiKey } });
+        const res = await fetch(`${API_BASE}/v1/models/${modelId}/history`, { headers: { 'x-api-key': apiKey } });
         const data = await res.json().catch(() => ({}));
-        if (!res.ok) { showToast(data.detail || 'Toggle failed', 'error'); return; }
-        showToast(data.is_enabled ? 'Enabled' : 'Disabled', 'success');
-        closeProviderEdit(); loadModels();
-    } catch (e) { showToast('Network error', 'error'); }
+        const items = data.history || data.evaluations || [];
+        if (!items.length) {
+            el.innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:var(--text-muted);padding:14px;text-align:center;border:1px dashed var(--border);border-radius:3px">No evaluations yet</div>';
+            return;
+        }
+        let html = '<table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="border-bottom:1px solid var(--border);font-family:var(--mono);font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-faint)">';
+        html += '<th style="text-align:left;padding:8px 10px">Time</th><th style="text-align:right;padding:8px 10px">Score</th><th style="text-align:right;padding:8px 10px">Grade</th><th style="text-align:left;padding:8px 10px">Proof</th></tr></thead><tbody>';
+        items.slice(0, 50).forEach(ev => {
+            const ts = ev.submitted_at || ev.created_at || ev.timestamp;
+            const scoreV = (ev.risk_score != null) ? Number(ev.risk_score).toFixed(2) : (ev.score != null ? Number(ev.score).toFixed(2) : '—');
+            const proof = ev.proof_hash ? ev.proof_hash.slice(0, 12) + '…' : '—';
+            html += '<tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 10px;color:var(--text-muted);font-family:var(--mono);font-size:11px">' + (ts ? new Date(ts).toLocaleString() : '—') + '</td><td style="padding:8px 10px;text-align:right;color:var(--text)">' + scoreV + '</td><td style="padding:8px 10px;text-align:right;color:var(--text-secondary);font-family:var(--mono)">' + escHtml(ev.grade || '—') + '</td><td style="padding:8px 10px;font-family:var(--mono);font-size:11px;color:var(--text-faint)">' + escHtml(proof) + '</td></tr>';
+        });
+        html += '</tbody></table>';
+        el.innerHTML = html;
+    } catch (e) {
+        el.innerHTML = '<div class="mc-test-err">History endpoint unavailable</div>';
+    }
 }
 
-async function pvEditConnect() {
-    if (!_pvEditModel) return;
+async function d_toggle() {
+    if (!_dCurrentId || _dCurrentId === DEMO_MODEL.id) return;
     const apiKey = localStorage.getItem('onto_first_api_key');
-    try {
-        const res = await fetch(`${API_BASE}/v1/models/${_pvEditModel.id}/connect`, { method: 'POST', headers: { 'x-api-key': apiKey } });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) { showToast(data.detail || 'Connect failed', 'error'); return; }
-        showToast('SSE connected', 'success');
-        closeProviderEdit(); loadModels();
-    } catch (e) { showToast('Network error', 'error'); }
+    const res = await fetch(`${API_BASE}/v1/models/${_dCurrentId}/toggle`, { method: 'PUT', headers: { 'x-api-key': apiKey } });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) { showToast(data.detail || 'Toggle failed', 'error'); return; }
+    showToast(data.is_enabled ? 'Enabled' : 'Disabled', 'success');
+    await loadModels();
+    const m = (window._lastModels || []).find(x => String(x.id) === String(_dCurrentId));
+    if (m) renderDetail(m);
 }
 
-async function pvEditDisconnect() {
-    if (!_pvEditModel) return;
+async function d_reconnect() {
+    if (!_dCurrentId || _dCurrentId === DEMO_MODEL.id) return;
     const apiKey = localStorage.getItem('onto_first_api_key');
-    try {
-        const res = await fetch(`${API_BASE}/v1/models/${_pvEditModel.id}/disconnect`, { method: 'POST', headers: { 'x-api-key': apiKey } });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) { showToast(data.detail || 'Disconnect failed', 'error'); return; }
-        showToast('SSE disconnected', 'success');
-        closeProviderEdit(); loadModels();
-    } catch (e) { showToast('Network error', 'error'); }
+    const res = await fetch(`${API_BASE}/v1/models/${_dCurrentId}/connect`, { method: 'POST', headers: { 'x-api-key': apiKey } });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) { showToast(data.detail || 'Reconnect failed', 'error'); return; }
+    showToast('Reconnected', 'success');
+    await loadModels();
+    const m = (window._lastModels || []).find(x => String(x.id) === String(_dCurrentId));
+    if (m) renderDetail(m);
 }
 
-async function pvEditUnregister() {
-    if (!_pvEditModel) return;
-    const m = _pvEditModel;
-    if (!confirm('Unregister "' + m.name + '"?\n\nStops attestation and removes the model.')) return;
+async function d_unregister() {
+    if (!_dCurrentId || _dCurrentId === DEMO_MODEL.id) return;
+    const m = (window._lastModels || []).find(x => String(x.id) === String(_dCurrentId));
+    if (!m) return;
+    if (!confirm('Unregister "' + m.name + '"?')) return;
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    const res = await fetch(`${API_BASE}/v1/models/${_dCurrentId}`, { method: 'DELETE', headers: { 'x-api-key': apiKey } });
+    if (!res.ok && res.status !== 204) {
+        const data = await res.json().catch(() => ({}));
+        showToast(data.detail || 'Unregister failed', 'error');
+        return;
+    }
+    showToast('Unregistered', 'success');
+    closeDetail();
+    loadModels();
+}
+
+async function pvAct_unregister(id, name) {
+    if (!confirm('Unregister "' + name + '"?')) return;
     const apiKey = localStorage.getItem('onto_first_api_key');
     try {
-        const res = await fetch(`${API_BASE}/v1/models/${m.id}`, { method: 'DELETE', headers: { 'x-api-key': apiKey } });
+        const res = await fetch(`${API_BASE}/v1/models/${id}`, { method: 'DELETE', headers: { 'x-api-key': apiKey } });
         if (!res.ok && res.status !== 204) {
             const data = await res.json().catch(() => ({}));
             showToast(data.detail || 'Unregister failed', 'error');
             return;
         }
         showToast('Unregistered', 'success');
-        closeProviderEdit(); loadModels();
+        loadModels();
     } catch (e) { showToast('Network error', 'error'); }
 }
 
 function pvCopyEl(id, btn) {
     const el = document.getElementById(id);
     if (!el) return;
-    const text = (el.textContent || '').trim();
+    const text = (el.textContent || el.value || '').trim();
     if (!text || text === '—') { showToast('Nothing to copy', 'info'); return; }
     navigator.clipboard.writeText(text).then(() => {
-        const orig = btn.textContent;
-        btn.textContent = 'Copied';
-        setTimeout(() => { btn.textContent = orig; }, 1500);
+        btn.classList.add('done');
+        const orig = btn.innerHTML;
+        btn.innerHTML = 'Copied';
+        setTimeout(() => { btn.classList.remove('done'); btn.innerHTML = orig; }, 1500);
     });
 }
-
 
 // === PROVIDER MODALS · Phase 5 (real backend) ==========================
 function openProviderAdd() {
@@ -4418,7 +4654,7 @@ async function pvAddSubmit() {
     const name = document.getElementById('pv-add-name').value.trim();
     const ptype = document.getElementById('pv-add-ptype').value;
     const apikey = document.getElementById('pv-add-apikey').value.trim();
-    const ch = document.getElementById('pv-add-overlay').dataset.channel || 'proxy';
+    const ch = 'sse';
 
     let invalid = false;
     [['pv-add-name', name], ['pv-add-apikey', apikey]].forEach(([id, val]) => {
@@ -4443,12 +4679,20 @@ async function pvAddSubmit() {
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
-            showToast(data.detail || data.message || 'Registration failed', 'error');
+            const msg = data.detail || data.message || 'Registration failed';
+            if (res.status === 403 && /tier/i.test(msg)) {
+                showToast('SSE channel requires Provider tier · go to Billing', 'error');
+            } else {
+                showToast(msg, 'error');
+            }
             return;
         }
         showToast('Model registered · ' + (data.name || name), 'success');
         closeProviderAdd();
-        if (typeof loadModels === 'function') loadModels();
+        if (typeof loadModels === 'function') await loadModels();
+        // Redirect to detail with setup steps visible
+        const newId = data.id || data.model_id;
+        if (newId) openDetail(newId);
     } catch (e) {
         console.error('pvAddSubmit:', e);
         showToast('Network error', 'error');
@@ -4490,15 +4734,20 @@ async function loadModels() {
         window._lastModels = data.models || [];
         const list = document.getElementById('models-list');
         const testSelect = document.getElementById('test-model-select');
-        
+
+        // KPI compute
+        renderKPI(window._lastModels);
+
+        // Render: demo (if not hidden) + real models
+        let listHtml = '';
+        if (!isDemoHidden()) listHtml += renderModelCard(DEMO_MODEL);
+
         if (!data.models || data.models.length === 0) {
-            if (list) list.innerHTML = '<div class="mc-empty">No models registered yet</div>';
+            if (list) list.innerHTML = listHtml + '<div class="mc-empty">No models registered yet · click Register a model to add your first</div>';
             return;
         }
-        
-        let listHtml = '';
+
         let testSelectHtml = '<option value="">Select model...</option>';
-        
         for (const m of data.models) {
             listHtml += renderModelCard(m);
             const isOn = m.is_enabled !== false;
