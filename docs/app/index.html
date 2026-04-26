@@ -676,6 +676,34 @@ body::before {
 
 .disabled-btn { opacity: .4; pointer-events: none; }
 
+/* === ONBOARDING FLOW (Detail page · 3-step lead) === */
+.ob-step {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.ob-step:last-child { border-bottom: 0; }
+.ob-step.done { background: rgba(34,197,94,.04); }
+.ob-num {
+  flex-shrink: 0;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  color: var(--text-muted);
+}
+.ob-step.done .ob-num { background: var(--accent-subtle); border-color: var(--accent); color: var(--accent); }
+.ob-body { flex: 1; min-width: 0; }
+.ob-title { font-size: 14.5px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.ob-desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.6; margin-bottom: 10px; }
+.ob-action { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.ob-status {
+  font-family: var(--mono); font-size: 10.5px; font-weight: 600;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  color: var(--text-faint);
+}
+.ob-step.done .ob-status { color: var(--accent); }
+
 /* === MODEL CARDS · v6 (Phase 2B · provider parity) === */
 .model-card {
   background: var(--bg-card);
@@ -1941,10 +1969,7 @@ a.info-val:hover { color: var(--text); }
                 </div>
 
                 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px">
-                    <div>
-                        <div style="font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-secondary)">My Models</div>
-                        <div style="font-size:11px;color:var(--text-muted);margin-top:3px">Click any model to manage · setup status · code snippets · evaluation history</div>
-                    </div>
+                    <div style="font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-secondary)">My Models</div>
                     <button class="btn-mini" onclick="openProviderAdd()" style="background:var(--accent-subtle);color:var(--accent);border-color:var(--accent-border)">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                         Register a model
@@ -1998,6 +2023,50 @@ a.info-val:hover { color: var(--text); }
                     <div class="detail-stat"><div class="l">Last heartbeat</div><div class="v" id="d-hb">—</div></div>
                     <div class="detail-stat"><div class="l">Signals 24h</div><div class="v" id="d-signals">—</div></div>
                     <div class="detail-stat"><div class="l">Avg score</div><div class="v" id="d-score">—</div></div>
+                </div>
+            </div>
+
+            <!-- ONBOARDING FLOW · only shows while incomplete -->
+            <div class="detail-section" id="d-onboarding" style="display:none">
+                <div class="h">Get this model online</div>
+                <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:0;overflow:hidden">
+
+                    <div class="ob-step" id="ob-step1">
+                        <div class="ob-num" id="ob-num1">1</div>
+                        <div class="ob-body">
+                            <div class="ob-title">Confirm your provider key works</div>
+                            <div class="ob-desc">Send one test message through your stored API key. This validates the key and shows what GOLD does to a response.</div>
+                            <div class="ob-action">
+                                <button class="btn-mini" onclick="d_obRunTest()" id="ob-test-btn" style="background:var(--accent-subtle);color:var(--accent);border-color:var(--accent-border)">Run test</button>
+                                <span class="ob-status" id="ob-status1">not run yet</span>
+                            </div>
+                            <div id="ob-test-result" style="margin-top:10px"></div>
+                        </div>
+                    </div>
+
+                    <div class="ob-step" id="ob-step2">
+                        <div class="ob-num" id="ob-num2">2</div>
+                        <div class="ob-body">
+                            <div class="ob-title">Point your business traffic at ONTO</div>
+                            <div class="ob-desc">In your application that calls this model · change <code style="font-family:var(--mono);background:var(--bg-secondary);padding:1px 6px;border-radius:2px;color:var(--accent)">base_url</code> to ONTO. ONTO injects GOLD on every call and forwards to your provider. You'll see signals start appearing here.</div>
+                            <div class="ob-action">
+                                <button class="btn-mini" onclick="d_obShowCode()" id="ob-code-btn">Show integration code ↓</button>
+                                <span class="ob-status" id="ob-status2">awaiting first signal</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ob-step" id="ob-step3">
+                        <div class="ob-num" id="ob-num3">3</div>
+                        <div class="ob-body">
+                            <div class="ob-title">Watch evaluations come in</div>
+                            <div class="ob-desc">Once signals start flowing · the Status panel above will show live counts and scores. Each evaluation is signed (Ed25519) and recorded in the proof chain.</div>
+                            <div class="ob-action">
+                                <span class="ob-status" id="ob-status3">awaiting traffic</span>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -4490,11 +4559,12 @@ function renderKPI(models) {
         : '—';
     const verifiedCount = models.filter(m => m.cert_status === 'verified' || m.cert_status === 'active').length;
     const verifiedPct = total ? Math.round((verifiedCount / total) * 100) : 0;
+    const hasAnySignals = totalSignals > 0;
     const $ = id => document.getElementById(id);
     if ($('kpi-signals')) $('kpi-signals').textContent = Number(totalSignals).toLocaleString();
     if ($('kpi-active')) $('kpi-active').innerHTML = active + (total ? '<small> / ' + total + '</small>' : '');
     if ($('kpi-score')) $('kpi-score').textContent = avgScore;
-    if ($('kpi-verified')) $('kpi-verified').innerHTML = (total ? verifiedPct : '—') + '<small>%</small>';
+    if ($('kpi-verified')) $('kpi-verified').innerHTML = (total && hasAnySignals ? verifiedPct + '<small>%</small>' : '<small style="font-size:13px;color:var(--text-faint);font-weight:500">awaiting first eval</small>');
 }
 
 // === DETAIL PAGE =======================================================
@@ -4557,6 +4627,102 @@ function renderDetail(m) {
     else $('d-history').innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:var(--text-muted);padding:14px;text-align:center;border:1px dashed var(--border);border-radius:3px">Demo · no real history</div>';
 
     $('d-test-result').innerHTML = '';
+
+    // Onboarding flow · only shown if proxy + 0 evals (provider needs guidance)
+    d_renderOnboarding(m);
+}
+
+function d_renderOnboarding(m) {
+    const $ = id => document.getElementById(id);
+    const isSSE = (m.channel || 'proxy').toLowerCase() === 'sse';
+    const isDemo = !!m.is_demo;
+    const evalCount = Number(m.eval_count || 0);
+    const tested = !!sessionStorage.getItem('ob-tested-' + m.id);
+
+    // Show onboarding only for proxy (SSE has its own setup checklist) and not demo and 0 evals
+    const ob = $('d-onboarding');
+    if (!ob) return;
+    const showOb = !isDemo && !isSSE && evalCount === 0;
+    ob.style.display = showOb ? 'block' : 'none';
+    if (!showOb) return;
+
+    // Step 1 · provider key tested
+    const step1 = $('ob-step1');
+    const num1 = $('ob-num1');
+    const status1 = $('ob-status1');
+    if (tested) {
+        step1.classList.add('done'); num1.textContent = '✓';
+        status1.textContent = 'verified';
+    } else {
+        step1.classList.remove('done'); num1.textContent = '1';
+        status1.textContent = 'not run yet';
+    }
+
+    // Step 2 · code shown / first signal
+    const step2 = $('ob-step2');
+    const num2 = $('ob-num2');
+    const status2 = $('ob-status2');
+    if (evalCount > 0) {
+        step2.classList.add('done'); num2.textContent = '✓';
+        status2.textContent = 'first signal received';
+    } else {
+        step2.classList.remove('done'); num2.textContent = '2';
+        status2.textContent = 'awaiting first signal';
+    }
+
+    // Step 3 · 5+ evals indicates actual traffic
+    const step3 = $('ob-step3');
+    const num3 = $('ob-num3');
+    const status3 = $('ob-status3');
+    if (evalCount >= 5) {
+        step3.classList.add('done'); num3.textContent = '✓';
+        status3.textContent = evalCount + ' signals so far';
+    } else {
+        step3.classList.remove('done'); num3.textContent = '3';
+        status3.textContent = 'awaiting traffic';
+    }
+}
+
+async function d_obRunTest() {
+    if (!_dCurrentId) return;
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    const btn = document.getElementById('ob-test-btn');
+    const resEl = document.getElementById('ob-test-result');
+    btn.disabled = true; btn.textContent = 'Testing…';
+    resEl.innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:var(--text-muted);padding:10px 12px;border:1px dashed var(--border);border-radius:3px">Calling provider through GOLD…</div>';
+    try {
+        const res = await fetch(`${API_BASE}/v1/models/${_dCurrentId}/test`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+            body: JSON.stringify({ question: 'Briefly explain how vaccines work.' })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+            resEl.innerHTML = '<div class="mc-test-err">Error ' + res.status + ' · ' + escHtml(data.detail || 'failed') + '</div>';
+            return;
+        }
+        sessionStorage.setItem('ob-tested-' + _dCurrentId, '1');
+        const score = (data.score != null) ? Number(data.score).toFixed(2) : '—';
+        resEl.innerHTML =
+            '<div class="mc-test-meta">' +
+                '<div class="it"><span class="l">Score</span><span class="v">' + score + '</span></div>' +
+                '<div class="it"><span class="l">Grade</span><span class="v">' + escHtml(data.grade || '—') + '</span></div>' +
+                '<div class="it"><span class="l">GOLD</span><span class="v">' + escHtml(data.gold_mode || 'off') + '</span></div>' +
+            '</div>' +
+            '<div class="mc-test-resp">' + escHtml((data.response || '(empty)').slice(0, 600)) + (data.response && data.response.length > 600 ? '…' : '') + '</div>';
+        // Re-render to mark step 1 done
+        const m = (window._lastModels || []).find(x => String(x.id) === String(_dCurrentId));
+        if (m) d_renderOnboarding(m);
+    } catch (e) {
+        resEl.innerHTML = '<div class="mc-test-err">Network error</div>';
+    } finally {
+        btn.disabled = false; btn.textContent = 'Run test';
+    }
+}
+
+function d_obShowCode() {
+    const target = document.getElementById('d-setup-proxy');
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function d_renderCode(m) {
