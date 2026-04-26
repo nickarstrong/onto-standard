@@ -1,16 +1,18 @@
 /**
- * ONTO Agent · Service Worker v1.0
- * 
+ * ONTO Agent · Service Worker v1.1
+ *
  * Strategy:
  *   - App shell cached on install (offline splash works)
  *   - Network-first for HTML (always latest UI)
  *   - Cache-first for static assets (icons, fonts, manifest)
  *   - API calls pass through untouched (never cache AI responses)
- * 
+ *
  * Cache versioning: bump CACHE_NAME on UI release to force refresh.
+ *
+ * v1.1: fix maskable filename (was 'icon-maskable-512.png', actual 'maskable-icon-512.png')
  */
 
-const CACHE_NAME = 'onto-agent-v1';
+const CACHE_NAME = 'onto-agent-v1.1';
 
 const APP_SHELL = [
   '/agent/',
@@ -20,7 +22,7 @@ const APP_SHELL = [
   '/agent/favicon-32.png',
   '/agent/icons/icon-192.png',
   '/agent/icons/icon-512.png',
-  '/agent/icons/icon-maskable-512.png',
+  '/agent/icons/maskable-icon-512.png',
 ];
 
 // ─── install: prime cache with app shell ─────────────────────────

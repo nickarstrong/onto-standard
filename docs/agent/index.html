@@ -832,6 +832,56 @@ button{font-family:var(--sans)}
   .delta-mult{font-size:12px;width:36px}
 }
 
+/* ── PWA · install pill (floating) + iOS hint banner ── */
+.pwa-install-pill{
+  position:fixed;
+  right:16px;
+  bottom:88px;
+  display:none;
+  align-items:center;
+  gap:8px;
+  padding:10px 14px;
+  background:var(--bg);
+  color:var(--text);
+  border:1px solid var(--bg4);
+  border-radius:999px;
+  font:600 13px/1 var(--sans);
+  cursor:pointer;
+  z-index:9000;
+  box-shadow:0 4px 14px rgba(0,0,0,.12);
+  transition:transform .15s ease,box-shadow .15s ease;
+}
+.pwa-install-pill:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.pwa-install-pill svg{width:16px;height:16px;stroke:var(--green);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.pwa-install-pill.show{display:inline-flex}
+.pwa-install-pill .pwa-x{margin-left:4px;opacity:.5;font-size:18px;line-height:1;padding:0 2px;cursor:pointer}
+.pwa-install-pill .pwa-x:hover{opacity:1}
+.pwa-ios-hint{
+  position:fixed;
+  left:50%;
+  bottom:88px;
+  transform:translateX(-50%);
+  display:none;
+  max-width:calc(100vw - 32px);
+  padding:12px 16px;
+  background:var(--bg);
+  color:var(--text);
+  border:1px solid var(--bg4);
+  border-radius:14px;
+  font:500 13px/1.45 var(--sans);
+  z-index:9000;
+  box-shadow:0 6px 20px rgba(0,0,0,.14);
+}
+.pwa-ios-hint.show{display:block}
+.pwa-ios-hint .pwa-ios-row{display:flex;align-items:center;gap:10px}
+.pwa-ios-hint b{color:var(--green);font-weight:700}
+.pwa-ios-hint .pwa-ios-x{margin-left:6px;opacity:.5;cursor:pointer;font-size:18px;line-height:1;padding:0 4px;flex-shrink:0}
+.pwa-ios-hint .pwa-ios-x:hover{opacity:1}
+@media(max-width:540px){
+  .pwa-install-pill{right:12px;bottom:84px;padding:9px 12px;font-size:12px}
+  .pwa-ios-hint{bottom:84px;font-size:12px;padding:10px 14px}
+}
+
 </style>
 </head>
 <body>
@@ -881,6 +931,8 @@ button{font-family:var(--sans)}
         <a class="menu-a" onclick="openModal('modalPrivacy');toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span data-en="Privacy" data-ru="Конфиденциальность">Privacy</span></a>
         <a class="menu-a" onclick="openModal('modalTerms');toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-en="Terms" data-ru="Условия">Terms</span></a>
         <div class="menu-sep"></div>
+        <a class="menu-a" id="menuInstall" onclick="pwaTriggerInstall(event);toggleMenu(event)" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg><span data-en="Install ONTO" data-ru="Установить ONTO">Install ONTO</span></a>
+        <div class="menu-sep" id="menuInstallSep" style="display:none"></div>
         <a class="menu-a" onclick="shareConversation();toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg><span data-en="Share link" data-ru="Поделиться ссылкой">Share link</span></a>
         <div class="menu-sep"></div>
         <a class="menu-a" onclick="openWelcome();toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span data-en="Show intro" data-ru="Показать интро">Show intro</span></a>
@@ -899,6 +951,21 @@ button{font-family:var(--sans)}
   <button class="btn-cmp" id="btnCmp" onclick="compare()">VS</button>
   <button class="btn-stop" id="btnStop" onclick="stop()">Stop</button>
 </div><div class="input-meta"><span id="remLbl"></span><span id="langLbl"></span></div></div>
+
+<!-- PWA · floating install pill (Android/Chrome/Edge · fires beforeinstallprompt) -->
+<div class="pwa-install-pill" id="pwaInstallPill" onclick="pwaTriggerInstall(event)" role="button" aria-label="Install ONTO">
+  <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  <span data-en="Install ONTO" data-ru="Установить ONTO">Install ONTO</span>
+  <span class="pwa-x" onclick="pwaDismissPill(event)" title="Dismiss">×</span>
+</div>
+
+<!-- PWA · iOS hint (Safari, no beforeinstallprompt support) -->
+<div class="pwa-ios-hint" id="pwaIosHint" role="dialog" aria-label="Install hint">
+  <div class="pwa-ios-row">
+    <span data-en="Install: tap <b>Share</b> → <b>Add to Home Screen</b>" data-ru="Установить: <b>Поделиться</b> → <b>На экран Домой</b>">Install: tap <b>Share</b> → <b>Add to Home Screen</b></span>
+    <span class="pwa-ios-x" onclick="pwaDismissIos()" title="Dismiss">×</span>
+  </div>
+</div>
 
 <!-- v2.13: history drawer -->
 <div class="drawer-bg" id="drawerBg" onclick="closeDrawer()"></div>
@@ -1838,6 +1905,101 @@ function copySupportAddr(elId){
     navigator.clipboard.writeText(text).then(()=>toast(ok)).catch(()=>toast(er,'err'));
   }else{toast(er,'err');}
 }
+
+/* ── PWA · install flow (Chromium beforeinstallprompt + iOS Safari hint) ── */
+(function(){
+  const PILL = document.getElementById('pwaInstallPill');
+  const IOS_HINT = document.getElementById('pwaIosHint');
+  const MENU_ITEM = document.getElementById('menuInstall');
+  const MENU_SEP = document.getElementById('menuInstallSep');
+  const DISMISS_KEY = 'onto_pwa_dismissed_at';
+  const COOLDOWN_DAYS = 7;
+  let deferredPrompt = null;
+
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+                    || window.navigator.standalone === true;
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+  function dismissedRecently(){
+    try {
+      const ts = parseInt(localStorage.getItem(DISMISS_KEY) || '0', 10);
+      if (!ts) return false;
+      return (Date.now() - ts) < COOLDOWN_DAYS * 86400000;
+    } catch(_){ return false; }
+  }
+
+  function showPill(){
+    if (!PILL || isStandalone || dismissedRecently()) return;
+    PILL.classList.add('show');
+    if (MENU_ITEM) MENU_ITEM.style.display = '';
+    if (MENU_SEP) MENU_SEP.style.display = '';
+  }
+  function hidePill(){
+    if (PILL) PILL.classList.remove('show');
+    if (MENU_ITEM) MENU_ITEM.style.display = 'none';
+    if (MENU_SEP) MENU_SEP.style.display = 'none';
+  }
+
+  // Chromium · capture deferred prompt
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    showPill();
+  });
+
+  // After install · clean up + 30-day quiet window
+  window.addEventListener('appinstalled', () => {
+    hidePill();
+    if (IOS_HINT) IOS_HINT.classList.remove('show');
+    deferredPrompt = null;
+    try { localStorage.setItem(DISMISS_KEY, String(Date.now() + 30 * 86400000)); } catch(_){}
+  });
+
+  // Pill click · trigger native install prompt
+  window.pwaTriggerInstall = async function(e){
+    if (e) e.stopPropagation();
+    if (isIOS && !deferredPrompt){
+      if (IOS_HINT) IOS_HINT.classList.add('show');
+      return;
+    }
+    if (!deferredPrompt) return;
+    try {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'dismissed'){
+        try { localStorage.setItem(DISMISS_KEY, String(Date.now())); } catch(_){}
+      }
+    } catch(_){}
+    deferredPrompt = null;
+    hidePill();
+  };
+
+  // Pill × · dismiss with cooldown
+  window.pwaDismissPill = function(e){
+    if (e) e.stopPropagation();
+    try { localStorage.setItem(DISMISS_KEY, String(Date.now())); } catch(_){}
+    hidePill();
+  };
+
+  // iOS hint × · dismiss
+  window.pwaDismissIos = function(){
+    if (IOS_HINT) IOS_HINT.classList.remove('show');
+    try { localStorage.setItem(DISMISS_KEY, String(Date.now())); } catch(_){}
+  };
+
+  // iOS Safari · no beforeinstallprompt · show hint after 8s if user is engaged
+  if (isIOS && !isStandalone && !dismissedRecently()){
+    setTimeout(() => {
+      if (IOS_HINT) IOS_HINT.classList.add('show');
+    }, 8000);
+  }
+
+  // If already installed · ensure all install UI hidden
+  if (isStandalone){
+    hidePill();
+    if (IOS_HINT) IOS_HINT.classList.remove('show');
+  }
+})();
 
 if('serviceWorker' in navigator){navigator.serviceWorker.register('/agent/sw.js').catch(()=>{});}
 </script>
