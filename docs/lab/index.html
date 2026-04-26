@@ -87,6 +87,7 @@
   .vs-panel.raw{border-left:2px solid var(--raw)}
   .vs-panel.gold{border-left:2px solid var(--gold)}
   .vs-label{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+  .timer{font-family:var(--mono);font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.5px}
   .vs-panel.raw .vs-label{color:var(--raw)}
   .vs-panel.gold .vs-label{color:var(--gold)}
   .vs-text{line-height:1.6;white-space:pre-wrap;word-wrap:break-word;margin-bottom:8px}
@@ -478,13 +479,20 @@ async function send(){
   // assistant placeholder
   const placeholder = document.createElement('div');
   placeholder.className = 'msg assistant';
-  placeholder.innerHTML = `<div class="role"><span>assistant</span><span style="color:${goldOn?'var(--gold)':'var(--raw)'}">${goldOn?'GOLD':'RAW'}</span></div><div class="body"><span class="dots"><i></i><i></i><i></i></span></div>`;
+  const tid = 'tm' + Date.now();
+  placeholder.innerHTML = `<div class="role"><span>assistant</span><span style="color:${goldOn?'var(--gold)':'var(--raw)'}">${goldOn?'GOLD':'RAW'}</span><span class="timer" id="${tid}">0.0s</span></div><div class="body"><span class="dots"><i></i><i></i><i></i></span></div>`;
   chat.appendChild(placeholder);
   chat.scrollTop = chat.scrollHeight;
 
   const t0 = performance.now();
+  const tick = setInterval(() => {
+    const tEl = document.getElementById(tid);
+    if (tEl) tEl.textContent = ((performance.now() - t0)/1000).toFixed(1) + 's';
+  }, 100);
+
   try {
     const data = await callAgent(fullPrompt, goldOn, getPriorHistory().slice(0, -1));
+    clearInterval(tick);
     placeholder.remove();
 
     const entry = {
@@ -502,6 +510,7 @@ async function send(){
     setStatus(true);
 
   } catch (e){
+    clearInterval(tick);
     placeholder.remove();
     history.pop(); save();
     renderMsg({role:'error', content: 'Backend error: ' + e.message}, true);
@@ -536,8 +545,8 @@ async function vsCompare(){
   wrap.innerHTML = `
     <div class="vs-q"><strong>VS · RAW vs GOLD</strong></div>
     <div class="vs-grid">
-      <div class="vs-panel raw" id="${uid}_r"><div class="vs-label"><span>RAW</span><span>—</span></div><div class="vs-text"><span class="dots"><i></i><i></i><i></i></span></div></div>
-      <div class="vs-panel gold" id="${uid}_g"><div class="vs-label"><span>GOLD</span><span>—</span></div><div class="vs-text"><span class="dots"><i></i><i></i><i></i></span></div></div>
+      <div class="vs-panel raw" id="${uid}_r"><div class="vs-label"><span>RAW</span><span class="timer" id="${uid}_r_t">0.0s</span></div><div class="vs-text"><span class="dots"><i></i><i></i><i></i></span></div></div>
+      <div class="vs-panel gold" id="${uid}_g"><div class="vs-label"><span>GOLD</span><span class="timer" id="${uid}_g_t">0.0s</span></div><div class="vs-text"><span class="dots"><i></i><i></i><i></i></span></div></div>
     </div>
     <div class="vs-delta" id="${uid}_d" style="display:none"></div>
   `;
@@ -547,11 +556,29 @@ async function vsCompare(){
   const priorHist = getPriorHistory().slice(0, -1);
   const t0 = performance.now();
 
-  // Parallel
-  const [rawR, goldR] = await Promise.allSettled([
-    callAgent(fullPrompt, false, priorHist),
-    callAgent(fullPrompt, true, priorHist)
-  ]);
+  // Live timers
+  const rawTimerEl = document.getElementById(uid + '_r_t');
+  const goldTimerEl = document.getElementById(uid + '_g_t');
+  let rawDone = false, goldDone = false;
+  const tick = setInterval(() => {
+    const dt = ((performance.now() - t0)/1000).toFixed(1);
+    if (!rawDone && rawTimerEl) rawTimerEl.textContent = dt + 's';
+    if (!goldDone && goldTimerEl) goldTimerEl.textContent = dt + 's';
+    if (rawDone && goldDone) clearInterval(tick);
+  }, 100);
+
+  // Parallel — fire both, fill each as it settles
+  const rawP = callAgent(fullPrompt, false, priorHist).then(
+    v => { rawDone = true; const t = ((performance.now() - t0)/1000).toFixed(1); if (rawTimerEl) rawTimerEl.textContent = t + 's'; return {status:'fulfilled', value:v}; },
+    e => { rawDone = true; const t = ((performance.now() - t0)/1000).toFixed(1); if (rawTimerEl) rawTimerEl.textContent = t + 's · err'; return {status:'rejected', reason:e}; }
+  );
+  const goldP = callAgent(fullPrompt, true, priorHist).then(
+    v => { goldDone = true; const t = ((performance.now() - t0)/1000).toFixed(1); if (goldTimerEl) goldTimerEl.textContent = t + 's'; return {status:'fulfilled', value:v}; },
+    e => { goldDone = true; const t = ((performance.now() - t0)/1000).toFixed(1); if (goldTimerEl) goldTimerEl.textContent = t + 's · err'; return {status:'rejected', reason:e}; }
+  );
+
+  const [rawR, goldR] = await Promise.all([rawP, goldP]);
+  clearInterval(tick);
 
   fillVsPanel(uid + '_r', rawR, 'raw');
   fillVsPanel(uid + '_g', goldR, 'gold');
