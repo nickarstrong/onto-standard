@@ -2058,7 +2058,7 @@ a.info-val:hover { color: var(--text); }
                         <div class="ob-num" id="ob-num1">1</div>
                         <div class="ob-body">
                             <div class="ob-title">Confirm your provider key works</div>
-                            <div class="ob-desc">Send one test message through your stored API key. This validates the key and shows what GOLD does to a response.</div>
+                            <div class="ob-desc">Send one test message through your encrypted provider key (AES-256). This validates the key and shows what GOLD does to a response.</div>
                             <div class="ob-action">
                                 <button class="btn-mini" onclick="d_obRunTest()" id="ob-test-btn" style="background:var(--accent-subtle);color:var(--accent);border-color:var(--accent-border)">Run test</button>
                                 <span class="ob-status" id="ob-status1">not run yet</span>
@@ -2301,7 +2301,7 @@ client = OpenAI(
                         <div style="font-size:13px"><span style="font-weight:600" id="sdk-plan-name">Open</span> · <span style="color:var(--text-muted)" id="sdk-plan-rate">10 requests / day</span></div>
                         <div style="font-size:11px;color:var(--text-muted);margin-top:4px" id="sdk-plan-calls">0 / 50 proxy calls used today</div>
                     </div>
-                    <button class="btn-upgrade" id="sdk-upgrade-btn" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))" style="font-size:12px;padding:8px 20px">Upgrade →</button>
+                    <button class="btn-upgrade" id="sdk-upgrade-btn" onclick="showPage('billing', document.querySelector('.nav-item[onclick*=billing]'))" style="font-size:12px;padding:8px 20px">View tiers →</button>
                 </div>
             </div>
         </div>
@@ -2384,11 +2384,11 @@ client = OpenAI(
                         <span class="info-val" id="sub-rate">—</span>
                     </div>
                     <div class="info-row">
-                        <span class="info-key">Plan Expires</span>
+                        <span class="info-key">Active until</span>
                         <span class="info-val" id="sub-expires">—</span>
                     </div>
                     <div class="info-row">
-                        <span class="info-key">Total Paid</span>
+                        <span class="info-key">Paid</span>
                         <span class="info-val" id="sub-total">—</span>
                     </div>
                     <button class="btn-minimal" onclick="showPage('billing')" style="margin-top: 12px;">Extend Subscription</button>
@@ -2481,7 +2481,7 @@ client = OpenAI(
                 <div class="tier-card" id="card-free">
                     <div class="tier-name">Open</div>
                     <div class="tier-price">Free</div>
-                    <div class="tier-desc">Evaluate ONTO on your AI before you commit</div>
+                    <div class="tier-desc">Try ONTO before paying</div>
                     <ul class="tier-list">
                         <li>10 proxy requests/day</li>
                         <li>GOLD epistemic discipline layer</li>
@@ -2537,7 +2537,7 @@ client = OpenAI(
                     <div style="font-size:13px;font-weight:600;color:var(--text)">Grant Program</div>
                 </div>
                 <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;margin-bottom:12px">
-                    Free Standard access for independent researchers, early-stage startups, and nonprofit organizations whose work benefits society. Grant recipients receive the same infrastructure as paid Standard customers: 1,000 proxy requests/day, GOLD Extended, signed proof chain. No restrictions, no watermarks.
+                    Standard access granted to qualifying researchers, early-stage and nonprofit work whose output benefits society. Grant recipients receive the same infrastructure as the Standard tier: 1,000 proxy requests/day, GOLD Extended, signed proof chain. No restrictions, no watermarks.
                 </div>
                 <div style="display:flex;align-items:center;gap:12px">
                     <a href="mailto:council@ontostandard.org" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500">Apply → council@ontostandard.org</a>
@@ -5656,9 +5656,9 @@ function updateBillingUI() {
             if (daysLeft < 0) {
                 expiresEl.innerHTML = `<span style="color:var(--danger)">${dateStr} — EXPIRED</span>`;
             } else if (daysLeft < 30) {
-                expiresEl.innerHTML = `<span style="color:#f59e0b">${dateStr} (${daysLeft} days left) ⚠️</span>`;
+                expiresEl.innerHTML = `<span style="color:#f59e0b">${dateStr} ⚠️</span>`;
             } else {
-                expiresEl.textContent = `${dateStr} (${daysLeft} days left)`;
+                expiresEl.textContent = `${dateStr}`;
             }
         } else if (expiresEl) {
             expiresEl.textContent = '—';
