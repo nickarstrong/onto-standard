@@ -1941,7 +1941,10 @@ a.info-val:hover { color: var(--text); }
                 </div>
 
                 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px">
-                    <div style="font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-secondary)">My Models</div>
+                    <div>
+                        <div style="font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-secondary)">My Models</div>
+                        <div style="font-size:11px;color:var(--text-muted);margin-top:3px">Click any model to manage · setup status · code snippets · evaluation history</div>
+                    </div>
                     <button class="btn-mini" onclick="openProviderAdd()" style="background:var(--accent-subtle);color:var(--accent);border-color:var(--accent-border)">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                         Register a model
@@ -3724,10 +3727,10 @@ function renderDashHeader() {
         }
     }
     const yLabel = expiryDate
-        ? expiryDate.toLocaleDateString(undefined, { month: 'short', year: 'numeric' })
+        ? expiryDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
         : '∞';
     const tooltipExp = expiryDate
-        ? 'Active tier rights · expires ' + expiryDate.toLocaleDateString()
+        ? 'Active tier rights · expires ' + expiryDate.toLocaleDateString('en-US')
         : 'Active tier rights · no expiry';
     rightsEl.title = tooltipExp;
 
@@ -4436,10 +4439,10 @@ function renderModelCard(m) {
     let actionBtns = '';
     if (isDemo) {
         actionBtns =
-            '<button class="btn-mini" onclick="openDetail(\'' + id + '\')">Open</button>' +
-            '<button class="btn-mini" onclick="hideDemo()" title="Hide demo">Hide</button>';
+            '<button class="btn-mini" onclick="hideDemo()" title="Hide demo">Hide preview</button>';
     } else if (isLegacyProxy) {
         actionBtns =
+            '<button class="btn-mini" onclick="event.stopPropagation();pvReregisterAsSSE(\'' + id + '\',\'' + escHtml(m.name).replace(/\'/g,"\\'") + '\',\'' + escHtml(m.provider_type).replace(/\'/g,"\\'") + '\')" style="background:rgba(180,83,9,.12);color:#b45309;border-color:rgba(180,83,9,.4)">Re-register as SSE</button>' +
             '<button class="btn-mini" onclick="openDetail(\'' + id + '\')">Open</button>' +
             '<button class="btn-mini danger" onclick="event.stopPropagation();pvAct_unregister(\'' + id + '\',\'' + escHtml(m.name).replace(/\'/g,"\\'") + '\')">Unregister</button>';
     } else {
@@ -4448,7 +4451,7 @@ function renderModelCard(m) {
             '<button class="btn-mini danger" onclick="event.stopPropagation();pvAct_unregister(\'' + id + '\',\'' + escHtml(m.name).replace(/\'/g,"\\'") + '\')">Unregister</button>';
     }
 
-    return '<div class="' + cardClass + '" onclick="openDetail(\'' + id + '\')" style="cursor:pointer;margin-bottom:10px">' +
+    return '<div class="' + cardClass + '"' + (isDemo ? '' : ' onclick="openDetail(\'' + id + '\')" style="cursor:pointer;margin-bottom:10px"') + (isDemo ? ' style="margin-bottom:10px"' : '') + '>' +
         '<div style="display:flex;align-items:flex-start;gap:14px">' +
             '<div class="mc-dot" style="margin-top:6px;flex-shrink:0"><div class="core" style="background:' + (online ? 'var(--accent)' : 'var(--text-faint)') + '"></div>' + (online ? '<div class="ring"></div>' : '') + '</div>' +
             '<div style="flex:1;min-width:0">' +
@@ -4683,7 +4686,7 @@ async function loadDetailHistory(modelId) {
             const ts = ev.ts || ev.submitted_at || ev.created_at || ev.timestamp;
             const scoreV = (ev.score != null) ? Number(ev.score).toFixed(3) : (ev.risk_score != null ? Number(ev.risk_score).toFixed(3) : '—');
             const colored = (ev.score != null && ev.score < 0.3) ? 'var(--accent)' : (ev.score != null && ev.score > 0.7 ? '#dc2626' : 'var(--text)');
-            html += '<tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 10px;color:var(--text-muted);font-family:var(--mono);font-size:11px">' + (ts ? new Date(ts).toLocaleString() : '—') + '</td><td style="padding:8px 10px;text-align:right;color:' + colored + ';font-family:var(--mono);font-weight:600">' + scoreV + '</td></tr>';
+            html += '<tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 10px;color:var(--text-muted);font-family:var(--mono);font-size:11px">' + (ts ? new Date(ts).toLocaleString('en-US', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'}) : '—') + '</td><td style="padding:8px 10px;text-align:right;color:' + colored + ';font-family:var(--mono);font-weight:600">' + scoreV + '</td></tr>';
         });
         html += '</tbody></table>';
         el.innerHTML = html;
@@ -4731,6 +4734,44 @@ async function d_unregister() {
     showToast('Unregistered', 'success');
     closeDetail();
     loadModels();
+}
+
+async function pvReregisterAsSSE(id, name, ptype) {
+    const ok = confirm(
+        'Re-register "' + name + '" as SSE?\n\n' +
+        '• Old PROXY model will be removed\n' +
+        '• Evaluations history will be lost\n' +
+        '• You will need to provide your provider API key again\n' +
+        '• New SSE setup steps will be shown\n\n' +
+        'Continue?'
+    );
+    if (!ok) return;
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    try {
+        const res = await fetch(`${API_BASE}/v1/models/${id}`, { method: 'DELETE', headers: { 'x-api-key': apiKey } });
+        if (!res.ok && res.status !== 204) {
+            showToast('Could not unregister old model', 'error');
+            return;
+        }
+        await loadModels();
+        // Open Add modal pre-filled
+        openProviderAdd();
+        setTimeout(() => {
+            const nameEl = document.getElementById('pv-add-name');
+            const ptypeEl = document.getElementById('pv-add-ptype');
+            if (nameEl) nameEl.value = name;
+            if (ptypeEl && ptype) {
+                const opts = Array.from(ptypeEl.options || []);
+                const match = opts.find(o => o.value.toLowerCase() === ptype.toLowerCase());
+                if (match) ptypeEl.value = match.value;
+            }
+            const keyEl = document.getElementById('pv-add-apikey');
+            if (keyEl) keyEl.focus();
+        }, 100);
+        showToast('Old model removed · enter API key to register as SSE', 'success');
+    } catch (e) {
+        showToast('Network error', 'error');
+    }
 }
 
 async function pvAct_unregister(id, name) {
