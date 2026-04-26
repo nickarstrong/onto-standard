@@ -12,7 +12,7 @@
  * v1.1: fix maskable filename (was 'icon-maskable-512.png', actual 'maskable-icon-512.png')
  */
 
-const CACHE_NAME = 'onto-agent-v1.2';
+const CACHE_NAME = 'onto-agent-v1.4';
 
 const APP_SHELL = [
   '/agent/',
