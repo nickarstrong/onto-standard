@@ -3092,10 +3092,10 @@ client = OpenAI(
             </div>
             <div class="pv-field">
                 <label>Attestation channel</label>
-                <div style="display:flex;gap:8px;align-items:center;padding:10px 12px;background:var(--accent-subtle);border:1px solid var(--accent-border);border-radius:3px">
-                    <span style="font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:1.4px;color:var(--accent);text-transform:uppercase">SSE Streaming</span>
+                <div id="pv-add-channel-display" style="display:flex;gap:8px;align-items:center;padding:10px 12px;background:var(--accent-subtle);border:1px solid var(--accent-border);border-radius:3px">
+                    <span style="font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:1.4px;color:var(--accent);text-transform:uppercase" id="pv-add-channel-text">SSE Streaming</span>
                 </div>
-                <div class="help">Your server posts heartbeats every 30-60s and subscribes to the GOLD corpus stream. ONTO is not in your request path · no rate limit · no cost on your provider key. Setup steps appear after registration.</div>
+                <div class="help" id="pv-add-channel-help">Your server posts heartbeats every 30-60s and subscribes to the GOLD corpus stream. ONTO is not in your request path · no rate limit · no cost on your provider key. Setup steps appear after registration.</div>
             </div>
             <div class="pv-field mono">
                 <label>Provider API key</label>
@@ -4779,18 +4779,19 @@ async function d_switchToProxy() {
         await loadModels();
         showToast('Switched · re-register as Proxy below', 'success');
         setTimeout(() => {
+            const overlay = document.getElementById('pv-add-overlay');
+            if (overlay) overlay.dataset.channel = 'proxy';
             openProviderAdd();
             setTimeout(() => {
                 const nameEl = document.getElementById('pv-add-name');
                 const ptypeEl = document.getElementById('pv-add-ptype');
-                const overlay = document.getElementById('pv-add-overlay');
                 if (nameEl) nameEl.value = m.name;
                 if (ptypeEl && m.provider_type) {
                     const opts = Array.from(ptypeEl.options || []);
                     const match = opts.find(o => o.value.toLowerCase() === m.provider_type.toLowerCase());
                     if (match) ptypeEl.value = match.value;
                 }
-                if (overlay) overlay.dataset.channel = 'proxy';
+                pvAddRefreshChannelUI();
                 pvAddCheckName();
             }, 100);
         }, 400);
@@ -5067,8 +5068,22 @@ function openProviderAdd() {
     const ptypeSel = document.getElementById('pv-add-ptype');
     ptypeSel.value = 'openai';
     delete ptypeSel.dataset.userPicked;
-    document.getElementById('pv-add-overlay').dataset.channel = 'sse';
+    const overlay = document.getElementById('pv-add-overlay');
+    if (!overlay.dataset.channel) overlay.dataset.channel = 'sse';
+    pvAddRefreshChannelUI();
     setTimeout(() => { document.getElementById('pv-add-name')?.focus(); }, 50);
+}
+function pvAddRefreshChannelUI() {
+    const ch = (document.getElementById('pv-add-overlay').dataset.channel || 'sse').toLowerCase();
+    const txt = document.getElementById('pv-add-channel-text');
+    const help = document.getElementById('pv-add-channel-help');
+    if (ch === 'proxy') {
+        if (txt) txt.textContent = 'Proxy';
+        if (help) help.innerHTML = 'Businesses route traffic through ONTO using your provider key · ONTO injects GOLD on every call · no setup needed on your server. Your provider key is charged per call.';
+    } else {
+        if (txt) txt.textContent = 'SSE Streaming';
+        if (help) help.innerHTML = 'Your server posts heartbeats every 30-60s and subscribes to the GOLD corpus stream. ONTO is not in your request path · no rate limit · no cost on your provider key. Setup steps appear after registration.';
+    }
 }
 function closeProviderAdd() {
     document.getElementById('pv-add-overlay').classList.remove('active');
@@ -5159,7 +5174,7 @@ async function pvAddSubmit() {
     const name = document.getElementById('pv-add-name').value.trim();
     const ptype = document.getElementById('pv-add-ptype').value;
     const apikey = document.getElementById('pv-add-apikey').value.trim();
-    const ch = 'sse';
+    const ch = (document.getElementById('pv-add-overlay').dataset.channel || 'sse').toLowerCase();
 
     let invalid = false;
     [['pv-add-name', name], ['pv-add-apikey', apikey]].forEach(([id, val]) => {
