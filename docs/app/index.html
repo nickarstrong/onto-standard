@@ -2124,6 +2124,25 @@ a.info-val:hover { color: var(--text); }
 
             <!-- ===== SETUP · SSE channel ===== -->
             <div class="detail-section" id="d-setup-sse" style="display:none">
+
+                <!-- REALITY CHECK · for non-technical users -->
+                <div style="padding:18px 20px;background:rgba(180,83,9,.08);border:1px solid rgba(180,83,9,.4);border-radius:4px;margin-bottom:18px">
+                    <div style="display:flex;align-items:flex-start;gap:14px">
+                        <div style="font-size:20px;line-height:1;color:#b45309">⚠</div>
+                        <div style="flex:1">
+                            <div style="font-size:14px;font-weight:600;color:#b45309;margin-bottom:6px">SSE requires engineering work on YOUR server</div>
+                            <div style="font-size:12.5px;color:var(--text-muted);line-height:1.6;margin-bottom:12px">
+                                Your server (where the AI model runs) needs to: send heartbeats every 30-60s · subscribe to the GOLD corpus stream · inject GOLD prefix into every inference. If you don't have an engineer ready · use Proxy instead — it works without any setup on your side.
+                            </div>
+                            <div style="display:flex;gap:10px;flex-wrap:wrap">
+                                <button class="btn-mini" onclick="d_switchToProxy()" style="background:var(--accent-subtle);color:var(--accent);border-color:var(--accent-border)">← Switch to Proxy (no setup)</button>
+                                <button class="btn-mini" onclick="d_sendTestHeartbeat()" id="d-test-hb-btn">Send test heartbeat (simulate)</button>
+                            </div>
+                            <div id="d-test-hb-result" style="margin-top:10px"></div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="h">Setup · 3 steps</div>
                 <div id="d-step1" class="step">
                     <div class="step-num">1</div>
@@ -4716,6 +4735,67 @@ async function d_obRunTest() {
         resEl.innerHTML = '<div class="mc-test-err">Network error</div>';
     } finally {
         btn.disabled = false; btn.textContent = 'Run test';
+    }
+}
+
+async function d_sendTestHeartbeat() {
+    if (!_dCurrentId) return;
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    const btn = document.getElementById('d-test-hb-btn');
+    const resEl = document.getElementById('d-test-hb-result');
+    if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+    try {
+        const res = await fetch(`${API_BASE}/v1/models/${_dCurrentId}/heartbeat`, {
+            method: 'POST',
+            headers: { 'x-api-key': apiKey }
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+            resEl.innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:#dc2626;padding:8px 12px;border:1px solid rgba(220,38,38,.4);background:rgba(220,38,38,.08);border-radius:3px">Error: ' + escHtml(data.detail || 'failed') + '</div>';
+            return;
+        }
+        resEl.innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:var(--accent);padding:8px 12px;border:1px solid var(--accent-border);background:var(--accent-subtle);border-radius:3px">✓ Heartbeat received · model marked Connected for 5 min · refresh page to see</div>';
+        setTimeout(async () => { await loadModels(); const m = (window._lastModels || []).find(x => String(x.id) === String(_dCurrentId)); if (m) renderDetail(m); }, 800);
+    } catch (e) {
+        resEl.innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:#dc2626;padding:8px 12px">Network error</div>';
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'Send test heartbeat (simulate)'; }
+    }
+}
+
+async function d_switchToProxy() {
+    if (!_dCurrentId) return;
+    const m = (window._lastModels || []).find(x => String(x.id) === String(_dCurrentId));
+    if (!m) return;
+    if (!confirm('Switch "' + m.name + '" from SSE to Proxy?\n\n• Old SSE registration will be removed\n• You will re-enter your provider API key\n• Proxy works without any setup on your server\n\nContinue?')) return;
+    const apiKey = localStorage.getItem('onto_first_api_key');
+    try {
+        const res = await fetch(`${API_BASE}/v1/models/${_dCurrentId}`, { method: 'DELETE', headers: { 'x-api-key': apiKey } });
+        if (!res.ok && res.status !== 204) {
+            showToast('Could not switch · try again', 'error');
+            return;
+        }
+        closeDetail();
+        await loadModels();
+        showToast('Switched · re-register as Proxy below', 'success');
+        setTimeout(() => {
+            openProviderAdd();
+            setTimeout(() => {
+                const nameEl = document.getElementById('pv-add-name');
+                const ptypeEl = document.getElementById('pv-add-ptype');
+                const overlay = document.getElementById('pv-add-overlay');
+                if (nameEl) nameEl.value = m.name;
+                if (ptypeEl && m.provider_type) {
+                    const opts = Array.from(ptypeEl.options || []);
+                    const match = opts.find(o => o.value.toLowerCase() === m.provider_type.toLowerCase());
+                    if (match) ptypeEl.value = match.value;
+                }
+                if (overlay) overlay.dataset.channel = 'proxy';
+                pvAddCheckName();
+            }, 100);
+        }, 400);
+    } catch (e) {
+        showToast('Network error', 'error');
     }
 }
 
