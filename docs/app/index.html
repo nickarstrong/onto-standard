@@ -3059,7 +3059,7 @@ client = OpenAI(
             </div>
             <div class="pv-field">
                 <label>Provider</label>
-                <select id="pv-add-ptype" class="form-input" style="width:100%;padding:10px 12px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:3px;color:var(--text);font-family:var(--font);font-size:13.5px;outline:none;cursor:pointer">
+                <select id="pv-add-ptype" class="form-input" onchange="this.dataset.userPicked='1'" style="width:100%;padding:10px 12px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:3px;color:var(--text);font-family:var(--font);font-size:13.5px;outline:none;cursor:pointer">
                     <option value="openai">OpenAI</option>
                     <option value="anthropic">Anthropic</option>
                     <option value="xai">xAI</option>
@@ -4983,34 +4983,91 @@ function openProviderAdd() {
         const el = document.getElementById(id);
         if (el) { el.value = ''; el.classList.remove('error','invalid'); }
     });
-    document.getElementById('pv-add-ptype').value = 'openai';
+    const ptypeSel = document.getElementById('pv-add-ptype');
+    ptypeSel.value = 'openai';
+    delete ptypeSel.dataset.userPicked;
     document.getElementById('pv-add-overlay').dataset.channel = 'sse';
     setTimeout(() => { document.getElementById('pv-add-name')?.focus(); }, 50);
 }
 function closeProviderAdd() {
     document.getElementById('pv-add-overlay').classList.remove('active');
 }
-function pvAddCheckName() {
+let _pvNameCheckTimer = null;
+let _pvNameCheckAbort = null;
+
+function pvAddAutoProvider(name) {
+    const sel = document.getElementById('pv-add-ptype');
+    if (!sel) return;
+    const n = (name || '').toLowerCase();
+    let detected = null;
+    if (/grok|xai/.test(n)) detected = 'xai';
+    else if (/gpt|openai|o1|o3|o4/.test(n)) detected = 'openai';
+    else if (/claude|anthropic|opus|sonnet|haiku/.test(n)) detected = 'anthropic';
+    else if (/gemini|palm|google|bard/.test(n)) detected = 'google';
+    else if (/deepseek|dsk/.test(n)) detected = 'deepseek';
+    else if (/mistral|mixtral|codestral/.test(n)) detected = 'mistral';
+    else if (/llama|meta/.test(n)) detected = 'openai'; // llama via openai-compat
+    else if (/glm|qwen|zhipu/.test(n)) detected = 'openai';
+    if (detected && sel.value === 'openai' && !sel.dataset.userPicked) {
+        sel.value = detected;
+    }
+}
+
+async function pvAddCheckName() {
     const input = document.getElementById('pv-add-name');
     const help = document.getElementById('pv-add-name-help');
     if (!input || !help) return;
-    const name = input.value.trim().toLowerCase();
+    const raw = input.value.trim();
+    const name = raw.toLowerCase();
     if (!name) {
         help.innerHTML = 'Shown on your dashboard and in attestation records · must be unique.';
-        help.style.color = '';
         input.classList.remove('invalid');
         return;
     }
-    const existing = (window._lastModels || []).find(m => (m.name || '').toLowerCase() === name);
-    if (existing) {
-        const suggested = input.value.trim() + '-prod';
-        help.innerHTML = '<span style="color:#dc2626">"' + escHtml(input.value.trim()) + '" already registered.</span> Try <code style="font-family:var(--mono);background:var(--bg-secondary);padding:1px 5px;border-radius:2px;color:var(--accent);font-size:11px;cursor:pointer" onclick="document.getElementById(\'pv-add-name\').value=\'' + escHtml(suggested) + '\';pvAddCheckName()">' + escHtml(suggested) + '</code>';
+
+    // Auto-detect provider from name
+    pvAddAutoProvider(raw);
+
+    // Cheap local check first (covers loaded list)
+    const localHit = (window._lastModels || []).find(m => (m.name || '').toLowerCase() === name);
+    if (localHit) {
+        const suggested = raw + '-prod';
+        help.innerHTML = '<span style="color:#dc2626">"' + escHtml(raw) + '" already registered.</span> Try <code style="font-family:var(--mono);background:var(--bg-secondary);padding:1px 5px;border-radius:2px;color:var(--accent);font-size:11px;cursor:pointer" onclick="document.getElementById(\'pv-add-name\').value=\'' + escHtml(suggested) + '\';pvAddCheckName()">' + escHtml(suggested) + '</code>';
         input.classList.add('invalid');
-    } else {
-        help.innerHTML = '<span style="color:var(--accent)">✓ Available</span>';
-        help.style.color = '';
-        input.classList.remove('invalid');
+        return;
     }
+
+    // Debounced server check
+    help.innerHTML = '<span style="color:var(--text-muted)">Checking…</span>';
+    if (_pvNameCheckTimer) clearTimeout(_pvNameCheckTimer);
+    if (_pvNameCheckAbort) _pvNameCheckAbort.abort();
+
+    _pvNameCheckTimer = setTimeout(async () => {
+        _pvNameCheckAbort = new AbortController();
+        try {
+            const apiKey = localStorage.getItem('onto_first_api_key');
+            const res = await fetch(`${API_BASE}/v1/models`, {
+                headers: { 'x-api-key': apiKey },
+                signal: _pvNameCheckAbort.signal
+            });
+            const data = await res.json().catch(() => []);
+            const list = Array.isArray(data) ? data : (data.models || []);
+            window._lastModels = list;
+            const taken = list.find(m => (m.name || '').toLowerCase() === name);
+            if (taken) {
+                const suggested = raw + '-prod';
+                help.innerHTML = '<span style="color:#dc2626">"' + escHtml(raw) + '" already registered.</span> Try <code style="font-family:var(--mono);background:var(--bg-secondary);padding:1px 5px;border-radius:2px;color:var(--accent);font-size:11px;cursor:pointer" onclick="document.getElementById(\'pv-add-name\').value=\'' + escHtml(suggested) + '\';pvAddCheckName()">' + escHtml(suggested) + '</code>';
+                input.classList.add('invalid');
+            } else {
+                help.innerHTML = '<span style="color:var(--accent)">✓ Available</span>';
+                input.classList.remove('invalid');
+            }
+        } catch (e) {
+            if (e.name !== 'AbortError') {
+                help.innerHTML = 'Shown on your dashboard and in attestation records · must be unique.';
+            }
+        }
+    }, 400);
 }
 
 function pvAddSetChannel(ch, btn) {
