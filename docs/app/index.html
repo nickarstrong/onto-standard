@@ -1943,7 +1943,8 @@ a.info-val:hover { color: var(--text); }
             </div>
 
             <!-- HOW SSE WORKS -->
-            <div class="detail-section">
+            <!-- ===== HOW IT WORKS · SSE channel ===== -->
+            <div class="detail-section" id="d-how-sse" style="display:none">
                 <div class="h">How SSE works</div>
                 <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:3px;padding:16px 18px;font-size:13px;color:var(--text-secondary);line-height:1.65">
                     Your server keeps two channels with ONTO:<br>
@@ -1953,8 +1954,20 @@ a.info-val:hover { color: var(--text); }
                 </div>
             </div>
 
-            <!-- SETUP CHECKLIST -->
-            <div class="detail-section">
+            <!-- ===== HOW IT WORKS · PROXY channel ===== -->
+            <div class="detail-section" id="d-how-proxy" style="display:none">
+                <div class="h">How Proxy works</div>
+                <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:3px;padding:16px 18px;font-size:13px;color:var(--text-secondary);line-height:1.65">
+                    Businesses route their inference calls through ONTO using your provider key:<br>
+                    <strong style="color:var(--text)">1.</strong> They change their <code style="font-family:var(--mono);background:var(--bg-secondary);padding:1px 6px;border-radius:2px;color:var(--accent)">base_url</code> to <code style="font-family:var(--mono);background:var(--bg-secondary);padding:1px 6px;border-radius:2px;color:var(--accent)">api.ontostandard.org/v1/proxy</code><br>
+                    <strong style="color:var(--text)">2.</strong> Each request → ONTO injects GOLD prefix → forwards to your provider API → returns response with risk score<br>
+                    <strong style="color:var(--text)">3.</strong> ONTO charges your provider API key per call · counts toward business's tier rate limit<br>
+                    <span style="color:var(--text-muted);font-size:12px;display:block;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">⚠ Legacy channel · LIVE production traffic · costs your provider key · prefer SSE for new registrations</span>
+                </div>
+            </div>
+
+            <!-- ===== SETUP · SSE channel ===== -->
+            <div class="detail-section" id="d-setup-sse" style="display:none">
                 <div class="h">Setup · 3 steps</div>
                 <div id="d-step1" class="step">
                     <div class="step-num">1</div>
@@ -1998,6 +2011,23 @@ a.info-val:hover { color: var(--text); }
                 </div>
             </div>
 
+            <!-- ===== USAGE · PROXY channel ===== -->
+            <div class="detail-section" id="d-setup-proxy" style="display:none">
+                <div class="h">Integration · for businesses</div>
+                <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:3px;padding:18px 20px;margin-bottom:14px">
+                    <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:14px">Businesses can call this model via ONTO proxy by changing one line of code · ONTO injects GOLD on every request and returns response with risk score.</div>
+                    <div class="code-tabs">
+                        <button class="code-tab on" data-step="px" data-lang="curl" onclick="d_codeTab('px','curl',this)">cURL</button>
+                        <button class="code-tab" data-step="px" data-lang="python" onclick="d_codeTab('px','python',this)">Python</button>
+                    </div>
+                    <div class="code-pane on" id="d-code-px-curl"></div>
+                    <div class="code-pane" id="d-code-px-python"></div>
+                </div>
+                <div style="padding:12px 14px;background:rgba(180,83,9,.08);border:1px dashed rgba(180,83,9,.4);border-radius:3px;font-size:12px;color:#b45309;line-height:1.55">
+                    <strong>Heads up</strong> · This is a legacy registration. New models register as SSE by default. To migrate · unregister this model and register again with channel = SSE.
+                </div>
+            </div>
+
             <!-- PROVIDER KEY SANITY -->
             <div class="detail-section">
                 <div class="h">Provider key · sanity check</div>
@@ -2011,8 +2041,8 @@ a.info-val:hover { color: var(--text); }
             <!-- EVALUATIONS HISTORY -->
             <div class="detail-section">
                 <div class="h">Recent evaluations</div>
-                <div id="d-history">
-                    <div style="font-family:var(--mono);font-size:11px;color:var(--text-muted);padding:14px;text-align:center;border:1px dashed var(--border);border-radius:3px">No evaluations yet</div>
+                <div id="d-history" style="background:var(--bg-card);border:1px solid var(--border);border-radius:3px;padding:14px 16px;overflow-x:auto">
+                    <div style="font-family:var(--mono);font-size:11px;color:var(--text-muted);padding:14px;text-align:center">No evaluations yet</div>
                 </div>
             </div>
         </div>
@@ -4452,6 +4482,12 @@ function renderDetail(m) {
     if ($('d-step1-status')) $('d-step1-status').textContent = setup.step1 === 'done' ? 'Live · last hb ' + (m.last_heartbeat || '—') : (setup.step1 === 'warn' ? 'Stale · last hb ' + (m.last_heartbeat || '—') : 'Awaiting first heartbeat');
     if ($('d-step2-status')) $('d-step2-status').textContent = setup.step2 === 'done' ? 'Subscribed' : 'Subscribe via SSE long-poll';
 
+    // Channel-aware section visibility
+    $('d-how-sse').style.display    = isSSE ? 'block' : 'none';
+    $('d-how-proxy').style.display  = isSSE ? 'none'  : 'block';
+    $('d-setup-sse').style.display  = isSSE ? 'block' : 'none';
+    $('d-setup-proxy').style.display = isSSE ? 'none' : 'block';
+
     d_renderCode(m);
 
     $('d-toggle').textContent = isOn ? 'Disable' : 'Enable';
@@ -4471,28 +4507,50 @@ function renderDetail(m) {
 function d_renderCode(m) {
     const ontoKey = localStorage.getItem('onto_first_api_key') || 'YOUR_ONTO_KEY';
     const id = m.id;
-
-    const hbCurl = '<span class="c"># Send every 30-60 seconds from your server</span>\ncurl -X POST <span class="s">"' + API_BASE + '/v1/models/' + id + '/heartbeat"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span>';
-    const hbPy = '<span class="c"># Heartbeat every 30s</span>\nimport asyncio, httpx\n\nasync def heartbeat():\n    async with httpx.AsyncClient() as c:\n        while True:\n            await c.post(\n                f<span class="s">"' + API_BASE + '/v1/models/' + id + '/heartbeat"</span>,\n                headers={<span class="s">"x-api-key"</span>: <span class="s">"' + ontoKey + '"</span>}\n            )\n            await asyncio.sleep(30)\n\nasyncio.run(heartbeat())';
-
-    const goldCurl = '<span class="c"># Long-lived SSE stream · keep this open</span>\ncurl -N <span class="s">"' + API_BASE + '/v1/gold/stream"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span>';
-    const goldPy = '<span class="c"># Subscribe and cache GOLD corpus updates</span>\nimport httpx\n\nasync def gold_stream():\n    async with httpx.AsyncClient(timeout=None) as c:\n        async with c.stream(\n            <span class="s">"GET"</span>,\n            <span class="s">"' + API_BASE + '/v1/gold/stream"</span>,\n            headers={<span class="s">"x-api-key"</span>: <span class="s">"' + ontoKey + '"</span>}\n        ) as r:\n            async for chunk in r.aiter_text():\n                update_local_gold_cache(chunk)';
-
-    const applyPy = '<span class="c"># In your inference handler</span>\nfrom your_model import infer\n\ndef inference(user_message: str):\n    gold_prefix = get_local_gold_cache()  <span class="c"># cached from step 2</span>\n    full_prompt = gold_prefix + <span class="s">"\\n\\n"</span> + user_message\n    response = infer(full_prompt)\n    return response';
+    const isSSE = (m.channel || 'proxy').toLowerCase() === 'sse';
+    const ptype = (m.provider_type || 'openai').toLowerCase();
 
     const wrap = (paneId, content) =>
         '<button class="copy-btn" onclick="d_copyCode(\'' + paneId + '\',this)">Copy</button><pre>' + content + '</pre>';
 
-    document.getElementById('d-code-1-curl').innerHTML = wrap('d-code-1-curl', hbCurl);
-    document.getElementById('d-code-1-python').innerHTML = wrap('d-code-1-python', hbPy);
-    document.getElementById('d-code-2-curl').innerHTML = wrap('d-code-2-curl', goldCurl);
-    document.getElementById('d-code-2-python').innerHTML = wrap('d-code-2-python', goldPy);
-    document.getElementById('d-code-3-python').innerHTML = wrap('d-code-3-python', applyPy);
+    if (isSSE) {
+        // SSE channel · 3-step setup code
+        const hbCurl = '<span class="c"># Send every 30-60 seconds from your server</span>\ncurl -X POST <span class="s">"' + API_BASE + '/v1/models/' + id + '/heartbeat"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span>';
+        const hbPy = '<span class="c"># Heartbeat every 30s</span>\nimport asyncio, httpx\n\nasync def heartbeat():\n    async with httpx.AsyncClient() as c:\n        while True:\n            await c.post(\n                f<span class="s">"' + API_BASE + '/v1/models/' + id + '/heartbeat"</span>,\n                headers={<span class="s">"x-api-key"</span>: <span class="s">"' + ontoKey + '"</span>}\n            )\n            await asyncio.sleep(30)\n\nasyncio.run(heartbeat())';
+
+        const goldCurl = '<span class="c"># Long-lived SSE stream · keep this open</span>\ncurl -N <span class="s">"' + API_BASE + '/v1/gold/stream"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span>';
+        const goldPy = '<span class="c"># Subscribe and cache GOLD corpus updates</span>\nimport httpx\n\nasync def gold_stream():\n    async with httpx.AsyncClient(timeout=None) as c:\n        async with c.stream(\n            <span class="s">"GET"</span>,\n            <span class="s">"' + API_BASE + '/v1/gold/stream"</span>,\n            headers={<span class="s">"x-api-key"</span>: <span class="s">"' + ontoKey + '"</span>}\n        ) as r:\n            async for chunk in r.aiter_text():\n                update_local_gold_cache(chunk)';
+
+        const applyPy = '<span class="c"># In your inference handler</span>\nfrom your_model import infer\n\ndef inference(user_message: str):\n    gold_prefix = get_local_gold_cache()  <span class="c"># cached from step 2</span>\n    full_prompt = gold_prefix + <span class="s">"\\n\\n"</span> + user_message\n    response = infer(full_prompt)\n    return response';
+
+        document.getElementById('d-code-1-curl').innerHTML = wrap('d-code-1-curl', hbCurl);
+        document.getElementById('d-code-1-python').innerHTML = wrap('d-code-1-python', hbPy);
+        document.getElementById('d-code-2-curl').innerHTML = wrap('d-code-2-curl', goldCurl);
+        document.getElementById('d-code-2-python').innerHTML = wrap('d-code-2-python', goldPy);
+        document.getElementById('d-code-3-python').innerHTML = wrap('d-code-3-python', applyPy);
+    } else {
+        // PROXY channel · business integration snippet
+        const path = (ptype === 'anthropic') ? '/v1/proxy/anthropic/messages' : '/v1/proxy/chat/completions';
+        const modelArg = m.name || ptype;
+
+        const pxCurl = (ptype === 'anthropic')
+            ? '<span class="c"># Business: change one line · base_url → ONTO proxy</span>\ncurl -X POST <span class="s">"' + API_BASE + path + '"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span> \\\n  -H <span class="s">"Content-Type: application/json"</span> \\\n  -d <span class="s">\'{\n    "model": "' + modelArg + '",\n    "max_tokens": 512,\n    "messages": [{"role": "user", "content": "Explain quantum entanglement"}]\n  }\'</span>'
+            : '<span class="c"># Business: change one line · base_url → ONTO proxy</span>\ncurl -X POST <span class="s">"' + API_BASE + path + '"</span> \\\n  -H <span class="s">"x-api-key: ' + ontoKey + '"</span> \\\n  -H <span class="s">"Content-Type: application/json"</span> \\\n  -d <span class="s">\'{\n    "model": "' + modelArg + '",\n    "messages": [{"role": "user", "content": "Explain quantum entanglement"}]\n  }\'</span>';
+
+        const pxPy = (ptype === 'anthropic')
+            ? '<span class="c"># pip install anthropic</span>\nimport anthropic\nclient = anthropic.Anthropic(\n    api_key=<span class="s">"' + ontoKey + '"</span>,\n    base_url=<span class="s">"' + API_BASE + '/v1/proxy"</span>   <span class="c"># <- only change</span>\n)\nmsg = client.messages.create(\n    model=<span class="s">"' + modelArg + '"</span>,\n    max_tokens=512,\n    messages=[{<span class="s">"role"</span>: <span class="s">"user"</span>, <span class="s">"content"</span>: <span class="s">"Explain quantum entanglement"</span>}]\n)'
+            : '<span class="c"># pip install openai</span>\nfrom openai import OpenAI\nclient = OpenAI(\n    api_key=<span class="s">"' + ontoKey + '"</span>,\n    base_url=<span class="s">"' + API_BASE + '/v1/proxy"</span>   <span class="c"># <- only change</span>\n)\nresp = client.chat.completions.create(\n    model=<span class="s">"' + modelArg + '"</span>,\n    messages=[{<span class="s">"role"</span>: <span class="s">"user"</span>, <span class="s">"content"</span>: <span class="s">"Explain quantum entanglement"</span>}]\n)';
+
+        document.getElementById('d-code-px-curl').innerHTML = wrap('d-code-px-curl', pxCurl);
+        document.getElementById('d-code-px-python').innerHTML = wrap('d-code-px-python', pxPy);
+    }
 }
 
 function d_codeTab(step, lang, btn) {
-    document.querySelectorAll('#d-step' + step + ' .code-tab').forEach(b => b.classList.remove('on'));
-    document.querySelectorAll('#d-step' + step + ' .code-pane').forEach(p => p.classList.remove('on'));
+    document.querySelectorAll('[data-step="' + step + '"]').forEach(b => { if (b.classList.contains('code-tab')) b.classList.remove('on'); });
+    document.querySelectorAll('#page-detail .code-pane').forEach(p => {
+        if (p.id && p.id.startsWith('d-code-' + step + '-')) p.classList.remove('on');
+    });
     if (btn) btn.classList.add('on');
     const target = document.getElementById('d-code-' + step + '-' + lang);
     if (target) target.classList.add('on');
@@ -4531,6 +4589,7 @@ async function d_testKey() {
         }
         const score = (data.score != null) ? Number(data.score).toFixed(2) : '—';
         resEl.innerHTML =
+            '<div style="font-family:var(--mono);font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--text-faint);font-weight:600;margin-bottom:8px;padding-top:6px">Test result</div>' +
             '<div class="mc-test-meta">' +
                 '<div class="it"><span class="l">Score</span><span class="v">' + score + '</span></div>' +
                 '<div class="it"><span class="l">Grade</span><span class="v">' + escHtml(data.grade || '—') + '</span></div>' +
