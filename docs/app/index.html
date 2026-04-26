@@ -2048,9 +2048,14 @@ a.info-val:hover { color: var(--text); }
                         <div class="ob-num" id="ob-num2">2</div>
                         <div class="ob-body">
                             <div class="ob-title">Point your business traffic at ONTO</div>
-                            <div class="ob-desc">In your application that calls this model · change <code style="font-family:var(--mono);background:var(--bg-secondary);padding:1px 6px;border-radius:2px;color:var(--accent)">base_url</code> to ONTO. ONTO injects GOLD on every call and forwards to your provider. You'll see signals start appearing here.</div>
-                            <div class="ob-action">
-                                <button class="btn-mini" onclick="d_obShowCode()" id="ob-code-btn">Show integration code ↓</button>
+                            <div class="ob-desc">In your application code · change <code style="font-family:var(--mono);background:var(--bg-secondary);padding:1px 6px;border-radius:2px;color:var(--accent)">base_url</code> to <code style="font-family:var(--mono);background:var(--bg-secondary);padding:1px 6px;border-radius:2px;color:var(--accent)">api.ontostandard.org/v1/proxy</code>. ONTO injects GOLD on every call and forwards to your provider. Each request charges your provider key · counts toward business's tier rate limit.</div>
+                            <div class="code-tabs" style="margin:6px 0 0">
+                                <button class="code-tab on" data-step="px" data-lang="curl" onclick="d_codeTab('px','curl',this)">cURL</button>
+                                <button class="code-tab" data-step="px" data-lang="python" onclick="d_codeTab('px','python',this)">Python</button>
+                            </div>
+                            <div class="code-pane on" id="d-code-px-curl"></div>
+                            <div class="code-pane" id="d-code-px-python"></div>
+                            <div class="ob-action" style="margin-top:10px">
                                 <span class="ob-status" id="ob-status2">awaiting first signal</span>
                             </div>
                         </div>
@@ -2062,6 +2067,7 @@ a.info-val:hover { color: var(--text); }
                             <div class="ob-title">Watch evaluations come in</div>
                             <div class="ob-desc">Once signals start flowing · the Status panel above will show live counts and scores. Each evaluation is signed (Ed25519) and recorded in the proof chain.</div>
                             <div class="ob-action">
+                                <button class="btn-mini" onclick="d_obRefresh()" id="ob-refresh-btn">Refresh now</button>
                                 <span class="ob-status" id="ob-status3">awaiting traffic</span>
                             </div>
                         </div>
@@ -2084,13 +2090,12 @@ a.info-val:hover { color: var(--text); }
 
             <!-- ===== HOW IT WORKS · PROXY channel ===== -->
             <div class="detail-section" id="d-how-proxy" style="display:none">
-                <div class="h">How Proxy works</div>
-                <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:3px;padding:16px 18px;font-size:13px;color:var(--text-secondary);line-height:1.65">
-                    Businesses route their inference calls through ONTO using your provider key:<br>
-                    <strong style="color:var(--text)">1.</strong> They change their <code style="font-family:var(--mono);background:var(--bg-secondary);padding:1px 6px;border-radius:2px;color:var(--accent)">base_url</code> to <code style="font-family:var(--mono);background:var(--bg-secondary);padding:1px 6px;border-radius:2px;color:var(--accent)">api.ontostandard.org/v1/proxy</code><br>
-                    <strong style="color:var(--text)">2.</strong> Each request → ONTO injects GOLD prefix → forwards to your provider API → returns response with risk score<br>
-                    <strong style="color:var(--text)">3.</strong> ONTO charges your provider API key per call · counts toward business's tier rate limit<br>
-                    <span style="color:var(--text-muted);font-size:12px;display:block;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">⚠ Legacy channel · LIVE production traffic · costs your provider key · prefer SSE for new registrations</span>
+                <div class="h">Channel notes</div>
+                <div style="padding:14px 16px;background:rgba(180,83,9,.08);border:1px dashed rgba(180,83,9,.4);border-radius:3px;font-size:12.5px;color:#b45309;line-height:1.6">
+                    <strong>Proxy is fully supported</strong> for ongoing operations. SSE is recommended for new registrations because your provider key is never charged for inference and your server stays in the inference path.
+                    <div style="margin-top:10px">
+                        <button class="btn-mini" onclick="d_migrateToSSE()" style="background:rgba(180,83,9,.15);color:#b45309;border-color:rgba(180,83,9,.5)">Migrate to SSE</button>
+                    </div>
                 </div>
             </div>
 
@@ -2136,36 +2141,6 @@ a.info-val:hover { color: var(--text); }
                         </div>
                         <div class="code-pane on" id="d-code-3-python"></div>
                     </div>
-                </div>
-            </div>
-
-            <!-- ===== USAGE · PROXY channel ===== -->
-            <div class="detail-section" id="d-setup-proxy" style="display:none">
-                <div class="h">Integration · for businesses</div>
-                <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:3px;padding:18px 20px;margin-bottom:14px">
-                    <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:14px">Businesses can call this model via ONTO proxy by changing one line of code · ONTO injects GOLD on every request and returns response with risk score.</div>
-                    <div class="code-tabs">
-                        <button class="code-tab on" data-step="px" data-lang="curl" onclick="d_codeTab('px','curl',this)">cURL</button>
-                        <button class="code-tab" data-step="px" data-lang="python" onclick="d_codeTab('px','python',this)">Python</button>
-                    </div>
-                    <div class="code-pane on" id="d-code-px-curl"></div>
-                    <div class="code-pane" id="d-code-px-python"></div>
-                </div>
-                <div style="padding:14px 16px;background:rgba(180,83,9,.08);border:1px dashed rgba(180,83,9,.4);border-radius:3px;font-size:12.5px;color:#b45309;line-height:1.6">
-                    <strong>Proxy is fully supported</strong> for ongoing operations. SSE is recommended for new registrations because your provider key is never charged for inference and your server stays in the inference path.
-                    <div style="margin-top:10px">
-                        <button class="btn-mini" onclick="d_migrateToSSE()" style="background:rgba(180,83,9,.15);color:#b45309;border-color:rgba(180,83,9,.5)">Migrate to SSE</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PROVIDER KEY SANITY -->
-            <div class="detail-section">
-                <div class="h">Provider key · sanity check</div>
-                <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:3px;padding:16px 18px">
-                    <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;line-height:1.55">Sends <strong style="color:var(--text)">one message</strong> through your stored provider API key · validates the key works · NOT a live business call · counts toward your daily limit.</div>
-                    <button class="btn-mini" onclick="d_testKey()" id="d-test-btn" style="background:var(--accent-subtle);color:var(--accent);border-color:var(--accent-border)">Test provider key</button>
-                    <div id="d-test-result" style="margin-top:12px"></div>
                 </div>
             </div>
 
@@ -4720,9 +4695,15 @@ async function d_obRunTest() {
     }
 }
 
-function d_obShowCode() {
-    const target = document.getElementById('d-setup-proxy');
-    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+async function d_obRefresh() {
+    if (!_dCurrentId) return;
+    const btn = document.getElementById('ob-refresh-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Refreshing…'; }
+    await loadModels();
+    const m = (window._lastModels || []).find(x => String(x.id) === String(_dCurrentId));
+    if (m) renderDetail(m);
+    if (btn) { btn.disabled = false; btn.textContent = 'Refresh now'; }
+    showToast('Refreshed', 'success');
 }
 
 function d_renderCode(m) {
@@ -4980,22 +4961,15 @@ function openProviderAdd() {
         if (el) { el.value = ''; el.classList.remove('error','invalid'); }
     });
     document.getElementById('pv-add-ptype').value = 'openai';
-    pvAddSetChannel('proxy', document.querySelector('#pv-add-overlay [data-ch="proxy"]'));
+    document.getElementById('pv-add-overlay').dataset.channel = 'sse';
     setTimeout(() => { document.getElementById('pv-add-name')?.focus(); }, 50);
 }
 function closeProviderAdd() {
     document.getElementById('pv-add-overlay').classList.remove('active');
 }
 function pvAddSetChannel(ch, btn) {
-    document.querySelectorAll('#pv-add-overlay [data-ch]').forEach(b => b.classList.remove('on'));
-    if (btn) btn.classList.add('on');
-    const help = document.getElementById('pv-add-channel-help');
-    if (ch === 'proxy') {
-        help.innerHTML = '<strong>Proxy</strong> · ONTO sits in the request path · GOLD injected per call · suitable for testing &amp; small workloads.';
-    } else {
-        help.innerHTML = '<strong>SSE</strong> · ONTO not in inference path · provider streams signed signals via heartbeat POST · requires Provider tier.';
-    }
-    document.getElementById('pv-add-overlay').dataset.channel = ch;
+    // Channel is locked to SSE — kept as no-op for backward compat
+    document.getElementById('pv-add-overlay').dataset.channel = ch || 'sse';
 }
 async function pvAddSubmit() {
     const name = document.getElementById('pv-add-name').value.trim();
@@ -5027,7 +5001,9 @@ async function pvAddSubmit() {
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
             const msg = data.detail || data.message || 'Registration failed';
-            if (res.status === 403 && /tier/i.test(msg)) {
+            if (res.status === 409) {
+                showToast('Model "' + name + '" already exists · use different name or unregister the old one', 'error');
+            } else if (res.status === 403 && /tier/i.test(msg)) {
                 showToast('SSE channel requires Provider tier · go to Billing', 'error');
             } else {
                 showToast(msg, 'error');
