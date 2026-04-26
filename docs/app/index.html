@@ -4588,7 +4588,7 @@ function renderDetail(m) {
     $('d-meta').textContent = (m.provider_type || '—') + ' · ' + (m.channel || 'proxy').toUpperCase() + ' · ID ' + m.id;
     $('d-demo-banner').style.display = isDemo ? 'block' : 'none';
 
-    $('d-conn').textContent = isSSE ? (conn ? 'Connected' : 'Disconnected') : (isOn ? 'Active' : 'Disabled');
+    $('d-conn').textContent = isSSE ? (conn ? 'Connected' : 'Disconnected') : (isOn ? 'Ready' : 'Disabled');
     $('d-conn').style.color = (conn || (!isSSE && isOn)) ? 'var(--accent)' : 'var(--text-faint)';
     $('d-hb').textContent = m.last_heartbeat || '—';
     $('d-signals').textContent = (m.eval_count != null) ? Number(m.eval_count).toLocaleString() : '—';
@@ -4624,7 +4624,7 @@ function renderDetail(m) {
     if (!isDemo) loadDetailHistory(m.id);
     else $('d-history').innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:var(--text-muted);padding:14px;text-align:center;border:1px dashed var(--border);border-radius:3px">Demo · no real history</div>';
 
-    $('d-test-result').innerHTML = '';
+    const tr = $('d-test-result'); if (tr) tr.innerHTML = '';
 
     // Onboarding flow · only shown if proxy + 0 evals (provider needs guidance)
     d_renderOnboarding(m);
