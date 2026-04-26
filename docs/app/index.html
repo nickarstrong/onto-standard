@@ -4606,15 +4606,16 @@ function renderDetail(m) {
     if ($('d-step2-status')) $('d-step2-status').textContent = setup.step2 === 'done' ? 'Subscribed' : 'Subscribe via SSE long-poll';
 
     // Channel-aware section visibility
-    $('d-how-sse').style.display    = isSSE ? 'block' : 'none';
-    $('d-how-proxy').style.display  = isSSE ? 'none'  : 'block';
-    $('d-setup-sse').style.display  = isSSE ? 'block' : 'none';
-    $('d-setup-proxy').style.display = isSSE ? 'none' : 'block';
+    const setStyle = (id, val) => { const el = $(id); if (el) el.style.display = val; };
+    setStyle('d-how-sse',    isSSE ? 'block' : 'none');
+    setStyle('d-how-proxy',  isSSE ? 'none'  : 'block');
+    setStyle('d-setup-sse',  isSSE ? 'block' : 'none');
+    setStyle('d-setup-proxy', isSSE ? 'none' : 'block');
 
     d_renderCode(m);
 
-    $('d-toggle').textContent = isOn ? 'Disable' : 'Enable';
-    $('d-reconnect').style.display = (isSSE && !conn && !isDemo) ? 'inline-flex' : 'none';
+    if ($('d-toggle')) $('d-toggle').textContent = isOn ? 'Disable' : 'Enable';
+    setStyle('d-reconnect', (isSSE && !conn && !isDemo) ? 'inline-flex' : 'none');
 
     ['d-toggle', 'd-reconnect', 'd-test-btn'].forEach(id => {
         const el = $(id);
