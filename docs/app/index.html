@@ -555,8 +555,8 @@ body::before {
   background: rgba(180,83,9,.15); color: #b45309;
   border: 1px solid rgba(180,83,9,.4);
 }
-.model-card.is-demo { position: relative; opacity: .92; border-style: dashed; }
-.model-card.is-demo:hover { border-color: var(--border-hover); }
+.model-card.is-demo { position: relative; opacity: .65; border-style: dashed; }
+.model-card.is-demo:hover { border-color: var(--border-hover); opacity: .85; }
 
 .setup-pill {
   display: inline-flex; align-items: center; gap: 6px;
@@ -3716,20 +3716,20 @@ function renderDashHeader() {
     orgEl.textContent = orgName;
 
     // Rights badge · derive from layer + subscription expiry
-    let yearsLeft = null;
+    let expiryDate = null;
     if (currentUser.subscription && currentUser.subscription.expires_at) {
         const expires = new Date(currentUser.subscription.expires_at);
-        const diffMs = expires.getTime() - Date.now();
-        if (!isNaN(diffMs) && diffMs > 0) {
-            yearsLeft = diffMs / (1000 * 60 * 60 * 24 * 365.25);
+        if (!isNaN(expires.getTime()) && expires.getTime() > Date.now()) {
+            expiryDate = expires;
         }
     }
-    const yLabel = (() => {
-        if (yearsLeft == null) return '—';
-        if (yearsLeft >= 1) return Math.floor(yearsLeft) + 'y';
-        const months = Math.max(1, Math.round(yearsLeft * 12));
-        return months + 'mo';
-    })();
+    const yLabel = expiryDate
+        ? expiryDate.toLocaleDateString(undefined, { month: 'short', year: 'numeric' })
+        : '∞';
+    const tooltipExp = expiryDate
+        ? 'Active tier rights · expires ' + expiryDate.toLocaleDateString()
+        : 'Active tier rights · no expiry';
+    rightsEl.title = tooltipExp;
 
     let rightsHtml = '';
     if (layer === 'open' || !layer) {
@@ -4422,11 +4422,11 @@ function renderModelCard(m) {
     const certColor = (cert === 'verified' || cert === 'active') ? 'var(--accent)' : 'var(--text-faint)';
     const certPill = '<span class="mc-cert" style="font-size:9.5px;padding:3px 9px;color:' + certColor + ';border-color:' + (certColor === 'var(--accent)' ? 'var(--accent-border)' : 'var(--border-hover)') + ';background:transparent">' + (certMap[cert] || 'Inactive') + '</span>';
 
-    const setupPill = setup.complete
+    const isLegacyProxy = !isDemo && channel === 'proxy';
+    const setupPill = (setup.complete || isLegacyProxy || isDemo)
         ? ''
         : '<span class="setup-pill warn">Setup incomplete</span>';
 
-    const isLegacyProxy = !isDemo && channel === 'proxy';
     const legacyPill = isLegacyProxy
         ? '<span class="setup-pill warn" style="border-style:dashed">Legacy · re-register as SSE</span>'
         : '';
@@ -4665,20 +4665,25 @@ async function loadDetailHistory(modelId) {
     if (!el) return;
     el.innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:var(--text-muted);padding:14px;text-align:center">Loading…</div>';
     try {
-        const res = await fetch(`${API_BASE}/v1/models/${modelId}/history`, { headers: { 'x-api-key': apiKey } });
+        const res = await fetch(`${API_BASE}/v1/models/${modelId}/history?n=50`, { headers: { 'x-api-key': apiKey } });
         const data = await res.json().catch(() => ({}));
-        const items = data.history || data.evaluations || [];
+        // Backend returns: { model_id, points: [{score, ts}], alert: {...}|null }
+        const items = data.points || data.history || data.evaluations || [];
         if (!items.length) {
-            el.innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:var(--text-muted);padding:14px;text-align:center;border:1px dashed var(--border);border-radius:3px">No evaluations yet</div>';
+            el.innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:var(--text-muted);padding:14px;text-align:center">No evaluations yet</div>';
             return;
         }
-        let html = '<table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="border-bottom:1px solid var(--border);font-family:var(--mono);font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-faint)">';
-        html += '<th style="text-align:left;padding:8px 10px">Time</th><th style="text-align:right;padding:8px 10px">Score</th><th style="text-align:right;padding:8px 10px">Grade</th><th style="text-align:left;padding:8px 10px">Proof</th></tr></thead><tbody>';
-        items.slice(0, 50).forEach(ev => {
-            const ts = ev.submitted_at || ev.created_at || ev.timestamp;
-            const scoreV = (ev.risk_score != null) ? Number(ev.risk_score).toFixed(2) : (ev.score != null ? Number(ev.score).toFixed(2) : '—');
-            const proof = ev.proof_hash ? ev.proof_hash.slice(0, 12) + '…' : '—';
-            html += '<tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 10px;color:var(--text-muted);font-family:var(--mono);font-size:11px">' + (ts ? new Date(ts).toLocaleString() : '—') + '</td><td style="padding:8px 10px;text-align:right;color:var(--text)">' + scoreV + '</td><td style="padding:8px 10px;text-align:right;color:var(--text-secondary);font-family:var(--mono)">' + escHtml(ev.grade || '—') + '</td><td style="padding:8px 10px;font-family:var(--mono);font-size:11px;color:var(--text-faint)">' + escHtml(proof) + '</td></tr>';
+        let alertHtml = '';
+        if (data.alert && data.alert.type === 'degradation') {
+            alertHtml = '<div style="padding:10px 12px;margin-bottom:12px;background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.4);border-radius:3px;font-size:12px;color:#dc2626"><strong>Degradation alert</strong> · last 5 avg ' + data.alert.last5 + ' vs previous 5 avg ' + data.alert.prev5 + ' (Δ ' + data.alert.delta + ')</div>';
+        }
+        let html = alertHtml + '<table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="border-bottom:1px solid var(--border);font-family:var(--mono);font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-faint)">';
+        html += '<th style="text-align:left;padding:8px 10px">Time</th><th style="text-align:right;padding:8px 10px">Risk score</th></tr></thead><tbody>';
+        items.slice().reverse().forEach(ev => {
+            const ts = ev.ts || ev.submitted_at || ev.created_at || ev.timestamp;
+            const scoreV = (ev.score != null) ? Number(ev.score).toFixed(3) : (ev.risk_score != null ? Number(ev.risk_score).toFixed(3) : '—');
+            const colored = (ev.score != null && ev.score < 0.3) ? 'var(--accent)' : (ev.score != null && ev.score > 0.7 ? '#dc2626' : 'var(--text)');
+            html += '<tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 10px;color:var(--text-muted);font-family:var(--mono);font-size:11px">' + (ts ? new Date(ts).toLocaleString() : '—') + '</td><td style="padding:8px 10px;text-align:right;color:' + colored + ';font-family:var(--mono);font-weight:600">' + scoreV + '</td></tr>';
         });
         html += '</tbody></table>';
         el.innerHTML = html;
@@ -4883,20 +4888,17 @@ function renderBusinessConsumerView(subs) {
     list.innerHTML = html;
 }
 
-// === Context detection · 4 states (no-rights / business / onboarding / provider) ===
+// === Context detection · 3 states (no-rights / onboarding / provider) ===
+// Note: Business consumer view (CTX-B) requires subscribed_models endpoint · backend pending
 function detectContext(models) {
     const u = currentUser || {};
     const layer = (u.layer || 'open').toLowerCase();
     const hasModels = (models || []).length > 0;
-    const subs = (u.subscribed_models || []);
-    const hasSubs = subs.length > 0;
     const isProviderTier = layer === 'provider' || layer === 'white_label';
-    const isPaidConsumer = (layer === 'standard' || isProviderTier) && hasSubs;
 
     if (hasModels) return 'D';                    // Provider with models
     if (isProviderTier && !hasModels) return 'C'; // Provider rights, no models yet
-    if (isPaidConsumer) return 'B';               // Business consumer
-    return 'A';                                    // Open / Standard no subs / no rights
+    return 'A';                                    // Open / Standard / no rights
 }
 
 function showContext(ctx) {
