@@ -1951,9 +1951,32 @@ a.info-val:hover { color: var(--text); }
             <div id="ctx-c-onboarding" style="display:none">
                 <div style="padding:36px 32px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;margin-bottom:18px">
                     <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);font-family:var(--mono);font-weight:600;margin-bottom:10px">Provider rights · active</div>
-                    <h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0 0 10px;letter-spacing:-.4px">Register your first model</h2>
-                    <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;margin:0 0 22px;max-width:640px">SSE streaming attestation · your server posts heartbeats and pulls the GOLD corpus · ONTO is not in your inference path · zero cost on your provider key.</p>
-                    <button class="btn btn-primary" onclick="openProviderAdd()" style="width:auto;min-width:140px;padding:11px 20px;min-height:auto;font-size:13px">+ Register a model</button>
+                    <h2 style="font-size:26px;font-weight:700;color:var(--text);margin:0 0 8px;letter-spacing:-.5px">Welcome · let's get your first model online</h2>
+                    <p style="font-size:14px;color:var(--text-muted);line-height:1.6;margin:0 0 24px;max-width:680px">In 60 seconds you'll have a model registered, your provider key validated, and integration code ready to paste.</p>
+
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px">
+
+                        <div style="padding:18px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:4px">
+                            <div style="font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:1.4px;color:var(--accent);margin-bottom:8px">STEP 1 · 30 SEC</div>
+                            <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px">Register your model</div>
+                            <div style="font-size:12px;color:var(--text-muted);line-height:1.55">Display name · provider · API key. We store the key encrypted (AES-256) on Postgres.</div>
+                        </div>
+
+                        <div style="padding:18px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:4px">
+                            <div style="font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:1.4px;color:var(--accent);margin-bottom:8px">STEP 2 · 30 SEC</div>
+                            <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px">Confirm key works</div>
+                            <div style="font-size:12px;color:var(--text-muted);line-height:1.55">One test message goes through GOLD to your model. You see score · grade · what GOLD does.</div>
+                        </div>
+
+                        <div style="padding:18px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:4px">
+                            <div style="font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:1.4px;color:var(--accent);margin-bottom:8px">STEP 3 · LIVE</div>
+                            <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px">Point production traffic</div>
+                            <div style="font-size:12px;color:var(--text-muted);line-height:1.55">Change <code style="font-family:var(--mono);background:var(--bg);padding:1px 5px;border-radius:2px;color:var(--accent);font-size:11px">base_url</code> in your app. Each call signed (Ed25519) · attestation begins.</div>
+                        </div>
+
+                    </div>
+
+                    <button class="btn btn-primary" onclick="openProviderAdd()" style="width:auto;min-width:200px;padding:13px 24px;min-height:auto;font-size:13px">Start · Register a model</button>
                 </div>
                 <div style="font-size:11px;color:var(--text-muted);font-family:var(--mono);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:12px;font-weight:600">Preview · what an active model looks like</div>
                 <div id="ctx-c-demo-slot"></div>
@@ -3031,8 +3054,8 @@ client = OpenAI(
         <div class="pv-mbody">
             <div class="pv-field">
                 <label>Display name</label>
-                <input type="text" id="pv-add-name" placeholder="e.g. GLM-5.1" autocomplete="off">
-                <div class="help">Shown on your dashboard and in attestation records.</div>
+                <input type="text" id="pv-add-name" placeholder="e.g. Production GLM-5.1" autocomplete="off" oninput="pvAddCheckName()">
+                <div class="help" id="pv-add-name-help">Shown on your dashboard and in attestation records · must be unique.</div>
             </div>
             <div class="pv-field">
                 <label>Provider</label>
@@ -4967,6 +4990,29 @@ function openProviderAdd() {
 function closeProviderAdd() {
     document.getElementById('pv-add-overlay').classList.remove('active');
 }
+function pvAddCheckName() {
+    const input = document.getElementById('pv-add-name');
+    const help = document.getElementById('pv-add-name-help');
+    if (!input || !help) return;
+    const name = input.value.trim().toLowerCase();
+    if (!name) {
+        help.innerHTML = 'Shown on your dashboard and in attestation records · must be unique.';
+        help.style.color = '';
+        input.classList.remove('invalid');
+        return;
+    }
+    const existing = (window._lastModels || []).find(m => (m.name || '').toLowerCase() === name);
+    if (existing) {
+        const suggested = input.value.trim() + '-prod';
+        help.innerHTML = '<span style="color:#dc2626">"' + escHtml(input.value.trim()) + '" already registered.</span> Try <code style="font-family:var(--mono);background:var(--bg-secondary);padding:1px 5px;border-radius:2px;color:var(--accent);font-size:11px;cursor:pointer" onclick="document.getElementById(\'pv-add-name\').value=\'' + escHtml(suggested) + '\';pvAddCheckName()">' + escHtml(suggested) + '</code>';
+        input.classList.add('invalid');
+    } else {
+        help.innerHTML = '<span style="color:var(--accent)">✓ Available</span>';
+        help.style.color = '';
+        input.classList.remove('invalid');
+    }
+}
+
 function pvAddSetChannel(ch, btn) {
     // Channel is locked to SSE — kept as no-op for backward compat
     document.getElementById('pv-add-overlay').dataset.channel = ch || 'sse';
