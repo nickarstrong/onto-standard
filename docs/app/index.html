@@ -1885,25 +1885,81 @@ a.info-val:hover { color: var(--text); }
         <!-- ========== AUDIT PAGE ========== -->
         <div class="page active" id="page-monitor">
 
-            <!-- KPI strip -->
-            <div class="kpi-strip" id="kpi-strip">
-                <div class="kpi"><div class="l">Total signals today</div><div class="v" id="kpi-signals">—</div></div>
-                <div class="kpi"><div class="l">Active models</div><div class="v" id="kpi-active">—<small id="kpi-active-of"></small></div></div>
-                <div class="kpi"><div class="l">Avg score</div><div class="v" id="kpi-score">—</div></div>
-                <div class="kpi"><div class="l">Verified</div><div class="v" id="kpi-verified">—<small>%</small></div></div>
+            <!-- ============ CTX-A · NO RIGHTS / Open / Standard (no models, no subscribed) ============ -->
+            <div id="ctx-a-norights" style="display:none">
+                <div style="padding:36px 32px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;margin-bottom:18px">
+                    <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-faint);font-family:var(--mono);font-weight:600;margin-bottom:10px">Welcome to ONTO</div>
+                    <h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0 0 10px;letter-spacing:-.4px">No tier rights yet</h2>
+                    <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;margin:0 0 22px;max-width:640px">Acquire rights to register your AI models for continuous attestation, or subscribe to verified third-party models.</p>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap">
+                        <a class="btn btn-primary" href="/billing/" style="text-decoration:none;width:auto;min-width:140px;padding:11px 20px;min-height:auto;font-size:13px">Acquire tier rights</a>
+                        <a class="btn-mini" href="/agent/" target="_blank" style="text-decoration:none">Try ONTO scoring with your own keys → /agent/</a>
+                    </div>
+                </div>
+                <div style="font-size:11px;color:var(--text-muted);font-family:var(--mono);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:12px;font-weight:600">Preview · what providers see</div>
+                <div id="ctx-a-demo-slot"></div>
             </div>
 
-            <!-- My Models header -->
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px">
-                <div style="font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-secondary)">My Models</div>
-                <button class="btn-mini" onclick="openProviderAdd()" style="background:var(--accent-subtle);color:var(--accent);border-color:var(--accent-border)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                    Register a model
-                </button>
+            <!-- ============ CTX-B · BUSINESS CONSUMER (has subscribed_models, no own models) ============ -->
+            <div id="ctx-b-business" style="display:none">
+                <div style="display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:3px;background:rgba(180,83,9,.15);color:#b45309;border:1px solid rgba(180,83,9,.4);margin-bottom:14px">TEST · backend pending</div>
+
+                <div class="kpi-strip">
+                    <div class="kpi"><div class="l">Subscribed models</div><div class="v" id="bz-subs">—</div></div>
+                    <div class="kpi"><div class="l">Requests today</div><div class="v" id="bz-req">—</div></div>
+                    <div class="kpi"><div class="l">Quota used</div><div class="v" id="bz-quota">—<small>%</small></div></div>
+                    <div class="kpi"><div class="l">Avg score</div><div class="v" id="bz-score">—</div></div>
+                </div>
+
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px">
+                    <div style="font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-secondary)">Subscribed Models</div>
+                </div>
+                <div id="bz-models-list">
+                    <div class="mc-empty">No subscribed models yet</div>
+                </div>
             </div>
 
-            <div id="models-list">
-                <div class="mc-empty">No models registered yet</div>
+            <!-- ============ CTX-C · PROVIDER · 0 models (rights bought, onboarding) ============ -->
+            <div id="ctx-c-onboarding" style="display:none">
+                <div style="padding:36px 32px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;margin-bottom:18px">
+                    <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);font-family:var(--mono);font-weight:600;margin-bottom:10px">Provider rights · active</div>
+                    <h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0 0 10px;letter-spacing:-.4px">Register your first model</h2>
+                    <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;margin:0 0 22px;max-width:640px">SSE streaming attestation · your server posts heartbeats and pulls the GOLD corpus · ONTO is not in your inference path · zero cost on your provider key.</p>
+                    <button class="btn btn-primary" onclick="openProviderAdd()" style="width:auto;min-width:140px;padding:11px 20px;min-height:auto;font-size:13px">+ Register a model</button>
+                </div>
+                <div style="font-size:11px;color:var(--text-muted);font-family:var(--mono);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:12px;font-weight:600">Preview · what an active model looks like</div>
+                <div id="ctx-c-demo-slot"></div>
+            </div>
+
+            <!-- ============ CTX-D · PROVIDER · has models (full console) ============ -->
+            <div id="ctx-d-provider" style="display:none">
+                <div class="kpi-strip">
+                    <div class="kpi"><div class="l">Total signals today</div><div class="v" id="kpi-signals">—</div></div>
+                    <div class="kpi"><div class="l">Active models</div><div class="v" id="kpi-active">—</div></div>
+                    <div class="kpi"><div class="l">Avg score</div><div class="v" id="kpi-score">—</div></div>
+                    <div class="kpi"><div class="l">Verified</div><div class="v" id="kpi-verified">—<small>%</small></div></div>
+                </div>
+
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px">
+                    <div style="font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-secondary)">My Models</div>
+                    <button class="btn-mini" onclick="openProviderAdd()" style="background:var(--accent-subtle);color:var(--accent);border-color:var(--accent-border)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Register a model
+                    </button>
+                </div>
+
+                <div id="models-list">
+                    <div class="mc-empty">No models registered yet</div>
+                </div>
+
+                <!-- Subscribed models block · only if both provider AND consumer -->
+                <div id="ctx-d-subs-block" style="display:none;margin-top:32px">
+                    <div style="display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:3px;background:rgba(180,83,9,.15);color:#b45309;border:1px solid rgba(180,83,9,.4);margin-bottom:10px">TEST · backend pending</div>
+                    <div style="font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:14px">Subscribed Models</div>
+                    <div id="ctx-d-subs-list">
+                        <div class="mc-empty">No subscribed models</div>
+                    </div>
+                </div>
             </div>
 
             <div style="margin-top:42px;padding-top:18px;border-top:1px solid var(--border);font-family:var(--mono);font-size:10.5px;color:var(--text-faint);letter-spacing:1.4px;text-transform:uppercase;text-align:center;font-weight:600">
@@ -4799,6 +4855,60 @@ function togglePvPassword(inputId) {
 let _pvCurrentModel = null;
 
 
+// === Business consumer view (TEST · backend pending) ===
+function renderBusinessConsumerView(subs) {
+    subs = subs || [];
+    const $ = id => document.getElementById(id);
+    const total = subs.length;
+    const totalReq = subs.reduce((a, s) => a + (s.requests_today || 0), 0);
+    const quota = subs.reduce((a, s) => a + (s.quota_used_pct || 0), 0) / Math.max(total, 1);
+    const scored = subs.filter(s => s.avg_score != null);
+    const avgScore = scored.length ? (scored.reduce((a, s) => a + s.avg_score, 0) / scored.length).toFixed(2) : '—';
+
+    if ($('bz-subs')) $('bz-subs').textContent = total || '—';
+    if ($('bz-req')) $('bz-req').textContent = totalReq || '—';
+    if ($('bz-quota')) $('bz-quota').innerHTML = (total ? Math.round(quota) : '—') + '<small>%</small>';
+    if ($('bz-score')) $('bz-score').textContent = avgScore;
+
+    const list = $('bz-models-list');
+    if (!list) return;
+    if (!subs.length) {
+        list.innerHTML = '<div class="mc-empty">No subscribed models · backend integration pending</div>';
+        return;
+    }
+    let html = '';
+    for (const s of subs) {
+        html += '<div class="model-card" style="margin-bottom:10px"><div style="display:flex;align-items:flex-start;gap:14px"><div style="flex:1"><div style="font-size:15px;font-weight:600;color:var(--text)">' + escHtml(s.name || '—') + '</div><div style="font-size:12px;color:var(--text-muted);margin-top:4px">' + (s.requests_today || 0) + ' requests today · ' + Math.round(s.quota_used_pct || 0) + '% quota</div></div></div></div>';
+    }
+    list.innerHTML = html;
+}
+
+// === Context detection · 4 states (no-rights / business / onboarding / provider) ===
+function detectContext(models) {
+    const u = currentUser || {};
+    const layer = (u.layer || 'open').toLowerCase();
+    const hasModels = (models || []).length > 0;
+    const subs = (u.subscribed_models || []);
+    const hasSubs = subs.length > 0;
+    const isProviderTier = layer === 'provider' || layer === 'white_label';
+    const isPaidConsumer = (layer === 'standard' || isProviderTier) && hasSubs;
+
+    if (hasModels) return 'D';                    // Provider with models
+    if (isProviderTier && !hasModels) return 'C'; // Provider rights, no models yet
+    if (isPaidConsumer) return 'B';               // Business consumer
+    return 'A';                                    // Open / Standard no subs / no rights
+}
+
+function showContext(ctx) {
+    ['ctx-a-norights', 'ctx-b-business', 'ctx-c-onboarding', 'ctx-d-provider'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
+    const map = { A: 'ctx-a-norights', B: 'ctx-b-business', C: 'ctx-c-onboarding', D: 'ctx-d-provider' };
+    const target = document.getElementById(map[ctx]);
+    if (target) target.style.display = 'block';
+}
+
 async function loadModels() {
     const apiKey = localStorage.getItem('onto_first_api_key');
     if (!apiKey) return;
@@ -4807,18 +4917,36 @@ async function loadModels() {
         const res = await fetch(`${API_BASE}/v1/models`, { headers: { 'x-api-key': apiKey } });
         const data = await res.json();
         window._lastModels = data.models || [];
+        const ctx = detectContext(window._lastModels);
+        showContext(ctx);
+
+        // Empty-context preview demo cards (CTX-A and CTX-C show DEMO as preview)
+        if (ctx === 'A') {
+            const slot = document.getElementById('ctx-a-demo-slot');
+            if (slot) slot.innerHTML = renderModelCard(DEMO_MODEL);
+            return;
+        }
+        if (ctx === 'C') {
+            const slot = document.getElementById('ctx-c-demo-slot');
+            if (slot) slot.innerHTML = renderModelCard(DEMO_MODEL);
+            return;
+        }
+        if (ctx === 'B') {
+            renderBusinessConsumerView(currentUser?.subscribed_models || []);
+            return;
+        }
+
+        // CTX-D · Provider with models
         const list = document.getElementById('models-list');
         const testSelect = document.getElementById('test-model-select');
 
-        // KPI compute
         renderKPI(window._lastModels);
 
-        // Render: demo (if not hidden) + real models
         let listHtml = '';
         if (!isDemoHidden()) listHtml += renderModelCard(DEMO_MODEL);
 
         if (!data.models || data.models.length === 0) {
-            if (list) list.innerHTML = listHtml + '<div class="mc-empty">No models registered yet · click Register a model to add your first</div>';
+            if (list) list.innerHTML = listHtml + '<div class="mc-empty">No models registered yet</div>';
             return;
         }
 
