@@ -28,6 +28,8 @@
   .toggle{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:3px;cursor:pointer;user-select:none}
   .toggle.on{border-color:var(--accent);color:var(--accent)}
   .toggle.on .led{background:var(--accent);box-shadow:0 0 6px var(--accent)}
+  .toggle.fresh.on{border-color:var(--raw);color:var(--raw)}
+  .toggle.fresh.on .led{background:var(--raw);box-shadow:0 0 6px var(--raw)}
   .led{width:8px;height:8px;border-radius:50%;background:var(--muted)}
   .status{display:flex;align-items:center;gap:6px}
   .status .pulse{width:8px;height:8px;border-radius:50%;background:var(--muted);transition:.2s}
@@ -75,6 +77,7 @@
   .ind{font-family:var(--mono);font-size:10px;padding:3px 6px;border-radius:3px;background:var(--card);border:1px solid var(--border);color:var(--muted);letter-spacing:.5px}
   .ind.r17{border-color:var(--raw);color:var(--raw)}
   .ind.r18{border-color:var(--accent);color:var(--accent)}
+  .ind.fab{border-color:var(--danger);color:var(--danger)}
   .apoptosis{margin-top:8px;background:#7f1d1d;border:1px solid var(--danger);border-radius:3px;padding:8px 10px;font-family:var(--mono);font-size:11px;color:#fff;letter-spacing:.5px}
 
   /* VS compare */
@@ -128,7 +131,6 @@
   #drop-overlay.active{display:flex}
   #drop-overlay span{font-family:var(--mono);font-size:18px;font-weight:700;letter-spacing:2px;color:var(--accent);text-transform:uppercase}
 
-  /* API key warning banner */
   .auth-banner{background:#7f1d1d;border-bottom:1px solid var(--danger);padding:8px 20px;font-family:var(--mono);font-size:11px;color:#fff;letter-spacing:.5px;text-align:center}
   .auth-banner a{color:#fff;text-decoration:underline}
 </style>
@@ -142,15 +144,18 @@
 <header>
   <div class="logo"><span class="dot"></span><span class="brand">ONTO LAB</span></div>
   <div class="meta">
-    <select class="sel" id="model-sel" title="Active model"></select>
-    <span class="toggle on" id="gold-toggle" onclick="toggleGold()" title="GOLD discipline ON/OFF (single Send)">
+    <select class="sel" id="model-sel" title="Active model · changing model auto-clears history"></select>
+    <span class="toggle on" id="gold-toggle" onclick="toggleGold()" title="GOLD discipline ON/OFF (Send button)">
       <span class="led"></span><span id="gold-label">GOLD ON</span>
+    </span>
+    <span class="toggle on fresh" id="fresh-toggle" onclick="toggleFresh()" title="Fresh mode: each query sent without prior chat history (recommended for benchmarks)">
+      <span class="led"></span><span id="fresh-label">FRESH ON</span>
     </span>
     <select class="sel" id="mode-sel" title="Mode">
       <option value="experimenter">Experimenter</option>
       <option value="agent">Agent</option>
     </select>
-    <span class="status" id="status"><span class="pulse"></span><span id="status-text">checking</span></span>
+    <span class="status" id="status"><span class="pulse"></span><span id="status-text">idle</span></span>
     <button class="icon" onclick="clearChat()">Clear</button>
   </div>
 </header>
@@ -164,7 +169,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
     </button>
     <input type="file" id="file-input" multiple accept=".txt,.md,.json,.csv,.tsv,.py,.js,.ts,.html,.css,.yaml,.yml,.xml,.log,.pdf,.docx" style="display:none">
-    <textarea id="input" placeholder="Спроси Qwen с дисциплиной R1-R18… (Enter to send · Shift+Enter for newline)" rows="2"></textarea>
+    <textarea id="input" placeholder="Ask… (Enter to send · Shift+Enter for newline · drop files anywhere)" rows="2"></textarea>
     <button class="btn vs-btn" id="vs-btn" onclick="vsCompare()" title="RAW vs GOLD parallel">VS</button>
     <button class="btn send" id="send" onclick="send()">Send</button>
   </div>
@@ -178,20 +183,29 @@
 <div id="drop-overlay"><span>Drop to attach</span></div>
 
 <script>
-// ── CONFIG ──────────────────────────────────────────────────────────────
 const NGROK = 'https://pamphlet-whimsical-armed.ngrok-free.dev/v1';
 const ONTO_API = 'https://api.ontostandard.org';
 const STORAGE_KEY = 'onto_lab_history';
 const MODEL_KEY = 'onto_lab_model';
 const GOLD_KEY = 'onto_lab_gold';
+const FRESH_KEY = 'onto_lab_fresh';
 const MODE_KEY = 'onto_lab_mode';
 const MAX_FILE_CHARS = 80000;
+
+const MODELS = [
+  'qwen2.5:7b-instruct-q4_K_M',
+  'qwen2.5:14b-instruct-q4_K_M',
+  'deepseek-r1:7b',
+  'deepseek-r1:14b',
+  'mistral:7b-instruct-q4_K_M',
+  'gemma2:9b-instruct-q4_K_M',
+  'phi4:14b-q4_K_M'
+];
 
 if (window['pdfjsLib']) {
   pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 }
 
-// ── DOM ─────────────────────────────────────────────────────────────────
 const chat = document.getElementById('chat');
 const input = document.getElementById('input');
 const sendBtn = document.getElementById('send');
@@ -202,27 +216,27 @@ const modelSel = document.getElementById('model-sel');
 const modeSel = document.getElementById('mode-sel');
 const goldToggle = document.getElementById('gold-toggle');
 const goldLabel = document.getElementById('gold-label');
+const freshToggle = document.getElementById('fresh-toggle');
+const freshLabel = document.getElementById('fresh-label');
 const chipsEl = document.getElementById('chips');
 const fileInput = document.getElementById('file-input');
 const dropOverlay = document.getElementById('drop-overlay');
 const authBanner = document.getElementById('auth-banner');
 
-// ── STATE ───────────────────────────────────────────────────────────────
 let history = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
 let attached = [];
 let goldOn = localStorage.getItem(GOLD_KEY) !== '0';
+let freshOn = localStorage.getItem(FRESH_KEY) !== '0';  // default ON
 modeSel.value = localStorage.getItem(MODE_KEY) || 'experimenter';
 modeSel.addEventListener('change', () => localStorage.setItem(MODE_KEY, modeSel.value));
 
 function getApiKey(){ return localStorage.getItem('onto_first_api_key') || ''; }
 function refreshAuthBanner(){ authBanner.style.display = getApiKey() ? 'none' : 'block'; }
 
-// ── PERSIST ─────────────────────────────────────────────────────────────
 function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(history)); updateCount(); }
 function updateCount(){ document.getElementById('msg-count').textContent = history.length + ' messages'; }
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-// ── GOLD TOGGLE ─────────────────────────────────────────────────────────
 function setGold(on){
   goldOn = on;
   localStorage.setItem(GOLD_KEY, on ? '1' : '0');
@@ -232,15 +246,25 @@ function setGold(on){
 function toggleGold(){ setGold(!goldOn); }
 setGold(goldOn);
 
-// ── RENDER ──────────────────────────────────────────────────────────────
+function setFresh(on){
+  freshOn = on;
+  localStorage.setItem(FRESH_KEY, on ? '1' : '0');
+  freshToggle.classList.toggle('on', on);
+  freshLabel.textContent = on ? 'FRESH ON' : 'FRESH OFF';
+}
+function toggleFresh(){ setFresh(!freshOn); }
+setFresh(freshOn);
+
+function setStatus(ok){
+  statusEl.className = 'status ' + (ok ? 'ok' : 'err');
+  statusTxt.textContent = ok ? 'online' : 'error';
+}
+
 function render(){
   chat.innerHTML = '';
   history.forEach(h => {
-    if (h.kind === 'vs'){
-      renderVsBlock(h, false);
-    } else {
-      renderMsg(h, false);
-    }
+    if (h.kind === 'vs') renderVsBlock(h, false);
+    else renderMsg(h, false);
   });
   chat.scrollTop = chat.scrollHeight;
 }
@@ -273,56 +297,40 @@ function buildScore(score, apoptosis){
     <span class="grade ${cls}">Grade ${cls} · ${grade}/10</span>
     <span class="score-meta">R1-R7 measured · R17/R18 embedded</span>
   </div>`;
-
   const m = score.metrics || {};
   const rk = ['R1','R2','R3','R4','R5','R6','R7'].filter(k => m[k] != null);
   if (rk.length){
     html += '<div class="bars">';
     for (const k of rk){
       const v = m[k];
-      const cls = v < 0.3 ? 'low' : v < 0.6 ? 'mid' : '';
-      html += `<div class="bar ${cls}"><div class="bar-head"><span class="k">${k}</span><span class="v">${(v*100).toFixed(0)}%</span></div><div class="bar-track"><div class="bar-fill" style="width:${(v*100).toFixed(0)}%"></div></div></div>`;
+      const cls2 = v < 0.3 ? 'low' : v < 0.6 ? 'mid' : '';
+      html += `<div class="bar ${cls2}"><div class="bar-head"><span class="k">${k}</span><span class="v">${(v*100).toFixed(0)}%</span></div><div class="bar-track"><div class="bar-fill" style="width:${(v*100).toFixed(0)}%"></div></div></div>`;
     }
     html += '</div>';
   }
-
   const flags = score.r17_flags || [];
   const ir = score.r18_intron_ratio || 0;
   const ic = score.r18_intron_count || 0;
-  if (flags.length || ir > 0.3){
+  const fab = score.fabrication_suspected || (score.factors && score.factors.r4_sources && score.factors.r4_sources.fabrication_suspected);
+  if (flags.length || ir > 0.3 || fab){
     html += '<div class="indicators">';
-    flags.forEach(f => {
-      html += `<span class="ind r17">${escapeHtml(f.slice(0,60))}</span>`;
-    });
-    if (ir > 0.3){
-      html += `<span class="ind r18">R18 · ${ic} intron${ic===1?'':'s'} · ${(ir*100).toFixed(0)}%</span>`;
-    }
+    flags.forEach(f => html += `<span class="ind r17">${escapeHtml(f.slice(0,60))}</span>`);
+    if (ir > 0.3) html += `<span class="ind r18">R18 · ${ic} intron${ic===1?'':'s'} · ${(ir*100).toFixed(0)}%</span>`;
+    if (fab) html += `<span class="ind fab">⚠ DOI fabrication suspected</span>`;
     html += '</div>';
   }
-
   if (apoptosis && apoptosis.triggered){
     html += `<div class="apoptosis">⚠ APOPTOSIS · ${escapeHtml(apoptosis.reason || 'C8 frameshift')}</div>`;
   }
-
   wrap.innerHTML = html;
   return wrap;
 }
 
-function clearChat(){
-  if (!confirm('Clear all history?')) return;
+function clearChat(silent=false){
+  if (!silent && !confirm('Clear all history?')) return;
   history = []; save(); render();
 }
 
-// ── MODELS (hardcoded · ngrok CORS blocks browser) ──────────────────────
-const MODELS = [
-  'qwen2.5:7b-instruct-q4_K_M',
-  'qwen2.5:14b-instruct-q4_K_M',
-  'deepseek-r1:7b',
-  'deepseek-r1:14b',
-  'mistral:7b-instruct-q4_K_M',
-  'gemma2:9b-instruct-q4_K_M',
-  'phi4:14b-q4_K_M'
-];
 function loadModels(){
   modelSel.innerHTML = '';
   MODELS.forEach(id => {
@@ -332,22 +340,17 @@ function loadModels(){
   });
   const saved = localStorage.getItem(MODEL_KEY);
   if (saved && MODELS.includes(saved)) modelSel.value = saved;
-  // Status determined by first /v1/agent/chat call
   statusEl.className = 'status';
   statusTxt.textContent = 'idle';
 }
-modelSel.addEventListener('change', () => localStorage.setItem(MODEL_KEY, modelSel.value));
-
-function setStatus(ok){
-  statusEl.className = 'status ' + (ok ? 'ok' : 'err');
-  statusTxt.textContent = ok ? 'online' : 'error';
-}
-
-// ── FILES ───────────────────────────────────────────────────────────────
-fileInput.addEventListener('change', e => {
-  for (const f of e.target.files) attachFile(f);
-  fileInput.value = '';
+modelSel.addEventListener('change', () => {
+  localStorage.setItem(MODEL_KEY, modelSel.value);
+  document.getElementById('last-stats').textContent = `model: ${modelSel.value}`;
+  // History kept on screen (for export/screenshots).
+  // Backend isolation handled by FRESH toggle.
 });
+
+fileInput.addEventListener('change', e => { for (const f of e.target.files) attachFile(f); fileInput.value = ''; });
 
 function renderChips(){
   chipsEl.innerHTML = '';
@@ -360,17 +363,11 @@ function renderChips(){
 }
 function removeAttached(i){ attached.splice(i, 1); renderChips(); }
 window.removeAttached = removeAttached;
-
-function formatSize(n){
-  if (n < 1024) return n + 'B';
-  if (n < 1024*1024) return (n/1024).toFixed(1) + 'KB';
-  return (n/1024/1024).toFixed(1) + 'MB';
-}
+function formatSize(n){ if (n<1024) return n+'B'; if (n<1024*1024) return (n/1024).toFixed(1)+'KB'; return (n/1024/1024).toFixed(1)+'MB'; }
 
 async function attachFile(file){
   const entry = { name: file.name, size: file.size, content: '', parsing: true, error: null };
-  attached.push(entry);
-  renderChips();
+  attached.push(entry); renderChips();
   try {
     let txt = '';
     const ext = file.name.toLowerCase().split('.').pop();
@@ -378,15 +375,10 @@ async function attachFile(file){
     else if (ext === 'docx') txt = await parseDocx(file);
     else txt = await file.text();
     if (txt.length > MAX_FILE_CHARS) txt = txt.slice(0, MAX_FILE_CHARS) + `\n\n[…truncated · ${txt.length - MAX_FILE_CHARS} more chars]`;
-    entry.content = txt;
-    entry.parsing = false;
-  } catch (e){
-    entry.parsing = false; entry.error = 'parse failed';
-    console.error('attach', file.name, e);
-  }
+    entry.content = txt; entry.parsing = false;
+  } catch (e){ entry.parsing = false; entry.error = 'parse failed'; console.error(e); }
   renderChips();
 }
-
 async function parsePdf(file){
   const buf = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({data: buf}).promise;
@@ -398,14 +390,12 @@ async function parsePdf(file){
   }
   return out.trim();
 }
-
 async function parseDocx(file){
   const buf = await file.arrayBuffer();
   const r = await mammoth.extractRawText({arrayBuffer: buf});
   return r.value;
 }
 
-// ── DRAG-DROP ───────────────────────────────────────────────────────────
 let dragCounter = 0;
 window.addEventListener('dragenter', e => { e.preventDefault(); dragCounter++; if (e.dataTransfer.types.includes('Files')) dropOverlay.classList.add('active'); });
 window.addEventListener('dragleave', e => { e.preventDefault(); dragCounter--; if (dragCounter <= 0) dropOverlay.classList.remove('active'); });
@@ -415,7 +405,6 @@ window.addEventListener('drop', e => {
   for (const f of e.dataTransfer.files) attachFile(f);
 });
 
-// ── BUILD MESSAGE ───────────────────────────────────────────────────────
 function buildMessage(text){
   let prompt = '';
   for (const a of attached){
@@ -427,19 +416,18 @@ function buildMessage(text){
 }
 
 function getPriorHistory(){
-  // For backend: list of {role, content} excluding kind=vs and current msg
+  // Honors FRESH toggle: if ON, send no prior history to backend (clean benchmark).
+  if (freshOn) return [];
   return history
     .filter(h => h.kind !== 'vs' && (h.role === 'user' || h.role === 'assistant'))
     .slice(-20)
     .map(h => ({role: h.role, content: h.content}));
 }
 
-// ── BACKEND CALL ────────────────────────────────────────────────────────
 async function callAgent(message, goldEnabled, history_arr){
   const headers = {'Content-Type': 'application/json'};
   const apiKey = getApiKey();
   if (apiKey) headers['x-api-key'] = apiKey;
-
   const body = {
     message,
     provider_key: 'ollama',
@@ -450,13 +438,7 @@ async function callAgent(message, goldEnabled, history_arr){
     history: history_arr || [],
     language: 'auto'
   };
-
-  const res = await fetch(ONTO_API + '/v1/agent/chat', {
-    method: 'POST',
-    headers,
-    body: JSON.stringify(body)
-  });
-
+  const res = await fetch(ONTO_API + '/v1/agent/chat', {method:'POST', headers, body: JSON.stringify(body)});
   if (!res.ok){
     let detail = `HTTP ${res.status}`;
     try { const j = await res.json(); detail = j.detail || detail; } catch {}
@@ -465,26 +447,21 @@ async function callAgent(message, goldEnabled, history_arr){
   return await res.json();
 }
 
-// ── SEND (single, current GOLD toggle) ──────────────────────────────────
 async function send(){
   const text = input.value.trim();
   if (!text && !attached.length) return;
   if (attached.some(a => a.parsing)){ alert('Wait for file parsing.'); return; }
-
   const fullPrompt = buildMessage(text);
   const fileNames = attached.filter(a => !a.error).map(a => a.name);
 
   input.value = ''; input.style.height = 'auto';
   sendBtn.disabled = true; vsBtn.disabled = true;
 
-  // user msg (display = text only, history stores fullPrompt)
   renderMsg({role:'user', content: text || '(files only)', files: fileNames}, false);
   history.push({role:'user', content: fullPrompt, files: fileNames});
   save();
-
   attached = []; renderChips();
 
-  // assistant placeholder
   const placeholder = document.createElement('div');
   placeholder.className = 'msg assistant';
   const tid = 'tm' + Date.now();
@@ -502,21 +479,12 @@ async function send(){
     const data = await callAgent(fullPrompt, goldOn, getPriorHistory().slice(0, -1));
     clearInterval(tick);
     placeholder.remove();
-
-    const entry = {
-      role:'assistant',
-      content: data.response,
-      gold: data.gold_enabled,
-      score: data.score,
-      apoptosis: data.apoptosis
-    };
+    const entry = { role:'assistant', content: data.response, gold: data.gold_enabled, score: data.score, apoptosis: data.apoptosis };
     renderMsg(entry, true);
-
     const dt = ((performance.now() - t0)/1000).toFixed(1);
-    document.getElementById('last-stats').textContent = `${dt}s · ${data.score?.compliance_class || '?'} · ${data.score?.grade || '?'}/10 · ${modelSel.value}`;
+    document.getElementById('last-stats').textContent = `${dt}s · ${data.score?.compliance_class || '?'} · ${data.score?.grade || '?'}/10 · ${modelSel.value}${freshOn?' · fresh':''}`;
     if (data.remaining_today != null) document.getElementById('quota').textContent = `${data.remaining_today}/day remaining`;
     setStatus(true);
-
   } catch (e){
     clearInterval(tick);
     placeholder.remove();
@@ -528,12 +496,10 @@ async function send(){
   }
 }
 
-// ── VS COMPARE (RAW || GOLD parallel) ───────────────────────────────────
 async function vsCompare(){
   const text = input.value.trim();
   if (!text && !attached.length) return;
   if (attached.some(a => a.parsing)){ alert('Wait for file parsing.'); return; }
-
   const fullPrompt = buildMessage(text);
   const fileNames = attached.filter(a => !a.error).map(a => a.name);
 
@@ -543,15 +509,13 @@ async function vsCompare(){
   renderMsg({role:'user', content: text || '(files only)', files: fileNames}, false);
   history.push({role:'user', content: fullPrompt, files: fileNames});
   save();
-
   attached = []; renderChips();
 
-  // VS placeholder
   const wrap = document.createElement('div');
   wrap.className = 'vs';
   const uid = 'vs' + Date.now();
   wrap.innerHTML = `
-    <div class="vs-q"><strong>VS · RAW vs GOLD</strong></div>
+    <div class="vs-q"><strong>VS · RAW vs GOLD${freshOn?' · fresh':''}</strong></div>
     <div class="vs-grid">
       <div class="vs-panel raw" id="${uid}_r"><div class="vs-label"><span>RAW</span><span class="timer" id="${uid}_r_t">0.0s</span></div><div class="vs-text"><span class="dots"><i></i><i></i><i></i></span></div></div>
       <div class="vs-panel gold" id="${uid}_g"><div class="vs-label"><span>GOLD</span><span class="timer" id="${uid}_g_t">0.0s</span></div><div class="vs-text"><span class="dots"><i></i><i></i><i></i></span></div></div>
@@ -564,7 +528,6 @@ async function vsCompare(){
   const priorHist = getPriorHistory().slice(0, -1);
   const t0 = performance.now();
 
-  // Live timers
   const rawTimerEl = document.getElementById(uid + '_r_t');
   const goldTimerEl = document.getElementById(uid + '_g_t');
   let rawDone = false, goldDone = false;
@@ -575,23 +538,20 @@ async function vsCompare(){
     if (rawDone && goldDone) clearInterval(tick);
   }, 100);
 
-  // Parallel — fire both, fill each as it settles
   const rawP = callAgent(fullPrompt, false, priorHist).then(
-    v => { rawDone = true; const t = ((performance.now() - t0)/1000).toFixed(1); if (rawTimerEl) rawTimerEl.textContent = t + 's'; return {status:'fulfilled', value:v}; },
-    e => { rawDone = true; const t = ((performance.now() - t0)/1000).toFixed(1); if (rawTimerEl) rawTimerEl.textContent = t + 's · err'; return {status:'rejected', reason:e}; }
+    v => { rawDone=true; const t=((performance.now()-t0)/1000).toFixed(1); if (rawTimerEl) rawTimerEl.textContent=t+'s'; return {status:'fulfilled', value:v}; },
+    e => { rawDone=true; const t=((performance.now()-t0)/1000).toFixed(1); if (rawTimerEl) rawTimerEl.textContent=t+'s · err'; return {status:'rejected', reason:e}; }
   );
   const goldP = callAgent(fullPrompt, true, priorHist).then(
-    v => { goldDone = true; const t = ((performance.now() - t0)/1000).toFixed(1); if (goldTimerEl) goldTimerEl.textContent = t + 's'; return {status:'fulfilled', value:v}; },
-    e => { goldDone = true; const t = ((performance.now() - t0)/1000).toFixed(1); if (goldTimerEl) goldTimerEl.textContent = t + 's · err'; return {status:'rejected', reason:e}; }
+    v => { goldDone=true; const t=((performance.now()-t0)/1000).toFixed(1); if (goldTimerEl) goldTimerEl.textContent=t+'s'; return {status:'fulfilled', value:v}; },
+    e => { goldDone=true; const t=((performance.now()-t0)/1000).toFixed(1); if (goldTimerEl) goldTimerEl.textContent=t+'s · err'; return {status:'rejected', reason:e}; }
   );
 
   const [rawR, goldR] = await Promise.all([rawP, goldP]);
   clearInterval(tick);
-
   fillVsPanel(uid + '_r', rawR, 'raw');
   fillVsPanel(uid + '_g', goldR, 'gold');
 
-  // Delta
   if (rawR.status === 'fulfilled' && goldR.status === 'fulfilled'){
     const dr = rawR.value.score?.grade ?? 0;
     const dg = goldR.value.score?.grade ?? 0;
@@ -602,21 +562,17 @@ async function vsCompare(){
     deltaEl.style.display = 'block';
     deltaEl.classList.toggle('neg', delta < 0);
     deltaEl.innerHTML = `Δ Grade <strong>${cr} → ${cg}</strong> · score <strong>${delta > 0 ? '+' : ''}${delta}</strong>`;
-
     if (goldR.value.remaining_today != null) document.getElementById('quota').textContent = `${goldR.value.remaining_today}/day remaining`;
   }
-
   const dt = ((performance.now() - t0)/1000).toFixed(1);
-  document.getElementById('last-stats').textContent = `VS · ${dt}s · ${modelSel.value}`;
+  document.getElementById('last-stats').textContent = `VS · ${dt}s · ${modelSel.value}${freshOn?' · fresh':''}`;
 
-  // Save to history
   history.push({
     kind:'vs',
     raw: rawR.status === 'fulfilled' ? {response: rawR.value.response, score: rawR.value.score, apoptosis: rawR.value.apoptosis} : {error: rawR.reason?.message || 'failed'},
     gold: goldR.status === 'fulfilled' ? {response: goldR.value.response, score: goldR.value.score, apoptosis: goldR.value.apoptosis} : {error: goldR.reason?.message || 'failed'}
   });
   save();
-
   sendBtn.disabled = false; vsBtn.disabled = false; input.focus();
 }
 
@@ -651,7 +607,6 @@ function renderVsBlock(h, push){
     <div class="vs-delta" id="${uid}_d" style="display:none"></div>
   `;
   chat.appendChild(wrap);
-
   const fillFromStored = (id, stored, kind) => {
     const el = document.getElementById(id);
     if (stored.error){
@@ -664,10 +619,8 @@ function renderVsBlock(h, push){
     el.querySelector('.vs-text').textContent = stored.response;
     if (stored.score) el.appendChild(buildScore(stored.score, stored.apoptosis));
   };
-
   fillFromStored(uid + '_r', h.raw, 'raw');
   fillFromStored(uid + '_g', h.gold, 'gold');
-
   if (!h.raw.error && !h.gold.error){
     const dr = h.raw.score?.grade ?? 0;
     const dg = h.gold.score?.grade ?? 0;
@@ -681,21 +634,10 @@ function renderVsBlock(h, push){
   }
 }
 
-// ── INPUT ───────────────────────────────────────────────────────────────
-input.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); send(); }
-});
-input.addEventListener('input', () => {
-  input.style.height = 'auto';
-  input.style.height = Math.min(input.scrollHeight, 200) + 'px';
-});
+input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); send(); } });
+input.addEventListener('input', () => { input.style.height='auto'; input.style.height=Math.min(input.scrollHeight,200)+'px'; });
 
-// ── BOOT ────────────────────────────────────────────────────────────────
-render();
-updateCount();
-loadModels();
-// loadModels poll removed (no ngrok fetch from browser)
-refreshAuthBanner();
+render(); updateCount(); loadModels(); refreshAuthBanner();
 </script>
 </body>
 </html>
