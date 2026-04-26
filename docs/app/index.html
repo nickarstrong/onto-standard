@@ -4340,23 +4340,40 @@ function renderModelCard(m) {
         ? ''
         : '<span class="setup-pill warn">Setup incomplete</span>';
 
+    const isLegacyProxy = !isDemo && channel === 'proxy';
+    const legacyPill = isLegacyProxy
+        ? '<span class="setup-pill warn" style="border-style:dashed">Legacy · re-register as SSE</span>'
+        : '';
+
     const cardClass = 'model-card' + (online ? '' : ' disconnected') + (isOn ? '' : ' disabled') + (isDemo ? ' is-demo' : '');
 
-    const hideBtn = isDemo
-        ? '<button class="btn-mini" onclick="hideDemo()" title="Hide demo">Hide</button>'
-        : '<button class="btn-mini danger" onclick="event.stopPropagation();pvAct_unregister(\'' + id + '\',\'' + escHtml(m.name).replace(/\'/g,"\\'") + '\')">Unregister</button>';
+    let actionBtns = '';
+    if (isDemo) {
+        actionBtns =
+            '<button class="btn-mini" onclick="openDetail(\'' + id + '\')">Open</button>' +
+            '<button class="btn-mini" onclick="hideDemo()" title="Hide demo">Hide</button>';
+    } else if (isLegacyProxy) {
+        actionBtns =
+            '<button class="btn-mini" onclick="openDetail(\'' + id + '\')">Open</button>' +
+            '<button class="btn-mini danger" onclick="event.stopPropagation();pvAct_unregister(\'' + id + '\',\'' + escHtml(m.name).replace(/\'/g,"\\'") + '\')">Unregister</button>';
+    } else {
+        actionBtns =
+            '<button class="btn-mini" onclick="openDetail(\'' + id + '\')">' + (setup.complete ? 'Open' : 'Continue setup') + '</button>' +
+            '<button class="btn-mini danger" onclick="event.stopPropagation();pvAct_unregister(\'' + id + '\',\'' + escHtml(m.name).replace(/\'/g,"\\'") + '\')">Unregister</button>';
+    }
 
     return '<div class="' + cardClass + '" onclick="openDetail(\'' + id + '\')" style="cursor:pointer;margin-bottom:10px">' +
-        (isDemo ? '<div class="demo-banner">Demo</div>' : '') +
         '<div style="display:flex;align-items:flex-start;gap:14px">' +
             '<div class="mc-dot" style="margin-top:6px;flex-shrink:0"><div class="core" style="background:' + (online ? 'var(--accent)' : 'var(--text-faint)') + '"></div>' + (online ? '<div class="ring"></div>' : '') + '</div>' +
             '<div style="flex:1;min-width:0">' +
                 '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px">' +
                     '<span style="font-size:15px;font-weight:600;color:var(--text)">' + name + '</span>' +
+                    (isDemo ? '<span style="font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:3px;background:rgba(180,83,9,.15);color:#b45309;border:1px solid rgba(180,83,9,.4)">Demo</span>' : '') +
                     '<span style="font-family:var(--mono);font-size:11px;color:var(--text-faint);letter-spacing:.5px">' + ptype + '</span>' +
                     '<span class="mc-conn" style="font-size:9.5px;padding:3px 9px"><span class="label">' + channel.toUpperCase() + '</span></span>' +
                     certPill +
                     setupPill +
+                    legacyPill +
                 '</div>' +
                 '<div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">' + statusLine + '</div>' +
                 '<div style="font-family:var(--mono);font-size:11px;color:var(--text-faint);letter-spacing:.3px">' +
@@ -4364,8 +4381,7 @@ function renderModelCard(m) {
                 '</div>' +
             '</div>' +
             '<div style="display:flex;gap:8px;align-items:center" onclick="event.stopPropagation()">' +
-                '<button class="btn-mini" onclick="openDetail(\'' + id + '\')">' + (setup.complete ? 'Open' : 'Continue setup') + '</button>' +
-                hideBtn +
+                actionBtns +
             '</div>' +
         '</div>' +
     '</div>';
@@ -4379,7 +4395,7 @@ function pvOpenEdit(modelId) { return openDetail(modelId); }
 
 // === KPI ===============================================================
 function renderKPI(models) {
-    models = models || [];
+    models = (models || []).filter(m => !m.is_demo);
     const totalSignals = models.reduce((a, m) => a + (m.eval_count || 0), 0);
     const active = models.filter(m => m.is_enabled !== false && (m.connection_status === 'connected' || (m.channel || 'proxy') === 'proxy')).length;
     const total = models.length;
