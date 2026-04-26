@@ -2082,8 +2082,11 @@ a.info-val:hover { color: var(--text); }
                     <div class="code-pane on" id="d-code-px-curl"></div>
                     <div class="code-pane" id="d-code-px-python"></div>
                 </div>
-                <div style="padding:12px 14px;background:rgba(180,83,9,.08);border:1px dashed rgba(180,83,9,.4);border-radius:3px;font-size:12px;color:#b45309;line-height:1.55">
-                    <strong>Heads up</strong> · This is a legacy registration. New models register as SSE by default. To migrate · unregister this model and register again with channel = SSE.
+                <div style="padding:14px 16px;background:rgba(180,83,9,.08);border:1px dashed rgba(180,83,9,.4);border-radius:3px;font-size:12.5px;color:#b45309;line-height:1.6">
+                    <strong>Proxy is fully supported</strong> for ongoing operations. SSE is recommended for new registrations because your provider key is never charged for inference and your server stays in the inference path.
+                    <div style="margin-top:10px">
+                        <button class="btn-mini" onclick="d_migrateToSSE()" style="background:rgba(180,83,9,.15);color:#b45309;border-color:rgba(180,83,9,.5)">Migrate to SSE</button>
+                    </div>
                 </div>
             </div>
 
@@ -4430,9 +4433,7 @@ function renderModelCard(m) {
         ? ''
         : '<span class="setup-pill warn">Setup incomplete</span>';
 
-    const legacyPill = isLegacyProxy
-        ? '<span class="setup-pill warn" style="border-style:dashed">Legacy · re-register as SSE</span>'
-        : '';
+    const legacyPill = ''; // moved to Detail page only · don't shame valid registration on dashboard
 
     const cardClass = 'model-card' + (online ? '' : ' disconnected') + (isOn ? '' : ' disabled') + (isDemo ? ' is-demo' : '');
 
@@ -4440,14 +4441,9 @@ function renderModelCard(m) {
     if (isDemo) {
         actionBtns =
             '<button class="btn-mini" onclick="hideDemo()" title="Hide demo">Hide preview</button>';
-    } else if (isLegacyProxy) {
-        actionBtns =
-            '<button class="btn-mini" onclick="event.stopPropagation();pvReregisterAsSSE(\'' + id + '\',\'' + escHtml(m.name).replace(/\'/g,"\\'") + '\',\'' + escHtml(m.provider_type).replace(/\'/g,"\\'") + '\')" style="background:rgba(180,83,9,.12);color:#b45309;border-color:rgba(180,83,9,.4)">Re-register as SSE</button>' +
-            '<button class="btn-mini" onclick="openDetail(\'' + id + '\')">Open</button>' +
-            '<button class="btn-mini danger" onclick="event.stopPropagation();pvAct_unregister(\'' + id + '\',\'' + escHtml(m.name).replace(/\'/g,"\\'") + '\')">Unregister</button>';
     } else {
         actionBtns =
-            '<button class="btn-mini" onclick="openDetail(\'' + id + '\')">' + (setup.complete ? 'Open' : 'Continue setup') + '</button>' +
+            '<button class="btn-mini" onclick="openDetail(\'' + id + '\')">' + (setup.complete || isLegacyProxy ? 'Open' : 'Continue setup') + '</button>' +
             '<button class="btn-mini danger" onclick="event.stopPropagation();pvAct_unregister(\'' + id + '\',\'' + escHtml(m.name).replace(/\'/g,"\\'") + '\')">Unregister</button>';
     }
 
@@ -4734,6 +4730,14 @@ async function d_unregister() {
     showToast('Unregistered', 'success');
     closeDetail();
     loadModels();
+}
+
+function d_migrateToSSE() {
+    if (!_dCurrentId || _dCurrentId === DEMO_MODEL.id) return;
+    const m = (window._lastModels || []).find(x => String(x.id) === String(_dCurrentId));
+    if (!m) return;
+    closeDetail();
+    pvReregisterAsSSE(m.id, m.name, m.provider_type);
 }
 
 async function pvReregisterAsSSE(id, name, ptype) {
