@@ -9,10 +9,10 @@
  *
  * Cache versioning: bump CACHE_NAME on UI release to force refresh.
  *
- * v1.1: fix maskable filename (was 'icon-maskable-512.png', actual 'maskable-icon-512.png')
+ * v1.5: institute voice cleanup - removed SaaS reward tiers from donation modal
  */
 
-const CACHE_NAME = 'onto-agent-v1.4';
+const CACHE_NAME = 'onto-agent-v1.5';
 
 const APP_SHELL = [
   '/agent/',
