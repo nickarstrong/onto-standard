@@ -199,7 +199,10 @@ const MODELS = [
   'deepseek-r1:14b',
   'mistral:7b-instruct-q4_K_M',
   'gemma2:9b-instruct-q4_K_M',
-  'phi4:14b-q4_K_M'
+  'phi4:14b-q4_K_M',
+  'deepseek-coder-v2:16b-lite-instruct-q4_K_M',
+  'qwen2.5-coder:7b-instruct-q4_K_M',
+  'codellama:13b-instruct-q4_K_M'
 ];
 
 if (window['pdfjsLib']) {
@@ -538,19 +541,20 @@ async function vsCompare(){
     if (rawDone && goldDone) clearInterval(tick);
   }, 100);
 
+  let rawTime = null, goldTime = null;
   const rawP = callAgent(fullPrompt, false, priorHist).then(
-    v => { rawDone=true; const t=((performance.now()-t0)/1000).toFixed(1); if (rawTimerEl) rawTimerEl.textContent=t+'s'; return {status:'fulfilled', value:v}; },
-    e => { rawDone=true; const t=((performance.now()-t0)/1000).toFixed(1); if (rawTimerEl) rawTimerEl.textContent=t+'s · err'; return {status:'rejected', reason:e}; }
+    v => { rawDone=true; rawTime=((performance.now()-t0)/1000).toFixed(1); if (rawTimerEl) rawTimerEl.textContent=rawTime+'s'; return {status:'fulfilled', value:v}; },
+    e => { rawDone=true; rawTime=((performance.now()-t0)/1000).toFixed(1); if (rawTimerEl) rawTimerEl.textContent=rawTime+'s · err'; return {status:'rejected', reason:e}; }
   );
   const goldP = callAgent(fullPrompt, true, priorHist).then(
-    v => { goldDone=true; const t=((performance.now()-t0)/1000).toFixed(1); if (goldTimerEl) goldTimerEl.textContent=t+'s'; return {status:'fulfilled', value:v}; },
-    e => { goldDone=true; const t=((performance.now()-t0)/1000).toFixed(1); if (goldTimerEl) goldTimerEl.textContent=t+'s · err'; return {status:'rejected', reason:e}; }
+    v => { goldDone=true; goldTime=((performance.now()-t0)/1000).toFixed(1); if (goldTimerEl) goldTimerEl.textContent=goldTime+'s'; return {status:'fulfilled', value:v}; },
+    e => { goldDone=true; goldTime=((performance.now()-t0)/1000).toFixed(1); if (goldTimerEl) goldTimerEl.textContent=goldTime+'s · err'; return {status:'rejected', reason:e}; }
   );
 
   const [rawR, goldR] = await Promise.all([rawP, goldP]);
   clearInterval(tick);
-  fillVsPanel(uid + '_r', rawR, 'raw');
-  fillVsPanel(uid + '_g', goldR, 'gold');
+  fillVsPanel(uid + '_r', rawR, 'raw', rawTime);
+  fillVsPanel(uid + '_g', goldR, 'gold', goldTime);
 
   if (rawR.status === 'fulfilled' && goldR.status === 'fulfilled'){
     const dr = rawR.value.score?.grade ?? 0;
@@ -569,17 +573,18 @@ async function vsCompare(){
 
   history.push({
     kind:'vs',
-    raw: rawR.status === 'fulfilled' ? {response: rawR.value.response, score: rawR.value.score, apoptosis: rawR.value.apoptosis} : {error: rawR.reason?.message || 'failed'},
-    gold: goldR.status === 'fulfilled' ? {response: goldR.value.response, score: goldR.value.score, apoptosis: goldR.value.apoptosis} : {error: goldR.reason?.message || 'failed'}
+    raw: rawR.status === 'fulfilled' ? {response: rawR.value.response, score: rawR.value.score, apoptosis: rawR.value.apoptosis, time: rawTime} : {error: rawR.reason?.message || 'failed', time: rawTime},
+    gold: goldR.status === 'fulfilled' ? {response: goldR.value.response, score: goldR.value.score, apoptosis: goldR.value.apoptosis, time: goldTime} : {error: goldR.reason?.message || 'failed', time: goldTime}
   });
   save();
   sendBtn.disabled = false; vsBtn.disabled = false; input.focus();
 }
 
-function fillVsPanel(id, settled, kind){
+function fillVsPanel(id, settled, kind, finalTime){
   const el = document.getElementById(id);
+  const timeStr = finalTime != null ? `${finalTime}s` : '';
   if (settled.status === 'rejected'){
-    el.innerHTML = `<div class="vs-label"><span>${kind.toUpperCase()}</span></div><div class="vs-text" style="color:var(--danger)">Error: ${escapeHtml(settled.reason?.message || 'failed')}</div>`;
+    el.innerHTML = `<div class="vs-label"><span>${kind.toUpperCase()}</span><span class="timer">${timeStr} · err</span></div><div class="vs-text" style="color:var(--danger)">Error: ${escapeHtml(settled.reason?.message || 'failed')}</div>`;
     return;
   }
   const data = settled.value;
@@ -587,7 +592,7 @@ function fillVsPanel(id, settled, kind){
   const cls = score.compliance_class || '?';
   const grade = score.grade != null ? score.grade : '?';
   el.innerHTML = `
-    <div class="vs-label"><span>${kind === 'raw' ? 'RAW · no GOLD' : 'GOLD · disciplined'}</span><span class="grade ${cls}">${cls} · ${grade}/10</span></div>
+    <div class="vs-label"><span>${kind === 'raw' ? 'RAW · no GOLD' : 'GOLD · disciplined'}</span><span class="grade ${cls}">${cls} · ${grade}/10</span><span class="timer">${timeStr}</span></div>
     <div class="vs-text"></div>
   `;
   el.querySelector('.vs-text').textContent = data.response;
@@ -609,13 +614,14 @@ function renderVsBlock(h, push){
   chat.appendChild(wrap);
   const fillFromStored = (id, stored, kind) => {
     const el = document.getElementById(id);
+    const timeStr = stored.time != null ? `${stored.time}s` : '';
     if (stored.error){
-      el.innerHTML = `<div class="vs-label"><span>${kind.toUpperCase()}</span></div><div class="vs-text" style="color:var(--danger)">Error: ${escapeHtml(stored.error)}</div>`;
+      el.innerHTML = `<div class="vs-label"><span>${kind.toUpperCase()}</span><span class="timer">${timeStr} · err</span></div><div class="vs-text" style="color:var(--danger)">Error: ${escapeHtml(stored.error)}</div>`;
       return;
     }
     const cls = stored.score?.compliance_class || '?';
     const grade = stored.score?.grade != null ? stored.score.grade : '?';
-    el.innerHTML = `<div class="vs-label"><span>${kind === 'raw' ? 'RAW · no GOLD' : 'GOLD · disciplined'}</span><span class="grade ${cls}">${cls} · ${grade}/10</span></div><div class="vs-text"></div>`;
+    el.innerHTML = `<div class="vs-label"><span>${kind === 'raw' ? 'RAW · no GOLD' : 'GOLD · disciplined'}</span><span class="grade ${cls}">${cls} · ${grade}/10</span><span class="timer">${timeStr}</span></div><div class="vs-text"></div>`;
     el.querySelector('.vs-text').textContent = stored.response;
     if (stored.score) el.appendChild(buildScore(stored.score, stored.apoptosis));
   };
