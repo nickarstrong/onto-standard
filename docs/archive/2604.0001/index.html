@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ONTO:2604.0001 · Formal foundation of IGR (from the pitch, v5.13)</title><meta name="description" content="The IGR formula, its foundations, thresholds, scope and falsifier. The formula was never implemented as a measurement."><link rel="canonical" href="https://ontostandard.org/archive/2604.0001/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="ONTO"><meta property="og:title" content="ONTO:2604.0001 · Formal foundation of IGR (from the pitch, v5.13)"><meta property="og:description" content="The IGR formula, its foundations, thresholds, scope and falsifier. The formula was never implemented as a measurement."><meta property="og:url" content="https://ontostandard.org/archive/2604.0001/"><meta property="og:image" content="https://ontostandard.org/og-image.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#e7e6e2"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="any"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<script>document.documentElement.className+=" js"</script><link rel="stylesheet" href="/assets/site.css"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "ResearchOrganization", "name": "ONTO", "url": "https://ontostandard.org", "email": "council@ontostandard.org", "foundingDate": "2024", "founder": {"@type": "Person", "name": "Khakim Angenoev"}, "sameAs": ["https://github.com/nickarstrong/onto-standard", "https://www.linkedin.com/company/ontostandard", "https://medium.com/@ontostandard"]}</script></head>
+<body><a class="skip" href="#main">Skip to content</a><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-demo" viewBox="0 0 96 96"><circle cx="38" cy="50" r="26" fill="var(--ink)" fill-opacity=".22"/><circle cx="58" cy="46" r="26" fill="var(--green)" fill-opacity=".85"/><circle cx="58" cy="46" r="25.5" fill="none" stroke="#fff" stroke-opacity=".55"/></symbol>
+<symbol id="i-students" viewBox="0 0 96 96"><rect x="14" y="26" width="58" height="46" rx="12" fill="var(--violet)" fill-opacity=".5"/><rect x="26" y="34" width="58" height="46" rx="12" fill="var(--green)" fill-opacity=".85"/><rect x="26.5" y="34.5" width="57" height="45" rx="11.5" fill="none" stroke="#fff" stroke-opacity=".55"/><circle cx="46" cy="52" r="7" fill="#fff" fill-opacity=".85"/><rect x="58" y="49" width="18" height="5" rx="2.5" fill="#fff" fill-opacity=".7"/></symbol>
+<symbol id="i-archive" viewBox="0 0 96 96"><path d="M14 30a8 8 0 0 1 8-8h18l8 8h26a8 8 0 0 1 8 8v6H14z" fill="var(--ink)" fill-opacity=".25"/><rect x="14" y="38" width="68" height="40" rx="10" fill="var(--green)" fill-opacity=".85"/><rect x="14.5" y="38.5" width="67" height="39" rx="9.5" fill="none" stroke="#fff" stroke-opacity=".55"/><rect x="24" y="50" width="30" height="5" rx="2.5" fill="#fff" fill-opacity=".8"/></symbol>
+<symbol id="i-method" viewBox="0 0 96 96"><rect x="14" y="14" width="48" height="48" rx="10" fill="var(--violet)" fill-opacity=".5"/><rect x="34" y="34" width="48" height="48" rx="10" fill="var(--green)" fill-opacity=".85"/><rect x="34.5" y="34.5" width="47" height="47" rx="9.5" fill="none" stroke="#fff" stroke-opacity=".55"/><path d="M46 46h24M46 58h24M46 70h14" stroke="#fff" stroke-opacity=".85" stroke-width="4" stroke-linecap="round"/></symbol>
+<symbol id="i-about" viewBox="0 0 96 96"><circle cx="48" cy="48" r="34" fill="var(--green)" fill-opacity=".85"/><circle cx="48" cy="48" r="33.5" fill="none" stroke="#fff" stroke-opacity=".55"/><circle cx="48" cy="33" r="5" fill="#fff" fill-opacity=".9"/><rect x="43.5" y="42" width="9" height="24" rx="4.5" fill="#fff" fill-opacity=".9"/></symbol>
+</defs></svg>
+<div class="wrap"><header class="top"><a class="brand" href="/"><svg viewBox="0 0 96 96" aria-hidden="true"><use href="#i-about"/></svg>ONTO</a><div class="topr"><span class="mono dim">Updated 2026-10-10</span><a class="btn b-dark" href="/about/#contact">Test your model</a></div></header></div>
+<main id="main"><div class="wrap"><nav class="crumb" aria-label="Breadcrumb"><a href="/archive/">Archive</a> / Prompt layer, February–April 2026 / Documents of the period / ONTO:2604.0001</nav>
+<div class="doc"><div><header class="dhead"><div class="chips"><span class="pill">ONTO:2604.0001</span><span class="chip">Note · 2026-04-20</span><span class="chip ok">✓ Open</span></div>
+<h1 class="title">Formal foundation of IGR (from the pitch, v5.13)</h1><p class="abstract">The IGR formula, its foundations, thresholds, scope and falsifier. The formula was never implemented as a measurement.</p><div class="chips"><a class="btn b-line" href="2604.0001v1.md">Source .md</a></div></header><article class="prose"><blockquote>
+<p>Extracted on 2026-10-07 from ontostandard.org/pitch/ (v5.13, 2026-04-20). The formula was never implemented as a measurement.</p>
+</blockquote>
+<p><em>FORMAL FOUNDATION</em></p>
+<h1>The measurement, formalized</h1>
+<p>How grounded is a response in its cited sources? We answer that question with a measurement — bounded in [0, 1], deterministic, per-response. The definition below is instrumental: it specifies how the score is computed, not what it means universally. Methodology public · reference implementation commercial.</p>
+<h3>ARCHITECTURE · RESPONSE VS. CITED SOURCES</h3>
+<p><em>[Figure: SVG diagram “IGR architecture”; its labels are reproduced below as text.]</em></p>
+<pre><code>response  x  ──▶  Encoder Enc(x)  ──▶  s_x  claimed  ──┐
+                                                       ├──▶  D  divergence  ──▶  IGR ∈ [0, 1]
+sources   y  ──▶  Encoder Enc(y)  ──▶  s_y  cited    ──┘
+</code></pre>
+<p><strong>FIGURE.</strong> Filled inputs <em>x</em>, <em>y</em> are observed — the response and its cited sources. Rounded modules are deterministic encoders producing representations <em>s<sub>x</sub></em>, <em>s<sub>y</sub></em>. <em>D</em> computes divergence; the output is a bounded score. The measurement is non-generative — no prediction of <em>y</em> from <em>x</em>, only comparison. Diagram conventions follow LeCun (2022).</p>
+<h3>DEFINITION 1 · INFORMATION GAP RATIO</h3>
+<p><em>IGR</em>(<em>x</em>, <em>y</em>) = 1 − min( <em>I</em>(<em>s<sub>y</sub></em>) / <em>I</em>(<em>s<sub>x</sub></em>), 1 ) &nbsp;&nbsp; (1)</p>
+<p>where <em>I</em>(<em>s</em>) is the information content of representation <em>s</em> · bounded in [0, 1] · deterministic: same input, same score, every time.</p>
+<h3>FIVE FOUNDATIONS · A1–A4 CLASSICAL · A5 ONTO CONTRIBUTION</h3>
+<ul>
+<li><strong>A1 · Landauer</strong> — <em>Information is physical; it cannot be created without carrier.</em> — 1961</li>
+<li><strong>A2 · Kolmogorov</strong> — <em>Information content is the length of the shortest generating program.</em> — 1965</li>
+<li><strong>A3 · Eigen</strong> — <em>Self-organizing complexity is bounded without external information input.</em> — 1971</li>
+<li><strong>A4 · Shannon</strong> — <em>Channel capacity bounds transmittable information between source and output.</em> — 1948</li>
+<li><strong>A5 · ONTO sufficiency</strong> — <em>For text with citations, the measure I(·) is computable per response.</em> — this work</li>
+</ul>
+<p>A1–A4 are independently established results in information theory. A5 is the ONTO contribution — the sufficiency clause that makes the bound measurable per response, not in principle.</p>
+<h3>IGR · OPERATIONAL THRESHOLDS</h3>
+<table>
+<thead>
+<tr>
+<th>IGR</th>
+<th>GAP</th>
+<th>INTERPRETATION</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.00</td>
+<td>No gap</td>
+<td>Response fully grounded in cited sources</td>
+</tr>
+<tr>
+<td>0.01–0.29</td>
+<td>Minimal</td>
+<td>Sufficient for certification</td>
+</tr>
+<tr>
+<td>0.30–0.69</td>
+<td>Partial</td>
+<td>Further verification warranted</td>
+</tr>
+<tr>
+<td>0.70–1.00</td>
+<td>Critical</td>
+<td>Bound exceeded · R4 / R7 / C8 activate</td>
+</tr>
+</tbody>
+</table>
+<h3>IGR IN PRACTICE · THREE MEASUREMENTS</h3>
+<table>
+<thead>
+<tr>
+<th>SCENARIO</th>
+<th>CONDITION</th>
+<th>IGR</th>
+<th>R-RULES</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>AI cites a real paper</strong><br>source present · capacity matches</td>
+<td><em>I</em>(s<sub>y</sub>) ≈ <em>I</em>(s<sub>x</sub>)</td>
+<td>≈ 0</td>
+<td>R4 pass<br>R7 pass</td>
+</tr>
+<tr>
+<td><strong>AI summarizes recent event</strong><br>partial grounding · no live sources</td>
+<td><em>I</em>(s<sub>y</sub>) &lt; <em>I</em>(s<sub>x</sub>)</td>
+<td>≈ 0.4</td>
+<td>R2 uncertainty<br>R8 resolve</td>
+</tr>
+<tr>
+<td><strong>AI invents a statistic</strong><br>no source · ungrounded</td>
+<td><em>I</em>(s<sub>y</sub>) ≪ <em>I</em>(s<sub>x</sub>)</td>
+<td>≈ 0.9</td>
+<td>R4 cap · R7 refuse<br>C8 apoptosis</td>
+</tr>
+</tbody>
+</table>
+<p><em>Illustrative · IGR is measured per response, not per model. Three zones of the same bound.</em></p>
+<h3>REFERENCE CASE · UNCITED AI CLAIMS</h3>
+<p><strong>OPERATIONAL RULE · NO CLAIM EXCEEDS THE INFORMATION OF ITS CITED SOURCES</strong></p>
+<p>As the response's claimed information <em>I</em>(s<sub>x</sub>) grows past its cited information <em>I</em>(s<sub>y</sub>), <em>IGR</em> approaches 1 — the configuration where <strong>R4 Sources, R7 No Fabrication, and C8 Apoptosis</strong> activate. Measured per response, not per model.</p>
+<h3>SCOPE DISCIPLINE</h3>
+<p>An accounting measurement: it compares claimed information to cited information. What closes the gap — additional sources, uncertainty, refusal — is outside the measurement's scope. Complete derivation accompanies standard adoption.</p>
+<h3>FALSIFIABILITY</h3>
+<p>The framework is refuted by: (1) a response with IGR ≥ 0.7 that domain experts independently judge fully grounded · (2) an LLM-as-judge system producing deterministic scores (Var = 0) without regex or rule-based components.</p>
+<p><em>When AI doesn't know, it must cite — not invent. R4 Sources, R7 No Fabrication, and C8 Apoptosis are the operational consequences of Definition 1.</em></p></article></div>
+<aside class="meta"><div><span class="label">Cite as</span><div class="mono">ONTO:2604.0001v1</div></div>
+<div><span class="label">Versions · fingerprints prove the text was not changed</span><div class="tbl"><table><tbody><tr><td class="mono">v1</td><td class="mono">2026-04-20</td><td>open</td><td class="mono">e3783300</td></tr></tbody></table></div></div>
+<div><span class="label">Related</span><ul class="list"><li><a href="/archive/2603.0008/">ONTO:2603.0008</a> · Methodology of the prompt layer (from the documentation)</li></ul></div><div><span class="label">Rule</span><p class="muted" style="font-size:13.5px">Published documents are never rewritten; corrections come as new versions. Closed versions show date, md5 and reason only.</p></div></aside></div></div></main>
+<div class="wrap"><footer class="foot"><span>© 2024–2026 ONTO · <a href="mailto:council@ontostandard.org">council@ontostandard.org</a></span><nav aria-label="Elsewhere"><a href="https://github.com/nickarstrong/onto-standard" rel="noopener">GitHub</a><a href="https://www.linkedin.com/company/ontostandard" rel="noopener">LinkedIn</a><a href="https://medium.com/@ontostandard" rel="noopener">Medium</a></nav><span>No cookies. No tracking.</span></footer></div>
+<div class="dockwrap"><nav class="dock glass" aria-label="Sections"><a href="/">Home</a><a href="/demo/">Demo</a><a href="/lab/">Lab</a><a href="/method/">Method</a><a href="/archive/" aria-current="page">Archive</a><a href="/about/">About</a></nav></div>
+<nav class="tabs glass" aria-label="Sections"><a href="/"><svg viewBox="0 0 96 96" aria-hidden="true"><use href="#i-about"/></svg>Home</a><a href="/demo/"><svg viewBox="0 0 96 96" aria-hidden="true"><use href="#i-demo"/></svg>Demo</a><a href="/lab/"><svg viewBox="0 0 96 96" aria-hidden="true"><use href="#i-students"/></svg>Lab</a><a href="/method/"><svg viewBox="0 0 96 96" aria-hidden="true"><use href="#i-method"/></svg>Method</a><a href="/archive/" aria-current="page"><svg viewBox="0 0 96 96" aria-hidden="true"><use href="#i-archive"/></svg>Archive</a></nav>
+<script src="/assets/site.js" defer></script></body></html>

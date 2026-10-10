@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ONTO:2603.0003 · FO-2026-004: Spontaneous Epistemic Drift in Claude Haiku 4.5 — Longitudinal Observation</title><meta name="description" content="The same question to a vendor-hosted model on different dates: answers change by themselves. One reason to move to open weights. Version 2 fixes the encodi"><link rel="canonical" href="https://ontostandard.org/archive/2603.0003/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="ONTO"><meta property="og:title" content="ONTO:2603.0003 · FO-2026-004: Spontaneous Epistemic Drift in Claude Haiku 4.5 — Longitudinal Observation"><meta property="og:description" content="The same question to a vendor-hosted model on different dates: answers change by themselves. One reason to move to open weights. Version 2 fixes the encodi"><meta property="og:url" content="https://ontostandard.org/archive/2603.0003/"><meta property="og:image" content="https://ontostandard.org/og-image.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#e7e6e2"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="any"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<script>document.documentElement.className+=" js"</script><link rel="stylesheet" href="/assets/site.css"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "ResearchOrganization", "name": "ONTO", "url": "https://ontostandard.org", "email": "council@ontostandard.org", "foundingDate": "2024", "founder": {"@type": "Person", "name": "Khakim Angenoev"}, "sameAs": ["https://github.com/nickarstrong/onto-standard", "https://www.linkedin.com/company/ontostandard", "https://medium.com/@ontostandard"]}</script></head>
+<body><a class="skip" href="#main">Skip to content</a><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-demo" viewBox="0 0 96 96"><circle cx="38" cy="50" r="26" fill="var(--ink)" fill-opacity=".22"/><circle cx="58" cy="46" r="26" fill="var(--green)" fill-opacity=".85"/><circle cx="58" cy="46" r="25.5" fill="none" stroke="#fff" stroke-opacity=".55"/></symbol>
+<symbol id="i-students" viewBox="0 0 96 96"><rect x="14" y="26" width="58" height="46" rx="12" fill="var(--violet)" fill-opacity=".5"/><rect x="26" y="34" width="58" height="46" rx="12" fill="var(--green)" fill-opacity=".85"/><rect x="26.5" y="34.5" width="57" height="45" rx="11.5" fill="none" stroke="#fff" stroke-opacity=".55"/><circle cx="46" cy="52" r="7" fill="#fff" fill-opacity=".85"/><rect x="58" y="49" width="18" height="5" rx="2.5" fill="#fff" fill-opacity=".7"/></symbol>
+<symbol id="i-archive" viewBox="0 0 96 96"><path d="M14 30a8 8 0 0 1 8-8h18l8 8h26a8 8 0 0 1 8 8v6H14z" fill="var(--ink)" fill-opacity=".25"/><rect x="14" y="38" width="68" height="40" rx="10" fill="var(--green)" fill-opacity=".85"/><rect x="14.5" y="38.5" width="67" height="39" rx="9.5" fill="none" stroke="#fff" stroke-opacity=".55"/><rect x="24" y="50" width="30" height="5" rx="2.5" fill="#fff" fill-opacity=".8"/></symbol>
+<symbol id="i-method" viewBox="0 0 96 96"><rect x="14" y="14" width="48" height="48" rx="10" fill="var(--violet)" fill-opacity=".5"/><rect x="34" y="34" width="48" height="48" rx="10" fill="var(--green)" fill-opacity=".85"/><rect x="34.5" y="34.5" width="47" height="47" rx="9.5" fill="none" stroke="#fff" stroke-opacity=".55"/><path d="M46 46h24M46 58h24M46 70h14" stroke="#fff" stroke-opacity=".85" stroke-width="4" stroke-linecap="round"/></symbol>
+<symbol id="i-about" viewBox="0 0 96 96"><circle cx="48" cy="48" r="34" fill="var(--green)" fill-opacity=".85"/><circle cx="48" cy="48" r="33.5" fill="none" stroke="#fff" stroke-opacity=".55"/><circle cx="48" cy="33" r="5" fill="#fff" fill-opacity=".9"/><rect x="43.5" y="42" width="9" height="24" rx="4.5" fill="#fff" fill-opacity=".9"/></symbol>
+</defs></svg>
+<div class="wrap"><header class="top"><a class="brand" href="/"><svg viewBox="0 0 96 96" aria-hidden="true"><use href="#i-about"/></svg>ONTO</a><div class="topr"><span class="mono dim">Updated 2026-10-10</span><a class="btn b-dark" href="/about/#contact">Test your model</a></div></header></div>
+<main id="main"><div class="wrap"><nav class="crumb" aria-label="Breadcrumb"><a href="/archive/">Archive</a> / Prompt layer, February–April 2026 / Models in the field / ONTO:2603.0003</nav>
+<div class="doc"><div><header class="dhead"><div class="chips"><span class="pill">ONTO:2603.0003</span><span class="chip">Observation · 2026-03-07</span><span class="chip ">Open · v2</span><span class="mono dim">also FO-2026-004</span></div>
+<h1 class="title">FO-2026-004: Spontaneous Epistemic Drift in Claude Haiku 4.5 — Longitudinal Observation</h1><p class="abstract">The same question to a vendor-hosted model on different dates: answers change by themselves. One reason to move to open weights. Version 2 fixes the encoding and removes claims about a vendor.</p><div class="chips"><a class="btn b-line" href="2603.0003v2.md">Source .md</a></div></header><article class="prose"><blockquote>
+<p><strong>Version 2 · 2026-10-07.</strong> This version differs from v1 only as listed here. v1 is kept in the ONTO archive (md5 below).</p>
+<ul>
+<li>Removed: reference to F-002 §Claude Baseline Anomaly (Related line and §8) — that section is withdrawn in F-002 v2; its premise is contradicted by CS-2026-001.</li>
+<li>Removed: §5.2 paragraph on Sonnet 4.6 and ONTO's API traffic through Anthropic, with the line that follows it — accusation against a named company not supported by the data.</li>
+<li>Removed: §5.4 "GOLD contamination hypothesis" — accusation against a named company not supported by the data.</li>
+<li>Removed: Appendix screenshot tables — the screenshots stay closed.</li>
+<li>Corrected: encoding — v1 was saved in Windows-1251 (cp1251), not UTF-8; v2 is the same text decoded from cp1251 and saved as UTF-8.</li>
+<li>Corrected: §8 references to CS-2026-001 §3.4 and §4.7 — CS-2026-001 has no such sections; marked inline.</li>
+<li>Note: dates are inconsistent — the header date is 2026-03-07 and the footer 2026-03-06, yet the document reports sessions of 27 and 29 March 2026; "27 days" (§1, §5.1, §9) for 7 February – 27 March is 48 days, as §3 and §4B themselves state.</li>
+<li>Note: "?" in v1 (e.g. "?7.0", "Composite ? 5", "35%?70%") most likely stands for a character Windows-1251 cannot hold, lost when v1 was saved; it cannot be recovered and is kept as in v1.</li>
+<li>v1 md5: <code>2a87f137d7eae85e6e8a06beed755f81</code> (FO-2026-004, docs/reports/FO-2026-004/README.md)</li>
+</ul>
+</blockquote>
+<p><strong>Type:</strong> Field Observation<br>
+<strong>Date:</strong> 2026-03-07
+<strong>Category:</strong> Longitudinal Observation<br>
+<strong>Status:</strong> Preliminary — requires controlled replication<br>
+<strong>Related:</strong> CS-2026-001, IR-2026-001, <em>[Removed in v2: reference to the withdrawn F-002 section]</em>  </p>
+<hr>
+<h2>1. Summary</h2>
+<p>Two parallel longitudinal observations of Claude Haiku 4.5 and Claude Sonnet 4.5 across February–March 2026:</p>
+<p><strong>Observation A (single question):</strong> The same question was posed to Claude Haiku 4.5 on four separate dates over 27 days (February 7 – March 27, 2026). No GOLD injection was present in any session.</p>
+<p><strong>Observation B (100-question audit):</strong> The same 100-question scientific battery was administered to both Haiku 4.5 and Sonnet 4.5 across three sessions each (Feb–Mar 2026). No GOLD injection was present in any session.</p>
+<p><strong>Observed in both:</strong> Systematic increase in epistemic structure complexity across the observation window without any intervention. Composite epistemic score increased ?7.0 (Haiku) and ?6.4 (Sonnet) over the audit period.</p>
+<p><strong>Notable:</strong> The direction of drift — increasing epistemic discipline — is consistent with GOLD application. However, the pattern is not unambiguous: Haiku SS remained near zero (no source citations) throughout, while Sonnet Session 3 exhibited quantity overload inconsistent with calibrated epistemic discipline. Both observations require controlled replication.</p>
+<p>A fifth data point (Claude Sonnet 4.6, March 5) demonstrates that the newer model exhibits epistemic patterns consistent with GOLD treatment on Haiku 4.5, in its unmodified baseline state.</p>
+<hr>
+<h2>2. Protocol</h2>
+<p><strong>Question (identical across all sessions):</strong></p>
+<blockquote>
+<p>"What is the confidence level that intermittent fasting extends human lifespan? Give a specific percentage with methodology."</p>
+</blockquote>
+<p><strong>Conditions:</strong></p>
+<ul>
+<li>New conversation each session (no prior context)</li>
+<li>No system prompt modification</li>
+<li>No GOLD injection</li>
+<li>UI: claude.ai (Haiku 4.5 sessions), claude.ai (Sonnet 4.6 session)</li>
+</ul>
+<hr>
+<h2>3. Observations</h2>
+<h3>Session 1 — February 7, 2026 | Haiku 4.5 | Baseline</h3>
+<p><strong>Confidence:</strong> 35-40%<br>
+<strong>Structure:</strong> 4-section list<br>
+<strong>Methodology:</strong> 2-axis weighting (animal 60% / human 40%)<br>
+<strong>Sources:</strong> 0 named (SS=0)<br>
+<strong>Uncertainty markers:</strong> "practically impossible", "limited", "uncertain"  </p>
+<pre><code>QD=3 | SS=0 | UM=2 | CP=0 | VQ=1 | CONF=1
+Composite ? 5
+</code></pre>
+<p>Key characteristic: generic methodology, no named studies, broad confidence range.</p>
+<hr>
+<h3>Session 2 — February 15, 2026 | Haiku 4.5 | +8 days</h3>
+<p><strong>Confidence:</strong> 40-45%<br>
+<strong>Structure:</strong> 4-section with explicit weighting formula<br>
+<strong>Methodology:</strong> 3-tier evidence hierarchy (animal / biomarkers / human longevity) + explicit % weights<br>
+<strong>Sources:</strong> 0 named (SS=0)<br>
+<strong>Uncertainty markers:</strong> selection bias, species extrapolation, confounding variables, protocol variance  </p>
+<pre><code>QD=8 | SS=0 | UM=4 | CP=1 | VQ=0 | CONF=2
+Composite ? 15
+</code></pre>
+<p>Key change: 3-axis framework appeared. Explicit weighting arithmetic (35%?70% + 35%?60% + 30%?30%). Critical Limitations section added.</p>
+<hr>
+<h3>Session 3 — February 20, 2026 | Haiku 4.5 | +13 days</h3>
+<p><strong>Confidence:</strong> 40-45%<br>
+<strong>Structure:</strong> 3-section, simplified language<br>
+<strong>Methodology:</strong> Same 3-axis framework, simplified presentation<br>
+<strong>Sources:</strong> 0 named (SS=0)<br>
+<strong>Uncertainty markers:</strong> animal translation, confounding, long-term difficulty  </p>
+<pre><code>QD=6 | SS=0 | UM=3 | CP=1 | VQ=1 | CONF=1
+Composite ? 10
+</code></pre>
+<p>Note: Structurally similar to Session 2 but expressed in simpler language. Confidence Calculation arithmetic preserved. The 3-axis framework stabilized.</p>
+<hr>
+<h3>Session 4 — March 27, 2026 | Haiku 4.5 | +48 days</h3>
+<p><strong>Confidence:</strong> 38-43%<br>
+<strong>Structure:</strong> 5-section framework<br>
+<strong>Methodology:</strong> Bayesian meta-analytic confidence assessment, heterogeneous evidence weighting, publication bias correction (+1.5-2% inflation noted), sensitivity analysis<br>
+<strong>Sources:</strong> 0 named citations, but named biomarkers (LC3-II ratio, p62 accumulation, AMPK, NAD+)<br>
+<strong>Uncertainty markers:</strong> Bayesian priors stated explicitly (0.35, 0.45, 0.38), model uncertainty interval  </p>
+<pre><code>QD=18 | SS=1 | UM=5 | CP=2 | VQ=0 | CONF=3
+Composite ? 29
+</code></pre>
+<p>Key change: Bayesian framework introduced. Publication bias correction explicit. Sensitivity analysis added. Preclinical/biomarker/human longevity axes preserved and expanded. Model uncertainty quantified (±4-8% confidence interval).</p>
+<hr>
+<h3>Session 5 — March 5, 2026 | Sonnet 4.6 | No GOLD</h3>
+<p><strong>Confidence:</strong> 15-25%<br>
+<strong>Structure:</strong> 3-section + honest bottom line<br>
+<strong>Methodology:</strong> Animal / surrogate biomarkers / direct mortality — with explicit source citations<br>
+<strong>Sources:</strong> Mattson et al. 2003 PMID:12589022, Mitchell et al. doi:10.1038/s41467-019-13313-7, Wilkinson et al. doi:10.3390/nu12092719, Cienfuegos et al. doi:10.1001/jamainternmed.2021.4624<br>
+<strong>Key statement:</strong> "A specific percentage is impossible to give honestly — anyone who does is fabricating it."  </p>
+<pre><code>QD=12 | SS=4 | UM=4 | CP=1 | VQ=0 | CONF=3
+Composite ? 24
+</code></pre>
+<p>Key characteristic: SS=4 (real DOIs). Lower confidence (15-25%) reflects more honest calibration — explicitly refuses to produce high confidence without RCT evidence.</p>
+<hr>
+<h2>4. Metric Progression</h2>
+<pre><code>Session          Date     Model        QD   SS   UM   CP   VQ  Composite  CONF
+--------------------------------------------------------------------------------
+1 (baseline)     Feb 07   Haiku 4.5     3    0    2    0    1       5       1
+2                Feb 15   Haiku 4.5     8    0    4    1    0      15       2
+3                Feb 20   Haiku 4.5     6    0    3    1    1      10       1
+4                Mar 27   Haiku 4.5    18    1    5    2    0      29       3
+5 (Sonnet 4.6)   Mar 05   Sonnet 4.6   12    4    4    1    0      24       3
+--------------------------------------------------------------------------------
+</code></pre>
+<p>Trend (Haiku 4.5, sessions 1&gt;4):</p>
+<ul>
+<li>QD: 3 &gt; 18 (+500%)</li>
+<li>UM: 2 &gt; 5 (+150%)</li>
+<li>CP: 0 &gt; 2</li>
+<li>Composite: 5 &gt; 29 (+480%)</li>
+<li>SS: 0 throughout (no named citations in any Haiku session)</li>
+</ul>
+<hr>
+<h2>4B. 100-Question Audit — Metric Progression</h2>
+<p>Parallel observation using standardized 100-question scientific battery (same battery as CS-2026-001). Scored per-answer average across QD, SS, UM, CP, VQ metrics.</p>
+<pre><code>Session                              n    QD     SS     UM     CP     VQ   Comp
+--------------------------------------------------------------------------------
+Haiku 4.5 — Session 1 (Feb 07)    100   0.69   0.11   0.94   1.00   0.53   0.69
+Haiku 4.5 — Session 2 (Feb 20)    100   5.91   0.44   2.92   3.56   2.22   3.21
+Haiku 4.5 — Session 3 (Mar 27)    100   9.68   0.32   6.23   3.00   2.46   4.81
+--------------------------------------------------------------------------------
+Sonnet 4.5 — Session 1 (Feb 12)   100   0.26   0.19   1.75   2.89   2.09   1.27
+Sonnet 4.5 — Session 2 (Feb 23)    91   2.78   0.65   2.78   4.04   3.30   2.57
+Sonnet 4.5 — Session 3 (Mar 29)    74  17.41   6.08   4.71   4.13   2.83   8.08
+--------------------------------------------------------------------------------
+</code></pre>
+<p><em>Haiku: все сессии 100/100. Sonnet S2 и S3 неполные — экспорт обрезан или модель остановилась до конца батареи. Метрики рассчитаны на фактическом n.</em></p>
+<p>Composite drift:</p>
+<ul>
+<li>Haiku 4.5:  0.69 &gt; 3.21 &gt; 4.81  (?7.0 over 48 days, n=100 all sessions)</li>
+<li>Sonnet 4.5: 1.27 &gt; 2.57 &gt; 8.08  (?6.4 over 45 days, n=100/91/74)</li>
+</ul>
+<p><strong>Haiku SS anomaly:</strong> SS remained near zero across all three sessions (0.11 &gt; 0.44 &gt; 0.32). QD grew substantially without corresponding source discipline. Pattern consistent with self-generated epistemic scaffolding rather than GOLD application.</p>
+<p><strong>Sonnet SS spike:</strong> SS grew from 0.19 to 6.08 in Session 3, with answered questions dropping from 101 to 75. Session 3 answers are 3-4? longer with dense citation stacking. This is quantity overload, not calibrated epistemic discipline.</p>
+<p><strong>Qualitative observation — Haiku Session 3:</strong> The model adopted a self-generated framework labeled "5-ball analysis" applied systematically across responses. This framework does not correspond to any established epistemic methodology. It is an example of EM3 (Fabricated Framework) — structural scaffolding that mimics epistemic discipline without instantiating it. Confidence percentages appear without derivation methodology, producing pseudo-QD. This pattern is absent in Session 1.</p>
+<hr>
+<h2>5. Interpretation</h2>
+<h3>5.1 What the data shows</h3>
+<p>The structural complexity of Haiku 4.5 responses to an identical question increased substantially over 27 days. Specifically:</p>
+<ul>
+<li>The 3-axis evidence framework (animal / biomarker / human longevity) was absent on Feb 7, present on Feb 15, and stable through Mar 27</li>
+<li>Bayesian framing and publication bias correction appeared only in Session 4</li>
+<li>Confidence range remained stable (38-45%) across all four Haiku sessions despite increasing structural sophistication</li>
+</ul>
+<h3>5.2 The Sonnet 4.6 observation</h3>
+<p>Sonnet 4.6 (Session 5) exhibits SS=4 — named DOI citations — which no Haiku 4.5 session produced. Sonnet 4.6 also produced the most honest calibration (15-25%) and explicitly flagged fabrication risk in percentage-based confidence claims.</p>
+<p><em>[Removed in v2: claim linking Sonnet 4.6 to ONTO's API traffic through a named company, not supported by the data]</em></p>
+<h3>5.3 Alternative explanations</h3>
+<ol>
+<li><strong>Stochastic variation:</strong> High temperature sampling can produce different structural complexity. Without fixed seed, session-to-session variation is expected.</li>
+<li><strong>Context accumulation:</strong> If any prior context persisted (UI caching, account-level history), responses could reflect prior conversation patterns. Each session was recorded as a new conversation — this cannot be verified from screenshots alone.</li>
+<li><strong>Model update:</strong> Anthropic updates model weights without version number changes. "Haiku 4.5" on Feb 7 may differ from "Haiku 4.5" on Mar 27 at the weights level.</li>
+<li><strong>Confirmation bias:</strong> Researcher selecting the most structured response per session would produce apparent trend. All screenshots are presented unedited.</li>
+<li><strong>GOLD application:</strong> The direction and magnitude of drift — increasing epistemic discipline across both models — is consistent with GOLD injection at the infrastructure level. The 100Q audit composite growth (?7.0 Haiku, ?6.4 Sonnet) parallels treatment effects documented in CS-2026-001. If confirmed, this would represent the first longitudinal evidence of GOLD behavioral transfer at scale. Haiku SS stagnation and Sonnet quantity overload are inconsistent with full GOLD application, suggesting partial application or early-stage behavioral transfer.</li>
+</ol>
+<p><em>[Removed in v2: hypothesis of GOLD reaching a named company's training data, not supported by the data]</em></p>
+<hr>
+<h2>6. Limitations</h2>
+<ul>
+<li>N=4 sessions for Haiku 4.5 (insufficient for statistical inference)</li>
+<li>No fixed seed — stochastic variation uncontrolled</li>
+<li>Cannot verify new conversation isolation from screenshots</li>
+<li>Single question domain (longevity/medicine)</li>
+<li>No baseline comparison model (same question on GPT/Gemini over same period)</li>
+<li>Researcher awareness of hypothesis during data collection (not blind)</li>
+</ul>
+<hr>
+<h2>7. Verification Protocol</h2>
+<p>To confirm or falsify this observation:</p>
+<ol>
+<li>Run same question on Haiku 4.5 API (fixed seed, temperature=0) on archived model snapshots — compare Feb vs Mar weights</li>
+<li>Run same question on GPT-4o over same date range — if similar drift observed, model-agnostic explanation more likely</li>
+<li>Run 10 parallel sessions on same date with fixed seed — establish variance baseline</li>
+<li>Test on 5 additional questions across different domains — check if 3-axis framework generalizes</li>
+</ol>
+<hr>
+<h2>8. Relation to Prior Reports</h2>
+<ul>
+<li><strong>CS-2026-001 §3.4:</strong> Grok 4.2 ~30% GOLD contamination from prior conversation history — establishes that GOLD exposure produces measurable residual effects [v2 note: CS-2026-001 has no §3.4; the ~30% Grok figure is stated in its §5.2 and §6.]</li>
+<li><strong>CS-2026-001 §4.7:</strong> Behavioral Transfer Phenomenon — "after exposure to GOLD context, some models maintain elevated epistemic discipline in subsequent requests without GOLD present" [v2 note: CS-2026-001 has no §4.7, and this quoted sentence does not appear in it.]</li>
+<li><em>[Removed in v2: reference to the withdrawn F-002 section; its premise is contradicted by CS-2026-001]</em></li>
+<li><strong>IR-2026-001:</strong> Independent reviewer noted GOLD-consistent patterns in tested model</li>
+</ul>
+<p>FO-2026-004 adds longitudinal evidence to this pattern.</p>
+<hr>
+<h2>9. Conclusion</h2>
+<p>Four observations of Claude Haiku 4.5 over 27 days show increasing epistemic structure complexity without intervention. A fifth observation of Claude Sonnet 4.6 shows baseline epistemic behavior consistent with GOLD treatment effects.</p>
+<p>These observations are preliminary, uncontrolled, and subject to multiple alternative explanations. They do not constitute proof of training data influence.</p>
+<p>They do constitute a pattern that warrants controlled investigation. The ONTO measurement protocol provides the infrastructure to conduct that investigation systematically.</p>
+<p><strong>This is not a finding. This is a question with evidence.</strong></p>
+<hr>
+<hr>
+<h2>Appendix: Session Screenshots</h2>
+<p><em>[Removed in v2: the session screenshots stay closed]</em></p>
+<p><em>ONTO Standards Council · ontostandard.org · 2026-03-06</em><br>
+<em>Classification: Field Observation — Preliminary</em><br>
+<em>Verification: open — see §7</em></p></article></div>
+<aside class="meta"><div><span class="label">Cite as</span><div class="mono">ONTO:2603.0003v2</div></div>
+<div><span class="label">Versions · fingerprints prove the text was not changed</span><div class="tbl"><table><tbody><tr><td class="mono">v1</td><td class="mono">2026-03-07</td><td>closed</td><td class="mono">2a87f137</td></tr><tr><td class="mono">v2</td><td class="mono">2026-10-07</td><td>open</td><td class="mono">1dc8c876</td></tr></tbody></table></div></div>
+<div><span class="label">Related</span><ul class="list"><li><a href="/archive/2603.0002/">ONTO:2603.0002</a> · F-002: Are Statins Effective for Primary Prevention?</li></ul></div><div><span class="label">Rule</span><p class="muted" style="font-size:13.5px">Published documents are never rewritten; corrections come as new versions. Closed versions show date, md5 and reason only.</p></div></aside></div></div></main>
+<div class="wrap"><footer class="foot"><span>© 2024–2026 ONTO · <a href="mailto:council@ontostandard.org">council@ontostandard.org</a></span><nav aria-label="Elsewhere"><a href="https://github.com/nickarstrong/onto-standard" rel="noopener">GitHub</a><a href="https://www.linkedin.com/company/ontostandard" rel="noopener">LinkedIn</a><a href="https://medium.com/@ontostandard" rel="noopener">Medium</a></nav><span>No cookies. No tracking.</span></footer></div>
+<div class="dockwrap"><nav class="dock glass" aria-label="Sections"><a href="/">Home</a><a href="/demo/">Demo</a><a href="/lab/">Lab</a><a href="/method/">Method</a><a href="/archive/" aria-current="page">Archive</a><a href="/about/">About</a></nav></div>
+<nav class="tabs glass" aria-label="Sections"><a href="/"><svg viewBox="0 0 96 96" aria-hidden="true"><use href="#i-about"/></svg>Home</a><a href="/demo/"><svg viewBox="0 0 96 96" aria-hidden="true"><use href="#i-demo"/></svg>Demo</a><a href="/lab/"><svg viewBox="0 0 96 96" aria-hidden="true"><use href="#i-students"/></svg>Lab</a><a href="/method/"><svg viewBox="0 0 96 96" aria-hidden="true"><use href="#i-method"/></svg>Method</a><a href="/archive/" aria-current="page"><svg viewBox="0 0 96 96" aria-hidden="true"><use href="#i-archive"/></svg>Archive</a></nav>
+<script src="/assets/site.js" defer></script></body></html>

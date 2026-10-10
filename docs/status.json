@@ -1,0 +1,187 @@
+{
+ "_note": "Live status for the site. Numbers from ONTO:2610.0004 (method) and ONTO:2610.0005 (everyday questions).",
+ "goal": {
+  "label": "Invented answers on independent questions",
+  "unit": "per 100",
+  "base": 19.2,
+  "now": 7.7,
+  "target": 5.0,
+  "student": "Beta · Qwen 7B",
+  "verdict": "Not yet"
+ },
+ "stages": [
+  {
+   "id": "Beta",
+   "model": "Qwen 7B",
+   "status": "Passed",
+   "note": "sealed stage",
+   "date": "2026-10",
+   "doc": "2610.0004"
+  },
+  {
+   "id": "Beta on OLMo",
+   "model": "OLMo 7B",
+   "status": "Passed",
+   "note": "same procedure, fully open model",
+   "date": "2026-10",
+   "doc": "2610.0004"
+  },
+  {
+   "id": "Rebuilt from zero",
+   "model": "Qwen 7B · RTX A6000",
+   "status": "Passed",
+   "note": "about 49 minutes on another GPU",
+   "date": "2026-10",
+   "doc": "2610.0004"
+  },
+  {
+   "id": "v1196",
+   "model": "Qwen 7B",
+   "status": "Mixed",
+   "note": "holds better, breaks half-right answers; not sealed",
+   "date": "2026-10-05",
+   "doc": null
+  },
+  {
+   "id": "v1203",
+   "model": "Qwen 7B",
+   "status": "Passed",
+   "note": "not worse than its base on everyday questions; not sealed",
+   "date": "2026-10-07",
+   "doc": "2610.0005"
+  }
+ ],
+ "independent_questions": [
+  {
+   "arm": "Qwen base",
+   "checks_source": 0.5,
+   "fabrication": 0.192
+  },
+  {
+   "arm": "Qwen Beta",
+   "checks_source": 0.88,
+   "fabrication": 0.077
+  },
+  {
+   "arm": "OLMo base",
+   "checks_source": 0.35,
+   "fabrication": 0.115
+  },
+  {
+   "arm": "OLMo Beta",
+   "checks_source": 0.68,
+   "fabrication": 0.269
+  }
+ ],
+ "stop_bar_fabrication": 0.05,
+ "general_ability": [
+  {
+   "bench": "gsm8k",
+   "n": 300,
+   "base": 248,
+   "seed1": 258,
+   "seed2": 257
+  },
+  {
+   "bench": "ARC",
+   "n": 1000,
+   "base": 853,
+   "seed1": 844,
+   "seed2": 851
+  },
+  {
+   "bench": "MMLU",
+   "n": 1000,
+   "base": 638,
+   "seed1": 631,
+   "seed2": 644
+  }
+ ],
+ "two_sides_of_truth": {
+  "n_false": 223,
+  "says_true_to_false": {
+   "base": 139,
+   "seed1": 177,
+   "seed2": 172
+  },
+  "n_known_true": 46,
+  "confirms_known_true": {
+   "base": 44,
+   "seed1": 45,
+   "seed2": 45
+  }
+ },
+ "mirror_cost": [
+  {
+   "approach": "approach 1",
+   "own_base": 94,
+   "after": [
+    75
+   ],
+   "gained": "one knowledge form +3",
+   "paid": "accepted false statements 2 → 9 of 12"
+  },
+  {
+   "approach": "approach 2",
+   "own_base": 96,
+   "after": [
+    79
+   ],
+   "gained": "holds under pressure 6 → 10 of 10",
+   "paid": "over-corrects partial refutations 6 → 0 of 8"
+  },
+  {
+   "approach": "Beta",
+   "own_base": 100,
+   "after": [
+    100,
+    97
+   ],
+   "gained": "—",
+   "paid": "false-statement form −2 / −1"
+  },
+  {
+   "approach": "approach 3",
+   "own_base": 100,
+   "after": [
+    102,
+    105
+   ],
+   "gained": "rejects false 11 / 11",
+   "paid": "rejects true known facts 44 → 30 / 35 of 46"
+  }
+ ],
+ "updated": "2026-10-10",
+ "everyday": {
+  "questions": 12,
+  "languages": 2,
+  "clean_of_48": {
+   "base": 38,
+   "seed1": 40,
+   "seed2": 41
+  },
+  "demo_clean_of_12_en": {
+   "base": 11,
+   "student": 11
+  },
+  "beta_clean_of_12": {
+   "en": {
+    "beta": 8,
+    "base": 10
+   },
+   "ru": {
+    "beta": 9,
+    "base": 9
+   }
+  },
+  "doc": "2610.0005"
+ },
+ "lab": {
+  "sessions": "1,000+",
+  "open_models": 2,
+  "models": [
+   "Qwen 7B",
+   "OLMo 7B"
+  ]
+ }
+}
