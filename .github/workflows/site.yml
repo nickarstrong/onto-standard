@@ -1,0 +1,66 @@
+name: Site check
+
+# Checks the published site after every push to main and reports the real result to Telegram.
+# Replaces ci.yml of the prompt-layer period, which tested a package that is no longer in this repository
+# and reported "Passed" whatever the result.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: Check docs/
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Required files, catalogue and fingerprints
+        run: |
+          python3 - <<'EOF'
+          import hashlib, json, os, sys
+          bad = []
+          for f in ["docs/index.html", "docs/CNAME", "docs/status.json", "docs/archive/archive.json",
+                    "docs/method/index.html", "docs/lab/index.html", "docs/demo/index.html", "docs/archive/index.html"]:
+              if not os.path.isfile(f):
+                  bad.append("missing " + f)
+          json.load(open("docs/status.json", encoding="utf-8"))
+          cat = json.load(open("docs/archive/archive.json", encoding="utf-8"))
+          n = 0
+          for d in cat["documents"]:
+              if not os.path.isfile("docs/archive/%s/index.html" % d["id"]):
+                  bad.append("no page for " + d["id"])
+              for v in d["versions"]:
+                  src = v.get("source")
+                  if not src:
+                      continue
+                  p = "docs/archive/%s/%s" % (d["id"], os.path.basename(src))
+                  if not os.path.isfile(p):
+                      bad.append("missing " + p); continue
+                  if hashlib.md5(open(p, "rb").read()).hexdigest() != v["md5"]:
+                      bad.append("md5 differs " + p)
+                  n += 1
+          print("documents: %d, open versions checked: %d" % (len(cat["documents"]), n))
+          for b in bad:
+              print("FAIL", b)
+          sys.exit(1 if bad else 0)
+          EOF
+
+  notify:
+    name: Notify
+    runs-on: ubuntu-latest
+    needs: [check]
+    if: always()
+    steps:
+      - name: Send the real result to Telegram
+        env:
+          TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RESULT: ${{ needs.check.result }}
+          MSG: ${{ github.event.head_commit.message }}
+        run: |
+          if [ -z "$TOKEN" ] || [ -z "$CHAT" ]; then echo "no Telegram secrets"; exit 0; fi
+          if [ "$RESULT" = "success" ]; then MARK="✅ ONTO site check passed"; else MARK="🔴 ONTO site check FAILED ($RESULT)"; fi
+          TEXT="$MARK: ${GITHUB_REPOSITORY}@${GITHUB_SHA::7} — ${MSG%%$'\n'*}"
+          curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" --data-urlencode "chat_id=${CHAT}" --data-urlencode "text=${TEXT}" > /dev/null
