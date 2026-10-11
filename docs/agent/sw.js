@@ -1,0 +1,3 @@
+// retired: unregisters itself and clears old caches (ONTO, 2026-10)
+self.addEventListener('install',function(){self.skipWaiting()});
+self.addEventListener('activate',function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(n){return caches.delete(n)}))}).then(function(){return self.registration.unregister()}).then(function(){return self.clients.matchAll()}).then(function(cs){cs.forEach(function(c){c.navigate(c.url)})}))});
